@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/30 10:33:28 $
- * Version: $Revision: 1.110.2.12 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.110.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.12 $
+ * @version $Revision: 1.110.2.13 $
  * 
  * @since 6.0.0 
  */
@@ -111,7 +111,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
 
     /** The root path for organizational units. */
-    private static final String ORGUNIT_BASE_FOLDER = "/system/orgunits";
+    private static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
 
     /** Property for the organizational unit description. */
     private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
@@ -232,9 +232,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        groupFqn = internalAppendRootOrgUnit(dbc, groupFqn);
-        parentGroupFqn = internalAppendRootOrgUnit(dbc, parentGroupFqn);
-
         if (existsGroup(dbc, groupFqn)) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1,
@@ -287,7 +284,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String associatedResource) throws CmsDataAccessException {
 
         // check the parent
-        if ((parent == null) && !name.equals(CmsOrganizationalUnit.SEPARATOR)) {
+        if ((parent == null) && !name.equals("")) {
             throw new CmsDataAccessException(org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_PARENT_ORGUNIT_NULL_0));
         }
@@ -306,6 +303,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     internalCreateOrgUnitFromResource(dbc, parentFolder),
                     resource.getRootPath());
                 ouPath = parentFolder.getRootPath();
+                if (!ouPath.endsWith("/")) {
+                    ouPath += "/";
+                }
             }
             // create the resource
             CmsResource ouFolder = internalCreateResourceForOrgUnit(dbc, ouPath + name, flags);
@@ -359,7 +359,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void createRootOrganizationalUnit(CmsDbContext dbc) {
 
         try {
-            readOrganizationalUnit(dbc, CmsOrganizationalUnit.SEPARATOR);
+            readOrganizationalUnit(dbc, "");
         } catch (CmsException e) {
             try {
                 CmsProject onlineProject = dbc.currentProject();
@@ -382,7 +382,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 try {
                     createOrganizationalUnit(
                         dbc,
-                        CmsOrganizationalUnit.SEPARATOR,
+                        "",
                         "The root organizational unit",
                         0,
                         null,
@@ -420,8 +420,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         int flags,
         Map additionalInfos,
         String address) throws CmsDataAccessException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -529,8 +527,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public void deleteGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException {
 
-        groupFqn = internalAppendRootOrgUnit(dbc, groupFqn);
-
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -571,8 +567,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#deleteUser(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public void deleteUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -634,8 +628,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public boolean existsGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException {
 
-        groupFqn = internalAppendRootOrgUnit(dbc, groupFqn);
-
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -671,8 +663,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#existsUser(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public boolean existsUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -717,9 +707,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 while (itRoles.hasNext()) {
                     CmsRole role = (CmsRole)itRoles.next();
                     String groupName = role.getGroupName();
-                    if (!role.isOrganizationalUnitIndependent()) {
-                        groupName = CmsOrganizationalUnit.SEPARATOR + groupName;
-                    }
                     int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
                     if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
                         flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
@@ -741,7 +728,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            internalCreateDefaultGroups(dbc, CmsOrganizationalUnit.SEPARATOR);
+            internalCreateDefaultGroups(dbc, "");
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
@@ -905,8 +892,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USERS_0), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USERS_0), e);
         } finally {
@@ -1132,8 +1117,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public List readChildGroups(CmsDbContext dbc, String parentGroupFqn) throws CmsDataAccessException {
 
-        parentGroupFqn = internalAppendRootOrgUnit(dbc, parentGroupFqn);
-
         List childs = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1207,8 +1190,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#readGroup(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public CmsGroup readGroup(CmsDbContext dbc, String groupFqn) throws CmsDataAccessException {
-
-        groupFqn = internalAppendRootOrgUnit(dbc, groupFqn);
 
         CmsGroup group = null;
         ResultSet res = null;
@@ -1347,8 +1328,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
@@ -1360,8 +1339,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public CmsUser readUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1391,8 +1368,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
@@ -1407,8 +1382,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public CmsUser readUser(CmsDbContext dbc, String userFqn, String password, String remoteAddress)
     throws CmsDataAccessException, CmsPasswordEncryptionException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1442,8 +1415,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
@@ -1457,7 +1428,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public List readUsersOfGroup(CmsDbContext dbc, String groupFqn, boolean includeOtherOuUsers)
     throws CmsDataAccessException {
 
-        groupFqn = internalAppendRootOrgUnit(dbc, groupFqn);
         String sqlQuery = "C_GROUPS_GET_USERS_OF_GROUP_2";
         if (!includeOtherOuUsers) {
             sqlQuery = "C_GROUPS_GET_ALL_USERS_OF_GROUP_2";
@@ -1484,10 +1454,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
-        } catch (IOException e) {
-            throw new CmsDbIoException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1,
-                groupFqn), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1,
@@ -1817,8 +1783,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void writePassword(CmsDbContext dbc, String userFqn, String oldPassword, String newPassword)
     throws CmsDataAccessException, CmsPasswordEncryptionException {
 
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
-
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -1914,51 +1878,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * This method appends the root organizational unit to the name if the
-     * name does not contains any organizational unit name.<p>
-     * 
-     * This is needed to ensure backward compatibility.<p>
-     * 
-     * This method also checks that the organizational unit exists.<p> 
-     * 
-     * @param dbc the current database context
-     * @param name the group/user name to check
-     * 
-     * @return the new name
-     * 
-     * @throws CmsDataAccessException 
-     */
-    protected String internalAppendRootOrgUnit(CmsDbContext dbc, String name) throws CmsDataAccessException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            return null;
-        }
-        // if no ou given, append root
-        if (!name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            return CmsOrganizationalUnit.SEPARATOR + name;
-        }
-        // check the ou, but not during initialization
-        if (dbc.getRequestContext() != null) {
-            // check the ou, but not during set up
-            boolean check = false;
-            try {
-                m_driverManager.readResource(dbc, ORGUNIT_BASE_FOLDER, CmsResourceFilter.ALL);
-                check = true;
-            } catch (CmsException e) {
-                // ignore
-            }
-            if (check) {
-                try {
-                    m_driverManager.readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name)).getName();
-                } catch (CmsException e) {
-                    throw new CmsDataAccessException(e.getMessageContainer());
-                }
-            }
-        }
-        return name;
-    }
-
-    /**
      * Internal helper method to create an access control entry from a database record.<p>
      * 
      * @param res resultset of the current query
@@ -2015,8 +1934,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (CmsOrganizationalUnit.getParentFqn(ouFqn) == null) {
                 // check the flags of existing groups, for compatibility checks
                 internalUpdateRoleGroup(dbc, administratorsGroup, CmsRole.ROOT_ADMIN);
-                internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER);
-                internalUpdateRoleGroup(dbc, projectmanagersGroup, CmsRole.PROJECT_MANAGER);
+                internalUpdateRoleGroup(dbc, usersGroup, CmsRole.WORKPLACE_USER.forOrgUnit(ouFqn));
+                internalUpdateRoleGroup(dbc, projectmanagersGroup, CmsRole.PROJECT_MANAGER.forOrgUnit(ouFqn));
             }
             return;
         }
@@ -2113,6 +2032,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             new Hashtable(),
             " ");
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(CmsRole.ROOT_ADMIN.getGroupName()));
+        createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(administratorsGroup));
 
         if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin())
             && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
@@ -2169,10 +2089,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsGroup internalCreateGroup(ResultSet res) throws SQLException {
 
         String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0"));
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ou)) {
-            // backward compatibility
-            ou = CmsOrganizationalUnit.SEPARATOR;
-        }
         return new CmsGroup(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))),
@@ -2201,7 +2117,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
         // get the data
         String name = resource.getRootPath().substring(ORGUNIT_BASE_FOLDER.length());
-        if (!name.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+        if ((name.length() > 0) && !name.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
             name += CmsOrganizationalUnit.SEPARATOR;
         }
         String description = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_DESCRIPTION, false).getStructureValue();
@@ -2267,10 +2183,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @return CmsUser the new CmsUser object
      * 
      * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws IOException if there is an error in deserializing the user info
      * @throws ClassNotFoundException if there is an error in deserializing the user info
      */
-    protected CmsUser internalCreateUser(ResultSet res) throws SQLException, IOException, ClassNotFoundException {
+    protected CmsUser internalCreateUser(ResultSet res) throws SQLException, ClassNotFoundException {
 
         String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME_0"));
 
@@ -2292,10 +2207,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0"));
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ou)) {
-            // backward compatibility
-            ou = CmsOrganizationalUnit.SEPARATOR;
-        }
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0"))),
             ou + userName,
@@ -2455,7 +2366,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     throws CmsDataAccessException {
 
         CmsGroup group = readGroup(dbc, groupName);
-        if (CmsRole.valueOf(group.getFlags()) != role) {
+        if (!CmsRole.valueOf(group).equals(role)) {
             CmsGroup roleGroup = readGroup(dbc, role.getGroupName());
             // move all users from the group to the role
             // HINT: this could be improved with an special query like:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2006/10/16 13:30:24 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.4.1 $
+ * @version $Revision: 1.8.4.2 $
  * 
  * @since 6.0.0
  */
@@ -121,7 +121,8 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     
     /**
      * Tests the link substitution.<p>
-     * @throws Exception
+     * 
+     * @throws Exception if test fails
      */
     public void testLinkSubstitution() throws Exception {
 

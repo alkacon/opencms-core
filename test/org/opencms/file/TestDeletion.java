@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.8.4.7 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.8.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -55,7 +54,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.7 $
+ * @version $Revision: 1.8.4.8 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -313,7 +312,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
         String groupname = "deleteGroup";
 
-        List expected = OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true);
+        List expected = OpenCms.getOrgUnitManager().getGroups(cms, "", true);
 
         // create group
         cms.createGroup(groupname, "deleteMe", I_CmsPrincipal.FLAG_ENABLED, "Users");
@@ -321,7 +320,7 @@ public class TestDeletion extends OpenCmsTestCase {
         // now delete the group again
         cms.deleteGroup(groupname);
 
-        List actual = OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true);
+        List actual = OpenCms.getOrgUnitManager().getGroups(cms, "", true);
 
         assertEquals(expected, actual);
     }

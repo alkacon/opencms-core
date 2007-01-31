@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditFieldConfigurationDialog.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
@@ -55,7 +55,7 @@ public class CmsEditFieldConfigurationDialog extends A_CmsFieldConfigurationDial
     /**
      * Public constructor with JSP action element.<p>
      * 
-     * @param jsp
+     * @param jsp the jsp action element
      */
     public CmsEditFieldConfigurationDialog(CmsJspActionElement jsp) {
 

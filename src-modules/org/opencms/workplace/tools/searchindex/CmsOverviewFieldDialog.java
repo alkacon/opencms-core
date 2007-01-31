@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewFieldDialog.java,v $
- * Date   : $Date: 2006/12/14 15:45:56 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -54,7 +54,7 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
     /**
      * Public constructor with JSP action element.<p>
      * 
-     * @param jsp
+     * @param jsp the jsp action element
      */
     public CmsOverviewFieldDialog(CmsJspActionElement jsp) {
 

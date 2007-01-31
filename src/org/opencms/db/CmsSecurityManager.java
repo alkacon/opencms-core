@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.97.4.32 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.97.4.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -196,7 +196,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, orgUnit.getName());
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(orgUnit.getName()));
             m_driverManager.addResourceToOrgUnit(dbc, orgUnit, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -223,7 +223,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(groupname));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
             m_driverManager.addUserToGroup(dbc, username, groupname, readRoles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2, username, groupname), e);
@@ -490,34 +490,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the user of the given context has permissions to impersonate the given role.<p>
-     * 
-     * This method works only with role that are not organizational unit dependent.<p>
-     *  
-     * @param context the current request context
-     * @param role the role to check
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role permissions
-     * 
-     * @see CmsRole#isOrganizationalUnitIndependent()
-     */
-    public void checkRole(CmsRequestContext context, CmsRole role) throws CmsRoleViolationException {
-
-        if (!role.isOrganizationalUnitIndependent()) {
-            throw new CmsRoleViolationException(Messages.get().container(
-                Messages.ERR_ROLE_IS_ORGUNIT_DEPENDENT_1,
-                role.getName(context.getLocale())));
-
-        }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRoleForOrgUnit(dbc, role, null);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
      * Checks if the user of the current database context has permissions to impersonate the given role
      * in the given organizational unit.<p>
      *  
@@ -526,17 +498,16 @@ public final class CmsSecurityManager {
      *  
      * @param dbc the current OpenCms users database context
      * @param role the role to check
-     * @param orgUnitFqn the organizational unit to check the role for, be may be <code>null</code>
      * 
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      * 
-     * @see org.opencms.security.CmsRoleManager#checkRoleForOrgUnit(CmsObject, CmsRole, String)
+     * @see org.opencms.security.CmsRoleManager#checkRole(CmsObject, CmsRole)
      */
-    public void checkRoleForOrgUnit(CmsDbContext dbc, CmsRole role, String orgUnitFqn) throws CmsRoleViolationException {
+    public void checkRole(CmsDbContext dbc, CmsRole role) throws CmsRoleViolationException {
 
-        if (!hasRoleForOrgUnit(dbc, dbc.currentUser(), role, orgUnitFqn)) {
-            if (orgUnitFqn != null) {
-                throw role.createRoleViolationExceptionForOrgUnit(dbc.getRequestContext(), orgUnitFqn);
+        if (!hasRole(dbc, dbc.currentUser(), role)) {
+            if (role.getOuFqn() != null) {
+                throw role.createRoleViolationExceptionForOrgUnit(dbc.getRequestContext(), role.getOuFqn());
             } else {
                 throw role.createRoleViolationException(dbc.getRequestContext());
             }
@@ -551,16 +522,14 @@ public final class CmsSecurityManager {
      *  
      * @param context the current request context
      * @param role the role to check
-     * @param orgUnitFqn the organizational unit to check the role for
      * 
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      */
-    public void checkRoleForOrgUnit(CmsRequestContext context, CmsRole role, String orgUnitFqn)
-    throws CmsRoleViolationException {
+    public void checkRole(CmsRequestContext context, CmsRole role) throws CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, role, orgUnitFqn);
+            checkRole(dbc, role);
         } finally {
             dbc.clear();
         }
@@ -576,7 +545,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      * 
-     * @see org.opencms.security.CmsRoleManager#checkRoleForOrgUnit(CmsObject, CmsRole, String)
+     * @see org.opencms.security.CmsRoleManager#checkRole(CmsObject, CmsRole)
      */
     public void checkRoleForResource(CmsDbContext dbc, CmsRole role, CmsResource resource)
     throws CmsRoleViolationException {
@@ -852,7 +821,7 @@ public final class CmsSecurityManager {
 
         CmsGroup result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(name));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
             result = m_driverManager.createGroup(dbc, new CmsUUID(), name, description, flags, parent);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_GROUP_1, name), e);
@@ -888,7 +857,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsOrganizationalUnit result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, getParentOrganizationalUnit(ouFqn));
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(ouFqn)));
             checkOfflineProject(dbc);
             result = m_driverManager.createOrganizationalUnit(dbc, ouFqn, description, flags, resource);
         } catch (Exception e) {
@@ -925,7 +894,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.PROJECT_MANAGER, null);
+            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(getParentOrganizationalUnit(managergroupname)));
             result = m_driverManager.createProject(dbc, name, description, groupname, managergroupname, projecttype);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROJECT_1, name), e);
@@ -957,7 +926,7 @@ public final class CmsSecurityManager {
 
         try {
             checkOfflineProject(dbc);
-            checkRoleForOrgUnit(dbc, CmsRole.WORKPLACE_MANAGER, null);
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
             result = m_driverManager.createPropertyDefinition(dbc, name);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROPDEF_1, name), e);
@@ -1056,7 +1025,7 @@ public final class CmsSecurityManager {
 
         CmsProject result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.PROJECT_MANAGER, null);
+            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(null));
             result = m_driverManager.createTempfileProject(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_TEMPFILE_PROJECT_0), e);
@@ -1093,7 +1062,7 @@ public final class CmsSecurityManager {
 
         CmsUser result = null;
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(name));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
             result = m_driverManager.createUser(dbc, name, password, description, additionalInfos);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_USER_1, name), e);
@@ -1145,7 +1114,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.WORKPLACE_MANAGER, null);
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
             m_driverManager.deleteBackups(dbc, timestamp, versions, report);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -1179,7 +1148,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // catch own exception as special cause for general "Error deleting group". 
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(group.getName()));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(group.getName())));
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not, data will become inconsistent
@@ -1215,7 +1184,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // catch own exception as special cause for general "Error deleting group". 
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(name));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not data will become inconsistent
@@ -1250,7 +1219,9 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, getParentOrganizationalUnit(organizationalUnit.getName()));
+            checkRole(
+                dbc,
+                CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(organizationalUnit.getName())));
             checkOfflineProject(dbc);
             m_driverManager.deleteOrganizationalUnit(dbc, organizationalUnit);
         } catch (Exception e) {
@@ -1310,7 +1281,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkRoleForOrgUnit(dbc, CmsRole.WORKPLACE_MANAGER, null);
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
             m_driverManager.deletePropertyDefinition(dbc, name);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_PROPERTY_1, name), e);
@@ -2191,9 +2162,20 @@ public final class CmsSecurityManager {
             return true;
         }
 
-        if (hasRoleForOrgUnit(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER, null)) {
-            // user is admin            
-            return true;
+        try {
+            if (hasRole(
+                dbc,
+                dbc.currentUser(),
+                CmsRole.PROJECT_MANAGER.forOrgUnit(getParentOrganizationalUnit(m_driverManager.readGroup(
+                    dbc,
+                    project.getManagerGroupId()).getName())))) {
+                // user is admin            
+                return true;
+            }
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         // get all groups of the user
@@ -2202,7 +2184,7 @@ public final class CmsSecurityManager {
             groups = m_driverManager.getGroupsOfUser(
                 dbc,
                 dbc.currentUser().getName(),
-                CmsOrganizationalUnit.SEPARATOR,
+                "",
                 true,
                 false,
                 false,
@@ -2267,32 +2249,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the given user has the given role.<p>
-     *  
-     * This method can only be used for roles that are not organizational unit dependent.<p>
-     *  
-     * @param context the current OpenCms context
-     * @param user the user to check the role for
-     * @param role the role to check
-     * 
-     * @return <code>true</code> if the given user has the given role
-     */
-    public boolean hasRole(CmsRequestContext context, CmsUser user, CmsRole role) {
-
-        if (!role.isOrganizationalUnitIndependent()) {
-            return false;
-        }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        boolean result;
-        try {
-            result = hasRoleForOrgUnit(dbc, user, role, null);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
      * Checks if the given user has the given role in the given organizational unit.<p>
      *  
      * If the organizational unit is <code>null</code>, this method will check if the
@@ -2301,11 +2257,10 @@ public final class CmsSecurityManager {
      * @param dbc the current OpenCms users database context
      * @param user the user to check the role for
      * @param role the role to check
-     * @param orgUnitFqn the organizational unit the check the role for, may be <code>null</code>
      * 
      * @return <code>true</code> if the given user has the given role in the given organizational unit
      */
-    public boolean hasRoleForOrgUnit(CmsDbContext dbc, CmsUser user, CmsRole role, String orgUnitFqn) {
+    public boolean hasRole(CmsDbContext dbc, CmsUser user, CmsRole role) {
 
         // read all roles of the current user
         List roles;
@@ -2313,7 +2268,7 @@ public final class CmsSecurityManager {
             roles = m_driverManager.getGroupsOfUser(
                 dbc,
                 user.getName(),
-                CmsOrganizationalUnit.SEPARATOR,
+                "",
                 true,
                 true,
                 true,
@@ -2325,7 +2280,7 @@ public final class CmsSecurityManager {
             // any exception: return false
             return false;
         }
-        return hasRole(role, roles, orgUnitFqn);
+        return hasRole(role, roles);
     }
 
     /**
@@ -2337,16 +2292,15 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param user the user to check the role for
      * @param role the role to check
-     * @param orgUnitFqn the organizational unit to check the role for
      * 
      * @return <code>true</code> if the given user has the given role in the given organizational unit
      */
-    public boolean hasRoleForOrgUnit(CmsRequestContext context, CmsUser user, CmsRole role, String orgUnitFqn) {
+    public boolean hasRole(CmsRequestContext context, CmsUser user, CmsRole role) {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         boolean result;
         try {
-            result = hasRoleForOrgUnit(dbc, user, role, orgUnitFqn);
+            result = hasRole(dbc, user, role);
         } finally {
             dbc.clear();
         }
@@ -2379,7 +2333,7 @@ public final class CmsSecurityManager {
         Iterator it = orgUnits.iterator();
         while (it.hasNext()) {
             String orgUnitFqn = (String)it.next();
-            if (hasRoleForOrgUnit(dbc, user, role, orgUnitFqn)) {
+            if (hasRole(dbc, user, role.forOrgUnit(orgUnitFqn))) {
                 return true;
             }
         }
@@ -2529,7 +2483,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(name));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
             newUser = m_driverManager.importUser(
                 dbc,
                 id,
@@ -4075,7 +4029,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, orgUnit.getName());
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(orgUnit.getName()));
             checkOfflineProject(dbc);
             m_driverManager.removeResourceFromOrgUnit(dbc, orgUnit, resourceName);
         } catch (Exception e) {
@@ -4139,7 +4093,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(groupname));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
             m_driverManager.removeUserFromGroup(dbc, username, groupname, readRoles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_REMOVE_USER_FROM_GROUP_2, username, groupname), e);
@@ -4384,7 +4338,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(groupName));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupName)));
             m_driverManager.setParentGroup(dbc, groupName, parentGroupName);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PARENT_GROUP_2, parentGroupName, groupName), e);
@@ -4408,7 +4362,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(username));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(username)));
             m_driverManager.setPassword(dbc, username, newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PASSWORD_1, username), e);
@@ -4433,7 +4387,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, orgUnit.getName());
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(orgUnit.getName()));
             checkOfflineProject(dbc);
             m_driverManager.setUsersOrganizationalUnit(dbc, orgUnit, user);
         } catch (Exception e) {
@@ -4744,7 +4698,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(group.getName()));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(group.getName())));
             m_driverManager.writeGroup(dbc, group);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_GROUP_1, group.getName()), e);
@@ -4795,7 +4749,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ADMINISTRATOR, organizationalUnit.getName());
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(organizationalUnit.getName()));
             checkOfflineProject(dbc);
             m_driverManager.writeOrganizationalUnit(dbc, organizationalUnit);
         } catch (Exception e) {
@@ -4824,7 +4778,9 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.PROJECT_MANAGER, null);
+            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(m_driverManager.readGroup(
+                dbc,
+                project.getManagerGroupId()).getName()));
             m_driverManager.writeProject(dbc, project);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_PROJECT_1, project.getName()), e);
@@ -4975,7 +4931,9 @@ public final class CmsSecurityManager {
         try {
             if (!context.currentUser().equals(user)) {
                 // a user is allowed to write his own data (e.g. for "change preferences")
-                checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(user.getName()));
+                checkRole(
+                    dbc,
+                    CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
             }
             m_driverManager.writeUser(dbc, user);
         } catch (Exception e) {
@@ -5367,7 +5325,7 @@ public final class CmsSecurityManager {
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRoleForOrgUnit(dbc, CmsRole.ACCOUNT_MANAGER, getParentOrganizationalUnit(user.getName()));
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not data will become inconsistent
@@ -5395,7 +5353,7 @@ public final class CmsSecurityManager {
 
         String ouFqn = CmsOrganizationalUnit.getParentFqn(fqn);
         if (ouFqn == null) {
-            ouFqn = CmsOrganizationalUnit.SEPARATOR;
+            ouFqn = "";
         }
         return ouFqn;
     }
@@ -5412,12 +5370,11 @@ public final class CmsSecurityManager {
      *  
      * @param role the role to check
      * @param roles the groups to match the role groups against
-     * @param orgUnitFqn the organizational unit to check the role for
      * 
      * @return <code>true</code> if at last one of the given group names is equal to a group name
      *      of this role
      */
-    private boolean hasRole(CmsRole role, List roles, String orgUnitFqn) {
+    private boolean hasRole(CmsRole role, List roles) {
 
         // iterates the roles the user are in
         Iterator itGroups = roles.iterator();
@@ -5430,7 +5387,7 @@ public final class CmsSecurityManager {
                 if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role 
                     // we need an exact match, and we ignore the ou param
-                    if (groupName.equals(distictGroupName.substring(1)) || groupName.equals(distictGroupName)) {
+                    if (groupName.equals(distictGroupName.substring(1))) {
                         return true;
                     }
                 } else {
@@ -5438,15 +5395,14 @@ public final class CmsSecurityManager {
                     if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + distictGroupName)
                         || groupName.equals(distictGroupName)) {
                         // this is a ou dependent role
-                        if (orgUnitFqn == null) {
+                        if (role.getOuFqn() == null) {
                             // ou param is null, so the user needs to have the role in at least one ou does not matter which
                             return true;
                         } else {
                             // the user needs to have the role in the given ou or in a parent ou
                             // now check that the ou matches
                             String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
-                            if (orgUnitFqn.startsWith(groupFqn)
-                                || orgUnitFqn.startsWith(CmsOrganizationalUnit.SEPARATOR + groupFqn)) {
+                            if (role.getOuFqn().startsWith(groupFqn)) {
                                 return true;
                             }
                         }

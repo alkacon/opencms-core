@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/29 14:27:10 $
- * Version: $Revision: 1.4.8.6 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.4.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,106 +123,78 @@ public class TestRoles extends OpenCmsTestCase {
 
         CmsRoleManager roleMan = OpenCms.getRoleManager();
         // check preconditions for admin, with some roles
-        roleMan.checkRoleForResource(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR);
-        roleMan.checkRoleForOrgUnit(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR);
-        roleMan.checkRoleForResource(cms, CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR);
-        roleMan.checkRoleForOrgUnit(cms, CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR);
-        roleMan.checkRoleForResource(cms, CmsRole.WORKPLACE_MANAGER, CmsOrganizationalUnit.SEPARATOR);
-        roleMan.checkRoleForOrgUnit(cms, CmsRole.WORKPLACE_MANAGER, CmsOrganizationalUnit.SEPARATOR);
+        roleMan.checkRoleForResource(cms, CmsRole.ROOT_ADMIN, "/");
+        roleMan.checkRole(cms, CmsRole.ROOT_ADMIN);
+        roleMan.checkRoleForResource(cms, CmsRole.DEVELOPER, "/");
+        roleMan.checkRole(cms, CmsRole.DEVELOPER.forOrgUnit(""));
+        roleMan.checkRoleForResource(cms, CmsRole.WORKPLACE_MANAGER, "/");
+        roleMan.checkRole(cms, CmsRole.WORKPLACE_MANAGER);
 
-        assertFalse(roleMan.getManageableGroups(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertFalse(roleMan.getManageableUsers(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertFalse(roleMan.getManageableOrgUnits(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
+        assertFalse(roleMan.getManageableGroups(cms, "", false).isEmpty());
+        assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
+        assertFalse(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
 
-        assertFalse(roleMan.getRolesOfUser(
-            cms,
-            cms.getRequestContext().currentUser().getName(),
-            CmsOrganizationalUnit.SEPARATOR,
-            true,
-            false,
-            false).isEmpty());
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
+        assertFalse(roleMan.getRolesOfUser(cms, cms.getRequestContext().currentUser().getName(), "", true, false, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().currentUser()));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, true, true).isEmpty());
-        assertEquals(
-            1,
-            roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, true, false).size());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, true).isEmpty());
+        assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).size());
 
         // check preconditions for test user, with some roles
-        CmsUser user = cms.readUser("/test1");
-        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForResource(
-            cms,
-            user.getName(),
-            CmsRole.WORKPLACE_MANAGER,
-            CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForOrgUnit(
-            cms,
-            user.getName(),
-            CmsRole.WORKPLACE_MANAGER,
-            CmsOrganizationalUnit.SEPARATOR));
+        CmsUser user = cms.readUser("test1");
+        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.ROOT_ADMIN, "/"));
+        assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN));
+        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.DEVELOPER, "/"));
+        assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.DEVELOPER.forOrgUnit("")));
+        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.WORKPLACE_MANAGER, "/"));
+        assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.WORKPLACE_MANAGER));
 
-        assertEquals(
-            2,
-            roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false).size());
-        assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
-            user));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
+        assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(user));
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().currentUser()));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
             cms.getRequestContext().currentUser()));
 
         // login as test user to check if it can create a user
         cms.loginUser(user.getName(), "test1");
         try {
-            cms.createUser("/mytest", "mytest", "my test", null);
+            cms.createUser("mytest", "mytest", "my test", null);
             fail("the user should not have account management permissions");
         } catch (CmsRoleViolationException e) {
             // ok, ignore
         }
-        assertTrue(roleMan.getManageableGroups(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertTrue(roleMan.getManageableUsers(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertTrue(roleMan.getManageableOrgUnits(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
+        assertTrue(roleMan.getManageableGroups(cms, "", false).isEmpty());
+        assertTrue(roleMan.getManageableUsers(cms, "", false).isEmpty());
+        assertTrue(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
 
         // login back as admin
         cms = getCmsObject();
-        roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, user.getName());
+        roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR, user.getName());
 
         // login back as test user to check again
         cms.loginUser(user.getName(), "test1");
         // now it should work
-        cms.createUser("/mytest", "mytest", "my test", null);
+        cms.createUser("mytest", "mytest", "my test", null);
 
         // check post-conditions for test user, with some roles
-        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR));
-        assertTrue(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR));
-        assertTrue(roleMan.hasRoleForOrgUnit(cms, user.getName(), CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForResource(
-            cms,
-            user.getName(),
-            CmsRole.WORKPLACE_MANAGER,
-            CmsOrganizationalUnit.SEPARATOR));
-        assertFalse(roleMan.hasRoleForOrgUnit(
-            cms,
-            user.getName(),
-            CmsRole.WORKPLACE_MANAGER,
-            CmsOrganizationalUnit.SEPARATOR));
+        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.ROOT_ADMIN, "/"));
+        assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN));
+        assertTrue(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.DEVELOPER, "/"));
+        assertTrue(roleMan.hasRole(cms, user.getName(), CmsRole.DEVELOPER.forOrgUnit("")));
+        assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.WORKPLACE_MANAGER, "/"));
+        assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.WORKPLACE_MANAGER));
 
-        assertFalse(roleMan.getManageableGroups(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertFalse(roleMan.getManageableUsers(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
-        assertFalse(roleMan.getManageableOrgUnits(cms, CmsOrganizationalUnit.SEPARATOR, false).isEmpty());
+        assertFalse(roleMan.getManageableGroups(cms, "", false).isEmpty());
+        assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
+        assertFalse(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
 
-        assertFalse(roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false).isEmpty());
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
+        assertFalse(roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
             cms.getRequestContext().currentUser()));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER, CmsOrganizationalUnit.SEPARATOR, true, true).isEmpty());
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
-            cms.readUser("Admin")));
-        assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, CmsOrganizationalUnit.SEPARATOR, true, false).contains(
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true, true).isEmpty());
+        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(cms.readUser("Admin")));
+        assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().currentUser()));
     }
 
@@ -265,70 +237,66 @@ public class TestRoles extends OpenCmsTestCase {
         List adminRoles = roleMan.getRolesOfUser(
             cms,
             cms.getRequestContext().currentUser().getName(),
-            CmsOrganizationalUnit.SEPARATOR,
+            "",
             false,
             true,
             false);
         assertEquals(1, adminRoles.size());
-        assertTrue(((CmsGroup)adminRoles.get(0)).getName().equals(CmsRole.ROOT_ADMIN.getGroupName().substring(1)));
+        assertTrue(adminRoles.contains(CmsRole.ROOT_ADMIN));
 
         // should do nothing
-        roleMan.addUserToRole(
-            cms,
-            CmsRole.DEVELOPER,
-            CmsOrganizationalUnit.SEPARATOR,
-            cms.getRequestContext().currentUser().getName());
+        roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), cms.getRequestContext().currentUser().getName());
 
         // check again
         adminRoles = roleMan.getRolesOfUser(
             cms,
             cms.getRequestContext().currentUser().getName(),
-            CmsOrganizationalUnit.SEPARATOR,
+            "",
             false,
             true,
             false);
         assertEquals(1, adminRoles.size());
-        assertTrue(((CmsGroup)adminRoles.get(0)).getName().equals(CmsRole.ROOT_ADMIN.getGroupName().substring(1)));
+        assertTrue(adminRoles.contains(CmsRole.ROOT_ADMIN));
 
-        CmsUser user = cms.readUser("/test2");
-        List roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, true, false);
+        CmsUser user = cms.readUser("test2");
+        List roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
         assertEquals(1, roles.size());
-        assertTrue(roles.contains(cms.readGroup(CmsRole.WORKPLACE_USER.getGroupName(user.getOuFqn()))));
+        assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
 
-        roleMan.addUserToRole(cms, CmsRole.VFS_MANAGER, user.getOuFqn(), user.getName());
+        roleMan.addUserToRole(cms, CmsRole.VFS_MANAGER.forOrgUnit(user.getOuFqn()), user.getName());
 
-        roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, true, false);
+        roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
         assertEquals(2, roles.size());
-        assertTrue(roles.contains(cms.readGroup(CmsRole.VFS_MANAGER.getGroupName(user.getOuFqn()))));
-        assertTrue(roles.contains(cms.readGroup(CmsRole.WORKPLACE_USER.getGroupName(user.getOuFqn()))));
+        assertTrue(roles.contains(CmsRole.VFS_MANAGER.forOrgUnit(user.getOuFqn())));
+        assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
 
-        roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false);
-        List childs = CmsRole.VFS_MANAGER.getChilds(true);
-        childs.add(CmsRole.VFS_MANAGER);
-        childs.addAll(CmsRole.WORKPLACE_USER.getChilds(true));
-        childs.add(CmsRole.WORKPLACE_USER);
+        roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
+        List childs = CmsRole.VFS_MANAGER.forOrgUnit("").getChilds(true);
+        childs.add(CmsRole.VFS_MANAGER.forOrgUnit(""));
+        childs.addAll(CmsRole.WORKPLACE_USER.forOrgUnit("").getChilds(true));
+        childs.add(CmsRole.WORKPLACE_USER.forOrgUnit(""));
         assertEquals(childs.size(), roles.size());
         Iterator it = roles.iterator();
         while (it.hasNext()) {
-            CmsGroup role = (CmsGroup)it.next();
-            assertTrue(childs.contains(CmsRole.valueOf(role.getName())));
+            CmsRole role = (CmsRole)it.next();
+            assertTrue(childs.contains(role));
         }
 
         // now add a parent role
-        roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR, user.getOuFqn(), user.getName());
+        roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()), user.getName());
         // which should have removed the child role
-        roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, true, false);
+        roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
         assertEquals(1, roles.size());
-        assertTrue(roles.contains(cms.readGroup(CmsRole.ADMINISTRATOR.getGroupName(user.getOuFqn()))));
+        assertTrue(roles.contains(CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn())));
 
-        roles = roleMan.getRolesOfUser(cms, user.getName(), CmsOrganizationalUnit.SEPARATOR, true, false, false);
-        childs = CmsRole.ADMINISTRATOR.getChilds(true);
-        childs.add(CmsRole.ADMINISTRATOR);
+        roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
+        childs = CmsRole.ADMINISTRATOR.forOrgUnit("").getChilds(true);
+        childs.add(CmsRole.ADMINISTRATOR.forOrgUnit(""));
         assertEquals(childs.size(), roles.size());
         it = roles.iterator();
         while (it.hasNext()) {
-            CmsGroup role = (CmsGroup)it.next();
-            assertTrue(childs.contains(CmsRole.valueOf(role.getName())));
+            CmsRole role = (CmsRole)it.next();
+            assertTrue(childs.contains(role));
         }
     }
 
@@ -342,44 +310,35 @@ public class TestRoles extends OpenCmsTestCase {
         echo("Testing virtual role groups");
 
         CmsObject cms = getCmsObject();
-        CmsGroup group = cms.createGroup("/mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
+        CmsGroup group = cms.createGroup("mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
 
-        List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
-            cms,
-            CmsRole.VFS_MANAGER,
-            CmsOrganizationalUnit.SEPARATOR,
-            true,
-            false);
+        List roleUsers = OpenCms.getRoleManager().getUsersOfRole(cms, CmsRole.VFS_MANAGER.forOrgUnit(""), true, false);
         List groupUsers = cms.getUsersOfGroup(group.getName());
         assertEquals(new HashSet(roleUsers), new HashSet(groupUsers));
 
         // try out a child role
-        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.DEVELOPER, CmsOrganizationalUnit.SEPARATOR, "/Guest");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), "Guest");
         // nothing should change
         assertEquals(new HashSet(roleUsers), new HashSet(cms.getUsersOfGroup(group.getName())));
 
         // try out a parent role
-        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR, CmsOrganizationalUnit.SEPARATOR, "/Guest");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), "Guest");
         assertEquals(groupUsers.size() + 1, cms.getUsersOfGroup(group.getName()).size());
-        assertTrue(cms.getUsersOfGroup(group.getName()).contains(cms.readUser("/Guest")));
+        assertTrue(cms.getUsersOfGroup(group.getName()).contains(cms.readUser("Guest")));
 
         // everything should be as before
-        OpenCms.getRoleManager().removeUserFromRole(
-            cms,
-            CmsRole.ADMINISTRATOR,
-            CmsOrganizationalUnit.SEPARATOR,
-            "/Guest");
+        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), "Guest");
         groupUsers = cms.getUsersOfGroup(group.getName());
         assertEquals(new HashSet(roleUsers), new HashSet(groupUsers));
 
         // remove the virtual group
         cms.deleteGroup(group.getName());
-        assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, CmsOrganizationalUnit.SEPARATOR, true).contains(group));
+        assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
 
         // try to add a role by adding a user to the group
-        group = cms.createGroup("/mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
-        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "/Guest", "/", true, true, true).isEmpty());
-        cms.addUserToGroup("/Guest", group.getName());
-        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "/Guest", "/", true, true, true).size());
+        group = cms.createGroup("mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
+        cms.addUserToGroup("Guest", group.getName());
+        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
     }
 }

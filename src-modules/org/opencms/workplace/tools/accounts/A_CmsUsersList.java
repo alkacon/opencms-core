@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSessionManager;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -71,7 +73,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +96,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ROLES = "ar";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_SWITCH = "as";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ACTIVATE = "ca";
@@ -121,6 +126,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ROLES = "cr";
+
+    /** list action id constant. */
+    public static final String LIST_COLUMN_SWITCH = "cs";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_EDIT = "de";
@@ -162,6 +170,24 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     public A_CmsUsersList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
         super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, null);
+    }
+
+    /**
+     * Calls the switch user method of the SessionManager.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void actionSwitchUser() throws CmsException {
+
+        try {
+            CmsSessionManager sessionManager = OpenCms.getSessionManager();
+            sessionManager.switchUser(getCms(), getJsp().getRequest(), getCms().readUser(
+                new CmsUUID(getJsp().getRequest().getParameter("userid"))));
+        } catch (CmsException e) {
+            String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
+            getToolManager().setCurrentToolPath(this, toolPath);
+            throw e;
+        }
     }
 
     /**
@@ -239,7 +265,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
-        if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
+        if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
+            // forward
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/switch", params);
+        } else if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
         } else if (m_editActionIds.contains(getParamListAction())) {
@@ -352,6 +381,16 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the path the switch user icon.<p>
+     * 
+     * @return the path to the switch user icon
+     */
+    protected String getSwitchIcon() {
+
+        return PATH_BUTTONS + "user_switch.png";
+    }
+
+    /**
      * Returns a list of users.<p>
      * 
      * @return the list of all users
@@ -416,6 +455,23 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         groupCol.addDirectAction(groupAction);
         // add it to the list definition
         metadata.addColumn(groupCol);
+
+        // create column for switch user
+        CmsListColumnDefinition switchCol = new CmsListColumnDefinition(LIST_COLUMN_SWITCH);
+        switchCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_0));
+        switchCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_HELP_0));
+        switchCol.setWidth("20");
+        switchCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        switchCol.setSorteable(false);
+        // add switch action
+        CmsListDirectAction switchAction = new CmsListDirectAction(LIST_ACTION_SWITCH);
+        switchAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_NAME_0));
+        switchAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_HELP_0));
+        switchAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_CONF_0));
+        switchAction.setIconPath(getSwitchIcon());
+        switchCol.addDirectAction(switchAction);
+        // add it to the list definition
+        metadata.addColumn(switchCol);
 
         // create column for activation/deactivation
         CmsListColumnDefinition actCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);

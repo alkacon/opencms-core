@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/I_CmsWorkflowManager.java,v $
- * Date   : $Date: 2006/11/29 15:04:15 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.0 
  */
@@ -335,8 +335,9 @@ public interface I_CmsWorkflowManager {
      * if it is locked in the workflow, but not for a distinct user, then it is checked,
      * if the user is allowed to edit the resource by asking the workflow engine. 
      * 
-     * @param cms
-     * @param resource
+     * @param cms the current cms context
+     * @param resource the resource to check
+     * 
      * @return if a resource assigned to a task is editable
      */
     boolean isEditableInWorkflow(CmsObject cms, CmsResource resource);

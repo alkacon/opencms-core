@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.14.4.2 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.14.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -58,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14.4.2 $ 
+ * @version $Revision: 1.14.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +117,7 @@ public class CmsChaccBrowser extends CmsDialog {
         List groups = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
-            groups = OpenCms.getOrgUnitManager().getGroups(getCms(), CmsOrganizationalUnit.SEPARATOR, true);
+            groups = OpenCms.getOrgUnitManager().getGroups(getCms(), "", true);
         } catch (Throwable e) {
             // should usually never happen
             includeErrorpage(this, e);
@@ -142,7 +141,7 @@ public class CmsChaccBrowser extends CmsDialog {
         List users = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
-            users = OpenCms.getOrgUnitManager().getUsers(getCms(), CmsOrganizationalUnit.SEPARATOR, true);
+            users = OpenCms.getOrgUnitManager().getUsers(getCms(), "", true);
         } catch (Throwable e) {
             // should usually never happen
             includeErrorpage(this, e);

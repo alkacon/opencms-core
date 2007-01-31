@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.84.4.9 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.84.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsDateUtil;
@@ -93,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.9 $ 
+ * @version $Revision: 1.84.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1330,7 +1329,7 @@ public class CmsExport {
             List allUsers = new ArrayList();
             if (m_exportUserdata) {
                 // add system users
-                allUsers.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), CmsOrganizationalUnit.SEPARATOR, true));
+                allUsers.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
             }
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);

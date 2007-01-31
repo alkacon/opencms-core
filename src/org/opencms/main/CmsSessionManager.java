@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/01/23 13:03:20 $
- * Version: $Revision: 1.12.4.12 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.12.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.12 $ 
+ * @version $Revision: 1.12.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,12 +329,13 @@ public class CmsSessionManager {
      * @param cms the current CmsObject
      * @param req the current request
      * @param user the user to switch to
-     * @throws CmsException
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
 
         // only user with ACCOUNT_MANAGER role are allowed to switch the user
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(user.getOuFqn()));
         CmsSessionInfo info = getSessionInfo(req);
         HttpSession session = req.getSession(false);
         if (info == null || session == null) {

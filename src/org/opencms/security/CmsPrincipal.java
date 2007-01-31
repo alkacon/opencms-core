@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.2.4.6 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.2.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.6 $ 
+ * @version $Revision: 1.2.4.7 $ 
  * 
  * @since 6.2.0 
  */
@@ -320,7 +320,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public String getOuFqn() {
 
-        return CmsOrganizationalUnit.getParentFqn(CmsOrganizationalUnit.SEPARATOR + m_name);
+        return CmsOrganizationalUnit.getParentFqn(m_name);
     }
 
     /**
@@ -414,10 +414,6 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     public void setName(String name) {
 
         checkName(CmsOrganizationalUnit.getSimpleName(name));
-        // backward compatibility
-        if (name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            name = name.substring(1);
-        }
         m_name = name;
     }
 }

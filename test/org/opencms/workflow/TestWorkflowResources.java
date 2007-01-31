@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflowResources.java,v $
- * Date   : $Date: 2006/11/29 17:03:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.0.0
  */
@@ -78,7 +78,8 @@ public class TestWorkflowResources extends OpenCmsTestCase {
      * @param wfName the name of the workflow
      * @param resourcePath path of the resource
      * @return the workflow project
-     * @throws Throwable
+     * 
+     * @throws Throwable if test fails
      */
     public static CmsProject createWorkflowProjectWithResource(CmsObject cms, String wfName, String resourcePath)
     throws Throwable {
@@ -141,7 +142,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if a workflow project is aborted appropriately.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testAbortWorkflowProject() throws Throwable {
 
@@ -181,7 +182,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests the resource values and the locking when a resource is added to a workflow project.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testAddToWorkflowProject() throws Throwable {
 
@@ -230,7 +231,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if siblings of resources assigned to a workflow have an indirect lock.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testIndirectLock() throws Throwable {
 
@@ -253,7 +254,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests the task initialization.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testInitTask() throws Throwable {
 
@@ -266,7 +267,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if resources assigned to a workflow can additionally be locked by an administrator.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testLockResourceByAdmin() throws Throwable {
 
@@ -289,7 +290,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if resources assigned to a workflow can additionally be locked by a member of the agent group.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testLockResourceByAgent() throws Throwable {
 
@@ -316,7 +317,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if resources assigned to a workflow can additionally be locked by a single lock owner exclusively.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testLockResourceByOwner1() throws Throwable {
 
@@ -339,7 +340,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if resources assigned to a workflow can additionally be locked by a single lock owner exclusively.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testLockResourceByOwner2() throws Throwable {
 
@@ -366,7 +367,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if resources in a workflow project are published appropriately.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testPublishWorkflowProject() throws Throwable {
 
@@ -405,7 +406,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
     /**
      * Tests if undoing a workflow project works appropriately.<p>
      * 
-     * @throws Throwable
+     * @throws Throwable if test fails
      */
     public void testUndoWorkflowProject() throws Throwable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/29 10:52:11 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6 
  */
@@ -87,7 +87,7 @@ public class CmsOrganizationalUnit {
      */
     public static final String getParentFqn(String fqn) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fqn) || fqn.equals(CmsOrganizationalUnit.SEPARATOR)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fqn)) {
             // in case of the root ou
             return null;
         }
@@ -98,8 +98,8 @@ public class CmsOrganizationalUnit {
             pos = fqn.lastIndexOf(CmsOrganizationalUnit.SEPARATOR);
         }
         if (pos <= 0) {
-            // in case of simple names assume root ou 
-            return CmsOrganizationalUnit.SEPARATOR;
+            // in case of simple names assume root ou
+            return "";
         }
         return fqn.substring(0, pos + 1);
     }
@@ -114,7 +114,7 @@ public class CmsOrganizationalUnit {
     public static final String getSimpleName(String fqn) {
 
         String parentFqn = getParentFqn(fqn);
-        if ((parentFqn != null) && fqn.startsWith(parentFqn)) {
+        if (parentFqn != null) {
             return fqn.substring(parentFqn.length());
         }
         return fqn;

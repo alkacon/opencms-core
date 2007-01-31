@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -242,7 +241,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         if (getParamGroup() != null) {
             ret.addAll(getCms().getUsersOfGroup(getParamGroup()));
         } else {
-            ret.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), CmsOrganizationalUnit.SEPARATOR, true));
+            ret.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());

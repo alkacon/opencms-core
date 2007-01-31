@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.6
  */
@@ -72,31 +72,13 @@ public class CmsRoleManager {
      * 
      * @param cms the opencms context
      * @param role the role
-     * @param ouFqn the fully qualified name of the organizational unit of the role
      * @param username the name of the user that is to be added to the role
      * 
      * @throws CmsException if something goes wrong
      */
-    public void addUserToRole(CmsObject cms, CmsRole role, String ouFqn, String username) throws CmsException {
+    public void addUserToRole(CmsObject cms, CmsRole role, String username) throws CmsException {
 
-        m_securityManager.addUserToGroup(cms.getRequestContext(), username, role.getGroupName(ouFqn), true);
-    }
-
-    /**
-     * Checks if the user of this OpenCms context is a member of the given role.<p>
-     *  
-     * This method can only be used for roles that are not organizational unit dependent.<p>
-     *  
-     * @param cms the opencms context
-     * @param role the role to check
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role permissions
-     * 
-     * @see CmsRole#isOrganizationalUnitIndependent()
-     */
-    public void checkRole(CmsObject cms, CmsRole role) throws CmsRoleViolationException {
-
-        m_securityManager.checkRole(cms.getRequestContext(), role);
+        m_securityManager.addUserToGroup(cms.getRequestContext(), username, role.getGroupName(), true);
     }
 
     /**
@@ -107,13 +89,12 @@ public class CmsRoleManager {
      * 
      * @param cms the opencms context
      * @param role the role to check
-     * @param ouFqn the fully qualified name of the organizational unit to check the role for
      * 
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      */
-    public void checkRoleForOrgUnit(CmsObject cms, CmsRole role, String ouFqn) throws CmsRoleViolationException {
+    public void checkRole(CmsObject cms, CmsRole role) throws CmsRoleViolationException {
 
-        m_securityManager.checkRoleForOrgUnit(cms.getRequestContext(), role, ouFqn);
+        m_securityManager.checkRole(cms.getRequestContext(), role);
     }
 
     /**
@@ -213,7 +194,14 @@ public class CmsRoleManager {
     public List getRoles(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ouFqn);
-        return m_securityManager.getGroups(cms.getRequestContext(), ou, includeSubOus, true);
+        List groups = m_securityManager.getGroups(cms.getRequestContext(), ou, includeSubOus, true);
+        List roles = new ArrayList(groups.size());
+        Iterator itGroups = groups.iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            roles.add(CmsRole.valueOf(group));
+        }
+        return roles;
     }
 
     /**
@@ -238,8 +226,9 @@ public class CmsRoleManager {
         boolean directRolesOnly,
         boolean recursive) throws CmsException {
 
+        List groups;
         if (!recursive) {
-            return m_securityManager.getGroupsOfUser(
+            groups = m_securityManager.getGroupsOfUser(
                 cms.getRequestContext(),
                 username,
                 ouFqn,
@@ -247,24 +236,31 @@ public class CmsRoleManager {
                 true,
                 directRolesOnly,
                 cms.getRequestContext().getRemoteAddress());
+        } else {
+            groups = new ArrayList();
+            Iterator itAllGroups = m_securityManager.getGroupsOfUser(
+                cms.getRequestContext(),
+                username,
+                "",
+                true,
+                true,
+                directRolesOnly,
+                cms.getRequestContext().getRemoteAddress()).iterator();
+            while (itAllGroups.hasNext()) {
+                CmsGroup role = (CmsGroup)itAllGroups.next();
+                if (!includeChildOus && role.getOuFqn().equals(ouFqn)) {
+                    groups.add(role);
+                }
+                if (includeChildOus && role.getOuFqn().startsWith(ouFqn)) {
+                    groups.add(role);
+                }
+            }
         }
-        List roles = new ArrayList();
-        Iterator itAllRoles = m_securityManager.getGroupsOfUser(
-            cms.getRequestContext(),
-            username,
-            CmsOrganizationalUnit.SEPARATOR,
-            true,
-            true,
-            directRolesOnly,
-            cms.getRequestContext().getRemoteAddress()).iterator();
-        while (itAllRoles.hasNext()) {
-            CmsGroup role = (CmsGroup)itAllRoles.next();
-            if (!includeChildOus && role.getOuFqn().equals(ouFqn)) {
-                roles.add(role);
-            }
-            if (includeChildOus && role.getOuFqn().startsWith(ouFqn)) {
-                roles.add(role);
-            }
+        List roles = new ArrayList(groups.size());
+        Iterator itGroups = groups.iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            roles.add(CmsRole.valueOf(group));
         }
         return roles;
     }
@@ -276,7 +272,6 @@ public class CmsRoleManager {
      *
      * @param cms the opencms context
      * @param role the role to get all users for
-     * @param ouFqn the fully qualified name of the organizational unit of the role
      * @param includeOtherOuUsers include users of other organizational units
      * @param directUsersOnly if set only the direct assigned users will be returned, 
      *                          if not also indirect users, ie. members of child groups
@@ -285,38 +280,15 @@ public class CmsRoleManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getUsersOfRole(
-        CmsObject cms,
-        CmsRole role,
-        String ouFqn,
-        boolean includeOtherOuUsers,
-        boolean directUsersOnly) throws CmsException {
+    public List getUsersOfRole(CmsObject cms, CmsRole role, boolean includeOtherOuUsers, boolean directUsersOnly)
+    throws CmsException {
 
         return m_securityManager.getUsersOfGroup(
             cms.getRequestContext(),
-            role.getGroupName(ouFqn),
+            role.getGroupName(),
             includeOtherOuUsers,
             directUsersOnly,
             true);
-    }
-
-    /**
-     * Checks if the given context user has the given role.<p>
-     * 
-     * This method can only be used for roles that are not organizational unit dependent.<p>
-     *  
-     * @param cms the opencms context
-     * @param role the role to check
-     * 
-     * @return <code>true</code> if the given context user has the given role
-     */
-    public boolean hasRole(CmsObject cms, CmsRole role) {
-
-        return m_securityManager.hasRoleForOrgUnit(
-            cms.getRequestContext(),
-            cms.getRequestContext().currentUser(),
-            role,
-            null);
     }
 
     /**
@@ -324,17 +296,12 @@ public class CmsRoleManager {
      *  
      * @param cms the opencms context
      * @param role the role to check
-     * @param ouFqn the fully qualified name of the organizational unit to check
      * 
      * @return <code>true</code> if the given context user has the given role in the given organizational unit
      */
-    public boolean hasRoleForOrgUnit(CmsObject cms, CmsRole role, String ouFqn) {
+    public boolean hasRole(CmsObject cms, CmsRole role) {
 
-        return m_securityManager.hasRoleForOrgUnit(
-            cms.getRequestContext(),
-            cms.getRequestContext().currentUser(),
-            role,
-            ouFqn);
+        return m_securityManager.hasRole(cms.getRequestContext(), cms.getRequestContext().currentUser(), role);
     }
 
     /**
@@ -343,11 +310,10 @@ public class CmsRoleManager {
      * @param cms the opencms context
      * @param userName the name of the user to check the role for
      * @param role the role to check
-     * @param ouFqn the fully qualified name of the organizational unit to check
      * 
      * @return <code>true</code> if the given user has the given role in the given organizational unit
      */
-    public boolean hasRoleForOrgUnit(CmsObject cms, String userName, CmsRole role, String ouFqn) {
+    public boolean hasRole(CmsObject cms, String userName, CmsRole role) {
 
         CmsUser user;
         try {
@@ -356,7 +322,7 @@ public class CmsRoleManager {
             // ignore
             return false;
         }
-        return m_securityManager.hasRoleForOrgUnit(cms.getRequestContext(), user, role, ouFqn);
+        return m_securityManager.hasRole(cms.getRequestContext(), user, role);
     }
 
     /**
@@ -418,14 +384,13 @@ public class CmsRoleManager {
      *
      * @param cms the opencms context
      * @param role the role to remove the user from
-     * @param ouFqn the fully qualified name of the organizational unit of the role
      * @param username the name of the user that is to be removed from the group
      * 
      * @throws CmsException if operation was not successful
      */
-    public void removeUserFromRole(CmsObject cms, CmsRole role, String ouFqn, String username) throws CmsException {
+    public void removeUserFromRole(CmsObject cms, CmsRole role, String username) throws CmsException {
 
-        m_securityManager.removeUserFromGroup(cms.getRequestContext(), username, role.getGroupName(ouFqn), true);
+        m_securityManager.removeUserFromGroup(cms.getRequestContext(), username, role.getGroupName(), true);
     }
 
     /**
@@ -444,14 +409,14 @@ public class CmsRoleManager {
     throws CmsException {
 
         List orgUnits = new ArrayList();
-        if (hasRoleForOrgUnit(cms, role, ouFqn)) {
+        if (hasRole(cms, role.forOrgUnit(ouFqn))) {
             orgUnits.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ouFqn));
         }
         if (includeSubOus) {
             Iterator it = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ouFqn, true).iterator();
             while (it.hasNext()) {
                 CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
-                if (hasRoleForOrgUnit(cms, role, orgUnit.getName())) {
+                if (hasRole(cms, role.forOrgUnit(orgUnit.getName()))) {
                     orgUnits.add(orgUnit);
                 }
             }

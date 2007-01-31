@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/01/29 14:27:04 $
- * Version: $Revision: 1.11.4.8 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.11.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.security;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 
@@ -68,7 +69,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.8 $ 
+ * @version $Revision: 1.11.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,13 +112,16 @@ public final class CmsRole {
     private final List m_childs = new ArrayList();
 
     /** The distinct group names of this role. */
-    private List m_distictGroupNames;
+    private List m_distictGroupNames = new ArrayList();
 
     /** The name of the group this role is mapped to in the OpenCms database.*/
     private final String m_groupName;
 
     /** Indicates if this role is organizational unit dependent. */
     private boolean m_ouDependent;
+
+    /** The organizational unit this role applies to. */
+    private String m_ouFqn;
 
     /** The parent role of this role. */
     private final CmsRole m_parentRole;
@@ -145,6 +149,22 @@ public final class CmsRole {
     }
 
     /**
+     * Copy constructor.<p>
+     * 
+     * @param role the role to copy
+     */
+    private CmsRole(CmsRole role) {
+
+        m_roleName = role.m_roleName;
+        m_groupName = role.m_groupName;
+        m_parentRole = role.m_parentRole;
+        m_systemRole = role.m_systemRole;
+        m_ouDependent = role.m_ouDependent;
+        m_childs.addAll(role.m_childs);
+        m_distictGroupNames.addAll(Collections.unmodifiableList(role.m_distictGroupNames));
+    }
+
+    /**
      * Creates a system role.<p>
      * 
      * @param roleName the name of this role
@@ -154,10 +174,14 @@ public final class CmsRole {
     private CmsRole(String roleName, CmsRole parentRole, String groupName) {
 
         m_roleName = roleName;
-        m_groupName = groupName;
+        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
         m_parentRole = parentRole;
         m_systemRole = true;
-        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
+        if (!m_ouDependent) {
+            m_groupName = groupName.substring(1);
+        } else {
+            m_groupName = groupName;
+        }
         if (parentRole != null) {
             parentRole.m_childs.add(this);
         }
@@ -210,46 +234,37 @@ public final class CmsRole {
     }
 
     /**
-     * Returns the role which is represented by the given virtual group flags.<p>
-     * 
-     * @param flags group flags
-     * 
-     * @return the role which is represented
-     */
-    public static CmsRole valueOf(int flags) {
-
-        int index = (flags & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
-        index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
-        return (CmsRole)getSystemRoles().get(index);
-    }
-
-    /**
      * Returns the role for the given group name.<p>
      * 
-     * @param groupName a group name to check for role representation
+     * @param group a group to check for role representation
      * 
      * @return the role for the given group name
      */
-    public static CmsRole valueOf(String groupName) {
+    public static CmsRole valueOf(CmsGroup group) {
 
-        Iterator it = SYSTEM_ROLES.iterator();
-        while (it.hasNext()) {
-            CmsRole role = (CmsRole)it.next();
-            // direct check
-            if (groupName.equals(role.getGroupName())) {
-                return role;
-            }
-            if (role.isOrganizationalUnitIndependent()) {
-                // the role group name starts with "/", but the given group name not
-                if (groupName.equals(role.getGroupName().substring(1))) {
-                    return role;
+        // check groups for internal representing the roles
+        if (group.isRole()) {
+            Iterator it = SYSTEM_ROLES.iterator();
+            while (it.hasNext()) {
+                CmsRole role = (CmsRole)it.next();
+                // direct check
+                if (group.getName().equals(role.getGroupName())) {
+                    return role.forOrgUnit(group.getOuFqn());
                 }
-            } else {
-                // the role group name does not start with "/", but the given group name does 
-                if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
-                    return role;
+                if (!role.isOrganizationalUnitIndependent()) {
+                    // the role group name does not start with "/", but the given group fqn does 
+                    if (group.getName().endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
+                        return role.forOrgUnit(group.getOuFqn());
+                    }
                 }
             }
+        }
+        // check virtual groups mapping a role
+        if (group.isVirtual()) {
+            int index = (group.getFlags() & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
+            index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
+            CmsRole role = (CmsRole)getSystemRoles().get(index);
+            return role.forOrgUnit(group.getOuFqn());
         }
         return null;
     }
@@ -322,9 +337,38 @@ public final class CmsRole {
             return true;
         }
         if (obj instanceof CmsRole) {
-            return m_roleName.equals(((CmsRole)obj).m_roleName);
+            CmsRole that = (CmsRole)obj;
+            // first check name
+            if (m_roleName.equals(that.m_roleName)) {
+                if (isOrganizationalUnitIndependent()) {
+                    // if ou independent ignore ou info
+                    return true;
+                }
+                // then check the org unit
+                if (m_ouFqn == null) {
+                    // if org unit not set
+                    return (that.m_ouFqn == null);
+                } else {
+                    // if org unit set
+                    return (m_ouFqn.equals(that.m_ouFqn));
+                }
+            }
         }
         return false;
+    }
+
+    /**
+     * Creates a new role based on this one for the given organizational unit.<p>
+     * 
+     * @param ouFqn fully qualified name of the organizational unit
+     * 
+     * @return a new role based on this one for the given organizational unit
+     */
+    public CmsRole forOrgUnit(String ouFqn) {
+
+        CmsRole newRole = new CmsRole(this);
+        newRole.m_ouFqn = ouFqn;
+        return newRole;
     }
 
     /**
@@ -340,6 +384,11 @@ public final class CmsRole {
         Iterator itChilds = m_childs.iterator();
         while (itChilds.hasNext()) {
             CmsRole child = (CmsRole)itChilds.next();
+            if (child.isOrganizationalUnitIndependent()) {
+                child = child.forOrgUnit(null);
+            } else {
+                child = child.forOrgUnit(m_ouFqn);
+            }
             childs.add(child);
             if (recursive) {
                 childs.addAll(child.getChilds(true));
@@ -368,6 +417,8 @@ public final class CmsRole {
     /**
      * Returns the distinct group names of this role.<p>
      * 
+     * This group names are not fully qualified (organizational unit dependent).<p>
+     * 
      * @return the distinct group names of this role
      */
     public List getDistinctGroupNames() {
@@ -378,30 +429,16 @@ public final class CmsRole {
     /**
      * Returns the name of the group this role is mapped to in the OpenCms database.<p>
      * 
+     * Here the fully qualified group name is returned.<p>
+     * 
      * @return the name of the group this role is mapped to in the OpenCms database
      */
     public String getGroupName() {
 
-        return m_groupName;
-    }
-
-    /**
-     * Returns the group name of this role in the given organizational unit.<p>
-     * 
-     * @param ouFqn the organizational unit to get the group name for
-     * 
-     * @return the group name of this role in the given organizational unit
-     */
-    public String getGroupName(String ouFqn) {
-
-        if (isOrganizationalUnitIndependent()) {
-            return getGroupName();
+        if (m_ouFqn == null || isOrganizationalUnitIndependent()) {
+            return m_groupName;
         }
-        String name = ouFqn + getGroupName();
-        if (name.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            name = name.substring(1);
-        }
-        return name;
+        return m_ouFqn + m_groupName;
     }
 
     /**
@@ -422,13 +459,26 @@ public final class CmsRole {
     }
 
     /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     *
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return m_ouFqn;
+    }
+
+    /**
      * Returns the parent role of this role.<p>
      *
      * @return the parent role of this role
      */
     public CmsRole getParentRole() {
 
-        return m_parentRole;
+        if (m_parentRole == null) {
+            return null;
+        }
+        return m_parentRole.forOrgUnit(m_ouFqn);
     }
 
     /**
@@ -449,7 +499,7 @@ public final class CmsRole {
     public int getVirtualGroupFlags() {
 
         int flags = I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
-        flags += I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * getSystemRoles().indexOf(this);
+        flags += I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * getSystemRoles().indexOf(forOrgUnit(null));
         return flags;
     }
 
@@ -458,7 +508,8 @@ public final class CmsRole {
      */
     public int hashCode() {
 
-        return m_roleName.hashCode();
+        return m_roleName.hashCode()
+            + ((m_ouFqn == null || isOrganizationalUnitIndependent()) ? 13 : m_ouFqn.hashCode());
     }
 
     /**
@@ -482,6 +533,8 @@ public final class CmsRole {
         result.append(this.getClass().getName());
         result.append(", role: ");
         result.append(getRoleName());
+        result.append(", org unit: ");
+        result.append(getOuFqn());
         result.append(", group: ");
         result.append(getGroupName());
         result.append("]");

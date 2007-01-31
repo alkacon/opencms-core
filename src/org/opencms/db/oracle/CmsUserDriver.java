@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.55.4.4 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.55.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.4 $
+ * @version $Revision: 1.55.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -116,8 +116,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         int flags,
         Map additionalInfos,
         String address) throws CmsDataAccessException {
-
-        userFqn = internalAppendRootOrgUnit(dbc, userFqn);
 
         PreparedStatement stmt = null;
         Connection conn = null;

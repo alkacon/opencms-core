@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/01/08 14:03:06 $
- * Version: $Revision: 1.90.4.13 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.90.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.13 $
+ * @version $Revision: 1.90.4.14 $
  * 
  * @since 6.0.0
  */
@@ -696,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            cms.loginUser("/Admin", "admin");
+            cms.loginUser("Admin", "admin");
             cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
 
             if (importFolder != null) {

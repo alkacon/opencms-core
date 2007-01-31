@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2007/01/29 14:27:04 $
- * Version: $Revision: 1.32.4.6 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.32.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.6 $
+ * @version $Revision: 1.32.4.7 $
  * 
  * @since 6.0.0
  */
@@ -319,7 +319,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userAdmin.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userAdmin);
+        return m_userAdmin.equals(userName);
     }
 
     /**
@@ -334,7 +334,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userExport.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userExport);
+        return m_userExport.equals(userName);
     }
 
     /**
@@ -349,7 +349,7 @@ public class CmsDefaultUsers {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
             return false;
         }
-        return m_userGuest.equals(userName) || userName.equals(CmsOrganizationalUnit.SEPARATOR + m_userGuest);
+        return m_userGuest.equals(userName);
     }
 
     /**

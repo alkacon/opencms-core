@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.12.4.8 $
+ * Date   : $Date: 2007/01/31 12:04:38 $
+ * Version: $Revision: 1.12.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.8 $ 
+ * @version $Revision: 1.12.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,7 +170,7 @@ public class CmsHtmlImport {
     private String m_template;
 
     /**
-     * 
+     * Default Constructor.<p>
      */
     public CmsHtmlImport() {
 
@@ -184,8 +184,9 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Creates a new import object for the given cms object.<p>
      * 
-     * @param cms
+     * @param cms the current cms context
      */
     public CmsHtmlImport(CmsObject cms) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/01/29 10:13:50 $
- * Version: $Revision: 1.43.4.16 $
+ * Date   : $Date: 2007/01/31 12:04:36 $
+ * Version: $Revision: 1.43.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.16 $
+ * @version $Revision: 1.43.4.17 $
  * 
  * @since 6.0.0 
  */
@@ -566,9 +566,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ROLE_IS_ORGUNIT_DEPENDENT_1 = "ERR_ROLE_IS_ORGUNIT_DEPENDENT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_DATE_EXPIRED_2 = "ERR_SET_DATE_EXPIRED_2";
