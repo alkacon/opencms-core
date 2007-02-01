@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/Messages.java,v $
- * Date   : $Date: 2007/01/30 15:34:43 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/01 14:51:17 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -122,6 +122,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ITEM_NOT_FOUND_1 = "LOG_ITEM_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOGIN_FAILED_1 = "LOG_LOGIN_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MOVE_2 = "LOG_MOVE_2";

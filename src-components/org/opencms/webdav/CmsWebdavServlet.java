@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/01 10:08:18 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/01 14:51:17 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.5.6
  */
@@ -2637,10 +2637,15 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
             m_session = m_repository.login(m_username, password);
         } catch (CmsRepositoryAuthorizationException ex) {
-            // noop
+            m_session = null;
         }
 
         if (m_session == null) {
+            
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOGIN_FAILED_1, m_username));
+            }
+            
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
