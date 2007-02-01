@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/02/01 09:22:03 $
- * Version: $Revision: 1.8.4.7 $
+ * Date   : $Date: 2007/02/01 11:54:34 $
+ * Version: $Revision: 1.8.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.7 $ 
+ * @version $Revision: 1.8.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,15 +96,11 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
      */
     public boolean isEnabled(CmsWorkplace wp) {
 
-        String ouFqn;
-
-        if (wp instanceof CmsOrgUnitsSubList) {
-            ouFqn = ((CmsOrgUnitsSubList)wp).getParamOufqn();
-        } else {
-            ouFqn = wp.getCms().getRequestContext().getOuFqn();
-        }
-
         if (getLink().equals(DELETE_FILE)) {
+            String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
+            if (ouFqn == null) {
+                ouFqn = wp.getCms().getRequestContext().getOuFqn();
+            }
             try {
                 if (OpenCms.getOrgUnitManager().getUsers(wp.getCms(), ouFqn, true).size() > 0) {
                     return false;
@@ -134,21 +130,17 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
      */
     public boolean isVisible(CmsWorkplace wp) {
 
-        CmsObject cms = wp.getCms();
-        String ouFqn;
-        String parentOu;
-
-        if (wp instanceof CmsOrgUnitsSubList) {
-            ouFqn = ((CmsOrgUnitsSubList)wp).getParamOufqn();
-        } else {
-            ouFqn = cms.getRequestContext().getOuFqn();
-        }
-        parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
-
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
         }
         if (getVisibilityFlag().equals(VISIBILITY_ALL)) {
+            CmsObject cms = wp.getCms();
+            String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
+            if (ouFqn == null) {
+                ouFqn = cms.getRequestContext().getOuFqn();
+            }
+            String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+
             if (getLink().equals(OVERVIEW_FILE)) {
                 if (parentOu != null) {
                     return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER) && !OpenCms.getRoleManager().hasRole(

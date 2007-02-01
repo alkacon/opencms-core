@@ -1,5 +1,5 @@
-<%@ page import="org.opencms.workplace.tools.accounts.CmsOrgUnitDeleteDialog"%><%
+<%@ page import="org.opencms.workplace.tools.accounts.CmsOrgUnitsSubList"%><%
 
-	CmsOrgUnitDeleteDialog wp = new CmsOrgUnitDeleteDialog(pageContext, request, response);	
-	wp.displayDialog();
+    CmsOrgUnitsSubList wp = new CmsOrgUnitsSubList(pageContext, request, response);	
+	wp.actionDelete();
 %>

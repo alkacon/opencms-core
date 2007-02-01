@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2007/01/31 15:44:18 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/01 11:54:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -85,6 +85,42 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     }
 
     /**
+     * Deletes the given organizational unit.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void actionDelete() throws Exception {
+
+        OpenCms.getOrgUnitManager().deleteOrganizationalUnit(getCms(), getParamOufqn());
+        actionCloseDialog();
+    }
+
+    /**
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
+     */
+    public String defaultActionHtml() {
+
+        if ((getList() != null) && getList().getAllContent().isEmpty()) {
+            // TODO: check the need for this
+            refreshList();
+        }
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(customHtmlStart());
+        try {
+            if (hasSubOUs()) {
+                result.append(defaultActionHtmlContent());
+            }
+        } catch (CmsException e) {
+            // noop
+        }
+        result.append(customHtmlEnd());
+        result.append(defaultActionHtmlEnd());
+        return result.toString();
+    }
+
+    /**
      * Returns the organizational unit fqn parameter value.<p>
      *
      * @return the organizational unit fqn parameter value
@@ -92,6 +128,27 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     public String getParamOufqn() {
 
         return m_paramOufqn;
+    }
+
+    /**
+     * Checks if the user has more then one organizational unit to administrate.<p>
+     * 
+     * @return true if the user has more then then one organizational unit to administrate
+     *         otherwise false
+     * @throws CmsException if the organizational units can not be read
+     */
+    public boolean hasSubOUs() throws CmsException {
+
+        // to get the ous try another method (not written yet) - this returns only children ous
+        int todo = -1;
+        List orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), m_paramOufqn, true);
+        if (orgUnits == null) {
+            return false;
+        }
+        if (orgUnits.size() < 1) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -123,52 +180,6 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
             ret.add(item);
         }
         return ret;
-    }
-
-    /**
-     * 
-     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
-     */
-    public String defaultActionHtml() {
-
-        if ((getList() != null) && getList().getAllContent().isEmpty()) {
-            // TODO: check the need for this
-            refreshList();
-        }
-        StringBuffer result = new StringBuffer(2048);
-        result.append(defaultActionHtmlStart());
-        result.append(customHtmlStart());
-        try {
-            if (hasSubOUs()) {
-                result.append(defaultActionHtmlContent());
-            }
-        } catch (CmsException e) {
-            // noop
-        }
-        result.append(customHtmlEnd());
-        result.append(defaultActionHtmlEnd());
-        return result.toString();
-    }
-
-    /**
-     * Checks if the user has more then one organizational unit to administrate.<p>
-     * 
-     * @return true if the user has more then then one organizational unit to administrate
-     *         otherwise false
-     * @throws CmsException if the organizational units can not be read
-     */
-    public boolean hasSubOUs() throws CmsException {
-
-        // to get the ous try another method (not written yet) - this returns only children ous
-        int todo = -1;
-        List orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), m_paramOufqn, true);
-        if (orgUnits == null) {
-            return false;
-        }
-        if (orgUnits.size() < 1) {
-            return false;
-        }
-        return true;
     }
 
     /**
