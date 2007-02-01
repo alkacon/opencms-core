@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/01/31 13:06:33 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/01 09:22:03 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -1073,10 +1073,10 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         CmsUser user = cms.readUser("test/test1");
 
         // check preconditions
-        assertEquals(3, OpenCms.getRoleManager().getManageableOrgUnits(cms, "", true).size());
+        assertEquals(3, OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
 
         cms.loginUser(user.getName(), "test1");
-        List ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "", true);
+        List ous = OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
         assertTrue(ous.isEmpty());
 
         // create a new ou
@@ -1085,7 +1085,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         // check it
         cms.loginUser(user.getName(), "test1");
-        ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "", true);
+        ous = OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
         assertEquals(2, ous.size());
         assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "test")));
         assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "test/test2")));
@@ -1098,10 +1098,10 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit("test3/"), user.getName());
 
         // check the result
-        assertEquals(4, OpenCms.getRoleManager().getManageableOrgUnits(cms, "", true).size());
+        assertEquals(4, OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
 
         cms.loginUser(user.getName(), "test1");
-        ous = OpenCms.getRoleManager().getManageableOrgUnits(cms, "", true);
+        ous = OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
         assertEquals(3, ous.size());
         assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "test")));
         assertTrue(ous.contains(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "test/test2")));

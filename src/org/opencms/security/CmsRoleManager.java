@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/02/01 08:19:26 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/01 09:21:40 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.6
  */
@@ -132,29 +132,12 @@ public class CmsRoleManager {
     public List getManageableGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         List groups = new ArrayList();
-        Iterator it = internalManageableOrgUnits(cms, ouFqn, includeSubOus, CmsRole.ACCOUNT_MANAGER).iterator();
+        Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
         while (it.hasNext()) {
             CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
             groups.addAll(OpenCms.getOrgUnitManager().getGroups(cms, orgUnit.getName(), false));
         }
         return groups;
-    }
-
-    /**
-     * Returns all the organizational units for which the current user has 
-     * the {@link CmsRole#ADMINISTRATOR} role.<p>
-     * 
-     * @param cms the current cms context
-     * @param ouFqn the fully qualified name of the organizational unit
-     * @param includeSubOus if sub organizational units should be included in the search 
-     *  
-     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List getManageableOrgUnits(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
-
-        return internalManageableOrgUnits(cms, ouFqn, includeSubOus, CmsRole.ADMINISTRATOR);
     }
 
     /**
@@ -172,12 +155,41 @@ public class CmsRoleManager {
     public List getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         List users = new ArrayList();
-        Iterator it = internalManageableOrgUnits(cms, ouFqn, includeSubOus, CmsRole.ACCOUNT_MANAGER).iterator();
+        Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
         while (it.hasNext()) {
             CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
             users.addAll(OpenCms.getOrgUnitManager().getUsers(cms, orgUnit.getName(), false));
         }
         return users;
+    }
+
+    /**
+     * Returns all the organizational units for which the current user has the given role.<p>
+     * 
+     * @param cms the current cms context
+     * @param role the role to check
+     * @param includeSubOus if sub organizational units should be included in the search 
+     *  
+     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getOrgUnitsForRole(CmsObject cms, CmsRole role, boolean includeSubOus) throws CmsException {
+
+        List orgUnits = new ArrayList();
+        if (hasRole(cms, role)) {
+            orgUnits.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, role.getOuFqn()));
+        }
+        if (includeSubOus) {
+            Iterator it = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, role.getOuFqn(), true).iterator();
+            while (it.hasNext()) {
+                CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+                if (hasRole(cms, role.forOrgUnit(orgUnit.getName()))) {
+                    orgUnits.add(orgUnit);
+                }
+            }
+        }
+        return orgUnits;
     }
 
     /**
@@ -391,37 +403,6 @@ public class CmsRoleManager {
     public void removeUserFromRole(CmsObject cms, CmsRole role, String username) throws CmsException {
 
         m_securityManager.removeUserFromGroup(cms.getRequestContext(), username, role.getGroupName(), true);
-    }
-
-    /**
-     * Returns all the organizational units for which the current user has the given role.<p>
-     * 
-     * @param cms the current cms context
-     * @param ouFqn the fully qualified name of the organizational unit
-     * @param includeSubOus if sub organizational units should be included in the search 
-     * @param role the role to check
-     *  
-     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private List internalManageableOrgUnits(CmsObject cms, String ouFqn, boolean includeSubOus, CmsRole role)
-    throws CmsException {
-
-        List orgUnits = new ArrayList();
-        if (hasRole(cms, role.forOrgUnit(ouFqn))) {
-            orgUnits.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ouFqn));
-        }
-        if (includeSubOus) {
-            Iterator it = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, ouFqn, true).iterator();
-            while (it.hasNext()) {
-                CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
-                if (hasRole(cms, role.forOrgUnit(orgUnit.getName()))) {
-                    orgUnits.add(orgUnit);
-                }
-            }
-        }
-        return orgUnits;
     }
 
 }

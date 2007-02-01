@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/01 09:22:03 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -212,9 +213,9 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         if (getParamOufqn() != null) {
-            ret.addAll(OpenCms.getRoleManager().getManageableOrgUnits(getCms(), getParamOufqn(), true));
+            ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(getParamOufqn()), true));
         } else {
-            ret.addAll(OpenCms.getRoleManager().getManageableOrgUnits(getCms(), "/", true));
+            ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(""), true));
         }
         return ret;
     }

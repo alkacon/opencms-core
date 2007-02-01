@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/01/31 16:01:13 $
- * Version: $Revision: 1.4.8.8 $
+ * Date   : $Date: 2007/02/01 09:22:03 $
+ * Version: $Revision: 1.4.8.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,22 +123,22 @@ public class TestRoles extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         CmsRoleManager roleMan = OpenCms.getRoleManager();
-        
+
         CmsUser user = cms.createUser("testUser", "testUser", "testUser", null);
         roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), user.getName());
-        
+
         cms.loginUser(user.getName(), "testUser");
         CmsUser u2 = cms.createUser("testUser2", "testUser2", "testUser2", null);
-        
+
         try {
             roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), u2.getName());
             fail("it should not be possible to delegate a role you do not have");
         } catch (CmsRoleViolationException e) {
             // ok, ignore
         }
-        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), u2.getName());        
+        roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), u2.getName());
     }
- 
+
     /**
      * Tests role assignments.<p>
      * 
@@ -160,7 +160,7 @@ public class TestRoles extends OpenCmsTestCase {
 
         assertFalse(roleMan.getManageableGroups(cms, "", false).isEmpty());
         assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
-        assertFalse(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
+        assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
         assertFalse(roleMan.getRolesOfUser(cms, cms.getRequestContext().currentUser().getName(), "", true, false, false).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
@@ -194,7 +194,7 @@ public class TestRoles extends OpenCmsTestCase {
         }
         assertTrue(roleMan.getManageableGroups(cms, "", false).isEmpty());
         assertTrue(roleMan.getManageableUsers(cms, "", false).isEmpty());
-        assertTrue(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
+        assertTrue(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
         // login back as admin
         cms = getCmsObject();
@@ -215,7 +215,7 @@ public class TestRoles extends OpenCmsTestCase {
 
         assertFalse(roleMan.getManageableGroups(cms, "", false).isEmpty());
         assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
-        assertFalse(roleMan.getManageableOrgUnits(cms, "", false).isEmpty());
+        assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
         assertFalse(roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
