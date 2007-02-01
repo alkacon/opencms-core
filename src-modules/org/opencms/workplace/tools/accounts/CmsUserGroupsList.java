@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.10.4.3 $
+ * Date   : $Date: 2007/02/01 10:26:23 $
+ * Version: $Revision: 1.10.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListItemDetails;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.4.3 $ 
+ * @version $Revision: 1.10.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,6 +127,54 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         CmsListItemDetails orgUnitDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT);
         orgUnitDetails.setAtColumn(LIST_COLUMN_NAME);
         orgUnitDetails.setVisible(false);
+        orgUnitDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_ORGUNIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                List groups = getList().getAllContent();
+                Iterator itGroups = groups.iterator();
+                while (itGroups.hasNext()) {
+                    CmsListItem item = (CmsListItem)itGroups.next();
+                    String groupName = item.get(LIST_COLUMN_NAME).toString();
+                    try {
+                        CmsGroup group = getCms().readGroup(groupName);
+                        if (!group.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
+        orgUnitDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_ORGUNIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                List groups = getList().getAllContent();
+                Iterator itGroups = groups.iterator();
+                while (itGroups.hasNext()) {
+                    CmsListItem item = (CmsListItem)itGroups.next();
+                    String groupName = item.get(LIST_COLUMN_NAME).toString();
+                    try {
+                        CmsGroup group = getCms().readGroup(groupName);
+                        if (!group.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        });
         orgUnitDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_ORGUNIT_NAME_0));
         orgUnitDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_ORGUNIT_HELP_0));
         orgUnitDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_ORGUNIT_NAME_0));

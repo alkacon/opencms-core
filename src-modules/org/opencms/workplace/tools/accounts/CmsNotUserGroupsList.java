@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotUserGroupsList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.9.4.4 $
+ * Date   : $Date: 2007/02/01 10:26:23 $
+ * Version: $Revision: 1.9.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.4 $ 
+ * @version $Revision: 1.9.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,10 +116,10 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
         super(jsp, listId, Messages.get().container(Messages.GUI_NOTUSERGROUPS_LIST_NAME_0), true);
     }
-    
+
     /** list column id constant. */
     public static final String LIST_COLUMN_ORGUNIT = "co";
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
@@ -140,7 +141,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
         return ret;
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -166,7 +167,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
         nameCol.setWidth("35%");
         // add default actions
         setDefaultAction(nameCol);
-        
+
         // create column for orgunit
         CmsListColumnDefinition orgunitCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
         orgunitCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ORGUNIT_0));
@@ -308,10 +309,10 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
         // keep the id
         m_addActionIds.add(stateAction.getId());
     }
-    
+
     /** list item detail id constant. */
     public static final String LIST_DETAIL_OTHEROU = "doo";
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -320,6 +321,56 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
         // add user address details
         CmsListItemDetails otherOuDetails = new CmsListItemDetails(LIST_DETAIL_OTHEROU);
         otherOuDetails.setVisible(false);
+        otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                try {
+                    List groups = OpenCms.getRoleManager().getManageableGroups(getCms(), "", true);
+
+                    Iterator itGroups = groups.iterator();
+                    while (itGroups.hasNext()) {
+                        CmsGroup group = (CmsGroup)itGroups.next();
+
+                        if (!group.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+                return false;
+            }
+        });
+        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                try {
+                    List groups = OpenCms.getRoleManager().getManageableGroups(getCms(), "", true);
+
+                    Iterator itGroups = groups.iterator();
+                    while (itGroups.hasNext()) {
+                        CmsGroup group = (CmsGroup)itGroups.next();
+
+                        if (!group.getOuFqn().equals(getParamOufqn())) {
+                            return true;
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+                return false;
+            }
+        });
         otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0));
         otherOuDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0));
         otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0));
@@ -329,7 +380,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
             Messages.GUI_GROUPS_DETAIL_OTHEROU_NAME_0)));
         metadata.addItemDetails(otherOuDetails);
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
