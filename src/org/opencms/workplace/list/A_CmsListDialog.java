@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.35.4.9 $
+ * Date   : $Date: 2007/02/01 10:13:28 $
+ * Version: $Revision: 1.35.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35.4.9 $ 
+ * @version $Revision: 1.35.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,12 +310,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void actionDialog() throws JspException, ServletException, IOException {
 
+        if (isForwarded()) {
+            return;
+        }
         if (getAction() == ACTION_CANCEL) {
             // ACTION: cancel button pressed
             actionCloseDialog();
-            return;
-        }
-        if (isForwarded()) {
             return;
         }
 
@@ -572,7 +572,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
             return getList().getItem(
                 CmsStringUtil.splitAsArray(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR)[0].trim());
         } catch (Exception e) {
-            return null;
+            try {
+                return getList().getItem("");
+            } catch (Exception e1) {
+                return null;
+            }
         }
     }
 
