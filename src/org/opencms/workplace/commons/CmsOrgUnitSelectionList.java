@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2007/02/01 09:22:03 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/01 15:00:03 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -245,7 +245,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
         // create column for description
         CmsListColumnDefinition descCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
         descCol.setName(Messages.get().container(Messages.GUI_ORGUNITSELECTION_LIST_COLS_DESCRIPTION_0));
-        descCol.setWidth("35%");
+        descCol.setWidth("60%");
         CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
 
             /**
@@ -267,7 +267,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
         // create column for path
         CmsListColumnDefinition pathCol = new CmsListColumnDefinition(LIST_COLUMN_PATH);
         pathCol.setName(Messages.get().container(Messages.GUI_ORGUNITSELECTION_LIST_COLS_PATH_0));
-        pathCol.setWidth("65%");
+        pathCol.setWidth("40%");
         pathCol.setTextWrapping(true);
         // add it to the list definition
         metadata.addColumn(pathCol);
