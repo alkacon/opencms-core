@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/01 09:07:50 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/01 15:01:23 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -81,10 +81,10 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
     public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_PATH = "cp";
+    public static final String LIST_COLUMN_DESCRIPTION = "cd";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_DESCRIPTION = "dd";
+    public static final String LIST_DETAIL_PATH = "dp";
 
     /** list id constant. */
     public static final String LIST_ID = "lsur";
@@ -229,9 +229,9 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
             String roleName = item.get(LIST_COLUMN_HIDE_NAME).toString();
             StringBuffer html = new StringBuffer(512);
             try {
-                if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
+                if (detailId.equals(LIST_DETAIL_PATH)) {
                     CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
-                    html.append(role.getDescription(getCms().getRequestContext().getLocale()));
+                    html.append(role.getOuFqn());
                 } else {
                     continue;
                 }
@@ -265,7 +265,7 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(role.getGroupName());
             item.set(LIST_COLUMN_NAME, role.getName(getCms().getRequestContext().getLocale()));
             item.set(LIST_COLUMN_HIDE_NAME, role.getGroupName());
-            item.set(LIST_COLUMN_PATH, role.getOuFqn());
+            item.set(LIST_COLUMN_DESCRIPTION, role.getDescription(getCms().getRequestContext().getLocale()));
             ret.add(item);
         }
 
@@ -337,8 +337,8 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
         metadata.addColumn(nameCol);
 
         // create column for path
-        CmsListColumnDefinition descCol = new CmsListColumnDefinition(LIST_COLUMN_PATH);
-        descCol.setName(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_PATH_0));
+        CmsListColumnDefinition descCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
+        descCol.setName(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_DESCRIPTION_0));
         descCol.setWidth("65%");
         descCol.setTextWrapping(true);
         // add it to the list definition
@@ -351,17 +351,17 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add role description
-        CmsListItemDetails descDetails = new CmsListItemDetails(LIST_DETAIL_DESCRIPTION);
-        descDetails.setAtColumn(LIST_COLUMN_NAME);
-        descDetails.setVisible(false);
-        descDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_DESCRIPTION_NAME_0));
-        descDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_DESCRIPTION_HELP_0));
-        descDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_DESCRIPTION_NAME_0));
-        descDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_DESCRIPTION_HELP_0));
-        descDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_DESCRIPTION_NAME_0));
-        descDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ROLES_DETAIL_DESCRIPTION_NAME_0)));
-        metadata.addItemDetails(descDetails);
+        CmsListItemDetails pathDetails = new CmsListItemDetails(LIST_DETAIL_PATH);
+        pathDetails.setAtColumn(LIST_COLUMN_NAME);
+        pathDetails.setVisible(false);
+        pathDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_NAME_0));
+        pathDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_HELP_0));
+        pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
+        pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
+        pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
+        pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
+        metadata.addItemDetails(pathDetails);
     }
 
     /**
