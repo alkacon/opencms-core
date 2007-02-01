@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/01 08:19:26 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.6
  */
@@ -214,7 +214,7 @@ public class CmsRoleManager {
      * @param directRolesOnly if set only the direct assigned roles will be returned, if not also indirect roles
      * @param recursive if this is set, also roles of higher organizational unit are considered
      * 
-     * @return a list of <code>{@link org.opencms.file.CmsGroup}</code> objects
+     * @return a list of <code>{@link org.opencms.security.CmsRole}</code> objects
      *
      * @throws CmsException if operation was not successful
      */
