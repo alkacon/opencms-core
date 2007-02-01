@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleEditList.java,v $
- * Date   : $Date: 2007/02/01 15:09:41 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/01 15:26:30 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -352,7 +352,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
             Locale locale = getCms().getRequestContext().getLocale();
             item.set(LIST_COLUMN_NAME, role.getName(locale));
             String dependency = "";
-            CmsRole parent =role;
+            CmsRole parent = role;
             while ((parent.getParentRole() != null) && (parent.getParentRole().getParentRole() != null)) {
                 String roleName = parent.getParentRole().getName(locale);
                 if (dependency.length() > 0) {
@@ -543,7 +543,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
             Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_HELP_0));
         descriptionDetails.setName(Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_DESCRIPTION_NAME_0));
         descriptionDetails.setFormatter(new I_CmsListFormatter() {
-            
+
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
