@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleEditList.java,v $
- * Date   : $Date: 2007/02/01 08:21:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/01 10:28:10 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -391,7 +391,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
                     CmsRole role = CmsRole.valueOf(getCms().readGroup((String)getItem().get(LIST_COLUMN_HIDE_NAME)));
                     if (!OpenCms.getRoleManager().hasRole(
                         getCms(),
-                        getCms().readUser(new CmsUUID(getParamUserid())).getName(),
+                        getCms().readUser(new CmsUUID(((CmsRoleEditList)getWp()).getParamUserid())).getName(),
                         role)) {
                         return PATH_BUTTONS + "role_inactive.png";
                     }
@@ -431,7 +431,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
                         CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
                         if (OpenCms.getRoleManager().hasRole(
                             getCms(),
-                            getCms().readUser(new CmsUUID(getParamUserid())).getName(),
+                            getCms().readUser(new CmsUUID(((CmsRoleEditList)getWp()).getParamUserid())).getName(),
                             role)) {
                             return false;
                         }
@@ -462,7 +462,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
                         CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
                         if (OpenCms.getRoleManager().hasRole(
                             getCms(),
-                            getCms().readUser(new CmsUUID(getParamUserid())).getName(),
+                            getCms().readUser(new CmsUUID(((CmsRoleEditList)getWp()).getParamUserid())).getName(),
                             role)) {
                             return true;
                         }
