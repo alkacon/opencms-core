@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.3.4.4 $
+ * Date   : $Date: 2007/02/01 09:25:45 $
+ * Version: $Revision: 1.3.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.4 $ 
+ * @version $Revision: 1.3.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -393,7 +393,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                         false,
                         false).iterator();
                     while (itRoles.hasNext()) {
-                        html.append(((CmsGroup)itRoles.next()).getName());
+                        html.append(((CmsRole)itRoles.next()).getName(getLocale()));
                         if (itRoles.hasNext()) {
                             html.append("<br>");
                         }
