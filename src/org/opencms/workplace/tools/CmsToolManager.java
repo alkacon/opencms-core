@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2007/01/25 13:19:40 $
- * Version: $Revision: 1.44.4.8 $
+ * Date   : $Date: 2007/02/01 09:45:53 $
+ * Version: $Revision: 1.44.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44.4.8 $ 
+ * @version $Revision: 1.44.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,8 +257,14 @@ public class CmsToolManager {
                 onClic);
             html = buttonHtml + NAVBAR_SEPARATOR + html;
         }
-
-        return CmsToolMacroResolver.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n", wp);
+        html = CmsToolMacroResolver.resolveMacros(html, wp);
+        html = CmsEncoder.decode(html);
+        html = CmsToolMacroResolver.resolveMacros(html, wp);
+        html = "<div class='pathbar'>\n" + html + "&nbsp;</div>\n";
+        if (html.contains("${")) {
+            html.toString();
+        }
+        return html;
     }
 
     /**

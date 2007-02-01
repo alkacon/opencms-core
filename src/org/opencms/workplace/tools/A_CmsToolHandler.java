@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2007/01/25 13:19:39 $
- * Version: $Revision: 1.23.4.4 $
+ * Date   : $Date: 2007/02/01 09:45:52 $
+ * Version: $Revision: 1.23.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23.4.4 $ 
+ * @version $Revision: 1.23.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +185,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         Map argMap = new HashMap();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parameters)) {
-            String toolParams = wp.resolveMacros(m_parameters);
+            String toolParams = CmsEncoder.decode(wp.resolveMacros(m_parameters));
             Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
             while (itArgs.hasNext()) {
                 String arg = (String)itArgs.next();

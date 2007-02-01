@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolMacroResolver.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.2.8.1 $
+ * Date   : $Date: 2007/02/01 09:45:53 $
+ * Version: $Revision: 1.2.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.8.1 $ 
+ * @version $Revision: 1.2.8.2 $ 
  * @since 6.0.0 
  */
 public class CmsToolMacroResolver implements I_CmsMacroResolver {
@@ -209,6 +209,6 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
      */
     public boolean isKeepEmptyMacros() {
 
-        return true;
+        return false;
     }
 }
