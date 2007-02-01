@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/01 15:00:52 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
@@ -69,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -283,12 +282,11 @@ public class CmsRolesList extends A_CmsListDialog {
 
         Iterator itRoles = roles.iterator();
         while (itRoles.hasNext()) {
-            CmsGroup group = (CmsGroup)itRoles.next();
-            CmsRole role = CmsRole.valueOf(group);
-            CmsListItem item = getList().newItem(group.getName());
+            CmsRole role = (CmsRole)itRoles.next();
+            CmsListItem item = getList().newItem(role.getGroupName());
             Locale locale = getCms().getRequestContext().getLocale();
             item.set(LIST_COLUMN_NAME, role.getName(locale));
-            item.set(LIST_COLUMN_HIDE_NAME, group.getName());
+            item.set(LIST_COLUMN_HIDE_NAME, role.getGroupName());
             String dependency = "";
             while (role.getParentRole() != null) {
                 dependency = dependency + role.getParentRole().getName(locale);
