@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/01 09:07:50 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -63,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -258,26 +257,14 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
             true);
 
         int todo = -1;
-        // sort list of roles that children will be displayed after their parent role
-        //        List tempRoles = new ArrayList();
-        //        Iterator itRoles = roles.iterator();
-        //        while (itRoles.hasNext()) {
-        //            CmsGroup group = (CmsGroup)itRoles.next();
-        //            CmsRole role = CmsRole.valueOf(group.getName());
-        //            if (role.getParentRole() == null) {
-        //                tempRoles.add(0, role);
-        //            } else if (!roles.contains(role.getParentRole())) {
-        //                tempRoles.add(role);
-        //            }
-        //            role.getDistinctGroupNames()
-        //        }
+        // sort roles list
 
         Iterator itRoles = roles.iterator();
         while (itRoles.hasNext()) {
-            CmsGroup role = (CmsGroup)itRoles.next();
-            CmsListItem item = getList().newItem(role.getId().toString());
-            item.set(LIST_COLUMN_NAME, CmsRole.valueOf(role).getName(getCms().getRequestContext().getLocale()));
-            item.set(LIST_COLUMN_HIDE_NAME, role.getName());
+            CmsRole role = (CmsRole)itRoles.next();
+            CmsListItem item = getList().newItem(role.getGroupName());
+            item.set(LIST_COLUMN_NAME, role.getName(getCms().getRequestContext().getLocale()));
+            item.set(LIST_COLUMN_HIDE_NAME, role.getGroupName());
             item.set(LIST_COLUMN_PATH, role.getOuFqn());
             ret.add(item);
         }
