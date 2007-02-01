@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/02/01 10:13:28 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/01 10:29:28 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -161,7 +161,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public void forwardToSingleAdminOU() throws ServletException, IOException, CmsException {
 
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
+        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
         Map params = new HashMap();
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ((CmsOrganizationalUnit)orgUnits.get(0)).getName());
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
@@ -188,7 +188,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public boolean hasMoreAdminOUs() throws CmsException {
 
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
+        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
 
         if (orgUnits == null) {
             return false;
