@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleEditList.java,v $
- * Date   : $Date: 2007/02/01 10:28:10 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/01 15:09:41 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,15 +47,13 @@ import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
-import org.opencms.workplace.list.CmsListItemDefaultComparator;
 import org.opencms.workplace.list.CmsListItemDetails;
-import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -91,7 +89,10 @@ public class CmsRoleEditList extends A_CmsListDialog {
     public static final String LIST_COLUMN_DEPENDENCY = "cd";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_HIDE_NAME = "chn";
+    public static final String LIST_COLUMN_GROUP_NAME = "cgn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_HIDDEN_NAME = "chn";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
@@ -162,7 +163,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
      */
     protected CmsRoleEditList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
-        super(jsp, listId, listName, LIST_COLUMN_HIDE_NAME, CmsListOrderEnum.ORDER_ASCENDING, null);
+        super(jsp, listId, listName, LIST_COLUMN_HIDDEN_NAME, CmsListOrderEnum.ORDER_ASCENDING, null);
     }
 
     /**
@@ -177,7 +178,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
                     CmsListItem listItem = (CmsListItem)itItems.next();
-                    CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_HIDE_NAME));
+                    CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME));
                     CmsRole role = CmsRole.valueOf(group);
                     if (!OpenCms.getRoleManager().hasRole(getCms(), user.getName(), role)) {
                         OpenCms.getRoleManager().addUserToRole(getCms(), role, user.getName());
@@ -195,7 +196,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
                     CmsListItem listItem = (CmsListItem)itItems.next();
-                    CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_HIDE_NAME));
+                    CmsGroup group = getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME));
                     CmsRole role = CmsRole.valueOf(group);
                     if (OpenCms.getRoleManager().hasRole(getCms(), user.getName(), role)) {
                         OpenCms.getRoleManager().removeUserFromRole(getCms(), role, user.getName());
@@ -314,7 +315,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
         Iterator itRoles = roles.iterator();
         while (itRoles.hasNext()) {
             CmsListItem item = (CmsListItem)itRoles.next();
-            String roleName = item.get(LIST_COLUMN_HIDE_NAME).toString();
+            String roleName = item.get(LIST_COLUMN_GROUP_NAME).toString();
             StringBuffer html = new StringBuffer(512);
             try {
                 if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
@@ -350,16 +351,28 @@ public class CmsRoleEditList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(role.getGroupName());
             Locale locale = getCms().getRequestContext().getLocale();
             item.set(LIST_COLUMN_NAME, role.getName(locale));
-            item.set(LIST_COLUMN_HIDE_NAME, role.getGroupName());
             String dependency = "";
-            while (role.getParentRole() != null) {
-                dependency = dependency + role.getParentRole().getName(locale);
-                role = role.getParentRole();
-                if (role.getParentRole() != null) {
-                    dependency = dependency + ", ";
+            CmsRole parent =role;
+            while ((parent.getParentRole() != null) && (parent.getParentRole().getParentRole() != null)) {
+                String roleName = parent.getParentRole().getName(locale);
+                if (dependency.length() > 0) {
+                    roleName += ", ";
                 }
+                dependency = roleName + dependency;
+                parent = parent.getParentRole();
             }
             item.set(LIST_COLUMN_DEPENDENCY, dependency);
+            String hiddenName = dependency;
+            if (hiddenName.length() > 0) {
+                hiddenName = CmsRole.ROOT_ADMIN.getName(locale) + ", " + hiddenName;
+            } else {
+                hiddenName = CmsRole.ROOT_ADMIN.getName(locale);
+            }
+            if (role.getParentRole() != null) {
+                hiddenName += ", " + role.getName(locale);
+            }
+            item.set(LIST_COLUMN_HIDDEN_NAME, hiddenName);
+            item.set(LIST_COLUMN_GROUP_NAME, role.getGroupName());
             ret.add(item);
         }
 
@@ -388,7 +401,7 @@ public class CmsRoleEditList extends A_CmsListDialog {
             public String getIconPath() {
 
                 try {
-                    CmsRole role = CmsRole.valueOf(getCms().readGroup((String)getItem().get(LIST_COLUMN_HIDE_NAME)));
+                    CmsRole role = CmsRole.valueOf(getCms().readGroup((String)getItem().get(LIST_COLUMN_GROUP_NAME)));
                     if (!OpenCms.getRoleManager().hasRole(
                         getCms(),
                         getCms().readUser(new CmsUUID(((CmsRoleEditList)getWp()).getParamUserid())).getName(),
@@ -490,58 +503,17 @@ public class CmsRoleEditList extends A_CmsListDialog {
         metadata.addColumn(nameCol);
 
         // create column for hidden name
-        CmsListColumnDefinition hideNameCol = new CmsListColumnDefinition(LIST_COLUMN_HIDE_NAME);
+        CmsListColumnDefinition hideNameCol = new CmsListColumnDefinition(LIST_COLUMN_HIDDEN_NAME);
         hideNameCol.setVisible(false);
-        hideNameCol.setListItemComparator(new CmsListItemDefaultComparator() {
-
-            /**
-             * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
-             */
-            public Comparator getComparator(final String columnId, final Locale locale) {
-
-                return new Comparator() {
-
-                    /**
-                     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-                     */
-                    public int compare(Object o1, Object o2) {
-
-                        if ((o1 == o2) || !(o1 instanceof CmsListItem) || !(o2 instanceof CmsListItem)) {
-                            return 0;
-                        }
-                        Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
-                        Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                        if ((c1 instanceof String) && (c2 instanceof String)) {
-                            try {
-                                CmsRole role1 = CmsRole.valueOf(getCms().readGroup((String)c1));
-                                CmsRole role2 = CmsRole.valueOf(getCms().readGroup((String)c2));
-
-                                if (role1.getParentRole().equals(role2)) {
-                                    return 1;
-                                } else if (role2.getParentRole().equals(role1)) {
-                                    return -1;
-                                } else {
-                                    return 0;
-                                }
-                            } catch (CmsException e) {
-                                return 0;
-                            }
-                        } else if (c1 != null) {
-                            if (c2 == null) {
-                                return 1;
-                            }
-                            return c1.compareTo(c2);
-                        } else if (c2 != null) {
-                            return -1;
-                        }
-                        return 0;
-                    }
-                };
-            }
-        });
         hideNameCol.setSorteable(true);
         // add it to the list definition
         metadata.addColumn(hideNameCol);
+
+        // create column for group name
+        CmsListColumnDefinition groupNameCol = new CmsListColumnDefinition(LIST_COLUMN_GROUP_NAME);
+        groupNameCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(groupNameCol);
 
         // create column for path
         CmsListColumnDefinition depCol = new CmsListColumnDefinition(LIST_COLUMN_DEPENDENCY);
@@ -570,8 +542,26 @@ public class CmsRoleEditList extends A_CmsListDialog {
         descriptionDetails.setHideActionHelpText(Messages.get().container(
             Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_HELP_0));
         descriptionDetails.setName(Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_DESCRIPTION_NAME_0));
-        descriptionDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ROLEEDIT_DETAIL_DESCRIPTION_NAME_0)));
+        descriptionDetails.setFormatter(new I_CmsListFormatter() {
+            
+            /**
+             * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
+             */
+            public String format(Object data, Locale locale) {
+
+                StringBuffer html = new StringBuffer(512);
+                html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
+                html.append("\t<tr>\n");
+                html.append("\t\t<td style='white-space:normal;' >\n");
+                html.append("\t\t\t");
+                html.append(data == null ? "" : data);
+                html.append("\n");
+                html.append("\t\t</td>\n");
+                html.append("\t</tr>\n");
+                html.append("</table>\n");
+                return html.toString();
+            }
+        });
         metadata.addItemDetails(descriptionDetails);
     }
 
