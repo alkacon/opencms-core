@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/01/30 15:34:43 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/01 10:08:18 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6
  */
@@ -91,6 +91,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
      */
     public void copy(String src, String dest, boolean overwrite) throws CmsRepositoryException {
+
+        // Problems with spaces in new folders (default: "Neuer Ordner")
+        // Solution: translate this to a correct name.
+        src = m_cms.getRequestContext().getFileTranslator().translateResource(src);
+        dest = m_cms.getRequestContext().getFileTranslator().translateResource(dest);
 
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.
@@ -165,6 +170,8 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             // Problems with spaces in new folders (default: "Neuer Ordner")
             // Solution: translate this to a correct name.
             path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+            
+            // create the folder
             m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         } catch (CmsVfsResourceAlreadyExistsException raeex) {
 
@@ -199,6 +206,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public void create(String path, InputStream inputStream, boolean overwrite) throws CmsRepositoryException {
 
+        // check if file already exists and eventually delete it
         if (exists(path)) {
             if (overwrite) {
                 delete(path);
@@ -208,11 +216,19 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
         }
 
         try {
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+
             int type = OpenCms.getResourceManager().getDefaultTypeForName(path).getTypeId();
             byte[] content = CmsFileUtil.readFully(inputStream);
 
             // create the file
             m_cms.createResource(path, type, content, null);
+            
+            // unlock file after creation
+            m_cms.unlockResource(path);
+            
         } catch (CmsVfsResourceAlreadyExistsException raeex) {
 
             // Resource already exists
@@ -246,6 +262,10 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public void delete(String path) throws CmsRepositoryException {
 
         try {
+
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
 
             // lock resource
             m_cms.lockResource(path);
@@ -296,6 +316,10 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public I_CmsRepositoryItem getItem(String path) throws CmsRepositoryException {
 
         try {
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+
             CmsResource res = m_cms.readResource(path);
 
             CmsRepositoryItem item = new CmsRepositoryItem(res, m_cms);
@@ -334,6 +358,10 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
 
         try {
             CmsRepositoryLockInfo lockInfo = new CmsRepositoryLockInfo();
+
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
 
             CmsResource res = m_cms.readResource(path);
 
@@ -380,6 +408,10 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
         List ret = new ArrayList();
 
         try {
+
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
 
             // return empty list if resource is not a folder
             CmsResource folder = m_cms.readResource(path);
@@ -429,6 +461,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryException {
 
         try {
+            
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+
             m_cms.lockResource(path);
             return true;
         } catch (CmsVfsResourceNotFoundException rnfex) {
@@ -463,6 +500,11 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
      */
     public void move(String src, String dest, boolean overwrite) throws CmsRepositoryException {
 
+        // Problems with spaces in new folders (default: "Neuer Ordner")
+        // Solution: translate this to a correct name.
+        src = m_cms.getRequestContext().getFileTranslator().translateResource(src);
+        dest = m_cms.getRequestContext().getFileTranslator().translateResource(dest);
+        
         // It is only possible in OpenCms to overwrite files.
         // Folder are not possible to overwrite.
         try {
@@ -488,9 +530,7 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
             // lock source resource
             m_cms.lockResource(src);
 
-            // Problems with spaces in new folders (default: "Neuer Ordner")
-            // Solution: translate this to a correct name.
-            src = m_cms.getRequestContext().getFileTranslator().translateResource(src);
+            // moving
             m_cms.moveResource(src, dest);
 
             // unlock destination resource
@@ -528,6 +568,10 @@ public class CmsRepositorySession implements I_CmsRepositorySession {
     public void unlock(String path) {
 
         try {
+            // Problems with spaces in new folders (default: "Neuer Ordner")
+            // Solution: translate this to a correct name.
+            path = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+
             m_cms.unlockResource(path);
         } catch (CmsException ex) {
 

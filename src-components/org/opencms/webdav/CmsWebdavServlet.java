@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/01/30 15:34:43 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/02/01 10:08:18 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.6
  */
@@ -1432,7 +1432,7 @@ public class CmsWebdavServlet extends HttpServlet {
         if (req.getInputStream().available() > 0) {
             try {
                 new SAXReader().read(req.getInputStream());
-                // TODO : Process this request body
+                // TODO: Process this request body (from Apache Tomcat)
                 resp.setStatus(CmsWebdavStatus.SC_NOT_IMPLEMENTED);
                 return;
 
@@ -1675,7 +1675,6 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         } catch (Exception e) {
             // Most likely there was no content : we use the defaults.
-            // TODO : Enhance that !
         }
 
         if (propNode != null) {
@@ -1871,7 +1870,7 @@ public class CmsWebdavServlet extends HttpServlet {
         }
 
         try {
-            // FIXME: Add attributes
+            // FIXME: Add attributes(from Apache Tomcat)
             m_session.create(path, resourceInputStream, exists);
         } catch (CmsRepositoryException e) {
             result = false;

@@ -871,18 +871,18 @@ ${opencms.inputlib.textextraction}
 
     <target name="webdav" depends="compile" if="libsAvailable" description="Build the webdav.jar">
         
-        <mkdir dir="${opencms.output}/webdav/" />
+        <mkdir dir="${opencms.build}/classes-webdav/" />
         
-        <copy todir="${opencms.output}/webdav/">
+        <copy todir="${opencms.build}/classes-webdav/">
             <fileset dir="${opencms.input}/src-components">
-            	<include name="org/opencms/webdav/*.properties" />
-            	<include name="org/opencms/repository/*.properties" />
+            	<include name="org/opencms/webdav/**/*.properties" />
+            	<include name="org/opencms/repository/**/*.properties" />
             </fileset>
         </copy>              
 
         <javac
             srcdir="${opencms.input}/src-components/"
-            destdir="${opencms.output}/webdav"
+            destdir="${opencms.build}/classes-webdav/"
             classpath="${opencms.output.classes}:
         		       ${opencms.inputlib.servlet}:
         	           ${opencms.inputlib.dom4j}:
@@ -900,7 +900,7 @@ ${opencms.inputlib.textextraction}
  
         <jar
             jarfile="${opencms.output.jars}/webdav.jar"
-            basedir="${opencms.output}/webdav/"
+            basedir="${opencms.build}/classes-webdav/"
             includes="org/**" >  
         </jar>
     </target>    
