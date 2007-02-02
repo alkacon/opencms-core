@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 13:54:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Set;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -224,7 +224,39 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
         // add remove action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                if (getItem() != null) {
+                    String userName = getItem().get(LIST_COLUMN_LOGIN).toString();
+                    try {
+                        CmsUser user = getCms().readUser(userName);
+                        if (!user.getOuFqn().equals(getParamOufqn())) {
+                            return false;
+                        }
+                        return true;
+                    } catch (CmsException e) {
+                        return super.isVisible();
+                    }
+                }
+                return super.isVisible();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (!isEnabled()) {
+                    return Messages.get().container(Messages.GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0);
+                }
+                return super.getHelpText();
+            }
+        };
         stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_ROLEUSERS_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction.setIconPath(ICON_MINUS);

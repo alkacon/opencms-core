@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/02 12:04:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 13:54:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -121,10 +121,12 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
                 CmsListItem listItem = (CmsListItem)itItems.next();
                 String userName = (String)listItem.get(LIST_COLUMN_LOGIN);
                 try {
-                    OpenCms.getRoleManager().removeUserFromRole(
-                        getCms(),
-                        CmsRole.valueOf(getCms().readGroup(getParamRole())),
-                        userName);
+                    if (getCms().readUser(userName).getOuFqn().equals(getParamOufqn())) {
+                        OpenCms.getRoleManager().removeUserFromRole(
+                            getCms(),
+                            CmsRole.valueOf(getCms().readGroup(getParamRole())),
+                            userName);
+                    }
                 } catch (CmsException e) {
                     // noop
                 }
@@ -244,12 +246,12 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
                 }
                 return false;
             }
-            
+
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
             public String getIconPath() {
-            
+
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
             }
         });
@@ -276,12 +278,12 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
                 }
                 return false;
             }
-            
+
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
             public String getIconPath() {
-            
+
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
             }
         });

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/02 12:04:48 $
- * Version: $Revision: 1.9.4.10 $
+ * Date   : $Date: 2007/02/02 13:54:16 $
+ * Version: $Revision: 1.9.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.10 $ 
+ * @version $Revision: 1.9.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1355,6 +1355,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0 = "GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
