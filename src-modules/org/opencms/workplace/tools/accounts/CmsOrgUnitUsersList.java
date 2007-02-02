@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/02 12:04:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 17:01:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -135,11 +136,16 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                 String userName = (String)listItem.get(LIST_COLUMN_LOGIN);
                 try {
                     CmsUser user = getCms().readUser(userName);
-                    List ouUsers = getOuUsers();
+                    List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                        A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+                    if (ouUsers == null) {
+                        ouUsers = new ArrayList();
+                    }
                     ouUsers.remove(user);
                     setOuUsers(ouUsers);
 
-                    List notOuUsers = getNotOuUsers();
+                    List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                        A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
                     notOuUsers.add(user);
                     setNotOuUsers(notOuUsers);
                 } catch (CmsException e) {
@@ -160,12 +166,18 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
         if (m_removeActionIds.contains(getParamListAction())) {
             CmsListItem listItem = getSelectedItem();
             try {
+
                 CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
-                List ouUsers = getOuUsers();
+                List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                    A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+                if (ouUsers == null) {
+                    ouUsers = new ArrayList();
+                }
                 ouUsers.remove(user);
                 setOuUsers(ouUsers);
 
-                List notOuUsers = getNotOuUsers();
+                List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                    A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
                 notOuUsers.add(user);
                 setNotOuUsers(notOuUsers);
             } catch (CmsException e) {
@@ -183,10 +195,15 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
      */
     protected List getUsers() {
 
-        if (getOuUsers() == null) {
-            List orgUnitsUser = new ArrayList();
-            setOuUsers(orgUnitsUser);
+        List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+
+        if (ouUsers == null) {
+            ouUsers = new ArrayList();
+            setOuUsers(ouUsers);
+        } else {
+            setOuUsers(ouUsers);
         }
+
         return getOuUsers();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/02 12:04:48 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/02 17:01:05 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -82,14 +82,20 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /** list column id constant. */
     public static final String LIST_COLUMN_STATE = "cs";
 
-    /** Stores the value of the request parameter for the organizational unit fqn. */
-    private String m_paramOufqn;
+    /** Constant for session attribute. */
+    public static final String NOT_ORGUNIT_USERS = "not_orgunit_users";
+
+    /** Constant for session attribute. */
+    public static final String ORGUNIT_USERS = "orgunit_users";
 
     /** Stores the users not in the current ou.*/
     private List m_notOuUsers;
 
     /** Stores the users of the the current ou.*/
     private List m_ouUsers;
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /**
      * Public constructor.<p>
@@ -110,6 +116,26 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the notOuUsers.<p>
+     *
+     * @return the notOuUsers
+     */
+    public List getNotOuUsers() {
+
+        return m_notOuUsers;
+    }
+
+    /**
+     * Returns the ouUsers.<p>
+     *
+     * @return the ouUsers
+     */
+    public List getOuUsers() {
+
+        return m_ouUsers;
+    }
+
+    /**
      * Returns the organizational unit fqn parameter value.<p>
      * 
      * @return the organizational unit fqn parameter value
@@ -117,6 +143,28 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     public String getParamOufqn() {
 
         return m_paramOufqn;
+    }
+
+    /**
+     * Sets the notOuUsers.<p>
+     *
+     * @param notOuUsers the notOuUsers to set
+     */
+    public void setNotOuUsers(List notOuUsers) {
+
+        m_notOuUsers = notOuUsers;
+        getJsp().getRequest().getSession().setAttribute(A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS, m_notOuUsers);
+    }
+
+    /**
+     * Sets the ouUsers.<p>
+     *
+     * @param ouUsers the ouUsers to set
+     */
+    public void setOuUsers(List ouUsers) {
+
+        m_ouUsers = ouUsers;
+        getJsp().getRequest().getSession().setAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS, m_ouUsers);
     }
 
     /**
@@ -222,6 +270,13 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Sets the optional login default action.<p>
+     * 
+     * @param loginCol the login column
+     */
+    protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
+
+    /**
      * Sets the needed icon action(s).<p>
      * 
      * @param iconCol the list column for edition.
@@ -244,58 +299,11 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     protected abstract void setStateActionCol(CmsListMetadata metadata);
 
     /**
-     * Sets the optional login default action.<p>
-     * 
-     * @param loginCol the login column
-     */
-    protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
         OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_paramOufqn).getName();
-    }
-
-    /**
-     * Returns the notOuUsers.<p>
-     *
-     * @return the notOuUsers
-     */
-    public List getNotOuUsers() {
-
-        return m_notOuUsers;
-    }
-
-    /**
-     * Sets the notOuUsers.<p>
-     *
-     * @param notOuUsers the notOuUsers to set
-     */
-    public void setNotOuUsers(List notOuUsers) {
-
-        m_notOuUsers = notOuUsers;
-    }
-
-    /**
-     * Returns the ouUsers.<p>
-     *
-     * @return the ouUsers
-     */
-    public List getOuUsers() {
-
-        return m_ouUsers;
-    }
-
-    /**
-     * Sets the ouUsers.<p>
-     *
-     * @param ouUsers the ouUsers to set
-     */
-    public void setOuUsers(List ouUsers) {
-
-        m_ouUsers = ouUsers;
     }
 }
