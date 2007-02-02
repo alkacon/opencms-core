@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/02/02 08:28:38 $
- * Version: $Revision: 1.8.4.9 $
+ * Date   : $Date: 2007/02/02 09:47:03 $
+ * Version: $Revision: 1.8.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.9 $ 
+ * @version $Revision: 1.8.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             } else if (getLink().equals(NEW_FILE)) {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
             } else if (getLink().equals(PARENT_FILE)) {
-                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
+                if (parentOu != null) {
+                    return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
+                }
+                return false;
             } else if (getLink().equals(DELETE_FILE)) {
                 if (parentOu != null) {
                     return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
@@ -173,7 +176,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 try {
                     List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
                         cms,
-                        CmsRole.ADMINISTRATOR.forOrgUnit(""),
+                        CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
                         true);
                     if (orgUnits.size() > 1) {
                         return true;
