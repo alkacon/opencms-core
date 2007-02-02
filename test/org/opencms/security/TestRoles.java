@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/02/01 09:22:03 $
- * Version: $Revision: 1.4.8.9 $
+ * Date   : $Date: 2007/02/02 13:50:01 $
+ * Version: $Revision: 1.4.8.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -365,8 +365,14 @@ public class TestRoles extends OpenCmsTestCase {
 
         // try to add a role by adding a user to the group
         group = cms.createGroup("mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
+        assertEquals(1, cms.getGroupsOfUser("Guest", false).size());
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
         cms.addUserToGroup("Guest", group.getName());
+        assertEquals(2, cms.getGroupsOfUser("Guest", false).size());
         assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
+        
+        cms.removeUserFromGroup("Guest", group.getName());
+        assertEquals(1, cms.getGroupsOfUser("Guest", false).size());
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
     }
 }

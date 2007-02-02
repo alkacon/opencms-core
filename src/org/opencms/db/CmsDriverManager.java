@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/01/31 12:35:12 $
- * Version: $Revision: 1.570.2.54 $
+ * Date   : $Date: 2007/02/02 13:50:00 $
+ * Version: $Revision: 1.570.2.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -664,7 +664,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
         }
         if (group.isVirtual() && !readRoles) {
-            // if removing a user from a virtual role treat it as removing the user from the role
+            // if adding a user from a virtual role treat it as removing the user from the role
             addUserToGroup(dbc, username, CmsRole.valueOf(group).getGroupName(), true);
             return;
         }
@@ -6250,6 +6250,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (group == null) {
             // the group does not exists
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
+        }
+        if (group.isVirtual() && !readRoles) {
+            // if removing a user from a virtual role treat it as removing the user from the role
+            removeUserFromGroup(dbc, username, CmsRole.valueOf(group).getGroupName(), true);
+            return;
         }
         if (group.isVirtual()) {
             // this is an hack so to prevent a unlimited recursive calls
