@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/01 15:01:23 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/02 10:41:04 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,16 +38,8 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
-import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListItemDetails;
-import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,38 +54,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
-public class CmsShowUserRolesList extends A_CmsListDialog {
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "ai";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_HIDE_NAME = "chn";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "ci";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "cn";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_DESCRIPTION = "cd";
-
-    /** list item detail id constant. */
-    public static final String LIST_DETAIL_PATH = "dp";
+public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /** list id constant. */
     public static final String LIST_ID = "lsur";
-
-    /** Path to the list buttons. */
-    public static final String PATH_BUTTONS = "tools/accounts/buttons/";
-
-    /** Stores the value of the request parameter for the organizational unit. */
-    private String m_paramOufqn;
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
@@ -116,7 +84,7 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
      */
     public CmsShowUserRolesList(CmsJspActionElement jsp, String listId) {
 
-        this(jsp, listId, Messages.get().container(Messages.GUI_USERROLES_LIST_NAME_0), false);
+        this(jsp, listId, Messages.get().container(Messages.GUI_USERROLES_LIST_NAME_0));
     }
 
     /**
@@ -137,16 +105,10 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
-     * @param searchable searchable flag
      */
-    protected CmsShowUserRolesList(
-        CmsJspActionElement jsp,
-        String listId,
-        CmsMessageContainer listName,
-        boolean searchable) {
+    protected CmsShowUserRolesList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
-        super(jsp, listId, listName, LIST_COLUMN_NAME, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
-        : null);
+        super(jsp, listId, listName);
     }
 
     /**
@@ -166,13 +128,30 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the organizational unit parameter value.<p>
-     * 
-     * @return the organizational unit parameter value
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getIconPath(CmsListItem)
      */
-    public String getParamOufqn() {
+    public String getIconPath(CmsListItem item) {
 
-        return m_paramOufqn;
+        List roles = getList().getAllContent();
+        Iterator itRoles = roles.iterator();
+        List roleObjects = new ArrayList();
+        try {
+            while (itRoles.hasNext()) {
+                CmsListItem listItem = (CmsListItem)itRoles.next();
+                roleObjects.add(CmsRole.valueOf(getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME))));
+            }
+
+            CmsRole role = CmsRole.valueOf(getCms().readGroup((String)item.get(LIST_COLUMN_GROUP_NAME)));
+            if (role.getParentRole() != null && roleObjects.contains(role.getParentRole())) {
+                return PATH_BUTTONS + "role_child.png";
+            }
+        } catch (CmsException e) {
+            return PATH_BUTTONS + "role.png";
+        }
+        int todo = -1;
+        //define the return value for roles inherited from another ou
+
+        return PATH_BUTTONS + "role.png";
     }
 
     /**
@@ -183,19 +162,6 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
     public String getParamUserid() {
 
         return m_paramUserid;
-    }
-
-    /**
-     * Sets the user organizational unit value.<p>
-     * 
-     * @param ouFqn the organizational unit parameter value
-     */
-    public void setParamOufqn(String ouFqn) {
-
-        if (ouFqn == null) {
-            ouFqn = "";
-        }
-        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -217,151 +183,17 @@ public class CmsShowUserRolesList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getRoles()
      */
-    protected void fillDetails(String detailId) {
+    protected List getRoles() throws CmsException {
 
-        // get content
-        List roles = getList().getAllContent();
-        Iterator itRoles = roles.iterator();
-        while (itRoles.hasNext()) {
-            CmsListItem item = (CmsListItem)itRoles.next();
-            String roleName = item.get(LIST_COLUMN_HIDE_NAME).toString();
-            StringBuffer html = new StringBuffer(512);
-            try {
-                if (detailId.equals(LIST_DETAIL_PATH)) {
-                    CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
-                    html.append(role.getOuFqn());
-                } else {
-                    continue;
-                }
-            } catch (Exception e) {
-                // noop
-            }
-            item.set(detailId, html.toString());
-        }
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        List ret = new ArrayList();
-        List roles = OpenCms.getRoleManager().getRolesOfUser(
+        return OpenCms.getRoleManager().getRolesOfUser(
             getCms(),
             getCms().readUser(new CmsUUID(getParamUserid())).getName(),
             getParamOufqn(),
             false,
             false,
             true);
-
-        int todo = -1;
-        // sort roles list
-
-        Iterator itRoles = roles.iterator();
-        while (itRoles.hasNext()) {
-            CmsRole role = (CmsRole)itRoles.next();
-            CmsListItem item = getList().newItem(role.getGroupName());
-            item.set(LIST_COLUMN_NAME, role.getName(getCms().getRequestContext().getLocale()));
-            item.set(LIST_COLUMN_HIDE_NAME, role.getGroupName());
-            item.set(LIST_COLUMN_DESCRIPTION, role.getDescription(getCms().getRequestContext().getLocale()));
-            ret.add(item);
-        }
-
-        return ret;
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        // create column for icon display
-        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
-        iconCol.setName(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_ICON_0));
-        iconCol.setHelpText(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_ICON_HELP_0));
-        iconCol.setWidth("20");
-        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        iconCol.setSorteable(false);
-
-        // adds a role icon
-        CmsListDirectAction dirAction = new CmsListDefaultAction(LIST_ACTION_ICON) {
-
-            /**
-             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
-             */
-            public String getIconPath() {
-
-                List roles = getList().getAllContent();
-                Iterator itRoles = roles.iterator();
-                List roleObjects = new ArrayList();
-                try {
-                    while (itRoles.hasNext()) {
-                        CmsListItem item = (CmsListItem)itRoles.next();
-                        roleObjects.add(CmsRole.valueOf(getCms().readGroup((String)item.get(LIST_COLUMN_HIDE_NAME))));
-                    }
-
-                    CmsRole role = CmsRole.valueOf(getCms().readGroup((String)getItem().get(LIST_COLUMN_HIDE_NAME)));
-                    if (role.getParentRole() != null && roleObjects.contains(role.getParentRole())) {
-                        return PATH_BUTTONS + "role_child.png";
-                    }
-                } catch (CmsException e) {
-                    return super.getIconPath();
-                }
-                int todo = -1;
-                //define the return value for roles inherited from another ou
-
-                return super.getIconPath();
-            }
-        };
-        dirAction.setName(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_ICON_NAME_0));
-        dirAction.setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_ICON_HELP_0));
-        dirAction.setIconPath(PATH_BUTTONS + "role.png");
-        dirAction.setEnabled(false);
-        iconCol.addDirectAction(dirAction);
-        // add it to the list definition
-        metadata.addColumn(iconCol);
-
-        // create column for hidden name
-        CmsListColumnDefinition hideNameCol = new CmsListColumnDefinition(LIST_COLUMN_HIDE_NAME);
-        hideNameCol.setVisible(false);
-        // add it to the list definition
-        metadata.addColumn(hideNameCol);
-
-        // create column for name
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_NAME_0));
-        nameCol.setWidth("35%");
-        // add it to the list definition
-        metadata.addColumn(nameCol);
-
-        // create column for path
-        CmsListColumnDefinition descCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
-        descCol.setName(Messages.get().container(Messages.GUI_ROLES_LIST_COLS_DESCRIPTION_0));
-        descCol.setWidth("65%");
-        descCol.setTextWrapping(true);
-        // add it to the list definition
-        metadata.addColumn(descCol);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setIndependentActions(CmsListMetadata metadata) {
-
-        // add role description
-        CmsListItemDetails pathDetails = new CmsListItemDetails(LIST_DETAIL_PATH);
-        pathDetails.setAtColumn(LIST_COLUMN_NAME);
-        pathDetails.setVisible(false);
-        pathDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_NAME_0));
-        pathDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_HELP_0));
-        pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
-        pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
-        pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
-        pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
-        metadata.addItemDetails(pathDetails);
     }
 
     /**

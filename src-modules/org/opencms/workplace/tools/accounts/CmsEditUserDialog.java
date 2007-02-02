@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/01/31 16:19:35 $
- * Version: $Revision: 1.17.4.2 $
+ * Date   : $Date: 2007/02/02 10:41:04 $
+ * Version: $Revision: 1.17.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,13 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,11 +52,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.2 $ 
+ * @version $Revision: 1.17.4.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditUserDialog extends A_CmsEditUserDialog {
+
+    /** The additional information. */
+    private Map m_addInfo = new TreeMap();
 
     /**
      * Public constructor with JSP action element.<p>
@@ -73,6 +81,16 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     public CmsEditUserDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Returns the additional Info.<p>
+     *
+     * @return the additional Info
+     */
+    public Map getAddInfo() {
+
+        return m_addInfo;
     }
 
     /**
@@ -103,6 +121,16 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     }
 
     /**
+     * Sets the additional Info.<p>
+     *
+     * @param addInfo the additional Info to set
+     */
+    public void setAddInfo(Map addInfo) {
+
+        m_addInfo = addInfo;
+    }
+
+    /**
      * This method is only needed for displaying reasons.<p>
      * 
      * @param assignedOu nothing to do with this parameter
@@ -122,11 +150,45 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     }
 
     /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#createDialogHtml(java.lang.String)
+     */
+    protected String createDialogHtml(String dialog) {
+
+        if (dialog.equals(PAGES[0])) {
+            return super.createDialogHtml(dialog);
+        }
+
+        StringBuffer result = new StringBuffer(1024);
+
+        result.append(createWidgetTableStart());
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+        int todo;
+        result.append(dialogBlockStart("" /*key(Messages.GUI_USER_EDITOR_LABEL_ADDITIONALINFO_BLOCK_0)*/));
+        result.append(createWidgetTableStart());
+        result.append(createDialogRowsHtml(14, 14));
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+
+        result.append(createWidgetTableEnd());
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#createUser(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
     protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
 
         return getCms().createUser(name, pwd, desc, info);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#defineWidgets()
+     */
+    protected void defineWidgets() {
+
+        super.defineWidgets();
+        addWidget(new CmsWidgetDialogParameter(this, "addInfo", PAGES[0], new CmsDisplayWidget()/*, getAdditionalInfos()*/));
     }
 
     /**
@@ -146,6 +208,14 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     }
 
     /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1", "page2"};
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#isEditable(org.opencms.file.CmsUser)
      */
     protected boolean isEditable(CmsUser user) {
@@ -159,5 +229,21 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     protected void writeUser(CmsUser user) throws CmsException {
 
         getCms().writeUser(user);
+    }
+
+    /**
+     * Returns all editable additional information.<p>
+     * 
+     * @return all editable additional information
+     */
+    private List getAdditionalInfos() {
+
+        List addInfo = new ArrayList();
+        addInfo.add("info1");
+        addInfo.add("info1/info11");
+        addInfo.add("info2");
+        addInfo.add("info2/info21");
+        addInfo.add("info2/info22");
+        return addInfo;
     }
 }
