@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/01/31 15:44:17 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 12:04:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -150,12 +151,16 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
             CmsListItem listItem = getSelectedItem();
             try {
                 CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
-                List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), true);
+                List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+                
                 if (currentUsers.contains(user)) {
                     // set message that user is already in ou ...
                     int todo = -1;
                 } else {
                     List ouUsers = getOuUsers();
+                    if (ouUsers == null) {
+                        ouUsers = new ArrayList();
+                    }
                     ouUsers.add(user);
                     setOuUsers(ouUsers);
 
@@ -177,9 +182,6 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
      * @see org.opencms.workplace.tools.accounts.A_CmsOrgUnitUsersList#getUsers()
      */
     protected List getUsers() throws CmsException {
-
-        // check getting users
-        int todo = -1;
 
         if (getNotOuUsers() == null) {
             List orgUnitsUser = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);

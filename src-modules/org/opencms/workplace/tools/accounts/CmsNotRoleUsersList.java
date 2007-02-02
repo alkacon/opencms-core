@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotRoleUsersList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/02 12:04:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -180,14 +180,12 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
      */
     protected List getAllUsers() throws CmsException {
 
-        // check get other users
-        int todo = -1;
         List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
             getCms(),
             CmsRole.valueOf(getCms().readGroup(getParamRole())),
             false,
             false);
-        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), true);
+        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
         users.removeAll(roleUsers);
         return users;
     }
@@ -225,14 +223,12 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
      */
     protected List getUsers() throws CmsException {
 
-        // check getting of users
-        int todo = -1;
         List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
             getCms(),
             CmsRole.valueOf(getCms().readGroup(getParamRole())),
             false,
             false);
-        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), getParamOufqn(), false);
         users.removeAll(roleUsers);
         return users;
     }
@@ -341,24 +337,31 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
             public boolean isVisible() {
 
                 try {
-                    List users = OpenCms.getRoleManager().getManageableUsers(
-                        getCms(),
-                        CmsOrganizationalUnit.SEPARATOR,
-                        true);
+                    List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
 
                     Iterator itUsers = users.iterator();
                     while (itUsers.hasNext()) {
                         CmsUser user = (CmsUser)itUsers.next();
-
-                        if (!user.getOuFqn().equals(getParamOufqn())) {
-                            return true;
+                        try {
+                            if (!user.getOuFqn().equals(getParamOufqn())) {
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            return false;
                         }
-
                     }
                 } catch (Exception e) {
                     return false;
                 }
                 return false;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_HIDE;
             }
         });
         otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
@@ -368,21 +371,31 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
              */
             public boolean isVisible() {
 
-                List users = getList().getAllContent();
-                Iterator itUsers = users.iterator();
-                while (itUsers.hasNext()) {
-                    CmsListItem item = (CmsListItem)itUsers.next();
-                    String userName = item.get(LIST_COLUMN_LOGIN).toString();
-                    try {
-                        CmsUser user = getCms().readUser(userName);
-                        if (!user.getOuFqn().equals(getParamOufqn())) {
-                            return true;
+                try {
+                    List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
+                    Iterator itUsers = users.iterator();
+                    while (itUsers.hasNext()) {
+                        CmsUser user = (CmsUser)itUsers.next();
+                        try {
+                            if (!user.getOuFqn().equals(getParamOufqn())) {
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            return false;
                         }
-                    } catch (Exception e) {
-                        return false;
                     }
+                } catch (Exception e) {
+                    return false;
                 }
                 return false;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_SHOW;
             }
         });
         otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0));

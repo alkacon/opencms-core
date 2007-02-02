@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/01 10:27:25 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 12:04:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -121,6 +122,11 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             } else {
                 // changes of ou / parent ou have to be written
                 int todo = -1;
+
+                //                if (!m_orgunit.getParentFqn().equals(m_orgUnitBean.getParentOu())) {
+                //
+                //                }
+
                 m_orgunit.setDescription(m_orgUnitBean.getDescription());
 
                 List resourceNamesNew = CmsFileUtil.removeRedundancies(m_orgUnitBean.getResources());
@@ -165,6 +171,34 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
+
+    //    protected String defaultActionHtmlStart() throws JspException {
+    //    
+    //        // TODO Auto-generated method stub
+    //        return super.defaultActionHtmlStart();
+    //    }
+    //
+    //    /**
+    //     * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
+    //     */
+    //    public String dialogButtonsCustom() {
+    //
+    //        boolean onlyDisplay = true;
+    //        Iterator it = m_widgets.iterator();
+    //        while (it.hasNext()) {
+    //            CmsWidgetDialogParameter wdp = (CmsWidgetDialogParameter)it.next();
+    //            if (!(wdp.getWidget() instanceof CmsDisplayWidget)) {
+    //                onlyDisplay = false;
+    //                break;
+    //            }
+    //        }
+    //        if (!onlyDisplay) {
+    //            // this is a single page dialog, create common buttons
+    //            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
+    //        }
+    //        // this is a display only dialog
+    //        return "";
+    //    }
 
     /**
      * Returns the sub organizational unit fqn parameter value.<p>

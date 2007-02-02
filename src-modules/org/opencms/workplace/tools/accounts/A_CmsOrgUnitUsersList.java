@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/02 12:04:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -85,8 +85,10 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
 
+    /** Stores the users not in the current ou.*/
     private List m_notOuUsers;
 
+    /** Stores the users of the the current ou.*/
     private List m_ouUsers;
 
     /**
@@ -153,7 +155,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
-            item.set(LIST_COLUMN_ORGUNIT, user.getSimpleName());
+            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }

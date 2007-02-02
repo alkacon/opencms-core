@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.9.4.4 $
+ * Date   : $Date: 2007/02/02 12:04:48 $
+ * Version: $Revision: 1.9.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.4 $ 
+ * @version $Revision: 1.9.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,7 +192,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     protected List getAllUsers() throws CmsException {
 
         List groupusers = getCms().getUsersOfGroup(getParamGroupname());
-        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), CmsOrganizationalUnit.SEPARATOR, true);
+        List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
         users.removeAll(groupusers);
         return users;
     }
@@ -277,10 +278,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
             public boolean isVisible() {
 
                 try {
-                    List users = OpenCms.getRoleManager().getManageableUsers(
-                        getCms(),
-                        CmsOrganizationalUnit.SEPARATOR,
-                        true);
+                    List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
 
                     Iterator itUsers = users.iterator();
                     while (itUsers.hasNext()) {
@@ -296,6 +294,14 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
                 }
                 return false;
             }
+            
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+            
+                return A_CmsListDialog.ICON_DETAILS_HIDE;
+            }
         });
         otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
 
@@ -304,21 +310,30 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
              */
             public boolean isVisible() {
 
-                List users = getList().getAllContent();
-                Iterator itUsers = users.iterator();
-                while (itUsers.hasNext()) {
-                    CmsListItem item = (CmsListItem)itUsers.next();
-                    String userName = item.get(LIST_COLUMN_LOGIN).toString();
-                    try {
-                        CmsUser user = getCms().readUser(userName);
+                try {
+                    List users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
+
+                    Iterator itUsers = users.iterator();
+                    while (itUsers.hasNext()) {
+                        CmsUser user = (CmsUser)itUsers.next();
+
                         if (!user.getOuFqn().equals(getParamOufqn())) {
                             return true;
                         }
-                    } catch (Exception e) {
-                        return false;
+
                     }
+                } catch (Exception e) {
+                    return false;
                 }
                 return false;
+            }
+            
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+            
+                return A_CmsListDialog.ICON_DETAILS_SHOW;
             }
         });
         otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0));
