@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.4.4.2 $
+ * Date   : $Date: 2007/02/02 13:58:10 $
+ * Version: $Revision: 1.4.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.2 $ 
+ * @version $Revision: 1.4.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,8 +116,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
                 m_pwdInfo.setConfirmation(m_pwdInfo.getConfirmation());
             }
-            // check creating of user
-            int todo = -1;
             // if new create it first
             if (m_user.getId() == null) {
                 CmsUser newUser = createUser(
