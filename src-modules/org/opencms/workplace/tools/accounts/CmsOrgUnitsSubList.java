@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2007/02/01 11:54:34 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/02 08:28:38 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,14 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -92,6 +95,23 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     public void actionDelete() throws Exception {
 
         OpenCms.getOrgUnitManager().deleteOrganizationalUnit(getCms(), getParamOufqn());
+        actionCloseDialog();
+    }
+
+    /**
+     * Deletes the given organizational unit.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void actionParent() throws Exception {
+
+        String ouFqn = CmsOrganizationalUnit.getParentFqn(getParamOufqn());
+
+        Map params = new HashMap();
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn);
+        params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
+        getToolManager().jspForwardTool(this, toolPath, params);
         actionCloseDialog();
     }
 
@@ -139,8 +159,6 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
      */
     public boolean hasSubOUs() throws CmsException {
 
-        // to get the ous try another method (not written yet) - this returns only children ous
-        int todo = -1;
         List orgUnits = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), m_paramOufqn, true);
         if (orgUnits == null) {
             return false;

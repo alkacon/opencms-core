@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/01 09:22:03 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/02 08:28:38 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -255,7 +255,10 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
+        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
+            getCms(),
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
+            true);
         Iterator itOrgUnits = orgUnits.iterator();
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
@@ -280,7 +283,33 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
         // add edit action
-        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
+        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                if (getItem() != null) {
+                    if (!OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR)) {
+                        return false;
+                    }
+                    return true;
+                }
+                return super.isVisible();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (!isEnabled()) {
+                    return Messages.get().container(Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_EDIT_HELP_0);
+                }
+                return super.getHelpText();
+            }
+        };
         editAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_EDIT_HELP_0));
         editAction.setIconPath(getEditIcon());
@@ -338,6 +367,9 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
                 if (getItem() != null) {
                     String ouFqn = getItem().get(LIST_COLUMN_NAME).toString();
                     try {
+                        if (!OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR)) {
+                            return false;
+                        }
                         if (OpenCms.getOrgUnitManager().getUsers(getCms(), ouFqn, true).size() > 0) {
                             return false;
                         }
