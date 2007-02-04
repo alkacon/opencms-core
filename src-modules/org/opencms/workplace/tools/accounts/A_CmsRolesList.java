@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRolesList.java,v $
- * Date   : $Date: 2007/02/02 10:41:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -58,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -152,7 +153,9 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
             StringBuffer html = new StringBuffer(512);
             try {
                 if (detailId.equals(LIST_DETAIL_PATH)) {
-                    html.append(CmsOrganizationalUnit.getParentFqn(roleName));
+                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                        getCms(),
+                        CmsOrganizationalUnit.getParentFqn(roleName)).getDisplayName(getLocale()));
                 } else if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
                     CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
                     html.append(role.getDescription(getCms().getRequestContext().getLocale()));
@@ -279,6 +282,16 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
     }
 
     /**
+     * Returns if the organizational unit details button should be displayed.<p>
+     * 
+     * @return if the organizational unit details button should be displayed
+     */
+    protected boolean includeOuDetails() {
+
+        return true;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -318,17 +331,19 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
         });
         metadata.addItemDetails(descriptionDetails);
 
-        // add role path
-        CmsListItemDetails pathDetails = new CmsListItemDetails(LIST_DETAIL_PATH);
-        pathDetails.setAtColumn(LIST_COLUMN_NAME);
-        pathDetails.setVisible(false);
-        pathDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_NAME_0));
-        pathDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_HELP_0));
-        pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
-        pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
-        pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
-        pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
-        metadata.addItemDetails(pathDetails);
+        if (includeOuDetails()) {
+            // add role path
+            CmsListItemDetails pathDetails = new CmsListItemDetails(LIST_DETAIL_PATH);
+            pathDetails.setAtColumn(LIST_COLUMN_NAME);
+            pathDetails.setVisible(false);
+            pathDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_NAME_0));
+            pathDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_HELP_0));
+            pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
+            pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
+            pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
+            pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+                Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
+            metadata.addItemDetails(pathDetails);
+        }
     }
 }

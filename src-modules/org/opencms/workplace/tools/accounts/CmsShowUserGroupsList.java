@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.12.4.2 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.12.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.4.2 $ 
+ * @version $Revision: 1.12.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,11 +117,11 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups(boolean)
      */
-    protected List getGroups() throws CmsException {
+    protected List getGroups(boolean withOtherOus) throws CmsException {
 
-        return getCms().getGroupsOfUser(getParamUsername(), false);
+        return getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
     }
 
     /**

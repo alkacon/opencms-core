@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.2.4.7 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.2.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,13 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Common methods shared among user and group principals, 
@@ -47,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.7 $ 
+ * @version $Revision: 1.2.4.8 $ 
  * 
  * @since 6.2.0 
  */
@@ -283,6 +285,24 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the display name of this principal including the organizational unit.<p>
+     * 
+     * @param cms the cms context
+     * @param locale the locale
+     * 
+     * @return the display name of this principal including the organizational unit
+     * 
+     * @throws CmsException if the organizational unit could not be read 
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            getSimpleName(),
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
     }
 
     /**

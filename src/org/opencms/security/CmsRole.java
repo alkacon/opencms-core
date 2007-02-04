@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.11.4.9 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.11.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,11 @@
 package org.opencms.security;
 
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.9 $ 
+ * @version $Revision: 1.11.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,6 +415,24 @@ public final class CmsRole {
         } else {
             return getName(locale);
         }
+    }
+
+    /**
+     * Returns the display name of this role including the organizational unit.<p>
+     * 
+     * @param cms the cms context
+     * @param locale the locale
+     * 
+     * @return the display name of this role including the organizational unit
+     * 
+     * @throws CmsException if the organizational unit could not be read 
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            getName(locale),
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
     }
 
     /**

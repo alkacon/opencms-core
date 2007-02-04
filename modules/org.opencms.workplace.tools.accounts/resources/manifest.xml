@@ -1740,6 +1740,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/role_ou_child.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_ou_child.png</destination>
+			<type>image</type>
+			<uuidstructure>cb1234bf-af8e-abcd-8eef-ad62cbb123d3</uuidstructure>
+			<uuidresource>cb1234c0-af8e-abcd-8eef-ad62cbb123d3</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Jan 2007 11:49:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/accounts/buttons/unit_add.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/unit_add.png</destination>
 			<type>image</type>

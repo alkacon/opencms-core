@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/02 10:41:04 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -143,15 +143,20 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
             CmsRole role = CmsRole.valueOf(getCms().readGroup((String)item.get(LIST_COLUMN_GROUP_NAME)));
             if (role.getParentRole() != null && roleObjects.contains(role.getParentRole())) {
-                return PATH_BUTTONS + "role_child.png";
+                if (role.getOuFqn().equals(getParamOufqn())) {
+                    return PATH_BUTTONS + "role_child.png";
+                } else {
+                    return PATH_BUTTONS + "role_ou_child.png";
+                }
+            }
+            if (role.getOuFqn().equals(getParamOufqn())) {
+                return PATH_BUTTONS + "role.png";
+            } else {
+                return PATH_BUTTONS + "role_ou.png";
             }
         } catch (CmsException e) {
             return PATH_BUTTONS + "role.png";
         }
-        int todo = -1;
-        //define the return value for roles inherited from another ou
-
-        return PATH_BUTTONS + "role.png";
     }
 
     /**
@@ -191,7 +196,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             getCms(),
             getCms().readUser(new CmsUUID(getParamUserid())).getName(),
             getParamOufqn(),
-            false,
+            true,
             false,
             true);
     }

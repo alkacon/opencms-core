@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.32.4.11 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.32.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,18 @@ package org.opencms.file;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.security.Messages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -68,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.11 $
+ * @version $Revision: 1.32.4.12 $
  * 
  * @since 6.0.0
  * 
@@ -219,28 +222,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
     
     /**
-     * Returns <code>true</code> if this user is able to manage itselfs.<p> 
-     * 
-     * @return <code>true</code> if this user is able to manage itselfs 
-     */
-    public boolean isSelfManagement() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT) == I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT;
-    }
-    
-    /**
-     * Sets the self management flag for this user to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setSelfManagement(boolean value) {
-
-        if (isSelfManagement() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT);
-        }
-    }
-
-    /**
      * Returns <code>true</code> if the provided user type indicates a web user.<p>
      * 
      * @param type the user type to check
@@ -251,7 +232,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         return (type & 2) > 0;
     }
-
+    
     /**
      * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
@@ -375,6 +356,17 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * @see org.opencms.security.CmsPrincipal#getDisplayName(org.opencms.file.CmsObject, java.util.Locale)
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+    
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            getFullName(),
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+    }
+
+    /**
      * Returns the email address of this user.<p>
      *
      * @return the email address of this user
@@ -427,7 +419,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         return m_lastlogin;
     }
-
+    
     /**
      * Returns the lastname of this user.<p>
      *
@@ -477,6 +469,16 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public boolean isGuestUser() {
 
         return OpenCms.getDefaultUsers().isUserGuest(getName());
+    }
+
+    /**
+     * Returns <code>true</code> if this user is able to manage itselfs.<p> 
+     * 
+     * @return <code>true</code> if this user is able to manage itselfs 
+     */
+    public boolean isSelfManagement() {
+
+        return (getFlags() & I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT) == I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT;
     }
 
     /**
@@ -629,6 +631,18 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             throw new CmsIllegalArgumentException(e.getMessageContainer());
         }
         m_password = value;
+    }
+
+    /**
+     * Sets the self management flag for this user to the given value.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setSelfManagement(boolean value) {
+
+        if (isSelfManagement() != value) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/02 13:58:10 $
- * Version: $Revision: 1.4.4.3 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.4.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -61,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.3 $ 
+ * @version $Revision: 1.4.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,10 +167,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getAssignedOu() {
 
         try {
-            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
-                + " ("
-                + getParamOufqn()
-                + ")";
+            CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn());
+            return ou.getDisplayName(getLocale());
         } catch (CmsException e) {
             return null;
         }
@@ -212,7 +211,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     public void setName(String name) {
 
-        m_user.setName(name);
+        m_user.setName(getParamOufqn() + name);
     }
 
     /**

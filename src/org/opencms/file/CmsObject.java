@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.146.4.23 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.146.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.23 $
+ * @version $Revision: 1.146.4.24 $
  * 
  * @since 6.0.0 
  */
@@ -1070,7 +1070,7 @@ public final class CmsObject {
      */
     public List getGroups() throws CmsException {
 
-        return OpenCms.getOrgUnitManager().getGroups(this, CmsOrganizationalUnit.SEPARATOR, true);
+        return OpenCms.getOrgUnitManager().getGroups(this, "", true);
     }
 
     /**
@@ -1086,7 +1086,7 @@ public final class CmsObject {
      */
     public List getGroupsOfUser(String username) throws CmsException {
 
-        return getGroupsOfUser(username, false, m_context.getRemoteAddress());
+        return getGroupsOfUser(username, false);
     }
 
     /**
@@ -1101,7 +1101,23 @@ public final class CmsObject {
      */
     public List getGroupsOfUser(String username, boolean directGroupsOnly) throws CmsException {
 
-        return getGroupsOfUser(username, directGroupsOnly, m_context.getRemoteAddress());
+        return getGroupsOfUser(username, directGroupsOnly, true, m_context.getRemoteAddress());
+    }
+
+    /**
+     * Returns all the groups the given user belongs to.<p>
+     *
+     * @param username the name of the user
+     * @param directGroupsOnly if set only the direct assigned groups will be returned, if not also indirect roles
+     * @param includeOtherOus if to include groups of other organizational units
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus) throws CmsException {
+
+        return getGroupsOfUser(username, directGroupsOnly, includeOtherOus, m_context.getRemoteAddress());
     }
 
     /**
@@ -1110,14 +1126,23 @@ public final class CmsObject {
      * @param username the name of the user
      * @param directGroupsOnly if set only the direct assigned groups will be returned, if not also indirect roles
      * @param remoteAddress the IP address to filter the groups in the result list
+     * @param includeOtherOus if to include groups of other organizational units
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getGroupsOfUser(String username, boolean directGroupsOnly, String remoteAddress) throws CmsException {
+    public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus, String remoteAddress)
+    throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, CmsOrganizationalUnit.SEPARATOR, true, false, directGroupsOnly, remoteAddress);
+        return m_securityManager.getGroupsOfUser(
+            m_context,
+            username,
+            CmsOrganizationalUnit.getParentFqn(username),
+            includeOtherOus,
+            false,
+            directGroupsOnly,
+            remoteAddress);
     }
 
     /**
@@ -1526,7 +1551,7 @@ public final class CmsObject {
      */
     public List getUsers() throws CmsException {
 
-        return OpenCms.getOrgUnitManager().getUsers(this, CmsOrganizationalUnit.SEPARATOR, true);
+        return OpenCms.getOrgUnitManager().getUsers(this, "", true);
     }
 
     /**
@@ -1542,7 +1567,24 @@ public final class CmsObject {
      */
     public List getUsersOfGroup(String groupname) throws CmsException {
 
-        return (m_securityManager.getUsersOfGroup(m_context, groupname, true, false, false));
+        return getUsersOfGroup(groupname, true);
+    }
+
+    /**
+     * Returns all direct users of a given group.<p>
+     *
+     * Users that are "indirectly" in the group are not returned in the result.<p>
+     *
+     * @param groupname the name of the group to get all users for
+     * @param includeOtherOus if the result should include users of other ous
+     * 
+     * @return all <code>{@link CmsUser}</code> objects in the group
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getUsersOfGroup(String groupname, boolean includeOtherOus) throws CmsException {
+
+        return m_securityManager.getUsersOfGroup(m_context, groupname, includeOtherOus, false, false);
     }
 
     /**
@@ -1928,7 +1970,10 @@ public final class CmsObject {
      */
     public CmsUUID publishProject(I_CmsReport report) throws CmsException {
 
-        return OpenCms.getPublishManager().publishProject(this, report, OpenCms.getPublishManager().getPublishList(this));
+        return OpenCms.getPublishManager().publishProject(
+            this,
+            report,
+            OpenCms.getPublishManager().getPublishList(this));
     }
 
     /**
@@ -1974,10 +2019,10 @@ public final class CmsObject {
     public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
 
-        return OpenCms.getPublishManager().publishProject(this, report, OpenCms.getPublishManager().getPublishList(
+        return OpenCms.getPublishManager().publishProject(
             this,
-            directPublishResource,
-            directPublishSiblings));
+            report,
+            OpenCms.getPublishManager().getPublishList(this, directPublishResource, directPublishSiblings));
     }
 
     /**
@@ -1997,7 +2042,11 @@ public final class CmsObject {
      */
     public CmsUUID publishResource(String resourcename) throws Exception {
 
-        return OpenCms.getPublishManager().publishResource(this, resourcename, false, new CmsShellReport(m_context.getLocale()));
+        return OpenCms.getPublishManager().publishResource(
+            this,
+            resourcename,
+            false,
+            new CmsShellReport(m_context.getLocale()));
     }
 
     /**
@@ -2853,7 +2902,7 @@ public final class CmsObject {
      */
     public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
-        return readResourcesWithProperty(CmsOrganizationalUnit.SEPARATOR, propertyDefinition);
+        return readResourcesWithProperty("/", propertyDefinition);
     }
 
     /**

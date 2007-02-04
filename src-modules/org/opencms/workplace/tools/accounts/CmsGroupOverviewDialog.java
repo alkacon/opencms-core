@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,15 +184,13 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(0, n));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (!isOverview()) {
+            if (isOverview()) {
+                result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(4, 5));
                 result.append(createWidgetTableEnd());
-                return result.toString();
+                result.append(dialogBlockEnd());
             }
-            result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(4, 5));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
         }
 
         // close widget table

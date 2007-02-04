@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.20.4.7 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.20.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.7 $ 
+ * @version $Revision: 1.20.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,6 +143,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ZIPCODE_VALIDATION_1 = "ERR_ZIPCODE_VALIDATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_DISPLAY_NAME_2 = "GUI_ORGUNIT_DISPLAY_NAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PRINCIPAL_DISPLAY_NAME_2 = "GUI_PRINCIPAL_DISPLAY_NAME_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_ACCOUNT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_ACCOUNT_MANAGER_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/01/31 15:57:03 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,10 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 
@@ -57,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +85,16 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "co";
+
+    /** list column id constant. */
     public static final String LIST_COLUMN_STATE = "cs";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_OTHEROU = "doo";
+
+    /** Cached value. */
+    private Boolean m_hasUsersInOtherOus;
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramGroupid;
@@ -92,29 +104,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
-
-    /**
-     * Returns the organizational unit fqn parameter value.<p>
-     * 
-     * @return the organizational unit fqn parameter value
-     */
-    public String getParamOufqn() {
-
-        return m_paramOufqn;
-    }
-
-    /**
-     * Sets the organizational unit fqn parameter value.<p>
-     * 
-     * @param ouFqn the organizational unit fqn parameter value
-     */
-    public void setParamOufqn(String ouFqn) {
-
-        if (ouFqn == null) {
-            ouFqn = "";
-        }
-        m_paramOufqn = ouFqn;
-    }
 
     /**
      * Public constructor.<p>
@@ -164,6 +153,42 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
+     * Returns if the list of users has users of other organizational units.<p>
+     * 
+     * @return if the list of users has users of other organizational units
+     */
+    public boolean hasUsersInOtherOus() {
+
+        if (m_hasUsersInOtherOus == null) {
+            // lazzy initialization
+            m_hasUsersInOtherOus = Boolean.FALSE;
+            try {
+                Iterator itUsers = getUsers(true).iterator();
+                while (itUsers.hasNext()) {
+                    CmsUser user = (CmsUser)itUsers.next();
+                    if (!user.getOuFqn().equals(getParamOufqn())) {
+                        m_hasUsersInOtherOus = Boolean.TRUE;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return m_hasUsersInOtherOus.booleanValue();
+    }
+
+    /**
      * Sets the user id parameter value.<p>
      * 
      * @param userId the user id parameter value
@@ -171,6 +196,19 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public void setParamGroupid(String userId) {
 
         m_paramGroupid = userId;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -200,14 +238,17 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
         List ret = new ArrayList();
 
+        boolean withOtherOus = hasUsersInOtherOus()
+            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+
         // get content        
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
+        Iterator itUsers = getUsers(withOtherOus).iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
+            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }
@@ -218,11 +259,26 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     /**
      * Returns a list of users to display.<p>
      * 
+     * @param withOtherOus if not set only users of the current ou should be returned
+     * 
      * @return a list of <code><{@link CmsUser}</code>s
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getUsers() throws CmsException;
+    protected abstract List getUsers(boolean withOtherOus) throws CmsException;
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
+     */
+    protected void initializeDetail(String detailId) {
+
+        super.initializeDetail(detailId);
+        if (detailId.equals(LIST_DETAIL_OTHEROU)) {
+            boolean visible = hasUsersInOtherOus()
+                && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
+        }
+    }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
@@ -268,6 +324,13 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(nameCol);
 
+        // create column for orgunit
+        CmsListColumnDefinition orgunitCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        orgunitCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ORGUNIT_0));
+        orgunitCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(orgunitCol);
+
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_FULLNAME_0));
@@ -285,13 +348,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
 
     /**
-     * Sets the optional state change action column.<p>
-     * 
-     * @param metadata the list metadata object
-     */
-    protected abstract void setStateActionCol(CmsListMetadata metadata);
-
-    /**
      * Sets the needed icon action(s).<p>
      * 
      * @param iconCol the list column for edition.
@@ -303,8 +359,61 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // noop
+        // add other ou button
+        CmsListItemDetails otherOuDetails = new CmsListItemDetails(LIST_DETAIL_OTHEROU);
+        otherOuDetails.setVisible(false);
+        otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_HIDE;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((A_CmsGroupUsersList)getWp()).hasUsersInOtherOus();
+            }
+        });
+        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_SHOW;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((A_CmsGroupUsersList)getWp()).hasUsersInOtherOus();
+            }
+        });
+        otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0));
+        otherOuDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0));
+        otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0));
+        otherOuDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0));
+        otherOuDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0));
+        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
+        metadata.addItemDetails(otherOuDetails);
     }
+
+    /**
+     * Sets the optional state change action column.<p>
+     * 
+     * @param metadata the list metadata object
+     */
+    protected abstract void setStateActionCol(CmsListMetadata metadata);
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()

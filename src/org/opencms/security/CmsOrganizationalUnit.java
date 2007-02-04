@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Locale;
+
 /**
  * An organizational unit in OpenCms.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.6 
  */
@@ -61,7 +63,7 @@ public class CmsOrganizationalUnit {
 
     /** The fully qualified name of this organizational unit. */
     private String m_name;
-    
+
     /**
      * Creates a new OpenCms organizational unit principal.
      * 
@@ -166,6 +168,22 @@ public class CmsOrganizationalUnit {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the display name for this organizational unit.<p>
+     * 
+     * @param locale the locale
+     * 
+     * @return the display name for this organizational unit
+     */
+    public String getDisplayName(Locale locale) {
+
+        if (getParentFqn() == null) {
+            // for the root ou
+            return getDescription();
+        }
+        return Messages.get().getBundle(locale).key(Messages.GUI_ORGUNIT_DISPLAY_NAME_2, getDescription(), getName());
     }
 
     /**

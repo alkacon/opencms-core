@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/02/02 13:54:16 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/04 21:03:14 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -207,7 +207,7 @@ public class CmsRolesList extends A_CmsRolesList {
             try {
                 if (detailId.equals(LIST_DETAIL_USERS)) {
                     CmsRole role = CmsRole.valueOf(getCms().readGroup(roleName));
-                    List users = OpenCms.getRoleManager().getUsersOfRole(getCms(), role, true, false);
+                    List users = OpenCms.getRoleManager().getUsersOfRole(getCms(), role, true, true);
                     Iterator itUsers = users.iterator();
                     while (itUsers.hasNext()) {
                         CmsUser user = (CmsUser)itUsers.next();
@@ -258,6 +258,14 @@ public class CmsRolesList extends A_CmsRolesList {
         // add it to the list definition
         metadata.addColumn(editCol, 1);
     }
+    
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
+     */
+    protected boolean includeOuDetails() {
+    
+        return false;
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
@@ -265,7 +273,7 @@ public class CmsRolesList extends A_CmsRolesList {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
-
+        
         // add users details
         CmsListItemDetails usersDetails = new CmsListItemDetails(LIST_DETAIL_USERS);
         usersDetails.setAtColumn(LIST_COLUMN_NAME);
