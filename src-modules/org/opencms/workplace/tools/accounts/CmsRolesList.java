@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/05 09:14:28 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -211,7 +211,11 @@ public class CmsRolesList extends A_CmsRolesList {
                     Iterator itUsers = users.iterator();
                     while (itUsers.hasNext()) {
                         CmsUser user = (CmsUser)itUsers.next();
-                        html.append(user.getName());
+                        if (user.getOuFqn().equals(getParamOufqn())) {
+                            html.append(user.getSimpleName());
+                        } else {
+                            html.append(user.getDisplayName(getCms(), getLocale()));
+                        }
                         if (itUsers.hasNext()) {
                             html.append("<br>");
                         }

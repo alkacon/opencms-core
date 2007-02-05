@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.12.4.3 $
+ * Date   : $Date: 2007/02/05 09:14:28 $
+ * Version: $Revision: 1.12.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.4.3 $ 
+ * @version $Revision: 1.12.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,10 +117,8 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     public String getAssignedOu() {
 
         try {
-            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_user.getOuFqn()).getDescription()
-                + " ("
-                + m_user.getOuFqn()
-                + ")";
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_user.getOuFqn()).getDisplayName(
+                getLocale());
         } catch (CmsException e) {
             return null;
         }

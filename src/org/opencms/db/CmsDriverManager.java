@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/02 13:50:00 $
- * Version: $Revision: 1.570.2.55 $
+ * Date   : $Date: 2007/02/05 09:14:27 $
+ * Version: $Revision: 1.570.2.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3394,7 +3394,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     for (int i = 0; i < directGroups.size(); i++) {
                         CmsGroup parent = getParent(dbc, ((CmsGroup)directGroups.get(i)).getName());
                         while ((parent != null) && (!allGroups.contains(parent))) {
-                            allGroups.add(parent);
+                            if (parent.getOuFqn().startsWith(ouFqn)) {
+                                allGroups.add(parent);
+                            }
                             // read next parent group
                             parent = getParent(dbc, parent.getName());
                         }

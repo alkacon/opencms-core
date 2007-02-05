@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/05 09:14:28 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -57,7 +56,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -77,6 +76,9 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "co";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_STATE = "cs";
@@ -188,26 +190,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      */
     protected void fillDetails(String detailId) {
 
-        // get content
-        List users = getList().getAllContent();
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsListItem item = (CmsListItem)itUsers.next();
-            String userName = item.get(LIST_COLUMN_LOGIN).toString();
-            StringBuffer html = new StringBuffer(512);
-            try {
-                if (detailId.equals(LIST_DETAIL_ORGUNIT)) {
-                    CmsUser user = getCms().readUser(userName);
-                    // address
-                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn()));
-                } else {
-                    continue;
-                }
-            } catch (Exception e) {
-                // noop
-            }
-            item.set(detailId, html.toString());
-        }
+        // noop
     }
 
     /**
@@ -228,6 +211,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
+            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }
@@ -245,6 +229,19 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
      * @throws CmsException if something goes wrong
      */
     protected abstract List getUsers(boolean withOtherOus) throws CmsException;
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
+     */
+    protected void initializeDetail(String detailId) {
+
+        super.initializeDetail(detailId);
+        if (detailId.equals(LIST_DETAIL_ORGUNIT)) {
+            boolean visible = hasUsersInOtherOus()
+                && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_ORGUNIT).isVisible();
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
+        }
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
@@ -281,6 +278,13 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(nameCol);
 
+        // create column for orgunit
+        CmsListColumnDefinition orgunitCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        orgunitCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ORGUNIT_0));
+        orgunitCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(orgunitCol);
+
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_FULLNAME_0));
@@ -297,6 +301,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
         // add other ou button
         CmsListItemDetails otherOuDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT);
+        otherOuDetails.setAtColumn(LIST_COLUMN_NAME);
         otherOuDetails.setVisible(false);
         otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_ORGUNIT) {
 
