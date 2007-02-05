@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/05 09:14:27 $
- * Version: $Revision: 1.570.2.56 $
+ * Date   : $Date: 2007/02/05 16:51:41 $
+ * Version: $Revision: 1.570.2.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -8176,11 +8176,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     groups.add(group);
                 }
             }
-        }
-        // iterate all parent ous
-        String parentOu = CmsOrganizationalUnit.getParentFqn(role.getOuFqn());
-        if (parentOu != null) {
-            groups.addAll(getVirtualGroupsForRole(dbc, role.forOrgUnit(parentOu)));
         }
         return groups;
     }
