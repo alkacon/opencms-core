@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/02 17:01:05 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/05 10:03:42 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -120,7 +120,31 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
      */
     public void actionDialog() throws JspException, ServletException, IOException {
 
+        if (getAction() == ACTION_CANCEL) {
+            // ACTION: cancel button pressed
+            actionCloseDialog();
+            return;
+        }
+
+        if (getAction() == ACTION_DEFAULT) {
+
+            List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+            Iterator itOuUsers = ouUsers.iterator();
+            while (itOuUsers.hasNext()) {
+                CmsUser user = (CmsUser)itOuUsers.next();
+
+                try {
+                    OpenCms.getOrgUnitManager().setUsersOrganizationalUnit(getCms(), getParamOufqn(), user.getName());
+                } catch (CmsException e) {
+                    throw new JspException(e);
+                }
+            }
+            actionCloseDialog();
+            return;
+        }
         super.actionDialog();
+        refreshList();
     }
 
     /**

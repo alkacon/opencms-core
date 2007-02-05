@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/02 17:01:05 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/05 10:03:42 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -125,18 +126,30 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                     CmsListItem listItem = (CmsListItem)itItems.next();
 
                     CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
-                    List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
-                        A_CmsOrgUnitUsersList.ORGUNIT_USERS);
-                    if (ouUsers == null) {
-                        ouUsers = new ArrayList();
-                    }
-                    ouUsers.add(user);
-                    setOuUsers(ouUsers);
+                    List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
 
-                    List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
-                        A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
-                    notOuUsers.remove(user);
-                    setNotOuUsers(notOuUsers);
+                    boolean inOrgUnit = false;
+                    Iterator itCurrentUsers = currentUsers.iterator();
+                    while (itCurrentUsers.hasNext()) {
+                        CmsUser currentUser = (CmsUser)itCurrentUsers.next();
+                        if (currentUser.getSimpleName().equals(user.getSimpleName())) {
+                            inOrgUnit = true;
+                        }
+                    }
+                    if (!inOrgUnit) {
+                        List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                            A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+                        if (ouUsers == null) {
+                            ouUsers = new ArrayList();
+                        }
+                        ouUsers.add(user);
+                        setOuUsers(ouUsers);
+
+                        List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                            A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
+                        notOuUsers.remove(user);
+                        setNotOuUsers(notOuUsers);
+                    }
                 }
             } catch (CmsException e) {
                 // noop
@@ -156,25 +169,18 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
             CmsListItem listItem = getSelectedItem();
             try {
                 CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
-                List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
-
-                if (currentUsers.contains(user)) {
-                    // set message that user is already in ou ...
-                    int todo = -1;
-                } else {
-                    List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
-                        A_CmsOrgUnitUsersList.ORGUNIT_USERS);
-                    if (ouUsers == null) {
-                        ouUsers = new ArrayList();
-                    }
-                    ouUsers.add(user);
-                    setOuUsers(ouUsers);
-
-                    List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
-                        A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
-                    notOuUsers.remove(user);
-                    setNotOuUsers(notOuUsers);
+                List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                    A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+                if (ouUsers == null) {
+                    ouUsers = new ArrayList();
                 }
+                ouUsers.add(user);
+                setOuUsers(ouUsers);
+
+                List notOuUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(
+                    A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
+                notOuUsers.remove(user);
+                setNotOuUsers(notOuUsers);
             } catch (CmsException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ADD_SELECTED_ORGUNITUSER_0), e);
@@ -212,7 +218,43 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     protected void setDefaultAction(CmsListColumnDefinition loginCol) {
 
         // add add action
-        CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_DEFACTION_ADD);
+        CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_DEFACTION_ADD) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (!isEnabled()) {
+                    return Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0);
+                }
+                return super.getHelpText();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                if (getItem() != null) {
+                    try {
+                        String userName = getItem().get(LIST_COLUMN_NAME).toString();
+                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+                        Iterator itCurrentUsers = currentUsers.iterator();
+                        while (itCurrentUsers.hasNext()) {
+                            CmsUser user = (CmsUser)itCurrentUsers.next();
+                            if (user.getSimpleName().equals(userName)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    } catch (CmsException e) {
+                        return super.isVisible();
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         addAction.setName(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DEFACTION_ADD_NAME_0));
         addAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DEFACTION_ADD_HELP_0));
         loginCol.addDefaultAction(addAction);
@@ -259,7 +301,43 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
         // add add action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (!isEnabled()) {
+                    return Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0);
+                }
+                return super.getHelpText();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                if (getItem() != null) {
+                    try {
+                        String userName = getItem().get(LIST_COLUMN_NAME).toString();
+                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+                        Iterator itCurrentUsers = currentUsers.iterator();
+                        while (itCurrentUsers.hasNext()) {
+                            CmsUser user = (CmsUser)itCurrentUsers.next();
+                            if (user.getSimpleName().equals(userName)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    } catch (CmsException e) {
+                        return super.isVisible();
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         stateAction.setName(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DEFACTION_ADD_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_DEFACTION_ADD_HELP_0));
         stateAction.setIconPath(ICON_ADD);
