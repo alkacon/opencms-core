@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2006/09/18 13:01:37 $
- * Version: $Revision: 1.13.4.2 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.13.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.2 $ 
+ * @version $Revision: 1.13.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,7 +352,10 @@ public class CmsCalendarWidget extends A_CmsWidget {
                     widgetDialog.getMessages(),
                     Long.parseLong(result));
             } catch (NumberFormatException e) {
-                result = "";
+                if (!CmsMacroResolver.isMacro(result, CmsMacroResolver.KEY_CURRENT_TIME)) {
+                    // neither long nor macro, show empty value
+                    result = "";
+                }
             }
         } else {
             result = "";
@@ -378,26 +382,32 @@ public class CmsCalendarWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            long dateTime;
-            try {
-                dateTime = Long.valueOf(param.getStringValue(cms)).longValue();
-            } catch (NumberFormatException e) {
-                dateTime = 0;
-            }
             String dateTimeValue = values[0].trim();
-            if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
-                try {
-                    dateTime = getCalendarDate(widgetDialog.getMessages(), dateTimeValue, true);
-                } catch (ParseException e) {
-                    // TODO: Better exception handling
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
-                    }
-                }
+            if (CmsMacroResolver.isMacro(dateTimeValue, CmsMacroResolver.KEY_CURRENT_TIME)) {
+                // a macro is used, redisplay it
+                param.setStringValue(cms, dateTimeValue);
             } else {
-                dateTime = 0;
+                // a date value should be used
+                long dateTime;
+                try {
+                    dateTime = Long.valueOf(param.getStringValue(cms)).longValue();
+                } catch (NumberFormatException e) {
+                    dateTime = 0;
+                }
+                if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
+                    try {
+                        dateTime = getCalendarDate(widgetDialog.getMessages(), dateTimeValue, true);
+                    } catch (ParseException e) {
+                        // TODO: Better exception handling
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
+                        }
+                    }
+                } else {
+                    dateTime = 0;
+                }
+                param.setStringValue(cms, String.valueOf(dateTime));
             }
-            param.setStringValue(cms, String.valueOf(dateTime));
         }
     }
 }

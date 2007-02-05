@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.40.4.12 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.40.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
@@ -61,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.12 $
+ * @version $Revision: 1.40.4.13 $
  * 
  * @since 6.0.0
  */
@@ -183,6 +184,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the editor handler node. */
     public static final String N_EDITORHANDLER = "editorhandler";
+
+    /** The name of the editorprecondition node. */
+    public static final String N_EDITORPRECONDITION = "editorprecondition";
+
+    /** The name of the editorpreconditions node. */
+    public static final String N_EDITORPRECONDITIONS = "editorpreconditions";
 
     /** The node name of the editors preferences node. */
     public static final String N_EDITORPREFERENCES = "editors-preferences";
@@ -752,6 +759,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add rules for editor action handler
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
+        
+        // add rules for pre editor action classes
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION, "addPreEditorConditionDefinition", 2);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION, 0, A_NAME);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION, 1, A_CLASS);
 
         // add rules for direct edit provider
         digester.addObjectCreate(
@@ -1337,6 +1349,19 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_EDITORACTION).addAttribute(
             A_CLASS,
             m_workplaceManager.getEditorActionHandler().getClass().getName());
+
+        if (m_workplaceManager.getPreEditorConditionDefinitions().size() > 0) {
+            Element editorPreActions = workplaceElement.addElement(N_EDITORPRECONDITIONS);
+            Iterator it = m_workplaceManager.getPreEditorConditionDefinitions().iterator();
+            while (it.hasNext()) {
+                I_CmsPreEditorActionDefinition current = (I_CmsPreEditorActionDefinition)it.next();
+                Element action = editorPreActions.addElement(N_EDITORPRECONDITION);
+                action.addAttribute(A_NAME, current.getResourceTypeName());
+                action.addAttribute(
+                    A_CLASS,
+                    current.getClass().getName());
+            }
+        }
 
         I_CmsConfigurationParameterHandler deProvider = m_workplaceManager.getDirectEditProvider();
         Element deProviderNode = workplaceElement.addElement(N_DIRECTEDITPROVIDER).addAttribute(

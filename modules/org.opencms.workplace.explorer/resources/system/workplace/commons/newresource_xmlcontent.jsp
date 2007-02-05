@@ -28,17 +28,22 @@ case CmsNewResource.ACTION_SUBMITFORM:
 break;
 
 
+case CmsNewResourceXmlContent.ACTION_CHOOSEMODEL:
+//////////////////// ACTION: choose the model file for the new resource
+break;
+
 case CmsNewResource.ACTION_NEWFORM:
 case CmsNewResource.ACTION_DEFAULT:
 //////////////////// ACTION: show the form to specify the resource name and the edit properties checkbox
 	
-	wp.setParamAction(wp.DIALOG_SUBMITFORM);
+	wp.setParamAction(wp.DIALOG_CHECKMODEL);
 
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
 <!--
 	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
 	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
+	var hasModelFiles = <%= Boolean.valueOf(wp.hasModelFiles()) %>;
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -57,7 +62,7 @@ case CmsNewResource.ACTION_DEFAULT:
 	function toggleButtonLabel() {
 		var theCheckBox = document.getElementById("newresedit");
 		var theButton = document.getElementById("nextButton");
-		if (theCheckBox.checked == true) {
+		if (hasModelFiles || theCheckBox.checked == true) {
 			theButton.value = labelNext;
 		} else {
 			theButton.value = labelFinish;

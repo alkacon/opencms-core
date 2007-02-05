@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Messages.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_LOCALE_1 = "ERR_XMLCONTENT_MISSING_LOCALE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2 = "ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_PREVIEW_URI_2 = "ERR_XMLCONTENT_MISSING_PREVIEW_URI_2";

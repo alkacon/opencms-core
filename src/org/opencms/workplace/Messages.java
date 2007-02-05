@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/12/20 14:02:24 $
- * Version: $Revision: 1.23.4.11 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.23.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.11 $ 
+ * @version $Revision: 1.23.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -317,6 +317,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EDITOR_HANDLER_CLASS_1 = "INIT_EDITOR_HANDLER_CLASS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_EDITOR_PRE_ACTION_2 = "INIT_EDITOR_PRE_ACTION_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_LABEL_LINKS_IN_FOLDER_1 = "INIT_LABEL_LINKS_IN_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -375,6 +378,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_ERRORPAGE_FAILED_0 = "LOG_INCLUDE_ERRORPAGE_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INVALID_EDITOR_PRE_ACTION_1 = "LOG_INVALID_EDITOR_PRE_ACTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_NO_STARTUP_PROJECT_2 = "LOG_LOGIN_NO_STARTUP_PROJECT_2";

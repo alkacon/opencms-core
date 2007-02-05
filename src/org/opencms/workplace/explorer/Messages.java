@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/12/28 10:02:54 $
- * Version: $Revision: 1.14.2.8 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.14.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.8 $ 
+ * @version $Revision: 1.14.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,6 +270,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SITE_0 = "GUI_LABEL_SITE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_LABEL_DESCRIPTION_0 = "GUI_MODELFILES_LABEL_DESCRIPTION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0 = "GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0 ="GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFILE_EDITPROPERTIES_0 = "GUI_NEWFILE_EDITPROPERTIES_0";
@@ -342,6 +357,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_XMLCONTENT_0 = "GUI_NEWRESOURCE_XMLCONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_XMLCONTENT_CHOOSEMODEL_0 = "GUI_NEWRESOURCE_XMLCONTENT_CHOOSEMODEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_XMLCONTENT_NO_MODEL_0 = "GUI_NEWRESOURCE_XMLCONTENT_NO_MODEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_XMLPAGE_0 = "GUI_NEWRESOURCE_XMLPAGE_0";

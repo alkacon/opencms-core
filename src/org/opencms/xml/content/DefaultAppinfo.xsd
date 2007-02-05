@@ -15,6 +15,7 @@
 			<xsd:element name="layouts" type="OpenCmsDefaultAppinfoLayouts" minOccurs="0" />
 			<xsd:element name="validationrules" type="OpenCmsDefaultAppinfoValidationrules" minOccurs="0" />
 			<xsd:element name="relations" type="OpenCmsDefaultAppinfoRelations" minOccurs="0" />
+			<xsd:element name="modelfolder" type="OpenCmsDefaultAppinfoModelfolder" minOccurs="0" />
 
 			<!-- 
 				<xsd:element name="permissions" type="OpenCmsDefaultAppinfoPermissions" minOccurs="0" />
@@ -29,6 +30,10 @@
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoResourcebundle">
 		<xsd:attribute name="name" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsDefaultAppinfoModelfolder">
+		<xsd:attribute name="uri" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoPreview">

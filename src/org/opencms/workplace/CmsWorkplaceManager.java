@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.76.4.8 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.76.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
+import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
@@ -96,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.8 $ 
+ * @version $Revision: 1.76.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,6 +193,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured multi context menu. */
     private CmsExplorerContextMenu m_multiContextMenu;
 
+    /** The condition definitions for the resource types  which are triggered before opening the editor. */
+    private List m_preEditorConditionDefinitions;
+
     /** Indicates if the user managemet icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
@@ -237,6 +241,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_messages = new HashMap();
         m_multiContextMenu = new CmsExplorerContextMenu();
         m_multiContextMenu.setMultiMenu(true);
+        m_preEditorConditionDefinitions = new ArrayList();
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -357,6 +362,32 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_localizedFolders.add(uri);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
+        }
+    }
+
+    /**
+     * Adds a condition definition class for a given resource type glass name that is triggered before opening the editor.<p>
+     * 
+     * @param resourceTypeName the name of the resource type
+     * @param preEditorConditionDefinitionClassName full class name of the condition definition class
+     */
+    public void addPreEditorConditionDefinition(String resourceTypeName, String preEditorConditionDefinitionClassName) {
+
+        try {
+            I_CmsPreEditorActionDefinition preEditorCondition = (I_CmsPreEditorActionDefinition)Class.forName(
+                preEditorConditionDefinitionClassName).newInstance();
+            preEditorCondition.setResourceTypeName(resourceTypeName);
+            m_preEditorConditionDefinitions.add(preEditorCondition);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EDITOR_PRE_ACTION_2,
+                    preEditorConditionDefinitionClassName,
+                    resourceTypeName));
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INVALID_EDITOR_PRE_ACTION_1,
+                preEditorConditionDefinitionClassName), e);
         }
     }
 
@@ -701,6 +732,58 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public CmsExplorerContextMenu getMultiContextMenu() {
 
         return m_multiContextMenu;
+    }
+
+    /**
+     * Returns the condition definition for the given resource type that is triggered before opening the editor.<p>
+     * 
+     * @param resourceType the resource type 
+     * @return the condition definition for the given resource type class name or null if none is found
+     */
+    public I_CmsPreEditorActionDefinition getPreEditorConditionDefinition(I_CmsResourceType resourceType) {
+
+        Iterator i = m_preEditorConditionDefinitions.iterator();
+        I_CmsPreEditorActionDefinition result = null;
+        int matchResult = -1;
+        while (i.hasNext()) {
+            I_CmsPreEditorActionDefinition currentDefinition = (I_CmsPreEditorActionDefinition)i.next();
+            if (resourceType.getClass().isInstance(currentDefinition.getResourceType())) {
+                // now determine the match count...
+                int matchDistance = 0;
+                Class superClass = resourceType.getClass();
+                while (true) {
+                    // check if a super class is present
+                    if (superClass == null) {
+                        break;
+                    }
+                    if (superClass.getName().equals(currentDefinition.getResourceType().getClass().getName())) {
+                        break;
+                    }
+                    matchDistance += 1;
+                    superClass = superClass.getSuperclass();
+                }
+                if (matchResult != -1) {
+                    if (matchDistance < matchResult) {
+                        matchResult = matchDistance;
+                        result = currentDefinition;
+                    }
+                } else {
+                    matchResult = matchDistance;
+                    result = currentDefinition;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the condition definitions for the different resource types which are triggered before opening the editor.<p>
+     * 
+     * @return the condition definitions
+     */
+    public List getPreEditorConditionDefinitions() {
+
+        return m_preEditorConditionDefinitions;
     }
 
     /**

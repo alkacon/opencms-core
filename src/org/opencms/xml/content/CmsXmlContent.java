@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.36.4.4 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.36.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -77,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.4 $ 
+ * @version $Revision: 1.36.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,11 +125,48 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // for the next line to work the document must already be available
         m_contentDefinition = getContentDefinition(resolver);
         // initialize the XML content structure
-        initDocument(m_document, encoding, m_contentDefinition);
-        // check invalid links
-        if (cms != null) {
-            // this will remove all invalid links
-            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+        initDocument(cms, m_document, encoding, m_contentDefinition);
+    }
+
+    /**
+     * Create a new XML content based on the given default content,
+     * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param cms the current users OpenCms content
+     * @param locale the locale to generate the default content for
+     * @param modelUri the absolute path to the XML content file acting as model
+     * 
+     * @throws CmsException in case the model file is not found or not valid
+     */
+    protected CmsXmlContent(CmsObject cms, Locale locale, String modelUri)
+    throws CmsException {
+
+        // init model from given modelUri
+        CmsFile modelFile = cms.readFile(modelUri);
+        CmsXmlContent model = CmsXmlContentFactory.unmarshal(cms, modelFile);
+
+        // initialize macro resolver to use on model file values
+        CmsMacroResolver macroResolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+
+        // content defition must be set here since it's used during document creation
+        m_contentDefinition = model.getContentDefinition();
+        // get the document from the default content
+        Document document = (Document)model.m_document.clone();
+        // initialize the XML content structure
+        initDocument(cms, document, model.getEncoding(), m_contentDefinition);
+        // resolve eventual macros in the nodes
+        if ((cms != null) && (macroResolver != null)) {
+            visitAllValuesWith(new CmsXmlContentMacroVisitor(cms, macroResolver));
+        }
+        if (!hasLocale(locale)) {
+            // required locale not present, add it
+            try {
+                addLocale(cms, locale);
+            } catch (CmsXmlException e) {
+                // this can not happen since the locale does not exist
+            }
         }
     }
 
@@ -147,14 +186,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // content defition must be set here since it's used during document creation
         m_contentDefinition = contentDefinition;
         // create the XML document according to the content definition
-        Document document = contentDefinition.createDocument(cms, this, locale);
+        Document document = m_contentDefinition.createDocument(cms, this, locale);
         // initialize the XML content structure
-        initDocument(document, encoding, m_contentDefinition);
-        // check invalid links (they could come from default values)
-        if (cms != null) {
-            // this will remove all invalid links
-            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
-        }
+        initDocument(cms, document, encoding, m_contentDefinition);
     }
 
     /**
@@ -170,7 +204,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // add element node for Locale
         m_contentDefinition.createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(cms, m_document, m_encoding, m_contentDefinition);
     }
 
     /**
@@ -380,7 +414,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
-
     }
 
     /**
@@ -480,6 +513,26 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // language element was not found
         throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
+    }
+
+    /**
+     * Initializes an XML document based on the provided document, encoding and content definition.<p>
+     * 
+     * Checks the links and removes invalid ones in the initialized document.<p>
+     * 
+     * @param cms the current users OpenCms content
+     * @param document the base XML document to use for initializing
+     * @param encoding the encoding to use when marshalling the document later
+     * @param definition the content definition to use
+     */
+    protected void initDocument(CmsObject cms, Document document, String encoding, CmsXmlContentDefinition definition) {
+
+        initDocument(document, encoding, definition);
+        // check invalid links
+        if (cms != null) {
+            // this will remove all invalid links
+            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2006/04/20 09:20:28 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,6 +104,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_RES_HELP_0 = "GUI_EXPLORER_LIST_ACTION_RES_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_SELECT_0 = "GUI_EXPLORER_LIST_COLS_SELECT_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_SELECT_HELP_0 = "GUI_EXPLORER_LIST_COLS_SELECT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0 = "GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0";

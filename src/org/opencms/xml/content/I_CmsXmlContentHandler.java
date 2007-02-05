@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,6 +126,16 @@ public interface I_CmsXmlContentHandler {
     CmsMessages getMessages(Locale locale);
 
     /**
+     * Returns the folder that contains eventual XML content model files to use for this resource type.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param currentFolder the folder the user is currently working in
+     * 
+     * @return the folder containing eventual XML content master files
+     */
+    String getModelFolder(CmsObject cms, String currentFolder);
+
+    /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 
      * 
      * If <code>null</code> is returned, no preview is possible for contents using this handler.<p>
@@ -173,6 +183,17 @@ public interface I_CmsXmlContentHandler {
     void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
 
     /**
+     * Performs a check of the given XML document.<p>
+     * 
+     * The main difference to the {@link #resolveValidation(CmsObject, I_CmsXmlContentValue, CmsXmlContentErrorHandler)}
+     * method is that this method may silently remove some values, for instance, for broken links.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param document the document to resolve the check rules for
+     */
+    void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
+
+    /**
      * Prepares the given XML content to be written to the OpenCms VFS.<p>
      * 
      * This method is alway called before any content gets written.
@@ -188,17 +209,6 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsException in case something goes wrong
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
-
-    /**
-     * Performs a check of the given XML document.<p>
-     * 
-     * The main difference to the {@link #resolveValidation(CmsObject, I_CmsXmlContentValue, CmsXmlContentErrorHandler)}
-     * method is that this method may silently remove some values, for instance, for broken links.<p>
-     * 
-     * @param cms the current OpenCms user context
-     * @param document the document to resolve the check rules for
-     */
-    void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
 
     /**
      * Resolves the value mappings of the given XML content value, according 

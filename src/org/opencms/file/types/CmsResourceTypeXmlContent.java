@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.22.8.8 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.22.8.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.8 $ 
+ * @version $Revision: 1.22.8.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +104,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         byte[] content,
         List properties) throws CmsException {
 
+        boolean hasModelUri = false;
+        CmsXmlContent newContent = null;
         if ((m_schema != null) && ((content == null) || (content.length == 0))) {
             // unmarshal the content definition for the new resource
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
@@ -112,18 +115,34 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 cms,
                 CmsResource.getParentFolder(resourcename)).get(0);
 
-            // create the new content from the content defintion
-            CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
-                cms,
-                locale,
-                OpenCms.getSystemInfo().getDefaultEncoding(),
-                contentDefinition);
+            String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
+            if (modelUri != null) {
+                // create the new content from the model file
+                newContent = CmsXmlContentFactory.createDocument(cms, locale, modelUri);
+                hasModelUri = true;
+            } else {
+                // create the new content from the content definition
+                newContent = CmsXmlContentFactory.createDocument(
+                    cms,
+                    locale,
+                    OpenCms.getSystemInfo().getDefaultEncoding(),
+                    contentDefinition);
+            }
             // get the bytes from the created content
             content = newContent.marshal();
         }
 
         // now create the resource using the super class
-        return super.createResource(cms, securityManager, resourcename, content, properties);
+        CmsResource resource = super.createResource(cms, securityManager, resourcename, content, properties);
+
+        // a model file was used, call the content handler for post-processing
+        if (hasModelUri) {
+            CmsFile file = CmsFile.upgrade(resource, cms);
+            newContent = CmsXmlContentFactory.unmarshal(cms, file);
+            resource = newContent.getContentDefinition().getContentHandler().prepareForWrite(cms, newContent, file);
+        }
+
+        return resource;
     }
 
     /**

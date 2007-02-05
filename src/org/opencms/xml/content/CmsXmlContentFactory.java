@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2006/08/19 13:40:46 $
- * Version: $Revision: 1.11.8.1 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.11.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.8.1 $ 
+ * @version $Revision: 1.11.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,26 @@ public final class CmsXmlContentFactory {
     private CmsXmlContentFactory() {
 
         // noop
+    }
+
+    /**
+     * Create a new instance of an XML content based on the given default content,
+     * hat will have all language nodes of the default content and ensures the presence of the given locale.<p> 
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param cms the current users OpenCms content
+     * @param locale the locale to generate the default content for
+     * @param modelUri the absolute path to the XML content file acting as model
+     * 
+     * @throws CmsException in case the model file is not found or not valid
+     * 
+     * @return the created XML content
+     */
+    public static CmsXmlContent createDocument(CmsObject cms, Locale locale, String modelUri) throws CmsException {
+
+        // create the XML content
+        return new CmsXmlContent(cms, locale, modelUri);
     }
 
     /**

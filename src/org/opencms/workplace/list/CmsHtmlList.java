@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.35.4.9 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.35.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.9 $ 
+ * @version $Revision: 1.35.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,9 @@ public class CmsHtmlList {
     /** Search filter text. */
     private String m_searchFilter;
 
+    /** Show the title of the list. */
+    private boolean m_showTitle;
+
     /** The filtered content size, only used if data self managed. */
     private int m_size;
 
@@ -133,6 +136,7 @@ public class CmsHtmlList {
         m_name = name;
         m_metadata = metadata;
         m_currentPage = 1;
+        m_showTitle = true;
     }
 
     /**
@@ -431,6 +435,16 @@ public class CmsHtmlList {
     }
 
     /**
+     * Returns if the list title is shown.<p>
+     * 
+     * @return true if the list title is shown, otherwise false
+     */
+    public boolean isShowTitle() {
+
+        return m_showTitle;
+    }
+
+    /**
      * Generates the csv output for the list.<p>
      * 
      * @return csv output
@@ -673,6 +687,16 @@ public class CmsHtmlList {
     }
 
     /**
+     * Sets if the list title is shown.<p>
+     * 
+     * @param showTitle true if the list title is shown, otherwise false
+     */
+    public void setShowTitle(boolean showTitle) {
+
+        m_showTitle = showTitle;
+    }
+
+    /**
      * Sets the current filtered size, only used if data self managed.<p>
      *
      * @param size the size to set
@@ -865,7 +889,7 @@ public class CmsHtmlList {
     }
 
     /**
-     * Generates the need html code for ending a lsit.<p>
+     * Generates the need html code for ending a list.<p>
      * 
      * @return html code
      */
@@ -976,7 +1000,7 @@ public class CmsHtmlList {
     }
 
     /**
-     * returns the html for the title of the list.<p>
+     * Returns the html for the title of the list.<p>
      * 
      * @return html code
      */
@@ -986,37 +1010,39 @@ public class CmsHtmlList {
         CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
         html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
-        html.append("\t\t<td align='left'>\n");
-        html.append("\t\t\t");
-        if (getTotalNumberOfPages() > 1) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-                html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
-                    m_name.key(getWp().getLocale()),
-                    new Integer(displayedFrom()),
-                    new Integer(displayedTo()),
-                    new Integer(getTotalSize())}));
+        if (isShowTitle()) {
+            html.append("\t\t<td align='left'>\n");
+            html.append("\t\t\t");
+            if (getTotalNumberOfPages() > 1) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                    html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
+                        m_name.key(getWp().getLocale()),
+                        new Integer(displayedFrom()),
+                        new Integer(displayedTo()),
+                        new Integer(getTotalSize())}));
+                } else {
+                    html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
+                        m_name.key(getWp().getLocale()),
+                        new Integer(displayedFrom()),
+                        new Integer(displayedTo()),
+                        new Integer(getSize()),
+                        new Integer(getTotalSize())}));
+                }
             } else {
-                html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
-                    m_name.key(getWp().getLocale()),
-                    new Integer(displayedFrom()),
-                    new Integer(displayedTo()),
-                    new Integer(getSize()),
-                    new Integer(getTotalSize())}));
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                    html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
+                        m_name.key(getWp().getLocale()),
+                        new Integer(getTotalSize())}));
+                } else {
+                    html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
+                        m_name.key(getWp().getLocale()),
+                        new Integer(getSize()),
+                        new Integer(getTotalSize())}));
+                }
             }
-        } else {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
-                    m_name.key(getWp().getLocale()),
-                    new Integer(getTotalSize())}));
-            } else {
-                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
-                    m_name.key(getWp().getLocale()),
-                    new Integer(getSize()),
-                    new Integer(getTotalSize())}));
-            }
+            html.append("\n");
+            html.append("\t\t</td>\n\t\t");
         }
-        html.append("\n");
-        html.append("\t\t</td>\n\t\t");
         html.append(getMetadata().htmlActionBar());
         html.append("\n\t</tr>\n");
         html.append("</table>\n");

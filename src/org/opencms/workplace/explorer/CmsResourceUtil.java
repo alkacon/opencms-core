@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2006/12/12 10:14:57 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -553,7 +553,9 @@ public final class CmsResourceUtil {
                 permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
             } catch (Throwable e1) {
                 permissions = e1.getMessage();
-                LOG.error(e1);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e1);
+                }
             } finally {
                 getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }

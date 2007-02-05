@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2006/12/12 08:26:22 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -56,11 +56,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.1.0 
  */
 public abstract class A_CmsListResourceCollector implements I_CmsListResourceCollector {
+
+    /** VFS path to use for a dummy resource object. */
+    public static final String VFS_PATH_NONE = "none";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsListResourceCollector.class);
@@ -101,10 +104,21 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         if (state.getFilter() == null) {
             state.setFilter("");
         }
-        m_collectorParameter = I_CmsListResourceCollector.PARAM_PAGE + I_CmsListResourceCollector.SEP_KEYVAL + state.getPage();
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_SORTBY + I_CmsListResourceCollector.SEP_KEYVAL + state.getColumn();
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_ORDER + I_CmsListResourceCollector.SEP_KEYVAL + state.getOrder();
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_FILTER + I_CmsListResourceCollector.SEP_KEYVAL + state.getFilter();
+        m_collectorParameter = I_CmsListResourceCollector.PARAM_PAGE
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + state.getPage();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + I_CmsListResourceCollector.PARAM_SORTBY
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + state.getColumn();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + I_CmsListResourceCollector.PARAM_ORDER
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + state.getOrder();
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + I_CmsListResourceCollector.PARAM_FILTER
+            + I_CmsListResourceCollector.SEP_KEYVAL
+            + state.getFilter();
     }
 
     /**
@@ -178,7 +192,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             if (parameter == null) {
                 parameter = m_collectorParameter;
             }
-            Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
+            Map params = CmsStringUtil.splitAsMap(
+                parameter,
+                I_CmsListResourceCollector.SEP_PARAM,
+                I_CmsListResourceCollector.SEP_KEYVAL);
             CmsListState state = getState(params);
             List resources = getInternalResources(getWp().getCms(), params);
             List ret = new ArrayList();
@@ -187,7 +204,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
                     new Integer(resources.size())));
             }
-            CmsResourceUtil resUtil = getWp().getResourceUtil();
             getWp().applyColumnVisibilities();
             CmsHtmlList list = getWp().getList();
             // get content
@@ -199,29 +215,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     continue;
                 }
                 CmsResource resource = (CmsResource)obj;
-                if (!resource.getRootPath().startsWith(getWp().getJsp().getRequestContext().getSiteRoot())
-                    && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                    continue;
-                }
                 CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
                 if (item == null) {
-                    resUtil.setResource(resource);
-                    item = list.newItem(resource.getStructureId().toString());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
-                    item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
+                    item = createResourceListItem(resource, list);
                     m_liCache.put(resource.getStructureId().toString(), item);
                 }
                 ret.add(item);
@@ -280,7 +276,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 m_resCache.put(item.getId(), res);
             } catch (CmsException e) {
                 // should never happen
-                LOG.error(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
             }
         }
         return res;
@@ -330,7 +328,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     resources.add(getResource(cms, item));
                 }
             } else {
-                Map params = CmsStringUtil.splitAsMap(parameter, I_CmsListResourceCollector.SEP_PARAM, I_CmsListResourceCollector.SEP_KEYVAL);
+                Map params = CmsStringUtil.splitAsMap(
+                    parameter,
+                    I_CmsListResourceCollector.SEP_PARAM,
+                    I_CmsListResourceCollector.SEP_KEYVAL);
                 resources = getInternalResources(cms, params);
             }
             if (LOG.isDebugEnabled()) {
@@ -409,6 +410,54 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         }
         m_collectorParameter += I_CmsListResourceCollector.PARAM_PAGE + I_CmsListResourceCollector.SEP_KEYVAL + page;
         m_resources = null;
+    }
+
+    /**
+     * Returns a list item created from the resource information, differs between valid resources and invalid resources.<p>
+     * 
+     * @param resource the resource to create the list item from
+     * @param list the list
+     * @return a list item created from the resource information
+     */
+    protected CmsListItem createResourceListItem(CmsResource resource, CmsHtmlList list) {
+
+        CmsListItem item = list.newItem(resource.getStructureId().toString());
+        // get an initialized resource utility
+        CmsResourceUtil resUtil = getWp().getResourceUtil();
+        resUtil.setResource(resource);
+        boolean isDummyResource = !getWp().getCms().existsResource(
+            getWp().getCms().getSitePath(resource),
+            CmsResourceFilter.ALL);
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
+        if (isDummyResource) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, "");
+        } else {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
+        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
+        if (isDummyResource) {
+            item.set(
+                A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS,
+                CmsPermissionSet.ACCESS_VIEW.getPermissionString());
+        } else {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
+        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
+        if (isDummyResource) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getUserLastModified());
+        } else {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
+        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
+        return item;
     }
 
     /**
@@ -533,7 +582,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      */
     protected void setResourcesParam(List resources) {
 
-        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + I_CmsListResourceCollector.PARAM_RESOURCES + I_CmsListResourceCollector.SEP_KEYVAL;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+            + I_CmsListResourceCollector.PARAM_RESOURCES
+            + I_CmsListResourceCollector.SEP_KEYVAL;
         if (resources == null) {
             // search anywhere
             m_collectorParameter += "/";

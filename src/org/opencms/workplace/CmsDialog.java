@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2007/01/31 16:00:58 $
- * Version: $Revision: 1.96.4.8 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.96.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsLock;
+import org.opencms.workplace.editors.CmsPreEditorAction;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.8 $ 
+ * @version $Revision: 1.96.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +197,12 @@ public class CmsDialog extends CmsToolDialog {
     /** Request parameter name for the error message. */
     public static final String PARAM_MESSAGE = "message";
 
+    /** Request parameter name for the originalparams. */
+    public static final String PARAM_ORIGINALPARAMS = "originalparams";
+
+    /** Request parameter name for the preactiondone. */
+    public static final String PARAM_PREACTIONDONE = "preactiondone";
+
     /** Request parameter name for the redirect flag. */
     public static final String PARAM_REDIRECT = "redirect";
 
@@ -245,6 +252,8 @@ public class CmsDialog extends CmsToolDialog {
     private String m_paramFrameName;
     private String m_paramIsPopup;
     private String m_paramMessage;
+    private String m_paramOriginalParams;
+    private String m_paramPreActionDone;
     private String m_paramRedirect;
     private String m_paramResource;
     private String m_paramTitle;
@@ -1230,6 +1239,28 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Returns the value of the originalparams parameter.<p>
+     * 
+     * This stores the request parameter values from a previous dialog, if necessary.<p>
+     * 
+     * @return the value of the originalparams parameter
+     */
+    public String getParamOriginalParams() {
+
+        return m_paramOriginalParams;
+    }
+
+    /**
+     * Returns the value of the preactiondone parameter.<p>
+     * 
+     * @return the value of the preactiondone parameter
+     */
+    public String getParamPreActionDone() {
+
+        return m_paramPreActionDone;
+    }
+
+    /**
      * Returns the value of the redirect flag parameter.<p>
      * 
      * @return the value of the redirect flag parameter
@@ -1408,6 +1439,16 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Returns if the dialog is called in direct edit mode before the editor is opened.<p>
+     * 
+     * @return true if the dialog is called in direct edit mode before the editor is opened
+     */
+    public boolean isPreEditor() {
+
+        return CmsPreEditorAction.isPreEditorMode(this);
+    }
+
+    /**
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
      * 
@@ -1547,6 +1588,26 @@ public class CmsDialog extends CmsToolDialog {
     public void setParamMessage(String value) {
 
         m_paramMessage = value;
+    }
+
+    /**
+     * Sets the value of the originalparams parameter.<p>
+     * 
+     * @param paramOriginalParams the value of the originalparams parameter
+     */
+    public void setParamOriginalParams(String paramOriginalParams) {
+
+        m_paramOriginalParams = paramOriginalParams;
+    }
+
+    /**
+     * Sets the value of the preactiondone parameter.<p>
+     * 
+     * @param paramPreActionDone the value of the preactiondone parameter
+     */
+    public void setParamPreActionDone(String paramPreActionDone) {
+
+        m_paramPreActionDone = paramPreActionDone;
     }
 
     /**

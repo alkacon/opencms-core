@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.17.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -43,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +55,8 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     public static final String TYPE_NAME = "OpenCmsDateTime";
 
     /** The validation rule used for this schema type. */
-    public static final String TYPE_RULE = "\\p{Digit}+";
+    public static final String TYPE_RULE = "\\p{Digit}+|"
+        + CmsStringUtil.escapePattern(CmsMacroResolver.formatMacro(CmsMacroResolver.KEY_CURRENT_TIME));
 
     /** Pre-compiled regular expression pattern for this rule. */
     private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);
@@ -133,7 +136,23 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
      */
     public String getSchemaDefinition() {
 
-        return "<xsd:simpleType name=\"" + TYPE_NAME + "\"><xsd:restriction base=\"xsd:decimal\" /></xsd:simpleType>";
+        StringBuffer result = new StringBuffer(256);
+        // create a named decimal simpletype (for long values)
+        result.append("<xsd:simpleType name=\"ocmsdatedec\"><xsd:restriction base=\"xsd:decimal\">");
+        result.append("</xsd:restriction></xsd:simpleType>");
+        // create a simpletype containing the "currenttime" macro
+        result.append("<xsd:simpleType name=\"ocmsdatemacro\">");
+        result.append("<xsd:restriction base=\"xsd:string\">");
+        result.append("<xsd:enumeration value=\"");
+        result.append(CmsMacroResolver.formatMacro(CmsMacroResolver.KEY_CURRENT_TIME));
+        result.append("\"/>");
+        result.append("</xsd:restriction></xsd:simpleType>");
+        // unify the simpletypes for the datetime value
+        result.append("<xsd:simpleType name=\"");
+        result.append(TYPE_NAME);
+        result.append("\"><xsd:union memberTypes=\"ocmsdatedec ocmsdatemacro\"/></xsd:simpleType>");
+        
+        return  result.toString();
     }
 
     /**

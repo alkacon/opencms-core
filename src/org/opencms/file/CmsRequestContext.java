@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/01/29 14:27:04 $
- * Version: $Revision: 1.29.4.9 $
+ * Date   : $Date: 2007/02/05 16:02:49 $
+ * Version: $Revision: 1.29.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.9 $
+ * @version $Revision: 1.29.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -56,6 +56,9 @@ public final class CmsRequestContext {
 
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";
+
+    /** Request context attribute for indicating the model file for a create resource operation. */
+    public static final String ATTRIBUTE_MODEL = "org.opencms.file.CmsRequestContext.ATTRIBUTE_MODEL";
 
     /** A map for storing (optional) request context attributes. */
     private Map m_attributeMap;

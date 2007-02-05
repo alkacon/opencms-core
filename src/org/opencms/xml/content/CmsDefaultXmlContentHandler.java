@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.46.4.7 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.46.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.7 $ 
+ * @version $Revision: 1.46.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
 
+    /** Constant for the "invalidate" appinfo attribute name. */
+    public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
+
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
 
@@ -106,9 +109,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
-
-    /** Constant for the "invalidate" appinfo attribute name. */
-    public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
@@ -131,12 +131,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "widget" appinfo attribute name. */
     public static final String APPINFO_ATTR_WIDGET = "widget";
 
-    /** Constant for the "relation" appinfo element name. */
-    public static final String APPINFO_RELATION = "relation";
-
-    /** Constant for the "relations" appinfo element name. */
-    public static final String APPINFO_RELATIONS = "relations";
-
     /** Constant for the "default" appinfo element name. */
     public static final String APPINFO_DEFAULT = "default";
 
@@ -155,8 +149,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "mappings" appinfo element name. */
     public static final String APPINFO_MAPPINGS = "mappings";
 
+    /** Constant for the "modelfolder" appinfo element name. */
+    public static final String APPINFO_MODELFOLDER = "modelfolder";
+
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
+
+    /** Constant for the "relation" appinfo element name. */
+    public static final String APPINFO_RELATION = "relation";
+
+    /** Constant for the "relations" appinfo element name. */
+    public static final String APPINFO_RELATIONS = "relations";
 
     /** Constant for the "resourcebundle" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
@@ -164,15 +167,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
-    /** Constant for the "validationrule" appinfo element name. */
-    public static final String APPINFO_VALIDATIONRULE = "validationrule";
-
     /** The file where the appinfo schema is located. */
     public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
 
     /** The XML system is for the appinfo schema. */
     public static final String APPINFO_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
         + APPINFO_SCHEMA_FILE;
+
+    /** Constant for the "validationrule" appinfo element name. */
+    public static final String APPINFO_VALIDATIONRULE = "validationrule";
 
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
@@ -198,9 +201,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Prefix to cache the checkrule relation types. */
     private static final String RELATION_TYPE_PREFIX = "rt_";
 
-    /** The check rules. */
-    protected Map m_relations;
-
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map m_configurationValues;
 
@@ -216,8 +216,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
 
+    /** The folder containing the model file(s) for the content. */
+    protected String m_modelFolder;
+
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
+
+    /** The check rules. */
+    protected Map m_relations;
 
     /** The messages for the error validation rules. */
     protected Map m_validationErrorMessages;
@@ -321,6 +327,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getModelFolder(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getModelFolder(CmsObject cms, String currentFolder) {
+
+        String result = m_modelFolder;
+        // store the original uri
+        String uri = cms.getRequestContext().getUri();
+        try {
+            // set uri to current folder
+            cms.getRequestContext().setUri(currentFolder);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+            // resolve eventual macros
+            result = resolver.resolveMacros(m_modelFolder);
+        } finally {
+            // switch back to stored uri
+            cms.getRequestContext().setUri(uri);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
@@ -408,6 +435,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initRelations(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_DEFAULTS)) {
                     initDefaultValues(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_MODELFOLDER)) {
+                    initModelFolder(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_PREVIEW)) {
                     initPreview(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
@@ -418,41 +447,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         // at the end, add default check rules for optional file references
         addDefaultCheckRules(contentDefinition, null, null);
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
-     */
-    public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
-
-        if (!content.isAutoCorrectionEnabled()) {
-            // check if the XML should be corrected automatically (if not already set)
-            Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
-            // set the auto correction mode as required
-            boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
-            content.setAutoCorrectionEnabled(autoCorrectionEnabled);
-        }
-        // validate the xml structure before writing the file if required                 
-        if (!content.isAutoCorrectionEnabled()) {
-            // an exception will be thrown if the structure is invalid
-            content.validateXmlStructure(new CmsXmlEntityResolver(cms));
-        }
-        // read the content-conversion property
-        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
-            // enable pretty printing and XHTML conversion of XML content html fields by default
-            contentConversion = CmsHtmlConverter.PARAM_XHTML;
-        }
-        content.setConversion(contentConversion);
-        // correct the HTML structure
-        file = content.correctXmlStructure(cms);
-        content.setFile(file);
-        // resolve the file mappings
-        content.resolveMappings(cms);
-        // ensure all property mappings of deleted optional values are removed
-        removeEmptyMappings(cms, content);
-        // return the result
-        return file;
     }
 
     /**
@@ -531,6 +525,41 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // re-initialize the XML content 
             document.initDocument();
         }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
+     */
+    public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
+
+        if (!content.isAutoCorrectionEnabled()) {
+            // check if the XML should be corrected automatically (if not already set)
+            Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+            // set the auto correction mode as required
+            boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
+            content.setAutoCorrectionEnabled(autoCorrectionEnabled);
+        }
+        // validate the xml structure before writing the file if required                 
+        if (!content.isAutoCorrectionEnabled()) {
+            // an exception will be thrown if the structure is invalid
+            content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        }
+        // read the content-conversion property
+        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
+            // enable pretty printing and XHTML conversion of XML content html fields by default
+            contentConversion = CmsHtmlConverter.PARAM_XHTML;
+        }
+        content.setConversion(contentConversion);
+        // correct the HTML structure
+        file = content.correctXmlStructure(cms);
+        content.setFile(file);
+        // resolve the file mappings
+        content.resolveMappings(cms);
+        // ensure all property mappings of deleted optional values are removed
+        removeEmptyMappings(cms, content);
+        // return the result
+        return file;
     }
 
     /**
@@ -669,15 +698,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
                         switch (ATTRIBUTES.indexOf(attribute)) {
                             case 0: // datereleased
-                                long date;
-                                date = Long.valueOf(stringValue).longValue();
+                                long date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
                                 if (date == 0) {
                                     date = CmsResource.DATE_RELEASED_DEFAULT;
                                 }
                                 file.setDateReleased(date);
                                 break;
                             case 1: // dateexpired
-                                date = Long.valueOf(stringValue).longValue();
+                                date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
                                 if (date == 0) {
                                     date = CmsResource.DATE_EXPIRED_DEFAULT;
                                 }
@@ -1053,44 +1091,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_configurationValues = new HashMap();
         m_relations = new HashMap();
         m_previewLocation = null;
-    }
-
-    /**
-     * Initializes the relation configuration for this content handler.<p>
-     * 
-     * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
-     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
-     * over the link check process is required. For these cases, individual relation behaviour can 
-     * be defined for the appinfo node.<p>
-     * 
-     * Additional here can be defined an optional type for the relations, for instance, for the
-     * workflow engine.<p>
-     * 
-     * @param root the "relations" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the check rules belong to
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    protected void initRelations(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
-
-        Iterator i = root.elementIterator(APPINFO_RELATION);
-        while (i.hasNext()) {
-            // iterate all "checkrule" elements in the "checkrule" node
-            Element element = (Element)i.next();
-            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
-            String invalidate = element.attributeValue(APPINFO_ATTR_INVALIDATE);
-            if (invalidate != null) {
-                invalidate = invalidate.toUpperCase();
-            }
-            String type = element.attributeValue(APPINFO_ATTR_TYPE);
-            if (type != null) {
-                type = type.toLowerCase();
-            }
-            if (elementName != null) {
-                // add a check rule for the element
-                addCheckRule(contentDefinition, elementName, invalidate, type);
-            }
-        }
+        m_modelFolder = null;
     }
 
     /**
@@ -1191,6 +1192,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Initializes the folder containing the model file(s) for this content handler.<p>
+     * 
+     * @param root the "modelfolder" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the model folder belongs to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initModelFolder(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        String master = root.attributeValue(APPINFO_ATTR_URI);
+        if (master == null) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2,
+                root.getName(),
+                contentDefinition.getSchemaLocation()));
+        }
+        m_modelFolder = master;
+    }
+
+    /**
      * Initializes the preview location for this content handler.<p>
      * 
      * @param root the "preview" element from the appinfo node of the XML content definition
@@ -1207,6 +1227,44 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 contentDefinition.getSchemaLocation()));
         }
         m_previewLocation = preview;
+    }
+
+    /**
+     * Initializes the relation configuration for this content handler.<p>
+     * 
+     * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
+     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
+     * over the link check process is required. For these cases, individual relation behaviour can 
+     * be defined for the appinfo node.<p>
+     * 
+     * Additional here can be defined an optional type for the relations, for instance, for the
+     * workflow engine.<p>
+     * 
+     * @param root the "relations" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the check rules belong to
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initRelations(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_RELATION);
+        while (i.hasNext()) {
+            // iterate all "checkrule" elements in the "checkrule" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String invalidate = element.attributeValue(APPINFO_ATTR_INVALIDATE);
+            if (invalidate != null) {
+                invalidate = invalidate.toUpperCase();
+            }
+            String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            if (type != null) {
+                type = type.toLowerCase();
+            }
+            if (elementName != null) {
+                // add a check rule for the element
+                addCheckRule(contentDefinition, elementName, invalidate, type);
+            }
+        }
     }
 
     /**
@@ -1346,9 +1404,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     rootPath = content.getFile().getRootPath();
                 }
 
-                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // try / catch to ensure site root is always restored
+                    cms.getRequestContext().saveSiteRoot();
                     cms.getRequestContext().setSiteRoot("/");
 
                     // read all siblings of the file
@@ -1385,7 +1443,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                 } finally {
                     // restore the saved site root
-                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
+                    cms.getRequestContext().restoreSiteRoot();
                 }
             }
         }

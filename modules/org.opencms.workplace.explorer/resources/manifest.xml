@@ -55,6 +55,7 @@
 			<resource uri="/system/workplace/commons/newresource_sibling.jsp"/>
 			<resource uri="/system/workplace/commons/newresource_upload.jsp"/>
 			<resource uri="/system/workplace/commons/newresource_xmlcontent.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_xmlcontent_modelfile.jsp"/>
 			<resource uri="/system/workplace/commons/newresource_xmlpage.jsp"/>
 			<resource uri="/system/workplace/commons/opengallery.jsp"/>
 			<resource uri="/system/workplace/commons/preferences.jsp"/>
@@ -1967,12 +1968,43 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - New resource xmlcontent]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/newresource_xmlcontent_modelfile.jsp</source>
+			<destination>system/workplace/commons/newresource_xmlcontent_modelfile.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>5b5fc739-b074-11db-acba-ade360b6686d</uuidstructure>
+			<uuidresource>5b5fc73a-b074-11db-acba-ade360b6686d</uuidresource>
+			<datelastmodified>Wed, 31 Jan 2007 14:25:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 30 Jan 2007 15:12:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New resource xmlcontent - choose modelfile]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

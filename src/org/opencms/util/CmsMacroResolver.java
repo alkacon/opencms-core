@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/10/23 13:52:03 $
- * Version: $Revision: 1.18.4.5 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.18.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,11 +63,14 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.5 $ 
+ * @version $Revision: 1.18.4.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
+
+    /** The prefix indicating that the key represents an OpenCms runtime attribute. */
+    public static final String KEY_ATTRIBUTE = "attribute.";
 
     /** Key used to specify the current time as macro value. */
     public static final String KEY_CURRENT_TIME = "currenttime";
@@ -108,6 +111,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** The prefix indicating that the key represents a page context object. */
     public static final String KEY_PAGE_CONTEXT = "pageContext.";
 
+    /** Key used to specifiy the project id as macro value. */
+    public static final String KEY_PROJECT_ID = "projectid";
+
     /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
     public static final String KEY_PROPERTY = "property.";
 
@@ -138,14 +144,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specifiy the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
-    /** Key used to specifiy the project id as macro value. */
-    public static final String KEY_PROJECT_ID = "projectid";
-
     /** Identified for "magic" parameter commands. */
     static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding"};
-    
+
     /** The "magic" commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));    
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
@@ -491,7 +494,17 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         LOG.warn(message.key(), e);
                     }
                 }
+                return null;
+            }
 
+            if (macro.startsWith(CmsMacroResolver.KEY_ATTRIBUTE)) {
+                // the key is an OpenCms runtime attribute
+                macro = macro.substring(CmsMacroResolver.KEY_ATTRIBUTE.length());
+                Object attribute = m_cms.getRequestContext().getAttribute(macro);
+                if (attribute != null) {
+                    return attribute.toString();
+                }
+                return null;
             }
 
             if (macro.startsWith(CmsMacroResolver.KEY_OPENCMS)) {

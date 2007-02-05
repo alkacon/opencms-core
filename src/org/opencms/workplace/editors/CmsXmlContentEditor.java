@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/11/21 09:25:40 $
- * Version: $Revision: 1.68.4.8 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.68.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.8 $ 
+ * @version $Revision: 1.68.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Parameter name for the request parameter "elementname". */
     public static final String PARAM_ELEMENTNAME = "elementname";
 
+    /** Parameter name for the request parameter "newlink". */
+    public static final String PARAM_NEWLINK = "newlink";
+
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "xmlcontent";
 
@@ -170,6 +173,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Parameter stores the name of the element to add or remove. */
     private String m_paramElementName;
+
+    /** The selected model file for the new resource. */
+    private String m_paramModelFile;
 
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
@@ -408,14 +414,23 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
             newFileName = collector.getCreateLink(getCms(), collectorName, param);
 
+            boolean useModelFile = false;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())) {
+                getCms().getRequestContext().setAttribute(
+                    CmsRequestContext.ATTRIBUTE_MODEL,
+                    getParamModelFile());
+                useModelFile = true;
+            }
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
             getCms().createResource(newFileName, templateFile.getTypeId());
             // re-read the created resource
             CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.ALL);
-            newFile.setContents(newContent.marshal());
-            // write the file with the updated content
-            getCloneCms().writeFile(newFile);
+            if (!useModelFile) {
+                newFile.setContents(newContent.marshal());
 
+                // write the file with the updated content
+                getCloneCms().writeFile(newFile);
+            }
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
@@ -427,7 +442,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             // set the member variables for the content 
             m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
-            m_content = newContent;
+            if (!useModelFile) {
+                m_content = newContent;
+            } else {
+                m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+            }
 
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
@@ -658,6 +677,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Returns the parameter that specifies the model file name.<p>
+     * 
+     * @return the parameter that specifies the model file name
+     */
+    public String getParamModelFile() {
+
+        return m_paramModelFile;
+    }
+
+    /**
      * Returns the "new link" parameter.<p>
      *
      * @return the "new link" parameter
@@ -874,6 +903,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public void setParamElementName(String elementName) {
 
         m_paramElementName = elementName;
+    }
+
+    /**
+     * Sets the parameter that specifies the model file name.<p>
+     * 
+     * @param paramMasterFile the parameter that specifies the model file name
+     */
+    public void setParamModelFile(String paramMasterFile) {
+
+        m_paramModelFile = paramMasterFile;
     }
 
     /**

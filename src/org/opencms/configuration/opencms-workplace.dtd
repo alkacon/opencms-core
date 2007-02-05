@@ -14,7 +14,8 @@
 	localizedfolders,
 	dialoghandlers, 
 	editorhandler, 
-	editoraction, 
+	editoraction,
+	editorpreconditions?,
 	directeditprovider?, 
 	exportpoints, 
 	autolock?, 
@@ -99,6 +100,15 @@
 
 <!ELEMENT editoraction EMPTY>
 <!ATTLIST editoraction class CDATA #REQUIRED>
+
+<!--
+# The pre editor condition definition classes.
+# For each resource type (identified by the resource type name), a precondition can be executed before the editor is opened.
+# The specified class must implement the org.opencms.workplace.editors.I_CmsPreEditorActionDefinition interface.
+-->
+<!ELEMENT editorpreconditions (editorprecondition+)>
+<!ELEMENT editorprecondition EMPTY>
+<!ATTLIST editorprecondition name CDATA #REQUIRED class CDATA #REQUIRED>
 
 <!ELEMENT directeditprovider (param*)>
 <!ATTLIST directeditprovider class CDATA #REQUIRED>

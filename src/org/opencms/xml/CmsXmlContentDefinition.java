@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/08/24 12:47:42 $
- * Version: $Revision: 1.36.4.5 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.36.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.5 $ 
+ * @version $Revision: 1.36.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -481,9 +481,8 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @throws CmsXmlException if the validation fails
      */
-    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
-        Element element,
-        Set includes) throws CmsXmlException {
+    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(Element element, Set includes)
+    throws CmsXmlException {
 
         validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
 
@@ -870,7 +869,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
                 Element typeElement = type.generateXml(cms, document, root, locale);
-                // need to check for default value again because the of appinfo "mappings" node
+                // need to check for default value again because of the appinfo "mappings" node
                 I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
                 String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
                 if (defaultValue != null) {

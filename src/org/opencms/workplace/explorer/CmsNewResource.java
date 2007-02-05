@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.26.4.4 $
+ * Date   : $Date: 2007/02/05 16:02:48 $
+ * Version: $Revision: 1.26.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.4 $ 
+ * @version $Revision: 1.26.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,6 +100,9 @@ public class CmsNewResource extends CmsDialog {
 
     /** Constant for the "Next" button in the build button methods. */
     public static final int BUTTON_NEXT = 20;
+
+    /** The default suffix. */
+    public static final String DEFAULT_SUFFIX = ".html";
 
     /** Delimiter for property values, e.g. for available resource types or template sites. */
     public static final char DELIM_PROPERTYVALUES = ',';
@@ -134,9 +137,6 @@ public class CmsNewResource extends CmsDialog {
     /** The property value for available resource to reset behaviour to default dialog. */
     public static final String VALUE_DEFAULT = "default";
 
-    /** The default suffix. */
-    public static final String DEFAULT_SUFFIX = ".html";
-    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
 
@@ -437,6 +437,17 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Builds a button row with a "next" button.<p>
+     * 
+     * @param nextAttrs optional attributes for the next button
+     * @return the button row 
+     */
+    public String dialogButtonsNext(String nextAttrs) {
+
+        return dialogButtons(new int[] {BUTTON_NEXT}, new String[] {nextAttrs});
+    }
+
+    /**
      * Builds a button row with a "next" and a "cancel" button.<p>
      * 
      * @param nextAttrs optional attributes for the next button
@@ -605,7 +616,7 @@ public class CmsNewResource extends CmsDialog {
 
         // append the default suffix (".html") to new file if no standard type was provided
         if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())) {
-            
+
             if (OpenCms.getResourceManager().getMimeType(resourceName, null, null) == null) {
                 resourceName += DEFAULT_SUFFIX;
             }
