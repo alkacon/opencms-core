@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/05 10:03:42 $
- * Version: $Revision: 1.9.4.12 $
+ * Date   : $Date: 2007/02/05 15:51:49 $
+ * Version: $Revision: 1.9.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.12 $ 
+ * @version $Revision: 1.9.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,6 +148,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ADMINORGUNITS_LIST_NAME_0 = "GUI_ADMINORGUNITS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_ASSIGNUSER_ADMIN_TOOL_GROUP_0 = "GUI_ASSIGNUSER_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ASSIGNUSER_ADMIN_TOOL_HELP_0 = "GUI_ASSIGNUSER_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ASSIGNUSER_ADMIN_TOOL_NAME_0 = "GUI_ASSIGNUSER_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_DELETEORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_DELETEORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_DELETEORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_DELETEORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_DELETEORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_DELETEORGUNIT_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_DEPENDENCIES_BUTTON_DELETE_0 = "GUI_DEPENDENCIES_BUTTON_DELETE_0";
 
     /** Message contant for key in the resource bundle. */
@@ -200,6 +218,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_USERS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITGROUP_USERS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_EDITORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_EDITORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_EDITORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITUSER_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_ADMIN_TOOL_GROUP_0";
@@ -320,6 +347,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_GROUPS_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_GROUPS_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_GROUPS_DELETE_ADMIN_TOOL_GROUP_0";
@@ -598,6 +628,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_TRANSFER_NOTICE_TEXT_0 = "GUI_GROUPS_TRANSFER_NOTICE_TEXT_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPUSERS_LIST_NAME_0 = "GUI_GROUPUSERS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
@@ -608,6 +647,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_NEWGROUP_ADMIN_TOOL_NAME_0 = "GUI_NEWGROUP_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_NEWORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_NEWORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_NEWORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_NEWORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_NEWORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_NEWORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_NEWUSER_ADMIN_TOOL_GROUP_0 = "GUI_NEWUSER_ADMIN_TOOL_GROUP_0";
@@ -641,6 +689,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_ADMIN_TOOL_DISABLED_EDIT_HELP_0 = "GUI_ORGUNIT_ADMIN_TOOL_DISABLED_EDIT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_ORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_ORGUNIT_EDITOR_LABEL_CONTENT_BLOCK_0";
@@ -793,6 +844,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ORGUNITUSERS_LIST_DEFACTION_REMOVE_NAME_0 = "GUI_ORGUNITUSERS_LIST_DEFACTION_REMOVE_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0 = "GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNITUSERS_LIST_INORGUNIT_HELP_0 = "GUI_ORGUNITUSERS_LIST_INORGUNIT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -812,6 +866,33 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNITUSERS_LIST_NAME_0 = "GUI_ORGUNITUSERS_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_OVERVIEWORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_OVERVIEWORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_OVERVIEWORGUNIT_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWROLE_ADMIN_TOOL_HELP_0 = "GUI_OVERVIEWROLE_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWROLE_ADMIN_TOOL_NAME_0 = "GUI_OVERVIEWROLE_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWROLE_ADMIN_TOOL_NAVBARNAME_0 = "GUI_OVERVIEWROLE_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PARENTORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_PARENTORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PARENTORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_PARENTORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PARENTORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_PARENTORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLE_OVERVIEW_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_ROLE_OVERVIEW_LABEL_IDENTIFICATION_BLOCK_0";
@@ -898,6 +979,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLEEDIT_LIST_NAME_0 = "GUI_ROLEEDIT_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLES_ADMIN_TOOL_GROUP_0 = "GUI_ROLES_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLES_ADMIN_TOOL_HELP_0 = "GUI_ROLES_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLES_ADMIN_TOOL_NAME_0 = "GUI_ROLES_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_ROLES_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLES_DETAIL_DESCRIPTION_NAME_0 = "GUI_ROLES_DETAIL_DESCRIPTION_NAME_0";
 
     /** Message contant for key in the resource bundle. */
@@ -955,7 +1048,31 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLES_LIST_COLS_NAME_0 = "GUI_ROLES_LIST_COLS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSER_ADMIN_TOOL_GROUP_0 = "GUI_ROLEUSER_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSER_ADMIN_TOOL_HELP_0 = "GUI_ROLEUSER_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSER_ADMIN_TOOL_NAME_0 = "GUI_ROLEUSER_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSER_ADMIN_TOOL_NAVBARNAME_0 = "GUI_ROLEUSER_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_ADMIN_TOOL_HELP_0 = "GUI_ROLEUSERS_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_ADMIN_TOOL_NAME_0 = "GUI_ROLEUSERS_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_ROLEUSERS_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLEUSERS_LIST_DEFACTION_REMOVE_HELP_0 = "GUI_ROLEUSERS_LIST_DEFACTION_REMOVE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0 = "GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLEUSERS_LIST_NAME_0 = "GUI_ROLEUSERS_LIST_NAME_0";
@@ -1037,6 +1154,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_ADMIN_TOOL_NAME_0 = "GUI_USERS_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_USERS_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_USERS_DELETE_ADMIN_TOOL_GROUP_0";
@@ -1350,17 +1470,20 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_TRANSFER_NOTICE_TEXT_0 = "GUI_USERS_TRANSFER_NOTICE_TEXT_0";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERSORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_USERSORGUNIT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERSORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_USERSORGUNIT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERSORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_USERSORGUNIT_ADMIN_TOOL_NAME_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.accounts.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0 = "GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0 = "GUI_ORGUNITUSERS_LIST_DISABLED_DELETE_HELP_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
