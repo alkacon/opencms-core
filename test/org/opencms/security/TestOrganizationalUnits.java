@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/01 09:22:03 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/02/05 08:11:26 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -832,7 +832,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         CmsOrganizationalUnit ou2 = ouMan.readOrganizationalUnit(cms, ou.getName() + "test2");
         CmsResource ou2Res = (CmsResource)(ouMan.getResourcesForOrganizationalUnit(cms, ou2.getName()).get(0)); // /sites/default/folder2/
         CmsUser user = cms.readUser("test/test1");
-        roleMan.removeUserFromRole(cms, CmsRole.ROOT_ADMIN, user.getName());
         // check preconditions
         assertFalse(roleMan.hasRoleForResource(
             cms,
