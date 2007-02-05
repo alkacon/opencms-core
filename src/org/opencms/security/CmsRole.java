@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.11.4.10 $
+ * Date   : $Date: 2007/02/05 16:51:08 $
+ * Version: $Revision: 1.11.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.10 $ 
+ * @version $Revision: 1.11.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,8 +91,8 @@ public final class CmsRole {
     public static final CmsRole DEVELOPER;
 
     /** The "DIRECT_EDIT_USER" role. */
-    public static final CmsRole DIRECT_EDIT_USER;
-
+    // public static final CmsRole DIRECT_EDIT_USER;
+    
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
@@ -205,7 +205,7 @@ public final class CmsRole {
         VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
         DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
         WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.ADMINISTRATOR, "RoleWorkplaceUsers");
-        DIRECT_EDIT_USER = new CmsRole("DIRECT_EDIT_USER", CmsRole.WORKPLACE_USER, "RoleDirectEditUsers");
+        // DIRECT_EDIT_USER = new CmsRole("DIRECT_EDIT_USER", CmsRole.WORKPLACE_USER, "RoleDirectEditUsers");
 
         // create a lookup list for the system roles
         SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
@@ -218,7 +218,8 @@ public final class CmsRole {
             VFS_MANAGER,
             DEVELOPER,
             WORKPLACE_USER,
-            DIRECT_EDIT_USER}));
+        // DIRECT_EDIT_USER
+        }));
 
         // now initilaize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
