@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/11/29 15:00:06 $
- * Version: $Revision: 1.21.4.5 $
+ * Date   : $Date: 2007/02/05 16:50:37 $
+ * Version: $Revision: 1.21.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.4.5 $ 
+ * @version $Revision: 1.21.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,7 +257,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append("&nbsp;");
             }
             if (enabled) {
-                html.append("<a href='#'>");
+                if (style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT) {
+                    html.append("<a href='#'>");
+                } else {
+                    html.append("<a href='#' style='white-space: nowrap;'>");
+                }
             }
             html.append(name);
             if (enabled) {
