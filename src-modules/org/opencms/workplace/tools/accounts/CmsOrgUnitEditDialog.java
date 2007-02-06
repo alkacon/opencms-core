@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/06 11:21:49 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6
  */
@@ -279,6 +279,17 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 }
                 if (m_orgunit == null) {
                     m_orgUnitBean = new CmsOrgUnitBean();
+                    m_orgUnitBean.setFqn(getParamOufqn());
+                    List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                        getCms(),
+                        getParamOufqn());
+                    List resourceNames = new ArrayList();
+                    Iterator itResources = resources.iterator();
+                    while (itResources.hasNext()) {
+                        CmsResource resource = (CmsResource)itResources.next();
+                        resourceNames.add(resource.getRootPath());
+                    }
+                    m_orgUnitBean.setResources(resourceNames);
                 } else {
                     m_orgUnitBean = new CmsOrgUnitBean();
                     m_orgUnitBean.setDescription(m_orgunit.getDescription());
@@ -298,6 +309,21 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 }
             } catch (Exception e) {
                 m_orgUnitBean = new CmsOrgUnitBean();
+                m_orgUnitBean.setParentOu(getParamOufqn());
+                try {
+                    List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                        getCms(),
+                        getParamOufqn());
+                    List resourceNames = new ArrayList();
+                    Iterator itResources = resources.iterator();
+                    while (itResources.hasNext()) {
+                        CmsResource resource = (CmsResource)itResources.next();
+                        resourceNames.add(resource.getRootPath());
+                    }
+                    m_orgUnitBean.setResources(resourceNames);
+                } catch (CmsException ex) {
+                    // noop
+                }
             }
         } else {
             try {
