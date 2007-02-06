@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2007/02/02 08:28:38 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/06 17:04:07 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListItem;
 
@@ -53,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -206,6 +207,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
         OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_paramOufqn).getName();
     }
 }

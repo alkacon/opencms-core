@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleOverviewDialog.java,v $
- * Date   : $Date: 2007/01/31 16:19:35 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/06 17:04:07 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -297,6 +298,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
         CmsRole.valueOf(getCms().readGroup(getParamRole())).getGroupName();
     }
 }

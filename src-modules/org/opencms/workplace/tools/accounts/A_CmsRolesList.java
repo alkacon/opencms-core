@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRolesList.java,v $
- * Date   : $Date: 2007/02/06 15:55:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/06 17:04:07 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -400,5 +400,13 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
                 Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
             metadata.addItemDetails(pathDetails);
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
     }
 }

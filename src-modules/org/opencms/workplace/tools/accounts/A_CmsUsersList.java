@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.3.4.7 $
+ * Date   : $Date: 2007/02/06 17:04:07 $
+ * Version: $Revision: 1.3.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.7 $ 
+ * @version $Revision: 1.3.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -780,6 +780,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
         OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getName();
     }
 }

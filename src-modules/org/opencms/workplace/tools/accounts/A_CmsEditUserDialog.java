@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.4.4.4 $
+ * Date   : $Date: 2007/02/06 17:04:07 $
+ * Version: $Revision: 1.4.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -62,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.4 $ 
+ * @version $Revision: 1.4.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -463,6 +464,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     protected void validateParamaters() throws Exception {
 
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
         if (!isNewUser()) {
             // test the needed parameters
             getCms().readUser(new CmsUUID(getParamUserid())).getName();
