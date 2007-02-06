@@ -2666,17 +2666,17 @@
 			<source>system/workplace/resources/buttons/orgunit.png</source>
 			<destination>system/workplace/resources/buttons/orgunit.png</destination>
 			<type>image</type>
-			<uuidstructure>b1f3cef1-afad-11db-9664-ad62cbb573d3</uuidstructure>
-			<uuidresource>b1f3cef2-afad-11db-9664-ad62cbb573d3</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 11:06:21 GMT</datelastmodified>
+			<uuidstructure>7e7d8ee8-b53a-11db-b84c-4bc37e9d90a1</uuidstructure>
+			<uuidresource>7e7d8ee9-b53a-11db-b84c-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 17:02:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 29 Jan 2007 15:30:48 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 17:01:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6
  */
@@ -121,10 +121,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             } else {
                 // changes of ou / parent ou have to be written
                 int todo = -1;
-
-                //                if (!m_orgunit.getParentFqn().equals(m_orgUnitBean.getParentOu())) {
-                //
-                //                }
 
                 m_orgunit.setDescription(m_orgUnitBean.getDescription());
 

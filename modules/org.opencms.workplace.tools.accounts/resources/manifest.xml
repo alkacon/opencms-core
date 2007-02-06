@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.5.6</opencms_version>
-		<createdate>Fri, 02 Feb 2007 08:18:43 GMT</createdate>
+		<createdate>Tue, 06 Feb 2007 09:51:03 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the user accounts and groups.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.7</version>
+		<version>1.2.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1040,7 +1040,7 @@
 			<type>jsp</type>
 			<uuidstructure>5b51e111-a63d-11db-889b-75cc2042336b</uuidstructure>
 			<uuidresource>5b51e112-a63d-11db-889b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 31 Jan 2007 14:51:13 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 16:29:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Jan 2007 15:13:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1064,7 +1064,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/user_other_ou.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1648,17 +1648,17 @@
 			<source>system/workplace/resources/tools/accounts/buttons/orgunit.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/orgunit.png</destination>
 			<type>image</type>
-			<uuidstructure>85d8b48b-a550-11db-8449-75cc2042336b</uuidstructure>
-			<uuidresource>85d8b48c-a550-11db-8449-75cc2042336b</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 11:06:21 GMT</datelastmodified>
+			<uuidstructure>80cda145-b537-11db-8c20-4bc37e9d90a1</uuidstructure>
+			<uuidresource>80cda146-b537-11db-8c20-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:43:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 10:58:39 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:39:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1669,7 +1669,7 @@
 			<type>image</type>
 			<uuidstructure>ea5b22e0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4fa5a8a8-d427-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 16:39:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1686,17 +1686,17 @@
 			<source>system/workplace/resources/tools/accounts/buttons/role_child.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/role_child.png</destination>
 			<type>image</type>
-			<uuidstructure>559132d9-af8d-11db-8ecc-ad62cbb573d3</uuidstructure>
-			<uuidresource>559132da-af8d-11db-8ecc-ad62cbb573d3</uuidresource>
-			<datelastmodified>Mon, 29 Jan 2007 11:39:43 GMT</datelastmodified>
+			<uuidstructure>47717e80-b5c0-11db-bf25-4bc37e9d90a1</uuidstructure>
+			<uuidresource>47717e81-b5c0-11db-bf25-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 13:49:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 29 Jan 2007 11:39:09 GMT</datecreated>
+			<datecreated>Tue, 06 Feb 2007 08:58:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1721,39 +1721,39 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/accounts/buttons/role_ou.png</source>
-			<destination>system/workplace/resources/tools/accounts/buttons/role_ou.png</destination>
+			<source>system/workplace/resources/tools/accounts/buttons/role_other_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_other_ou.png</destination>
 			<type>image</type>
-			<uuidstructure>cb3227bf-af8e-11db-8ecc-ad62cbb573d3</uuidstructure>
-			<uuidresource>cb3227c0-af8e-11db-8ecc-ad62cbb573d3</uuidresource>
-			<datelastmodified>Mon, 29 Jan 2007 11:50:24 GMT</datelastmodified>
+			<uuidstructure>80a9eca0-b537-11db-8c20-4bc37e9d90a1</uuidstructure>
+			<uuidresource>80a9eca1-b537-11db-8c20-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:41:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 29 Jan 2007 11:49:36 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:39:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/accounts/buttons/role_ou_child.png</source>
-			<destination>system/workplace/resources/tools/accounts/buttons/role_ou_child.png</destination>
+			<source>system/workplace/resources/tools/accounts/buttons/role_other_ou_inherit.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/role_other_ou_inherit.png</destination>
 			<type>image</type>
-			<uuidstructure>cb1234bf-af8e-abcd-8eef-ad62cbb123d3</uuidstructure>
-			<uuidresource>cb1234c0-af8e-abcd-8eef-ad62cbb123d3</uuidresource>
-			<datelastmodified>Mon, 29 Jan 2007 11:50:24 GMT</datelastmodified>
+			<uuidstructure>80921edb-b537-11db-8c20-4bc37e9d90a1</uuidstructure>
+			<uuidresource>80921edc-b537-11db-8c20-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:41:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 29 Jan 2007 11:49:36 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:39:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:24,h:24]]></value>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1824,6 +1824,25 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/user_other_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/user_other_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>80732526-b537-11db-8c20-4bc37e9d90a1</uuidstructure>
+			<uuidresource>80732527-b537-11db-8c20-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:42:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Feb 2007 16:39:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1958,7 +1977,7 @@
 			<type>image</type>
 			<uuidstructure>ea7561b8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d385b10b-d426-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 16:15:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1994,11 +2013,11 @@
 			<source>system/workplace/resources/tools/accounts/icons/big/unit.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/unit.png</destination>
 			<type>image</type>
-			<uuidstructure>31f33e54-a56b-11db-ac6f-75cc2042336b</uuidstructure>
-			<uuidresource>31f33e55-a56b-11db-ac6f-75cc2042336b</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 14:10:33 GMT</datelastmodified>
+			<uuidstructure>9cd0433c-b535-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>9cd0433d-b535-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:26:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:26:20 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2013,11 +2032,11 @@
 			<source>system/workplace/resources/tools/accounts/icons/big/unit_add.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/unit_add.png</destination>
 			<type>image</type>
-			<uuidstructure>321963f9-a56b-11db-ac6f-75cc2042336b</uuidstructure>
-			<uuidresource>321963fa-a56b-11db-ac6f-75cc2042336b</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 14:10:39 GMT</datelastmodified>
+			<uuidstructure>e2318fd5-b533-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>e2318fd6-b533-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:27:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:13:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2032,11 +2051,11 @@
 			<source>system/workplace/resources/tools/accounts/icons/big/unit_delete.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/unit_delete.png</destination>
 			<type>image</type>
-			<uuidstructure>322ec0be-a56b-11db-ac6f-75cc2042336b</uuidstructure>
-			<uuidresource>322ec0bf-a56b-11db-ac6f-75cc2042336b</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 14:10:47 GMT</datelastmodified>
+			<uuidstructure>e23fc0aa-b533-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>e23fc0ab-b533-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:28:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 14:09:35 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:13:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2051,11 +2070,11 @@
 			<source>system/workplace/resources/tools/accounts/icons/big/unit_edit.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/unit_edit.png</destination>
 			<type>image</type>
-			<uuidstructure>32385db3-a56b-11db-ac6f-75cc2042336b</uuidstructure>
-			<uuidresource>32385db4-a56b-11db-ac6f-75cc2042336b</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2007 14:10:54 GMT</datelastmodified>
+			<uuidstructure>e2068830-b533-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>e2068831-b533-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:26:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 14:09:36 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:13:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2070,11 +2089,11 @@
 			<source>system/workplace/resources/tools/accounts/icons/big/unit_parent.png</source>
 			<destination>system/workplace/resources/tools/accounts/icons/big/unit_parent.png</destination>
 			<type>image</type>
-			<uuidstructure>a8c914d0-b211-11db-9866-4bc37e9d90a1</uuidstructure>
-			<uuidresource>a8c914d1-b211-11db-9866-4bc37e9d90a1</uuidresource>
-			<datelastmodified>Thu, 01 Feb 2007 16:32:05 GMT</datelastmodified>
+			<uuidstructure>e24e188f-b533-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>e24e1890-b533-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:28:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 01 Feb 2007 16:31:25 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 16:13:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2132,6 +2151,25 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/user_other_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/user_other_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>1d08bbc5-b534-11db-a490-4bc37e9d90a1</uuidstructure>
+			<uuidresource>1d08bbc6-b534-11db-a490-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 16:28:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Feb 2007 16:15:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2214,7 +2252,7 @@
 			<type>image</type>
 			<uuidstructure>ead979d7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4fa5a8a8-d427-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 16:39:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

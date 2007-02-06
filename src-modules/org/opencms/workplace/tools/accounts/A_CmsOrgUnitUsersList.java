@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/02 17:01:05 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -133,6 +133,27 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     public List getOuUsers() {
 
         return m_ouUsers;
+    }
+    
+    /**
+     * Returns the right icon path for the given list item.<p>
+     * 
+     * @param item the list item to get the icon path for
+     * 
+     * @return the icon path for the given role
+     */
+    public String getIconPath(CmsListItem item) {
+
+        try {
+            CmsUser user = getCms().readUser((String)item.get(LIST_COLUMN_LOGIN));
+            if (user.getOuFqn().equals(getParamOufqn())) {
+                return A_CmsUsersList.PATH_BUTTONS + "user.png";
+            } else {
+                return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";
+            }
+        } catch (CmsException e) {
+            return A_CmsUsersList.PATH_BUTTONS + "user.png";
+        }
     }
 
     /**

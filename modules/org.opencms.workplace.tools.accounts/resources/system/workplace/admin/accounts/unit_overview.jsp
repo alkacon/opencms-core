@@ -1,7 +1,7 @@
 <%@ page import="
 	org.opencms.workplace.tools.accounts.CmsOrgUnitOverviewDialog, 
-	org.opencms.workplace.tools.accounts.CmsShowOrgUnitResourceList
-"%><%
+	org.opencms.workplace.tools.accounts.CmsShowOrgUnitResourceList"%>
+<%
 	// initialize the widget dialog
 	CmsOrgUnitOverviewDialog wpWidget = new CmsOrgUnitOverviewDialog(pageContext, request, response);
 	// perform the widget actions   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/05 10:03:42 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -250,7 +250,16 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
      */
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return ((A_CmsOrgUnitUsersList)getWp()).getIconPath(getItem());
+            }
+        };
         iconAction.setName(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_INORGUNIT_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITUSERS_LIST_INORGUNIT_HELP_0));
         iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -146,13 +146,13 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
                 if (role.getOuFqn().equals(getParamOufqn())) {
                     return PATH_BUTTONS + "role_child.png";
                 } else {
-                    return PATH_BUTTONS + "role_ou_child.png";
+                    return PATH_BUTTONS + "role_other_ou_inherit.png";
                 }
             }
             if (role.getOuFqn().equals(getParamOufqn())) {
                 return PATH_BUTTONS + "role.png";
             } else {
-                return PATH_BUTTONS + "role_ou.png";
+                return PATH_BUTTONS + "role_other_ou.png";
             }
         } catch (CmsException e) {
             return PATH_BUTTONS + "role.png";

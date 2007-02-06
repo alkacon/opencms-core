@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -60,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -190,39 +188,7 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
         // add remove action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-
-                if (!isEnabled()) {
-                    return Messages.get().container(Messages.GUI_ROLEUSERS_LIST_DISABLED_ACTION_HELP_0);
-                }
-                return super.getHelpText();
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
-             */
-            public boolean isEnabled() {
-
-                if (getItem() != null) {
-                    String userName = getItem().get(LIST_COLUMN_LOGIN).toString();
-                    try {
-                        CmsUser user = getCms().readUser(userName);
-                        if (!user.getOuFqn().equals(getParamOufqn())) {
-                            return false;
-                        }
-                        return true;
-                    } catch (CmsException e) {
-                        return super.isVisible();
-                    }
-                }
-                return super.isVisible();
-            }
-        };
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
         stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_ROLEUSERS_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction.setIconPath(ICON_MINUS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/05 09:14:28 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6
  */
@@ -256,7 +256,31 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
 
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                try {
+                    List users = getList().getAllContent();
+                    Iterator itUsers = users.iterator();
+                    while (itUsers.hasNext()) {
+                        CmsListItem listItem = (CmsListItem)itUsers.next();
+                        CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
+                        if (user.getOuFqn().equals(getParamOufqn())) {
+                            return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                        } else {
+                            return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";
+                        }
+                    }
+                } catch (CmsException e) {
+                    return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                }
+                return A_CmsUsersList.PATH_BUTTONS + "user.png";
+            }
+        };
         iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INROLE_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INROLE_HELP_0));
         iconAction.setIconPath(PATH_BUTTONS + "user.png");

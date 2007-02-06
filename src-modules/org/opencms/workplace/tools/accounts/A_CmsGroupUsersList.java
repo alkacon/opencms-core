@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2007/02/06 10:22:08 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,6 +150,27 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public String getParamGroupname() {
 
         return m_paramGroupname;
+    }
+
+    /**
+     * Returns the right icon path for the given list item.<p>
+     * 
+     * @param item the list item to get the icon path for
+     * 
+     * @return the icon path for the given role
+     */
+    public String getIconPath(CmsListItem item) {
+
+        try {
+            CmsUser user = getCms().readUser((String)item.get(LIST_COLUMN_LOGIN));
+            if (user.getOuFqn().equals(getParamOufqn())) {
+                return A_CmsUsersList.PATH_BUTTONS + "user.png";
+            } else {
+                return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";
+            }
+        } catch (CmsException e) {
+            return A_CmsUsersList.PATH_BUTTONS + "user.png";
+        }
     }
 
     /**
