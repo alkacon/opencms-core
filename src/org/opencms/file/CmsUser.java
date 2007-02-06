@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.32.4.12 $
+ * Date   : $Date: 2007/02/06 10:25:12 $
+ * Version: $Revision: 1.32.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.12 $
+ * @version $Revision: 1.32.4.13 $
  * 
  * @since 6.0.0
  * 
@@ -123,7 +123,8 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public CmsUser(CmsUUID id, String name, String description) {
 
-        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED, null, "");
+        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED
+            + I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT, null, "");
     }
 
     /**
@@ -220,7 +221,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         return (type & 1) > 0;
     }
-    
+
     /**
      * Returns <code>true</code> if the provided user type indicates a web user.<p>
      * 
@@ -232,7 +233,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         return (type & 2) > 0;
     }
-    
+
     /**
      * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
@@ -359,7 +360,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * @see org.opencms.security.CmsPrincipal#getDisplayName(org.opencms.file.CmsObject, java.util.Locale)
      */
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
-    
+
         return Messages.get().getBundle(locale).key(
             Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
             getFullName(),
@@ -419,7 +420,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         return m_lastlogin;
     }
-    
+
     /**
      * Returns the lastname of this user.<p>
      *
