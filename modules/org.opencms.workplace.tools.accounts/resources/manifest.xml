@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.5.6</opencms_version>
-		<createdate>Tue, 06 Feb 2007 09:51:03 GMT</createdate>
+		<createdate>Tue, 06 Feb 2007 11:15:43 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the user accounts and groups.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.8</version>
+		<version>1.2.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -2056,6 +2056,25 @@
 			<datelastmodified>Mon, 05 Feb 2007 16:28:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 05 Feb 2007 16:13:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/unit_delete_disabled.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/unit_delete_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>c7842203-b5cd-11db-a08f-4bc37e9d90a1</uuidstructure>
+			<uuidresource>c7842204-b5cd-11db-a08f-4bc37e9d90a1</uuidresource>
+			<datelastmodified>Tue, 06 Feb 2007 10:36:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 06 Feb 2007 10:35:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
