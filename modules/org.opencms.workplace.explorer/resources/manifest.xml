@@ -1209,6 +1209,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/views/explorer/contextmenu.jsp</source>
+			<destination>system/workplace/views/explorer/contextmenu.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>5f47deec-b548-11db-8faa-57d0fde741a5</uuidstructure>
+			<uuidresource>5f47deed-b548-11db-8faa-57d0fde741a5</uuidresource>
+			<datelastmodified>Tue, 06 Feb 2007 11:19:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Feb 2007 18:40:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Context Menu Builder]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/views/explorer/explorer_body_fs.jsp</source>
 			<destination>system/workplace/views/explorer/explorer_body_fs.jsp</destination>
 			<type>jsp</type>
