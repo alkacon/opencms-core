@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/02/06 11:29:35 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,11 +54,14 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.2.4.2 $ 
+ * @version $Revision: 1.2.4.3 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsExplorerInit extends CmsWorkplace {
+
+    /** Stores already generated javascript menu outputs with a Locale object as key. */
+    private HashMap m_generatedScripts;
 
     /**
      * Public constructor.<p>
@@ -67,6 +71,7 @@ public class CmsExplorerInit extends CmsWorkplace {
     public CmsExplorerInit(CmsJspActionElement jsp) {
 
         super(jsp);
+        m_generatedScripts = new HashMap();
     }
 
     /**
@@ -76,30 +81,30 @@ public class CmsExplorerInit extends CmsWorkplace {
      */
     public String buildContextMenues() {
 
-        StringBuffer result = new StringBuffer();
-        // get all available resource types
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            int resTypeId = type.getTypeId();
-            // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getMessages()));
+        // try to get the stored entries from the Map
+        String entries = (String)m_generatedScripts.get(getMessages().getLocale());
+
+        if (entries == null) {
+            StringBuffer result = new StringBuffer();
+            // get all available resource types
+            List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+            for (int i = 0; i < allResTypes.size(); i++) {
+                // loop through all types
+                I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+                int resTypeId = type.getTypeId();
+                // get explorer type settings for current resource type
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    type.getTypeName());
+                if (settings != null) {
+                    // append the context menu of the current resource type 
+                    result.append(settings.getJSEntries(settings, resTypeId, getMessages()));
+                }
             }
+            entries = result.toString();
+            // store the generated entries
+            m_generatedScripts.put(getMessages().getLocale(), entries);
         }
-
-        result.append("\n");
-        // add generic multi context menu to JS
-        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(
-            getCms(),
-            null,
-            -1,
-            getMessages()));
-
-        return result.toString();
+        return entries;
     }
 
     /**

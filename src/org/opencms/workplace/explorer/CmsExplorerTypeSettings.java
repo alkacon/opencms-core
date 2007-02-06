@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.17.4.1 $
+ * Date   : $Date: 2007/02/06 11:29:34 $
+ * Version: $Revision: 1.17.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.1 $ 
+ * @version $Revision: 1.17.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,8 +71,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     private boolean m_hasEditOptions;
     private String m_icon;
     private String m_key;
-    private String m_name;
 
+    private String m_name;
     /** Optional class name for a new resource handler. */
     private String m_newResourceHandlerClassName;
     private Integer m_newResourceOrder;
@@ -80,6 +81,7 @@ public class CmsExplorerTypeSettings implements Comparable {
     private List m_properties;
     private boolean m_propertiesEnabled;
     private String m_reference;
+
     private boolean m_showNavigation;
 
     /**
@@ -274,6 +276,34 @@ public class CmsExplorerTypeSettings implements Comparable {
     public String getIcon() {
 
         return m_icon;
+    }
+
+    /**
+     * Builds the Javascript to create the context menu.<p>
+     * 
+     * @param settings the explorer type settings for which the context menu is created
+     * @param resTypeId the id of the resource type which uses the context menu
+     * @param messages the messages to generate the context menu with (should be the workplace messages)
+     * 
+     * @return the JavaScript output to create the context menu
+     */
+    public String getJSEntries(CmsExplorerTypeSettings settings, int resTypeId, CmsMessages messages) {
+
+        // entries not yet in Map, so generate them
+        StringBuffer result = new StringBuffer(4096);
+
+        // create the JS for the resource object
+        result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append(
+            "\", ");
+        result.append("\"");
+        result.append(messages.key(settings.getKey()));
+        result.append("\", vi.skinPath + \"filetypes/");
+        result.append(settings.getIcon());
+        result.append("\", \"");
+        result.append(settings.getNewResourceUri());
+        result.append("\", true);\n");
+
+        return result.toString();
     }
 
     /**

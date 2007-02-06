@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/12/14 15:31:04 $
- * Version: $Revision: 1.13.4.17 $
+ * Date   : $Date: 2007/02/06 11:29:35 $
+ * Version: $Revision: 1.13.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,15 +70,7 @@ function windowStore(body, head, tree, files) {
 }
 
 
-function menuItem(name, link, target, rules){
-	this.name = name;
-	this.link = link;
-	this.target = target;
-	this.rules = rules;
-}
-
-
-//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24
+//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24          
 function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
@@ -108,7 +100,7 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
+function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState) {
 	if(path == "") {
 		path=vr.actDirectory;
 	}
@@ -142,7 +134,6 @@ function vars_index() {
 
 	this.userName;
 	this.resource = new Array();
-	this.menus = new Array();
 }
 
 
@@ -313,11 +304,11 @@ function handleContext(e) {
 
 	if (selectedResources.length > 1) {
 		// multi context menu
-		showContext(win.files, "multi", false);
+		getContextMenu();
 	} else {
 		// single context menu
 		if (active_mouse_id >= 0) {
-			showContext(win.files, active_mouse_id, true);
+			getContextMenu();
 		}
 	}
 	// stop event bubbling
@@ -329,220 +320,54 @@ function handleContext(e) {
 }
 
 
-// builds the HTML for a context menu (single or multi context menu)
-function showContext(doc, i, isSingleContext) {
+// makes an ajax request to get the context menu for the selected resource(s)
+function getContextMenu() {
 
-	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
-	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
-	var spanend      = "</span>";
-
-	var menu = "";
-	// the type id of the current context menu
-	var typeId;
-	// the resource name needed for single context menu
-	var resourceName;
-
-	var access = true;
-	if (isSingleContext) {
-		resourceName = getResourceAbsolutePath(i);
-		typeId = vi.liste[i].type;
-		if ((typeof vi.resource[typeId] == 'undefined') || (vi.resource[typeId].editable == false)) {
-			// the user has no access to this resource type
-			access = false;
-		}
-	} else {
-		// multi context menu uses special menu type ID
-		typeId = "multi";
-		if (vi.menus[typeId] == null) {
-			// no multi context menu defined, do not show menu
-			return;
-		}
-		// set resource list in hidden form field value
-		var resourceList = "";
+	// the list of resources
+	var resourceList = "";
+	if (selectedResources.length == 1) {
+		resourceList = getResourceAbsolutePath(active_mouse_id);
+	} else if (selectedResources.length > 1) {
+		// concatenate all selected resources
 		var isFirst = true;
-		for (i=0; i<selectedResources.length; i++) {
+		for (var i=0; i<selectedResources.length; i++) {
 			if (!isFirst) {
 				resourceList += "|";
 			}
 			resourceList += getResourceAbsolutePath(selectedResources[i]);
 			isFirst = false;
-
 		}
-		doc.forms["formmulti"].elements["resourcelist"].value = resourceList;
+		// set resource list in hidden form field value
+   		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
-
-	if (access) {
-		menu += "<div class=\"cm2\">";
-		menu += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">";
-
-		var lastWasSeparator = false;
-		var firstEntryWritten = false;
-		for (a = 0; a < vi.menus[typeId].items.length; a++) {
-			// 0:unchanged, 1:changed, 2:new, 3:deleted
-			var result = -1;
-
-			if (vi.menus[typeId].items[a].name == "-") {
-				result = 1;
-			} else if (vr.actProject == vr.onlineProject) {
-				// online project
-				if (isSingleContext) {
-					if (vi.menus[typeId].items[a].rules.charAt(0) == 'i') {
-						result = 2;
-					} else {
-						if (vi.menus[typeId].items[a].rules.charAt(0) == 'a') {
-							if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-							&& (vi.liste[i].linkType == 0)) {
-								// special case: resource without siblings
-								result = 2;
-							} else {
-								result = (typeId == 0)?3:4;
-							}
-						}
-					}
-				} else {
-					// multi context menu
-					result = 2;
-				}
-			} else {
-				// offline project
-				if (isSingleContext) {
-					if ((vi.liste[i].projectState != 5) && !vi.liste[i].isInsideCurrentProject) {
-						// if not publish lock and resource is from online project
-						if (vi.menus[typeId].items[a].rules.charAt(1) == 'i') {
-							result = (vi.menus[typeId].items[a].name == "-")?1:2;
-						} else {
-							if (vi.menus[typeId].items[a].rules.charAt(1) == 'a') {
-								if (vi.menus[typeId].items[a].name == "-") {
-									result = 1;
-								} else {
-									if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-									&& (vi.liste[i].linkType == 0)) {
-										// special case: resource without siblings
-										result = 2;
-									} else {
-										result = (typeId == 0)?3:4;
-									}
-								}
-							}
-						}
-					} else {
-						// if not publish lock and resource is in this project => we have to differ 4 cases
-						if ((vi.liste[i].projectState != 5) && (vi.liste[i].lockedBy == '') || (vi.liste[i].lockType == 5)) {
-							// resource is not locked...
-							if (autolock) {
-								// autolock is enabled
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 6);
-							} else {
-								// autolock is disabled
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 2);
-							}
-						} else {
-							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
-							isSharedLock = isSharedLock || (vi.liste[i].projectState == 5);
-							// TODO: this is hardcoded for commons/lockchange.jsp !! ...
-							if ((vi.liste[i].projectState == 5) && (vi.menus[typeId].items[a].link.indexOf("lockchange") >= 0)) {
-								// disable steal lock for publish locks
-								display = 'i';
-							} else if (vi.liste[i].lockedInProjectId == vr.actProject) {
-								// locked in this project from ...
-								if (vi.liste[i].lockedBy == vr.userName) {
-									// ... the current user ...
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-									} else {
-										// ... as exclusive lock
-										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 10);
-									}
-
-								} else {
-									// ... someone else
-									display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-								}
-							} else {
-								// locked in an other project ...
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-							}
-						}
-						if (display == 'i') {
-							result = 2;
-						} else {
-							if (display == 'a') {
-								if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-								&& (vi.liste[i].linkType == 0)) {
-									// special case: resource without siblings
-									result = 2;
-								} else {
-									result = (typeId == 0)?3:4;
-								}
-							}
-						}
-					}
-				} else {
-					// multi context menu
-					result = 3;
-				}
-			}
-			switch (result) {
-				case 1:
-					// separator line
-					if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[typeId].items.length - 1))) {
-						menu += "<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>";
-						lastWasSeparator = true;
-					}
-					break;
-				case 2:
-					// inactive entry
-					menu += "<tr><td>" + spanstartina + vi.menus[typeId].items[a].name + spanend + "</td></tr>";
-					lastWasSeparator = false;
-					firstEntryWritten = true;
-					break;
-				case 3:
-				case 4:
-					// active entry
-					var link;
-					if (isSingleContext) {
-						link = "href=\"" + vi.menus[typeId].items[a].link;
-						if (link.indexOf("?") > 0) {
-							link += "&";
-						} else {
-							link += "?";
-						}
-
-						link += "resource=" + resourceName + "\"";
-						if (vi.menus[typeId].items[a].target != null && vi.menus[typeId].items[a].target != "''") {
-							// href has a target set
-							link += " target=" + vi.menus[typeId].items[a].target;
-						}
-
-						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
-					} else {
-						// multi context menu
-						link = "href=\"javascript:top.submitMultiAction('" + vi.menus[typeId].items[a].link + "');\"";
-						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
-					}
-					lastWasSeparator = false;
-					firstEntryWritten = true;
-					break;
-				default:
-					// alert("Undefined result for menu " + a);
-					break;
-			}
-		} // end for ...
-		menu += "</table></div>";
-
-		var el = doc.getElementById("contextmenu");
-		el.innerHTML = menu;
-		var x = 12;
-		el.style.left = x + "px";
-		el.style.visibility = "visible";
-		// calculate menu y position after setting visibility to avoid display errors
-		var y = getMenuPosY(doc, active_mouse_id);
-		el.style.top =  y + "px";
-	} // end if (access)
-	last_id = active_mouse_id;
-	contextOpen = true;
+	// ajax call	
+    makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList, 'showContextMenu');
 }
+
+// builds the HTML for a context menu (single or multi context menu)
+function showContextMenu(msg, state) {
+
+    if (state == 'ok') {
+        var menu = msg;
+		if (menu.length > 0) {
+			var el = win.files.getElementById("contextmenu");
+			el.innerHTML = "";
+			var x = 12;
+			el.style.left = x + "px";
+			el.style.visibility = "visible";
+			// calculate menu y position after setting visibility to avoid display errors
+			var y = getMenuPosY(win.files, active_mouse_id);
+			el.style.top =  y + "px";
+			el.innerHTML = menu;
+		} // end if (access)
+    	last_id = active_mouse_id;
+	    contextOpen = true;
+	} else if (state != 'wait') {
+		// an error occurred
+		alert('state:' + state + '\nmessage:' + msg);
+	}
+}
+
 
 
 // closes a context menu
@@ -879,11 +704,6 @@ function printList(wo) {
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
 			vi_text = vi.resource[plainresid].text;
-		} else if (vi.resource[vi.liste[i].type].editable == false) {
-			// type exists but the user has no access to this resource type
-			noaccess = true;
-			vi_icon = vi.resource[plainresid].icon;
-			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;
@@ -1520,13 +1340,6 @@ function menu(nr) {
 	this.nr = nr;
 	this.items = new Array();
 }
-
-
-function addMenuEntry(nr,text,link,target,rules){
-	if(!vi.menus[nr])vi.menus[nr] = new menu(vi.menus.length);
-	vi.menus[nr].items[vi.menus[nr].items.length] = new menuItem(text,link,target,rules);
-}
-
 
 var treewin = null;
 var treeForm = null;
