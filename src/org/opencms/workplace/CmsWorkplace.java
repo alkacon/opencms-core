@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/12/20 14:02:24 $
- * Version: $Revision: 1.156.4.13 $
+ * Date   : $Date: 2007/02/06 15:08:13 $
+ * Version: $Revision: 1.156.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
@@ -57,7 +56,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
@@ -86,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.13 $ 
+ * @version $Revision: 1.156.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -519,9 +517,6 @@ public abstract class CmsWorkplace {
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
 
-        // save the editable resource types for the current user
-        settings.setResourceTypes(initWorkplaceResourceTypes(cms));
-
         return settings;
     }
 
@@ -535,33 +530,6 @@ public abstract class CmsWorkplace {
 
         // save the workplace settings in the session
         session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
-    }
-
-    /**
-     * Initializes a Map with all editable resource types for the current user.<p>
-     * 
-     * @param cms the CmsObject
-     * @return all editable resource types in a map with the resource type id as key value
-     */
-    private static Map initWorkplaceResourceTypes(CmsObject cms) {
-
-        Map resourceTypes = new HashMap();
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types and check which types can be displayed and edited for the user
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            // get the settings for the resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // determine if this resource type is editable for the current user
-                CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
-                if (permissions.requiresWritePermission()) {
-                    // user is allowed to edit this resource type
-                    resourceTypes.put(new Integer(type.getTypeId()), type);
-                }
-            }
-        }
-        return resourceTypes;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2006/12/14 12:23:30 $
- * Version: $Revision: 1.23.4.5 $
+ * Date   : $Date: 2007/02/06 15:08:13 $
+ * Version: $Revision: 1.23.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.5 $ 
+ * @version $Revision: 1.23.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -445,8 +446,15 @@ public class CmsTree extends CmsWorkplace {
             while (i.hasNext()) {
                 CmsResource resource = (CmsResource)i.next();
                 grey = !CmsProject.isInsideProject(projectResources, resource);
-                if ((!grey) && (!getSettings().getResourceTypes().containsKey(new Integer(resource.getTypeId())))) {
-                    grey = true;
+                if (!grey) {
+                    try {
+                        grey = !OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                            OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName()).isEditable(
+                            getCms(),
+                            resource);
+                    } catch (CmsLoaderException e) {
+                        grey = true;
+                    }
                 }
 
                 result.append(getNode(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2006/12/14 09:58:17 $
- * Version: $Revision: 1.57.4.3 $
+ * Date   : $Date: 2007/02/06 15:08:13 $
+ * Version: $Revision: 1.57.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57.4.3 $ 
+ * @version $Revision: 1.57.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,6 @@ public class CmsWorkplaceSettings {
     private String m_permissionDetailView;
     private int m_project;
     private CmsPublishList m_publishList;
-    private Map m_resourceTypes;
     private CmsToolUserData m_toolUserData;
     private Map m_treeSite;
     private Map m_treeType;
@@ -92,7 +91,6 @@ public class CmsWorkplaceSettings {
         m_explorerResource = new HashMap();
         m_treeType = new HashMap();
         m_treeSite = new HashMap();
-        m_resourceTypes = new HashMap();
         m_frameUris = new HashMap();
         m_lastUsedGalleries = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
@@ -301,16 +299,6 @@ public class CmsWorkplaceSettings {
     public CmsPublishList getPublishList() {
 
         return m_publishList;
-    }
-
-    /**
-     * Returns a Map with all visible resource types for the current user, with the IDs as key values.<p>
-     * 
-     * @return Map with all visible resource types
-     */
-    public Map getResourceTypes() {
-
-        return m_resourceTypes;
     }
 
     /**
@@ -607,16 +595,6 @@ public class CmsWorkplaceSettings {
     public void setPublishList(CmsPublishList publishList) {
 
         m_publishList = publishList;
-    }
-
-    /**
-     * Sets all visible resource types for the current user, with the IDs as key values.<p>
-     * 
-     * @param value Map with all visible resource types
-     */
-    public void setResourceTypes(Map value) {
-
-        m_resourceTypes = value;
     }
 
     /**

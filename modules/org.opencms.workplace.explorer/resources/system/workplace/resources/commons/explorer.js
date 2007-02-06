@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/02/06 11:29:35 $
- * Version: $Revision: 1.13.4.18 $
+ * Date   : $Date: 2007/02/06 15:08:13 $
+ * Version: $Revision: 1.13.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,8 @@ function windowStore(body, head, tree, files) {
 }
 
 
-//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24          
-function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
+//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24            25
+function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable){
 	this.name = name;
 	this.path = path;
 	this.title = decodeURIComponent(title);
@@ -92,19 +92,20 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.lockType = lockType;
 	this.lockedInProjectName = lockedInProjectName;
 	this.lockedInProjectId = lockedInProjectId;
-	this.isInsideCurrentProject = (isInsideCurrentProject=='I') ? true : false;
+	this.isInsideCurrentProject = (isInsideCurrentProject=='I');
 	this.workflowState = workflowState;
 	this.sysLockInfo = sysLockInfo;
 	this.projectState = projectState;
-	this.isFolder = (size < 0) ? true : false;
+	this.editable = (editable == 1);
+	this.isFolder = (size < 0);
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState) {
+function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable) {
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState);
+	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable);
 }
 
 
@@ -704,6 +705,11 @@ function printList(wo) {
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
 			vi_text = vi.resource[plainresid].text;
+		} else if (!vi.liste[i].editable) {
+			// the user has no access to this resource type
+			noaccess = true;
+			vi_icon = vi.resource[plainresid].icon;
+			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;

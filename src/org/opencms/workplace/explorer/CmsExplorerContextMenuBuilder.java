@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/02/06 11:29:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/06 15:08:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -52,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -126,7 +124,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             } catch (Throwable e) {
                 return "";
             }
-            if (settings == null || !isEditable(getCms(), settings)) {
+            if (settings == null || !settings.isEditable(getCms(), resUtil.getResource())) {
                 // the user has no access to this resource type
                 return "";
             }
@@ -371,21 +369,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);
-    }
-
-    /**
-     * Checks if the current user has write permissions on the given settings.<p>
-     * 
-     * @param cms the current cms context
-     * @param settings the settings to check
-     * 
-     * @return <code>true</code> if the current user has write permissions on the given settings
-     */
-    private boolean isEditable(CmsObject cms, CmsExplorerTypeSettings settings) {
-
-        // determine if this resource type is editable for the current user
-        CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
-        return permissions.requiresWritePermission();
     }
 
     /**
