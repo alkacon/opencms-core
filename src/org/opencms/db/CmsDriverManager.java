@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/05 16:51:41 $
- * Version: $Revision: 1.570.2.57 $
+ * Date   : $Date: 2007/02/06 17:02:40 $
+ * Version: $Revision: 1.570.2.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -720,6 +720,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsGroup virtualGroup = (CmsGroup)it.next();
                 // here we say readroles = true, to prevent an unlimited recursive calls
                 addUserToGroup(dbc, username, virtualGroup.getName(), true);
+            }
+            // if setting a role that is not the workplace user role ensure the user is also wp user
+            CmsRole wpUser = CmsRole.WORKPLACE_USER.forOrgUnit(group.getOuFqn());
+            if (!role.equals(wpUser) && !userInGroup(dbc, username, wpUser.getGroupName(), true)) {
+                addUserToGroup(dbc, username, wpUser.getGroupName(), true);
             }
         }
 
