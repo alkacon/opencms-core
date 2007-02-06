@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/06 15:55:08 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -192,13 +192,30 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
      */
     protected List getRoles() throws CmsException {
 
-        return OpenCms.getRoleManager().getRolesOfUser(
+        List allRoles = OpenCms.getRoleManager().getRolesOfUser(
+            getCms(),
+            getCms().readUser(new CmsUUID(getParamUserid())).getName(),
+            "",
+            true,
+            true,
+            false);
+
+        List childRoles = OpenCms.getRoleManager().getRolesOfUser(
             getCms(),
             getCms().readUser(new CmsUUID(getParamUserid())).getName(),
             getParamOufqn(),
-            true,
             false,
-            true);
+            false,
+            false);
+
+        Iterator itChildRoles = childRoles.iterator();
+        while (itChildRoles.hasNext()) {
+            CmsRole role = (CmsRole)itChildRoles.next();
+            if (!allRoles.contains(role)) {
+                allRoles.add(role);
+            }
+        }
+        return allRoles;
     }
 
     /**
