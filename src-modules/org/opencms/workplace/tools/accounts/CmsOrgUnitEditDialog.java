@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6
  */
@@ -167,34 +167,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
-
-    //    protected String defaultActionHtmlStart() throws JspException {
-    //    
-    //        // TODO Auto-generated method stub
-    //        return super.defaultActionHtmlStart();
-    //    }
-    //
-    //    /**
-    //     * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
-    //     */
-    //    public String dialogButtonsCustom() {
-    //
-    //        boolean onlyDisplay = true;
-    //        Iterator it = m_widgets.iterator();
-    //        while (it.hasNext()) {
-    //            CmsWidgetDialogParameter wdp = (CmsWidgetDialogParameter)it.next();
-    //            if (!(wdp.getWidget() instanceof CmsDisplayWidget)) {
-    //                onlyDisplay = false;
-    //                break;
-    //            }
-    //        }
-    //        if (!onlyDisplay) {
-    //            // this is a single page dialog, create common buttons
-    //            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
-    //        }
-    //        // this is a display only dialog
-    //        return "";
-    //    }
 
     /**
      * Returns the sub organizational unit fqn parameter value.<p>

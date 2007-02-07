@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.5 $ 
+ * @version $Revision: 1.17.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +102,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
         try {
             return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
                 + " ("
+                + CmsOrganizationalUnit.SEPARATOR
                 + getParamOufqn()
                 + ")";
         } catch (CmsException e) {
@@ -165,13 +167,13 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#defineWidgets()
      *-/
-    protected void defineWidgets() {
+     protected void defineWidgets() {
 
-        super.defineWidgets();
-        addWidget(new CmsWidgetDialogParameter(this, "addInfo", PAGES[0], new CmsDisplayWidget()/*, getAdditionalInfos()*-/));
-    }
+     super.defineWidgets();
+     addWidget(new CmsWidgetDialogParameter(this, "addInfo", PAGES[0], new CmsDisplayWidget()/*, getAdditionalInfos()*-/));
+     }
 
-    /**
+     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getListClass()
      */
     protected String getListClass() {
@@ -190,12 +192,12 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getPageArray()
      *-/
-    protected String[] getPageArray() {
+     protected String[] getPageArray() {
 
-        return new String[] {"page1", "page2"};
-    }
+     return new String[] {"page1", "page2"};
+     }
 
-    /**
+     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#isEditable(org.opencms.file.CmsUser)
      */
     protected boolean isEditable(CmsUser user) {

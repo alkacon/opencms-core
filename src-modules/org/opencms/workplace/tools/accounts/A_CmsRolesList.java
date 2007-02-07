@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRolesList.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListFormatter;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -242,61 +241,6 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
 
         // adds a role icon
         CmsListDirectAction dirAction = new CmsListDefaultAction(LIST_ACTION_ICON) {
-
-            /**
-             * @see org.opencms.workplace.list.A_CmsListAction#buttonHtml()
-             */
-            public String buttonHtml() {
-
-                if (!isVisible()) {
-                    return "";
-                }
-
-                String buttonHtml = "";
-                try {
-                    CmsRole role = CmsRole.valueOf(getCms().readGroup(getItem().getId()));
-
-                    List roles = getList().getAllContent();
-                    Iterator itRoles = roles.iterator();
-                    List roleObjects = new ArrayList();
-                    while (itRoles.hasNext()) {
-                        CmsListItem listItem = (CmsListItem)itRoles.next();
-                        roleObjects.add(CmsRole.valueOf(getCms().readGroup((String)listItem.get(LIST_COLUMN_GROUP_NAME))));
-                    }
-
-                    while (role.getParentRole() != null && roleObjects.contains(role.getParentRole())) {
-                        buttonHtml += A_CmsHtmlIconButton.defaultButtonHtml(
-                            resolveButtonStyle(),
-                            getId() + getItem().getId(),
-                            getId(),
-                            resolveName(getLocale()),
-                            resolveHelpText(getLocale()),
-                            isEnabled(),
-                            "tree/empty.gif",
-                            null,
-                            resolveOnClic(getLocale()),
-                            getColumnForTexts() == null,
-                            null);
-                        role = role.getParentRole();
-                    }
-
-                    buttonHtml += A_CmsHtmlIconButton.defaultButtonHtml(
-                        resolveButtonStyle(),
-                        getId() + getItem().getId(),
-                        getId(),
-                        resolveName(getLocale()),
-                        resolveHelpText(getLocale()),
-                        isEnabled(),
-                        getIconPath(),
-                        null,
-                        resolveOnClic(getLocale()),
-                        getColumnForTexts() == null,
-                        null);
-                    return buttonHtml;
-                } catch (CmsException e) {
-                    return "";
-                }
-            }
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()

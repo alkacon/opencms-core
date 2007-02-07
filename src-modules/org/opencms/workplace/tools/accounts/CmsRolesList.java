@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/02/05 09:14:28 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -246,6 +247,12 @@ public class CmsRolesList extends A_CmsRolesList {
 
         super.setColumns(metadata);
 
+        // create default overview action
+        CmsListDefaultAction defOverviewAction = new CmsListDefaultAction(LIST_DEFACTION_OVERVIEW);
+        defOverviewAction.setName(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_DEFACTION_OVERVIEW_NAME_0));
+        defOverviewAction.setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_DEFACTION_OVERVIEW_HELP_0));
+        metadata.getColumnDefinition(LIST_COLUMN_NAME).addDefaultAction(defOverviewAction);
+
         // create column for edit
         CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
         editCol.setName(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_0));
@@ -262,12 +269,12 @@ public class CmsRolesList extends A_CmsRolesList {
         // add it to the list definition
         metadata.addColumn(editCol, 1);
     }
-    
+
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
      */
     protected boolean includeOuDetails() {
-    
+
         return false;
     }
 
@@ -277,7 +284,7 @@ public class CmsRolesList extends A_CmsRolesList {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
-        
+
         // add users details
         CmsListItemDetails usersDetails = new CmsListItemDetails(LIST_DETAIL_USERS);
         usersDetails.setAtColumn(LIST_COLUMN_NAME);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -194,7 +194,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
             CmsListItem item = getList().newItem(childOrgUnit.getName());
-            item.set(LIST_COLUMN_NAME, childOrgUnit.getName());
+            item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription());
             ret.add(item);
         }

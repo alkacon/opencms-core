@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.4 $ 
+ * @version $Revision: 1.16.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,7 +270,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
-            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
+            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }

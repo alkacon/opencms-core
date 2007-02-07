@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.18.4.5 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.18.4.6 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -55,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.18.4.5 $ 
+ * @version $Revision: 1.18.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,7 +259,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
-            item.set(LIST_COLUMN_ORGUNIT, group.getOuFqn());
+            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + group.getOuFqn());
             ret.add(item);
         }
         return ret;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2007/02/07 15:01:35 $
- * Version: $Revision: 1.3.4.6 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.3.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.6 $ 
+ * @version $Revision: 1.3.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,9 +112,6 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_PARENT = "cp";
-
-    /** list column id constant. */
     public static final String LIST_COLUMN_USERS = "cu";
 
     /** list action id constant. */
@@ -121,6 +119,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_CHILDS = "dc";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_PARENT = "dp";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_SET_PERM = "dsp";
@@ -155,7 +156,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
      */
     public A_CmsGroupsList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
-        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, LIST_COLUMN_DISPLAY);
+        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, null);
     }
 
     /**
@@ -334,6 +335,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                         }
                         html.append("\n");
                     }
+                } else if (detailId.equals(LIST_DETAIL_PARENT)) {
+                    // parent
+                    CmsGroup parent = getCms().readGroup(getCms().readGroup(groupName).getParentId());
+                    html.append(parent.getName());
                 } else if (detailId.equals(LIST_DETAIL_SET_PERM)) {
                     // folder permissions
                     String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
@@ -401,11 +406,6 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
-            try {
-                item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
-            } catch (Exception e) {
-                // ignore
-            }
             ret.add(item);
         }
 
@@ -540,7 +540,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         // create column for display name
         CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
         displayCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
-        displayCol.setWidth("20%");
+        displayCol.setWidth("35%");
 
         // create default edit action
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
@@ -554,14 +554,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         // add column for description
         CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
         descriptionCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_DESCRIPTION_0));
-        descriptionCol.setWidth("60%");
+        descriptionCol.setWidth("65%");
         metadata.addColumn(descriptionCol);
-
-        // add column for parent
-        CmsListColumnDefinition parentCol = new CmsListColumnDefinition(LIST_COLUMN_PARENT);
-        parentCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_PARENT_0));
-        parentCol.setWidth("20%");
-        metadata.addColumn(parentCol);
     }
 
     /**
@@ -609,6 +603,19 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0)));
         metadata.addItemDetails(childDetails);
 
+        // add parent group details
+        CmsListItemDetails parentDetails = new CmsListItemDetails(LIST_DETAIL_PARENT);
+        parentDetails.setAtColumn(LIST_COLUMN_DISPLAY);
+        parentDetails.setVisible(false);
+        parentDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_PARENT_NAME_0));
+        parentDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_PARENT_HELP_0));
+        parentDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_NAME_0));
+        parentDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_HELP_0));
+        parentDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0));
+        parentDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0)));
+        metadata.addItemDetails(parentDetails);
+
         // add folder permission details
         CmsListItemDetails setPermDetails = new CmsListItemDetails(LIST_DETAIL_SET_PERM);
         setPermDetails.setAtColumn(LIST_COLUMN_DISPLAY);
@@ -621,6 +628,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         setPermDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0)));
         metadata.addItemDetails(setPermDetails);
+
+        // makes the list searchable
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
+        metadata.setSearchAction(searchAction);
     }
 
     /**

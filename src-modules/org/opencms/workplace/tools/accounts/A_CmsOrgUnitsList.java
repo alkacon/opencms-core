@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/02 08:28:38 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -148,7 +148,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
                 while (itItems.hasNext()) {
                     item = (CmsListItem)itItems.next();
                     String ouFqn = item.get(LIST_COLUMN_NAME).toString();
-                    OpenCms.getOrgUnitManager().deleteOrganizationalUnit(getCms(), ouFqn);
+                    OpenCms.getOrgUnitManager().deleteOrganizationalUnit(getCms(), ouFqn.substring(1));
                 }
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(
@@ -168,7 +168,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
         String ouFqn = getSelectedItem().get(LIST_COLUMN_NAME).toString();
         Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn.substring(1));
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit user screen
@@ -263,7 +263,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
             CmsListItem item = getList().newItem(childOrgUnit.getName());
-            item.set(LIST_COLUMN_NAME, childOrgUnit.getName());
+            item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription());
             ret.add(item);
         }

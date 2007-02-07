@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/07 15:01:35 $
- * Version: $Revision: 1.9.4.14 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.9.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.14 $ 
+ * @version $Revision: 1.9.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -382,6 +382,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_PARENT_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_PARENT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_PARENT_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_PARENT_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -398,6 +404,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_OTHEROU_NAME_0 = "GUI_GROUPS_DETAIL_OTHEROU_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_PARENT_NAME_0 = "GUI_GROUPS_DETAIL_PARENT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SET_PERM_NAME_0 = "GUI_GROUPS_DETAIL_SET_PERM_NAME_0";
@@ -419,6 +428,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_PARENT_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_PARENT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_PARENT_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_PARENT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0";
@@ -506,6 +521,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_LIST_COLS_NAME_0 = "GUI_GROUPS_LIST_COLS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_LIST_COLS_ORGUNIT_0 = "GUI_GROUPS_LIST_COLS_ORGUNIT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_LIST_COLS_PARENT_0 = "GUI_GROUPS_LIST_COLS_PARENT_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitBean.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.security.CmsOrganizationalUnit;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -113,7 +115,7 @@ public class CmsOrgUnitBean {
      */
     public String getParentOu() {
 
-        return m_parentOu;
+        return CmsOrganizationalUnit.SEPARATOR + m_parentOu;
     }
 
     /**
@@ -163,6 +165,9 @@ public class CmsOrgUnitBean {
      */
     public void setParentOu(String parentOu) {
 
+        if (parentOu.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            parentOu = parentOu.substring(1);
+        }
         m_parentOu = parentOu;
     }
 

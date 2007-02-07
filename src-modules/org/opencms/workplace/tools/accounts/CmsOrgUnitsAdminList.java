@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/02/01 10:29:28 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -131,11 +131,11 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             ouFqn = "";
         }
         Map params = new HashMap();
-        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ouFqn.substring(1));
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
         if (getParamListAction().equals(LIST_ACTION_OVERVIEW)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit/overview", params);
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit", params);
         } else if (getParamListAction().equals(LIST_ACTION_USER)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit/users", params);
@@ -260,7 +260,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         // create default overview action
         CmsListDefaultAction defOverviewAction = new CmsListDefaultAction(LIST_DEFACTION_OVERVIEW);
         defOverviewAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_DEFACTION_OVERVIEW_NAME_0));
-        defOverviewAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_DEFACTION_OVERVIEW_HELP_0));
+        defOverviewAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_OVERVIEW_HELP_0));
         descCol.addDefaultAction(defOverviewAction);
         // add it to the list definition
         metadata.addColumn(descCol);

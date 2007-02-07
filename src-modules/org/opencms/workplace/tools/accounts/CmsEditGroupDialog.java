@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/01/31 16:19:35 $
- * Version: $Revision: 1.18.4.2 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.18.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18.4.2 $ 
+ * @version $Revision: 1.18.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +84,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
         try {
             return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
                 + " ("
+                + CmsOrganizationalUnit.SEPARATOR
                 + getParamOufqn()
                 + ")";
         } catch (CmsException e) {

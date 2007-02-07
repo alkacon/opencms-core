@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6
  */
@@ -239,7 +239,10 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                 if (getItem() != null) {
                     try {
                         String userName = getItem().get(LIST_COLUMN_NAME).toString();
-                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(
+                            getWp().getCms(),
+                            ((A_CmsOrgUnitUsersList)getWp()).getParamOufqn(),
+                            false);
                         Iterator itCurrentUsers = currentUsers.iterator();
                         while (itCurrentUsers.hasNext()) {
                             CmsUser user = (CmsUser)itCurrentUsers.next();
@@ -331,7 +334,10 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                 if (getItem() != null) {
                     try {
                         String userName = getItem().get(LIST_COLUMN_NAME).toString();
-                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+                        List currentUsers = OpenCms.getOrgUnitManager().getUsers(
+                            getWp().getCms(),
+                            ((A_CmsOrgUnitUsersList)getWp()).getParamOufqn(),
+                            false);
                         Iterator itCurrentUsers = currentUsers.iterator();
                         while (itCurrentUsers.hasNext()) {
                             CmsUser user = (CmsUser)itCurrentUsers.next();

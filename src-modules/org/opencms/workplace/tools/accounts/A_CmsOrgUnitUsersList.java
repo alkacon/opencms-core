@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/07 17:06:11 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -53,7 +54,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6
  */
@@ -135,7 +136,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
         return m_ouUsers;
     }
-    
+
     /**
      * Returns the right icon path for the given list item.<p>
      * 
@@ -225,7 +226,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
             item.set(LIST_COLUMN_NAME, user.getSimpleName());
-            item.set(LIST_COLUMN_ORGUNIT, user.getOuFqn());
+            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
             item.set(LIST_COLUMN_FULLNAME, user.getFullName());
             ret.add(item);
         }
