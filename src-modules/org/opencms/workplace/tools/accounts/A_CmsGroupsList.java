@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.3.4.5 $
+ * Date   : $Date: 2007/02/07 15:01:35 $
+ * Version: $Revision: 1.3.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -72,7 +74,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.5 $ 
+ * @version $Revision: 1.3.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -321,7 +323,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     // childs
                     Iterator itChilds = getCms().getChild(groupName).iterator();
                     while (itChilds.hasNext()) {
-                        CmsGroup group = (CmsGroup)itGroups.next();
+                        CmsGroup group = (CmsGroup)itChilds.next();
                         if (group.getOuFqn().equals(getParamOufqn())) {
                             html.append(group.getSimpleName());
                         } else {
@@ -651,5 +653,15 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
+        OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getName();
     }
 }

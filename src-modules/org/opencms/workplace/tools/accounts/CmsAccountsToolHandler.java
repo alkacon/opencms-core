@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/02/02 17:01:05 $
- * Version: $Revision: 1.8.4.11 $
+ * Date   : $Date: 2007/02/07 15:01:35 $
+ * Version: $Revision: 1.8.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.CmsDefaultToolHandler;
 
@@ -50,7 +51,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.11 $ 
+ * @version $Revision: 1.8.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +65,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
     /** Edit file path constant. */
     private static final String EDIT_FILE = "/system/workplace/admin/accounts/unit_edit.jsp";
+
+    /** Edit group users file path constant. */
+    private static final String GROUPUSERS_FILE = "/system/workplace/admin/accounts/group_users.jsp";
 
     /** New file path constant. */
     private static final String NEW_FILE = "/system/workplace/admin/accounts/unit_new.jsp";
@@ -89,6 +93,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     public String getDisabledHelpText() {
 
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
+            if (getLink().equals(GROUPUSERS_FILE)) {
+                return "${key." + Messages.GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0 + "}";
+            }
             return "${key." + Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_DELETE_HELP_0 + "}";
         }
         return super.getDisabledHelpText();
@@ -99,6 +106,14 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
      */
     public boolean isEnabled(CmsWorkplace wp) {
 
+        if (getLink().equals(GROUPUSERS_FILE)) {
+            String groupId = wp.getJsp().getRequest().getParameter(A_CmsEditGroupDialog.PARAM_GROUPID);
+            try {
+                return !wp.getCms().readGroup(new CmsUUID(groupId)).isVirtual();
+            } catch (Exception e) {
+                return false;
+            }
+        }
         if (!getLink().equals(ASSIGN_FILE)) {
             wp.getJsp().getRequest().getSession().removeAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS);
             wp.getJsp().getRequest().getSession().removeAttribute(A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);

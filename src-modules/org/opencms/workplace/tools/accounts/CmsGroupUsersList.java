@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.8.4.4 $
+ * Date   : $Date: 2007/02/07 15:01:35 $
+ * Version: $Revision: 1.8.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8.4.4 $ 
+ * @version $Revision: 1.8.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,5 +235,16 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         metadata.addColumn(stateCol);
         // keep the id
         m_removeActionIds.add(stateAction.getId());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        super.validateParamaters();
+        if (getCms().readGroup(new CmsUUID(getParamGroupid())).isVirtual()) {
+            throw new Exception();
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/05 15:51:49 $
- * Version: $Revision: 1.9.4.13 $
+ * Date   : $Date: 2007/02/07 15:01:35 $
+ * Version: $Revision: 1.9.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.13 $ 
+ * @version $Revision: 1.9.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1478,6 +1478,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERSORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_USERSORGUNIT_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0 = "GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.accounts.messages";
