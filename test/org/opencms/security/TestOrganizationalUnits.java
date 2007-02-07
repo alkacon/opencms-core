@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/05 08:11:26 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/02/07 16:58:07 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -337,17 +337,11 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         // check default users & groups for the new ou
         List groups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), false);
-        assertEquals(4, groups.size());
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertEquals(1, groups.size());
         assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
         groups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), true);
-        assertEquals(4, groups.size());
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertEquals(1, groups.size());
         assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(groups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
         assertTrue(OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), false).isEmpty());
         assertTrue(OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), true).isEmpty());
 
@@ -363,7 +357,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(rootGroups.contains(cms.readGroup("group3")));
 
         List rootSubGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), true);
-        assertEquals(11, rootSubGroups.size());
+        assertEquals(8, rootSubGroups.size());
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers())));
         assertTrue(rootSubGroups.contains(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers())));
@@ -371,12 +365,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(rootSubGroups.contains(cms.readGroup("group1")));
         assertTrue(rootSubGroups.contains(cms.readGroup("group2")));
         assertTrue(rootSubGroups.contains(cms.readGroup("group3")));
-        assertTrue(rootSubGroups.contains(cms.readGroup(ou.getName()
-            + OpenCms.getDefaultUsers().getGroupAdministrators())));
         assertTrue(rootSubGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(rootSubGroups.contains(cms.readGroup(ou.getName()
-            + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(rootSubGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
 
         List rootUsers = OpenCms.getOrgUnitManager().getUsers(cms, rootOu.getName(), false);
         assertEquals(5, rootUsers.size());
@@ -395,6 +384,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(rootSubUsers.contains(cms.readUser("test2")));
 
         cms.removeUserFromGroup("test1", "Administrators");
+        cms.removeUserFromGroup("test1", "Users");
         assertLock(cms, "/system/", CmsLockType.EXCLUSIVE, cms.readUser("test1"));
         cms.changeLock("/system/");
         cms.unlockResource("/system/");
@@ -487,7 +477,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         }
         // check all roles
         myRoles = OpenCms.getRoleManager().getRoles(cms, rootOu.getName(), true);
-        assertEquals(CmsRole.getSystemRoles().size() + getOuRoles(flOu.getName()).size() + getOuRoles(dlOu.getName()).size(), myRoles.size());
+        assertEquals(CmsRole.getSystemRoles().size()
+            + getOuRoles(flOu.getName()).size()
+            + getOuRoles(dlOu.getName()).size(), myRoles.size());
         List rootRoles = new ArrayList(CmsRole.getSystemRoles().size());
         List flRoles = new ArrayList(getOuRoles(flOu.getName()).size());
         List dlRoles = new ArrayList(getOuRoles(dlOu.getName()).size());
@@ -656,25 +648,13 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(rootSubusers.contains(cms.readUser("test/test2/test2")));
 
         List ouGroups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), false);
-        assertEquals(4, ouGroups.size());
-        assertTrue(ouGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertEquals(1, ouGroups.size());
         assertTrue(ouGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(ouGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(ouGroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
 
         List ouSubgroups = OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), true);
-        assertEquals(8, ouSubgroups.size());
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupAdministrators())));
+        assertEquals(2, ouSubgroups.size());
         assertTrue(ouSubgroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou.getName()
-            + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou2.getName()
-            + OpenCms.getDefaultUsers().getGroupAdministrators())));
         assertTrue(ouSubgroups.contains(cms.readGroup(ou2.getName() + OpenCms.getDefaultUsers().getGroupUsers())));
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou2.getName()
-            + OpenCms.getDefaultUsers().getGroupProjectmanagers())));
-        assertTrue(ouSubgroups.contains(cms.readGroup(ou2.getName() + OpenCms.getDefaultUsers().getGroupGuests())));
 
         ouUsers = OpenCms.getOrgUnitManager().getUsers(cms, ou.getName(), false);
         assertEquals(1, ouUsers.size());
@@ -867,14 +847,26 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         roleMan.addUserToRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName()), user.getName());
         // check role in the given ou
         assertTrue(roleMan.hasRole(cms, user.getName(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).size());
-        assertTrue(((CmsRole)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).get(0)).equals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).size());
-        assertTrue(((CmsRole)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).get(0)).equals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).size());
-        assertTrue(((CmsRole)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).get(0)).equals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).size());
-        assertTrue(((CmsRole)roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).get(0)).equals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).contains(
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, false, false).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit(ou.getName())));
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).contains(
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit(ou.getName())));
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).contains(
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit(ou.getName())));
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).contains(
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, true, false).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit(ou.getName())));
         assertEquals(
             1,
             roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName()), false, false).size());
@@ -899,8 +891,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(roleMan.hasRole(cms, user.getName(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou2.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, false, false).isEmpty());
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, true, false).isEmpty());
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, false, false).size());
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, true, false).size());
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, false, false).size());
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, true, false).size());
         assertEquals(
             0,
             roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou2.getName()), false, false).size());
@@ -913,8 +905,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou2.getName()), true, true).isEmpty());
         // check role in higher ou
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(rootOu.getName())));
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
-        assertTrue(((CmsRole)roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).get(0)).equals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).contains(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), false, false, false).isEmpty());
         assertEquals(
             1,
@@ -1072,7 +1064,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         CmsUser user = cms.readUser("test/test1");
 
         // check preconditions
-        assertEquals(3, OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
+        assertEquals(
+            3,
+            OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
 
         cms.loginUser(user.getName(), "test1");
         List ous = OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
@@ -1097,7 +1091,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit("test3/"), user.getName());
 
         // check the result
-        assertEquals(4, OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
+        assertEquals(
+            4,
+            OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true).size());
 
         cms.loginUser(user.getName(), "test1");
         ous = OpenCms.getRoleManager().getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true);
@@ -1382,16 +1378,16 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(1, OpenCms.getOrgUnitManager().getUsers(cms, "test/", false).size());
         assertEquals(2, OpenCms.getOrgUnitManager().getUsers(cms, "test/", true).size());
 
-        assertEquals(4, OpenCms.getOrgUnitManager().getGroups(cms, "test/", false).size());
-        assertEquals(8, OpenCms.getOrgUnitManager().getGroups(cms, "test/", true).size());
+        assertEquals(1, OpenCms.getOrgUnitManager().getGroups(cms, "test/", false).size());
+        assertEquals(2, OpenCms.getOrgUnitManager().getGroups(cms, "test/", true).size());
         // try to create another group 'group1' in the test ou 
         cms.createGroup("test/group1", "test group", 0, null);
 
         assertEquals(7, OpenCms.getOrgUnitManager().getGroups(cms, "", false).size());
-        assertEquals(20, OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
+        assertEquals(11, OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
 
-        assertEquals(5, OpenCms.getOrgUnitManager().getGroups(cms, "test", false).size());
-        assertEquals(9, OpenCms.getOrgUnitManager().getGroups(cms, "test", true).size());
+        assertEquals(2, OpenCms.getOrgUnitManager().getGroups(cms, "test", false).size());
+        assertEquals(3, OpenCms.getOrgUnitManager().getGroups(cms, "test", true).size());
         try {
             // try to create another group 'group1' in the /test ou 
             cms.createGroup("test/group1", "test group", 0, null);
@@ -1399,8 +1395,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         } catch (CmsVfsException e) {
             // ok, ignore
         }
-        assertEquals(5, OpenCms.getOrgUnitManager().getGroups(cms, "test", false).size());
-        assertEquals(9, OpenCms.getOrgUnitManager().getGroups(cms, "test", true).size());
+        assertEquals(2, OpenCms.getOrgUnitManager().getGroups(cms, "test", false).size());
+        assertEquals(3, OpenCms.getOrgUnitManager().getGroups(cms, "test", true).size());
 
         cms.addUserToGroup("test/test1", "test/group1");
 
@@ -1416,13 +1412,13 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(cms.getGroupsOfUser("test1", false).contains(cms.readGroup("test/group1")));
 
         assertTrue(cms.getUsersOfGroup("group1").isEmpty());
-        assertEquals(7, cms.getGroupsOfUser("test/test1", true).size());
+        assertEquals(3, cms.getGroupsOfUser("test/test1", true).size());
         assertTrue(cms.getGroupsOfUser("test/test1", true).contains(cms.readGroup("test/group1")));
         // add user of 1st level ou to group of root ou
         cms.addUserToGroup("test/test1", "group1");
         assertEquals(1, cms.getUsersOfGroup("group1").size());
         assertTrue(cms.getUsersOfGroup("group1").contains(cms.readUser("test/test1")));
-        assertEquals(8, cms.getGroupsOfUser("test/test1", true).size());
+        assertEquals(4, cms.getGroupsOfUser("test/test1", true).size());
         assertTrue(cms.getGroupsOfUser("test/test1", true).contains(cms.readGroup("test/group1")));
         assertTrue(cms.getGroupsOfUser("test/test1", true).contains(cms.readGroup("group1")));
     }

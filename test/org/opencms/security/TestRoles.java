@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/02/02 13:50:01 $
- * Version: $Revision: 1.4.8.10 $
+ * Date   : $Date: 2007/02/07 16:58:07 $
+ * Version: $Revision: 1.4.8.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -177,7 +177,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.WORKPLACE_MANAGER, "/"));
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.WORKPLACE_MANAGER));
 
-        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
+        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(user));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
             cms.getRequestContext().currentUser()));
@@ -314,8 +314,9 @@ public class TestRoles extends OpenCmsTestCase {
         roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()), user.getName());
         // which should have removed the child role
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
-        assertEquals(1, roles.size());
+        assertEquals(2, roles.size());
         assertTrue(roles.contains(CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn())));
+        assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
         childs = CmsRole.ADMINISTRATOR.forOrgUnit("").getChilds(true);
@@ -363,15 +364,32 @@ public class TestRoles extends OpenCmsTestCase {
         cms.deleteGroup(group.getName());
         assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
 
+        // assert remaining workplace user role, that was automatically added
+        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit("")));
+
+        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
+
         // try to add a role by adding a user to the group
         group = cms.createGroup("mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);
         assertEquals(1, cms.getGroupsOfUser("Guest", false).size());
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
         cms.addUserToGroup("Guest", group.getName());
+        assertEquals(3, cms.getGroupsOfUser("Guest", false).size());
+        assertEquals(2, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
+
+        cms.removeUserFromGroup("Guest", group.getName());
         assertEquals(2, cms.getGroupsOfUser("Guest", false).size());
         assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
-        
-        cms.removeUserFromGroup("Guest", group.getName());
+
+        // assert remaining workplace user role, that was automatically added
+        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).contains(
+            CmsRole.WORKPLACE_USER.forOrgUnit("")));
+
+        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
+
         assertEquals(1, cms.getGroupsOfUser("Guest", false).size());
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
     }
