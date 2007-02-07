@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/02/05 16:52:00 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/07 15:03:22 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.5.6
  */
@@ -147,22 +147,13 @@ public class CmsRoleManager {
      * @param cms the current cms context
      * @param role the role to check
      *  
-     * @return a list of {@link org.opencms.file.CmsUser} objects
+     * @return a list of {@link org.opencms.file.CmsResource} objects
      * 
      * @throws CmsException if something goes wrong
      */
     public List getManageableResources(CmsObject cms, CmsRole role) throws CmsException {
 
-        if (hasRole(cms, role)) {
-            return OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, role.getOuFqn());
-        }
-        List resources = new ArrayList();
-        Iterator it = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, role.getOuFqn(), false).iterator();
-        while (it.hasNext()) {
-            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
-            resources.addAll(getManageableResources(cms, role.forOrgUnit(orgUnit.getName())));
-        }
-        return resources;
+        return m_securityManager.getManageableResources(cms.getRequestContext(), role);
     }
 
     /**

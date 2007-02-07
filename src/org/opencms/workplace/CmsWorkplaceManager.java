@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.76.4.9 $
+ * Date   : $Date: 2007/02/07 15:03:22 $
+ * Version: $Revision: 1.76.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.9 $ 
+ * @version $Revision: 1.76.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1287,7 +1287,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
         // sort the explorer type settings
         Collections.sort(explorerTypeSettings);
-        // make the settings unmodifiable and store them in the golbal variables
+        // make the settings unmodifiable and store them in the global variables
         m_explorerTypeSettings = Collections.unmodifiableList(explorerTypeSettings);
         m_explorerTypeSettingsMap = Collections.unmodifiableMap(explorerTypeSettingsMap);
     }

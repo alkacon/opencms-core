@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.3 $ 
+ * @version $Revision: 1.17.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,15 +446,8 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public boolean isEditable(CmsObject cms, CmsResource resource) {
 
-        boolean isWpUser = OpenCms.getRoleManager().hasRoleForResource(
-            cms,
-            CmsRole.WORKPLACE_USER.forOrgUnit(cms.getRequestContext().getOuFqn()),
-            cms.getSitePath(resource));
-        if (isWpUser) {
-            return true;
-        }
         // determine if this resource type is editable for the current user
-        CmsPermissionSet permissions = getAccess().getPermissions(cms);
+        CmsPermissionSet permissions = getAccess().getPermissions(cms, resource);
         return permissions.requiresWritePermission();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1040,7 +1040,7 @@ public final class CmsResourceUtil {
      * 
      * Retuns <code>false</code> if no request context is set.<p>
      * 
-     * @return <code>true</code> if the given resource  is editable by the current user
+     * @return <code>true</code> if the given resource is editable by the current user
      */
     public boolean isEditable() {
 
@@ -1049,7 +1049,7 @@ public final class CmsResourceUtil {
         }
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName());
         if (settings != null) {
-            return settings.getAccess().getPermissions(getCms()).requiresWritePermission();
+            return settings.isEditable(getCms(), getResource());
         }
         return false;
     }

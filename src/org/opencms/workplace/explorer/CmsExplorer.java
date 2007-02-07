@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.32.4.13 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.32.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.13 $ 
+ * @version $Revision: 1.32.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,16 +454,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(", ");
 
         // position 25: editable
-        boolean editable = false;
-        try {
-            editable = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName()).isEditable(
-                getCms(),
-                resource);
-        } catch (CmsLoaderException e) {
-            // ignore
-        }
-        content.append(editable ? "1" : "0");
+        content.append(resUtil.isEditable() ? "1" : "0");
 
         // finish
         content.append(");\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.23.4.6 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.23.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplace;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.6 $ 
+ * @version $Revision: 1.23.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,19 +203,15 @@ public class CmsTree extends CmsWorkplace {
                 }
                 access = OpenCms.getWorkplaceManager().getDefaultAccess();
             }
-            CmsPermissionSet permissions = access.getPermissions(cms);
-            if (permissions.requiresWritePermission()) {
-                // user is allowed to write this resource type
-                retValue.append("\taddResourceType(");
-                retValue.append(curTypeId);
-                retValue.append(", \"");
-                retValue.append(curTypeName);
-                retValue.append("\",\t\"");
-                retValue.append(messages.key(settings.getKey()));
-                retValue.append("\",\t\"filetypes/");
-                retValue.append(settings.getIcon());
-                retValue.append("\");\n");
-            }
+            retValue.append("\taddResourceType(");
+            retValue.append(curTypeId);
+            retValue.append(", \"");
+            retValue.append(curTypeName);
+            retValue.append("\",\t\"");
+            retValue.append(messages.key(settings.getKey()));
+            retValue.append("\",\t\"filetypes/");
+            retValue.append(settings.getIcon());
+            retValue.append("\");\n");
         }
 
         retValue.append("}\n\n");

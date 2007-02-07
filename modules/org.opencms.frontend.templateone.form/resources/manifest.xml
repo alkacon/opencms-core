@@ -49,9 +49,7 @@
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                     <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>

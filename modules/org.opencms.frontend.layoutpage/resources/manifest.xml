@@ -50,9 +50,7 @@
 			<explorertype name="layoutpage" key="fileicon.layoutpage" icon="layoutpage.gif" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=layoutpage" order="19" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                	<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>

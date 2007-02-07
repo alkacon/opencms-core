@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/04 21:03:15 $
- * Version: $Revision: 1.110.2.15 $
+ * Date   : $Date: 2007/02/07 15:03:22 $
+ * Version: $Revision: 1.110.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.15 $
+ * @version $Revision: 1.110.2.16 $
  * 
  * @since 6.0.0 
  */
@@ -380,13 +380,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(
-                        dbc,
-                        "",
-                        "The root organizational unit",
-                        0,
-                        null,
-                        "/");
+                    createOrganizationalUnit(dbc, "", "The root organizational unit", 0, null, "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -1939,6 +1933,22 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
             return;
         }
+        String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+        String parentGroup = null;
+        if (parentOu != null) {
+            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
+        }
+        createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, "The users group for "
+            + (CmsStringUtil.isEmptyOrWhitespaceOnly(ouFqn) ? "the root organizational unit" : " organizational unit "
+                + ouFqn), I_CmsPrincipal.FLAG_ENABLED
+            | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
+            | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
+
+        if (parentOu != null) {
+            // default users/groups(except the users group) are only for the root ou
+            return;
+        }
+
         CmsGroup guests = createGroup(
             dbc,
             CmsUUID.getConstantUUID(guestGroup),
@@ -1947,16 +1957,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             I_CmsPrincipal.FLAG_ENABLED,
             null);
 
-        String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
-
-        int flags;
-        if (parentOu != null) {
-            // just ou admin rights
-            flags = CmsRole.ADMINISTRATOR.getVirtualGroupFlags();
-        } else {
-            // root ou admin has additional rights
-            flags = CmsRole.ROOT_ADMIN.getVirtualGroupFlags();
-        }
+        int flags = CmsRole.ROOT_ADMIN.getVirtualGroupFlags();
         createGroup(
             dbc,
             CmsUUID.getConstantUUID(administratorsGroup),
@@ -1965,25 +1966,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
             null);
 
-        String parentGroup = null;
-        if (parentOu != null) {
-            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
-        }
-        createGroup(
-            dbc,
-            CmsUUID.getConstantUUID(usersGroup),
-            usersGroup,
-            "The users group",
-            I_CmsPrincipal.FLAG_ENABLED
-                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
-                | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(),
-            parentGroup);
-
-        if (parentOu != null) {
-            parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        } else {
-            parentGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
-        }
+        parentGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
         createGroup(
             dbc,
             CmsUUID.getConstantUUID(projectmanagersGroup),
@@ -1994,11 +1977,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
                 | CmsRole.PROJECT_MANAGER.getVirtualGroupFlags(),
             parentGroup);
-
-        if (CmsOrganizationalUnit.getParentFqn(ouFqn) != null) {
-            // default users are only for the root ou
-            return;
-        }
 
         CmsUser guest = createUser(
             dbc,

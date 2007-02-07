@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ public class CmsChtype extends CmsDialog {
 
                     if (changeable) {
                         // determine if this resource type is editable for the current user
-                        CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+                        CmsPermissionSet permissions = settings.getAccess().getPermissions(cms, res);
                         if (!permissions.requiresWritePermission() || !permissions.requiresControlPermission()) {
                             // skip resource types without required write or create permissions
                             continue;

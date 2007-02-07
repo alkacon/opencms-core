@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.97.4.33 $
+ * Date   : $Date: 2007/02/07 15:03:21 $
+ * Version: $Revision: 1.97.4.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1219,9 +1219,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(
-                dbc,
-                CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(organizationalUnit.getName())));
+            checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(organizationalUnit.getName())));
             checkOfflineProject(dbc);
             m_driverManager.deleteOrganizationalUnit(dbc, organizationalUnit);
         } catch (Exception e) {
@@ -1880,6 +1878,29 @@ public final class CmsSecurityManager {
     public CmsLockManager getLockManager() {
 
         return m_lockManager;
+    }
+
+    /**
+     * Returns all resources of organizational units for which the current user has 
+     * the given role role.<p>
+     * 
+     * @param context the current request context
+     * @param role the role to check
+     *  
+     * @return a list of {@link org.opencms.file.CmsResource} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getManageableResources(CmsRequestContext context, CmsRole role) throws CmsException {
+
+        List resources = new ArrayList();
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            resources = getManageableResources(dbc, role);
+        } finally {
+            dbc.clear();
+        }
+        return resources;
     }
 
     /**
@@ -4931,9 +4952,7 @@ public final class CmsSecurityManager {
         try {
             if (!context.currentUser().equals(user)) {
                 // a user is allowed to write his own data (e.g. for "change preferences")
-                checkRole(
-                    dbc,
-                    CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
+                checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
             }
             m_driverManager.writeUser(dbc, user);
         } catch (Exception e) {
@@ -5043,12 +5062,143 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Internal recursive method for deleting a resource.<p>
+     * 
+     * @param dbc the db context
+     * @param resource the name of the resource to delete (full path)
+     * @param siblingMode indicates how to handle siblings of the deleted resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    throws CmsException {
+
+        if (resource.isFolder()) {
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = m_driverManager.readChildResources(
+                dbc,
+                resource,
+                CmsResourceFilter.IGNORE_EXPIRATION,
+                true,
+                true,
+                false);
+
+            Set deletedResources = new HashSet();
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if ((siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS)
+                    && deletedResources.contains(childResource.getResourceId())) {
+                    // sibling mode is "delete all siblings" and another sibling of the current child resource has already
+                    // been deleted- do nothing and continue with the next child resource.
+                    continue;
+                }
+                if (childResource.isFolder()) {
+                    // recurse into this method for subfolders
+                    deleteResource(dbc, childResource, siblingMode);
+                } else {
+                    // handle child resources
+                    m_driverManager.deleteResource(dbc, childResource, siblingMode);
+                }
+                deletedResources.add(childResource.getResourceId());
+            }
+            deletedResources.clear();
+        }
+        // handle the resource itself
+        m_driverManager.deleteResource(dbc, resource, siblingMode);
+    }
+
+    /**
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user, if given.<p>
+     *
+     * @param context the current request context
+     * @param user the user to be deleted
+     * @param replacement the user to be transfered, can be <code>null</code>
+     * 
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
+     * @throws CmsSecurityException in case the user is a default user 
+     * @throws CmsException if something goes wrong
+     */
+    protected void deleteUser(CmsRequestContext context, CmsUser user, CmsUser replacement)
+    throws CmsException, CmsSecurityException, CmsRoleViolationException {
+
+        if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
+            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
+                org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
+                user.getName()));
+        }
+        if (context.currentUser().equals(user)) {
+            throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
+            if (replacement == null) {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+            } else {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+            }
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
 
         destroy();
         super.finalize();
+    }
+
+    /**
+     * Returns all resources of organizational units for which the current user has 
+     * the given role role.<p>
+     * 
+     * @param dbc the current database context
+     * @param role the role to check
+     *  
+     * @return a list of {@link org.opencms.file.CmsResource} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List getManageableResources(CmsDbContext dbc, CmsRole role) throws CmsException {
+
+        CmsOrganizationalUnit ou = m_driverManager.readOrganizationalUnit(dbc, role.getOuFqn());
+        if (hasRole(dbc, dbc.currentUser(), role)) {
+            return m_driverManager.getResourcesForOrganizationalUnit(dbc, ou);
+        }
+        List resources = new ArrayList();
+        Iterator it = m_driverManager.getOrganizationalUnits(dbc, ou, false).iterator();
+        while (it.hasNext()) {
+            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+            resources.addAll(getManageableResources(dbc, role.forOrgUnit(orgUnit.getName())));
+        }
+        return resources;
+    }
+
+    /**
+     * Returns the organizational unit for the parent of the given fully qualified name.<p>
+     * 
+     * @param fqn the fully qualified name to get the parent organizational unit for
+     * 
+     * @return the parent organizational unit for the fully qualified name
+     */
+    protected String getParentOrganizationalUnit(String fqn) {
+
+        String ouFqn = CmsOrganizationalUnit.getParentFqn(fqn);
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        return ouFqn;
     }
 
     /**
@@ -5181,6 +5331,109 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns <code>true</code> if at least one of the given group names is equal to a group name
+     * of the given role in the given organizational unit.<p>
+     * 
+     * This checks the given list against the group of the given role as well as against the role group 
+     * of all parent roles.<p>
+     * 
+     * If the organizational unit is <code>null</code>, this method will check if the
+     * given user has the given role for at least one organizational unit.<p>
+     *  
+     * @param role the role to check
+     * @param roles the groups to match the role groups against
+     * 
+     * @return <code>true</code> if at last one of the given group names is equal to a group name
+     *      of this role
+     */
+    protected boolean hasRole(CmsRole role, List roles) {
+
+        // iterates the roles the user are in
+        Iterator itGroups = roles.iterator();
+        while (itGroups.hasNext()) {
+            String groupName = ((CmsGroup)itGroups.next()).getName();
+            // iterate the role hierarchie
+            Iterator itDistinctGroupNames = role.getDistinctGroupNames().iterator();
+            while (itDistinctGroupNames.hasNext()) {
+                String distictGroupName = (String)itDistinctGroupNames.next();
+                if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+                    // this is a ou independent role 
+                    // we need an exact match, and we ignore the ou param
+                    if (groupName.equals(distictGroupName.substring(1))) {
+                        return true;
+                    }
+                } else {
+                    // first check if the user has the role at all
+                    if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + distictGroupName)
+                        || groupName.equals(distictGroupName)) {
+                        // this is a ou dependent role
+                        if (role.getOuFqn() == null) {
+                            // ou param is null, so the user needs to have the role in at least one ou does not matter which
+                            return true;
+                        } else {
+                            // the user needs to have the role in the given ou or in a parent ou
+                            // now check that the ou matches
+                            String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
+                            if (role.getOuFqn().startsWith(groupFqn)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Internal recursive method to move a resource.<p>
+     * 
+     * @param dbc the db context
+     * @param source the source resource
+     * @param destination the destination path
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void moveResource(CmsDbContext dbc, CmsResource source, String destination) throws CmsException {
+
+        List resources = null;
+
+        if (source.isFolder()) {
+            if (!CmsResource.isFolder(destination)) {
+                // ensure folder name end's with a /
+                destination = destination.concat("/");
+            }
+            // collect all resources in the folder (including everything)
+            resources = m_driverManager.readChildResources(dbc, source, CmsResourceFilter.ALL, true, true, false);
+        }
+
+        // target permissions will be checked later
+        m_driverManager.moveResource(dbc, source, destination, false, true);
+
+        // make sure lock is set
+        CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);
+        try {
+            // the destination must always get a new lock
+            m_driverManager.lockResource(dbc, destinationResource, CmsLockType.EXCLUSIVE);
+        } catch (Exception e) {
+            // could happen with workflow (and harder with shared) locks on single files
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e);
+            }
+        }
+
+        if (resources != null) {
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                String childDestination = destination.concat(childResource.getName());
+                // recurse with child resource
+                moveResource(dbc, childResource, childDestination);
+            }
+        }
+    }
+
+    /**
      * Reads a folder from the VFS, using the specified resource filter.<p>
      * 
      * @param dbc the current database context
@@ -5251,213 +5504,5 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
-    }
-
-    /**
-     * Internal recursive method for deleting a resource.<p>
-     * 
-     * @param dbc the db context
-     * @param resource the name of the resource to delete (full path)
-     * @param siblingMode indicates how to handle siblings of the deleted resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
-    throws CmsException {
-
-        if (resource.isFolder()) {
-            // collect all resources in the folder (but exclude deleted ones)
-            List resources = m_driverManager.readChildResources(
-                dbc,
-                resource,
-                CmsResourceFilter.IGNORE_EXPIRATION,
-                true,
-                true,
-                false);
-
-            Set deletedResources = new HashSet();
-            // now walk through all sub-resources in the folder
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
-                if ((siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS)
-                    && deletedResources.contains(childResource.getResourceId())) {
-                    // sibling mode is "delete all siblings" and another sibling of the current child resource has already
-                    // been deleted- do nothing and continue with the next child resource.
-                    continue;
-                }
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    deleteResource(dbc, childResource, siblingMode);
-                } else {
-                    // handle child resources
-                    m_driverManager.deleteResource(dbc, childResource, siblingMode);
-                }
-                deletedResources.add(childResource.getResourceId());
-            }
-            deletedResources.clear();
-        }
-        // handle the resource itself
-        m_driverManager.deleteResource(dbc, resource, siblingMode);
-    }
-
-    /**
-     * Deletes a user, where all permissions and resources attributes of the user
-     * were transfered to a replacement user, if given.<p>
-     *
-     * @param context the current request context
-     * @param user the user to be deleted
-     * @param replacement the user to be transfered, can be <code>null</code>
-     * 
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
-     * @throws CmsSecurityException in case the user is a default user 
-     * @throws CmsException if something goes wrong
-     */
-    private void deleteUser(CmsRequestContext context, CmsUser user, CmsUser replacement)
-    throws CmsException, CmsSecurityException, CmsRoleViolationException {
-
-        if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
-                user.getName()));
-        }
-        if (context.currentUser().equals(user)) {
-            throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
-        }
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
-            // this is needed because 
-            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
-            // expects an offline project, if not data will become inconsistent
-            checkOfflineProject(dbc);
-            if (replacement == null) {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
-            } else {
-                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
-            }
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Returns the organizational unit for the parent of the given fully qualified name.<p>
-     * 
-     * @param fqn the fully qualified name to get the parent organizational unit for
-     * 
-     * @return the parent organizational unit for the fully qualified name
-     */
-    private String getParentOrganizationalUnit(String fqn) {
-
-        String ouFqn = CmsOrganizationalUnit.getParentFqn(fqn);
-        if (ouFqn == null) {
-            ouFqn = "";
-        }
-        return ouFqn;
-    }
-
-    /**
-     * Returns <code>true</code> if at least one of the given group names is equal to a group name
-     * of the given role in the given organizational unit.<p>
-     * 
-     * This checks the given list against the group of the given role as well as against the role group 
-     * of all parent roles.<p>
-     * 
-     * If the organizational unit is <code>null</code>, this method will check if the
-     * given user has the given role for at least one organizational unit.<p>
-     *  
-     * @param role the role to check
-     * @param roles the groups to match the role groups against
-     * 
-     * @return <code>true</code> if at last one of the given group names is equal to a group name
-     *      of this role
-     */
-    private boolean hasRole(CmsRole role, List roles) {
-
-        // iterates the roles the user are in
-        Iterator itGroups = roles.iterator();
-        while (itGroups.hasNext()) {
-            String groupName = ((CmsGroup)itGroups.next()).getName();
-            // iterate the role hierarchie
-            Iterator itDistinctGroupNames = role.getDistinctGroupNames().iterator();
-            while (itDistinctGroupNames.hasNext()) {
-                String distictGroupName = (String)itDistinctGroupNames.next();
-                if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-                    // this is a ou independent role 
-                    // we need an exact match, and we ignore the ou param
-                    if (groupName.equals(distictGroupName.substring(1))) {
-                        return true;
-                    }
-                } else {
-                    // first check if the user has the role at all
-                    if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + distictGroupName)
-                        || groupName.equals(distictGroupName)) {
-                        // this is a ou dependent role
-                        if (role.getOuFqn() == null) {
-                            // ou param is null, so the user needs to have the role in at least one ou does not matter which
-                            return true;
-                        } else {
-                            // the user needs to have the role in the given ou or in a parent ou
-                            // now check that the ou matches
-                            String groupFqn = CmsOrganizationalUnit.getParentFqn(groupName);
-                            if (role.getOuFqn().startsWith(groupFqn)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Internal recursive method to move a resource.<p>
-     * 
-     * @param dbc the db context
-     * @param source the source resource
-     * @param destination the destination path
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private void moveResource(CmsDbContext dbc, CmsResource source, String destination) throws CmsException {
-
-        List resources = null;
-
-        if (source.isFolder()) {
-            if (!CmsResource.isFolder(destination)) {
-                // ensure folder name end's with a /
-                destination = destination.concat("/");
-            }
-            // collect all resources in the folder (including everything)
-            resources = m_driverManager.readChildResources(dbc, source, CmsResourceFilter.ALL, true, true, false);
-        }
-
-        // target permissions will be checked later
-        m_driverManager.moveResource(dbc, source, destination, false, true);
-
-        // make sure lock is set
-        CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);
-        try {
-            // the destination must always get a new lock
-            m_driverManager.lockResource(dbc, destinationResource, CmsLockType.EXCLUSIVE);
-        } catch (Exception e) {
-            // could happen with workflow (and harder with shared) locks on single files
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(e);
-            }
-        }
-
-        if (resources != null) {
-            // now walk through all sub-resources in the folder
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
-                String childDestination = destination.concat(childResource.getName());
-                // recurse with child resource
-                moveResource(dbc, childResource, childDestination);
-            }
-        }
     }
 }

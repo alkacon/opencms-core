@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/02/05 16:02:49 $
- * Version: $Revision: 1.717.2.127 $
+ * Date   : $Date: 2007/02/07 15:05:57 $
+ * Version: $Revision: 1.717.2.128 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ OpenCms 6.5.6 - xxx, 2007
 * Fixed issue with damaged admin user info preventing OpenCms from starting (IOException: invalid stream header)
 ! New user interfaces for organizational unit usage inside the OpenCms user management
 ! Creating new XML content resource allows the selection of a "model file" in explorer and direct edit mode if configured
+! Added support for resource type permissions in explorer type definitions based on roles
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended

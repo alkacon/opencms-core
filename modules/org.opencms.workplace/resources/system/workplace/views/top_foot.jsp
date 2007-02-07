@@ -28,7 +28,7 @@ function doReloadFoot() {
 <body class="buttons-foot" unselectable="on" onload="setTimeout('doReloadFoot()', 300000);">
 <%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
-<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_USER_0) %><td><%= wp.getSettings().getUser().getName() %></td>
+<%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_USER_0) %><td><%= wp.getSettings().getUser().getDisplayName(wp.getCms(), wp.getLocale()) %></td>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINTIME_0) %><td><%= wp.getLoginTime() %></td>
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_LOGINADDRESS_0) %><td><%= wp.getLoginAddress() %></td><%
 Long attrTimeWarp = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);

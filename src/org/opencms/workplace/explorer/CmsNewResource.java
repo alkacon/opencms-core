@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.26.4.5 $
+ * Date   : $Date: 2007/02/07 15:03:20 $
+ * Version: $Revision: 1.26.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.5 $ 
+ * @version $Revision: 1.26.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -342,6 +341,13 @@ public class CmsNewResource extends CmsDialog {
             // create list iterator from all configured resource types
             i = OpenCms.getWorkplaceManager().getExplorerTypeSettings().iterator();
         }
+        
+        CmsResource resource = null;
+        try {
+            resource = getCms().readResource(getParamCurrentFolder());
+        } catch (CmsException e) {
+            // ignore
+        }
 
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
@@ -363,8 +369,7 @@ public class CmsNewResource extends CmsDialog {
             }
 
             // check permissions for the type
-            CmsPermissionSet permissions = settings.getAccess().getPermissions(getCms());
-            if (!permissions.requiresControlPermission()) {
+            if (!settings.isEditable(getCms(), resource)) {
                 // the type has no permission for the current user to be created, don't show the type
                 continue;
             }

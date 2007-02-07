@@ -49,25 +49,19 @@
 			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                        <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                        <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                        <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>

@@ -52,9 +52,7 @@
 			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=microsite" order="50"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                     <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>

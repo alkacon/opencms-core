@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/02/05 16:51:08 $
- * Version: $Revision: 1.11.4.11 $
+ * Date   : $Date: 2007/02/07 15:03:21 $
+ * Version: $Revision: 1.11.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.11 $ 
+ * @version $Revision: 1.11.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,6 @@ public final class CmsRole {
 
     /** The "DIRECT_EDIT_USER" role. */
     // public static final CmsRole DIRECT_EDIT_USER;
-    
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
@@ -238,29 +237,19 @@ public final class CmsRole {
     }
 
     /**
-     * Returns the role for the given group name.<p>
+     * Returns the role for the given group.<p>
      * 
      * @param group a group to check for role representation
      * 
-     * @return the role for the given group name
+     * @return the role for the given group
      */
     public static CmsRole valueOf(CmsGroup group) {
 
         // check groups for internal representing the roles
         if (group.isRole()) {
-            Iterator it = SYSTEM_ROLES.iterator();
-            while (it.hasNext()) {
-                CmsRole role = (CmsRole)it.next();
-                // direct check
-                if (group.getName().equals(role.getGroupName())) {
-                    return role.forOrgUnit(group.getOuFqn());
-                }
-                if (!role.isOrganizationalUnitIndependent()) {
-                    // the role group name does not start with "/", but the given group fqn does 
-                    if (group.getName().endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
-                        return role.forOrgUnit(group.getOuFqn());
-                    }
-                }
+            CmsRole role = valueOf(group.getName());
+            if (role != null) {
+                return role;
             }
         }
         // check virtual groups mapping a role
@@ -269,6 +258,33 @@ public final class CmsRole {
             index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
             CmsRole role = (CmsRole)getSystemRoles().get(index);
             return role.forOrgUnit(group.getOuFqn());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the role for the given group name.<p>
+     * 
+     * @param groupName a group name to check for role representation
+     * 
+     * @return the role for the given group name
+     */
+    public static CmsRole valueOf(String groupName) {
+
+        String groupOu = CmsOrganizationalUnit.getParentFqn(groupName);
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            // direct check
+            if (groupName.equals(role.getGroupName())) {
+                return role.forOrgUnit(groupOu);
+            }
+            if (!role.isOrganizationalUnitIndependent()) {
+                // the role group name does not start with "/", but the given group fqn does 
+                if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
+                    return role.forOrgUnit(groupOu);
+                }
+            }
         }
         return null;
     }
