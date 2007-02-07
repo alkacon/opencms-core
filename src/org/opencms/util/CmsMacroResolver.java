@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.18.4.6 $
+ * Date   : $Date: 2007/02/07 16:57:29 $
+ * Version: $Revision: 1.18.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.6 $ 
+ * @version $Revision: 1.18.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,6 +221,32 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input.substring(2, input.length() - 1).equals(macroName);
         }
         return false;
+    }
+
+    /**
+     * Returns a macro for the given localization key with the given parameters.<p>
+     * 
+     * @param keyName the name of the localized key
+     * @param params the optional parameter array
+     * 
+     * @return a macro for the given localization key with the given parameters
+     */
+    public static String localizedKeyMacro(String keyName, Object[] params) {
+
+        String parameters = "";
+        if ((params != null) && (params.length > 0)) {
+            for (int i = 0; i < params.length; i++) {
+                if (params[i] != null) {
+                    parameters += "|" + params[i].toString();
+                }
+            }
+        }
+        return "" + I_CmsMacroResolver.MACRO_DELIMITER
+            + I_CmsMacroResolver.MACRO_START
+            + CmsMacroResolver.KEY_LOCALIZED_PREFIX
+            + keyName
+            + parameters
+            + I_CmsMacroResolver.MACRO_END;
     }
 
     /**

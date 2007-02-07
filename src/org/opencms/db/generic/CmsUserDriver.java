@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/07 15:03:22 $
- * Version: $Revision: 1.110.2.16 $
+ * Date   : $Date: 2007/02/07 16:57:29 $
+ * Version: $Revision: 1.110.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -68,6 +69,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -88,6 +90,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -101,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.16 $
+ * @version $Revision: 1.110.2.17 $
  * 
  * @since 6.0.0 
  */
@@ -130,6 +133,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+
+    /** The macro resolver for the default group/user descriptions. */
+    private CmsMacroResolver m_macroResolver;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsResource)
@@ -343,8 +349,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                             null);
                     }
                 }
+                Locale locale = dbc.getRequestContext().getLocale();
+                if (locale == null) {
+                    locale = CmsLocaleManager.getDefaultLocale();
+                }
                 // create default groups
-                internalCreateDefaultGroups(dbc, ou.getName());
+                internalCreateDefaultGroups(dbc, ou.getName(), ou.getDisplayName(locale));
             }
             m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
             return ou;
@@ -380,7 +390,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
                 try {
-                    createOrganizationalUnit(dbc, "", "The root organizational unit", 0, null, "/");
+                    createOrganizationalUnit(dbc, "", CmsMacroResolver.localizedKeyMacro(
+                        Messages.GUI_ORGUNIT_ROOT_DESCRIPTION_0,
+                        null), 0, null, "/");
                 } finally {
                     dbc.getRequestContext().setCurrentProject(onlineProject);
                 }
@@ -722,7 +734,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            internalCreateDefaultGroups(dbc, "");
+            internalCreateDefaultGroups(dbc, "", "");
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
@@ -762,7 +774,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms group objects
             while (res.next()) {
-                groups.add(internalCreateGroup(res));
+                groups.add(internalCreateGroup(dbc, res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -879,7 +891,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms group objects
             while (res.next()) {
-                users.add(internalCreateUser(res));
+                users.add(internalCreateUser(dbc, res));
             }
 
         } catch (SQLException e) {
@@ -1127,7 +1139,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 res = stmt.executeQuery();
                 // create new Cms group objects
                 while (res.next()) {
-                    childs.add(internalCreateGroup(res));
+                    childs.add(internalCreateGroup(dbc, res));
                 }
             }
         } catch (SQLException e) {
@@ -1160,7 +1172,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(res);
+                group = internalCreateGroup(dbc, res);
             } else {
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_ID_1, groupId);
                 if (LOG.isDebugEnabled()) {
@@ -1201,7 +1213,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(res);
+                group = internalCreateGroup(dbc, res);
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
@@ -1261,7 +1273,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
 
             while (res.next()) {
-                groups.add(internalCreateGroup(res));
+                groups.add(internalCreateGroup(dbc, res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1308,7 +1320,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms user object
             if (res.next()) {
-                user = internalCreateUser(res);
+                user = internalCreateUser(dbc, res);
             } else {
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, id);
                 if (LOG.isDebugEnabled()) {
@@ -1348,7 +1360,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                user = internalCreateUser(res);
+                user = internalCreateUser(dbc, res);
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
@@ -1391,7 +1403,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms user object
             if (res.next()) {
-                user = internalCreateUser(res);
+                user = internalCreateUser(dbc, res);
             } else {
                 res.close();
                 res = null;
@@ -1442,7 +1454,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
 
             while (res.next()) {
-                users.add(internalCreateUser(res));
+                users.add(internalCreateUser(dbc, res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1872,6 +1884,31 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
+     * Returns the macro resolver.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @return the macro resolver
+     */
+    protected CmsMacroResolver getMacroResolver(CmsDbContext dbc) {
+
+        if (m_macroResolver == null) {
+            m_macroResolver = new CmsMacroResolver();
+            Locale locale = null;
+            if (dbc.getRequestContext() != null) {
+                locale = dbc.getRequestContext().getLocale();
+            }
+            if (locale == null) {
+                m_macroResolver.setMessages(Messages.get().getBundle());
+            } else {
+                m_macroResolver.setMessages(Messages.get().getBundle(locale));
+            }
+
+        }
+        return m_macroResolver;
+    }
+
+    /**
      * Internal helper method to create an access control entry from a database record.<p>
      * 
      * @param res resultset of the current query
@@ -1910,10 +1947,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @param dbc the database context
      * @param ouFqn the fully qualified name of the organizational unit to create the principals for
+     * @param ouDescription the description of the given organizational unit
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn) throws CmsException {
+    protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn, String ouDescription)
+    throws CmsException {
 
         String administratorsGroup = ouFqn + OpenCms.getDefaultUsers().getGroupAdministrators();
         String guestGroup = ouFqn + OpenCms.getDefaultUsers().getGroupGuests();
@@ -1938,9 +1977,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         if (parentOu != null) {
             parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
         }
-        createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, "The users group for "
-            + (CmsStringUtil.isEmptyOrWhitespaceOnly(ouFqn) ? "the root organizational unit" : " organizational unit "
-                + ouFqn), I_CmsPrincipal.FLAG_ENABLED
+        String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription) ? CmsMacroResolver.localizedKeyMacro(
+            Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
+            new String[] {ouDescription})
+        : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
+        createGroup(dbc, CmsUUID.getConstantUUID(usersGroup), usersGroup, groupDescription, I_CmsPrincipal.FLAG_ENABLED
             | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
             | CmsRole.WORKPLACE_USER.getVirtualGroupFlags(), parentGroup);
 
@@ -1953,7 +1994,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(guestGroup),
             guestGroup,
-            "The guest group",
+            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_GUESTS_DESCRIPTION_0, null),
             I_CmsPrincipal.FLAG_ENABLED,
             null);
 
@@ -1962,7 +2003,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(administratorsGroup),
             administratorsGroup,
-            "The administrators group",
+            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0, null),
             I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER | flags,
             null);
 
@@ -1971,7 +2012,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(projectmanagersGroup),
             projectmanagersGroup,
-            "The projectmanager group",
+            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0, null),
             I_CmsPrincipal.FLAG_ENABLED
                 | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
                 | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
@@ -1983,7 +2024,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(guestUser),
             guestUser,
             OpenCms.getPasswordHandler().digest(""),
-            "The guest user",
+            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0, null),
             " ",
             " ",
             " ",
@@ -1998,7 +2039,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(adminUser),
             adminUser,
             OpenCms.getPasswordHandler().digest("admin"),
-            "The admin user",
+            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0, null),
             " ",
             " ",
             " ",
@@ -2017,7 +2058,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 CmsUUID.getConstantUUID(exportUser),
                 exportUser,
                 OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
-                "The static export user",
+                CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null),
                 " ",
                 " ",
                 " ",
@@ -2032,19 +2073,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             && !OpenCms.getDefaultUsers().getUserDeletedResource().equals(OpenCms.getDefaultUsers().getUserGuest())
             && !OpenCms.getDefaultUsers().getUserDeletedResource().equals(OpenCms.getDefaultUsers().getUserExport())) {
 
-            createUser(
-                dbc,
-                CmsUUID.getConstantUUID(deleteUser),
-                deleteUser,
-                OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
-                "The default user for deleted resources",
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                Collections.EMPTY_MAP,
-                " ");
+            createUser(dbc, CmsUUID.getConstantUUID(deleteUser), deleteUser, OpenCms.getPasswordHandler().digest(
+                (new CmsUUID()).toString()), CmsMacroResolver.localizedKeyMacro(
+                Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0,
+                null), " ", " ", " ", 0, I_CmsPrincipal.FLAG_ENABLED, Collections.EMPTY_MAP, " ");
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2055,21 +2087,20 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * Semi-constructor to create a {@link CmsGroup} instance from a JDBC result set.
      * 
+     * @param dbc the current database context
      * @param res the JDBC ResultSet
-     * 
      * @return CmsGroup the new CmsGroup object
      * 
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    protected CmsGroup internalCreateGroup(ResultSet res) throws SQLException {
+    protected CmsGroup internalCreateGroup(CmsDbContext dbc, ResultSet res) throws SQLException {
 
         String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0"));
-        return new CmsGroup(
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))),
-            ou + res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME_0")),
-            res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0")),
-            res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS_0")));
+        String description = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0"));
+        return new CmsGroup(new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))), new CmsUUID(
+            res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))), ou
+            + res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME_0")), getMacroResolver(dbc).resolveMacros(
+            description), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS_0")));
     }
 
     /**
@@ -2098,7 +2129,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String description = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_DESCRIPTION, false).getStructureValue();
         int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
         // create the object
-        return new CmsOrganizationalUnit(resource.getStructureId(), name, description, flags);
+        return new CmsOrganizationalUnit(resource.getStructureId(), name, getMacroResolver(dbc).resolveMacros(
+            description), flags);
     }
 
     /**
@@ -2151,8 +2183,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Semi-constructor to create a {@link CmsUser} instance from a JDBC result set.
+     * Semi-constructor to create a {@link CmsUser} instance from a JDBC result set.<p>
      * 
+     * @param dbc the current database context
      * @param res the JDBC ResultSet
      * 
      * @return CmsUser the new CmsUser object
@@ -2160,7 +2193,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @throws SQLException in case the result set does not include a requested table attribute
      * @throws ClassNotFoundException if there is an error in deserializing the user info
      */
-    protected CmsUser internalCreateUser(ResultSet res) throws SQLException, ClassNotFoundException {
+    protected CmsUser internalCreateUser(CmsDbContext dbc, ResultSet res) throws SQLException, ClassNotFoundException {
 
         String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME_0"));
 
@@ -2182,11 +2215,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0"));
+        String description = res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION_0"));
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0"))),
             ou + userName,
             res.getString(m_sqlManager.readQuery("C_USERS_USER_PASSWORD_0")),
-            res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION_0")),
+            getMacroResolver(dbc).resolveMacros(description),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_FIRSTNAME_0")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_LASTNAME_0")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_EMAIL_0")),

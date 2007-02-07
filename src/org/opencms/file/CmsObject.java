@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.146.4.24 $
+ * Date   : $Date: 2007/02/07 16:57:29 $
+ * Version: $Revision: 1.146.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.24 $
+ * @version $Revision: 1.146.4.25 $
  * 
  * @since 6.0.0 
  */
@@ -390,8 +390,7 @@ public final class CmsObject {
     throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        String dst = m_context.getFileTranslator().translateResource(destination);
-        getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, dst, siblingMode);
+        getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, destination, siblingMode);
     }
 
     /**
@@ -559,8 +558,7 @@ public final class CmsObject {
     public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
     throws CmsException, CmsIllegalArgumentException {
 
-        String resName = m_context.getFileTranslator().translateResource(resourcename);
-        return getResourceType(type).createResource(this, m_securityManager, resName, content, properties);
+        return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
     }
 
     /**
@@ -1913,8 +1911,7 @@ public final class CmsObject {
     public void moveResource(String source, String destination) throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        String dst = m_context.getFileTranslator().translateResource(destination);
-        getResourceType(resource.getTypeId()).moveResource(this, m_securityManager, resource, dst);
+        getResourceType(resource.getTypeId()).moveResource(this, m_securityManager, resource, destination);
     }
 
     /**

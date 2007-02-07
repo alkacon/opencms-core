@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/01/29 10:13:50 $
- * Version: $Revision: 1.25.2.8 $
+ * Date   : $Date: 2007/02/07 16:57:29 $
+ * Version: $Revision: 1.25.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.8 $
+ * @version $Revision: 1.25.2.9 $
  * 
  * @since 6.0.0 
  */
@@ -243,6 +243,36 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1 = "GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0 = "GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTGROUP_ROOT_GUESTS_DESCRIPTION_0 = "GUI_DEFAULTGROUP_ROOT_GUESTS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0 = "GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0 = "GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0 = "GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0 = "GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0 = "GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0 = "GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_ROOT_DESCRIPTION_0 = "GUI_ORGUNIT_ROOT_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ASSIGNED_POOL_1 = "INIT_ASSIGNED_POOL_1";
