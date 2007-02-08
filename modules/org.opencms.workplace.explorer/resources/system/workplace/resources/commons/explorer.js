@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.13.4.19 $
+ * Date   : $Date: 2007/02/08 15:35:23 $
+ * Version: $Revision: 1.13.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -341,7 +341,7 @@ function getContextMenu() {
 		// set resource list in hidden form field value
    		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
-	// ajax call	
+	// ajax call
     makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList, 'showContextMenu');
 }
 
@@ -352,14 +352,13 @@ function showContextMenu(msg, state) {
         var menu = msg;
 		if (menu.length > 0) {
 			var el = win.files.getElementById("contextmenu");
-			el.innerHTML = "";
+			el.innerHTML = menu;
 			var x = 12;
 			el.style.left = x + "px";
-			el.style.visibility = "visible";
-			// calculate menu y position after setting visibility to avoid display errors
+			// calculate menu y position before setting visibility to avoid display errors
 			var y = getMenuPosY(win.files, active_mouse_id);
 			el.style.top =  y + "px";
-			el.innerHTML = menu;
+			el.style.visibility = "visible";
 		} // end if (access)
     	last_id = active_mouse_id;
 	    contextOpen = true;
@@ -666,7 +665,7 @@ function printList(wo) {
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
 	returnplace = returnplace.replace(/\//g, "%2F");
-	
+
 	wo.open();
 	wo.writeln(temp);
 
@@ -789,11 +788,11 @@ function printList(wo) {
 		} else if (vi.liste[i].projectState == 4) {
 			// not lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_otherworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;	
+			projectAltText = vi.liste[i].sysLockInfo;
 		} else if (vi.liste[i].projectState == 3) {
 			// lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_myworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;	
+			projectAltText = vi.liste[i].sysLockInfo;
 		} else if (vi.liste[i].projectState == 2) {
 			// locked in other project
 			projectIcon = vi.skinPath + 'explorer/project_other.png';
@@ -809,7 +808,7 @@ function printList(wo) {
 
 		wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 		wo.write("</td>\n");
-		
+
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (mode == "listview") {
