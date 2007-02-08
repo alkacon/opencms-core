@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*"%><%	
 
-                CmsUsersList usersList = new CmsUsersList(pageContext, request, response);
-             	usersList.actionSwitchUser();
+    CmsUserOverviewDialog usersList = new CmsUserOverviewDialog(pageContext, request, response);
+    usersList.actionSwitchUser();
 %>
 <html>
 <head></head>

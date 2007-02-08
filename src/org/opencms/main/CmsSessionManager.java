@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.12.4.13 $
+ * Date   : $Date: 2007/02/08 10:05:24 $
+ * Version: $Revision: 1.12.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.13 $ 
+ * @version $Revision: 1.12.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -373,7 +373,7 @@ public class CmsSessionManager {
         cms.getRequestContext().setSiteRoot(userSiteRoot);
         cms.getRequestContext().setCurrentProject(userProject);
 
-        // delete the stored workplace settings, so the session has to recieve them again
+        // delete the stored workplace settings, so the session has to receive them again
         session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
     }
 
