@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/08 11:21:44 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 
@@ -69,20 +68,17 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
 public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
-    /** Path to the list buttons. */
-    public static final String PATH_BUTTONS = "tools/accounts/buttons/";
+    /** list action id constant. */
+    public static final String LIST_ACTION_DEACTIVE = "add";
 
     /** list action id constant. */
     public static final String LIST_ACTION_DELETE = "ad";
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_DEACTIVE = "add";
 
     /** list action id constant. */
     public static final String LIST_ACTION_EDIT = "ae";
@@ -115,13 +111,19 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     public static final String LIST_DEFACTION_OVERVIEW = "do";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_USERS = "du";
-
-    /** list item detail id constant. */
     public static final String LIST_DETAIL_GROUPS = "dg";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_RESOURCES = "dr";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_USERS = "du";
+
+    /** list action id constant. */
+    public static final String LIST_MACTION_DELETE = "md";
+
+    /** Path to the list buttons. */
+    public static final String PATH_BUTTONS = "tools/accounts/buttons/";
 
     /**
      * Public constructor.<p>
@@ -189,6 +191,36 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * Returns the path of the edit icon.<p>
+     * 
+     * @return the path of the edit icon
+     */
+    public String getEditIcon() {
+
+        return PATH_BUTTONS + "orgunit.png";
+    }
+
+    /**
+     * Returns the path of the group icon.<p>
+     * 
+     * @return the path of the group icon
+     */
+    public String getGroupIcon() {
+
+        return PATH_BUTTONS + "group.png";
+    }
+
+    /**
+     * Returns the path of the user icon.<p>
+     * 
+     * @return the path of the user icon
+     */
+    public String getUserIcon() {
+
+        return PATH_BUTTONS + "user.png";
     }
 
     /**
@@ -286,6 +318,17 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT) {
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (!isEnabled()) {
+                    return Messages.get().container(Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_EDIT_HELP_0);
+                }
+                return super.getHelpText();
+            }
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
             public boolean isEnabled() {
@@ -297,17 +340,6 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
                     return true;
                 }
                 return super.isVisible();
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-
-                if (!isEnabled()) {
-                    return Messages.get().container(Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_EDIT_HELP_0);
-                }
-                return super.getHelpText();
             }
         };
         editAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_ACTION_EDIT_NAME_0));
@@ -348,70 +380,6 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         groupCol.addDirectAction(groupAction);
         // add it to the list definition
         metadata.addColumn(groupCol);
-
-        // create column for delete
-        CmsListColumnDefinition deleteCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
-        deleteCol.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_DELETE_0));
-        deleteCol.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_DELETE_HELP_0));
-        deleteCol.setWidth("20");
-        deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        deleteCol.setSorteable(false);
-        // add delete action
-        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE) {
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
-             */
-            public boolean isEnabled() {
-
-                if (getItem() != null) {
-                    String ouFqn = getItem().get(LIST_COLUMN_NAME).toString();
-                    try {
-                        if (!OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR)) {
-                            return false;
-                        }
-                        if (OpenCms.getOrgUnitManager().getUsers(getCms(), ouFqn, true).size() > 0) {
-                            return false;
-                        }
-                        if (OpenCms.getOrgUnitManager().getGroups(getCms(), ouFqn, true).size() > 0) {
-                            List groups = OpenCms.getOrgUnitManager().getGroups(getCms(), ouFqn, true);
-                            Iterator itGroups = groups.iterator();
-                            while (itGroups.hasNext()) {
-                                CmsGroup group = (CmsGroup)itGroups.next();
-                                if (!OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
-                                    return false;
-                                }
-                            }
-                        }
-                        if (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), ouFqn, true).size() > 0) {
-                            return false;
-                        }
-                        return true;
-                    } catch (CmsException e) {
-                        return true;
-                    }
-                }
-                return super.isVisible();
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getHelpText() {
-
-                if (!isEnabled()) {
-                    return Messages.get().container(Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_DELETE_HELP_0);
-                }
-                return super.getHelpText();
-            }
-        };
-        deleteAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_ACTION_DELETE_NAME_0));
-        deleteAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_DELETE_HELP_0));
-        deleteAction.setIconPath(ICON_DELETE);
-        deleteCol.addDirectAction(deleteAction);
-
-        // add it to the list definition
-        metadata.addColumn(deleteCol);
 
         // create column for description
         CmsListColumnDefinition descCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
@@ -486,52 +454,12 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         metadata.setSearchAction(searchAction);
     }
 
-    /** list action id constant. */
-    public static final String LIST_MACTION_DELETE = "md";
-
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // add delete multi action
-        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
-        deleteMultiAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_MACTION_DELETE_NAME_0));
-        deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_MACTION_DELETE_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_ORGUNITS_LIST_MACTION_DELETE_CONF_0));
-        deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
-        metadata.addMultiAction(deleteMultiAction);
-    }
-
-    /**
-     * Returns the path of the edit icon.<p>
-     * 
-     * @return the path of the edit icon
-     */
-    public String getEditIcon() {
-
-        return PATH_BUTTONS + "orgunit.png";
-    }
-
-    /**
-     * Returns the path of the group icon.<p>
-     * 
-     * @return the path of the group icon
-     */
-    public String getGroupIcon() {
-
-        return PATH_BUTTONS + "group.png";
-    }
-
-    /**
-     * Returns the path of the user icon.<p>
-     * 
-     * @return the path of the user icon
-     */
-    public String getUserIcon() {
-
-        return PATH_BUTTONS + "user.png";
+        // noop
     }
 
 }

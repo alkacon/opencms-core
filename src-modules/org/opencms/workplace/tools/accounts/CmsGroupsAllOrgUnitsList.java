@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/08 08:02:58 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/08 11:21:44 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 
 import java.io.IOException;
@@ -61,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -72,6 +74,9 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ORGUNIT = "co";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_ORGUNIT_DESC = "dd";
 
     /** list id constant. */
     public static final String LIST_ID = "lgaou";
@@ -123,6 +128,34 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
             super.executeListSingleActions();
         }
         listSave();
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        super.fillDetails(detailId);
+
+        // get content
+        List groups = getList().getAllContent();
+        Iterator itGroups = groups.iterator();
+        while (itGroups.hasNext()) {
+            CmsListItem item = (CmsListItem)itGroups.next();
+            String groupName = item.get(LIST_COLUMN_NAME).toString();
+            StringBuffer html = new StringBuffer(512);
+            try {
+                if (detailId.equals(LIST_DETAIL_ORGUNIT_DESC)) {
+                    CmsGroup group = getCms().readGroup(groupName);
+                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), group.getOuFqn()).getDescription());
+                } else {
+                    continue;
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+            item.set(detailId, html.toString());
+        }
     }
 
     /**
@@ -198,6 +231,23 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
+
+        // add orgunit description details
+        CmsListItemDetails orgUnitDescDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT_DESC);
+        orgUnitDescDetails.setAtColumn(LIST_COLUMN_DISPLAY);
+        orgUnitDescDetails.setVisible(false);
+        orgUnitDescDetails.setShowActionName(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setHideActionName(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
+        metadata.addItemDetails(orgUnitDescDetails);
 
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_ORGUNIT));

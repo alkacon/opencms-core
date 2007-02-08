@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitDialog.java,v $
- * Date   : $Date: 2007/02/08 08:02:58 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/08 11:21:44 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,16 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -100,6 +105,23 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     public String getParamOufqn() {
 
         return m_paramOufqn;
+    }
+
+    /**
+     * Sets the resources for the given orgUnitBean.<p>
+     * 
+     * @param orgUnitBean the <code>CmsOrgUnitBean</code> object
+     * @param resources the list of resources
+     */
+    public void setResourcesInBean(CmsOrgUnitBean orgUnitBean, List resources) {
+
+        List resourceNames = new ArrayList();
+        Iterator itResources = resources.iterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = (CmsResource)itResources.next();
+            resourceNames.add(getCms().getSitePath(resource));
+        }
+        orgUnitBean.setResources(resourceNames);
     }
 
     /**

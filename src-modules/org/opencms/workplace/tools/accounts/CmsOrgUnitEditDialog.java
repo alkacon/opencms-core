@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/08 08:02:58 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/02/08 11:21:44 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.6
  */
@@ -253,16 +253,11 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 if (m_orgunit == null) {
                     m_orgUnitBean = new CmsOrgUnitBean();
                     m_orgUnitBean.setFqn(getParamOufqn());
+
                     List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                         getCms(),
                         getParamOufqn());
-                    List resourceNames = new ArrayList();
-                    Iterator itResources = resources.iterator();
-                    while (itResources.hasNext()) {
-                        CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(getCms().getSitePath(resource));
-                    }
-                    m_orgUnitBean.setResources(resourceNames);
+                    setResourcesInBean(m_orgUnitBean, resources);
                 } else {
                     m_orgUnitBean = new CmsOrgUnitBean();
                     m_orgUnitBean.setDescription(m_orgunit.getDescription());
@@ -272,13 +267,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                         getCms(),
                         m_orgunit.getName());
-                    List resourceNames = new ArrayList();
-                    Iterator itResources = resources.iterator();
-                    while (itResources.hasNext()) {
-                        CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(getCms().getSitePath(resource));
-                    }
-                    m_orgUnitBean.setResources(resourceNames);
+                    setResourcesInBean(m_orgUnitBean, resources);
                 }
             } catch (Exception e) {
                 m_orgUnitBean = new CmsOrgUnitBean();
@@ -287,13 +276,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                         getCms(),
                         getParamOufqn());
-                    List resourceNames = new ArrayList();
-                    Iterator itResources = resources.iterator();
-                    while (itResources.hasNext()) {
-                        CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(getCms().getSitePath(resource));
-                    }
-                    m_orgUnitBean.setResources(resourceNames);
+                    setResourcesInBean(m_orgUnitBean, resources);
                 } catch (CmsException ex) {
                     // noop
                 }
@@ -308,13 +291,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
                     m_orgunit.getName());
-                List resourceNames = new ArrayList();
-                Iterator itResources = resources.iterator();
-                while (itResources.hasNext()) {
-                    CmsResource resource = (CmsResource)itResources.next();
-                    resourceNames.add(getCms().getSitePath(resource));
-                }
-                m_orgUnitBean.setResources(resourceNames);
+                setResourcesInBean(m_orgUnitBean, resources);
             } catch (CmsException e) {
                 // noop
             }
