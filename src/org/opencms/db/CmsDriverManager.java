@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/06 17:02:40 $
- * Version: $Revision: 1.570.2.58 $
+ * Date   : $Date: 2007/02/08 11:34:39 $
+ * Version: $Revision: 1.570.2.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -723,7 +723,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // if setting a role that is not the workplace user role ensure the user is also wp user
             CmsRole wpUser = CmsRole.WORKPLACE_USER.forOrgUnit(group.getOuFqn());
-            if (!role.equals(wpUser) && !userInGroup(dbc, username, wpUser.getGroupName(), true)) {
+            if (!role.equals(wpUser)
+                && !role.getChilds(true).contains(wpUser)
+                && !userInGroup(dbc, username, wpUser.getGroupName(), true)) {
                 addUserToGroup(dbc, username, wpUser.getGroupName(), true);
             }
         }
@@ -3425,6 +3427,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 true).iterator();
                             while (itSubOus.hasNext()) {
                                 CmsOrganizationalUnit subOu = (CmsOrganizationalUnit)itSubOus.next();
+                                // add role in child ou
+                                try {
+                                    allGroups.add(readGroup(dbc, role.forOrgUnit(subOu.getName()).getGroupName()));
+                                } catch (CmsDbEntryNotFoundException e) {
+                                    // ignore, this may happen while deleting an orgunit
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(e.getLocalizedMessage(), e);
+                                    }
+                                }
+                                // add child roles in child ous
                                 itChildRoles = role.getChilds(true).iterator();
                                 while (itChildRoles.hasNext()) {
                                     CmsRole childRole = (CmsRole)itChildRoles.next();
@@ -6292,8 +6304,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         if (readRoles) {
+            CmsRole role = CmsRole.valueOf(group);
+            // the workplace user role can only be removed if no other user has no other role
+            if (role.equals(CmsRole.WORKPLACE_USER.forOrgUnit(role.getOuFqn()))) {
+                if (getGroupsOfUser(
+                    dbc,
+                    username,
+                    role.getOuFqn(),
+                    false,
+                    true,
+                    true,
+                    dbc.getRequestContext().getRemoteAddress()).size() > 1) {
+                    return;
+                }
+            }
             // update virtual groups
-            Iterator it = getVirtualGroupsForRole(dbc, CmsRole.valueOf(group)).iterator();
+            Iterator it = getVirtualGroupsForRole(dbc, role).iterator();
             while (it.hasNext()) {
                 CmsGroup virtualGroup = (CmsGroup)it.next();
                 if (userInGroup(dbc, username, virtualGroup.getName(), false)) {
