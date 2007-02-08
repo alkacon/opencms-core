@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2006/08/25 08:13:10 $
- * Version: $Revision: 1.26.4.2 $
+ * Date   : $Date: 2007/02/08 11:34:05 $
+ * Version: $Revision: 1.26.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26.4.2 $ 
+ * @version $Revision: 1.26.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +216,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsUserWidget(
-            null,
             null,
             null)));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
