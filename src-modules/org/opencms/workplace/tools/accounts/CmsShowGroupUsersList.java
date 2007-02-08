@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2007/02/07 15:01:35 $
- * Version: $Revision: 1.11.4.6 $
+ * Date   : $Date: 2007/02/08 08:02:58 $
+ * Version: $Revision: 1.11.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11.4.6 $ 
+ * @version $Revision: 1.11.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,8 +127,9 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
         String userId = getSelectedItem().getId();
 
         Map params = new HashMap();
-        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/accounts/orgunit/users/edit/user", params);

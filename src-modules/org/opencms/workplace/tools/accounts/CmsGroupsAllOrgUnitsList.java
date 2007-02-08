@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/07 17:06:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/08 08:02:58 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -209,5 +209,14 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
+    }
+
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // no param check needed
     }
 }

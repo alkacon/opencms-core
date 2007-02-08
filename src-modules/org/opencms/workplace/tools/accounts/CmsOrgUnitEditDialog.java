@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/08 08:02:58 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.6
  */
@@ -260,7 +260,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     Iterator itResources = resources.iterator();
                     while (itResources.hasNext()) {
                         CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(resource.getRootPath());
+                        resourceNames.add(getCms().getSitePath(resource));
                     }
                     m_orgUnitBean.setResources(resourceNames);
                 } else {
@@ -276,7 +276,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     Iterator itResources = resources.iterator();
                     while (itResources.hasNext()) {
                         CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(resource.getRootPath());
+                        resourceNames.add(getCms().getSitePath(resource));
                     }
                     m_orgUnitBean.setResources(resourceNames);
                 }
@@ -291,7 +291,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     Iterator itResources = resources.iterator();
                     while (itResources.hasNext()) {
                         CmsResource resource = (CmsResource)itResources.next();
-                        resourceNames.add(resource.getRootPath());
+                        resourceNames.add(getCms().getSitePath(resource));
                     }
                     m_orgUnitBean.setResources(resourceNames);
                 } catch (CmsException ex) {
@@ -312,7 +312,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 Iterator itResources = resources.iterator();
                 while (itResources.hasNext()) {
                     CmsResource resource = (CmsResource)itResources.next();
-                    resourceNames.add(resource.getRootPath());
+                    resourceNames.add(getCms().getSitePath(resource));
                 }
                 m_orgUnitBean.setResources(resourceNames);
             } catch (CmsException e) {

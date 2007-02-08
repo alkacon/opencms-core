@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/07 17:06:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/08 08:02:58 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -223,4 +224,11 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
         // noop
     }
 
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // no param check needed
+    }
 }
