@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/02/09 15:45:05 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.5.6
  */
@@ -120,9 +120,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                         (String)itResourceNames.next());
                 }
             } else {
-                // changes of ou / parent ou have to be written
-                int todo = -1;
-
                 m_orgunit.setDescription(m_orgUnitBean.getDescription());
 
                 List resourceNamesNew = CmsFileUtil.removeRedundancies(m_orgUnitBean.getResources());

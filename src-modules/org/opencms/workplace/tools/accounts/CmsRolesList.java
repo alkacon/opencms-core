@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/02/09 15:45:05 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -151,11 +151,11 @@ public class CmsRolesList extends A_CmsRolesList {
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
         params.put(PARAM_ROLE, roleName);
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-        if (getParamListAction().equals(LIST_ACTION_EDIT)) {
+        if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_ACTION_ICON)) {
             try {
                 if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.valueOf(getCms().readGroup(roleName)))) {
                     // forward to the edit user screen
-                    getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
+                    getToolManager().jspForwardTool(this, getCurrentToolPath() + "/overview/edit", params);
                 } else {
                     getToolManager().jspForwardTool(this, getCurrentToolPath() + "/overview", params);
                 }
@@ -268,6 +268,9 @@ public class CmsRolesList extends A_CmsRolesList {
         editCol.addDirectAction(editAction);
         // add it to the list definition
         metadata.addColumn(editCol, 1);
+
+        // activate icon action
+        metadata.getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON).setEnabled(true);
     }
 
     /**

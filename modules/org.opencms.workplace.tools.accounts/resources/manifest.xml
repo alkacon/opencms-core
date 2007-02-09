@@ -754,6 +754,14 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
 					<name>NavPos</name>
 					<value><![CDATA[3]]></value>
 				</property>
@@ -771,7 +779,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.role}&action=initial|path:/accounts/orgunit/roles/edit]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.role}&action=initial|path:/accounts/orgunit/roles/overview/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

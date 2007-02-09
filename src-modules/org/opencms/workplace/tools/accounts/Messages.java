@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.9.4.16 $
+ * Date   : $Date: 2007/02/09 15:45:05 $
+ * Version: $Revision: 1.9.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.16 $ 
+ * @version $Revision: 1.9.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -1076,6 +1076,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLEUSER_ADMIN_TOOL_NAVBARNAME_0 = "GUI_ROLEUSER_ADMIN_TOOL_NAVBARNAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ROLEUSERS_ADMIN_TOOL_GROUP_0 = "GUI_ROLEUSERS_ADMIN_TOOL_GROUP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ROLEUSERS_ADMIN_TOOL_HELP_0 = "GUI_ROLEUSERS_ADMIN_TOOL_HELP_0";
