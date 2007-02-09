@@ -1,0 +1,559 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
+ * Date   : $Date: 2007/02/09 10:29:15 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.workplace.commons;
+
+import org.opencms.file.CmsUser;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPrincipal;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.workplace.list.A_CmsListDefaultJsAction;
+import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
+import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListOrderEnum;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
+
+/**
+ * Principal selection dialog.<p>
+ * 
+ * @author Michael Moossen  
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.5.6 
+ */
+public class CmsPrincipalSelectionList extends A_CmsListDialog {
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_ICON = "ai";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_SELECT = "js";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DESCRIPTION = "cd";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ICON = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_NAME = "cn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "cou";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_OTHEROU = "doo";
+
+    /** list action id constant. */
+    public static final String LIST_IACTION_GROUPS = "iag";
+
+    /** list action id constant. */
+    public static final String LIST_IACTION_USERS = "iau";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lus";
+
+    /** Path to the list buttons. */
+    public static final String PATH_BUTTONS = "tools/accounts/buttons/";
+
+    /** Cached value. */
+    private Boolean m_hasPrincipalsInOtherOus;
+
+    /** Stores the value of the request parameter for the flags. */
+    private String m_paramFlags;
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsPrincipalSelectionList(CmsJspActionElement jsp) {
+
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_NAME_0),
+            LIST_COLUMN_DISPLAY,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            LIST_COLUMN_DISPLAY);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsPrincipalSelectionList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
+     */
+    public String dialogTitle() {
+
+        // build title
+        StringBuffer html = new StringBuffer(512);
+        html.append("<div class='screenTitle'>\n");
+        html.append("\t<table width='100%' cellspacing='0'>\n");
+        html.append("\t\t<tr>\n");
+        html.append("\t\t\t<td>\n");
+        html.append(key(Messages.GUI_PRINCIPALSELECTION_INTRO_TITLE_0));
+        html.append("\n\t\t\t</td>");
+        html.append("\t\t</tr>\n");
+        html.append("\t</table>\n");
+        html.append("</div>\n");
+        return html.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
+     */
+    public void executeListIndepActions() {
+
+        if (LIST_IACTION_USERS.equals(getParamListAction())) {
+            getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).setVisible(false);
+            getList().getMetadata().getIndependentAction(LIST_IACTION_GROUPS).setVisible(true);
+        } else if (LIST_IACTION_GROUPS.equals(getParamListAction())) {
+            getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).setVisible(true);
+            getList().getMetadata().getIndependentAction(LIST_IACTION_GROUPS).setVisible(false);
+        }
+        super.executeListIndepActions();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
+     */
+    public void executeListMultiActions() throws CmsRuntimeException {
+
+        throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
+     */
+    public void executeListSingleActions() throws CmsRuntimeException {
+
+        throwListUnsupportedActionException();
+    }
+
+    /**
+     * Returns the right icon path for the given list item.<p>
+     * 
+     * @param item the list item to get the icon path for
+     * 
+     * @return the icon path for the given role
+     */
+    public String getIconPath(CmsListItem item) {
+
+        boolean showingUsers = isShowingUsers();
+        try {
+            CmsPrincipal principal;
+            if (showingUsers) {
+                principal = getCms().readUser((String)item.get(LIST_COLUMN_NAME));
+            } else {
+                principal = getCms().readGroup((String)item.get(LIST_COLUMN_NAME));
+            }
+            if (principal.getOuFqn().equals(getCms().getRequestContext().currentUser().getOuFqn())) {
+                if (showingUsers) {
+                    return PATH_BUTTONS + "user.png";
+                } else {
+                    return PATH_BUTTONS + "group.png";
+                }
+            } else {
+                if (showingUsers) {
+                    return PATH_BUTTONS + "user_other_ou.png";
+                } else {
+                    return PATH_BUTTONS + "group_other_ou.png";
+                }
+            }
+        } catch (CmsException e) {
+            if (showingUsers) {
+                return PATH_BUTTONS + "user.png";
+            } else {
+                return PATH_BUTTONS + "group.png";
+            }
+        }
+    }
+
+    /**
+     * Returns the flags parameter value.<p>
+     *
+     * @return the flags parameter value
+     */
+    public String getParamFlags() {
+
+        return m_paramFlags;
+    }
+
+    /**
+     * Returns if the list of principals has principals of other organizational units.<p>
+     * 
+     * @return if the list of principals has principals of other organizational units
+     */
+    public boolean hasPrincipalsInOtherOus() {
+
+        if (m_hasPrincipalsInOtherOus == null) {
+            // lazzy initialization
+            m_hasPrincipalsInOtherOus = Boolean.FALSE;
+            try {
+                Iterator itPrincipals = getPrincipals(true).iterator();
+                while (itPrincipals.hasNext()) {
+                    CmsPrincipal principal = (CmsPrincipal)itPrincipals.next();
+                    if (!principal.getOuFqn().equals(getCms().getRequestContext().currentUser().getOuFqn())) {
+                        m_hasPrincipalsInOtherOus = Boolean.TRUE;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return m_hasPrincipalsInOtherOus.booleanValue();
+    }
+
+    /**
+     * Checks if we are currently displaying users or groups.<p>
+     * 
+     * @return <code>true</code> if we are currently displaying users
+     */
+    public boolean isShowingUsers() {
+
+        return getList().getMetadata().getIndependentAction(LIST_IACTION_GROUPS).isVisible();
+    }
+
+    /**
+     * Sets the flags parameter value.<p>
+     *
+     * @param flags the flags parameter value to set
+     */
+    public void setParamFlags(String flags) {
+
+        m_paramFlags = flags;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        List ret = new ArrayList();
+
+        boolean withOtherOus = hasPrincipalsInOtherOus()
+            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+
+        // get content        
+        List principals = getPrincipals(withOtherOus);
+        Iterator itPrincipals = principals.iterator();
+        while (itPrincipals.hasNext()) {
+            I_CmsPrincipal principal = (I_CmsPrincipal)itPrincipals.next();
+            CmsListItem item = getList().newItem(principal.getId().toString());
+            item.set(LIST_COLUMN_NAME, principal.getName());
+            item.set(LIST_COLUMN_DISPLAY, principal.getSimpleName());
+            if (principal.isUser()) {
+                item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getFullName());
+            } else {
+                item.set(LIST_COLUMN_DESCRIPTION, principal.getDescription());
+            }
+            item.set(LIST_COLUMN_ORGUNIT, principal.getOuFqn());
+            ret.add(item);
+        }
+        return ret;
+    }
+
+    /**
+     * Returns the list of principals for selection.<p>
+     * 
+     * @param includeOtherOus if to include other ou's in the selection 
+     * 
+     * @return a list of principals
+     * 
+     * @throws CmsException if womething goes wrong
+     */
+    protected List getPrincipals(boolean includeOtherOus) throws CmsException {
+
+        Set principals = new HashSet();
+        if (isShowingUsers()) {
+            if (includeOtherOus) {
+                // add all manageable users
+                principals.addAll(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
+                // add own ou users
+                principals.addAll(OpenCms.getOrgUnitManager().getUsers(
+                    getCms(),
+                    getCms().getRequestContext().currentUser().getOuFqn(),
+                    true));
+            } else {
+                // add own ou users
+                principals.addAll(OpenCms.getOrgUnitManager().getUsers(
+                    getCms(),
+                    getCms().getRequestContext().currentUser().getOuFqn(),
+                    false));
+            }
+        } else {
+            if (includeOtherOus) {
+                // add all manageable users
+                principals.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
+                // add own ou users
+                principals.addAll(OpenCms.getOrgUnitManager().getGroups(
+                    getCms(),
+                    getCms().getRequestContext().currentUser().getOuFqn(),
+                    true));
+            } else {
+                // add own ou users
+                principals.addAll(OpenCms.getOrgUnitManager().getGroups(
+                    getCms(),
+                    getCms().getRequestContext().currentUser().getOuFqn(),
+                    false));
+            }
+        }
+        List ret = new ArrayList(principals);
+        if (getParamFlags() != null) {
+            int flags = Integer.parseInt(getParamFlags());
+            return CmsPrincipal.filterFlag(ret, flags);
+        }
+        return ret;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
+     */
+    protected void initializeDetail(String detailId) {
+
+        super.initializeDetail(detailId);
+        if (detailId.equals(LIST_DETAIL_OTHEROU)) {
+            boolean visible = hasPrincipalsInOtherOus()
+                && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setPrintable(visible);
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        // create column for icon display
+        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
+        iconCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_ICON_0));
+        iconCol.setHelpText(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_ICON_HELP_0));
+        iconCol.setWidth("20");
+        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        iconCol.setSorteable(false);
+        // set icon action
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return ((CmsPrincipalSelectionList)getWp()).getIconPath(getItem());
+            }
+        };
+        iconAction.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_ICON_NAME_0));
+        iconAction.setHelpText(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_ICON_HELP_0));
+        iconAction.setEnabled(false);
+        iconCol.addDirectAction(iconAction);
+        // add it to the list definition
+        metadata.addColumn(iconCol);
+
+        CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
+        loginCol.setVisible(false);
+        metadata.addColumn(loginCol);
+        loginCol.setPrintable(false);
+
+        // create column for display name
+        CmsListColumnDefinition displayNameCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
+        displayNameCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_NAME_0));
+        displayNameCol.setWidth("40%");
+        CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
+             */
+            public String jsCode() {
+
+                return "window.opener.setPrincipalFormValue("
+                    + (((CmsPrincipalSelectionList)getWp()).isShowingUsers() ? 1 : 0)
+                    + ",'"
+                    + getItem().get(LIST_COLUMN_NAME)
+                    + "'); window.opener.focus(); window.close();";
+            }
+        };
+        selectAction.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
+        selectAction.setHelpText(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_HELP_0));
+        displayNameCol.addDefaultAction(selectAction);
+        // add it to the list definition
+        metadata.addColumn(displayNameCol);
+
+        // create column for description
+        CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
+        descriptionCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_DESCRIPTION_0));
+        descriptionCol.setWidth("60%");
+        descriptionCol.setTextWrapping(true);
+        // add it to the list definition
+        metadata.addColumn(descriptionCol);
+
+        // create column for description
+        CmsListColumnDefinition ouCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        ouCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_ORGUNIT_0));
+        ouCol.setWidth("40%");
+        ouCol.setTextWrapping(true);
+        // add it to the list definition
+        metadata.addColumn(ouCol);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        // add other ou button
+        CmsListItemDetails otherOuDetails = new CmsListItemDetails(LIST_DETAIL_OTHEROU);
+        otherOuDetails.setVisible(false);
+        otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_HIDE;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
+            }
+        });
+        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_SHOW;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
+            }
+        });
+        otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_NAME_0));
+        otherOuDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_HELP_0));
+        otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_NAME_0));
+        otherOuDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_HELP_0));
+        otherOuDetails.setName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0));
+        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0)));
+        metadata.addItemDetails(otherOuDetails);
+
+        CmsListIndependentAction usersAction = new CmsListIndependentAction(LIST_IACTION_USERS);
+        usersAction.setName(Messages.get().container(Messages.GUI_PRINCIPALS_IA_USERS_NAME_0));
+        usersAction.setHelpText(Messages.get().container(Messages.GUI_PRINCIPALS_IA_USERS_HELP_0));
+        usersAction.setIconPath(PATH_BUTTONS + "user.png");
+        usersAction.setVisible(true);
+        metadata.addIndependentAction(usersAction);
+
+        CmsListIndependentAction groupsAction = new CmsListIndependentAction(LIST_IACTION_GROUPS);
+        groupsAction.setName(Messages.get().container(Messages.GUI_PRINCIPALS_IA_GROUPS_NAME_0));
+        groupsAction.setHelpText(Messages.get().container(Messages.GUI_PRINCIPALS_IA_GROUPS_HELP_0));
+        groupsAction.setIconPath(PATH_BUTTONS + "group.png");
+        groupsAction.setVisible(false);
+        metadata.addIndependentAction(groupsAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // no-op        
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        try {
+            Integer.valueOf(getParamFlags());
+        } catch (Throwable e) {
+            setParamFlags(null);
+        }
+    }
+}

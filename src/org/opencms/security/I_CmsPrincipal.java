@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.15.4.6 $
+ * Date   : $Date: 2007/02/09 10:29:15 $
+ * Version: $Revision: 1.15.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15.4.6 $ 
+ * @version $Revision: 1.15.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,9 +57,6 @@ public interface I_CmsPrincipal extends Principal {
     /** This flag is set for enabled principals in the database. */
     int FLAG_ENABLED = 0;
 
-    /** Flag to indicate a user is able to manage himself. */
-    int FLAG_USER_SELF_MANAGEMENT = 2;
-    
     /** Flag to indicate a group is a potential project manager group. */
     int FLAG_GROUP_PROJECT_MANAGER = 2;
 
@@ -74,6 +71,9 @@ public interface I_CmsPrincipal extends Principal {
      * <code>{@link CmsRole#getSystemRoles()}.size()-1</code> so we will need up to 4 more bits. 
      */
     int FLAG_GROUP_VIRTUAL = 1024; // 2^10 << FLAG_CORE_LIMIT 
+
+    /** Flag to indicate a user is able to manage himself. */
+    int FLAG_USER_SELF_MANAGEMENT = 2;
 
     /** Identifier for group principals. */
     String PRINCIPAL_GROUP = "GROUP";
@@ -131,6 +131,13 @@ public interface I_CmsPrincipal extends Principal {
     String getName();
 
     /**
+     * Returns the fully qualified name of the associated organizational unit.<p>
+     *
+     * @return the fully qualified name of the associated organizational unit
+     */
+    String getOuFqn();
+
+    /**
      * Returns this principals unique name prefixed with it's type.<p>
      * 
      * The type prefix can either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code> 
@@ -139,6 +146,13 @@ public interface I_CmsPrincipal extends Principal {
      * @return this principals unique name prefixed with this principals type
      */
     String getPrefixedName();
+
+    /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    String getSimpleName();
 
     /**
      * Returns the hash code of this object.<p>

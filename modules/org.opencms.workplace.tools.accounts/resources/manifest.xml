@@ -1747,6 +1747,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/group_other_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/group_other_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>1fc4d52d-b827-11db-ab28-57d0fde741a5</uuidstructure>
+			<uuidresource>1fc4d52e-b827-11db-ab28-57d0fde741a5</uuidresource>
+			<datelastmodified>Fri, 09 Feb 2007 10:20:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 09 Feb 2007 10:20:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/accounts/buttons/orgunit.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/orgunit.png</destination>
 			<type>image</type>

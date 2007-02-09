@@ -83,6 +83,8 @@
 			<resource uri="/system/workplace/resources/components/widgets/htmlgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/orgunitselector.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/principalselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
@@ -110,7 +112,6 @@
 			<resource uri="/system/workplace/views/top_js.jsp"/>
 			<resource uri="/system/workplace/locales/en/readme.txt"/>
 			<resource uri="/system/shared/decoration/"/>
-			<resource uri="/system/workplace/resources/components/widgets/orgunitselector.js"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -2634,6 +2635,25 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to open Organizational Unit selector]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/principalselector.js</source>
+			<destination>system/workplace/resources/components/widgets/principalselector.js</destination>
+			<type>plain</type>
+			<uuidstructure>46f230b2-b777-11db-aafa-57d0fde741a5</uuidstructure>
+			<uuidresource>46f4a1b3-b777-11db-aafa-57d0fde741a5</uuidresource>
+			<datelastmodified>Thu, 08 Feb 2007 13:22:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 08 Feb 2007 13:21:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open Principal selector]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

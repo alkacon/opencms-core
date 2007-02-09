@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.24.4.6 $
+ * Date   : $Date: 2007/02/09 10:29:15 $
+ * Version: $Revision: 1.24.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.CmsPrincipalWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.6 $ 
+ * @version $Revision: 1.24.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,6 +185,54 @@ public class CmsChacc extends CmsDialog {
     public CmsChacc(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Builds a detail view selector.<p>
+     * 
+     * @param wp the dialog object
+     * @return the HTML code for the detail view selector
+     */
+    public static String buildSummaryDetailsButtons(CmsDialog wp) {
+
+        StringBuffer result = new StringBuffer(512);
+        // create detail view selector 
+        result.append("<table border=\"0\">\n<tr>\n\t<td>");
+        result.append(wp.key(Messages.GUI_PERMISSION_SELECT_VIEW_0));
+        result.append("</td>\n");
+        String selectedView = wp.getSettings().getPermissionDetailView();
+        result.append("\t<form action=\"").append(wp.getDialogUri()).append(
+            "\" method=\"post\" name=\"selectshortview\">\n");
+        result.append("\t<td>\n");
+        result.append("\t<input type=\"hidden\" name=\"");
+        result.append(PARAM_VIEW);
+        result.append("\" value=\"short\">\n");
+        // set parameters to show correct hidden input fields
+        wp.setParamAction(null);
+        result.append(wp.paramsAsHidden());
+        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(
+            wp.key(Messages.GUI_LABEL_SUMMARY_0)).append("\"");
+        if (!"long".equals(selectedView)) {
+            result.append(" disabled=\"disabled\"");
+        }
+        result.append(">\n");
+        result.append("\t</td>\n");
+        result.append("\t</form>\n\t<form action=\"").append(wp.getDialogUri()).append(
+            "\" method=\"post\" name=\"selectlongview\">\n");
+        result.append("\t<td>\n");
+        result.append("\t<input type=\"hidden\" name=\"");
+        result.append(PARAM_VIEW);
+        result.append("\" value=\"long\">\n");
+        result.append(wp.paramsAsHidden());
+        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(
+            wp.key(Messages.GUI_LABEL_DETAILS_0)).append("\"");
+        if ("long".equals(selectedView)) {
+            result.append(" disabled=\"disabled\"");
+        }
+        result.append(">\n");
+        result.append("\t</td>\n\t</form>\n");
+        result.append("</tr>\n</table>\n");
+        return result.toString();
     }
 
     /**
@@ -419,50 +468,92 @@ public class CmsChacc extends CmsDialog {
     }
 
     /**
-     * Builds a detail view selector.<p>
+     * Builds a String with HTML code to display the responsibles of a resource.<p>
      * 
-     * @param wp the dialog object
-     * @return the HTML code for the detail view selector
+     * @param show true the responsible list is open
+     * @return HTML code for the responsibles of the current resource
      */
-    public static String buildSummaryDetailsButtons(CmsDialog wp) {
+    public String buildResponsibleList(boolean show) {
 
+        List parentResources = new ArrayList();
+        Map responsibles = new HashMap();
+        CmsObject cms = getCms();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
+        try {
+            // get all parent folders of the current file
+            parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            // can usually be ignored
+            if (CmsChacc.LOG.isInfoEnabled()) {
+                CmsChacc.LOG.info(e.getLocalizedMessage());
+            }
+        }
+        Iterator i = parentResources.iterator();
+        while (i.hasNext()) {
+            CmsResource resource = (CmsResource)i.next();
+            try {
+                String sitePath = resource.getRootPath();
+                Iterator entries = cms.getAccessControlEntries(cms.getRequestContext().removeSiteRoot(sitePath), false).iterator();
+                while (entries.hasNext()) {
+                    CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
+                    if (ace.isResponsible()) {
+                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                        if (principal != null) {
+                            responsibles.put(principal, sitePath);
+                        } else {
+                            responsibles.put(ace.getPrincipal(), sitePath);
+                        }
+                    }
+                }
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
+        }
+
+        if (responsibles.size() == 0) {
+            return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
+        }
         StringBuffer result = new StringBuffer(512);
-        // create detail view selector 
-        result.append("<table border=\"0\">\n<tr>\n\t<td>");
-        result.append(wp.key(Messages.GUI_PERMISSION_SELECT_VIEW_0));
-        result.append("</td>\n");
-        String selectedView = wp.getSettings().getPermissionDetailView();
-        result.append("\t<form action=\"").append(wp.getDialogUri()).append(
-            "\" method=\"post\" name=\"selectshortview\">\n");
-        result.append("\t<td>\n");
-        result.append("\t<input type=\"hidden\" name=\"");
-        result.append(PARAM_VIEW);
-        result.append("\" value=\"short\">\n");
-        // set parameters to show correct hidden input fields
-        wp.setParamAction(null);
-        result.append(wp.paramsAsHidden());
-        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(
-            wp.key(Messages.GUI_LABEL_SUMMARY_0)).append("\"");
-        if (!"long".equals(selectedView)) {
-            result.append(" disabled=\"disabled\"");
+        result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
+
+        result.append(dialogWhiteBoxStart());
+        i = responsibles.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String name;
+            String image;
+            if (entry.getKey() instanceof I_CmsPrincipal) {
+                I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
+                name = principal.getName();
+                image = "commons/user.png";
+                if (principal instanceof CmsGroup) {
+                    image = "commons/group.png";
+                }
+            } else {
+                name = entry.getKey().toString();
+                image = "explorer/project_none.gif";
+            }
+            result.append("<div class=\"dialogrow\"><img src=\"");
+            result.append(getSkinUri());
+            result.append(image);
+            result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"Group\" title=\"Group\">&nbsp;<span class=\"textbold\">");
+            result.append(name);
+            result.append("</span>");
+            if ("long".equals(getSettings().getPermissionDetailView())) {
+                result.append("<div class=\"dialogpermissioninherit\">");
+                String resourceName = (String)entry.getValue();
+                if (!resourceSitePath.equals(resourceName)) {
+                    result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
+                }
+                result.append("</div>");
+            }
+            result.append("</div>\n");
         }
-        result.append(">\n");
-        result.append("\t</td>\n");
-        result.append("\t</form>\n\t<form action=\"").append(wp.getDialogUri()).append(
-            "\" method=\"post\" name=\"selectlongview\">\n");
-        result.append("\t<td>\n");
-        result.append("\t<input type=\"hidden\" name=\"");
-        result.append(PARAM_VIEW);
-        result.append("\" value=\"long\">\n");
-        result.append(wp.paramsAsHidden());
-        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(
-            wp.key(Messages.GUI_LABEL_DETAILS_0)).append("\"");
-        if ("long".equals(selectedView)) {
-            result.append(" disabled=\"disabled\"");
-        }
-        result.append(">\n");
-        result.append("\t</td>\n\t</form>\n");
-        result.append("</tr>\n</table>\n");
+        result.append(dialogWhiteBoxEnd());
+        result.append("</div>\n");
         return result.toString();
     }
 
@@ -607,6 +698,30 @@ public class CmsChacc extends CmsDialog {
     public String getParamType() {
 
         return m_paramType;
+    }
+
+    /**
+     * Returns if the inherited permissions information should be displayed.<p>
+     *
+     * @return true if the inherited permissions information should be displayed, otherwise false
+     */
+    public boolean getShowInheritedPermissions() {
+
+        return m_showInheritedPermissions;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#htmlStart()
+     */
+    public String htmlStart() {
+
+        StringBuffer result = new StringBuffer(256);
+        result.append(super.htmlStart());
+        result.append((new CmsPrincipalWidget().getDialogIncludes(getCms(), null)));
+        result.append("<script type='text/javascript' >");
+        result.append("typeField = '").append(PARAM_TYPE).append("';");
+        result.append("</script>");
+        return result.toString();
     }
 
     /**
@@ -771,16 +886,6 @@ public class CmsChacc extends CmsDialog {
     protected boolean getInheritOption() {
 
         return m_inherit;
-    }
-
-    /**
-     * Returns if the inherited permissions information should be displayed.<p>
-     *
-     * @return true if the inherited permissions information should be displayed, otherwise false
-     */
-    public boolean getShowInheritedPermissions() {
-
-        return m_showInheritedPermissions;
     }
 
     /**
@@ -990,9 +1095,16 @@ public class CmsChacc extends CmsDialog {
             result.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"");
             result.append(PARAM_NAME);
             result.append("\" value=\"\"></td>\n");
-            result.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\"");
-            result.append(key(Messages.GUI_LABEL_SEARCH_0)).append(
-                "\" onClick=\"javascript:openDialogWin('chaccbrowser.jsp','UserGroup');\"></td>\n");
+
+            result.append("<td><span style='display: block; height: 1px; width: 10px;'/></td>");
+
+            result.append(button(
+                new CmsPrincipalWidget().getButtonJs(PARAM_NAME, "add"),
+                null,
+                "principal",
+                org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
+                getSettings().getUserSettings().getEditorButtonStyle()));
+
             result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
                 key(Messages.GUI_LABEL_ADD_0)).append("\"></td>\n");
             result.append("</tr>\n");
@@ -1397,96 +1509,6 @@ public class CmsChacc extends CmsDialog {
             result.append(dialogWhiteBox(HTML_END));
         }
         return result;
-    }
-
-    /**
-     * Builds a String with HTML code to display the responsibles of a resource.<p>
-     * 
-     * @param show true the responsible list is open
-     * @return HTML code for the responsibles of the current resource
-     */
-    public String buildResponsibleList(boolean show) {
-
-        List parentResources = new ArrayList();
-        Map responsibles = new HashMap();
-        CmsObject cms = getCms();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (CmsChacc.LOG.isInfoEnabled()) {
-                CmsChacc.LOG.info(e.getLocalizedMessage());
-            }
-        }
-        Iterator i = parentResources.iterator();
-        while (i.hasNext()) {
-            CmsResource resource = (CmsResource)i.next();
-            try {
-                String sitePath = resource.getRootPath();
-                Iterator entries = cms.getAccessControlEntries(cms.getRequestContext().removeSiteRoot(sitePath), false).iterator();
-                while (entries.hasNext()) {
-                    CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            responsibles.put(principal, sitePath);
-                        } else {
-                            responsibles.put(ace.getPrincipal(), sitePath);
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-            }
-        }
-
-        if (responsibles.size() == 0) {
-            return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
-        }
-        StringBuffer result = new StringBuffer(512);
-        result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
-
-        result.append(dialogWhiteBoxStart());
-        i = responsibles.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String name;
-            String image;
-            if (entry.getKey() instanceof I_CmsPrincipal) {
-                I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
-                name = principal.getName();
-                image = "commons/user.png";
-                if (principal instanceof CmsGroup) {
-                    image = "commons/group.png";
-                }
-            } else {
-                name = entry.getKey().toString();
-                image = "explorer/project_none.gif";
-            }
-            result.append("<div class=\"dialogrow\"><img src=\"");
-            result.append(getSkinUri());
-            result.append(image);
-            result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"Group\" title=\"Group\">&nbsp;<span class=\"textbold\">");
-            result.append(name);
-            result.append("</span>");
-            if ("long".equals(getSettings().getPermissionDetailView())) {
-                result.append("<div class=\"dialogpermissioninherit\">");
-                String resourceName = (String)entry.getValue();
-                if (!resourceSitePath.equals(resourceName)) {
-                    result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
-                }
-                result.append("</div>");
-            }
-            result.append("</div>\n");
-        }
-        result.append(dialogWhiteBoxEnd());
-        result.append("</div>\n");
-        return result.toString();
     }
 
 }
