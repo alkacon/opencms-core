@@ -922,6 +922,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/publish</destination>
+			<type>folder</type>
+			<uuidstructure>1234abcd-70d1-11db-b760-bf6fa13020a5</uuidstructure>
+			<datelastmodified>Fri, 10 Nov 2006 15:53:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Nov 2006 15:53:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/publish/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/publish/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>abcd4321-70d2-11db-b760-bf6fa13020a5</uuidstructure>
+			<uuidresource>dcba1234-70d3-11db-b760-bf6fa13020a5</uuidresource>
+			<datelastmodified>Tue, 14 Nov 2006 16:19:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Nov 2006 15:53:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/relations</destination>
 			<type>folder</type>
 			<uuidstructure>134e7a30-700c-11db-85b5-e907d95948a7</uuidstructure>
