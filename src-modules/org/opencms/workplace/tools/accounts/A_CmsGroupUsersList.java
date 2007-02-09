@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2007/02/09 10:31:30 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.5 $ 
+ * @version $Revision: 1.16.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -299,6 +299,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             boolean visible = hasUsersInOtherOus()
                 && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
             getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
+            getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setPrintable(visible);
         }
     }
 
