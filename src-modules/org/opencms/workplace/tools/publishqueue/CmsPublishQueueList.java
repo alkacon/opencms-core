@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/09 16:41:00 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.5
  */
@@ -219,23 +219,6 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         } else {
             throwListUnsupportedActionException();
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
-     */
-    protected String customHtmlStart() {
-
-        StringBuffer result = new StringBuffer(8);
-        result.append("<script type=\"text/javascript\">\n");
-        result.append("adminVal=\"" + getJsp().link("/system/workplace/views/admin/admin-fs.jsp") + "\";\n");
-        result.append("for(var i = 0; i < top.frames[0].document.getElementsByName(\"wpView\")[0].length; i++){\n");
-        result.append("if(top.frames[0].document.getElementsByName(\"wpView\")[0].options[i].value==adminVal){\n");
-        result.append("top.frames[0].document.getElementsByName(\"wpView\")[0].options[i].selected=true;\n");
-        result.append("break;\n");
-        result.append("}\n}\n");
-        result.append("</script>");
-        return result.toString();
     }
 
     /**

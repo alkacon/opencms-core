@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.86.4.8 $
+ * Date   : $Date: 2007/02/09 16:41:00 $
+ * Version: $Revision: 1.86.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.8 $ 
+ * @version $Revision: 1.86.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,12 +290,17 @@ public class CmsFrameset extends CmsWorkplace {
     public String getPublishQueueButton() {
 
         int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
-        return button(
-            getJsp().link("/system/workplace/views/admin/admin-fs.jsp?path=/publishqueue"),
-            "body",
-            "publish_queue.png",
-            Messages.GUI_BUTTON_PUBLISHQUEUE_0,
-            buttonStyle);
+        StringBuffer js = new StringBuffer(128);
+        js.append("javascript:if (parent.body.admin_content && parent.body.admin_menu) {");
+        js.append("parent.body.location.href = '");
+        js.append(getJsp().link("/system/workplace/views/admin/admin-fs.jsp?root=admin&path=/publishqueue"));
+        js.append("';");
+        js.append("} else {");
+        js.append("parent.body.explorer_body.explorer_files.location.href = '");
+        js.append(getJsp().link("/system/workplace/views/admin/admin-fs.jsp?root=explorer&path=/publishqueue&menu=no"));
+        js.append("';");
+        js.append("};");
+        return button(js.toString(), null, "publish_queue.png", Messages.GUI_BUTTON_PUBLISHQUEUE_0, buttonStyle);
     }
 
     /**

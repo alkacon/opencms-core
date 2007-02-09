@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.4</opencms_version>
-		<createdate>Mon, 13 Nov 2006 10:28:11 GMT</createdate>
+		<opencms_version>6.5.6</opencms_version>
+		<createdate>Fri, 09 Feb 2007 16:35:36 GMT</createdate>
 		<project>Offline</project>
 		<export_version>5</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[This module contains the tools for view the OpenCms publish queue.
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.0.8</version>
+		<version>1.0.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -31,6 +31,7 @@
 			<resource uri="/system/workplace/admin/publishqueue/"/>
 			<resource uri="/system/workplace/resources/tools/publishqueue/"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.publishqueue/"/>
+			<resource uri="/system/workplace/explorer/publishqueue/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -38,10 +39,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>4dea53ce-64cc-11db-8713-bf6fa13020a5</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<uuidstructure>59c34f7a-b4f9-11db-8a69-57d0fde741a5</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 26 Oct 2006 08:30:58 GMT</datecreated>
+			<datecreated>Mon, 05 Feb 2007 09:14:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -60,7 +61,7 @@
 			<destination>system/modules</destination>
 			<type>folder</type>
 			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -110,7 +111,7 @@
 			<destination>system/workplace</destination>
 			<type>folder</type>
 			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -144,7 +145,7 @@
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
 			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -212,7 +213,7 @@
 			<type>jsp</type>
 			<uuidstructure>78d657c8-6db6-11db-9171-bf6fa13020a5</uuidstructure>
 			<uuidresource>78d657c9-6db6-11db-9171-bf6fa13020a5</uuidresource>
-			<datelastmodified>Fri, 10 Nov 2006 10:41:11 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Nov 2006 16:47:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -255,7 +256,7 @@
 			<type>jsp</type>
 			<uuidstructure>cfa0f835-797c-11db-b79b-9362e1ae9c5d</uuidstructure>
 			<uuidresource>cfa0f836-797c-11db-b79b-9362e1ae9c5d</uuidresource>
-			<datelastmodified>Thu, 23 Nov 2006 11:53:47 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Nov 2006 16:24:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -302,7 +303,7 @@
 			<type>jsp</type>
 			<uuidstructure>314cebe0-70ce-11db-9bff-bf6fa13020a5</uuidstructure>
 			<uuidresource>314cebe1-70ce-11db-9bff-bf6fa13020a5</uuidresource>
-			<datelastmodified>Mon, 13 Nov 2006 10:23:33 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Nov 2006 15:14:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -321,7 +322,225 @@
 			<type>jsp</type>
 			<uuidstructure>f387ac04-709e-11db-9d60-bf6fa13020a5</uuidstructure>
 			<uuidresource>f387ac05-709e-11db-9d60-bf6fa13020a5</uuidresource>
-			<datelastmodified>Fri, 10 Nov 2006 15:14:51 GMT</datelastmodified>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Nov 2006 09:36:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAME_0}:${key.GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish report view]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/publishqueue/view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer</destination>
+			<type>folder</type>
+			<uuidstructure>c59d76ba-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 05 Nov 2005 14:40:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Tools]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/publishqueue</destination>
+			<type>folder</type>
+			<uuidstructure>d74023ea-b854-11db-8fff-57d0fde741a5</uuidstructure>
+			<datelastmodified>Fri, 09 Feb 2007 15:47:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 09 Feb 2007 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOfflineToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[15.0]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[publishqueue.jsp]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/publishqueue/icons/big/publish_queue.png:tools/publishqueue/icons/small/publish_queue.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish Queue]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/publishqueue/publishqueue.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d75336c4-b854-11db-8fff-57d0fde741a5</uuidstructure>
+			<uuidresource>78d657c9-6db6-11db-9171-bf6fa13020a5</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Nov 2006 16:47:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[buttons/publish_queue.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_NAVBARNAME_0}:${key.GUI_PUBLISHQUEUE_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish queue]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[action=initial|path:/publishqueue]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/publishqueue/publishreportlive.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d766499c-b854-11db-8fff-57d0fde741a5</uuidstructure>
+			<uuidresource>cfa0f836-797c-11db-b79b-9362e1ae9c5d</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Nov 2006 16:24:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[123]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish report live view]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/publishqueue/live]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/publishqueue/publishreportshow.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d7771284-b854-11db-8fff-57d0fde741a5</uuidstructure>
+			<uuidresource>314cebe1-70ce-11db-9bff-bf6fa13020a5</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Nov 2006 15:14:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/publishqueue/publishreportview.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d782f965-b854-11db-8fff-57d0fde741a5</uuidstructure>
+			<uuidresource>f387ac05-709e-11db-9d60-bf6fa13020a5</uuidresource>
+			<datelastmodified>Mon, 05 Feb 2007 09:18:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Nov 2006 09:36:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -362,7 +581,7 @@
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Thu, 26 Oct 2006 10:26:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -374,7 +593,7 @@
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
