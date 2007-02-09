@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/02/08 10:05:24 $
- * Version: $Revision: 1.12.4.14 $
+ * Date   : $Date: 2007/02/09 13:46:49 $
+ * Version: $Revision: 1.12.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplaceManager;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.14 $ 
+ * @version $Revision: 1.12.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,6 +129,11 @@ public class CmsSessionManager {
      */
     public int getSessionCountAuthenticated() {
 
+        // since this method could be called from another thread
+        // we have to prevent access before initialization
+        if (m_sessionStorageProvider == null) {
+            return 0;
+        }
         return m_sessionStorageProvider.getSize();
     }
 
@@ -161,6 +167,11 @@ public class CmsSessionManager {
      */
     public CmsSessionInfo getSessionInfo(CmsUUID sessionId) {
 
+        // since this method could be called from another thread
+        // we have to prevent access before initialization
+        if (m_sessionStorageProvider == null) {
+            return null;
+        }
         return m_sessionStorageProvider.get(sessionId);
     }
 
@@ -223,6 +234,11 @@ public class CmsSessionManager {
      */
     public List getSessionInfos() {
 
+        // since this method could be called from another thread
+        // we have to prevent access before initialization
+        if (m_sessionStorageProvider == null) {
+            return Collections.EMPTY_LIST;
+        }
         return m_sessionStorageProvider.getAll();
     }
 
@@ -240,6 +256,11 @@ public class CmsSessionManager {
      */
     public List getSessionInfos(CmsUUID userId) {
 
+        // since this method could be called from another thread
+        // we have to prevent access before initialization
+        if (m_sessionStorageProvider == null) {
+            return Collections.EMPTY_LIST;
+        }
         return m_sessionStorageProvider.getAllOfUser(userId);
     }
 
@@ -579,10 +600,11 @@ public class CmsSessionManager {
      */
     protected void validateSessionInfos() {
 
-        // since this method is called from another thread
+        // since this method could be called from another thread
         // we have to prevent access before initialization
-        if (m_sessionStorageProvider != null) {
-            m_sessionStorageProvider.validate();
+        if (m_sessionStorageProvider == null) {
+            return;
         }
+        m_sessionStorageProvider.validate();
     }
 }
