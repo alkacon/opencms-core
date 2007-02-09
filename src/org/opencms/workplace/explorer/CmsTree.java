@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2007/02/07 15:03:20 $
- * Version: $Revision: 1.23.4.7 $
+ * Date   : $Date: 2007/02/09 12:49:57 $
+ * Version: $Revision: 1.23.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23.4.7 $ 
+ * @version $Revision: 1.23.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,14 +194,6 @@ public class CmsTree extends CmsWorkplace {
                 }
                 settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     CmsResourceTypePlain.getStaticTypeName());
-            }
-            // determine if this resource type is editable for the current user
-            CmsExplorerTypeAccess access = settings.getAccess();
-            if (access == null) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_ACCESS_ENTRY_1, curTypeName));
-                }
-                access = OpenCms.getWorkplaceManager().getDefaultAccess();
             }
             retValue.append("\taddResourceType(");
             retValue.append(curTypeId);

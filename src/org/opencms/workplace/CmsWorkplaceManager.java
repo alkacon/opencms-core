@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/02/07 15:03:22 $
- * Version: $Revision: 1.76.4.10 $
+ * Date   : $Date: 2007/02/09 12:49:57 $
+ * Version: $Revision: 1.76.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.10 $ 
+ * @version $Revision: 1.76.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1267,6 +1267,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         Map explorerTypeSettingsMap = new HashMap();
         List explorerTypeSettings = new ArrayList();
 
+        if (m_defaultAccess.getAccessControlList() == null) {
+            try {
+                // initialize the default access control configuration
+                m_defaultAccess.createAccessControlList(CmsExplorerTypeAccess.PRINCIPAL_DEFAULT);
+            } catch (CmsException e) {
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_ADD_TYPE_SETTING_FAILED_1,
+                        CmsExplorerTypeAccess.PRINCIPAL_DEFAULT), e);
+                }
+            }
+        }
+
         explorerTypeSettings.addAll(m_explorerTypeSettingsFromXml);
         explorerTypeSettings.addAll(m_explorerTypeSettingsFromModules);
 
@@ -1274,9 +1287,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)explorerTypeSettings.get(i);
             // put the settings in the lookup map
             explorerTypeSettingsMap.put(settings.getName(), settings);
+            if (getDefaultAccess() == settings.getAccess()) {
+                continue;
+            }
             try {
                 // initialize the access control configuration of the explorer type
-                settings.getAccess().createAccessControlList();
+                settings.getAccess().createAccessControlList(settings.getName());
             } catch (CmsException e) {
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
