@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/11/29 15:04:12 $
- * Version: $Revision: 1.22.4.7 $
+ * Date   : $Date: 2007/02/09 10:30:44 $
+ * Version: $Revision: 1.22.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.7 $ 
+ * @version $Revision: 1.22.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,13 +107,7 @@ public class CmsListMetadata {
      */
     public void addColumn(CmsListColumnDefinition listColumn) {
 
-        setListIdForColumn(listColumn);
-        if (m_columns.elementList().isEmpty()) {
-            listColumn.setPrintable(true);
-        } else {
-            listColumn.setPrintable(listColumn.isSorteable());
-        }
-        m_columns.addIdentifiableObject(listColumn.getId(), listColumn);
+        addColumn(listColumn, m_columns.elementList().size());
     }
 
     /**
@@ -138,6 +132,9 @@ public class CmsListMetadata {
             listColumn.setPrintable(true);
         } else {
             listColumn.setPrintable(listColumn.isSorteable());
+        }
+        if ((listColumn.getName() == null) && listColumn.isPrintable()) {
+            listColumn.setPrintable(false);
         }
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
     }
