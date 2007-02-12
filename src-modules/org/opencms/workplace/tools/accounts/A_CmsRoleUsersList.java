@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/09 10:31:30 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/12 15:39:31 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.6
  */
@@ -373,6 +373,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         otherOuDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0));
         otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
+        otherOuDetails.setVisible(true);
         metadata.addItemDetails(otherOuDetails);
     }
 

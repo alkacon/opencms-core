@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/09 10:31:30 $
- * Version: $Revision: 1.16.4.6 $
+ * Date   : $Date: 2007/02/12 15:39:31 $
+ * Version: $Revision: 1.16.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.6 $ 
+ * @version $Revision: 1.16.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -428,6 +428,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         otherOuDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0));
         otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
+        otherOuDetails.setVisible(true);
         metadata.addItemDetails(otherOuDetails);
     }
 
