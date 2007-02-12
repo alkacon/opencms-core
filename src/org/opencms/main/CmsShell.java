@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.48.4.2 $
+ * Date   : $Date: 2007/02/12 15:39:46 $
+ * Version: $Revision: 1.48.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.2 $ 
+ * @version $Revision: 1.48.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -123,6 +123,9 @@ public class CmsShell {
          * @return true if a method was executed, false otherwise
          */
         protected boolean executeMethod(String command, List parameters) {
+
+            // TODO: ensure that publishmanager, oumanager and rolemanager methods are accessible
+            int todo;
 
             // build the method lookup
             String lookup = buildMethodLookup(command, parameters.size());

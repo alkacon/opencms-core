@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/07 16:58:07 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/02/12 15:39:46 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,15 +66,12 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
-    int m_todo5; // change ou name/parent
     int m_todo6; // user additional info clean up (import/export, compatibility, update)
     int m_todo7; // db creation scripts
-    int m_todo8; // localization
-    int m_todo9; // publishmanager, oumanager and rolemanager methods should be accessible from the shell
 
     /**
      * Default JUnit constructor.<p>
@@ -906,7 +903,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         // check role in higher ou
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(rootOu.getName())));
         assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
-        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).contains(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).contains(
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), false, false, false).isEmpty());
         assertEquals(
             1,
