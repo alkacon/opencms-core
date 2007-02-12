@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.4.4.5 $
+ * Date   : $Date: 2007/02/12 11:50:03 $
+ * Version: $Revision: 1.4.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,26 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsRole;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsPasswordWidget;
+import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -53,7 +60,9 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.5 $ 
+ * @version $Revision: 1.4.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +96,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
 
+    /** The starting group for the new user. */
+    private String m_group;
+
+    /** The default language for the new user. */
+    private String m_language;
+
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
 
@@ -95,6 +110,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /** The password information object. */
     private CmsPasswordInfo m_pwdInfo;
+
+    /** The starting site for the new user. */
+    private String m_site;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -119,7 +137,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_pwdInfo.setConfirmation(m_pwdInfo.getConfirmation());
             }
             // if new create it first
-            if (m_user.getId() == null) {
+            if (isNewUser()) {
                 CmsUser newUser = createUser(
                     m_paramOufqn + m_user.getSimpleName(),
                     m_pwdInfo.getNewPwd(),
@@ -136,8 +154,20 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 }
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
+            // test the group name
+            if (isNewUser() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
+                getCms().readGroup(getGroup());
+            }
             // write the edited user
             writeUser(m_user);
+            if (isNewUser()) {
+                // set starting settings
+                getCms().addUserToGroup(m_user.getName(), getGroup());
+                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                settings.setLocale(CmsLocaleManager.getLocale(getLanguage()));
+                settings.setStartSite(getSite());
+                settings.save(getCms());
+            }
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
             if (objects != null) {
@@ -176,6 +206,26 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the group.<p>
+     *
+     * @return the group
+     */
+    public String getGroup() {
+
+        return m_group;
+    }
+
+    /**
+     * Returns the language.<p>
+     *
+     * @return the language
+     */
+    public String getLanguage() {
+
+        return m_language;
+    }
+
+    /**
      * Returns the simple name of the user object.<p>
      * 
      * @return the simple name of the user object
@@ -203,6 +253,36 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getParamUserid() {
 
         return m_paramUserid;
+    }
+
+    /**
+     * Returns the site.<p>
+     *
+     * @return the site
+     */
+    public String getSite() {
+
+        return m_site;
+    }
+
+    /**
+     * Sets the group.<p>
+     *
+     * @param group the group to set
+     */
+    public void setGroup(String group) {
+
+        m_group = group;
+    }
+
+    /**
+     * Sets the language.<p>
+     *
+     * @param language the language to set
+     */
+    public void setLanguage(String language) {
+
+        m_language = language;
     }
 
     /**
@@ -239,6 +319,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the site.<p>
+     *
+     * @param site the site to set
+     */
+    public void setSite(String site) {
+
+        m_site = site;
+    }
+
+    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
      * 
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
@@ -266,12 +356,19 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(6, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
+            int row = isNewUser() ? 12 : 11;
+            result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(10, row));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+            row++;
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
             if (isPwdChangeAllowed(m_user)) {
-                result.append(createDialogRowsHtml(10, 13));
+                result.append(createDialogRowsHtml(row, row + 3));
             } else {
-                result.append(createDialogRowsHtml(10, 11));
+                result.append(createDialogRowsHtml(row, row + 1));
             }
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
@@ -306,7 +403,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
-        if (m_user.getId() == null && isEditable(m_user)) {
+        if (isNewUser() && isEditable(m_user)) {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
@@ -321,6 +418,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsSelectWidget(getLanguages())));
+            addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsSelectWidget(getSites())));
+            if (isNewUser()) {
+                addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
+                    null,
+                    null,
+                    getParamOufqn())));
+            }
         } else {
             addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
@@ -391,6 +496,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 // edit an existing user, get the user object from db
                 m_user = getCms().readUser(new CmsUUID(getParamUserid()));
                 m_pwdInfo = new CmsPasswordInfo();
+                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                m_language = settings.getLocale().toString();
+                m_site = settings.getStartSite();
                 return;
             } else {
                 // this is not the initial call, get the user object from session            
@@ -398,6 +506,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 Map dialogObject = (Map)o;
                 m_user = (CmsUser)dialogObject.get(USER_OBJECT);
                 m_pwdInfo = (CmsPasswordInfo)dialogObject.get(PWD_OBJECT);
+                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                m_language = settings.getLocale().toString();
+                m_site = settings.getStartSite();
                 // test
                 m_user.getId();
                 return;
@@ -408,6 +519,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         // create a new user object
         m_user = new CmsUser();
         m_pwdInfo = new CmsPasswordInfo();
+        m_group = getParamOufqn() + OpenCms.getDefaultUsers().getGroupUsers();
+        m_language = CmsLocaleManager.getDefaultLocale().toString();
+        m_site = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }
 
     /**
@@ -479,4 +593,37 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * @throws CmsException if something goes wrong
      */
     protected abstract void writeUser(CmsUser user) throws CmsException;
+
+    /**
+     * Returns a list of options for the locale selector.<p>
+     * 
+     * @return a list of options for the locale selector
+     */
+    private List getLanguages() {
+
+        List locales = new ArrayList();
+        Iterator itLocales = OpenCms.getLocaleManager().getAvailableLocales().iterator();
+        while (itLocales.hasNext()) {
+            Locale locale = (Locale)itLocales.next();
+            boolean selected = false;
+            locales.add(new CmsSelectWidgetOption(locale.toString(), selected, locale.getDisplayName(getLocale()), null));
+        }
+        return locales;
+    }
+
+    /**
+     * Returns a list of options for the site selector.<p>
+     * 
+     * @return a list of options for the site selector
+     */
+    private List getSites() {
+
+        List sites = new ArrayList();
+        Iterator itSites = CmsSiteManager.getAvailableSites(getCms(), true, getParamOufqn()).iterator();
+        while (itSites.hasNext()) {
+            CmsSite site = (CmsSite)itSites.next();
+            sites.add(new CmsSelectWidgetOption(site.getSiteRoot(), false, site.getTitle(), null));
+        }
+        return sites;
+    }
 }

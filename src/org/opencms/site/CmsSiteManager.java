@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.51.4.5 $
+ * Date   : $Date: 2007/02/12 11:50:02 $
+ * Version: $Revision: 1.51.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.5 $ 
+ * @version $Revision: 1.51.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,14 +111,30 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Returns a list of all site available for the current user.<p>
+     * Returns a list of all sites available for the current user.<p>
      * 
      * @param cms the current cms context 
      * @param workplaceMode if true, the root and current site is included for the admin user
-     * and the view permission is required to see the site root
+     *                      and the view permission is required to see the site root
+     * 
      * @return a list of all site available for the current user
      */
     public static List getAvailableSites(CmsObject cms, boolean workplaceMode) {
+
+        return getAvailableSites(cms, workplaceMode, cms.getRequestContext().getOuFqn());
+    }
+
+    /**
+     * Returns a list of all sites that are compatible to the given organizational unit.<p>
+     * 
+     * @param cms the current cms context 
+     * @param workplaceMode if true, the root and current site is included for the admin user
+     *                      and the view permission is required to see the site root
+     * @param ouFqn the organizational unit
+     * 
+     * @return a list of all site available for the current user
+     */
+    public static List getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
 
         Map sites = OpenCms.getSiteManager().getSites();
         List siteroots = new ArrayList(sites.size() + 1);
@@ -156,26 +172,45 @@ public final class CmsSiteManager implements Cloneable {
                     siteroots.add(storedSiteRoot + "/");
                 }
             }
+            List resources;
+            try {
+                resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
+            } catch (CmsException e) {
+                return Collections.EMPTY_LIST;
+            }
+
             Collections.sort(siteroots);
             i = siteroots.iterator();
             while (i.hasNext()) {
                 String folder = (String)i.next();
-                try {
-                    CmsResource res = cms.readResource(folder);
-                    if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
-                        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                        if (title == null) {
-                            title = folder;
-                        }
-                        result.add(new CmsSite(
-                            folder,
-                            res.getStructureId(),
-                            title,
-                            (CmsSiteMatcher)siteServers.get(folder)));
+                boolean compatible = false;
+                Iterator itResources = resources.iterator();
+                while (itResources.hasNext()) {
+                    CmsResource resource = (CmsResource)itResources.next();
+                    if (resource.getRootPath().startsWith(folder) || folder.startsWith(resource.getRootPath())) {
+                        compatible = true;
+                        break;
                     }
+                }
+                // select only sites compatibles to the given organizational unit 
+                if (compatible) {
+                    try {
+                        CmsResource res = cms.readResource(folder);
+                        if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
+                            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                            if (title == null) {
+                                title = folder;
+                            }
+                            result.add(new CmsSite(
+                                folder,
+                                res.getStructureId(),
+                                title,
+                                (CmsSiteMatcher)siteServers.get(folder)));
+                        }
 
-                } catch (CmsException e) {
-                    // user probably has no read access to the folder, ignore and continue iterating            
+                    } catch (CmsException e) {
+                        // user probably has no read access to the folder, ignore and continue iterating            
+                    }
                 }
             }
         } catch (Throwable t) {
