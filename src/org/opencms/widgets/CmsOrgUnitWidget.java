@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsOrgUnitWidget.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/12 14:27:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
- * Provides a OpenCms User selection widget, for use on a widget dialog.<p>
+ * Provides a OpenCms orgaizational unit selection widget, for use on a widget dialog.<p>
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
