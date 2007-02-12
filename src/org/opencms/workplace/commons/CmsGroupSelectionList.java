@@ -242,26 +242,23 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     protected List getGroups() throws CmsException {
 
         List ret = new ArrayList();
-        List tempRet = new ArrayList();
         if (getParamUser() != null) {
-            tempRet.addAll(getCms().getGroupsOfUser(getParamUser(), false));
+            ret.addAll(getCms().getGroupsOfUser(getParamUser(), false));
         } else {
-            tempRet.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
+            ret.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            tempRet = CmsPrincipal.filterFlag(ret, flags);
+            ret = CmsPrincipal.filterFlag(ret, flags);
         }
-        if (getParamOufqn() != null) {
-            Iterator itTempRet = tempRet.iterator();
+        if ((getParamOufqn() != null) && !getParamOufqn().equals("null")) {
+            Iterator itTempRet = ret.iterator();
             while (itTempRet.hasNext()) {
                 CmsGroup group = (CmsGroup)itTempRet.next();
-                if (group.getOuFqn().equals(getParamOufqn())) {
-                    ret.add(group);
+                if (!group.getOuFqn().startsWith(getParamOufqn())) {
+                    itTempRet.remove();
                 }
             }
-        } else {
-            return tempRet;
         }
         return ret;
     }

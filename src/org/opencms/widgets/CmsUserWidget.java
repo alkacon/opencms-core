@@ -159,20 +159,22 @@ public class CmsUserWidget extends A_CmsWidget {
         buttonJs.append("/system/workplace/commons/user_selection.jsp");
         buttonJs.append("','EDITOR',  '");
         buttonJs.append(id);
-        buttonJs.append("', document, '");
+        buttonJs.append("', document, ");
         if (m_flags != null) {
+            buttonJs.append("'");
             buttonJs.append(m_flags);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
+        buttonJs.append(", ");
         if (m_groupName != null) {
+            buttonJs.append("'");
             buttonJs.append(m_groupName);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
-        buttonJs.append("'");
         buttonJs.append(");");
 
         result.append(widgetDialog.button(

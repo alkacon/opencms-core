@@ -38,13 +38,19 @@ function openGroupWin(url, formName, fieldName, curDoc, flags, user, oufqn) {
 	groupField = fieldName;
 	groupDoc = curDoc;
 
-	var paramString = "?type=groupwidget&flags=";
-	paramString += flags;
-	paramString += "&user=";
-	paramString += user;
-        paramString += "&oufqn=";
-	paramString += oufqn;
-	
+	var paramString = "?type=groupwidget";
+	if (flags != null) {
+		paramString += "&flags=";
+		paramString += flags;
+	}
+	if (user != null) {
+		paramString += "&user=";
+		paramString += user;
+	}
+	if (oufqn != null) {
+	    paramString += "&oufqn=";
+		paramString += oufqn;
+	}	
 	var groupWin = window.open(url + paramString, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=450,height=450');
 	if(groupWin != null) {
 		if (groupWin.opener == null) {

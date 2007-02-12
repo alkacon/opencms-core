@@ -33,18 +33,20 @@ var userForm = null;
 var userField = null;
 var userDoc = null;
 
-function openUserWin(url, formName, fieldName, curDoc, flags, group, userType) {
+function openUserWin(url, formName, fieldName, curDoc, flags, group) {
 	userForm = formName;
 	userField = fieldName;
 	userDoc = curDoc;
 
-	var paramString = "?type=userwidget&flags=";
-	paramString += flags;
-	paramString += "&group=";
-	paramString += group;
-	paramString += "&usertype=";
-	paramString += userType;
-	
+	var paramString = "?type=userwidget";
+	if (flags != null) {
+		paramString += "&flags=";
+		paramString += flags;
+	}
+	if (group != null) {
+		paramString += "&group=";
+		paramString += group;
+	}	
 	var userWin = window.open(url + paramString, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=450,height=450');
 	if(userWin != null) {
 		if (userWin.opener == null) {

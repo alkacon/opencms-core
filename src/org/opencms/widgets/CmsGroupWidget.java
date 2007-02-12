@@ -188,25 +188,30 @@ public class CmsGroupWidget extends A_CmsWidget {
         buttonJs.append("/system/workplace/commons/group_selection.jsp");
         buttonJs.append("','EDITOR',  '");
         buttonJs.append(id);
-        buttonJs.append("', document, '");
+        buttonJs.append("', document, ");
         if (m_flags != null) {
+            buttonJs.append("'");
             buttonJs.append(m_flags);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
+        buttonJs.append(", ");
         if (m_userName != null) {
+            buttonJs.append("'");
             buttonJs.append(m_userName);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
+        buttonJs.append(", ");
         if (m_ouFqn != null) {
+            buttonJs.append("'");
             buttonJs.append(m_ouFqn);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("'");
         buttonJs.append(");");
 
         result.append(widgetDialog.button(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/principalselector.js,v $
- * Date   : $Date: 2007/02/09 10:29:15 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/12 16:30:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,16 +32,18 @@ var principalWin = null;
 var principalForm = null;
 var principalField = null;
 var principalDoc = null;
-var typeField = null;  // this must be explicitly set if needed
+var typeField = null;
 
 function openPrincipalWin(url, formName, fieldName, curDoc, flags) {
 	principalForm = formName;
 	principalField = fieldName;
 	principalDoc = curDoc;
 
-	var paramString = "?type=principalwidget&flags=";
-	paramString += flags;
-	
+	var paramString = "?type=principalwidget";
+	if (flags != null) {
+		paramString += "&flags=";
+		paramString += flags;
+	}	
 	var principalWin = window.open(url + paramString, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
 	if(principalWin != null) {
 		if (principalWin.opener == null) {
