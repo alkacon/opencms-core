@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/12 15:39:46 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/02/12 16:37:35 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,12 +66,9 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
-
-    int m_todo6; // user additional info clean up (import/export, compatibility, update)
-    int m_todo7; // db creation scripts
 
     /**
      * Default JUnit constructor.<p>
@@ -927,8 +924,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             user.getName(),
             CmsRole.ACCOUNT_MANAGER,
             cms.getRequestContext().getSitePath(ou2Res)));
-
-        int todo; // remove the user role
     }
 
     /**
