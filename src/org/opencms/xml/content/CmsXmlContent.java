@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.36.4.5 $
+ * Date   : $Date: 2007/02/12 15:56:21 $
+ * Version: $Revision: 1.36.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.5 $ 
+ * @version $Revision: 1.36.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,9 +157,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // initialize the XML content structure
         initDocument(cms, document, model.getEncoding(), m_contentDefinition);
         // resolve eventual macros in the nodes
-        if ((cms != null) && (macroResolver != null)) {
-            visitAllValuesWith(new CmsXmlContentMacroVisitor(cms, macroResolver));
-        }
+        visitAllValuesWith(new CmsXmlContentMacroVisitor(cms, macroResolver));
         if (!hasLocale(locale)) {
             // required locale not present, add it
             try {

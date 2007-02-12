@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.46.4.8 $
+ * Date   : $Date: 2007/02/12 15:56:21 $
+ * Version: $Revision: 1.46.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.8 $ 
+ * @version $Revision: 1.46.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1404,9 +1404,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     rootPath = content.getFile().getRootPath();
                 }
 
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // try / catch to ensure site root is always restored
-                    cms.getRequestContext().saveSiteRoot();
                     cms.getRequestContext().setSiteRoot("/");
 
                     // read all siblings of the file
@@ -1443,7 +1443,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                 } finally {
                     // restore the saved site root
-                    cms.getRequestContext().restoreSiteRoot();
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             }
         }
