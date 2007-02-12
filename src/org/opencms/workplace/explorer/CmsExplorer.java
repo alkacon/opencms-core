@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/02/07 15:03:20 $
- * Version: $Revision: 1.32.4.14 $
+ * Date   : $Date: 2007/02/12 11:50:49 $
+ * Version: $Revision: 1.32.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.14 $ 
+ * @version $Revision: 1.32.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -451,10 +451,6 @@ public class CmsExplorer extends CmsWorkplace {
 
         // position 24: project state
         content.append(resUtil.getProjectState().getMode());
-        content.append(", ");
-
-        // position 25: editable
-        content.append(resUtil.isEditable() ? "1" : "0");
 
         // finish
         content.append(");\n");

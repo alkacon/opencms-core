@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/02/08 15:35:23 $
- * Version: $Revision: 1.13.4.20 $
+ * Date   : $Date: 2007/02/12 11:50:49 $
+ * Version: $Revision: 1.13.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,8 @@ function windowStore(body, head, tree, files) {
 }
 
 
-//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24            25
-function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable){
+//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24          
+function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
 	this.title = decodeURIComponent(title);
@@ -96,16 +96,15 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.workflowState = workflowState;
 	this.sysLockInfo = sysLockInfo;
 	this.projectState = projectState;
-	this.editable = (editable == 1);
 	this.isFolder = (size < 0);
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable) {
+function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState) {
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState, editable);
+	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState);
 }
 
 
@@ -138,12 +137,11 @@ function vars_index() {
 }
 
 
-function res(text, nicename, icon, createLink, isEditable){
+function res(text, nicename, icon, createLink) {
 	this.text = text;
 	this.nicename = nicename;
 	this.icon = icon;
 	this.createLink = createLink;
-	this.editable = isEditable;
 }
 
 function setDisplayResource(resource) {
@@ -665,7 +663,7 @@ function printList(wo) {
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
 	returnplace = returnplace.replace(/\//g, "%2F");
-
+	
 	wo.open();
 	wo.writeln(temp);
 
@@ -704,11 +702,6 @@ function printList(wo) {
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
 			vi_text = vi.resource[plainresid].text;
-		} else if (!vi.liste[i].editable) {
-			// the user has no access to this resource type
-			noaccess = true;
-			vi_icon = vi.resource[plainresid].icon;
-			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;
@@ -788,11 +781,11 @@ function printList(wo) {
 		} else if (vi.liste[i].projectState == 4) {
 			// not lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_otherworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;
+			projectAltText = vi.liste[i].sysLockInfo;	
 		} else if (vi.liste[i].projectState == 3) {
 			// lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_myworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;
+			projectAltText = vi.liste[i].sysLockInfo;	
 		} else if (vi.liste[i].projectState == 2) {
 			// locked in other project
 			projectIcon = vi.skinPath + 'explorer/project_other.png';
@@ -808,7 +801,7 @@ function printList(wo) {
 
 		wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 		wo.write("</td>\n");
-
+		
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (mode == "listview") {
