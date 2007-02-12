@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitOverviewDialog.java,v $
- * Date   : $Date: 2007/01/31 14:23:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/12 15:11:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -136,7 +136,9 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
                 m_orgUnitBean = new CmsOrgUnitBean();
                 m_orgUnitBean.setDescription(m_orgunit.getDescription());
                 m_orgUnitBean.setName(m_orgunit.getName());
-                m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
+                if (!m_orgunit.getName().equals("")) {
+                    m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
+                }
                 m_orgUnitBean.setFqn(m_orgunit.getName());
                 m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
@@ -149,7 +151,9 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
                 m_orgUnitBean = new CmsOrgUnitBean();
                 m_orgUnitBean.setDescription(m_orgunit.getDescription());
                 m_orgUnitBean.setName(m_orgunit.getName());
-                m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
+                if (!m_orgunit.getName().equals("")) {
+                    m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
+                }
                 m_orgUnitBean.setFqn(m_orgunit.getName());
                 m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
