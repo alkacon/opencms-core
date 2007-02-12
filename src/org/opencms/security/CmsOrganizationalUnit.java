@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/12 14:29:43 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.6 
  */
@@ -183,7 +183,10 @@ public class CmsOrganizationalUnit {
             // for the root ou
             return getDescription();
         }
-        return Messages.get().getBundle(locale).key(Messages.GUI_ORGUNIT_DISPLAY_NAME_2, getDescription(), getName());
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_ORGUNIT_DISPLAY_NAME_2,
+            getDescription(),
+            CmsOrganizationalUnit.SEPARATOR + getName());
     }
 
     /**

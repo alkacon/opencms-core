@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.10.4.5 $
+ * Date   : $Date: 2007/02/12 14:29:43 $
+ * Version: $Revision: 1.10.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.4.5 $ 
+ * @version $Revision: 1.10.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,8 +248,6 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         stateCol.setWidth("20");
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
-        // add it to the list definition
-        metadata.addColumn(stateCol);
 
         // add remove action for direct groups
         CmsGroupRemoveAction dirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE, true);

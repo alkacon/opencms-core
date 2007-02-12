@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotOrgUnitUsersList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/12 14:29:43 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6
  */
@@ -249,6 +249,11 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                             if (user.getSimpleName().equals(userName)) {
                                 return false;
                             }
+                            if (((A_CmsOrgUnitUsersList)getWp()).getCms().getGroupsOfUser(
+                                getItem().get(LIST_COLUMN_LOGIN).toString(),
+                                false).size() > 0) {
+                                return false;
+                            }
                         }
                         return true;
                     } catch (CmsException e) {
@@ -342,6 +347,11 @@ public class CmsNotOrgUnitUsersList extends A_CmsOrgUnitUsersList {
                         while (itCurrentUsers.hasNext()) {
                             CmsUser user = (CmsUser)itCurrentUsers.next();
                             if (user.getSimpleName().equals(userName)) {
+                                return false;
+                            }
+                            if (((A_CmsOrgUnitUsersList)getWp()).getCms().getGroupsOfUser(
+                                getItem().get(LIST_COLUMN_LOGIN).toString(),
+                                false).size() > 0) {
                                 return false;
                             }
                         }

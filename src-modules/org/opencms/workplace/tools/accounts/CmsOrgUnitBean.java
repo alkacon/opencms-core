@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitBean.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/12 14:29:43 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -115,6 +115,9 @@ public class CmsOrgUnitBean {
      */
     public String getParentOu() {
 
+        if (m_parentOu == null) {
+            return "";
+        }
         return CmsOrganizationalUnit.SEPARATOR + m_parentOu;
     }
 
