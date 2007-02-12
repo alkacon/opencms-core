@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/02/09 10:29:15 $
- * Version: $Revision: 1.24.4.7 $
+ * Date   : $Date: 2007/02/12 14:22:59 $
+ * Version: $Revision: 1.24.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,16 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -74,7 +77,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.7 $ 
+ * @version $Revision: 1.24.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -524,14 +527,18 @@ public class CmsChacc extends CmsDialog {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
             String name;
+            String ou = null;
             String image;
             if (entry.getKey() instanceof I_CmsPrincipal) {
                 I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
-                name = principal.getName();
-                image = "commons/user.png";
                 if (principal instanceof CmsGroup) {
+                    name = principal.getDescription() + " (" + principal.getSimpleName() + ")";
                     image = "commons/group.png";
+                } else {
+                    name = ((CmsUser)principal).getFullName();
+                    image = "commons/user.png";
                 }
+                ou = principal.getOuFqn();
             } else {
                 name = entry.getKey().toString();
                 image = "explorer/project_none.gif";
@@ -539,16 +546,28 @@ public class CmsChacc extends CmsDialog {
             result.append("<div class=\"dialogrow\"><img src=\"");
             result.append(getSkinUri());
             result.append(image);
-            result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"Group\" title=\"Group\">&nbsp;<span class=\"textbold\">");
+            result.append("\" class='noborder' width='16' height='16' alt='Principal' title='Principal'>&nbsp;<span class=\"textbold\">");
             result.append(name);
             result.append("</span>");
             if ("long".equals(getSettings().getPermissionDetailView())) {
-                result.append("<div class=\"dialogpermissioninherit\">");
                 String resourceName = (String)entry.getValue();
                 if (!resourceSitePath.equals(resourceName)) {
+                    result.append("<div class=\"dialogpermissioninherit\">");
                     result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
+                    result.append("</div>");
                 }
-                result.append("</div>");
+            }
+            if (ou != null) {
+                result.append("<br>");
+                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("&nbsp;");                
+                try {
+                    result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                        getLocale()));
+                } catch (CmsException e) {
+                    result.append(ou);
+                }
             }
             result.append("</div>\n");
         }
@@ -568,8 +587,6 @@ public class CmsChacc extends CmsDialog {
             key(Messages.GUI_PERMISSION_BEQUEATH_SUBFOLDER_0),
             "inheritedpermissions",
             getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()));
-
-        //result.append(buildSummaryDetailsButtons(this));
 
         // get all access control entries of the current file
         List allEntries = new ArrayList();
@@ -1105,8 +1122,13 @@ public class CmsChacc extends CmsDialog {
                 org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
                 getSettings().getUserSettings().getEditorButtonStyle()));
 
-            result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
-                key(Messages.GUI_LABEL_ADD_0)).append("\"></td>\n");
+            result.append(button(
+                "javascript:document.forms['add'].submit();",
+                null,
+                "new",
+                Messages.GUI_LABEL_ADD_0,
+                getSettings().getUserSettings().getEditorButtonStyle()));
+
             result.append("</tr>\n");
             result.append("</form>\n");
             result.append("</table>\n");
@@ -1235,19 +1257,31 @@ public class CmsChacc extends CmsDialog {
 
         // get name and type of the current entry
         I_CmsPrincipal principal = getCms().lookupPrincipal(entry.getPrincipal());
-        String name = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
+        String id = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
+        String name;
+        String ou = null;
+        if (principal instanceof CmsGroup) {
+            name = principal.getDescription() + "(" + principal.getSimpleName() + ")";
+            ou = CmsOrganizationalUnit.getParentFqn(id);
+        } else if (principal instanceof CmsUser) {
+            name = ((CmsUser)principal).getFullName();
+            ou = CmsOrganizationalUnit.getParentFqn(id);
+        } else {
+            name = entry.getPrincipal().toString();
+        }
+
         String type = getEntryType(entry.getFlags());
 
-        if (name == null) {
-            name = "";
+        if (id == null) {
+            id = "";
         }
 
         // set the parameters for the hidden fields
         setParamType(type);
-        setParamName(name);
+        setParamName(id);
 
         // set id value for html attributes
-        String idValue = type + name + entry.getResource();
+        String idValue = type + id + entry.getResource();
 
         // get the localized type label
         String typeLocalized = getTypesLocalized()[getEntryTypeInt(entry.getFlags())];
@@ -1271,6 +1305,8 @@ public class CmsChacc extends CmsDialog {
             result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
             result.append("<img src=\"").append(getSkinUri()).append("commons/plus.png\" class=\"noborder\" id=\"ic-").append(
                 idValue).append("\"></a>");
+        } else {
+            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
         }
         result.append("<img src=\"").append(getSkinUri()).append("commons/");
         result.append(typeImg);
@@ -1283,19 +1319,34 @@ public class CmsChacc extends CmsDialog {
         result.append("</span>");
 
         if (extendedView) {
-            // for extended view, add short permissions and hidden div
+            // for extended view, add short permissions
             result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(
                 entry.getResponsibleString()).append(")");
-            result.append(dialogRow(HTML_END));
+        }
+        if (ou != null) {
+            result.append("<br>");
+            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+            result.append("&nbsp;");                
+            try {
+                result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                    getLocale()));
+            } catch (CmsException e) {
+                result.append(ou);
+            }
+        }
+        result.append(dialogRow(HTML_END));
+        if (extendedView) {
             // show the resource from which the ace is inherited if present
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inheritRes)) {
+                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("&nbsp;");                
                 result.append("<div class=\"dialogpermissioninherit\">");
                 result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {inheritRes}));
                 result.append("</div>\n");
             }
             result.append("<div id =\"").append(idValue).append("\" class=\"hide\">");
-        } else {
-            result.append(dialogRow(HTML_END));
         }
 
         result.append("<table class=\"dialogpermissiondetails\">\n");
@@ -1443,19 +1494,16 @@ public class CmsChacc extends CmsDialog {
         String fileName = getParamResource();
         int flags = 0;
         try {
-            // TODO: a more elegant way to determine user/group of current id
             try {
-                getCms().readGroup(id);
-                flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
-            } catch (CmsException e) {
-                try {
-                    getCms().readUser(id);
+                if (CmsPrincipal.readPrincipal(getCms(), id).isGroup()) {
+                    flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
+                } else {
                     flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
-                } catch (CmsException exc) {
-                    // can usually be ignored
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e.getLocalizedMessage());
-                    }
+                }
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
                 }
             }
             CmsResource res = getCms().readResource(fileName, CmsResourceFilter.ALL);
