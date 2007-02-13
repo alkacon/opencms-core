@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.156.4.14 $
+ * Date   : $Date: 2007/02/13 14:21:33 $
+ * Version: $Revision: 1.156.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.14 $ 
+ * @version $Revision: 1.156.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -1068,7 +1069,11 @@ public abstract class CmsWorkplace {
      */
     public String getBroadcastMessageString() {
 
-        String sessionId = OpenCms.getSessionManager().getSessionInfo(getSession()).getSessionId().toString();
+        CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getSession());
+        if (sessionInfo == null) {
+            return null;
+        }
+        String sessionId = sessionInfo.getSessionId().toString();
         Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
         if (!messageQueue.isEmpty()) {
             // create message String
