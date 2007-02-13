@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/07 16:57:29 $
- * Version: $Revision: 1.110.2.17 $
+ * Date   : $Date: 2007/02/13 14:21:19 $
+ * Version: $Revision: 1.110.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.17 $
+ * @version $Revision: 1.110.2.18 $
  * 
  * @since 6.0.0 
  */
@@ -133,9 +133,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
-
-    /** The macro resolver for the default group/user descriptions. */
-    private CmsMacroResolver m_macroResolver;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#addResourceToOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, org.opencms.file.CmsResource)
@@ -1892,20 +1889,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected CmsMacroResolver getMacroResolver(CmsDbContext dbc) {
 
-        if (m_macroResolver == null) {
-            m_macroResolver = new CmsMacroResolver();
-            Locale locale = null;
-            if (dbc.getRequestContext() != null) {
-                locale = dbc.getRequestContext().getLocale();
-            }
-            if (locale == null) {
-                m_macroResolver.setMessages(Messages.get().getBundle());
-            } else {
-                m_macroResolver.setMessages(Messages.get().getBundle(locale));
-            }
-
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        Locale locale = null;
+        if (dbc.getRequestContext() != null) {
+            locale = dbc.getRequestContext().getLocale();
         }
-        return m_macroResolver;
+        if (locale == null) {
+            macroResolver.setMessages(Messages.get().getBundle());
+        } else {
+            macroResolver.setMessages(Messages.get().getBundle(locale));
+        }
+        return macroResolver;
     }
 
     /**
