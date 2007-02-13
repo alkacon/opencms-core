@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -202,7 +202,6 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
         super.setColumns(metadata);
 
         metadata.getColumnDefinition(LIST_COLUMN_GROUPS).setVisible(false);
-        metadata.getColumnDefinition(LIST_COLUMN_SWITCH).setVisible(false);
         metadata.getColumnDefinition(LIST_COLUMN_ROLE).setVisible(false);
         metadata.getColumnDefinition(LIST_COLUMN_ACTIVATE).setVisible(false);
         metadata.getColumnDefinition(LIST_COLUMN_DELETE).setVisible(false);

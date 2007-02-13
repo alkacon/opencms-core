@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/12 15:39:30 $
- * Version: $Revision: 1.9.4.19 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.9.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.19 $ 
+ * @version $Revision: 1.9.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -761,6 +761,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_ORGUNIT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_MGMT_ADMIN_TOOL_GROUP_0 = "GUI_ORGUNIT_MGMT_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_MGMT_ADMIN_TOOL_HELP_0 = "GUI_ORGUNIT_MGMT_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_MGMT_ADMIN_TOOL_NAME_0 = "GUI_ORGUNIT_MGMT_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_RESOURCES_LIST_NAME_0 = "GUI_ORGUNIT_RESOURCES_LIST_NAME_0";

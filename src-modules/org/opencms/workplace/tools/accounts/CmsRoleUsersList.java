@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6
  */
@@ -229,4 +229,12 @@ public class CmsRoleUsersList extends A_CmsRoleUsersList {
         metadata.addMultiAction(removeMultiAction);
     }
 
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        super.validateParamaters();
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.valueOf(getCms().readGroup(getParamRole())));
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -174,19 +174,19 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit/mgmt/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_USER)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/users", params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit/users", params);
         } else if (getParamListAction().equals(LIST_ACTION_GROUP)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/groups", params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit/groups", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/delete", params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit/mgmt/delete", params);
         } else if (getParamListAction().equals(LIST_DEFACTION_OVERVIEW)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath(), params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit", params);
         } else {
             throwListUnsupportedActionException();
         }

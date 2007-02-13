@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/09 15:45:05 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.5.6
  */
@@ -130,7 +130,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 Iterator itResourcesOld = resourcesOld.iterator();
                 while (itResourcesOld.hasNext()) {
                     CmsResource resourceOld = (CmsResource)itResourcesOld.next();
-                    resourceNamesOld.add(resourceOld.getRootPath());
+                    resourceNamesOld.add(getCms().getSitePath(resourceOld));
                 }
                 Iterator itResourceNamesNew = resourceNamesNew.iterator();
                 // add new resources to ou
@@ -139,7 +139,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     if (!resourceNamesOld.contains(resourceNameNew)) {
                         OpenCms.getOrgUnitManager().addResourceToOrgUnit(
                             getCms(),
-                            m_orgunit.getDescription(),
+                            m_orgunit.getName(),
                             resourceNameNew);
                     }
                 }
@@ -238,7 +238,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
      * Initializes the unit object to work with depending on the dialog state and request parameters.<p>
      * 
      */
-    protected void initUserObject() {
+    protected void initOrgUnitObject() {
 
         if (m_orgunit == null) {
             try {
@@ -314,6 +314,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
      */
     private boolean isNewOrgUnit() {
 
-        return getCurrentToolPath().equals("/accounts/orgunit/new");
+        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
     }
 }

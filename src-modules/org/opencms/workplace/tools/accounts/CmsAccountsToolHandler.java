@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/02/07 15:01:35 $
- * Version: $Revision: 1.8.4.12 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.8.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.12 $ 
+ * @version $Revision: 1.8.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,60 +157,56 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
         }
-        if (getVisibilityFlag().equals(VISIBILITY_ALL)) {
-            CmsObject cms = wp.getCms();
-            String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
-            if (ouFqn == null) {
-                ouFqn = cms.getRequestContext().getOuFqn();
-            }
-            String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
-
-            if (getLink().equals(OVERVIEW_FILE)) {
-                if (parentOu != null) {
-                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER) && !OpenCms.getRoleManager().hasRole(
-                        cms,
-                        CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
-                }
-                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
-            } else if (getLink().equals(EDIT_FILE)) {
-                if (parentOu != null) {
-                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
-                        cms,
-                        CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
-                }
-                return false;
-            } else if (getLink().equals(NEW_FILE)) {
-                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
-            } else if (getLink().equals(PARENT_FILE)) {
-                if (parentOu != null) {
-                    return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
-                }
-                return false;
-            } else if (getLink().equals(DELETE_FILE)) {
-                if (parentOu != null) {
-                    return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
-                        cms,
-                        CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
-                }
-                return false;
-            } else if (getLink().equals(ASSIGN_FILE)) {
-                try {
-                    List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
-                        cms,
-                        CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
-                        true);
-                    if (orgUnits.size() > 1) {
-                        return true;
-                    }
-                    return false;
-                } catch (CmsException e) {
-                    return super.isVisible(cms);
-                }
-            } else {
-                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
-            }
+        CmsObject cms = wp.getCms();
+        String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
+        if (ouFqn == null) {
+            ouFqn = cms.getRequestContext().getOuFqn();
         }
-        return true;
+        String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+
+        if (getLink().equals(OVERVIEW_FILE)) {
+            if (parentOu != null) {
+                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER) && !OpenCms.getRoleManager().hasRole(
+                    cms,
+                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+            }
+            return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
+        } else if (getLink().equals(EDIT_FILE)) {
+            if (parentOu != null) {
+                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
+                    cms,
+                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+            }
+            return false;
+        } else if (getLink().equals(NEW_FILE)) {
+            return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
+        } else if (getLink().equals(PARENT_FILE)) {
+            if (parentOu != null) {
+                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
+            }
+            return false;
+        } else if (getLink().equals(DELETE_FILE)) {
+            if (parentOu != null) {
+                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
+                    cms,
+                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+            }
+            return false;
+        } else if (getLink().equals(ASSIGN_FILE)) {
+            try {
+                List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
+                    cms,
+                    CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
+                    true);
+                if (orgUnits.size() > 1) {
+                    return true;
+                }
+                return false;
+            } catch (CmsException e) {
+                return super.isVisible(cms);
+            }
+        } 
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2007/02/09 15:45:05 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
-import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
@@ -64,17 +61,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.6 
  */
 public class CmsRolesList extends A_CmsRolesList {
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_EDIT = "ae";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_EDIT = "ce";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_OVERVIEW = "do";
@@ -151,7 +142,7 @@ public class CmsRolesList extends A_CmsRolesList {
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
         params.put(PARAM_ROLE, roleName);
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-        if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_ACTION_ICON)) {
+        if (getParamListAction().equals(LIST_ACTION_ICON)) {
             try {
                 if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.valueOf(getCms().readGroup(roleName)))) {
                     // forward to the edit user screen
@@ -253,24 +244,9 @@ public class CmsRolesList extends A_CmsRolesList {
         defOverviewAction.setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_DEFACTION_OVERVIEW_HELP_0));
         metadata.getColumnDefinition(LIST_COLUMN_NAME).addDefaultAction(defOverviewAction);
 
-        // create column for edit
-        CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
-        editCol.setName(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_0));
-        editCol.setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_HELP_0));
-        editCol.setWidth("20");
-        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        editCol.setSorteable(false);
-        // add edit action
-        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
-        editAction.setName(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_ACTION_EDIT_NAME_0));
-        editAction.setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_HELP_0));
-        editAction.setIconPath(getEditIcon());
-        editCol.addDirectAction(editAction);
-        // add it to the list definition
-        metadata.addColumn(editCol, 1);
-
-        // activate icon action
+        // activate icon action and set a more descriptive help text
         metadata.getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON).setEnabled(true);
+        metadata.getColumnDefinition(LIST_COLUMN_ICON).setHelpText(Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_HELP_0));
     }
 
     /**

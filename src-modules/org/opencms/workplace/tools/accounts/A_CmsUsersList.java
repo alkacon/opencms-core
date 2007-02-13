@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/02/09 15:45:05 $
- * Version: $Revision: 1.3.4.10 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.3.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.10 $ 
+ * @version $Revision: 1.3.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,9 +99,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ROLES = "ar";
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_SWITCH = "as";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ACTIVATE = "ca";
@@ -132,9 +129,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_COLUMN_ROLE = "cr";
-
-    /** list action id constant. */
-    public static final String LIST_COLUMN_SWITCH = "cs";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_EDIT = "de";
@@ -257,10 +251,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
-        if (getParamListAction().equals(LIST_ACTION_SWITCH)) {
-            // forward
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/switch", params);
-        } else if (getParamListAction().equals(LIST_ACTION_ROLE)) {
+        if (getParamListAction().equals(LIST_ACTION_ROLE)) {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/role", params);
         } else if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // forward to the edit user screen
@@ -512,23 +503,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         groupCol.addDirectAction(groupAction);
         // add it to the list definition
         metadata.addColumn(groupCol);
-
-        // create column for switch user
-        CmsListColumnDefinition switchCol = new CmsListColumnDefinition(LIST_COLUMN_SWITCH);
-        switchCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_0));
-        switchCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_SWITCH_HELP_0));
-        switchCol.setWidth("20");
-        switchCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        switchCol.setSorteable(false);
-        // add switch action
-        CmsListDirectAction switchAction = new CmsListDirectAction(LIST_ACTION_SWITCH);
-        switchAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_NAME_0));
-        switchAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_HELP_0));
-        switchAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_SWITCH_CONF_0));
-        switchAction.setIconPath(getSwitchIcon());
-        switchCol.addDirectAction(switchAction);
-        // add it to the list definition
-        metadata.addColumn(switchCol);
 
         // create column for edit role
         CmsListColumnDefinition roleCol = new CmsListColumnDefinition(LIST_COLUMN_ROLE);

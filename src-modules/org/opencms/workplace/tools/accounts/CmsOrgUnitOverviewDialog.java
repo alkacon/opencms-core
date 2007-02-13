@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitOverviewDialog.java,v $
- * Date   : $Date: 2007/02/12 15:11:37 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/13 14:21:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -114,7 +114,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
-        initUserObject();
+        initOrgUnitObject();
 
         setKeyPrefix(KEY_PREFIX);
 
@@ -128,7 +128,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      * Initializes the organizational unit object to work with depending on the dialog state and request parameters.<p>
      * 
      */
-    protected void initUserObject() {
+    protected void initOrgUnitObject() {
 
         if (m_orgunit == null) {
             try {
