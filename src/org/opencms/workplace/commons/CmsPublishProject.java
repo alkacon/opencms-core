@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.27.4.12 $
+ * Date   : $Date: 2007/02/13 14:20:54 $
+ * Version: $Revision: 1.27.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.12 $ 
+ * @version $Revision: 1.27.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -283,7 +283,8 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         // show only for direct publish actions
         StringBuffer result = new StringBuffer(128);
-        boolean showOptionSiblings = (isMultiOperation() || isOperationOnFolder() || (hasSiblings() && hasCorrectLockstate()));
+        boolean showOptionSiblings = (isMultiOperation() || isOperationOnFolder() || (isDirectPublish()
+            && hasSiblings() && hasCorrectLockstate()));
         boolean showOptionSubresources = (isMultiOperation() || isOperationOnFolder());
         if (showOptionSiblings || showOptionSubresources) {
             result.append("<p>");
@@ -471,7 +472,11 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             try {
                 // create publish list for direct publish
-                publishList = OpenCms.getPublishManager().getPublishList(getCms(), publishResources, Boolean.valueOf(getParamPublishsiblings()).booleanValue(), publishSubResources);
+                publishList = OpenCms.getPublishManager().getPublishList(
+                    getCms(),
+                    publishResources,
+                    Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
+                    publishSubResources);
             } catch (CmsException e) {
                 addMultiOperationException(e);
             }
@@ -545,7 +550,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         boolean locked = true;
         // flag to indicate that all resources are unlocked
         boolean unlocked = true;
-        
+
         Iterator i = getResourceList().iterator();
         while (i.hasNext()) {
             String resName = (String)i.next();
@@ -554,9 +559,10 @@ public class CmsPublishProject extends CmsMultiDialog {
                 if (!lock.isUnlocked()) {
                     unlocked = false;
                 }
-                if (locked && !lock.isOwnedInProjectBy(
-                    getCms().getRequestContext().currentUser(),
-                    getCms().getRequestContext().currentProject())) {
+                if (locked
+                    && !lock.isOwnedInProjectBy(
+                        getCms().getRequestContext().currentUser(),
+                        getCms().getRequestContext().currentProject())) {
                     // locks of another users or locked in another project are blocking
                     locked = false;
                 }
@@ -699,7 +705,10 @@ public class CmsPublishProject extends CmsMultiDialog {
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
         }
-        OpenCms.getPublishManager().publishProject(getCms(), new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+        OpenCms.getPublishManager().publishProject(
+            getCms(),
+            new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()),
+            publishList);
         // wait 2 seconds, may be it is already done
         OpenCms.getPublishManager().waitWhileRunning(1500);
         return true;
