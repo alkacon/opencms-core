@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2007/02/08 08:02:58 $
- * Version: $Revision: 1.11.4.7 $
+ * Date   : $Date: 2007/02/13 09:00:21 $
+ * Version: $Revision: 1.11.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11.4.7 $ 
+ * @version $Revision: 1.11.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +152,17 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void setDefaultAction(CmsListColumnDefinition loginCol) {
 
-        CmsListDefaultAction editAction = new CmsListDefaultAction(LIST_ACTION_EDIT);
+        CmsListDefaultAction editAction = new CmsListDefaultAction(LIST_ACTION_EDIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                return getItem().get(LIST_COLUMN_ORGUNIT).equals(
+                    CmsOrganizationalUnit.SEPARATOR + ((CmsShowGroupUsersList)getWp()).getParamOufqn());
+            }
+        };
         editAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_HELP_0));
         loginCol.addDefaultAction(editAction);

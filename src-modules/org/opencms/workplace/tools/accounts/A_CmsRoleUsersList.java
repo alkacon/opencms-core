@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/02/12 15:39:31 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/02/13 09:00:21 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.6
  */
@@ -272,7 +272,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
                     while (itUsers.hasNext()) {
                         CmsListItem listItem = (CmsListItem)itUsers.next();
                         CmsUser user = getCms().readUser((String)listItem.get(LIST_COLUMN_LOGIN));
-                        if (user.getOuFqn().equals(getParamOufqn())) {
+                        if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
                             return A_CmsUsersList.PATH_BUTTONS + "user.png";
                         } else {
                             return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";

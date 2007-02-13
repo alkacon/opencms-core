@@ -751,7 +751,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -2299,6 +2299,25 @@
 			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/user_disabled.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/user_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>7e2be067-bb3f-11db-b013-07f8507c1185</uuidstructure>
+			<uuidresource>7e2be068-bb3f-11db-b013-07f8507c1185</uuidresource>
+			<datelastmodified>Tue, 13 Feb 2007 08:52:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 Feb 2007 08:52:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
