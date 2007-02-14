@@ -873,7 +873,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/delete]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/mgmt/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -920,7 +920,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/edit]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/mgmt/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1004,6 +1004,53 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/accounts/unit_mgmt.jsp</source>
+			<destination>system/workplace/admin/accounts/unit_mgmt.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a558dbc7-bc49-11db-b67c-edbe706a5d23</uuidstructure>
+			<uuidresource>a558dbc8-bc49-11db-b67c-edbe706a5d23</uuidresource>
+			<datelastmodified>Wed, 14 Feb 2007 16:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Feb 2007 16:37:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ORGUNIT_MGMT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ORGUNIT_MGMT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/unit.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ORGUNIT_MGMT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/mgmt]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/accounts/unit_new.jsp</source>
 			<destination>system/workplace/admin/accounts/unit_new.jsp</destination>
 			<type>jsp</type>
@@ -1045,7 +1092,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/new]]></value>
+					<value><![CDATA[params:oufqn=${param.oufqn}&action=initial|path:/accounts/orgunit/mgmt/new]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1092,7 +1139,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:action=initial&oufqn=${param.oufqn}|path:/accounts/orgunit/overview]]></value>
+					<value><![CDATA[params:action=initial&oufqn=${param.oufqn}|path:/accounts/orgunit/mgmt/overview]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
