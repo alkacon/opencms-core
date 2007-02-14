@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.55.4.5 $
+ * Date   : $Date: 2007/02/14 16:51:30 $
+ * Version: $Revision: 1.55.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.5 $
+ * @version $Revision: 1.55.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -145,7 +145,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setLong(8, lastlogin);
             stmt.setInt(9, flags);
             stmt.setString(10, m_sqlManager.validateEmpty(address));
-            stmt.setString(11, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(11, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
@@ -240,7 +240,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
 
             // update user_info in this special way because of using blob
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO_1");
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {

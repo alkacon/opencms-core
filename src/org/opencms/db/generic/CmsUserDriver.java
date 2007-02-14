@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/13 14:21:19 $
- * Version: $Revision: 1.110.2.18 $
+ * Date   : $Date: 2007/02/14 16:51:30 $
+ * Version: $Revision: 1.110.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.18 $
+ * @version $Revision: 1.110.2.19 $
  * 
  * @since 6.0.0 
  */
@@ -260,7 +260,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.setString(3, CmsOrganizationalUnit.getSimpleName(groupFqn));
             stmt.setString(4, m_sqlManager.validateEmpty(description));
             stmt.setInt(5, flags);
-            stmt.setString(6, CmsOrganizationalUnit.getParentFqn(groupFqn));
+            stmt.setString(6, " " + CmsOrganizationalUnit.getParentFqn(groupFqn));
             stmt.executeUpdate();
 
             group = new CmsGroup(groupId, parentId, groupFqn, description, flags);
@@ -452,7 +452,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.setInt(9, flags);
             m_sqlManager.setBytes(stmt, 10, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(11, m_sqlManager.validateEmpty(address));
-            stmt.setString(12, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(12, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -538,7 +538,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_DELETE_GROUP_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(groupFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(groupFqn));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -579,7 +579,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETE_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -641,7 +641,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READ_BY_NAME_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(groupFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(groupFqn));
             res = stmt.executeQuery();
 
             // create new Cms group object
@@ -676,7 +676,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_NAME_2");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
 
             res = stmt.executeQuery();
 
@@ -749,7 +749,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // compose the query
         String sqlQuery = createRoleQuery("C_GROUPS_GET_GROUPS_0", includeSubOus, readRoles);
         // adjust parameter to use with LIKE
-        String ouFqn = orgUnit.getName();
+        String ouFqn = " " + orgUnit.getName();
         if (includeSubOus) {
             ouFqn += "%";
         }
@@ -878,7 +878,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
 
-            String param = orgUnit.getName();
+            String param = " " + orgUnit.getName();
             if (recursive) {
                 param += "%";
             }
@@ -1205,7 +1205,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // read the group from the database
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(groupFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(groupFqn));
             res = stmt.executeQuery();
 
             // create new Cms group object
@@ -1246,7 +1246,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // compose the query
         String sqlQuery = createRoleQuery("C_GROUPS_GET_GROUPS_OF_USER_1", includeChildOus, readRoles);
         // adjust parameter to use with LIKE
-        String ouFqnParam = ouFqn;
+        String ouFqnParam = " " + ouFqn;
         if (includeChildOus) {
             ouFqnParam = "%";
         }
@@ -1352,7 +1352,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_NAME_2");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
 
             res = stmt.executeQuery();
 
@@ -1394,7 +1394,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_WITH_PWD_3");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.setString(3, OpenCms.getPasswordHandler().digest(password));
             res = stmt.executeQuery();
 
@@ -1446,7 +1446,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, sqlQuery);
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
-            stmt.setString(2, CmsOrganizationalUnit.getParentFqn(groupFqn));
+            stmt.setString(2, " " + CmsOrganizationalUnit.getParentFqn(groupFqn));
 
             res = stmt.executeQuery();
 
@@ -1620,7 +1620,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (orgUnit == null) {
                 stmt.setString(1, null);
             } else {
-                stmt.setString(1, orgUnit.getName());
+                stmt.setString(1, " " + orgUnit.getName());
             }
             stmt.setString(2, user.getId().toString());
 
@@ -1796,7 +1796,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SET_PWD_3");
             stmt.setString(1, OpenCms.getPasswordHandler().digest(newPassword));
             stmt.setString(2, CmsOrganizationalUnit.getSimpleName(userFqn));
-            stmt.setString(3, CmsOrganizationalUnit.getParentFqn(userFqn));
+            stmt.setString(3, " " + CmsOrganizationalUnit.getParentFqn(userFqn));
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2089,7 +2089,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected CmsGroup internalCreateGroup(CmsDbContext dbc, ResultSet res) throws SQLException {
 
-        String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0"));
+        String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0")).trim();
         String description = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0"));
         return new CmsGroup(new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))), new CmsUUID(
             res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))), ou
@@ -2208,7 +2208,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             info = new HashMap();
         }
 
-        String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0"));
+        String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0")).trim();
         String description = res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION_0"));
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0"))),
@@ -2374,6 +2374,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // move all users from the group to the role
             // HINT: this could be improved with an special query like:
             // UPDATE CMS_GROUPUSERS SET GROUP_ID = ? WHERE GROUP_ID = ?
+            // but it does not really matters since it is used you to update from version 6 to 7
             Iterator it = readUsersOfGroup(dbc, groupName, false).iterator();
             while (it.hasNext()) {
                 CmsUser user = (CmsUser)it.next();
