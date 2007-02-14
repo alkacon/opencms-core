@@ -25,6 +25,7 @@
 		<resourceinit>
 			<resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">

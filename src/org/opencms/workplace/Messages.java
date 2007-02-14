@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.23.4.12 $
+ * Date   : $Date: 2007/02/14 16:52:45 $
+ * Version: $Revision: 1.23.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.12 $ 
+ * @version $Revision: 1.23.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,6 +230,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_HEADLINE_ALREADY_IN_0 = "GUI_LOGIN_HEADLINE_ALREADY_IN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1 = "GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_0 = "GUI_LOGIN_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -249,6 +252,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0 = "GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_0 = "GUI_LOGIN_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SELECT_OFF_0 = "GUI_LOGIN_ORGUNIT_SELECT_OFF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SELECT_ON_0 = "GUI_LOGIN_ORGUNIT_SELECT_ON_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_PASSWORD_0 = "GUI_LOGIN_PASSWORD_0";

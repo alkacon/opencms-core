@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/01/08 14:03:06 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2007/02/14 16:52:45 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,24 @@ import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspLoginBean;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -63,38 +70,50 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLogin extends CmsJspLoginBean {
 
     /** Action constant: Default action, display the dialog. */
-    private static final int ACTION_DISPLAY = 0;
+    public static final int ACTION_DISPLAY = 0;
 
     /** Action constant: Login sucessful. */
-    private static final int ACTION_LOGIN = 1;
+    public static final int ACTION_LOGIN = 1;
 
     /** Action constant: Logout. */
-    private static final int ACTION_LOGOUT = 2;
+    public static final int ACTION_LOGOUT = 2;
+
+    /** The parameter name for the "login" action. */
+    public static final String PARAM_ACTION_LOGIN = "login";
+
+    /** The parameter name for the "logout" action. */
+    public static final String PARAM_ACTION_LOGOUT = "logout";
+
+    /** The html id for the login form. */
+    public static final String PARAM_FORM = "ocLoginForm";
+
+    /** The parameter name for the organizational unit. */
+    public static final String PARAM_OUFQN = "ocOuFqn";
+
+    /** The parameter name for the password. */
+    public static final String PARAM_PASSWORD = "ocPword";
+
+    /** The parameter name for the organizational unit. */
+    public static final String PARAM_PREDEF_OUFQN = "ocPredefOuFqn";
+
+    /** The parameter name for the user name. */
+    public static final String PARAM_USERNAME = "ocUname";
+
+    /** The oufqn cookie name. */
+    private static final String COOKIE_OUFQN = "OpenCmsOuFqn";
+
+    /** The username cookie name. */
+    private static final String COOKIE_USERNAME = "OpenCmsUserName";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLogin.class);
-
-    /** The parameter name for the "login" action. */
-    private static final String PARAM_ACTION_LOGIN = "login";
-
-    /** The parameter name for the "logout" action. */
-    private static final String PARAM_ACTION_LOGOUT = "logout";
-
-    /** The html id for the login form. */
-    private static final String PARAM_FORM = "ocLoginForm";
-
-    /** The parameter name for the password. */
-    private static final String PARAM_PASSWORD = "ocPword";
-
-    /** The parameter name for the user name. */
-    private static final String PARAM_USERNAME = "ocUname";
 
     /** The action to perform. */
     private int m_action;
@@ -110,6 +129,15 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /** The message to display with the dialog in a JavaScrip alert. */
     private CmsMessageContainer m_message;
+
+    /** The selected organizational unit. */
+    private CmsOrganizationalUnit m_ou;
+
+    /** The value of the organizational unit parameter. */
+    private String m_oufqn;
+
+    /** The list of all organizational units. */
+    private List m_ous;
 
     /** The value of the password parameter. */
     private String m_password;
@@ -149,6 +177,32 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
+     * Returns html code for selecting an organizational unit.<p>
+     * 
+     * @return html code
+     */
+    public String buildOrgUnitSelector() {
+
+        StringBuffer html = new StringBuffer();
+        html.append("<select style='width: 100%;' size='1' ");
+        appendId(html, PARAM_OUFQN);
+        html.append(">\n");
+        Iterator itOus = getOus().iterator();
+        while (itOus.hasNext()) {
+            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+            String selected = "";
+            if (ou.getName().equals(m_oufqn) || ou.getName().equals(m_oufqn.substring(1))) {
+                selected = " selected='selected'";
+            }
+            html.append("<option value='").append(ou.getName()).append("'").append(selected).append(">");
+            html.append(ou.getDisplayName(m_locale));
+            html.append("</option>\n");
+        }
+        html.append("</select>\n");
+        return html.toString();
+    }
+
+    /**
      * Returns the HTML for the login dialog in it's current state.<p>
      * 
      * @return the HTML for the login dialog
@@ -183,9 +237,27 @@ public class CmsLogin extends CmsJspLoginBean {
             }
             m_password = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_PASSWORD);
             m_actionLogin = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGIN);
-
+            m_oufqn = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_OUFQN);
+            if (m_oufqn == null) {
+                m_oufqn = (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
+            }
+            // try to get some info from a cookie
+            getCookieData();
+            if (m_oufqn == null) {
+                m_oufqn = CmsOrganizationalUnit.SEPARATOR;
+            }
+            m_ou = null;
+            try {
+                m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
+            } catch (CmsException e) {
+                m_oufqn = CmsOrganizationalUnit.SEPARATOR;
+                try {
+                    m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
+                } catch (CmsException exc) {
+                    LOG.error(exc.getLocalizedMessage(), exc);
+                }
+            }
         } else {
-
             // user is already logged in
             m_action = ACTION_LOGIN;
             m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
@@ -204,7 +276,6 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
-
             // login was requested
             if ((m_username == null) && (m_password == null)) {
                 m_message = Messages.get().container(Messages.GUI_LOGIN_NO_DATA_0);
@@ -215,7 +286,7 @@ public class CmsLogin extends CmsJspLoginBean {
             } else if ((m_username != null) && (m_password != null)) {
 
                 // try to login with the given user information
-                login(m_username, m_password);
+                login((m_oufqn == null ? CmsOrganizationalUnit.SEPARATOR : m_oufqn) + m_username, m_password);
 
                 if (getLoginException() == null) {
                     // the login was successful
@@ -229,7 +300,7 @@ public class CmsLogin extends CmsJspLoginBean {
                             // user has access to the project, set this as current project
                             cms.getRequestContext().setCurrentProject(project);
                         }
-                    } catch (Exception e) {
+                    } catch (CmsException e) {
                         // unable to set the startup project, bad but not critical
                         LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
@@ -260,9 +331,7 @@ public class CmsLogin extends CmsJspLoginBean {
                     }
                 }
             }
-
         } else if (Boolean.valueOf(m_actionLogout).booleanValue()) {
-
             m_action = ACTION_LOGOUT;
             // after logout this will automatically redirect to the login form again
             logout();
@@ -306,10 +375,63 @@ public class CmsLogin extends CmsJspLoginBean {
                 if (session != null) {
                     session.invalidate();
                 }
+            } else {
+                // successfully logged in, so set the cookie
+                setCookieData();
             }
         }
 
         return displayLoginForm();
+    }
+
+    /**
+     * Gets the login info from the cookies.<p>
+     */
+    public void getCookieData() {
+
+        // get the user name cookie
+        Cookie userNameCookie = getCookie(COOKIE_USERNAME);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userNameCookie.getValue())) {
+            // only set the data is needed
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_username)) {
+                m_username = userNameCookie.getValue();
+            }
+        }
+        // get the user name cookie
+        Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
+            // only set the data is needed
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_oufqn)) {
+                m_oufqn = ouFqnCookie.getValue();
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.jsp.CmsJspLoginBean#getFormLink()
+     */
+    public String getFormLink() {
+
+        if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) {
+            return super.getFormLink();
+        }
+        return link("/system/login" + (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN));
+    }
+
+    /**
+     * Sets the login cookies.<p>
+     */
+    public void setCookieData() {
+
+        // set the user name cookie
+        Cookie userNameCookie = getCookie(COOKIE_USERNAME);
+        userNameCookie.setValue(m_username);
+        setCookie(userNameCookie);
+
+        // set the user name cookie
+        Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
+        ouFqnCookie.setValue(m_oufqn);
+        setCookie(ouFqnCookie);
     }
 
     /**
@@ -322,7 +444,6 @@ public class CmsLogin extends CmsJspLoginBean {
     protected void appendDefaultLoginScript(StringBuffer html, CmsMessageContainer message) {
 
         html.append("<script type=\"text/javascript\">\n");
-
         if (message != null) {
             html.append("function showAlert() {\n");
             html.append("\talert(\"");
@@ -330,6 +451,25 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("\");\n");
             html.append("}\n");
         }
+        html.append("var orgUnitShow = false;\n");
+        html.append("function orgUnitSelection() {\n");
+        html.append("\tif (!orgUnitShow) {\n");
+        html.append("\t\tdocument.getElementById('ouSelId').style.display = 'block';\n");
+        html.append("\t\tdocument.getElementById('ouLabelId').style.display = 'block';\n");
+        html.append("\t\tdocument.getElementById('ouBtnId').value = '");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_OFF_0));
+        html.append("';\n");
+        html.append("\t} else {\n");
+        html.append("\t\tdocument.getElementById('ouSelId').style.display = 'none';\n");
+        html.append("\t\tdocument.getElementById('ouLabelId').style.display = 'none';\n");
+        html.append("\t\tdocument.getElementById('ouBtnId').value = '");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0));
+        html.append("';\n");
+        html.append("\t}\n");
+        html.append("\torgUnitShow = !orgUnitShow;\n");
+        html.append("\tdocument.getElementById('titleId').style.display = 'block';\n");
+        html.append("\tdocument.getElementById('titleIdOu').style.display = 'none';\n");
+        html.append("}\n");
 
         html.append("function doOnload() {\n");
         html.append("\tdocument.");
@@ -510,7 +650,22 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<div class=\"dialoghead\">");
 
         if (m_action == ACTION_DISPLAY) {
+            html.append("<div id='titleId'");
+            if (!m_oufqn.equals(CmsOrganizationalUnit.SEPARATOR)) {
+                html.append(" style='display: none;'");
+            }
+            html.append(">\n");
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_0));
+            html.append("</div>\n");
+            html.append("<div id='titleIdOu'");
+            if (m_oufqn.equals(CmsOrganizationalUnit.SEPARATOR)) {
+                html.append(" style='display: none;'");
+            }
+            html.append(">\n");
+            html.append(Messages.get().getBundle(m_locale).key(
+                Messages.GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1,
+                m_ou.getDescription()));
+            html.append("</div>\n");
         } else if (m_action == ACTION_LOGIN) {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_ALREADY_IN_0));
         }
@@ -546,7 +701,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("<tr>\n");
 
-        html.append("<td style=\"width: 60px; text-align: center; vertical-align: top\" rowspan=\"3\">");
+        html.append("<td style=\"width: 60px; text-align: center; vertical-align: top\" rowspan=\"4\">");
         html.append("<img src=\"");
         html.append(CmsWorkplace.getResourceUri("commons/login.png"));
         html.append("\" height=\"48\" width=\"48\" alt=\"\">");
@@ -559,7 +714,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         if (m_action == ACTION_DISPLAY) {
             // append input for user name
-            html.append("<input style=\"width: 100%\" type=\"text\"");
+            html.append("<input style=\"width: 300px;\" type=\"text\"");
             appendId(html, PARAM_USERNAME);
             html.append("value=\"");
             html.append(CmsStringUtil.isEmpty(m_username) ? "" : CmsEncoder.escapeXml(m_username));
@@ -579,14 +734,25 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_PASSWORD_0));
             html.append("</b>&nbsp;&nbsp;</td>\n");
             html.append("<td style=\"width: 300px; white-space: nowrap;\">");
-            html.append("<input style=\"width: 100%\" type=\"password\"");
+            html.append("<input style=\"width: 300px;\" type=\"password\"");
             appendId(html, PARAM_PASSWORD);
             html.append(">");
             html.append("</td>\n");
             html.append("</tr>\n");
 
             html.append("<tr>\n");
-            html.append("<td></td>\n<td style=\"white-space: nowrap;\">\n");
+            html.append("<td style=\"white-space: nowrap;\"><div id='ouLabelId' style='display: none;'><b>");
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_0)).append(
+                "</b>&nbsp;&nbsp;\n");
+            html.append("</div></td>\n");
+            html.append("<td style=\"width: 300px; white-space: nowrap;\"><div id='ouSelId' style='display: none;'>");
+            html.append(buildOrgUnitSelector());
+            html.append("</div></td>\n");
+            html.append("</tr>\n");
+            html.append("<tr>\n");
+            html.append("<td>\n");
+            html.append("</td>\n");
+            html.append("<td style=\"white-space: nowrap;\">\n");
             html.append("<input type=\"hidden\"");
             appendId(html, PARAM_ACTION_LOGIN);
             html.append("value=\"true\">\n");
@@ -603,6 +769,14 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_BUTTON_0));
             html.append("\">\n");
 
+            if ((getOus().size() > 1)
+                && (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null || getRequest().getAttribute(
+                    PARAM_PREDEF_OUFQN).equals(CmsOrganizationalUnit.SEPARATOR))) {
+                // options
+                html.append("&nbsp;<input id='ouBtnId' class='loginbutton' type='button' value='");
+                html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0));
+                html.append("' onclick='javascript:orgUnitSelection();'>\n");
+            }
             html.append("</td>\n");
             html.append("</tr>\n");
         } else if (m_action == ACTION_LOGIN) {
@@ -668,5 +842,60 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\" id=\"");
         html.append(id);
         html.append("\" ");
+    }
+
+    /**
+     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
+     * 
+     * @param name the name of the cookie
+     * 
+     * @return the cookie
+     */
+    private Cookie getCookie(String name) {
+
+        Cookie[] cookies = getRequest().getCookies();
+        for (int i = 0; cookies != null && i < cookies.length; i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i];
+            }
+        }
+        return new Cookie(name, "");
+    }
+
+    /**
+     * Returns all organizational units in the system.<p>
+     * 
+     * @return a list of {@link CmsOrganizationalUnit} objects
+     */
+    private List getOus() {
+
+        if (m_ous == null) {
+            m_ous = new ArrayList();
+            try {
+                m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
+                m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return m_ous;
+    }
+
+    /**
+     * Sets the cookie in the response.<p>
+     * 
+     * @param cookie the cookie to set
+     */
+    private void setCookie(Cookie cookie) {
+
+        // set the expiration date of the cookie to six months from today
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.add(Calendar.MONTH, 6);
+        int maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
+        cookie.setMaxAge(maxAge);
+        // set the path
+        cookie.setPath(link("/system/login"));
+        // set the cookie
+        getResponse().addCookie(cookie);
     }
 }

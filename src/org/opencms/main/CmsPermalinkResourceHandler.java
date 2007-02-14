@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsPermalinkResourceHandler.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/14 16:52:45 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.3 
  */
 public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
 
-    /** The backup handler path. */
+    /** The permalink handler path. */
     public static final String PERMALINK_HANDLER = "/permalink/";
 
     /** The log object for this class. */
@@ -72,7 +72,7 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
         // only do something if the resource was not found 
         if (resource == null) {
             String uri = cms.getRequestContext().getUri();
-            // check if the resource starts with the BACKUP_HANDLER
+            // check if the resource starts with the PERMALINK_HANDLER
             if (uri.startsWith(PERMALINK_HANDLER)) {
                 // get the id of the real resource
                 String id = uri.substring(PERMALINK_HANDLER.length());
