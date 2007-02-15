@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2007/02/15 09:37:53 $
- * Version: $Revision: 1.26.4.4 $
+ * Date   : $Date: 2007/02/15 11:20:03 $
+ * Version: $Revision: 1.26.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26.4.4 $ 
+ * @version $Revision: 1.26.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,9 @@ public class CmsIndexingThread extends Thread {
                 m_factory.getName()));
         }
 
+        // flag for logging in the "final" block
+        boolean docOk = false;
+        
         try {
 
             if (LOG.isDebugEnabled()) {
@@ -140,6 +143,9 @@ public class CmsIndexingThread extends Thread {
                 m_writer.addDocument(doc);
             }
 
+            // indicate that the document was correctly handled
+            docOk = true;
+            
             if ((m_report != null) && !isInterrupted()) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -165,13 +171,11 @@ public class CmsIndexingThread extends Thread {
                     I_CmsReport.FORMAT_OK);
             } else {
                 if (m_report != null) {
-                    m_report.print(
+                    m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                         I_CmsReport.FORMAT_ERROR);
-                    m_report.println();
                     m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, 
                         exc.toString()), I_CmsReport.FORMAT_ERROR);
-
                 }
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -180,22 +184,28 @@ public class CmsIndexingThread extends Thread {
                         m_index.getName()), exc);
                 }
             }
-        } catch (Throwable other) {
-            if (m_report != null) {
-                m_report.print(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                    I_CmsReport.FORMAT_ERROR);
-                m_report.println();                
-                m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, 
-                    other.toString()), I_CmsReport.FORMAT_ERROR);
-
-            }
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                    m_res.getRootPath(),
-                    m_index.getName()), other);
-            }            
+            
+            // set flag to avoid logging in finally block
+            docOk = true;
+            
+        } finally {
+            if (!docOk) {
+            	// apparently there was a Throwable that causes an issue
+				if (m_report != null) {
+                	m_report.println(
+                    	org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    	I_CmsReport.FORMAT_ERROR);                
+                    m_report.println(Messages.get().container(
+                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                        m_res.getRootPath(), m_index.getName()), I_CmsReport.FORMAT_ERROR);
+            	}
+            	if (LOG.isErrorEnabled()) {
+                	LOG.error(Messages.get().getBundle().key(
+                    	Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                    	m_res.getRootPath(),
+                    	m_index.getName()));
+            	}
+           	}          
         }
     }
 }
