@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepository.java,v $
- * Date   : $Date: 2007/01/30 11:32:16 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/cms/Attic/CmsRepository.java,v $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.repository.A_CmsRepository;
 import org.opencms.repository.CmsRepositoryAuthorizationException;
-import org.opencms.repository.I_CmsRepository;
 import org.opencms.repository.I_CmsRepositorySession;
 
 import javax.servlet.ServletConfig;
@@ -47,11 +47,11 @@ import javax.servlet.ServletConfig;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.4.2 $
  * 
  * @since 6.5.6
  */
-public class CmsRepository implements I_CmsRepository {
+public class CmsRepository extends A_CmsRepository {
 
     /**
      * Empty default constructor.<p>

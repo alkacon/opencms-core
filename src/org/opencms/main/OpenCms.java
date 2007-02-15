@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.58.4.8 $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.58.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.publish.CmsPublishManager;
+import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsOrgUnitManager;
@@ -96,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.8 $ 
+ * @version $Revision: 1.58.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -299,6 +300,16 @@ public final class OpenCms {
     }
 
     /**
+     * Returns the organizational unit manager.<p>
+     * 
+     * @return the organizational unit manager
+     */
+    public static CmsOrgUnitManager getOrgUnitManager() {
+
+        return OpenCmsCore.getInstance().getOrgUnitManager();
+    }
+
+    /**
      * Returns the password handler.<p>
      * 
      * @return the password handler
@@ -319,6 +330,16 @@ public final class OpenCms {
     }
 
     /**
+     * Returns the repository manager.<p>
+     * 
+     * @return the repository manager
+     */
+    public static CmsRepositoryManager getRepositoryManager() {
+
+        return OpenCmsCore.getInstance().getRepositoryManager();
+    }
+
+    /**
      * Returns the resource manager.<p>
      * 
      * @return the resource manager
@@ -336,16 +357,6 @@ public final class OpenCms {
     public static CmsRoleManager getRoleManager() {
 
         return OpenCmsCore.getInstance().getRoleManager();
-    }
-
-    /**
-     * Returns the organizational unit manager.<p>
-     * 
-     * @return the organizational unit manager
-     */
-    public static CmsOrgUnitManager getOrgUnitManager() {
-
-        return OpenCmsCore.getInstance().getOrgUnitManager();
     }
 
     /**

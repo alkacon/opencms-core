@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/I_CmsRepository.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepository.java,v $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,18 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.4.2 $
  * 
  * @since 6.5.6
  */
 public interface I_CmsRepository {
+
+    /**
+     * Returns the name of the repository.<p>
+     * 
+     * @return the name of the repository
+     */
+    String getName();
 
     /**
      * Initialize the repository with the servlet context.<p>
@@ -65,7 +72,12 @@ public interface I_CmsRepository {
      * 
      * @throws CmsRepositoryAuthorizationException if something goes wrong 
      */
-    I_CmsRepositorySession login(String userName, String password)
-    throws CmsRepositoryAuthorizationException;
+    I_CmsRepositorySession login(String userName, String password) throws CmsRepositoryAuthorizationException;
 
+    /**
+     * Sets the name for this repository.<p>
+     * 
+     * @param name the name to use for the repository
+     */
+    void setName(String name);
 }

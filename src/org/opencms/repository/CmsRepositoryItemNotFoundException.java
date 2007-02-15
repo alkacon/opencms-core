@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/Attic/CmsRepositoryAuthorizationException.java,v $
- * Date   : $Date: 2007/01/24 14:55:05 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/Attic/CmsRepositoryItemNotFoundException.java,v $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,24 +32,24 @@
 package org.opencms.repository;
 
 /**
- * Exception thrown if authorization fails.<p>
+ * Exception thrown if an item could not be found.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.4.2 $
  * 
  * @since 6.5.6
  */
-public class CmsRepositoryAuthorizationException extends CmsRepositoryException {
+public class CmsRepositoryItemNotFoundException extends CmsRepositoryException {
 
     /** The unique serial id for this class. */
-    private static final long serialVersionUID = 5443218881773952475L;
+    private static final long serialVersionUID = -6704243302339411102L;
 
     /**
      * Constructs a new instance of this class with <code>null</code> as its
      * detail message.<p>
      */
-    public CmsRepositoryAuthorizationException() {
+    public CmsRepositoryItemNotFoundException() {
 
         super();
     }
@@ -61,7 +61,7 @@ public class CmsRepositoryAuthorizationException extends CmsRepositoryException 
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method
      */
-    public CmsRepositoryAuthorizationException(String message) {
+    public CmsRepositoryItemNotFoundException(String message) {
 
         super(message);
     }
@@ -74,7 +74,7 @@ public class CmsRepositoryAuthorizationException extends CmsRepositoryException 
      *                  later retrieval by the {@link #getMessage()} method
      * @param rootCause root failure cause
      */
-    public CmsRepositoryAuthorizationException(String message, Throwable rootCause) {
+    public CmsRepositoryItemNotFoundException(String message, Throwable rootCause) {
 
         super(message, rootCause);
     }
@@ -84,7 +84,7 @@ public class CmsRepositoryAuthorizationException extends CmsRepositoryException 
      *
      * @param rootCause root failure cause
      */
-    public CmsRepositoryAuthorizationException(Throwable rootCause) {
+    public CmsRepositoryItemNotFoundException(Throwable rootCause) {
 
         super(rootCause);
     }

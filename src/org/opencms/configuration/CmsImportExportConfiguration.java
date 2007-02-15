@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2006/12/01 14:26:40 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.configuration;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
+import org.opencms.repository.A_CmsRepository;
+import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -42,6 +44,7 @@ import org.opencms.staticexport.CmsStaticExportRfsRule;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.digester.Digester;
@@ -53,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.2 $
+ * @version $Revision: 1.25.4.3 $
  * 
  * @since 6.0.0
  */
@@ -103,6 +106,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /** The principal translation node. */
     protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
+
+    /** The node name of the repositories node. */
+    protected static final String N_REPOSITORIES = "repositories";
+
+    /** The node name of the repository node. */
+    protected static final String N_REPOSITORY = "repository";
 
     /**  The main configuration node for static export name. */
     protected static final String N_STATICEXPORT = "staticexport";
@@ -208,6 +217,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
+
+    /** The configured repository manager. */
+    private CmsRepositoryManager m_repositoryManager;
 
     /** The configured static export manager. */
     private CmsStaticExportManager m_staticExportManager;
@@ -484,6 +496,31 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             "addRfsRuleSystemRes",
             1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
+
+        // creation of the static repository manager        
+        digester.addObjectCreate("*/" + N_REPOSITORIES, CmsRepositoryManager.class);
+
+        digester.addCallMethod("*/" + N_REPOSITORIES, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+
+        // static repository manager finished
+        digester.addSetNext("*/" + N_REPOSITORIES, "setRepositoryManager");
+
+        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, A_CLASS, CmsConfigurationException.class);
+
+        digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "setName", 1);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, 0, A_NAME);
+
+        digester.addCallMethod(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAM,
+            0,
+            I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAM, 1);
+
+        digester.addSetNext("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "addRepositoryClass");
     }
 
     /**
@@ -728,6 +765,36 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             }
 
         }
+
+        // <repositories> node
+        Element repositoriesElement = parent.addElement(N_REPOSITORIES);
+
+        i = m_repositoryManager.getRepositories().iterator();
+        while (i.hasNext()) {
+
+            // <repository> node
+            A_CmsRepository repository = (A_CmsRepository)i.next();
+            Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
+            repositoryElement.addAttribute(A_NAME, repository.getName());
+            repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
+
+            // <param> nodes
+            Map config = repository.getConfiguration();
+            if (config != null) {
+                Iterator it = config.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String)it.next();
+                    String[] value = (String[])config.get(key);
+
+                    for (int j = 0; j < value.length; j++) {
+                        Element paramNode = repositoryElement.addElement(N_PARAM);
+                        paramNode.addAttribute(A_NAME, key);
+                        paramNode.addText(value[j]);
+                    }
+                }
+            }
+        }
+
         // return the configured node
         return importexportElement;
     }
@@ -748,6 +815,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public CmsImportExportManager getImportExportManager() {
 
         return m_importExportManager;
+    }
+
+    /**
+     * Returns the initialized repository manager.<p>
+     * 
+     * @return the initialized repository manager
+     */
+    public CmsRepositoryManager getRepositoryManager() {
+
+        return m_repositoryManager;
     }
 
     /**
@@ -781,6 +858,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_MANAGER_0));
         }
+    }
+
+    /**
+     * Sets the generated repository manager.<p>
+     * 
+     * @param manager the repository manager to set
+     */
+    public void setRepositoryManager(CmsRepositoryManager manager) {
+
+        m_repositoryManager = manager;
     }
 
     /**

@@ -82,7 +82,7 @@
         </init-param>
         <init-param>
           <param-name>repository</param-name>
-          <param-value>org.opencms.repository.cms.CmsRepository</param-value>
+          <param-value>default</param-value>
         </init-param>
     </servlet>
     

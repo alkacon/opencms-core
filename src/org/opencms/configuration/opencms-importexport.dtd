@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport)>
+<!ELEMENT opencms (importexport, staticexport, repositories)>
 
 <!--
 # <importexport> configuration:
@@ -348,3 +348,15 @@
 -->
 <!ELEMENT related-system-res (regex*)>
 
+<!--
+# <repositories> configuration:
+#
+# In this node repositories to access OpenCms are configured.
+-->
+<!ELEMENT repositories (repository*)>
+<!ELEMENT repository (param*)>
+<!ATTLIST repository name CDATA #REQUIRED>
+<!ATTLIST repository class CDATA #REQUIRED>
+
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>

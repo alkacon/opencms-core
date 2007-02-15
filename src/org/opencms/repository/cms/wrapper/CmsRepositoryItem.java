@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/cms/Attic/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/cms/wrapper/Attic/CmsRepositoryItem.java,v $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.repository.cms;
+package org.opencms.repository.cms.wrapper;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.repository.I_CmsRepositoryItem;
@@ -46,7 +47,7 @@ import org.opencms.repository.I_CmsRepositoryItem;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.4.2 $
  * 
  * @since 6.5.6
  */
@@ -61,17 +62,17 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
     /** The CmsResource the CmsRepositoryItem is for. */
     private CmsResource m_resource;
 
-    /** The actual CmsObject. */
-    private CmsObject m_cms;
+    /** The actual CmsObjectWrapper. */
+    private CmsObjectWrapper m_cms;
 
     /**
      * Construct a new CmsRepositoryItem initialized with the CmsResource to use
      * and the CmsObject needed for some operations.<p>
      * 
      * @param res The CmsResource this CmsRepositoryItem is used for
-     * @param cms The actual CmsObject
+     * @param cms The actual CmsObjectWrapper
      */
-    public CmsRepositoryItem(CmsResource res, CmsObject cms) {
+    public CmsRepositoryItem(CmsResource res, CmsObjectWrapper cms) {
 
         m_resource = res;
         m_cms = cms;
@@ -88,7 +89,11 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
 
         if (m_content == null) {
             try {
-                CmsFile file = CmsFile.upgrade(m_resource, m_cms);
+                String filename = m_cms.getSitePath(m_resource);
+                
+                // read and return the file
+                CmsFile file = m_cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
+
                 m_content = file.getContents();
             } catch (CmsException ex) {
                 // noop
@@ -153,7 +158,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
                 // noop
             }
         }
-
+        
         return m_mimeType;
     }
 

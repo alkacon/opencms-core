@@ -76,4 +76,13 @@
 			</resourcestorender>
 		</rendersettings>
 	</staticexport>
+	<repositories>
+		<repository name="default" class="org.opencms.repository.cms.CmsRepository" />
+		<repository name="extended" class="org.opencms.repository.cms.wrapper.CmsRepository">
+			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperJsp</param>
+			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperXmlContent</param>
+			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperXmlPage</param>
+			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+		</repository>
+	</repositories>
 </opencms>

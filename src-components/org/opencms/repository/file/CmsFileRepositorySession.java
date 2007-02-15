@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepositorySession.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Vector;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -168,34 +168,6 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
         }
 
         dir.mkdir();
-    }
-
-    /**
-     * @see org.opencms.repository.I_CmsRepositorySession#create(java.lang.String, java.io.InputStream, boolean)
-     */
-    public void create(String path, InputStream inputStream, boolean overwrite)
-    throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
-
-        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
-            throw new CmsRepositoryPermissionException();
-        }
-
-        try {
-
-            boolean exists = (new File(getAbsolutePath(path))).exists();
-            if ((exists) && (!overwrite)) {
-                throw new CmsRepositoryItemAlreadyExistsException();
-            }
-
-            // Create file if it does not exist
-            FileOutputStream out = new FileOutputStream(getAbsolutePath(path));
-            out.write(CmsFileUtil.readFully(inputStream));
-            out.close();
-
-        } catch (IOException e) {
-            throw new CmsRepositoryItemAlreadyExistsException();
-        }
-
     }
 
     /**
@@ -392,6 +364,34 @@ public class CmsFileRepositorySession implements I_CmsRepositorySession {
 
         copy(src, dest, overwrite);
         delete(src);
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepositorySession#save(java.lang.String, java.io.InputStream, boolean)
+     */
+    public void save(String path, InputStream inputStream, boolean overwrite)
+    throws CmsRepositoryItemAlreadyExistsException, CmsRepositoryPermissionException {
+
+        if ((path.toUpperCase().startsWith("/WEB-INF")) || (path.toUpperCase().startsWith("/META-INF"))) {
+            throw new CmsRepositoryPermissionException();
+        }
+
+        try {
+
+            boolean exists = (new File(getAbsolutePath(path))).exists();
+            if ((exists) && (!overwrite)) {
+                throw new CmsRepositoryItemAlreadyExistsException();
+            }
+
+            // Create file if it does not exist
+            FileOutputStream out = new FileOutputStream(getAbsolutePath(path));
+            out.write(CmsFileUtil.readFully(inputStream));
+            out.close();
+
+        } catch (IOException e) {
+            throw new CmsRepositoryItemAlreadyExistsException();
+        }
+
     }
 
     /**

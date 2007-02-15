@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/repository/file/Attic/CmsFileRepository.java,v $
- * Date   : $Date: 2007/01/30 11:32:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.repository.file;
 
-import org.opencms.repository.I_CmsRepository;
+import org.opencms.repository.A_CmsRepository;
 import org.opencms.repository.I_CmsRepositorySession;
 import org.opencms.webdav.Messages;
 
@@ -43,26 +43,17 @@ import javax.servlet.ServletException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
-public class CmsFileRepository implements I_CmsRepository {
-
-    /** The root path to use for the repository. */
-    private String m_root;
+public class CmsFileRepository extends A_CmsRepository {
 
     /** The name of the init parameter in the web.xml to specify the root path. */
     private static final String INIT_PARAM_ROOT = "root";
 
-    /**
-     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
-     */
-    public I_CmsRepositorySession login(String userName, String password) {
-
-        // username and password doesnt matter in this case
-        return new CmsFileRepositorySession(m_root);
-    }
+    /** The root path to use for the repository. */
+    private String m_root;
 
     /**
      * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
@@ -78,6 +69,15 @@ public class CmsFileRepository implements I_CmsRepository {
                 INIT_PARAM_ROOT));
         }
 
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
+     */
+    public I_CmsRepositorySession login(String userName, String password) {
+
+        // username and password doesnt matter in this case
+        return new CmsFileRepositorySession(m_root);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.218.4.25 $
+ * Date   : $Date: 2007/02/15 15:54:20 $
+ * Version: $Revision: 1.218.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,6 +69,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishManager;
+import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsOrgUnitManager;
@@ -138,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.25 $ 
+ * @version $Revision: 1.218.4.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,6 +204,9 @@ public final class OpenCmsCore {
 
     /** The publish manager instance. */
     private CmsPublishManager m_publishManager;
+
+    /** The repository manager. */
+    private CmsRepositoryManager m_repositoryManager;
 
     /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
     private Map m_requestHandlers;
@@ -514,6 +518,16 @@ public final class OpenCmsCore {
     protected CmsPublishManager getPublishManager() {
 
         return m_publishManager;
+    }
+
+    /**
+     * Returns the repository manager.<p>
+     * 
+     * @return the repository manager
+     */
+    protected CmsRepositoryManager getRepositoryManager() {
+
+        return m_repositoryManager;
     }
 
     /**
@@ -1028,6 +1042,7 @@ public final class OpenCmsCore {
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
         m_staticExportManager = importExportConfiguration.getStaticExportManager();
+        m_repositoryManager = importExportConfiguration.getRepositoryManager();
 
         // get the search configuration
         CmsSearchConfiguration searchConfiguration = (CmsSearchConfiguration)m_configurationManager.getConfiguration(CmsSearchConfiguration.class);
