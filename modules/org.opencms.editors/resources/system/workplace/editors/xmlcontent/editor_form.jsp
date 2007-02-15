@@ -220,8 +220,18 @@ function init() {
 <%= wp.getXmlEditorInitCalls() %>
 	setTimeout("scrollForm();", 200);
 	initialized = true;
-	//parent.frames[0].location.reload(true);
-	parent.frames[0].buttons.submit();
+
+	// must rewrite href in order to set the language selector in the button bar to the appropriate language
+	var href = parent.frames[0].location.href;
+	var languageParam = "elementlanguage=";
+	var p = href.indexOf(languageParam);
+	languageParam = languageParam + "<%= wp.getParamElementlanguage() %>";
+	if (p>=0) { // exchange elementlanguage param only if it was available	
+		href = href.substr(0,p) + languageParam + href.substr(p+languageParam.length);
+	} else {
+		href = href + "&" + languageParam;
+	}
+	parent.frames[0].location.replace(href);
 }
 
 function exitEditor() {
