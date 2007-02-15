@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/02/07 16:58:07 $
- * Version: $Revision: 1.4.8.11 $
+ * Date   : $Date: 2007/02/15 11:12:53 $
+ * Version: $Revision: 1.4.8.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -314,10 +314,10 @@ public class TestRoles extends OpenCmsTestCase {
         roleMan.addUserToRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn()), user.getName());
         // which should have removed the child role
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
-        assertEquals(2, roles.size());
+        // wp user is child of administrator, so it will not be set automatically
+        assertEquals(1, roles.size());
         assertTrue(roles.contains(CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn())));
-        assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
-
+        
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
         childs = CmsRole.ADMINISTRATOR.forOrgUnit("").getChilds(true);
         childs.add(CmsRole.ADMINISTRATOR.forOrgUnit(""));
@@ -364,12 +364,7 @@ public class TestRoles extends OpenCmsTestCase {
         cms.deleteGroup(group.getName());
         assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
 
-        // assert remaining workplace user role, that was automatically added
-        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
-        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).contains(
-            CmsRole.WORKPLACE_USER.forOrgUnit("")));
-
-        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
+        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
 
         // try to add a role by adding a user to the group
         group = cms.createGroup("mytest", "vfs managers", CmsRole.VFS_MANAGER.getVirtualGroupFlags(), null);

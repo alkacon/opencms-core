@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/12 16:37:35 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/02/15 11:12:53 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.14 $
+ * @version $Revision: 1.1.2.15 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -376,9 +376,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(rootSubUsers.contains(cms.readUser(OpenCms.getDefaultUsers().getUserGuest())));
         assertTrue(rootSubUsers.contains(cms.readUser("test1")));
         assertTrue(rootSubUsers.contains(cms.readUser("test2")));
-
         cms.removeUserFromGroup("test1", "Administrators");
-        cms.removeUserFromGroup("test1", "Users");
         assertLock(cms, "/system/", CmsLockType.EXCLUSIVE, cms.readUser("test1"));
         cms.changeLock("/system/");
         cms.unlockResource("/system/");
@@ -851,7 +849,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), false, true, false).contains(
             CmsRole.WORKPLACE_USER.forOrgUnit(ou.getName())));
-        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).size());
+        assertEquals(4, roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).size());
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).contains(
             CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou.getName(), true, false, false).contains(
@@ -886,7 +884,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, false, false).isEmpty());
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), false, true, false).isEmpty());
         assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, false, false).size());
-        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, true, false).size());
+        assertTrue(roleMan.getRolesOfUser(cms, user.getName(), ou2.getName(), true, true, false).isEmpty());
         assertEquals(
             0,
             roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou2.getName()), false, false).size());
@@ -899,7 +897,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou2.getName()), true, true).isEmpty());
         // check role in higher ou
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(rootOu.getName())));
-        assertEquals(2, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
+        assertEquals(4, roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).size());
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), true, false, false).contains(
             CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName())));
         assertTrue(roleMan.getRolesOfUser(cms, user.getName(), rootOu.getName(), false, false, false).isEmpty());

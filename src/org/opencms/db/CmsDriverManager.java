@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/08 11:34:39 $
- * Version: $Revision: 1.570.2.59 $
+ * Date   : $Date: 2007/02/15 11:12:52 $
+ * Version: $Revision: 1.570.2.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3390,11 +3390,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List directGroups = m_userDriver.readGroupsOfUser(
                 dbc,
                 user.getId(),
-                ouFqn,
-                includeChildOus,
+                readRoles ? "" : ouFqn,
+                readRoles ? true : includeChildOus,
                 remoteAddress,
                 readRoles);
-            Set allGroups = new HashSet(directGroups);
+            Set allGroups = new HashSet();
+            if (!readRoles) {
+                allGroups.addAll(directGroups);
+            }
             if (!directGroupsOnly) {
                 if (!readRoles) {
                     // now get all parents of the groups
@@ -3408,47 +3411,55 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             parent = getParent(dbc, parent.getName());
                         }
                     }
-                } else {
-                    // for each for role 
-                    for (int i = 0; i < directGroups.size(); i++) {
-                        CmsGroup group = (CmsGroup)directGroups.get(i);
-                        CmsRole role = CmsRole.valueOf(group);
-                        // get the child roles
-                        Iterator itChildRoles = role.getChilds(true).iterator();
-                        while (itChildRoles.hasNext()) {
-                            CmsRole childRole = (CmsRole)itChildRoles.next();
-                            allGroups.add(readGroup(dbc, childRole.getGroupName()));
-                        }
-                        if (includeChildOus) {
-                            // if needed include the roles of child ous 
-                            Iterator itSubOus = getOrganizationalUnits(
-                                dbc,
-                                readOrganizationalUnit(dbc, group.getOuFqn()),
-                                true).iterator();
-                            while (itSubOus.hasNext()) {
-                                CmsOrganizationalUnit subOu = (CmsOrganizationalUnit)itSubOus.next();
-                                // add role in child ou
+                }
+            }
+            if (readRoles) {
+                // for each for role 
+                for (int i = 0; i < directGroups.size(); i++) {
+                    CmsGroup group = (CmsGroup)directGroups.get(i);
+                    CmsRole role = CmsRole.valueOf(group);
+                    if (!includeChildOus && role.getOuFqn().equals(ouFqn)) {
+                        allGroups.add(group);
+                    }
+                    if (includeChildOus && role.getOuFqn().startsWith(ouFqn)) {
+                        allGroups.add(group);
+                    }
+                    if (directGroupsOnly) {
+                        continue;
+                    }
+                    // get the child roles
+                    Iterator itChildRoles = role.getChilds(true).iterator();
+                    while (itChildRoles.hasNext()) {
+                        CmsRole childRole = (CmsRole)itChildRoles.next();
+                        allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                    }
+                    if (includeChildOus) {
+                        // if needed include the roles of child ous 
+                        Iterator itSubOus = getOrganizationalUnits(
+                            dbc,
+                            readOrganizationalUnit(dbc, group.getOuFqn()),
+                            true).iterator();
+                        while (itSubOus.hasNext()) {
+                            CmsOrganizationalUnit subOu = (CmsOrganizationalUnit)itSubOus.next();
+                            // add role in child ou
+                            try {
+                                allGroups.add(readGroup(dbc, role.forOrgUnit(subOu.getName()).getGroupName()));
+                            } catch (CmsDbEntryNotFoundException e) {
+                                // ignore, this may happen while deleting an orgunit
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(e.getLocalizedMessage(), e);
+                                }
+                            }
+                            // add child roles in child ous
+                            itChildRoles = role.getChilds(true).iterator();
+                            while (itChildRoles.hasNext()) {
+                                CmsRole childRole = (CmsRole)itChildRoles.next();
                                 try {
-                                    allGroups.add(readGroup(dbc, role.forOrgUnit(subOu.getName()).getGroupName()));
+                                    allGroups.add(readGroup(dbc, childRole.forOrgUnit(subOu.getName()).getGroupName()));
                                 } catch (CmsDbEntryNotFoundException e) {
                                     // ignore, this may happen while deleting an orgunit
                                     if (LOG.isDebugEnabled()) {
                                         LOG.debug(e.getLocalizedMessage(), e);
-                                    }
-                                }
-                                // add child roles in child ous
-                                itChildRoles = role.getChilds(true).iterator();
-                                while (itChildRoles.hasNext()) {
-                                    CmsRole childRole = (CmsRole)itChildRoles.next();
-                                    try {
-                                        allGroups.add(readGroup(
-                                            dbc,
-                                            childRole.forOrgUnit(subOu.getName()).getGroupName()));
-                                    } catch (CmsDbEntryNotFoundException e) {
-                                        // ignore, this may happen while deleting an orgunit
-                                        if (LOG.isDebugEnabled()) {
-                                            LOG.debug(e.getLocalizedMessage(), e);
-                                        }
                                     }
                                 }
                             }
