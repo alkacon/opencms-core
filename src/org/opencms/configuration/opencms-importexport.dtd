@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, repositories)>
+<!ELEMENT opencms (importexport, staticexport, repositories?)>
 
 <!--
 # <importexport> configuration:
