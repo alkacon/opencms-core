@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2006/12/06 16:11:50 $
- * Version: $Revision: 1.37.4.14 $
+ * Date   : $Date: 2007/02/19 09:52:19 $
+ * Version: $Revision: 1.37.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.14 $ 
+ * @version $Revision: 1.37.4.15 $ 
  * 
  * @since 6.0.0 
  * 
@@ -419,7 +419,7 @@ public final class CmsLockManager {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
-                Iterator itLocks = m_locks.keySet().iterator();
+                Iterator itLocks = new ArrayList(m_locks.keySet()).iterator();
                 while (itLocks.hasNext()) {
                     String lockedPath = (String)itLocks.next();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
@@ -631,7 +631,7 @@ public final class CmsLockManager {
      */
     private CmsLock getParentFolderLock(String resourceName) {
 
-        Iterator itLocks = m_locks.keySet().iterator();
+        Iterator itLocks = new ArrayList(m_locks.keySet()).iterator();
         while (itLocks.hasNext()) {
             String lockedPath = (String)itLocks.next();
             if (lockedPath.endsWith("/") && resourceName.startsWith(lockedPath) && !resourceName.equals(lockedPath)) {
