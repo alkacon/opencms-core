@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/12/18 15:31:06 $
- * Version: $Revision: 1.28.4.6 $
+ * Date   : $Date: 2007/02/19 09:51:08 $
+ * Version: $Revision: 1.28.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.6 $ 
+ * @version $Revision: 1.28.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NO_WORKFLOW_CLASS_0 = "ERR_NO_WORKFLOW_CLASS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_WORKPLACE_PERMISSIONS_0 = "ERR_NO_WORKPLACE_PERMISSIONS_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
@@ -366,6 +369,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_MODULE_SHUTDOWN_1 = "LOG_ERROR_MODULE_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_PUBLISH_SHUTDOWN_1 = "LOG_ERROR_PUBLISH_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_READING_AUTH_PROP_2 = "LOG_ERROR_READING_AUTH_PROP_2";
 
     /** Message contant for key in the resource bundle. */
@@ -442,9 +448,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_NO_WORKPLACE_PERMISSIONS_0 = "ERR_NO_WORKPLACE_PERMISSIONS_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

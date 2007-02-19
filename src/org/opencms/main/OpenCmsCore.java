@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.218.4.26 $
+ * Date   : $Date: 2007/02/19 09:51:08 $
+ * Version: $Revision: 1.218.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.26 $ 
+ * @version $Revision: 1.218.4.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -1497,8 +1497,14 @@ public final class OpenCmsCore {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
 
-                // the first thing we have to do is to wait until the current publish process finishes
-                m_publishEngine.shutDown();
+                try {
+                    // the first thing we have to do is to wait until the current publish process finishes
+                    m_publishEngine.shutDown();
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
 
                 try {
                     if (m_staticExportManager != null) {
