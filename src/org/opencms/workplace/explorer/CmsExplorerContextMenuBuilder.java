@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/20 08:30:08 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,23 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+import org.opencms.workplace.explorer.menu.CmsMenuRule;
+import org.opencms.workplace.explorer.menu.CmsMenuRuleTranslator;
+import org.opencms.workplace.explorer.menu.CmsMirMultiStandard;
+import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,12 +57,22 @@ import javax.servlet.jsp.PageContext;
  * Context menu builder class.<p>
  * 
  * @author Michael Moossen  
+ * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
 public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
+
+    /** Html fragment constant. */
+    private static final String HTML_SPAN_END = "</span>";
+
+    /** Html fragment constant. */
+    private static final String HTML_SPAN_START = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
+
+    /** Html fragment constant. */
+    private static final String HTML_SPAN_START_INACTIVE = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
 
     /** The resource list parameter value. */
     private String m_paramResourcelist;
@@ -81,13 +99,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_START = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_START_INACTIVE = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_END = "</span>";
-
     /**
      * Generates the context menu for the given resources.<p>
      * 
@@ -95,18 +106,22 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
      */
     public String contextMenu() {
 
-        StringBuffer menu = new StringBuffer();
+        StringBuffer menu = new StringBuffer(2048);
 
         // get the resource path list
         List resourceList = CmsStringUtil.splitAsList(getParamResourcelist(), "|");
 
         // create a resource util object for the first resource in the list
-        CmsResourceUtil resUtil;
-        try {
-            resUtil = new CmsResourceUtil(getCms(), getCms().readResource((String)resourceList.get(0)));
-        } catch (CmsException e) {
-            // fatal error
-            return "";
+        CmsResourceUtil[] resUtil = new CmsResourceUtil[resourceList.size()];
+        for (int i = 0; i < resourceList.size(); i++) {
+            try {
+                resUtil[i] = new CmsResourceUtil(getCms(), getCms().readResource(
+                    (String)resourceList.get(0),
+                    CmsResourceFilter.ALL));
+            } catch (CmsException e) {
+                // fatal error
+                return "";
+            }
         }
 
         // the explorer type settings
@@ -120,223 +135,159 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         if (isSingleSelection) {
             // get the explorer type setting for the first resource
             try {
-                settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resUtil.getResourceTypeName());
+                settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resUtil[0].getResourceTypeName());
             } catch (Throwable e) {
                 return "";
             }
-            if (settings == null || !settings.isEditable(getCms(), resUtil.getResource())) {
+            if (settings == null || !settings.isEditable(getCms(), resUtil[0].getResource())) {
                 // the user has no access to this resource type
                 return "";
             }
             // get the context menu configuration
             contextMenu = settings.getContextMenu();
         } else {
-            // get the context menu configuration
-            contextMenu = OpenCms.getWorkplaceManager().getMultiContextMenu();
+            // get the multi context menu configuration
             if (OpenCms.getWorkplaceManager().getMultiContextMenu() == null) {
                 // no multi context menu defined, do not show menu
                 return "";
+            } else {
+                contextMenu = OpenCms.getWorkplaceManager().getMultiContextMenu();
             }
         }
 
-        menu.append("<div class=\"cm2\">");
-        menu.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
+        // get an instance of the menu rule translator
+        CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
+
+        // store the mode results in a Map to optimize performance
+        Map storedModes = new HashMap();
+
+        menu.append("<div class=\"cm2\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
 
         boolean lastWasSeparator = false;
         boolean firstEntryWritten = false;
-        String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplace.PATH_WORKPLACE);
 
         // for each defined menu item
         Iterator it = contextMenu.getAllEntries().iterator();
         while (it.hasNext()) {
             CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)it.next();
 
-            // rebuild the explorer settings
             String itemName = "-";
             String itemLink = " ";
             String itemTarget = "";
-            String itemRules = "";
 
             if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                 itemName = key(item.getKey());
                 if (item.getUri().startsWith("/")) {
-                    itemLink = OpenCms.getLinkManager().substituteLink(getCms(), item.getUri());
+                    itemLink = getJsp().link(item.getUri());
                 } else {
-                    itemLink = jspWorkplaceUri;
-                    itemLink += item.getUri();
+                    itemLink = getJsp().link(CmsWorkplace.PATH_WORKPLACE + item.getUri());
                 }
                 itemTarget = item.getTarget();
                 if (itemTarget == null) {
                     itemTarget = "";
                 }
-                itemRules = CmsStringUtil.substitute(item.getRules(), " ", "");
-            }
-            // parse the rules to create the autolock column
-            itemRules = parseRules(itemRules, item.getKey());
 
-            // 0:unchanged, 1:changed, 2:new, 3:deleted
-            int result = -1;
+                CmsMenuItemVisibilityMode mode = null;
+                CmsMenuRule customMenuRule = null;
+                String itemRuleName = item.getRule();
 
-            if (CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
-                result = 1;
-            } else if (getCms().getRequestContext().currentProject().isOnlineProject()) {
-                // online project
-                if (isSingleSelection) {
-                    if (itemRules.charAt(0) == 'i') {
-                        result = 2;
+                // check presence of item rule name and determine the correct rule name
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(itemRuleName)) {
+                    if (isSingleSelection) {
+                        // no new rule set defined, try to get it with the rule translator
+                        if (menuRuleTranslator.hasMenuRule(item.getRules())) {
+                            // this is a standard known rule, get the name of the matching rule set
+                            itemRuleName = menuRuleTranslator.getMenuRuleName(item.getRules());
+                            item.setRule(itemRuleName);
+                        } else {
+                            // no standard rule, create a new rule set from legacy rule String
+                            customMenuRule = menuRuleTranslator.createMenuRule(item.getRules());
+                            // set the rule name
+                            itemRuleName = customMenuRule.getName();
+                        }
                     } else {
-                        if (itemRules.charAt(0) == 'a') {
-                            if ((itemLink.indexOf("showlinks=true") > 0) && (resUtil.getLinkType() == 0)) {
-                                // special case: resource without siblings
-                                result = 2;
-                            } else {
-                                result = (resUtil.getResourceTypeId() == 0) ? 3 : 4;
-                            }
+                        // for multi context menu, use the standard rule if no rule set name was provided
+                        itemRuleName = CmsMirMultiStandard.RULE_NAME;
+                        if (!storedModes.containsKey(itemRuleName)) {
+                            storedModes.put(itemRuleName, new CmsMirMultiStandard().getVisibility(getCms(), resUtil));
                         }
                     }
-                } else {
-                    // multi context menu
-                    result = 2;
+                }
+
+                // first try to get the mode from the previously stored modes
+                mode = (CmsMenuItemVisibilityMode)storedModes.get(itemRuleName);
+
+                // no mode found in stored modes
+                if (mode == null) {
+                    // get the matching rule set
+                    CmsMenuRule rule;
+                    if (customMenuRule != null) {
+                        rule = customMenuRule;
+                    } else {
+                        rule = OpenCms.getWorkplaceManager().getMenuRule(itemRuleName);
+                    }
+                    if (rule != null) {
+                        // get the first matching rule to apply for visibility
+                        I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCms(), resUtil);
+                        if (itemRule != null) {
+                            // found a rule, get visibility mode and store it for later usage
+                            mode = itemRule.getVisibility(getCms(), resUtil);
+                            storedModes.put(item.getRule(), mode);
+                        }
+                    }
+                }
+                if (mode != null) {
+                    // found a visibility mode
+                    if (mode.isActive()) {
+                        // item is active
+                        StringBuffer link = new StringBuffer(128);
+                        if (isSingleSelection) {
+                            // create link for single resource context menu
+                            link.append("href=\"");
+                            link.append(itemLink);
+                            if (itemLink.indexOf('?') > -1) {
+                                link.append("&resource=");
+                            } else {
+                                link.append("?resource=");
+                            }
+                            link.append(getCms().getSitePath(resUtil[0].getResource()));
+                            link.append("\"");
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemTarget)) {
+                                // href has a target set
+                                link.append(" target=\"");
+                                link.append(itemTarget);
+                                link.append("\"");
+                            }
+                        } else {
+                            // create link for multi resource context menu
+                            link.append("href=\"javascript:top.submitMultiAction('");
+                            link.append(itemLink);
+                            link.append("');\"");
+                        }
+                        menu.append("<tr><td><a class=\"cme\" ");
+                        menu.append(link);
+                        menu.append(">");
+                        menu.append(HTML_SPAN_START);
+                        menu.append(itemName);
+                        menu.append(HTML_SPAN_END);
+                        menu.append("</a></td></tr>");
+                        lastWasSeparator = false;
+                        firstEntryWritten = true;
+                    } else if (mode.isInActive()) {
+                        // item is inactive
+                        menu.append("<tr><td>");
+                        menu.append(HTML_SPAN_START_INACTIVE).append(itemName).append(HTML_SPAN_END);
+                        menu.append("</td></tr>");
+                        lastWasSeparator = false;
+                        firstEntryWritten = true;
+                    }
                 }
             } else {
-                // offline project
-                if (isSingleSelection) {
-                    if ((resUtil.getProjectState() != CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING)
-                        && !resUtil.isInsideProject()) {
-                        // if not publish lock and resource is from online project
-                        if (itemRules.charAt(1) == 'i') {
-                            result = (CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) ? 1 : 2;
-                        } else {
-                            if (itemRules.charAt(1) == 'a') {
-                                if (CmsExplorerContextMenuItem.TYPE_SEPARATOR.equals(item.getType())) {
-                                    result = 1;
-                                } else {
-                                    if ((itemLink.indexOf("showlinks=true") > 0) && (resUtil.getLinkType() == 0)) {
-                                        // special case: resource without siblings
-                                        result = 2;
-                                    } else {
-                                        result = (resUtil.getResourceTypeId() == 0) ? 3 : 4;
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        char display = ' ';
-                        // if not publish lock and resource is in this project => we have to differ 4 cases
-                        if ((resUtil.getProjectState() != CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING)
-                            && (CmsStringUtil.isEmptyOrWhitespaceOnly(resUtil.getLockedByName()))
-                            || (resUtil.getLock().getType().isWorkflow())) {
-                            // resource is not locked...
-                            if (OpenCms.getWorkplaceManager().autoLockResources()) {
-                                // autolock is enabled
-                                display = itemRules.charAt(resUtil.getResource().getState().getState() + 6);
-                            } else {
-                                // autolock is disabled
-                                display = itemRules.charAt(resUtil.getResource().getState().getState() + 2);
-                            }
-                        } else {
-                            boolean isSharedLock = resUtil.getLock().getType().isShared();
-                            isSharedLock = isSharedLock
-                                || (resUtil.getProjectState() == CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING);
-                            // TODO: this is hardcoded for commons/lockchange.jsp !! ...
-                            if ((resUtil.getProjectState() == CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING)
-                                && (itemLink.indexOf("lockchange") >= 0)) {
-                                // disable steal lock for publish locks
-                                display = 'i';
-                            } else if (resUtil.getLockedInProjectId() == getCms().getRequestContext().currentProject().getId()) {
-                                // locked in this project from ...
-                                if (resUtil.getLockedByName().equals(
-                                    getCms().getRequestContext().currentUser().getName())) {
-                                    // ... the current user ...
-                                    if (isSharedLock) {
-                                        // ... as shared lock
-                                        display = itemRules.charAt(resUtil.getResource().getState().getState() + 14);
-                                    } else {
-                                        // ... as exclusive lock
-                                        display = itemRules.charAt(resUtil.getResource().getState().getState() + 10);
-                                    }
-
-                                } else {
-                                    // ... someone else
-                                    display = itemRules.charAt(resUtil.getResource().getState().getState() + 14);
-                                }
-                            } else {
-                                // locked in an other project ...
-                                display = itemRules.charAt(resUtil.getResource().getState().getState() + 14);
-                            }
-                        }
-                        if (display == 'i') {
-                            result = 2;
-                        } else {
-                            if (display == 'a') {
-                                if ((itemLink.indexOf("showlinks=true") > 0) && (resUtil.getLinkType() == 0)) {
-                                    // special case: resource without siblings
-                                    result = 2;
-                                } else {
-                                    result = (resUtil.getResourceTypeId() == 0) ? 3 : 4;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // multi context menu
-                    result = 3;
+                // separator line
+                if ((firstEntryWritten) && (!lastWasSeparator) && (it.hasNext())) {
+                    menu.append("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
+                    lastWasSeparator = true;
                 }
-            }
-            switch (result) {
-                case 1:
-                    // separator line
-                    if ((firstEntryWritten) && (!lastWasSeparator) && (it.hasNext())) {
-                        menu.append("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
-                        lastWasSeparator = true;
-                    }
-                    break;
-                case 2:
-                    // inactive entry
-                    menu.append("<tr><td>" + HTML_SPAN_START_INACTIVE + itemName + HTML_SPAN_END + "</td></tr>");
-                    lastWasSeparator = false;
-                    firstEntryWritten = true;
-                    break;
-                case 3:
-                case 4:
-                    // active entry
-                    String link;
-                    if (isSingleSelection) {
-                        link = "href=\"" + itemLink;
-                        if (link.indexOf("?") > 0) {
-                            link += "&";
-                        } else {
-                            link += "?";
-                        }
-                        link += "resource=" + getCms().getSitePath(resUtil.getResource()) + "\"";
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemTarget)) {
-                            // href has a target set
-                            link += " target='" + itemTarget + "'";
-                        }
-                        menu.append("<tr><td><a class=\"cme\" "
-                            + link
-                            + ">"
-                            + HTML_SPAN_START
-                            + itemName
-                            + HTML_SPAN_END
-                            + "</a></td></tr>");
-                    } else {
-                        // multi context menu
-                        link = "href=\"javascript:top.submitMultiAction('" + itemLink + "');\"";
-                        menu.append("<tr><td><a class=\"cme\" "
-                            + link
-                            + ">"
-                            + HTML_SPAN_START
-                            + itemName
-                            + HTML_SPAN_END
-                            + "</a></td></tr>");
-                    }
-                    lastWasSeparator = false;
-                    firstEntryWritten = true;
-                    break;
-                default:
-                    // alert("Undefined result for menu " + a);
-                    break;
             }
         } // end for ...
         menu.append("</table></div>");
@@ -371,29 +322,4 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         fillParamValues(request);
     }
 
-    /**
-     * Parses the rules and adds a column for the autolock feature of resources.<p>
-     * 
-     * @param rules the current rules
-     * @param key the key name of the current item
-     * @return the rules with added autlock rules column
-     */
-    private String parseRules(String rules, String key) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
-            return "";
-        }
-        StringBuffer newRules = new StringBuffer(rules.length() + 4);
-        newRules.append(rules.substring(0, 6));
-        if (Messages.GUI_EXPLORER_CONTEXT_LOCK_0.equalsIgnoreCase(key)
-            || Messages.GUI_EXPLORER_CONTEXT_UNLOCK_0.equalsIgnoreCase(key)) {
-            // for "lock" and "unlock" item, use same rules as "unlocked" column
-            newRules.append(rules.substring(2, 6));
-        } else {
-            // for all other items, use same rules as "locked exclusively by current user" column
-            newRules.append(rules.substring(6, 10));
-        }
-        newRules.append(rules.substring(6));
-        return newRules.toString();
-    }
 }

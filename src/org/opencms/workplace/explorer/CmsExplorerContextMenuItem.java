@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.9.8.1 $
+ * Date   : $Date: 2007/02/20 08:30:09 $
+ * Version: $Revision: 1.9.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package org.opencms.workplace.explorer;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9.8.1 $ 
+ * @version $Revision: 1.9.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +52,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
 
     private String m_key;
     private Integer m_order;
+    private String m_rule;
     private String m_rules;
     private String m_target;
     private String m_type;
@@ -63,15 +64,24 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param key the key for localization
      * @param uri the URI of the dialog
      * @param rules the set of display rules
+     * @param rule the name of the menu rule set
      * @param target the frame target of the entry (e.g. "_top")
      * @param order the order of the item
      */
-    public CmsExplorerContextMenuItem(String type, String key, String uri, String rules, String target, Integer order) {
+    public CmsExplorerContextMenuItem(
+        String type,
+        String key,
+        String uri,
+        String rules,
+        String rule,
+        String target,
+        Integer order) {
 
         m_type = type;
         m_key = key;
         m_uri = uri;
         m_rules = rules;
+        m_rule = rule;
         m_order = order;
         m_target = target;
     }
@@ -81,7 +91,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      */
     public Object clone() {
 
-        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_target, m_order);
+        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_rule, m_target, m_order);
     }
 
     /**
@@ -130,6 +140,16 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public Integer getOrder() {
 
         return m_order;
+    }
+
+    /**
+     * Returns the name of the menu rule set.<p>
+     * 
+     * @return the name of the menu rule set
+     */
+    public String getRule() {
+
+        return m_rule;
     }
 
     /**
@@ -198,6 +218,16 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public void setOrder(Integer order) {
 
         m_order = order;
+    }
+
+    /**
+     * Sets the name of the menu rule set.<p>
+     * 
+     * @param rule the name of the menu rule set
+     */
+    public void setRule(String rule) {
+
+        m_rule = rule;
     }
 
     /**

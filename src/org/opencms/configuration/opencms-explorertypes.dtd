@@ -107,10 +107,11 @@
 <!ATTLIST entry 
 	key CDATA #REQUIRED 
 	uri CDATA #REQUIRED 
-	rules CDATA #REQUIRED 
-	order CDATA #REQUIRED 
+	rules CDATA #IMPLIED 
+	rule CDATA #IMPLIED
+	order CDATA #IMPLIED 
 	target CDATA #IMPLIED
 	isxml (true|false|TRUE|FALSE) #IMPLIED>
 	
 <!ELEMENT separator EMPTY>
-<!ATTLIST separator order CDATA #REQUIRED>
+<!ATTLIST separator order CDATA "999999">

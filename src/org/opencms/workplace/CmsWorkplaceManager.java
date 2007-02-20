@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/02/09 12:49:57 $
- * Version: $Revision: 1.76.4.11 $
+ * Date   : $Date: 2007/02/20 08:30:09 $
+ * Version: $Revision: 1.76.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,7 @@ import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.menu.CmsMenuRule;
 import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -97,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.11 $ 
+ * @version $Revision: 1.76.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,6 +188,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured list of localized workplace folders. */
     private List m_localizedFolders;
 
+    /** The configured list of menu rule sets. */
+    private List m_menuRules;
+
+    /** The configured menu rule sets as Map with the rule name as key. */
+    private Map m_menuRulesMap;
+
     /** The workplace localized messages (mapped to the locales). */
     private Map m_messages;
 
@@ -238,6 +245,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
+        m_menuRules = new ArrayList();
+        m_menuRulesMap = new HashMap();
         m_messages = new HashMap();
         m_multiContextMenu = new CmsExplorerContextMenu();
         m_multiContextMenu.setMultiMenu(true);
@@ -363,6 +372,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
         }
+    }
+
+    /**
+     * Adds a menu rule set from the workplace configuration to the configured menu rules.<p>
+     * 
+     * @param menuRule the menu rule to add
+     */
+    public void addMenuRule(CmsMenuRule menuRule) {
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_MENURULE_1, menuRule.getName()));
+        }
+        m_menuRules.add(menuRule);
     }
 
     /**
@@ -696,6 +718,39 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the menu rule set with the given name.<p>
+     * 
+     * If no rule set with the specified name is found, <code>null</code> is returned.<p>
+     * 
+     * @param ruleName the name of the rule set to get
+     * @return the menu rule set with the given name
+     */
+    public CmsMenuRule getMenuRule(String ruleName) {
+
+        return (CmsMenuRule)m_menuRulesMap.get(ruleName);
+    }
+
+    /**
+     * Returns the configured menu rule sets.<p>
+     * 
+     * @return the configured menu rule sets
+     */
+    public List getMenuRules() {
+
+        return m_menuRules;
+    }
+
+    /**
+     * Returns the configured menu rule sets as Map.<p>
+     * 
+     * @return the configured menu rule sets as Map
+     */
+    public Map getMenuRulesMap() {
+
+        return m_menuRulesMap;
+    }
+
+    /**
      * Returns the {@link CmsWorkplaceMessages} for the given locale.<p>
      * 
      * The workplace messages are a collection of resource bundles, containing the messages 
@@ -876,6 +931,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     addExplorerTypeSettings(module);
                 }
             }
+            // initialize the menu rules
+            initMenuRules();
             // initialize the explorer type settings
             initExplorerTypeSettings();
             // initialize the workplace views
@@ -1306,6 +1363,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         // make the settings unmodifiable and store them in the global variables
         m_explorerTypeSettings = Collections.unmodifiableList(explorerTypeSettings);
         m_explorerTypeSettingsMap = Collections.unmodifiableMap(explorerTypeSettingsMap);
+    }
+
+    /**
+     * Initializes the configured menu rule sets.<p>
+     */
+    private void initMenuRules() {
+
+        Iterator i = m_menuRules.iterator();
+        while (i.hasNext()) {
+            CmsMenuRule currentRule = (CmsMenuRule)i.next();
+            // freeze the current rule set
+            currentRule.freeze();
+            // put the rule set to the Map with the name as key
+            m_menuRulesMap.put(currentRule.getName(), currentRule);
+        }
     }
 
     /**
