@@ -17,7 +17,7 @@
       //-->
       <dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
       <dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
-      <dialoghandler class="org.opencms.frontend.templateone.CmsPropertyTemplateOne"/>
+      <dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced"/>
     </dialoghandlers>
     <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
     <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>
