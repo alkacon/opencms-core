@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.4.4.7 $
+ * Date   : $Date: 2007/02/21 14:45:00 $
+ * Version: $Revision: 1.4.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.7 $ 
+ * @version $Revision: 1.4.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,7 +163,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             if (isNewUser()) {
                 // set starting settings
                 getCms().addUserToGroup(m_user.getName(), getGroup());
-                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                CmsUserSettings settings = new CmsUserSettings(m_user);
                 settings.setLocale(CmsLocaleManager.getLocale(getLanguage()));
                 settings.setStartSite(getSite());
                 settings.save(getCms());
@@ -507,7 +507,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 // edit an existing user, get the user object from db
                 m_user = getCms().readUser(new CmsUUID(getParamUserid()));
                 m_pwdInfo = new CmsPasswordInfo();
-                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
                 m_site = settings.getStartSite();
                 return;
@@ -517,7 +517,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 Map dialogObject = (Map)o;
                 m_user = (CmsUser)dialogObject.get(USER_OBJECT);
                 m_pwdInfo = (CmsPasswordInfo)dialogObject.get(PWD_OBJECT);
-                CmsUserSettings settings = new CmsUserSettings(getCms(), m_user);
+                CmsUserSettings settings = new CmsUserSettings(m_user);
                 m_language = settings.getLocale().toString();
                 m_site = settings.getStartSite();
                 // test

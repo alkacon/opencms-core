@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/02/09 13:46:49 $
- * Version: $Revision: 1.12.4.15 $
+ * Date   : $Date: 2007/02/21 14:45:01 $
+ * Version: $Revision: 1.12.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.15 $ 
+ * @version $Revision: 1.12.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public class CmsSessionManager {
         }
 
         // get the user settings for the given user and set the start project and the site root
-        CmsUserSettings settings = new CmsUserSettings(cms, user);
+        CmsUserSettings settings = new CmsUserSettings(user);
         CmsProject userProject = cms.readProject(settings.getStartProject());
         String userSiteRoot = settings.getStartSite();
         CmsRequestContext context = new CmsRequestContext(

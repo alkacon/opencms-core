@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.17.4.11 $
+ * Date   : $Date: 2007/02/21 14:45:00 $
+ * Version: $Revision: 1.17.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.11 $ 
+ * @version $Revision: 1.17.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,10 +171,6 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
                 // if no param, get old value
                 m_filter = listAction.getSelection();
             }
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
-            // if first call, use default value
-            m_filter = getSettings().getUserSettings().getProjectSettings().getProjectFilesMode().getMode();
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filter)) {
             m_filter = CmsProjectResourcesDisplayMode.ALL_CHANGES.getMode();

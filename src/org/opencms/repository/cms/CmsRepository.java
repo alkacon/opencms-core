@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/cms/Attic/CmsRepository.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/21 14:45:01 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.ServletConfig;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
@@ -81,7 +81,7 @@ public class CmsRepository extends A_CmsRepository {
             cms.loginUser(userName, password);
             
             CmsUser user = cms.readUser(userName);
-            CmsUserSettings settings = new CmsUserSettings(cms, user);
+            CmsUserSettings settings = new CmsUserSettings(user);
             
             cms.getRequestContext().setSiteRoot(settings.getStartSite());
             cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2006/03/28 12:22:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/02/21 14:45:00 $
+ * Version: $Revision: 1.16.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.projects;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.security.I_CmsPrincipal;
@@ -61,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,17 +107,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
-     * Overridden to set a custom online help mapping.<p>
-     * 
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
-     */
-    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
-
-        super.initWorkplaceMembers(jsp);
-        setOnlineHelpUriCustom("/projects/project_edit.jsp");
-    }
-
-    /**
      * Commits the edited project to the db.<p>
      */
     public void actionCommit() {
@@ -150,7 +138,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             try {
                 // switch to the root site
                 getCms().getRequestContext().setSiteRoot("");
-                
+
                 // remove deleted resources
                 Iterator itDel = getCms().readProjectResources(m_project).iterator();
                 while (itDel.hasNext()) {
@@ -276,7 +264,8 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             addWidget(new CmsWidgetDialogParameter(m_project, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(new Integer(I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER), null)));
+        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(new Integer(
+            I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER), null)));
         addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsGroupWidget(null, null)));
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
@@ -311,12 +300,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             m_project = new CmsProject();
         }
         try {
-            CmsUserSettings settings = new CmsUserSettings(getCms());
-            m_project.setDeleteAfterPublishing(settings.getProjectSettings().isDeleteAfterPublishing());
-        } catch (Exception e) {
-            // ignore
-        }
-        try {
             setManagerGroup(getCms().readManagerGroup(m_project).getName());
         } catch (Exception e) {
             // ignore
@@ -331,6 +314,17 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    /**
+     * Overridden to set a custom online help mapping.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        super.initWorkplaceMembers(jsp);
+        setOnlineHelpUriCustom("/projects/project_edit.jsp");
     }
 
     /**

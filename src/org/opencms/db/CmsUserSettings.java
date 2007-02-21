@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.36.4.16 $
+ * Date   : $Date: 2007/02/21 14:45:00 $
+ * Version: $Revision: 1.36.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.16 $
+ * @version $Revision: 1.36.4.17 $
  * 
  * @since 6.0.0
  */
@@ -224,21 +223,6 @@ public class CmsUserSettings {
     /** Identifier prefix for all keys in the user additional info table. */
     public static final String PREFERENCES = "USERPREFERENCES_";
 
-    /** Identifier for the project settings key. */
-    public static final String PRJ_DELETEAFTERPUBLISH = "DELETEAFTERPUBLISH";
-
-    /** Identifier for the project settings key. */
-    public static final String PRJ_MANAGERGROUP = "MANAGERGROUP";
-
-    /** Identifier for the project settings key. */
-    public static final String PRJ_MODE = "PROJECTMODE";
-
-    /** Identifier for the project settings key. */
-    public static final String PRJ_USERSGROUP = "USERSGROUP";
-
-    /** Identifier for the project settings key. */
-    public static final String PROJECT_SETTINGS = "PROJECTSETTINGS_";
-
     /** Identifier for the synchronize setting key. */
     public static final String SYNC_DESTINATION = "DESTINATION";
 
@@ -298,8 +282,6 @@ public class CmsUserSettings {
     private Boolean m_newFolderEditProperties;
 
     private String m_project;
-
-    private CmsUserProjectSettings m_projectSettings;
 
     /** Controls appearance of the publish button. */
     private String m_publishButtonAppearance;
@@ -372,18 +354,7 @@ public class CmsUserSettings {
      */
     public CmsUserSettings(CmsObject cms) {
 
-        init(cms, cms.getRequestContext().currentUser());
-    }
-
-    /**
-     * Creates a user settings object with initialized settings of the user.<p>
-     * 
-     * @param cms the OpenCms context
-     * @param user the OpenCms user
-     */
-    public CmsUserSettings(CmsObject cms, CmsUser user) {
-
-        init(cms, user);
+        init(cms.getRequestContext().currentUser());
     }
 
     /**
@@ -393,7 +364,7 @@ public class CmsUserSettings {
      *  
      * @param user the current CmsUser
      * 
-     * @see #CmsUserSettings(CmsObject, CmsUser)
+     * @see #CmsUserSettings(CmsObject)
      */
     public CmsUserSettings(CmsUser user) {
 
@@ -596,16 +567,6 @@ public class CmsUserSettings {
     }
 
     /**
-     * Returns the project Settings.<p>
-     *
-     * @return the project Settings
-     */
-    public CmsUserProjectSettings getProjectSettings() {
-
-        return m_projectSettings;
-    }
-
-    /**
      * Returns the appearance of the "publish project" button.<p>
      * 
      * This can be either {@link CmsDefaultUserSettings#PUBLISHBUTTON_SHOW_ALWAYS}, 
@@ -777,10 +738,9 @@ public class CmsUserSettings {
     /**
      * Initializes the user settings with the given users setting parameters.<p>
      * 
-     * @param cms the OpenCms context
      * @param user the current CmsUser
      */
-    public void init(CmsObject cms, CmsUser user) {
+    public void init(CmsUser user) {
 
         m_user = user;
 
@@ -1016,48 +976,6 @@ public class CmsUserSettings {
             // default is to disable the synchronize settings
             m_synchronizeSettings = null;
         }
-        // project settings
-        try {
-            CmsUUID managersGroup = null;
-            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP) != null) {
-                managersGroup = ((CmsUUID)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP));
-            }
-            CmsUUID usersGroup = null;
-            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP) != null) {
-                usersGroup = ((CmsUUID)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP));
-            }
-            CmsProjectResourcesDisplayMode projectMode = null;
-            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE) != null) {
-                projectMode = CmsProjectResourcesDisplayMode.valueOf((String)m_user.getAdditionalInfo(PREFERENCES
-                    + PROJECT_SETTINGS
-                    + PRJ_MODE));
-            }
-            boolean deleteAfterPublish = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
-                + PROJECT_SETTINGS
-                + PRJ_DELETEAFTERPUBLISH)).booleanValue();
-            m_projectSettings = new CmsUserProjectSettings();
-            m_projectSettings.setManagerGroup(managersGroup);
-            m_projectSettings.setUserGroup(usersGroup);
-            m_projectSettings.setProjectFilesMode(projectMode);
-            m_projectSettings.setDeleteAfterPublishing(deleteAfterPublish);
-        } catch (Throwable t) {
-            m_projectSettings = null;
-        }
-        if (m_projectSettings == null) {
-            // default
-            m_projectSettings = new CmsUserProjectSettings();
-            m_projectSettings.setDeleteAfterPublishing(false);
-            try {
-                m_projectSettings.setManagerGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId());
-                m_projectSettings.setUserGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId());
-            } catch (Exception e) {
-                // ignore
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-            m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
-        }
         // upload applet client folder path
         m_uploadAppletClientFolder = (String)m_user.getAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
 
@@ -1069,20 +987,6 @@ public class CmsUserSettings {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-    }
-
-    /**
-     * Initializes the user settings with the given users setting parameters.<p>
-     * 
-     * Some default settings will be unset, if no cms object is given.<p>
-     *  
-     * @param user the current CmsUser
-     * 
-     * @see #init(CmsObject, CmsUser)
-     */
-    public void init(CmsUser user) {
-
-        init(null, user);
     }
 
     /**
@@ -1372,37 +1276,6 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION);
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST);
         }
-        // project settings        
-        if (getProjectSettings() != null) {
-            if (getProjectSettings().getManagerGroup() != null) {
-                m_user.setAdditionalInfo(
-                    PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP,
-                    getProjectSettings().getManagerGroup());
-            } else {
-                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP);
-            }
-            if (getProjectSettings().getProjectFilesMode() != null) {
-                m_user.setAdditionalInfo(
-                    PREFERENCES + PROJECT_SETTINGS + PRJ_MODE,
-                    getProjectSettings().getProjectFilesMode().getMode());
-            } else {
-                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE);
-            }
-            if (getProjectSettings().getUserGroup() != null) {
-                m_user.setAdditionalInfo(
-                    PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP,
-                    getProjectSettings().getUserGroup());
-            } else {
-                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP);
-            }
-            m_user.setAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_DELETEAFTERPUBLISH, ""
-                + getProjectSettings().isDeleteAfterPublishing());
-        } else {
-            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP);
-            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE);
-            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP);
-            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_DELETEAFTERPUBLISH);
-        }
         // upload applet client folder path
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uploadAppletClientFolder)) {
             m_user.setAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER, m_uploadAppletClientFolder);
@@ -1618,16 +1491,6 @@ public class CmsUserSettings {
             m_editorSettings.remove(resourceType);
         }
         m_editorSettings.put(resourceType, editorUri);
-    }
-
-    /**
-     * Sets the project Settings.<p>
-     *
-     * @param projectSettings the project Settings to set
-     */
-    public void setProjectSettings(CmsUserProjectSettings projectSettings) {
-
-        m_projectSettings = projectSettings;
     }
 
     /**

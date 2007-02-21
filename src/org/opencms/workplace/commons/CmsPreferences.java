@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/12/12 10:22:42 $
- * Version: $Revision: 1.31.4.7 $
+ * Date   : $Date: 2007/02/21 14:45:00 $
+ * Version: $Revision: 1.31.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.7 $
+ * @version $Revision: 1.31.4.8 $
  * 
  * @since 6.0.0
  */
@@ -328,7 +328,7 @@ public class CmsPreferences extends CmsTabDialog {
         request.setAttribute(SESSION_WORKPLACE_CLASS, this);
 
         // special case: set the preferred editor settings in the user settings object
-        CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
+        CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
         // first set the old preferred editors
         m_userSettings.setEditorSettings(userSettings.getEditorSettings());
         // then set the old synchronization settings
@@ -1918,7 +1918,7 @@ public class CmsPreferences extends CmsTabDialog {
             return CmsEncoder.decode(preSelection);
         } else {
             // no value found in request, check current user settings (not the member!)
-            CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
+            CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
             return userSettings.getPreferredEditor(resourceType);
 
         }
@@ -1931,7 +1931,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     private void fillUserSettings() {
 
-        m_userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
+        m_userSettings = new CmsUserSettings(getSettings().getUser());
     }
 
     /**
