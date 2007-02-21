@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/12 11:50:03 $
- * Version: $Revision: 1.4.4.6 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.4.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.6 $ 
+ * @version $Revision: 1.4.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,10 +88,10 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public static final String PARAM_USERID = "userid";
 
     /** Session parameter name for the pwd info object. */
-    private static final Object PWD_OBJECT = "PWD_INFO";
+    private static final String PWD_OBJECT = "PWD_INFO";
 
     /** Session parameter name for the user object. */
-    private static final Object USER_OBJECT = "USER";
+    private static final String USER_OBJECT = "USER";
 
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
@@ -263,6 +263,17 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getSite() {
 
         return m_site;
+    }
+
+    /**
+     * This method is only needed for displaying reasons.<p>
+     * 
+     * @param assignedOu nothing to do with this parameter
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        // nothing will be done here, just to avoid warnings
+        assignedOu.length();
     }
 
     /**
@@ -537,7 +548,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         dialogObject.put(USER_OBJECT, m_user);
         dialogObject.put(PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
-
     }
 
     /**
@@ -570,7 +580,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     protected boolean isPwdChangeAllowed(CmsUser user) {
 
-        return user == user; // to avoid warning 
+        return (user == user); // to avoid warning 
     }
 
     /**

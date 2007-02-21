@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.84.4.10 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.84.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,16 +53,15 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.10 $ 
+ * @version $Revision: 1.84.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1266,36 +1265,41 @@ public class CmsExport {
             // encode the password, using a base 64 decoder
             String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
             e.addElement(CmsImportExportManager.N_PASSWORD).addCDATA(passwd);
-            e.addElement(CmsImportExportManager.N_DESCRIPTION).addCDATA(user.getDescription());
             e.addElement(CmsImportExportManager.N_FIRSTNAME).addText(user.getFirstname());
             e.addElement(CmsImportExportManager.N_LASTNAME).addText(user.getLastname());
             e.addElement(CmsImportExportManager.N_EMAIL).addText(user.getEmail());
             e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(user.getFlags()));
-            e.addElement(CmsImportExportManager.N_TAG_ADDRESS).addCDATA(user.getAddress());
-            // serialize the user info and write it into a file
-            try {
-                String datfileName = "/~" + CmsImportExportManager.N_USERINFO + "/" + user.getName() + ".dat";
-                // create tag for userinfo
-                e.addElement(CmsImportExportManager.N_USERINFO).addText(datfileName);
-                ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                ObjectOutputStream oout = new ObjectOutputStream(bout);
-                oout.writeObject(user.getAdditionalInfo());
-                oout.close();
-                byte[] serializedInfo = bout.toByteArray();
-                // store the serialized user info in the zip-file
-                ZipEntry entry = new ZipEntry(datfileName);
-                getExportZipStream().putNextEntry(entry);
-                getExportZipStream().write(serializedInfo);
-                getExportZipStream().closeEntry();
-            } catch (IOException ioe) {
-                getReport().println(ioe);
+            e.addElement(CmsImportExportManager.N_DATECREATED).addText(Long.toString(user.getDateCreated()));
 
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
-                        user.getName()), ioe);
+            Element userInfoNode = e.addElement(CmsImportExportManager.N_USERINFO);
+            List keys = new ArrayList(user.getAdditionalInfo().keySet());
+            Collections.sort(keys);
+            Iterator itInfoKeys = keys.iterator();
+            while (itInfoKeys.hasNext()) {
+                String key = (String)itInfoKeys.next();
+                if (key == null) {
+                    continue;
+                }
+                Object value = user.getAdditionalInfo(key);
+                if (value == null) {
+                    continue;
+                }
+                Element entryNode = userInfoNode.addElement(CmsImportExportManager.N_USERINFO_ENTRY);
+                entryNode.addAttribute(CmsImportExportManager.A_NAME, key);
+                entryNode.addAttribute(CmsImportExportManager.A_TYPE, value.getClass().getName());
+                try {
+                    // serialize the user info and write it into a file
+                    entryNode.addCDATA(CmsDataTypeUtil.dataExport(value));
+                } catch (IOException ioe) {
+                    getReport().println(ioe);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(
+                            Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
+                            user.getName()), ioe);
+                    }
                 }
             }
+
             // append the node for groups of user
             List userGroups = getCms().getGroupsOfUser(user.getName(), true);
             Element g = e.addElement(CmsImportExportManager.N_USERGROUPS);
@@ -1310,7 +1314,6 @@ public class CmsExport {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-
             throw new CmsImportExportException(e.getMessageContainer(), e);
         }
     }

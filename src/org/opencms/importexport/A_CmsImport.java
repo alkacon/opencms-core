@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/01/31 12:35:12 $
- * Version: $Revision: 1.84.4.7 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.84.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.7 $ 
+ * @version $Revision: 1.84.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -575,13 +575,12 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Imports a single user.<p>
      * 
      * @param name user name
-     * @param description user description
      * @param flags user flags
      * @param password user password 
      * @param firstname firstname of the user
      * @param lastname lastname of the user
      * @param email user email
-     * @param address user address 
+     * @param dateCreated creation date 
      * @param userInfo user info
      * @param userGroups user groups
      * 
@@ -589,13 +588,12 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void importUser(
         String name,
-        String description,
         String flags,
         String password,
         String firstname,
         String lastname,
         String email,
-        String address,
+        long dateCreated,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
@@ -612,12 +610,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                     id,
                     name,
                     password,
-                    description,
                     firstname,
                     lastname,
                     email,
-                    address,
                     Integer.parseInt(flags),
+                    dateCreated,
                     userInfo);
                 // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
@@ -720,31 +717,32 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                 }
 
+                if (description != null) {
+                    userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
+                }
+                if (address != null) {
+                    userInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
+                }
                 // import this user
                 importUser(
                     name,
-                    description,
                     flags,
                     password,
                     firstname,
                     lastname,
                     email,
-                    address,
+                    0,
                     userInfo,
                     userGroups);
             }
         } catch (CmsImportExportException e) {
-
             throw e;
         } catch (Exception e) {
-
             m_report.println(e);
-
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USERS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-
             throw new CmsImportExportException(message, e);
         }
     }

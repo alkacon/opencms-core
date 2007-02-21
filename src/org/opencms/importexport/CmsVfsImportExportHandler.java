@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2007/01/08 14:03:05 $
- * Version: $Revision: 1.21.4.2 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.21.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
@@ -49,7 +50,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21.4.2 $ 
+ * @version $Revision: 1.21.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,10 +228,12 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
         Element rootElement = manifest.getRootElement();
 
-        boolean hasModuleNode = (rootElement.selectNodes("./module/name").size() > 0);
-        boolean hasFileNodes = (rootElement.selectNodes("./files/file").size() > 0);
+        boolean hasModuleNode = (rootElement.selectNodes(
+            "./" + CmsModuleXmlHandler.N_MODULE + "/" + CmsModuleXmlHandler.N_NAME).size() > 0);
+        boolean hasFileNodes = (rootElement.selectNodes("./" + "files").size() == 1);
+        boolean hasUserData = (rootElement.selectNodes("./" + CmsImportExportManager.N_USERGROUPDATA).size() == 1);
 
-        return (!hasModuleNode && hasFileNodes);
+        return (!hasModuleNode && (hasFileNodes || hasUserData));
     }
 
     /**

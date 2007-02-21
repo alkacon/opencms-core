@@ -27,33 +27,61 @@
 	labeledfolders?,
 	rfsfileviewsettings?,
 	explorertypes+,
+	user-infos?,
 	default-preferences,
-	tool-manager? )>
+	tool-manager?)>
+
+<!--
+# The user additional information configuration.
+-->
+<!ELEMENT user-infos (info-block+) >
+
+<!--
+# The configuration of a block of user additional information.
+-->
+<!ELEMENT info-block (user-info+) >
+<!ATTLIST info-block name CDATA #REQUIRED>
+
+<!--
+# The user additional information entry configuration.
+-->
+<!ELEMENT user-info EMPTY >
+<!ATTLIST user-info key CDATA #REQUIRED
+                    type (java.lang.Byte|java.lang.Short|java.lang.Integer|java.lang.Long|java.lang.Float|java.lang.Double|java.lang.Boolean|java.lang.Character|java.lang.String|java.util.Date|org.opencms.CmsUUID) #IMPLIED
+		  			widget CDATA #IMPLIED
+		  			params CDATA #IMPLIED
+		  			optional (true|TRUE|false|FALSE) #IMPLIED >
 
 <!--
 # The tool manager configuration.
 -->
 <!ELEMENT tool-manager (roots) >
+
 <!--
 # A list of tool's roots.
 -->
 <!ELEMENT roots (root*) >
+
 <!--
 # A root.
 -->
 <!ELEMENT root (key, uri, name, helptext) >
+
 <!--
 # The key for accessing a root.
 -->
 <!ELEMENT key (#PCDATA) >
+
 <!--
 # The uri to look for tools for this root.
 -->
 <!ELEMENT uri (#PCDATA) >
+
 <!--
 # a macro for the display name of the given root.
 -->
 <!ELEMENT name (#PCDATA) >
+
 <!--
 # a macro for the helptext of the given root.
 -->

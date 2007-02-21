@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.43.4.17 $
+ * Date   : $Date: 2007/02/21 14:27:04 $
+ * Version: $Revision: 1.43.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.17 $
+ * @version $Revision: 1.43.4.18 $
  * 
  * @since 6.0.0 
  */
@@ -286,7 +286,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMPORT_RESOURCE_2 = "ERR_IMPORT_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORT_USER_8 = "ERR_IMPORT_USER_8";
+    public static final String ERR_IMPORT_USER_7 = "ERR_IMPORT_USER_7";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_CONN_POOL_1 = "ERR_INIT_CONN_POOL_1";

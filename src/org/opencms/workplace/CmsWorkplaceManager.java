@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/02/20 08:30:09 $
- * Version: $Revision: 1.76.4.12 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.76.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.12 $ 
+ * @version $Revision: 1.76.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,6 +211,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The tool manager. */
     private CmsToolManager m_toolManager;
+
+    /** The user additional information configuration. */
+    private CmsWorkplaceUserInfoManager m_userInfoManager;
 
     /** The configured workplace views. */
     private List m_views;
@@ -869,6 +872,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the user additional information configuration Manager.<p>
+     *
+     * @return the user additional information configuration manager
+     */
+    public CmsWorkplaceUserInfoManager getUserInfoManager() {
+
+        return m_userInfoManager;
+    }
+
+    /**
      * Returns the map of configured workplace views.<p>
      * 
      * @return the map of configured workplace views
@@ -1275,6 +1288,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Sets the user additional information configuration manager.<p>
+     *
+     * @param userInfoManager the manager to set
+     */
+    public void setUserInfoManager(CmsWorkplaceUserInfoManager userInfoManager) {
+
+        m_userInfoManager = userInfoManager;
+    }
+
+    /**
      * Controls if the user/group icon in the administration view should be shown.<p>
      * 
      * @param value <code>"true"</code> if the user/group icon in the administration view should be shown, otherwise false
@@ -1498,4 +1521,5 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         Collections.sort(m_views);
         return m_views;
     }
+
 }

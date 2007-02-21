@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.90.4.14 $
+ * Date   : $Date: 2007/02/21 14:27:04 $
+ * Version: $Revision: 1.90.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.14 $
+ * @version $Revision: 1.90.4.15 $
  * 
  * @since 6.0.0
  */
@@ -546,6 +546,10 @@ public class OpenCmsTestCase extends TestCase {
         // remove potentially created "classes, "lib", "backup" etc. folder
         String path;
         path = getTestDataPath("WEB-INF/classes/");
+        if (path != null) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
+        path = getTestDataPath("WEB-INF/logs/publish");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
@@ -2730,6 +2734,27 @@ public class OpenCmsTestCase extends TestCase {
             m_currentResourceStrorage = storage;
         } else {
             throw new CmsException(Messages.get().container(Messages.ERR_RESOURCE_STORAGE_NOT_FOUND_0));
+        }
+    }
+
+    /**
+     * Deletes the given file from the rfs.<p>
+     * 
+     * @param absolutePath the absolute path of the file
+     */
+    protected void deleteFile(String absolutePath) {
+
+        try {
+            // sleep 0.5 seconds - sometimes deletion does not work if not waiting
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+        File file = new File(absolutePath);
+        if (file.exists()) {
+            if (!file.delete()) {
+                file.deleteOnExit();
+            }
         }
     }
 

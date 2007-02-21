@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/01/29 09:44:53 $
- * Version: $Revision: 1.36.4.15 $
+ * Date   : $Date: 2007/02/21 14:27:04 $
+ * Version: $Revision: 1.36.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -46,8 +47,11 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -59,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.15 $
+ * @version $Revision: 1.36.4.16 $
  * 
  * @since 6.0.0
  */
@@ -69,9 +73,6 @@ public class CmsUserSettings {
      *  Enumeration class for workplace search result styles.<p>
      */
     public static final class CmsSearchResultStyle extends A_CmsModeStringEnumeration {
-
-        /** Serializable version id. */
-        private static final long serialVersionUID = 6611568161885127011L;
 
         /** Workplace search result style explorer view. */
         public static final CmsSearchResultStyle STYLE_EXPLORER = new CmsSearchResultStyle(
@@ -87,6 +88,9 @@ public class CmsUserSettings {
         public static final CmsSearchResultStyle STYLE_LIST_WITHOUT_EXCERPTS = new CmsSearchResultStyle(
             "list-without-excerpts",
             Messages.GUI_WORKPLACE_SEARCH_STYLE_LIST_WITHOUT_EXCERPTS_0);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 6611568161885127011L;
 
         /** The localization key for this style. */
         private final String m_key;
@@ -132,9 +136,11 @@ public class CmsUserSettings {
         }
     }
 
+    /** Key for additional info address. */
+    public static final String ADDITIONAL_INFO_ADDRESS = "USER_ADDRESS";
+
     /** Key for additional info city. */
-    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN"; // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
 
     /** Key for additional info of resources that were confirmemed by the user. */
     public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
@@ -144,6 +150,9 @@ public class CmsUserSettings {
 
     /** Key for additional info default group. */
     public static final String ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
+
+    /** Key for additional info address. */
+    public static final String ADDITIONAL_INFO_DESCRIPTION = "USER_DESCRIPTION";
 
     /** Key for additional info explorer settings. */
     public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
@@ -169,12 +178,6 @@ public class CmsUserSettings {
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
-
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -219,16 +222,46 @@ public class CmsUserSettings {
     public static final int FILELIST_WORKFLOW_STATE = 16384;
 
     /** Identifier prefix for all keys in the user additional info table. */
-    private static final String PREFERENCES = "USERPREFERENCES_";
+    public static final String PREFERENCES = "USERPREFERENCES_";
 
     /** Identifier for the project settings key. */
-    private static final String PROJECT_SETTINGS = "PROJECT_SETTINGS";
+    public static final String PRJ_DELETEAFTERPUBLISH = "DELETEAFTERPUBLISH";
+
+    /** Identifier for the project settings key. */
+    public static final String PRJ_MANAGERGROUP = "MANAGERGROUP";
+
+    /** Identifier for the project settings key. */
+    public static final String PRJ_MODE = "PROJECTMODE";
+
+    /** Identifier for the project settings key. */
+    public static final String PRJ_USERSGROUP = "USERSGROUP";
+
+    /** Identifier for the project settings key. */
+    public static final String PROJECT_SETTINGS = "PROJECTSETTINGS_";
+
+    /** Identifier for the synchronize setting key. */
+    public static final String SYNC_DESTINATION = "DESTINATION";
+
+    /** Identifier for the synchronize setting key. */
+    public static final String SYNC_ENABLED = "ENABLED";
+
+    /** Identifier for the synchronize setting key. */
+    public static final String SYNC_SETTINGS = "SYNC_SETTINGS_";
+
+    /** Identifier for the synchronize setting key. */
+    public static final String SYNC_VFS_LIST = "VFS_LIST";
+
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
 
     /** Default workplace search index name. */
     private static final String SEARCH_INDEX_DEFAULT = "Offline project (VFS)";
-
-    /** Identifier for the synchronize setting key. */
-    private static final String SYNC_SETTINGS = "SYNC_SETTINGS";
 
     private boolean m_dialogDirectpublish;
 
@@ -741,9 +774,6 @@ public class CmsUserSettings {
         return m_workplaceSearchViewStyle;
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
-
     /**
      * Initializes the user settings with the given users setting parameters.<p>
      * 
@@ -772,9 +802,9 @@ public class CmsUserSettings {
             m_timeWarp = CmsContextInfo.CURRENT_TIME;
         }
         // workplace report type
-        m_workplaceReportType = ((String)m_user.getAdditionalInfo(PREFERENCES
+        m_workplaceReportType = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-            + CmsWorkplaceConfiguration.N_REPORTTYPE));
+            + CmsWorkplaceConfiguration.N_REPORTTYPE);
         if (m_workplaceReportType == null) {
             m_workplaceReportType = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType();
         }
@@ -787,17 +817,17 @@ public class CmsUserSettings {
             m_uploadApplet = OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet();
         }
         // locale
-        m_locale = (Locale)m_user.getAdditionalInfo(PREFERENCES
+        m_locale = CmsLocaleManager.getLocale((String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + CmsWorkplaceConfiguration.N_LOCALE);
+            + CmsWorkplaceConfiguration.N_LOCALE));
         if (m_locale == null) {
             m_locale = OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale();
         }
         // start project
         try {
-            m_project = ((String)m_user.getAdditionalInfo(PREFERENCES
+            m_project = (String)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_PROJECT));
+                + CmsWorkplaceConfiguration.N_PROJECT);
         } catch (Throwable t) {
             m_project = null;
         }
@@ -805,9 +835,9 @@ public class CmsUserSettings {
             m_project = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
         }
         // start view
-        m_view = ((String)m_user.getAdditionalInfo(PREFERENCES
+        m_view = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + CmsWorkplaceConfiguration.N_WORKPLACEVIEW));
+            + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
         if (m_view == null) {
             m_view = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
         }
@@ -924,22 +954,29 @@ public class CmsUserSettings {
             m_directeditButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle();
         }
         // editor settings
-        m_editorSettings = (HashMap)m_user.getAdditionalInfo(PREFERENCES
-            + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS);
-        if (m_editorSettings == null) {
+        m_editorSettings = new HashMap();
+        Iterator itKeys = m_user.getAdditionalInfo().keySet().iterator();
+        while (itKeys.hasNext()) {
+            String key = (String)itKeys.next();
+            if (key.startsWith(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS)) {
+                String editKey = key.substring((PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS).length());
+                m_editorSettings.put(editKey, m_user.getAdditionalInfo(key));
+            }
+        }
+        if (m_editorSettings.isEmpty()) {
             m_editorSettings = new HashMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
         }
         // start site
-        m_startSite = ((String)m_user.getAdditionalInfo(PREFERENCES
+        m_startSite = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + I_CmsXmlConfiguration.N_SITE));
+            + I_CmsXmlConfiguration.N_SITE);
         if (m_startSite == null) {
             m_startSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
         }
         // start folder
-        m_startFolder = ((String)m_user.getAdditionalInfo(PREFERENCES
+        m_startFolder = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + CmsWorkplaceConfiguration.N_FOLDER));
+            + CmsWorkplaceConfiguration.N_FOLDER);
         if (m_startFolder == null) {
             m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
         }
@@ -952,28 +989,57 @@ public class CmsUserSettings {
             m_restrictExplorerView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView();
         }
         // workplace search
-        m_workplaceSearchIndexName = ((String)m_user.getAdditionalInfo(PREFERENCES
+        m_workplaceSearchIndexName = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
-            + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME));
+            + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME);
         if (m_workplaceSearchIndexName == null) {
             m_workplaceSearchIndexName = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchIndexName();
         }
-        m_workplaceSearchViewStyle = CmsSearchResultStyle.valueOf(((String)m_user.getAdditionalInfo(PREFERENCES
+        m_workplaceSearchViewStyle = CmsSearchResultStyle.valueOf((String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
-            + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE)));
+            + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE));
         if (m_workplaceSearchViewStyle == null) {
             m_workplaceSearchViewStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchViewStyle();
         }
         // synchronize settings
         try {
-            m_synchronizeSettings = ((CmsSynchronizeSettings)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS));
+            boolean enabled = ((Boolean)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED)).booleanValue();
+            String destination = (String)m_user.getAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION);
+            List vfsList = CmsStringUtil.splitAsList((String)m_user.getAdditionalInfo(PREFERENCES
+                + SYNC_SETTINGS
+                + SYNC_VFS_LIST), '|');
+            m_synchronizeSettings = new CmsSynchronizeSettings();
+            m_synchronizeSettings.setEnabled(enabled);
+            m_synchronizeSettings.setDestinationPathInRfs(destination);
+            m_synchronizeSettings.setSourceListInVfs(vfsList);
         } catch (Throwable t) {
             // default is to disable the synchronize settings
             m_synchronizeSettings = null;
         }
         // project settings
         try {
-            m_projectSettings = ((CmsUserProjectSettings)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS));
+            CmsUUID managersGroup = null;
+            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP) != null) {
+                managersGroup = ((CmsUUID)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP));
+            }
+            CmsUUID usersGroup = null;
+            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP) != null) {
+                usersGroup = ((CmsUUID)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP));
+            }
+            CmsProjectResourcesDisplayMode projectMode = null;
+            if (m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE) != null) {
+                projectMode = CmsProjectResourcesDisplayMode.valueOf((String)m_user.getAdditionalInfo(PREFERENCES
+                    + PROJECT_SETTINGS
+                    + PRJ_MODE));
+            }
+            boolean deleteAfterPublish = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
+                + PROJECT_SETTINGS
+                + PRJ_DELETEAFTERPUBLISH)).booleanValue();
+            m_projectSettings = new CmsUserProjectSettings();
+            m_projectSettings.setManagerGroup(managersGroup);
+            m_projectSettings.setUserGroup(usersGroup);
+            m_projectSettings.setProjectFilesMode(projectMode);
+            m_projectSettings.setDeleteAfterPublishing(deleteAfterPublish);
         } catch (Throwable t) {
             m_projectSettings = null;
         }
@@ -1033,7 +1099,7 @@ public class CmsUserSettings {
 
         // only set those values that are different than the default values
         // if the user info should be written to the database (if the CmsObject != null)
-        // all values that are equal to the default values must be deleted form the additional info
+        // all values that are equal to the default values must be deleted from the additional info
         // user settings.
 
         // workplace button style
@@ -1045,12 +1111,6 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
-        }
-        // workplace user surf time (timewarp) 
-        if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
-            m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, new Long(getTimeWarp()));
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         }
         // workplace report type
         if (!getWorkplaceReportType().equals(
@@ -1077,7 +1137,7 @@ public class CmsUserSettings {
         if (!getLocale().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale())) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_LOCALE, getLocale());
+                + CmsWorkplaceConfiguration.N_LOCALE, getLocale().toString());
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
@@ -1103,6 +1163,37 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                 + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
         }
+        // start site
+        if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + I_CmsXmlConfiguration.N_SITE, getStartSite());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + I_CmsXmlConfiguration.N_SITE);
+        }
+        // start folder
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getStartFolder())
+            && !getStartFolder().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder())) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + CmsWorkplaceConfiguration.N_FOLDER, getStartFolder());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + CmsWorkplaceConfiguration.N_FOLDER);
+        }
+        // restrict explorer folder view
+        if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW, Boolean.valueOf(getRestrictExplorerView()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
+        }
         // explorer button style    
         if (getExplorerButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerButtonStyle()) {
             m_user.setAdditionalInfo(PREFERENCES
@@ -1113,7 +1204,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
-        // explorer file entires
+        // explorer file entries
         if (getExplorerFileEntries() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntries()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
@@ -1239,40 +1330,21 @@ public class CmsUserSettings {
         }
         // editorsettings
         if (m_editorSettings.size() > 0) {
-            m_user.setAdditionalInfo(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS, m_editorSettings);
+            Iterator itEntries = m_editorSettings.entrySet().iterator();
+            while (itEntries.hasNext()) {
+                Map.Entry entry = (Map.Entry)itEntries.next();
+                m_user.setAdditionalInfo(PREFERENCES
+                    + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
+                    + entry.getKey(), entry.getValue().toString());
+            }
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS);
-        }
-        // start site
-        if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + I_CmsXmlConfiguration.N_SITE, getStartSite());
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + I_CmsXmlConfiguration.N_SITE);
-        }
-        // start folder
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getStartFolder())
-            && !getStartFolder().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder())) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_FOLDER, getStartFolder());
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_FOLDER);
-        }
-        // restrict explorer folder view
-        if (getRestrictExplorerView() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView()) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW, Boolean.valueOf(getRestrictExplorerView()));
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_RESTRICTEXPLORERVIEW);
+            Iterator itKeys = m_user.getAdditionalInfo().keySet().iterator();
+            while (itKeys.hasNext()) {
+                String key = (String)itKeys.next();
+                if (key.startsWith(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS)) {
+                    m_user.deleteAdditionalInfo(key);
+                }
+            }
         }
         // workplace search
         if (getWorkplaceSearchIndexName() != null) {
@@ -1287,21 +1359,61 @@ public class CmsUserSettings {
         }
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
-            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS, getSynchronizeSettings());
+            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, new Boolean(
+                getSynchronizeSettings().isEnabled()));
+            m_user.setAdditionalInfo(
+                PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION,
+                getSynchronizeSettings().getDestinationPathInRfs());
+            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST, CmsStringUtil.collectionAsString(
+                getSynchronizeSettings().getSourceListInVfs(),
+                "|"));
         } else {
-            m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS);
+            m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED);
+            m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION);
+            m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_VFS_LIST);
         }
         // project settings        
         if (getProjectSettings() != null) {
-            m_user.setAdditionalInfo(PREFERENCES + PROJECT_SETTINGS, getProjectSettings());
+            if (getProjectSettings().getManagerGroup() != null) {
+                m_user.setAdditionalInfo(
+                    PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP,
+                    getProjectSettings().getManagerGroup());
+            } else {
+                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP);
+            }
+            if (getProjectSettings().getProjectFilesMode() != null) {
+                m_user.setAdditionalInfo(
+                    PREFERENCES + PROJECT_SETTINGS + PRJ_MODE,
+                    getProjectSettings().getProjectFilesMode().getMode());
+            } else {
+                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE);
+            }
+            if (getProjectSettings().getUserGroup() != null) {
+                m_user.setAdditionalInfo(
+                    PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP,
+                    getProjectSettings().getUserGroup());
+            } else {
+                m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP);
+            }
+            m_user.setAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_DELETEAFTERPUBLISH, ""
+                + getProjectSettings().isDeleteAfterPublishing());
         } else {
-            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS);
+            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MANAGERGROUP);
+            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_MODE);
+            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_USERSGROUP);
+            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS + PRJ_DELETEAFTERPUBLISH);
         }
         // upload applet client folder path
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_uploadAppletClientFolder)) {
             m_user.setAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER, m_uploadAppletClientFolder);
         } else {
             m_user.deleteAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
+        }
+        // workplace user surf time (timewarp) 
+        if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
+            m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, new Long(getTimeWarp()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         }
 
         // only write the updated user to the DB if we have the cms object
@@ -1448,21 +1560,6 @@ public class CmsUserSettings {
     public void setExplorerFileEntries(int entries) {
 
         m_explorerFileEntries = entries;
-    }
-
-    /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
     }
 
     /**
@@ -1993,5 +2090,20 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
+    }
+
+    /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
     }
 }

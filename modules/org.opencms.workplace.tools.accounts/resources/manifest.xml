@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the user accounts and groups.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.10</version>
+		<version>1.2.11</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -1192,6 +1192,108 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/accounts/user_addinfo.jsp</source>
+			<destination>system/workplace/admin/accounts/user_addinfo.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b1f7ef4d-c01a-11db-9b43-e9e9e6393f7a</uuidstructure>
+			<uuidresource>b1f7ef4e-c01a-11db-9b43-e9e9e6393f7a</uuidresource>
+			<datelastmodified>Mon, 19 Feb 2007 13:12:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Feb 2007 13:11:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_USER_ADDINFO_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_USER_ADDINFO_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user_info.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_USER_ADDINFO_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Additional Info]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial|path:/accounts/orgunit/users/edit/addinfo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/user_allinfo.jsp</source>
+			<destination>system/workplace/admin/accounts/user_allinfo.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>c4e24a22-c0f0-11db-b19e-e9e9e6393f7a</uuidstructure>
+			<uuidresource>c4e24a23-c0f0-11db-b19e-e9e9e6393f7a</uuidresource>
+			<datelastmodified>Tue, 20 Feb 2007 14:48:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 Feb 2007 14:43:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_USER_ALLINFO_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_USER_ALLINFO_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user_allinfo.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_USER_ALLINFO_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[All Additional Info]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&userid=${param.userid}&action=initial&editall=true|path:/accounts/orgunit/users/edit/addinfo/all]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/accounts/user_assign.jsp</source>
 			<destination>system/workplace/admin/accounts/user_assign.jsp</destination>
 			<type>jsp</type>
@@ -1260,7 +1362,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
+					<value><![CDATA[60]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1362,7 +1464,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
+					<value><![CDATA[20]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1511,7 +1613,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[4]]></value>
+					<value><![CDATA[30]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -1562,7 +1664,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[5]]></value>
+					<value><![CDATA[50]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -2006,6 +2108,44 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/user_allinfo.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/user_allinfo.png</destination>
+			<type>image</type>
+			<uuidstructure>091cdf94-c0f1-11db-b19e-e9e9e6393f7a</uuidstructure>
+			<uuidresource>091cdf95-c0f1-11db-b19e-e9e9e6393f7a</uuidresource>
+			<datelastmodified>Mon, 19 Feb 2007 13:39:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 Feb 2007 14:45:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/icons/big/user_info.png</source>
+			<destination>system/workplace/resources/tools/accounts/icons/big/user_info.png</destination>
+			<type>image</type>
+			<uuidstructure>8fbc3630-c01e-11db-a7e6-e9e9e6393f7a</uuidstructure>
+			<uuidresource>8fbc3631-c01e-11db-a7e6-e9e9e6393f7a</uuidresource>
+			<datelastmodified>Mon, 19 Feb 2007 13:39:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Feb 2007 13:39:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

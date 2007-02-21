@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.20.4.7 $
+ * Date   : $Date: 2007/02/21 14:27:09 $
+ * Version: $Revision: 1.20.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.7 $
+ * @version $Revision: 1.20.4.8 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -92,6 +92,8 @@ public class TestLock extends OpenCmsTestCase {
         suite.addTest(new TestLock("testLockInherit"));
         suite.addTest(new TestLock("testLockForSiblings"));
         suite.addTest(new TestLock("testLockForBaseOperations"));
+        suite.addTest(new TestLock("testCopyToLockedFolder"));
+        suite.addTest(new TestLock("testCreationInLockedFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -107,6 +109,55 @@ public class TestLock extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests copying a file to a folder locked by another user.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyToLockedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing copying a file to a folder locked by another user");
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        String source = "/index.html";
+        String folder = "/folder2";
+        String destination = "/copytest.html";
+
+        cms.lockResource(folder);
+
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // TODO: define the expected behaviour
+        cms.copyResource(source, folder + destination);
+        assertLock(cms, folder + destination, CmsLockType.INHERITED, cms.readUser("test1"));
+    }
+
+    /**
+     * Tests creating a new file in a folder locked by another user.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCreationInLockedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creating a new file in a folder locked by another user");
+
+        String fileName = "/folder2/creationtest.html";
+
+        // NOTE: folder still locked by test1 from previous test case
+
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // TODO: define the expected behaviour
+        cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
+        assertLock(cms, fileName, CmsLockType.INHERITED, cms.readUser("test1"));
     }
 
     /**

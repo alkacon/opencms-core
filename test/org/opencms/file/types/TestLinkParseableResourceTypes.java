@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -542,16 +542,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
             relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
             assertTrue(relations.isEmpty());
         } finally {
-            try {
-                if (zipExportFilename != null) {
-                    File file = new File(zipExportFilename);
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                }
-            } catch (Throwable t) {
-                // intentionally left blank
-            }
+            deleteFile(zipExportFilename);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.58.8.5 $
+ * Date   : $Date: 2007/02/21 14:27:04 $
+ * Version: $Revision: 1.58.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.5 $
+ * @version $Revision: 1.58.8.6 $
  * 
  * @since 6.0.0 
  */
@@ -154,14 +154,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param id the id of the user
      * @param userFqn the fully qualified name of the new user
      * @param password the already encripted user password
-     * @param description the user description
      * @param firstname the user firstname
      * @param lastname the user lastname
      * @param email the user email
      * @param lastlogin the user lastlogin time
      * @param flags the user flags
+     * @param dateCreated the creation date
      * @param additionalInfos the user additional infos
-     * @param address the user default address
      * 
      * @return the created user
      * 
@@ -172,14 +171,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsUUID id,
         String userFqn,
         String password,
-        String description,
         String firstname,
         String lastname,
         String email,
         long lastlogin,
         int flags,
-        Map additionalInfos,
-        String address) throws CmsDataAccessException;
+        long dateCreated,
+        Map additionalInfos) throws CmsDataAccessException;
 
     /**
      * Adds a user to a group.<p>
@@ -238,6 +236,16 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void deleteUser(CmsDbContext dbc, String userFqn) throws CmsDataAccessException;
+
+    /**
+     * Deletes the user additional information table.<p>
+     * 
+     * @param dbc the current database context
+     * @param userId the id of the user to update
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deleteUserInfos(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException;
 
     /**
      * Removes a user from a group.<p>
@@ -301,11 +309,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getGroups(
-        CmsDbContext dbc,
-        CmsOrganizationalUnit orgUnit,
-        boolean includeSubOus,
-        boolean readRoles) throws CmsDataAccessException;
+    List getGroups(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus, boolean readRoles)
+    throws CmsDataAccessException;
 
     /**
      * Returns all child organizational units of the given parent organizational unit including 
@@ -365,8 +370,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @throws CmsDataAccessException if operation was not successful
      */
-    List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive)
-    throws CmsDataAccessException;
+    List getUsers(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean recursive) throws CmsDataAccessException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -484,8 +488,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String ouFqn, boolean includeChildOus, String remoteAddress, boolean readRoles)
-    throws CmsDataAccessException;
+    List readGroupsOfUser(
+        CmsDbContext dbc,
+        CmsUUID userId,
+        String ouFqn,
+        boolean includeChildOus,
+        String remoteAddress,
+        boolean readRoles) throws CmsDataAccessException;
 
     /**
      * Reads an organizational Unit based on its fully qualified name.<p>
@@ -538,6 +547,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress)
     throws CmsDataAccessException, CmsPasswordEncryptionException;
+
+    /**
+     * Reads the user additional information map.<p>
+     * 
+     * @param dbc the current database context
+     * @param userId the id of the user to update
+     * 
+     * @return the user additional information map
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    Map readUserInfos(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException;
 
     /**
      * Reads all users that are members of the given group.<p>
@@ -688,4 +709,16 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
+
+    /**
+     * Writes an user additional information entry.<p>
+     * 
+     * @param dbc the current database context
+     * @param userId the id of the user to update
+     * @param key the key of the info to write
+     * @param value the value of the info to write
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException;
 }

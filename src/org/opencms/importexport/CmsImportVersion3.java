@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.75.4.5 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.75.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.5 $ 
+ * @version $Revision: 1.75.4.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -141,17 +141,16 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
-     * @see org.opencms.importexport.A_CmsImport#importUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map, java.util.List)
+     * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
     protected void importUser(
         String name,
-        String description,
         String flags,
         String password,
         String firstname,
         String lastname,
         String email,
-        String address,
+        long dateCreated,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
@@ -166,17 +165,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             password = convertDigestEncoding(password);
         }
 
-        super.importUser(
-            name,
-            description,
-            flags,
-            password,
-            firstname,
-            lastname,
-            email,
-            address,
-            userInfo,
-            userGroups);
+        super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
     }
 
     /**

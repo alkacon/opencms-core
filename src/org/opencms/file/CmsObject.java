@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/02/12 11:49:24 $
- * Version: $Revision: 1.146.4.27 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.146.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -60,6 +61,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +92,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.27 $
+ * @version $Revision: 1.146.4.28 $
  * 
  * @since 6.0.0 
  */
@@ -1707,6 +1709,8 @@ public final class CmsObject {
      * @return the imported user
      *
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #importUser(String, String, String, String, String, String, int, long, Map)} instead
      */
     public CmsUser importUser(
         String id,
@@ -1720,17 +1724,66 @@ public final class CmsObject {
         int flags,
         Map additionalInfos) throws CmsException {
 
+        Map info = new HashMap();
+        if (additionalInfos != null) {
+            info.putAll(additionalInfos);
+        }
+        if (description != null) {
+            info.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
+        }
+        if (address != null) {
+            info.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
+        }
+        return importUser(
+            id,
+            name,
+            password,
+            firstname,
+            lastname,
+            email,
+            flags,
+            System.currentTimeMillis(),
+            additionalInfos);
+    }
+
+    /**
+     * Creates a new user by import.<p>
+     * 
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
+     * @param dateCreated the creation date
+     * @param additionalInfos the additional user infos
+     * 
+     * @return the imported user
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser importUser(
+        String id,
+        String name,
+        String password,
+        String firstname,
+        String lastname,
+        String email,
+        int flags,
+        long dateCreated,
+        Map additionalInfos) throws CmsException {
+
         return m_securityManager.importUser(
             m_context,
             id,
             name,
             password,
-            description,
             firstname,
             lastname,
             email,
-            address,
             flags,
+            dateCreated,
             additionalInfos);
     }
 

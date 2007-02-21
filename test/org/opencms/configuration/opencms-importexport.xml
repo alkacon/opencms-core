@@ -16,6 +16,7 @@
 				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion4"/>	
 				<importversion class="org.opencms.importexport.CmsImportVersion5"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion6"/>
 			</importversions>          	   	
 			<immutables>
 				<resource uri="/system/"/>

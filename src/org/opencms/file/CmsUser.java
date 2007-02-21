@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/02/06 10:25:12 $
- * Version: $Revision: 1.32.4.13 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.32.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.security.Messages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -71,7 +72,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.13 $
+ * @version $Revision: 1.32.4.14 $
  * 
  * @since 6.0.0
  * 
@@ -82,8 +83,8 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /** Storage for additional user information. */
     private Map m_additionalInfo;
 
-    /** The address of this user. */
-    private String m_address;
+    /** The creation date. */
+    private long m_dateCreated;
 
     /**  The email of the user. */
     private String m_email;
@@ -110,21 +111,10 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public CmsUser() {
 
-        this(null, "", "");
-        setAdditionalInfo(new HashMap());
-    }
-
-    /**
-     * Creates a new OpenCms user principal.<p>
-     *
-     * @param id the unique id of the new user
-     * @param name the fully qualified name of the new user
-     * @param description the description of the new user
-     */
-    public CmsUser(CmsUUID id, String name, String description) {
-
-        this(id, name, "", description, "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED
-            + I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT, null, "");
+        this(null, "", "", "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED
+            + I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT, System.currentTimeMillis(), Collections.singletonMap(
+            CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
+            ""));
     }
 
     /**
@@ -133,39 +123,42 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * @param id the unique id of the new user
      * @param name the fully qualified name of the new user
      * @param password the password of the user
-     * @param description the description of the new user
      * @param firstname the first name
      * @param lastname the last name
      * @param email the email address
      * @param lastlogin time stamp 
      * @param flags flags
+     * @param dateCreated the creation date
      * @param additionalInfo user related information
-     * @param address the address
      */
     public CmsUser(
         CmsUUID id,
         String name,
         String password,
-        String description,
         String firstname,
         String lastname,
         String email,
         long lastlogin,
         int flags,
-        Map additionalInfo,
-        String address) {
+        long dateCreated,
+        Map additionalInfo) {
 
         m_id = id;
         m_name = name;
         m_password = password;
-        m_description = description;
         m_firstname = firstname;
         m_lastname = lastname;
         m_email = email;
         m_lastlogin = lastlogin;
         m_flags = flags;
-        m_additionalInfo = additionalInfo;
-        m_address = address;
+        m_dateCreated = dateCreated;
+        m_additionalInfo = new HashMap(additionalInfo);
+        if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_ADDRESS) == null) {
+            m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, "");
+        }
+        if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION) == null) {
+            m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, "");
+        }
     }
 
     /**
@@ -256,14 +249,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             m_id,
             m_name,
             m_password,
-            m_description,
             m_firstname,
             m_lastname,
             m_email,
             m_lastlogin,
             m_flags,
-            m_additionalInfo != null ? new HashMap(m_additionalInfo) : null,
-            m_address);
+            m_dateCreated,
+            m_additionalInfo);
     }
 
     /**
@@ -284,7 +276,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * The "additional information" storage map is a simple {@link java.util#Map}
      * that can be used to store any key / value pairs for the user.
      * Some information parts of the users address are stored in this map
-     * by default. The map is serialized when the user is stored in the database.<p>
+     * by default.<p>
      * 
      * @return this users complete "additional information" storage map
      */
@@ -315,13 +307,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public String getAddress() {
 
-        return m_address;
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ADDRESS);
     }
 
     /**
      * Returns the city information of this user.<p>
      * 
-     * This informaion is stored in the "additional information" storage map
+     * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_CITY}</code>.<p>
      * 
      * @return the city information of this user
@@ -342,6 +334,24 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public String getCountry() {
 
         return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY);
+    }
+
+    /**
+     * Returns the creation date.<p>
+     *
+     * @return the creation date
+     */
+    public long getDateCreated() {
+
+        return m_dateCreated;
+    }
+
+    /**
+     * @see org.opencms.security.CmsPrincipal#getDescription()
+     */
+    public String getDescription() {
+
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION);
     }
 
     /**
@@ -532,7 +542,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setAddress(String address) {
 
-        m_address = address;
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
     }
 
     /**
@@ -553,6 +563,14 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setCountry(String country) {
 
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY, country);
+    }
+
+    /**
+     * @see org.opencms.security.CmsPrincipal#setDescription(java.lang.String)
+     */
+    public void setDescription(String description) {
+
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
     }
 
     /**
@@ -674,7 +692,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         result.append(" flags:");
         result.append(getFlags());
         result.append(" description:");
-        result.append(m_description);
+        result.append(getDescription());
         return result.toString();
     }
 

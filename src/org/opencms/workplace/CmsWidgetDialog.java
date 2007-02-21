@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/11/14 09:35:40 $
- * Version: $Revision: 1.60.4.5 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.60.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.5 $ 
+ * @version $Revision: 1.60.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1120,6 +1120,34 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             }
+            if (hasValidationErrors()) {
+                result.append(dialogBlockStart(""));
+                result.append(createWidgetTableStart());
+                Iterator i = getValidationErrorList().iterator();
+                while (i.hasNext()) {
+                    Throwable t = (Throwable)i.next();
+                    result.append("<tr><td><img src=\"");
+                    result.append(getSkinUri()).append("editors/xmlcontent/");
+                    result.append("error.png");
+                    result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
+                    while (t != null) {
+                        String message = "";
+                        if (t instanceof I_CmsThrowable) {
+                            message = ((I_CmsThrowable)t).getLocalizedMessage(getLocale());
+                        } else {
+                            message = t.getLocalizedMessage();
+                        }
+                        result.append(CmsStringUtil.escapeHtml(message));
+                        t = t.getCause();
+                        if (t != null) {
+                            result.append("<br>");
+                        }
+                    }
+                    result.append("</td></tr>\n");
+                }
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            }
         }
         return result.toString();
     }
@@ -1253,7 +1281,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters = request.getParameterMap();
-        Map processedParamters = new HashMap();
+        Map processedParameters = new HashMap();
         Iterator p = parameters.entrySet().iterator();
         // make sure all "hidden" widget parameters are decoded
         while (p.hasNext()) {
@@ -1269,7 +1297,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 }
                 values = newValues;
             }
-            processedParamters.put(key, values);
+            processedParameters.put(key, values);
         }
 
         // now process the parameters
@@ -1304,13 +1332,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 String id = CmsWidgetDialogParameter.createId(base.getName(), j);
 
                 boolean required = (params.size() < base.getMinOccurs())
-                    || (processedParamters.get(id) != null)
+                    || (processedParameters.get(id) != null)
                     || (!onPage && base.hasValue(j));
 
                 if (required) {
                     CmsWidgetDialogParameter param = new CmsWidgetDialogParameter(base, params.size(), j);
                     param.setKeyPrefix(m_prefix);
-                    base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
+                    base.getWidget().setEditorValue(getCms(), processedParameters, this, param);
                     params.add(param);
                 }
             }
@@ -1482,7 +1510,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // set the action for the JSP switch 
         if (DIALOG_SAVE.equals(getParamAction())) {
             // ok button pressed, save    
-            List errors = commitWidgetValues();
+            List errors = commitWidgetValues(null);
             if (errors.size() > 0) {
                 setAction(ACTION_DEFAULT);
                 // found validation errors, redisplay page

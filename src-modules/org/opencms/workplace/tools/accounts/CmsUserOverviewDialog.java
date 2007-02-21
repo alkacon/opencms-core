@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2007/02/08 10:05:24 $
- * Version: $Revision: 1.12.4.5 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.12.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.4.5 $ 
+ * @version $Revision: 1.12.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,9 +144,21 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the creation date.<p>
+     *
+     * Auxiliary Property for better representation.<p>
+     * 
+     * @return the creation date
+     */
+    public String getCreated() {
+
+        return LAST_LOGIN_FORMATTER.format(new Date(m_user.getDateCreated()), getLocale());
+    }
+
+    /**
      * Returns the last login.<p>
      *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * Auxiliary Property for better representation.<p>
      * 
      * @return the last login
      */
@@ -182,20 +194,34 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      */
     public void setAssignedOu(String assignedOu) {
 
-        assignedOu.length();
+        assignedOu.length(); // prevent warning
+    }
+
+    /**
+     * Sets the creation date.<p>
+     *
+     * Auxiliary Property for better representation.<p>
+     * 
+     * @param created the creation date to set
+     */
+    public void setCreated(String created) {
+
+        if (created == null) {
+            // just to avoid warnings
+        }
     }
 
     /**
      * Sets the last login.<p>
      *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * Auxiliary Property for better representation.<p>
      * 
      * @param lastlogin the last login to set
      */
     public void setLastlogin(String lastlogin) {
 
         if (lastlogin == null) {
-            // never used
+            // just to avoid warnings
         }
     }
 
@@ -254,7 +280,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(10, 12));
+            result.append(createDialogRowsHtml(10, 13));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -296,6 +322,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "selfManagement", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "lastlogin", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "created", PAGES[0], new CmsDisplayWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));

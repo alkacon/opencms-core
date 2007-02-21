@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/15 11:12:52 $
- * Version: $Revision: 1.570.2.60 $
+ * Date   : $Date: 2007/02/21 14:27:04 $
+ * Version: $Revision: 1.570.2.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2023,20 +2023,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // check the password
         validatePassword(password);
 
+        Map info = new HashMap();
+        if (additionalInfos != null) {
+            info.putAll(additionalInfos);
+        }
+        if (description != null) {
+            info.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
+        }
         if ((name.length() > 0)) {
             return m_userDriver.createUser(
                 dbc,
                 new CmsUUID(),
                 name,
                 OpenCms.getPasswordHandler().digest(password),
-                description,
                 " ",
                 " ",
                 " ",
                 0,
                 I_CmsPrincipal.FLAG_ENABLED,
-                additionalInfos,
-                " ");
+                0,
+                info);
         } else {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
         }
@@ -3966,12 +3972,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param id the id of the user
      * @param name the new name for the user
      * @param password the new password for the user
-     * @param description the description for the user
      * @param firstname the firstname of the user
      * @param lastname the lastname of the user
      * @param email the email of the user
-     * @param address the address of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
+     * @param dateCreated the creation date
      * @param additionalInfos the additional user infos
      * 
      * @return the imported user
@@ -3983,12 +3988,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String id,
         String name,
         String password,
-        String description,
         String firstname,
         String lastname,
         String email,
-        String address,
         int flags,
+        long dateCreated,
         Map additionalInfos) throws CmsException {
 
         // no space before or after the name
@@ -4001,14 +4005,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             new CmsUUID(id),
             name,
             password,
-            description,
             firstname,
             lastname,
             email,
             0,
             flags,
-            additionalInfos,
-            address);
+            dateCreated,
+            additionalInfos);
         return newUser;
     }
 

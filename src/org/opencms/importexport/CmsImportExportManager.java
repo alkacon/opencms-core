@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.30.4.3 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.30.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.3 $ 
+ * @version $Revision: 1.30.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -76,11 +76,17 @@ import org.dom4j.io.SAXReader;
  */
 public class CmsImportExportManager {
 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name. */
+    public static final String A_NAME = "name";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@type" attribute, contains the additional user info entry data type name. */
+    public static final String A_TYPE = "type";
+
     /** The name of the XML manifest file used for the description of exported OpenCms VFS properties and atributes. */
     public static final String EXPORT_MANIFEST = "manifest.xml";
 
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
-    public static final String EXPORT_VERSION = "" + CmsImportVersion5.IMPORT_VERSION;
+    public static final String EXPORT_VERSION = "" + CmsImportVersion6.IMPORT_VERSION6;
 
     /** 
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and atributes.<p>
@@ -223,6 +229,9 @@ public class CmsImportExportManager {
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo" node, contains the additional user info. */
     public static final String N_USERINFO = "userinfo";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry" node, contains the additional user info entry value. */
+    public static final String N_USERINFO_ENTRY = "entry";
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "userlastmodified" node, contains the name of the user who last modified the VFS resource. */
     public static final String N_USERLASTMODIFIED = "userlastmodified";

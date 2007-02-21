@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/13 14:21:55 $
- * Version: $Revision: 1.9.4.20 $
+ * Date   : $Date: 2007/02/21 14:27:05 $
+ * Version: $Revision: 1.9.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.20 $ 
+ * @version $Revision: 1.9.4.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -1156,6 +1156,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SUBORGUNITS_LIST_NAME_0 = "GUI_SUBORGUNITS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ADDINFO_ADMIN_TOOL_GROUP_0 = "GUI_USER_ADDINFO_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ADDINFO_ADMIN_TOOL_HELP_0 = "GUI_USER_ADDINFO_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ADDINFO_ADMIN_TOOL_NAME_0 = "GUI_USER_ADDINFO_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ALLINFO_ADMIN_TOOL_GROUP_0 = "GUI_USER_ALLINFO_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ALLINFO_ADMIN_TOOL_HELP_0 = "GUI_USER_ALLINFO_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_ALLINFO_ADMIN_TOOL_NAME_0 = "GUI_USER_ALLINFO_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_DEPENDENCIES_DELETE_0 = "GUI_USER_DEPENDENCIES_DELETE_0";
 
     /** Message contant for key in the resource bundle. */
@@ -1192,6 +1210,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USER_DEPENDENCIES_SELECTED_USERS_0 = "GUI_USER_DEPENDENCIES_SELECTED_USERS_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_EDITOR_LABEL_ADDITIONALINFO_BLOCK_0 = "GUI_USER_EDITOR_LABEL_ADDITIONALINFO_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0 = "GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
@@ -1201,7 +1222,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_EDITOR_LABEL_READONLY_BLOCK_0 = "GUI_USER_EDITOR_LABEL_READONLY_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_EDITOR_LABEL_SELECTEDINFO_BLOCK_0 = "GUI_USER_EDITOR_LABEL_SELECTEDINFO_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0 = "GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0 = "GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_SENDEMAIL_ADMIN_TOOL_GROUP_0 = "GUI_USER_SENDEMAIL_ADMIN_TOOL_GROUP_0";

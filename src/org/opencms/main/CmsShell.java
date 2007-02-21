@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2007/02/12 15:39:46 $
- * Version: $Revision: 1.48.4.3 $
+ * Date   : $Date: 2007/02/21 14:27:09 $
+ * Version: $Revision: 1.48.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.3 $ 
+ * @version $Revision: 1.48.4.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -175,53 +175,10 @@ public class CmsShell {
                 boolean match = true;
                 for (int j = 0; j < clazz.length; j++) {
                     String value = (String)parameters.get(j);
-                    if (clazz[j].equals(String.class)) {
-                        // no conversion required for String
-                        converted[j] = value;
-                    } else if (clazz[j].equals(boolean.class)) {
-                        // try to convert to boolean
-                        if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
-                            converted[j] = Boolean.valueOf(value);
-                        } else {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(CmsUUID.class)) {
-                        // try to convert to CmsUUID
-                        try {
-                            converted[j] = new CmsUUID(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(int.class)) {
-                        // try to convert to int
-                        try {
-                            converted[j] = Integer.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(long.class)) {
-                        // try to convert to long
-                        try {
-                            converted[j] = Long.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(float.class)) {
-                        // try to convert to float
-                        try {
-                            converted[j] = Float.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(double.class)) {
-                        // try to convert to double
-                        try {
-                            converted[j] = Double.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    }
-                    if (!match) {
+                    try {
+                        converted[j] = CmsDataTypeUtil.parse(value, clazz[j]);
+                    } catch (Throwable t) {
+                        match = false;
                         break;
                     }
                 }
@@ -367,12 +324,7 @@ public class CmsShell {
                     boolean onlyPrimitive = true;
                     Class[] clazz = methods[i].getParameterTypes();
                     for (int j = 0; j < clazz.length; j++) {
-                        if (!((clazz[j].equals(String.class))
-                            || (clazz[j].equals(CmsUUID.class))
-                            || (clazz[j].equals(boolean.class))
-                            || (clazz[j].equals(int.class))
-                            || (clazz[j].equals(long.class))
-                            || (clazz[j].equals(double.class)) || (clazz[j].equals(float.class)))) {
+                        if (!CmsDataTypeUtil.isParseable(clazz[j])) {
                             // complex data type methods can not be called from the shell
                             onlyPrimitive = false;
                             break;

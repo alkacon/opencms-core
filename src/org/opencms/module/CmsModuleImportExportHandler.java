@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.33.4.7 $
+ * Date   : $Date: 2007/02/21 14:27:09 $
+ * Version: $Revision: 1.33.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.7 $ 
+ * @version $Revision: 1.33.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -375,8 +375,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         Element rootElement = manifest.getRootElement();
 
-        boolean hasModuleNode = (rootElement.selectNodes("./module/name").size() > 0);
-        return (hasModuleNode);
+        return (rootElement.selectNodes("./module/name").size() > 0);
     }
 
     /**
