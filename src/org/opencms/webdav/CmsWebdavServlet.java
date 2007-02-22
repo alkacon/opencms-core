@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.1.2.13 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
+ * Date   : $Date: 2007/02/22 16:48:29 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.6
  */
@@ -2427,7 +2427,7 @@ public class CmsWebdavServlet extends HttpServlet {
         int slash = parentDirectory.lastIndexOf('/');
         if (slash >= 0) {
 
-            String parent = name.substring(0, slash);
+            String parent = parentDirectory.substring(0, slash);
 
             sb.append("<tr");
             if (shade) {
@@ -2468,16 +2468,17 @@ public class CmsWebdavServlet extends HttpServlet {
             Iterator iter = list.iterator();
             while (iter.hasNext()) {
 
-                String resourceName = (String)iter.next();
-                String trimmed = resourceName/*.substring(trim)*/;
-
-                I_CmsRepositoryItem childItem = null;
-                try {
-                    childItem = m_session.getItem(path + resourceName);
-                } catch (CmsException ex) {
-                    continue;
+                I_CmsRepositoryItem childItem = (I_CmsRepositoryItem)iter.next();
+                
+                String resourceName = childItem.getName();
+                if (resourceName.endsWith("/")) {
+                    resourceName = resourceName.substring(0, resourceName.length() - 1);
                 }
-
+                slash = resourceName.lastIndexOf('/');
+                if (slash > -1) {
+                    resourceName = resourceName.substring(slash + 1, resourceName.length());
+                }
+                
                 sb.append("<tr");
                 if (shade) {
                     sb.append(" bgcolor=\"#eeeeee\"");
@@ -2488,13 +2489,13 @@ public class CmsWebdavServlet extends HttpServlet {
                 sb.append("<td align=\"left\">&nbsp;&nbsp;\r\n");
                 sb.append("<a href=\"");
                 sb.append(rewrittenContextPath);
-                resourceName = rewriteUrl(name + resourceName);
-                sb.append(resourceName);
+                //resourceName = rewriteUrl(name + resourceName);
+                sb.append(rewriteUrl(name + resourceName));
                 if (childItem.isCollection()) {
                     sb.append("/");
                 }
                 sb.append("\"><tt>");
-                sb.append(CmsEncoder.escapeXml(trimmed));
+                sb.append(CmsEncoder.escapeXml(resourceName));
                 if (childItem.isCollection()) {
                     sb.append("/");
                 }

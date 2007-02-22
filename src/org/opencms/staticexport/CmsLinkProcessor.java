@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.46.4.6 $
+ * Date   : $Date: 2007/02/22 16:48:29 $
+ * Version: $Revision: 1.46.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.4.6 $ 
+ * @version $Revision: 1.46.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -454,7 +454,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
      */
     private String rewriteUri(String internalUri) {
 
-        // if a object wrapper is used, rewrite the uri
+        // if an object wrapper is used, rewrite the uri
         if (m_cms != null) {
             Object obj = m_cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
             if (obj != null) {

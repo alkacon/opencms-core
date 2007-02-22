@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/02/22 16:48:29 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -343,7 +343,7 @@ public class CmsLink {
             // _with_ server name / port so that the source code looks identical to code
             // that would normally created when running in a regular site.
 
-            // if a object wrapper is used, rewrite the uri
+            // if an object wrapper is used, rewrite the uri
             Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
             if (obj != null) {
                 CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;

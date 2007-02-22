@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/Messages.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.2.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/Messages.java,v $
+ * Date   : $Date: 2007/02/22 16:48:29 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.6
  */
