@@ -55,6 +55,7 @@
 			<resource uri="/system/workplace/resources/buttons/new.png"/>
 			<resource uri="/system/workplace/resources/buttons/new_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/preferences.png"/>
+			<resource uri="/system/workplace/resources/buttons/preferences_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/preview.png"/>
 			<resource uri="/system/workplace/resources/buttons/publish.png"/>
 			<resource uri="/system/workplace/resources/buttons/publish_in.png"/>
@@ -2258,6 +2259,25 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/preferences_in.png</source>
+			<destination>system/workplace/resources/buttons/preferences_in.png</destination>
+			<type>image</type>
+			<uuidstructure>f0ef880f-c255-11db-bd78-d1e27da85d64</uuidstructure>
+			<uuidresource>f0ef8810-c255-11db-bd78-d1e27da85d64</uuidresource>
+			<datelastmodified>Thu, 22 Feb 2007 09:20:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 22 Feb 2007 09:20:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.12.4.6 $
+ * Date   : $Date: 2007/02/22 09:42:35 $
+ * Version: $Revision: 1.12.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.4.6 $ 
+ * @version $Revision: 1.12.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,6 +188,16 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the selfManagement.<p>
+     *
+     * @return the selfManagement
+     */
+    public boolean isSelfManagement() {
+
+        return !m_user.isManaged();
+    }
+
+    /**
      * Setter for widget definition.<p>
      * 
      * @param assignedOu the ou description
@@ -243,6 +253,16 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
+    }
+
+    /**
+     * Sets the selfManagement.<p>
+     *
+     * @param selfManagement the selfManagement to set
+     */
+    public void setSelfManagement(boolean selfManagement) {
+
+        m_user.setManaged(!selfManagement);
     }
 
     /**
@@ -320,7 +340,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "selfManagement", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "selfManagement", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "lastlogin", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "created", PAGES[0], new CmsDisplayWidget()));
         } else {

@@ -24,7 +24,6 @@
 		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
 	}
 %>
-    
     function loadBody() {
         var link = document.forms.wpViewSelect.wpView.options[document.forms.wpViewSelect.wpView.selectedIndex].value;
         window.top.body.location.href = link;
@@ -54,60 +53,41 @@
 <td>
 <form style="margin: 0; padding: 0;" name="wpProjectSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
 <div>
-<%=
-	
-	wp.getProjectSelect("name=\"wpProject\" onchange=\"document.forms.wpProjectSelect.submit()\"", "style=\"width:150px\"")
-        
-%>
+<%= wp.getProjectSelect("name=\"wpProject\" onchange=\"document.forms.wpProjectSelect.submit()\"", "style=\"width:150px\"") %>
 <input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
 
-<%= 
-	
-	wp.getPublishButton() 
-
-
-%>
+<%= wp.getPublishButton() %>
 <%= wp.getPublishQueueButton() %>
 <%
-
 if (wp.showSiteSelector()) {
 
 %><%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_SITE_0) %>
-
 <td>
 <form style="margin: 0; padding: 0;" name="wpSiteSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
 <div>
-<%= 
-
-	wp.getSiteSelect("name=\"wpSite\" style=\"width:150px\" onchange=\"document.forms.wpSiteSelect.submit()\"")
-        
-%>
+<%= wp.getSiteSelect("name=\"wpSite\" style=\"width:150px\" onchange=\"document.forms.wpSiteSelect.submit()\"") %>
 <input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
+
 <% } %>
 
 <%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel(org.opencms.workplace.Messages.GUI_LABEL_VIEW_0) %>
-
 <td>
 <form style="margin: 0; padding: 0;" name="wpViewSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
 <div>
-<%= 
-
-	wp.getViewSelect("name=\"wpView\" style=\"width:150px\" onchange=\"document.forms.wpViewSelect.submit()\"")
-        
-%>
+<%= wp.getViewSelect("name=\"wpView\" style=\"width:150px\" onchange=\"document.forms.wpViewSelect.submit()\"") %>
 <input type="hidden" name="<%= CmsFrameset.PARAM_WP_FRAME %>" value="head">
 </div>
 </form></td>
 
 <%= wp.buttonBarSeparator(5, 0) %>
 <%= wp.button("javascript:doReload()", null, "reload.png", org.opencms.workplace.Messages.GUI_BUTTON_RELOAD_0, buttonStyle) %>
-<%= wp.button("../commons/preferences.jsp", "body", "preferences.png",org.opencms.workplace.Messages.GUI_BUTTON_PREFERENCES_0 , buttonStyle) %>
+<%= wp.getPreferencesButton() %>
 
 <% 
 if (wp.isSyncEnabled()) {
@@ -123,8 +103,10 @@ if (wp.isHelpEnabled()) {
 <%= wp.button("../../login/index.html?logout=true", "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
 
 <% if (buttonStyle != 2) {%>
+
 <td>&nbsp;</td>
 <td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= CmsWorkplace.getSkinUri() %>commons/workplace.png'); "></span></td>
+
 <% } %>
 <%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/21 14:45:00 $
- * Version: $Revision: 1.4.4.8 $
+ * Date   : $Date: 2007/02/22 09:42:35 $
+ * Version: $Revision: 1.4.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.8 $ 
+ * @version $Revision: 1.4.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -266,6 +266,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the selfManagement.<p>
+     *
+     * @return the selfManagement
+     */
+    public boolean isSelfManagement() {
+
+        return !m_user.isManaged();
+    }
+
+    /**
      * This method is only needed for displaying reasons.<p>
      * 
      * @param assignedOu nothing to do with this parameter
@@ -327,6 +337,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
+    }
+
+    /**
+     * Sets the selfManagement.<p>
+     *
+     * @param selfManagement the selfManagement to set
+     */
+    public void setSelfManagement(boolean selfManagement) {
+
+        m_user.setManaged(!selfManagement);
     }
 
     /**
@@ -449,7 +469,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "selfManagement", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "selfManagement", PAGES[0], new CmsCheckboxWidget()));
         if (isPwdChangeAllowed(m_user)) {
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
@@ -501,7 +521,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     protected void initUserObject() {
 
         Object o = null;
-
         try {
             if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
                 // edit an existing user, get the user object from db

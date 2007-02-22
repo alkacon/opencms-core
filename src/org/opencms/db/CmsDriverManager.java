@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.570.2.61 $
+ * Date   : $Date: 2007/02/22 09:42:34 $
+ * Version: $Revision: 1.570.2.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6418,7 +6418,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
 
-            if (user == null) {
+            if ((user == null) || user.isManaged()) {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 

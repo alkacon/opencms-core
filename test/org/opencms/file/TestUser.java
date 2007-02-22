@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUser.java,v $
- * Date   : $Date: 2007/02/21 14:27:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/22 09:42:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestUser extends OpenCmsTestCase {
 
@@ -81,6 +81,7 @@ public class TestUser extends OpenCmsTestCase {
         suite.addTest(new TestUser("testUserCreation"));
         suite.addTest(new TestUser("testUserInfo"));
         suite.addTest(new TestUser("testUserExport"));
+        suite.addTest(new TestUser("testUserSelfManagement"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -109,13 +110,44 @@ public class TestUser extends OpenCmsTestCase {
         echo("Testing user creation");
 
         long time = System.currentTimeMillis();
-        synchronized (this) {
-            wait(50);
-            CmsUser user = cms.createUser("test123", "test123", "my description", null);
-            wait(50);
-            assertTrue(time < user.getDateCreated());
-            assertTrue(user.getDateCreated() < System.currentTimeMillis());
-            assertEquals("my description", user.getDescription());
+        Thread.sleep(50);
+        CmsUser user = cms.createUser("test123", "test123", "my description", null);
+        Thread.sleep(50);
+        assertTrue(time < user.getDateCreated());
+        assertTrue(user.getDateCreated() < System.currentTimeMillis());
+        assertEquals("my description", user.getDescription());
+    }
+
+    /**
+     * Test import/export of additional user info.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUserExport() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing import/export of additional user info");
+
+        String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + "userexport.zip");
+
+        try {
+            // export
+            CmsUser before = cms.readUser("test");
+            new CmsExport(cms, exportFileName, Collections.EMPTY_LIST, false, false, null, true, 0, new CmsShellReport(
+                Locale.ENGLISH), false, false);
+
+            // delete
+            cms.deleteUser("test");
+
+            // import
+            OpenCms.getImportExportManager().importData(cms, exportFileName, null, new CmsShellReport(Locale.ENGLISH));
+            CmsUser after = cms.readUser("test");
+
+            // compare
+            assertEquals(before.getAdditionalInfo(), after.getAdditionalInfo());
+        } finally {
+            deleteFile(exportFileName);
         }
     }
 
@@ -151,35 +183,41 @@ public class TestUser extends OpenCmsTestCase {
     }
 
     /**
-     * Test import/export of additional user info.<p>
+     * Test user creation.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testUserExport() throws Throwable {
+    public void testUserSelfManagement() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing import/export of additional user info");
+        echo("Testing user creation");
 
-        String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + "userexport.zip");
+        CmsUser userA = cms.createUser("userA", "test", "my description", null);
+        assertFalse(userA.isManaged());
 
+        CmsUser userB = cms.createUser("userB", "test", "my description", null);
+        assertFalse(userB.isManaged());
+        userB.setManaged(true);
+        assertTrue(userB.isManaged());
+        cms.writeUser(userB);
+
+        // the admin should be able to change the pwd
+        cms.setPassword(userA.getName(), "test2");
+        cms.setPassword(userB.getName(), "test2");
+
+        // login as userA
+        cms.loginUser(userA.getName(), "test2");
+        // he should be able to change his own pwd
+        cms.setPassword(userA.getName(), "test2", "test3");
+
+        // login as userB
+        cms.loginUser(userB.getName(), "test2");
+        // he should not be able to change his own pwd
         try {
-            // export
-            CmsUser before = cms.readUser("test");
-            new CmsExport(cms, exportFileName, Collections.EMPTY_LIST, false, false, null, true, 0, new CmsShellReport(
-                Locale.ENGLISH), false, false);
-
-            // delete
-            cms.deleteUser("test");
-
-            // import
-            OpenCms.getImportExportManager().importData(cms, exportFileName, null, new CmsShellReport(Locale.ENGLISH));
-            CmsUser after = cms.readUser("test");
-
-            // compare
-            assertEquals(before.getAdditionalInfo(), after.getAdditionalInfo());
-        } finally {
-            deleteFile(exportFileName);
+            cms.setPassword(userB.getName(), "test2", "test3");
+            fail("this user should not be able to change his own pwd");
+        } catch (CmsDataAccessException e) {
+            // ignore, ok
         }
     }
 }

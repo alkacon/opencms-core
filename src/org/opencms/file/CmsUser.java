@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.32.4.14 $
+ * Date   : $Date: 2007/02/22 09:42:35 $
+ * Version: $Revision: 1.32.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.14 $
+ * @version $Revision: 1.32.4.15 $
  * 
  * @since 6.0.0
  * 
@@ -111,10 +111,17 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public CmsUser() {
 
-        this(null, "", "", "", "", "", CmsDbUtil.UNKNOWN_ID, I_CmsPrincipal.FLAG_ENABLED
-            + I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT, System.currentTimeMillis(), Collections.singletonMap(
-            CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-            ""));
+        this(
+            null,
+            "",
+            "",
+            "",
+            "",
+            "",
+            CmsDbUtil.UNKNOWN_ID,
+            I_CmsPrincipal.FLAG_ENABLED,
+            System.currentTimeMillis(),
+            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, ""));
     }
 
     /**
@@ -483,13 +490,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is able to manage itselfs.<p> 
+     * Returns <code>true</code> if this user is not able to manage itselfs.<p> 
      * 
-     * @return <code>true</code> if this user is able to manage itselfs 
+     * @return <code>true</code> if this user is not able to manage itselfs 
      */
-    public boolean isSelfManagement() {
+    public boolean isManaged() {
 
-        return (getFlags() & I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT) == I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT;
+        return (getFlags() & I_CmsPrincipal.FLAG_USER_MANAGED) == I_CmsPrincipal.FLAG_USER_MANAGED;
     }
 
     /**
@@ -653,14 +660,14 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the self management flag for this user to the given value.<p>
+     * Sets the managed flag for this user to the given value.<p>
      * 
      * @param value the value to set
      */
-    public void setSelfManagement(boolean value) {
+    public void setManaged(boolean value) {
 
-        if (isSelfManagement() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_SELF_MANAGEMENT);
+        if (isManaged() != value) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_MANAGED);
         }
     }
 

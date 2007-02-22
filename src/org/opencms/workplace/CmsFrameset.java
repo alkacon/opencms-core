@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/02/09 16:41:00 $
- * Version: $Revision: 1.86.4.9 $
+ * Date   : $Date: 2007/02/22 09:42:34 $
+ * Version: $Revision: 1.86.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.9 $ 
+ * @version $Revision: 1.86.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,6 +189,27 @@ public class CmsFrameset extends CmsWorkplace {
     public String getLoginTime() {
 
         return getMessages().getDateTime(getSettings().getUser().getLastlogin());
+    }
+
+    /**
+     * Returns the html for the "preferences" button depending on the current users permissions and 
+     * the default workplace settings.<p>
+     * 
+     * @return the html for the "preferences" button
+     */
+    public String getPreferencesButton() {
+
+        int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
+        if (!getCms().getRequestContext().currentUser().isManaged()) {
+            return button(
+                "../commons/preferences.jsp",
+                "body",
+                "preferences.png",
+                Messages.GUI_BUTTON_PREFERENCES_0,
+                buttonStyle);
+        } else {
+            return button(null, null, "preferences_in.png", Messages.GUI_BUTTON_PREFERENCES_0, buttonStyle);
+        }
     }
 
     /**
