@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.42.4.16 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.42.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.16 $ 
+ * @version $Revision: 1.42.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -382,18 +382,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public List getConfiguredMappings() {
 
         return m_mappings;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getInternalMimeType()
-     */
-    public String getInternalMimeType() {
-
-        // the default is here to return null, so that the mime type for the
-        // resource depends on the file extension. Only overwrite this for
-        // resources that have different mime types to those found by the
-        // file extension.
-        return null;
     }
 
     /**

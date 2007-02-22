@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 6.5.6
  */
@@ -438,7 +438,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_INIT_PARAM_ERROR_2, INIT_PARAM_LIST, value));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_INIT_PARAM_ERROR_2, INIT_PARAM_LIST, value), e);
             }
         }
 
@@ -460,7 +460,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_READ_INIT_PARAM_ERROR_2,
                     INIT_PARAM_READONLY,
-                    value));
+                    value), e);
             }
         }
 
@@ -477,7 +477,7 @@ public class CmsWebdavServlet extends HttpServlet {
         } catch (NoSuchAlgorithmException e) {
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_MD5_NOT_AVAILABLE_0));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_MD5_NOT_AVAILABLE_0), e);
             }
 
             throw new UnavailableException(Messages.get().getBundle().key(Messages.ERR_MD5_NOT_AVAILABLE_0));
@@ -546,7 +546,7 @@ public class CmsWebdavServlet extends HttpServlet {
             reader.close();
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0), e);
             }
         }
 
@@ -595,7 +595,7 @@ public class CmsWebdavServlet extends HttpServlet {
             istream.close();
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0), e);
             }
         }
 
@@ -629,7 +629,7 @@ public class CmsWebdavServlet extends HttpServlet {
             reader.close();
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0), e);
             }
         }
 
@@ -683,7 +683,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 reader.close();
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_READER_0), e);
                 }
             }
 
@@ -721,7 +721,7 @@ public class CmsWebdavServlet extends HttpServlet {
             istream.close();
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0), e);
             }
         }
 
@@ -775,7 +775,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 istream.close();
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_INPUT_STREAM_0), e);
                 }
             }
 
@@ -1069,7 +1069,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
             }
             return;
         }
@@ -1172,7 +1172,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
             }
 
             return;
@@ -1468,7 +1468,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
                 }
 
                 return;
@@ -1594,7 +1594,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
             }
 
             return;
@@ -1734,7 +1734,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
             }
 
             return;
@@ -1926,7 +1926,7 @@ public class CmsWebdavServlet extends HttpServlet {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(Messages.get().getBundle().key(
                                 Messages.LOG_LIST_ITEMS_ERROR_1,
-                                currentItem.getName()));
+                                currentItem.getName()), e);
                         }
 
                         return;
@@ -2051,7 +2051,7 @@ public class CmsWebdavServlet extends HttpServlet {
         } catch (CmsException e) {
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), e);
             }
 
             result = false;
@@ -2066,7 +2066,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 contentFile.delete();
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_DELETE_TEMP_FILE_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_DELETE_TEMP_FILE_0), e);
                 }
             }
         }
@@ -2161,7 +2161,7 @@ public class CmsWebdavServlet extends HttpServlet {
             oldResourceStream = new ByteArrayInputStream(item.getContent());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ITEM_NOT_FOUND_1, path));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ITEM_NOT_FOUND_1, path), e);
             }
         }
 
@@ -2926,7 +2926,7 @@ public class CmsWebdavServlet extends HttpServlet {
             list = m_session.list(path);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_ERROR_1, path));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_ERROR_1, path), e);
             }
             errorList.put(path, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
             return;

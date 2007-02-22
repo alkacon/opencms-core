@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.25.4.6 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.25.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.6 $ 
+ * @version $Revision: 1.25.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,14 +121,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     public String getCachePropertyDefault() {
 
         return "element;locale;";
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getInternalMimeType()
-     */
-    public String getInternalMimeType() {
-
-        return I_CmsResourceType.MIME_TYPE_TEXT_XML;
     }
 
     /**

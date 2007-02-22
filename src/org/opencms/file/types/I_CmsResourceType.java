@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.29.4.6 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.29.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.6 $ 
+ * @version $Revision: 1.29.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,12 +92,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
     /** Configuration key for the resource type name. */
     String CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
-
-    /** The mime type to use for plain text files. */
-    String MIME_TYPE_TEXT_PLAIN = "text/plain";
-
-    /** The mime type to use for xml text files. */
-    String MIME_TYPE_TEXT_XML = "text/xml";
 
     /** Store the property on resource record. */
     String PROPERTY_ON_RESOURCE = "resource";
@@ -357,18 +351,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return a list of file extensions mappings for this resource type in an unmodifiable List
      */
     List getConfiguredMappings();
-
-    /**
-     * Returns the internal mime type to use for opening the resource in an editor.<p>
-     * If the mime type depends on the file extension (images or binary files), null
-     * should be returned.
-     * 
-     * For example: return text/xml for xmlpages and xmlcontents to show them in a
-     * xml editor.
-     * 
-     * @return the internal mime type of the resource to use for an editor
-     */
-    String getInternalMimeType();
 
     /**
      * Returns the loader type id of this resource type.<p>

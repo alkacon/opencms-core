@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2007/01/30 08:31:39 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,14 +100,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getInternalMimeType()
-     */
-    public String getInternalMimeType() {
-
-        return I_CmsResourceType.MIME_TYPE_TEXT_PLAIN;
     }
 
     /**

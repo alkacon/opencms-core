@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.22.8.9 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.22.8.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.9 $ 
+ * @version $Revision: 1.22.8.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,14 +167,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             result.putAll(additional);
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getInternalMimeType()
-     */
-    public String getInternalMimeType() {
-
-        return I_CmsResourceType.MIME_TYPE_TEXT_XML;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -388,6 +388,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                 file.setContents(content);
 
                 CmsRepositoryLockInfo lock = getLock(path);
+
+                // lock resource
+                m_cms.lockResource(path);
 
                 // write file
                 m_cms.writeFile(file);

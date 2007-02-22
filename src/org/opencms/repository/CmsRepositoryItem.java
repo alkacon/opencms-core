@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/22 14:39:55 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.file.wrapper.CmsObjectWrapper;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
@@ -46,7 +46,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -89,7 +89,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
         if (m_content == null) {
             try {
                 String filename = m_cms.getSitePath(m_resource);
-                
+
                 // read and return the file
                 CmsFile file = m_cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
@@ -137,27 +137,24 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
 
         if (m_mimeType == null) {
             try {
-                m_mimeType = OpenCms.getResourceManager().getResourceType(m_resource.getTypeId()).getInternalMimeType();
                 String encoding = m_cms.readPropertyObject(
                     m_resource,
                     CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
                     true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
 
-                if (m_mimeType == null) {
-                    m_mimeType = OpenCms.getResourceManager().getMimeType(
-                        m_resource.getRootPath(),
-                        encoding,
-                        I_CmsResourceType.MIME_TYPE_TEXT_PLAIN);
-                } else {
-                    if ((encoding != null) && m_mimeType.startsWith("text") && (m_mimeType.indexOf("charset") == -1)) {
-                        m_mimeType += "; charset=" + encoding;
-                    }
+                m_mimeType = OpenCms.getResourceManager().getMimeType(
+                    m_resource.getRootPath(),
+                    encoding,
+                    CmsResourceManager.MIMETYPE_TEXT);
+                
+                if ((encoding != null) && m_mimeType.startsWith("text") && (m_mimeType.indexOf("charset") == -1)) {
+                    m_mimeType += "; charset=" + encoding;
                 }
             } catch (CmsException ex) {
                 // noop
             }
         }
-        
+
         return m_mimeType;
     }
 
