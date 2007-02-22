@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.repository;
 
+import org.opencms.main.CmsException;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -39,7 +42,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
@@ -52,9 +55,9 @@ public interface I_CmsRepositorySession {
      * @param dest The destination path where to copy to
      * @param overwrite Should any existing item be overwritten
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    void copy(String src, String dest, boolean overwrite) throws CmsRepositoryException;
+    void copy(String src, String dest, boolean overwrite) throws CmsException;
 
     /**
      * Creates a new item at the given path.<p>
@@ -63,18 +66,18 @@ public interface I_CmsRepositorySession {
      * 
      * @param path The complete path of the new collection
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    void create(String path) throws CmsRepositoryException;
+    void create(String path) throws CmsException;
 
     /**
      * Deletes the item at the given path.<p>
      * 
      * @param path The complete path of the item to delete
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    void delete(String path) throws CmsRepositoryException;
+    void delete(String path) throws CmsException;
 
     /**
      * Returns if an item exists at the given path.<p>
@@ -92,9 +95,9 @@ public interface I_CmsRepositorySession {
      * 
      * @return the item found at the path
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    I_CmsRepositoryItem getItem(String path) throws CmsRepositoryException;
+    I_CmsRepositoryItem getItem(String path) throws CmsException;
 
     /**
      * Returns the lock for the resource at the given path.<p>
@@ -112,9 +115,9 @@ public interface I_CmsRepositorySession {
      * 
      * @return a list with {@link I_CmsRepositoryItem} found in the path
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    List list(String path) throws CmsRepositoryException;
+    List list(String path) throws CmsException;
 
     /**
      * Creates a new lock on the item with the path with the given information 
@@ -125,9 +128,9 @@ public interface I_CmsRepositorySession {
      * 
      * @return if the lock was successfully
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsRepositoryException;
+    boolean lock(String path, CmsRepositoryLockInfo lock) throws CmsException;
 
     /**
      * Moves an item from a source path to a destination path.<p>
@@ -136,9 +139,9 @@ public interface I_CmsRepositorySession {
      * @param dest The complete destination path where to copy to
      * @param overwrite Should any existing item should be overwritten
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    void move(String src, String dest, boolean overwrite) throws CmsRepositoryException;
+    void move(String src, String dest, boolean overwrite) throws CmsException;
 
     /**
      * Saves an item at the given path.<p>
@@ -149,9 +152,10 @@ public interface I_CmsRepositorySession {
      * @param inputStream The content of the item
      * @param overwrite Should an existing item at the path be overwritten
      * 
-     * @throws CmsRepositoryException if something goes wrong
+     * @throws CmsException if something goes wrong
+     * @throws IOException if a write error occurs
      */
-    void save(String path, InputStream inputStream, boolean overwrite) throws CmsRepositoryException;
+    void save(String path, InputStream inputStream, boolean overwrite) throws CmsException, IOException;
 
     /**
      * Unlocks the item found at the path.<p>

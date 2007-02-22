@@ -82,7 +82,7 @@
         </init-param>
         <init-param>
           <param-name>repository</param-name>
-          <param-value>default</param-value>
+          <param-value>standard</param-value>
         </init-param>
     </servlet>
     

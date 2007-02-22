@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/Messages.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,17 +39,35 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEST_EXISTS_0 = "ERR_DEST_EXISTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_FILTER_TYPE_1 = "ERR_INVALID_FILTER_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_WRAPPER_NAME_1 = "ERR_INVALID_WRAPPER_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ITEM_FILTERED_1 = "ERR_ITEM_FILTERED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_CONFIG_AFTER_STARTUP_0 = "ERR_NO_CONFIG_AFTER_STARTUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_OVERWRITE_0 = "ERR_OVERWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNLOCK_FAILED_0 = "ERR_UNLOCK_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_FILTER_RULE_2 = "INIT_ADD_FILTER_RULE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_REPOSITORY_2 = "INIT_ADD_REPOSITORY_2";
@@ -62,6 +80,39 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STARTING_REPOSITORY_CONFIG_0 = "INIT_STARTING_REPOSITORY_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_COPY_ITEM_2 = "LOG_COPY_ITEM_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CREATE_ITEM_1 = "LOG_CREATE_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DELETE_DEST_0 = "LOG_DELETE_DEST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DELETE_ITEM_1 = "LOG_DELETE_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LIST_ITEMS_1 = "LOG_LIST_ITEMS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LIST_ITEMS_SUCESS_1 = "LOG_LIST_ITEMS_SUCESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOCK_ITEM_1 = "LOG_LOCK_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MOVE_ITEM_2 = "LOG_MOVE_ITEM_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_READ_ITEM_1 = "LOG_READ_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNLOCK_ITEM_1 = "LOG_UNLOCK_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UPDATE_ITEM_1 = "LOG_UPDATE_ITEM_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRAPPER_CLASS_NOT_FOUND_1 = "LOG_WRAPPER_CLASS_NOT_FOUND_1";

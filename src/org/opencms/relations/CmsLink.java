@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.relations;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -58,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -342,6 +343,13 @@ public class CmsLink {
             // _with_ server name / port so that the source code looks identical to code
             // that would normally created when running in a regular site.
 
+            // if a object wrapper is used, rewrite the uri
+            Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (obj != null) {
+                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+                m_uri = wrapper.rewriteLink(getUri());
+            }
+            
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!processEditorLinks && (cms.getRequestContext().getSiteRoot().length() == 0)) {
                 return OpenCms.getLinkManager().substituteLink(cms, getUri());

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/Attic/CmsResourceWrapperJsp.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceExtensionWrapperJsp.java,v $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import org.opencms.file.types.CmsResourceTypeJsp;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.6
  */
-public class CmsResourceWrapperJsp extends A_CmsResourceExtensionWrapper {
+public class CmsResourceExtensionWrapperJsp extends A_CmsResourceExtensionWrapper {
 
     /** The extension used for this resource type wrapper. */
     private static final String RESOURCE_TYPE_EXTENSION = "jsp";

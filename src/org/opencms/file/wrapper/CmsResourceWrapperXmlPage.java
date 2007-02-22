@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Properties;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
@@ -431,11 +431,15 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             } else {
 
                 // sub path is a locale -> return all elements for this locale
-                List names = xml.getNames(new Locale(path));
+                Locale locale = new Locale(path);
+                List names = xml.getNames(locale);
                 Iterator iter = names.iterator();
                 while (iter.hasNext()) {
                     String name = (String)iter.next();
-                    ret.add(getResourceForElement(xmlPage, path, name, 0));
+                    String content = xml.getStringValue(cms, name, locale);
+                    content = prepareContent(content, cms, xmlPage, false);
+
+                    ret.add(getResourceForElement(xmlPage, path, name, content.getBytes().length));
                 }
 
             }
@@ -568,11 +572,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             // get the path below the xml page
             String path = getSubPath(cms, xmlPage, resourcename);
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
-            CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
-
             String[] tokens = path.split("/");
             if (tokens.length == 1) {
+
+                CmsFile file = CmsFile.upgrade(xmlPage, cms);
 
                 // check temp file table to remove deleted virtual files
                 if ((TMP_FILE_TABLE.containsKey(resourcename))
@@ -597,6 +600,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
             } else if (tokens.length == 2) {
 
+                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
+
                 // cut off the html suffix
                 String name = tokens[1];
                 if (name.endsWith("." + EXTENSION_ELEMENT)) {
@@ -605,7 +611,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 if (xml.hasValue(name, new Locale(tokens[0]))) {
 
-                    byte[] content = xml.getStringValue(cms, name, new Locale(tokens[0])).getBytes();
+                    String contentString = xml.getStringValue(cms, name, new Locale(tokens[0]));
+                    contentString = prepareContent(contentString, cms, xmlPage, false);
+
+                    byte[] content = contentString.getBytes();
                     CmsResource resElem = getResourceForElement(xmlPage, tokens[0], name, content.length);
                     CmsFile fileElem = new CmsFile(resElem);
 
@@ -685,10 +694,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     }
 
                     if (xml.hasValue(name, new Locale(tokens[0]))) {
-                        return getResourceForElement(xmlPage, tokens[0], name, xml.getStringValue(
-                            cms,
-                            name,
-                            new Locale(tokens[0])).getBytes().length);
+                        String content = xml.getStringValue(cms, name, new Locale(tokens[0]));
+                        content = prepareContent(content, cms, xmlPage, false);
+
+                        return getResourceForElement(xmlPage, tokens[0], name, content.getBytes().length);
                     }
                 }
 
@@ -696,6 +705,36 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
             return null;
         }
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String restoreLink(CmsObject cms, String uri) {
+
+        CmsResource res = findXmlPage(cms, uri);
+        if (res != null) {
+            return res.getRootPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
+     */
+    public String rewriteLink(CmsObject cms, CmsResource res) {
+
+        if (isWrappedResource(cms, res)) {
+            String path = res.getRootPath();
+            if (!path.endsWith("/")) {
+                path += "/";
+            }
+            
+            return path + NAME_ELEMENT_CONTROLCODE;
+        }
+
+        return null;
     }
 
     /**
@@ -730,9 +769,6 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             String path = getSubPath(cms, xmlPage, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
             String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
-            CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
-
             // set individual properties
             if (NAME_ELEMENT_IND_PROPERTIES.equals(path)) {
 
@@ -756,6 +792,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             String[] tokens = path.split("/");
             if (tokens.length == 2) {
 
+                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
+
                 // cut off the html suffix
                 String name = tokens[1];
                 if (name.endsWith("." + EXTENSION_ELEMENT)) {
@@ -763,7 +802,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
 
                 // set content
-                xml.setStringValue(cms, name, new Locale(tokens[0]), getStringValue(cms, file, resource.getContents()));
+                String content = getStringValue(cms, file, resource.getContents());
+                content = prepareContent(content, cms, xmlPage, true);
+                xml.setStringValue(cms, name, new Locale(tokens[0]), content);
 
                 // write file
                 file.setContents(xml.marshal());
@@ -775,6 +816,104 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         }
 
         return null;
+    }
+
+    /**
+     * Returns the OpenCms VFS uri of the style sheet of the resource.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param res the resource where to read the style sheet for
+     * 
+     * @return the OpenCms VFS uri of the style sheet of resource
+     */
+    protected String getUriStyleSheet(CmsObject cms, CmsResource res) {
+
+        String result = "";
+        try {
+            String currentTemplate = getUriTemplate(cms, res);
+            if (!"".equals(currentTemplate)) {
+                // read the stylesheet from the template file
+                result = cms.readPropertyObject(currentTemplate, CmsPropertyDefinition.PROPERTY_TEMPLATE, false).getValue(
+                    "");
+            }
+        } catch (CmsException e) {
+            // LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the OpenCms VFS uri of the template of the resource.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param res the resource where to read the template for
+     * 
+     * @return the OpenCms VFS uri of the template of the resource
+     */
+    protected String getUriTemplate(CmsObject cms, CmsResource res) {
+
+        String result = "";
+        try {
+            result = cms.readPropertyObject(
+                cms.getRequestContext().removeSiteRoot(res.getRootPath()),
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                true).getValue("");
+        } catch (CmsException e) {
+            // LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
+        }
+        return result;
+    }
+
+    /**
+     * Prepare the content of a xml page before returning.<p>
+     * 
+     * Mainly adds the basic html structure and the css style sheet.<p>
+     * 
+     * @param content the origin content of the xml page element
+     * @param cms the initialized CmsObject
+     * @param xmlPage the xml page resource
+     * @param save if the content should be prepared for saving or not
+     * 
+     * @return the prepared content with the added html structure
+     */
+    protected String prepareContent(String content, CmsObject cms, CmsResource xmlPage, boolean save) {
+
+        // extract content of <body>...</body> tag
+        content = CmsStringUtil.extractHtmlBody(content);
+
+        // remove unwanted "&amp;" from links
+        // content = filterAnchors(content);
+
+        if (!save) {
+
+            // add tags for stylesheet
+            String stylesheet = getUriStyleSheet(cms, xmlPage);
+
+            // rewrite uri
+            Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (obj != null) {
+                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+                stylesheet = wrapper.rewriteLink(stylesheet);
+            }
+            
+            String base = OpenCms.getSystemInfo().getOpenCmsContext();
+
+            StringBuffer result = new StringBuffer(content.length() + 1024);
+            result.append("<html><head>");
+            if (!"".equals(stylesheet)) {
+                result.append("<link href=\"");
+                result.append(base);
+                result.append(stylesheet);
+                result.append("\" rel=\"stylesheet\" type=\"text/css\">");
+            }
+
+            result.append("</head><body>");
+            result.append(content);
+            result.append("</body></html>");
+            content = result.toString();
+        }
+
+        return content.trim();
     }
 
     /**
@@ -824,9 +963,15 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
         CmsFile ret = null;
         if (CmsProperty.TYPE_SHARED.equals(type)) {
-            ret = new CmsFile(setRootPath(res, res.getRootPath() + "/" + NAME_ELEMENT_SHARED_PROPERTIES, CmsResourceTypePlain.getStaticTypeId()));
+            ret = new CmsFile(setRootPath(
+                res,
+                res.getRootPath() + "/" + NAME_ELEMENT_SHARED_PROPERTIES,
+                CmsResourceTypePlain.getStaticTypeId()));
         } else {
-            ret = new CmsFile(setRootPath(res, res.getRootPath() + "/" + NAME_ELEMENT_IND_PROPERTIES, CmsResourceTypePlain.getStaticTypeId()));
+            ret = new CmsFile(setRootPath(
+                res,
+                res.getRootPath() + "/" + NAME_ELEMENT_IND_PROPERTIES,
+                CmsResourceTypePlain.getStaticTypeId()));
         }
 
         ret.setContents(content.toString().getBytes());
@@ -994,7 +1139,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             if (path.startsWith("/")) {
                 path = path.substring(1);
             }
-            
+
             if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
@@ -1019,7 +1164,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         if (!path.endsWith("/")) {
             path += "/";
         }
-        
+
         return new CmsResource(
             res.getStructureId(),
             res.getResourceId(),
@@ -1076,6 +1221,20 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
+     * Change the root path of the resource.<p>
+     * 
+     * @param res the resource where to change the path
+     * @param rootPath the root path which should be set at the resource
+     * 
+     * @return the resource with the changed root path
+     */
+
+    private CmsResource setRootPath(CmsResource res, String rootPath) {
+
+        return setRootPath(res, rootPath, res.getTypeId());
+    }
+
+    /**
      * Change the root path and the type id of the resource.<p>
      * 
      * @param res the resource where to change the path
@@ -1104,19 +1263,5 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             res.getDateExpired(),
             res.getSiblingCount(),
             res.getLength());
-    }
-
-    /**
-     * Change the root path of the resource.<p>
-     * 
-     * @param res the resource where to change the path
-     * @param rootPath the root path which should be set at the resource
-     * 
-     * @return the resource with the changed root path
-     */
-
-    private CmsResource setRootPath(CmsResource res, String rootPath) {
-
-        return setRootPath(res, rootPath, res.getTypeId());
     }
 }

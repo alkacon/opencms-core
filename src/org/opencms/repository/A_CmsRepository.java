@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepository.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,6 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
  * 
@@ -47,7 +44,7 @@ import javax.servlet.ServletException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $ 
+ * @version $Revision: 1.1.4.3 $ 
  * 
  * @since 6.5.6
  */
@@ -55,6 +52,9 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
 
     /** The repository configuration. */
     private Map m_configuration;
+
+    /** The filter to use for the repository. */
+    private CmsRepositoryFilter m_filter;
 
     /** The name of the repository. */
     private String m_name;
@@ -65,6 +65,7 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
     public A_CmsRepository() {
 
         m_configuration = new TreeMap();
+        m_filter = null;
     }
 
     /**
@@ -74,11 +75,11 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
 
         if (m_configuration.containsKey(paramName)) {
             String[] values = (String[])m_configuration.get(paramName);
-            
+
             String[] added = new String[values.length + 1];
             System.arraycopy(values, 0, added, 0, values.length);
-            added[added.length-1] = paramValue;
-            
+            added[added.length - 1] = paramValue;
+
             m_configuration.put(paramName, added);
         } else {
             m_configuration.put(paramName, new String[] {paramValue});
@@ -94,6 +95,16 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
     }
 
     /**
+     * Returns the filter.<p>
+     *
+     * @return the filter
+     */
+    public CmsRepositoryFilter getFilter() {
+
+        return m_filter;
+    }
+
+    /**
      * @see org.opencms.repository.I_CmsRepository#getName()
      */
     public String getName() {
@@ -102,14 +113,13 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
-     */
-    public abstract void init(ServletConfig servletConfig) throws ServletException;
-
-    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() throws CmsConfigurationException {
+
+        if (m_filter != null) {
+            m_filter.initConfiguration();
+        }
 
         // suppress the compiler warning, this is never true
         if (m_configuration == null) {
@@ -119,10 +129,14 @@ public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigura
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
+     * Sets the filter.<p>
+     *
+     * @param filter the filter to set
      */
-    public abstract I_CmsRepositorySession login(String userName, String password)
-    throws CmsRepositoryAuthorizationException;
+    public void setFilter(CmsRepositoryFilter filter) {
+
+        m_filter = filter;
+    }
 
     /**
      * @see org.opencms.repository.I_CmsRepository#setName(String)

@@ -354,9 +354,14 @@
 # In this node repositories to access OpenCms are configured.
 -->
 <!ELEMENT repositories (repository*)>
-<!ELEMENT repository (param*)>
+<!ELEMENT repository (params?, filter?)>
 <!ATTLIST repository name CDATA #REQUIRED>
 <!ATTLIST repository class CDATA #REQUIRED>
 
+<!ELEMENT params (param*)>
+
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!ELEMENT filter (regex*)>
+<!ATTLIST filter type CDATA #REQUIRED>

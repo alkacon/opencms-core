@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/cms/wrapper/Attic/CmsRepository.java,v $
- * Date   : $Date: 2007/02/21 14:45:00 $
- * Version: $Revision: 1.1.4.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepository.java,v $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,21 +29,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.repository.cms.wrapper;
+package org.opencms.repository;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.file.wrapper.I_CmsResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.repository.A_CmsRepository;
-import org.opencms.repository.CmsRepositoryAuthorizationException;
-import org.opencms.repository.I_CmsRepositorySession;
-import org.opencms.repository.Messages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -98,7 +93,7 @@ public class CmsRepository extends A_CmsRepository {
         if (getConfiguration().containsKey(PARAM_WRAPPER)) {
             String[] wrappers = (String[])getConfiguration().get(PARAM_WRAPPER);
 
-            for (int i=0; i<wrappers.length; i++) {
+            for (int i = 0; i < wrappers.length; i++) {
 
                 String classname = wrappers[i].trim();
                 Class nameClazz;
@@ -139,27 +134,30 @@ public class CmsRepository extends A_CmsRepository {
         }
 
         m_wrappers = Collections.unmodifiableList(m_wrappers);
+
+        super.initConfiguration();
     }
 
     /**
      * @see org.opencms.repository.I_CmsRepository#login(java.lang.String, java.lang.String)
      */
-    public I_CmsRepositorySession login(String userName, String password) throws CmsRepositoryAuthorizationException {
+    public I_CmsRepositorySession login(String userName, String password) throws CmsException {
 
         CmsObject cms;
-        try {
-            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            cms.loginUser(userName, password);
+        cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms.loginUser(userName, password);
 
-            CmsUser user = cms.readUser(userName);
-            CmsUserSettings settings = new CmsUserSettings(user);
+        //CmsUser user = cms.readUser(userName);
+        CmsUserSettings settings = new CmsUserSettings(cms);
 
-            cms.getRequestContext().setSiteRoot(settings.getStartSite());
-            cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));
-        } catch (CmsException e) {
-            throw new CmsRepositoryAuthorizationException(e.getLocalizedMessage());
-        }
-        return new CmsRepositorySession(new CmsObjectWrapper(cms, m_wrappers));
+        cms.getRequestContext().setSiteRoot(settings.getStartSite());
+        cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));
+
+        // set a link table wrapper to handle links in xml pages
+        CmsObjectWrapper objWrapper = new CmsObjectWrapper(cms, m_wrappers);
+        cms.getRequestContext().setAttribute(CmsObjectWrapper.ATTRIBUTE_NAME, objWrapper);
+        
+        return new CmsRepositorySession(objWrapper, getFilter());
     }
 
 }

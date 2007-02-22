@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceExtensionWrapper.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
@@ -149,7 +149,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = getResource(cms, resourcename);
         if (res != null) {
 
-            cms.lockResource(removeFileExtension(cms, resourcename));
+            cms.lockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
             return true;
         }
 
@@ -207,13 +207,38 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
     }
 
     /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String restoreLink(CmsObject cms, String uri) {
+
+        CmsResource res = getResource(cms, uri);
+        if (res != null) {
+            return res.getRootPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
+     */
+    public String rewriteLink(CmsObject cms, CmsResource res) {
+
+        if (checkTypeId(res.getTypeId())) {
+            return addFileExtension(cms, res.getRootPath());
+        }
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#unlockResource(org.opencms.file.CmsObject, java.lang.String)
      */
     public boolean unlockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = getResource(cms, resourcename);
         if (res != null) {
-            cms.unlockResource(resourcename);
+            cms.unlockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
             return true;
         }
 
@@ -243,7 +268,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
             // TODO: addFileExtension(cms, file);
             return cms.writeFile(removeFileExtension(cms, resource));
         }
-        
+
         return null;
     }
 
@@ -353,7 +378,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
     /**
      * Trys to read the resourcename after removing the file extension and return the
-     * resource of the type id is correct.<p>
+     * resource if the type id is correct.<p>
      * 
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource to read

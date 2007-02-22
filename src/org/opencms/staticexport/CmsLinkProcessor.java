@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/10/27 09:26:56 $
- * Version: $Revision: 1.46.4.5 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.46.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -61,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46.4.5 $ 
+ * @version $Revision: 1.46.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,7 +326,6 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getAttribute(attr)));
                 if (link != null) {
                     // link management check
-                    link.checkConsistency(m_cms);
                     String l = link.getLink(m_cms, m_processEditorLinks);
                     if (TAG_PARAM.equals(tag.getTagName())) {
                         // HACK: to distinguish link params the link itself has to end with '&' or '?'
@@ -354,6 +354,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                         || targetUri.endsWith(CmsRequestUtil.URL_DELIMITER)
                         || targetUri.endsWith(CmsRequestUtil.PARAMETER_DELIMITER)) {
                         if (internalUri != null) {
+                            internalUri = rewriteUri(internalUri);
                             // this is an internal link
                             link = m_linkTable.addLink(type, internalUri, true);
                             // link management check
@@ -442,5 +443,26 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             attrs.add(1, new Attribute(" "));
             attrs.add(2, new Attribute("alt", value == null ? "" : value, '"'));
         }
+    }
+
+    /**
+     * Use the {@link org.opencms.file.wrapper.CmsObjectWrapper} to restore the link in the VFS.<p>
+     * 
+     * @param internalUri the internal uri to restore
+     * 
+     * @return the restored uri
+     */
+    private String rewriteUri(String internalUri) {
+
+        // if a object wrapper is used, rewrite the uri
+        if (m_cms != null) {
+            Object obj = m_cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (obj != null) {
+                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+                return wrapper.restoreLink(internalUri);
+            }
+        }
+
+        return internalUri;
     }
 }

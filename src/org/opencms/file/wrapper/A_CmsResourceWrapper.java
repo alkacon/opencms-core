@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
@@ -182,6 +182,22 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
         if (m_isWrappedResource) {
             return cms.readResource(resourcename, filter);
         }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String restoreLink(CmsObject cms, String uri) {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
+     */
+    public String rewriteLink(CmsObject cms, CmsResource res) {
 
         return null;
     }

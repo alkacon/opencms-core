@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/I_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * since 6.5.6
  */
@@ -264,6 +264,26 @@ public interface I_CmsResourceWrapper {
      * @see CmsObject#readResource(String)
      */
     CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException;
+
+    /**
+     * Returns the link to a existing resource in the VFS for the uri.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param uri the (virutal) uri to be restored
+     * 
+     * @return the uri where to find the resource in the VFS or null if the wrapper is not responsible
+     */
+    String restoreLink(CmsObject cms, String uri);
+
+    /**
+     * Change the link to the resource existing in the VFS.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param res the resource where to rewrite the path
+     * 
+     * @return the rewritten path or null if the wrapper is not responsible
+     */
+    String rewriteLink(CmsObject cms, CmsResource res);
 
     /**
      * Unlocks a resource.<p>

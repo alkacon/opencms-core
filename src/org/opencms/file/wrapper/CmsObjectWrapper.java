@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,14 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
  * @since 6.5.6
  */
 public class CmsObjectWrapper {
+
+    /** The name of the attribute in the {@link org.opencms.file.CmsRequestContext}. */
+    public static final String ATTRIBUTE_NAME = "org.opencms.file.wrapper.CmsObjectWrapper";
 
     /** The initialized CmsObject. */
     private CmsObject m_cms;
@@ -606,6 +609,67 @@ public class CmsObjectWrapper {
     public CmsUser readUser(CmsUUID userId) throws CmsException {
 
         return m_cms.readUser(userId);
+    }
+
+    /**
+     * Restores the uri for the resource at the rewritten path.<p>
+     * 
+     * @param path the path where to find the resource
+     * 
+     * @return the restored path for the resource
+     */
+    public String restoreLink(String path) {
+
+        String ret = null;
+
+        // iterate through all wrappers and call "restoreLink" till one does not return null
+        List wrappers = getWrappers();
+        Iterator iter = wrappers.iterator();
+        while (iter.hasNext()) {
+            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+            ret = wrapper.restoreLink(m_cms, m_cms.getRequestContext().removeSiteRoot(path));
+            if (ret != null) {
+                return ret;
+            }
+        }
+
+        return path;
+    }
+
+    /**
+     * Rewrite the link for the resource at the path.<p>
+     * 
+     * Used for the link processing ({@link org.opencms.relations.CmsLink}).<p>
+     * 
+     * @param path the full path where to find the resource
+     * 
+     * @return the rewritten link for the resource
+     */
+    public String rewriteLink(String path) {
+
+        CmsResource res = null;
+
+        try {
+            res = readResource(m_cms.getRequestContext().removeSiteRoot(path), CmsResourceFilter.ALL);
+            if (res != null) {
+                String ret = null;
+
+                // iterate through all wrappers and call "rewriteLink" till one does not return null
+                List wrappers = getWrappers();
+                Iterator iter = wrappers.iterator();
+                while (iter.hasNext()) {
+                    I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
+                    ret = wrapper.rewriteLink(m_cms, res);
+                    if (ret != null) {
+                        return ret;
+                    }
+                }
+            }
+        } catch (CmsException ex) {
+            // noop
+        }
+
+        return path;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/webdav/Attic/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,18 +51,17 @@
 
 package org.opencms.webdav;
 
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.repository.CmsRepositoryAuthorizationException;
-import org.opencms.repository.CmsRepositoryException;
-import org.opencms.repository.CmsRepositoryItemAlreadyExistsException;
-import org.opencms.repository.CmsRepositoryItemNotFoundException;
 import org.opencms.repository.CmsRepositoryLockInfo;
-import org.opencms.repository.CmsRepositoryPermissionException;
 import org.opencms.repository.I_CmsRepository;
 import org.opencms.repository.I_CmsRepositoryItem;
 import org.opencms.repository.I_CmsRepositorySession;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.BufferedInputStream;
@@ -125,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.5.6
  */
@@ -1038,7 +1037,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.copy(src, dest, overwrite);
-        } catch (CmsRepositoryPermissionException pex) {
+        } catch (CmsSecurityException sex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
             if (LOG.isDebugEnabled()) {
@@ -1046,7 +1045,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryItemAlreadyExistsException iaeex) {
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
 
             // should never happen
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
@@ -1056,7 +1055,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryItemNotFoundException infex) {
+        } catch (CmsVfsResourceNotFoundException rnfex) {
 
             // should never happen
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
@@ -1066,7 +1065,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryException ex) {
+        } catch (CmsException ex) {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
@@ -1156,12 +1155,12 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.delete(path);
-        } catch (CmsRepositoryItemNotFoundException infex) {
+        } catch (CmsVfsResourceNotFoundException rnfex) {
 
             // should never happen
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
             return;
-        } catch (CmsRepositoryPermissionException pex) {
+        } catch (CmsSecurityException sex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
             if (LOG.isDebugEnabled()) {
@@ -1169,7 +1168,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryException ex) {
+        } catch (CmsException ex) {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
@@ -1449,7 +1448,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
                     return;
                 }
-            } catch (CmsRepositoryItemNotFoundException infex) {
+            } catch (CmsVfsResourceNotFoundException rnfex) {
                 resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
 
                 if (LOG.isDebugEnabled()) {
@@ -1457,7 +1456,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 }
 
                 return;
-            } catch (CmsRepositoryPermissionException pex) {
+            } catch (CmsSecurityException sex) {
                 resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
                 if (LOG.isDebugEnabled()) {
@@ -1465,7 +1464,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 }
 
                 return;
-            } catch (CmsRepositoryException ex) {
+            } catch (CmsException ex) {
                 resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
                 if (LOG.isErrorEnabled()) {
@@ -1571,7 +1570,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.create(path);
-        } catch (CmsRepositoryItemAlreadyExistsException iaeex) {
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
 
             // should never happen, because it was checked if the item exists before
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
@@ -1581,7 +1580,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryPermissionException pex) {
+        } catch (CmsSecurityException sex) {
 
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
@@ -1590,7 +1589,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryException ex) {
+        } catch (CmsException ex) {
 
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
@@ -1707,7 +1706,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.move(src, dest, overwrite);
-        } catch (CmsRepositoryItemNotFoundException infex) {
+        } catch (CmsVfsResourceNotFoundException rnfex) {
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
 
             if (LOG.isDebugEnabled()) {
@@ -1715,7 +1714,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryPermissionException pex) {
+        } catch (CmsSecurityException sex) {
             resp.setStatus(CmsWebdavStatus.SC_FORBIDDEN);
 
             if (LOG.isDebugEnabled()) {
@@ -1723,7 +1722,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryItemAlreadyExistsException iaeex) {
+        } catch (CmsVfsResourceAlreadyExistsException raeex) {
             resp.setStatus(CmsWebdavStatus.SC_PRECONDITION_FAILED);
 
             if (LOG.isDebugEnabled()) {
@@ -1731,7 +1730,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             return;
-        } catch (CmsRepositoryException ex) {
+        } catch (CmsException ex) {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
@@ -1883,7 +1882,7 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsRepositoryItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
             resp.setStatus(CmsWebdavStatus.SC_NOT_FOUND);
             return;
         }
@@ -1920,7 +1919,7 @@ public class CmsWebdavServlet extends HttpServlet {
                             stackBelow.push(element);
                         }
 
-                    } catch (CmsRepositoryException e) {
+                    } catch (CmsException e) {
 
                         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
@@ -2049,7 +2048,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.save(path, resourceInputStream, exists);
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
 
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0));
@@ -2160,7 +2159,7 @@ public class CmsWebdavServlet extends HttpServlet {
             I_CmsRepositoryItem item = m_session.getItem(path);
 
             oldResourceStream = new ByteArrayInputStream(item.getContent());
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_ITEM_NOT_FOUND_1, path));
             }
@@ -2475,7 +2474,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 I_CmsRepositoryItem childItem = null;
                 try {
                     childItem = m_session.getItem(path + resourceName);
-                } catch (CmsRepositoryException ex) {
+                } catch (CmsException ex) {
                     continue;
                 }
 
@@ -2516,7 +2515,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 sb.append("</tr>\r\n");
             }
 
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
 
             // Something went wrong
             e.printStackTrace();
@@ -2590,7 +2589,7 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsRepositoryItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsRepositoryException ex) {
+        } catch (CmsException ex) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
             if (LOG.isDebugEnabled()) {
@@ -2813,7 +2812,7 @@ public class CmsWebdavServlet extends HttpServlet {
             String path = getRelativePath(req);
             LOG.debug("[" + method + "] " + path);
         }
-
+        
         // check authorization
         String auth = req.getHeader(HEADER_AUTHORIZATION);
         if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
@@ -2843,7 +2842,7 @@ public class CmsWebdavServlet extends HttpServlet {
         // get session
         try {
             m_session = m_repository.login(m_username, password);
-        } catch (CmsRepositoryAuthorizationException ex) {
+        } catch (CmsException ex) {
             m_session = null;
         }
 
@@ -2876,7 +2875,7 @@ public class CmsWebdavServlet extends HttpServlet {
             // DefaultServlet processing
             super.service(req, resp);
         }
-
+        
     }
 
     /**
@@ -2925,7 +2924,7 @@ public class CmsWebdavServlet extends HttpServlet {
         List list = null;
         try {
             list = m_session.list(path);
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_ERROR_1, path));
             }
@@ -2935,23 +2934,13 @@ public class CmsWebdavServlet extends HttpServlet {
 
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
-            String element = (String)iter.next();
-            String childName = path;
-            if (!childName.endsWith("/")) {
-                childName += "/";
-            }
+            I_CmsRepositoryItem element = (I_CmsRepositoryItem)iter.next();
 
-            childName += element;
-            if (isLocked(childName)) {
-                errorList.put(childName, new Integer(CmsWebdavStatus.SC_LOCKED));
+            if (isLocked(element.getName())) {
+                errorList.put(element.getName(), new Integer(CmsWebdavStatus.SC_LOCKED));
             } else {
-                try {
-                    I_CmsRepositoryItem item = m_session.getItem(childName);
-                    if (item.isCollection()) {
-                        checkChildLocks(req, childName, errorList);
-                    }
-                } catch (CmsRepositoryException e) {
-                    errorList.put(childName, new Integer(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR));
+                if (element.isCollection()) {
+                    checkChildLocks(req, element.getName(), errorList);
                 }
             }
         }
@@ -2970,7 +2959,7 @@ public class CmsWebdavServlet extends HttpServlet {
         I_CmsRepositoryItem item = null;
         try {
             item = m_session.getItem(path);
-        } catch (CmsRepositoryException e) {
+        } catch (CmsException e) {
             exists = false;
         }
 
@@ -3480,7 +3469,7 @@ public class CmsWebdavServlet extends HttpServlet {
                             if (contentType == null) {
                                 contentType = getServletContext().getMimeType(item.getName());
                             }
-                            
+
                             if (contentType != null) {
                                 addElement(propElem, TAG_CONTENTTYPE).addText(contentType);
                             }

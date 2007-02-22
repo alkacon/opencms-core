@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/Attic/CmsResourceWrapperXmlContent.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceExtensionWrapperXmlPage.java,v $
+ * Date   : $Date: 2007/02/22 12:35:51 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,22 @@
 
 package org.opencms.file.wrapper;
 
-import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 /**
- * A resource type wrapper for xml content files, which mainly adds the correct file extensions
+ * A resource type wrapper for jsp files, which mainly adds the correct file extensions
  * to the resources.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.5.6
  */
-public class CmsResourceWrapperXmlContent extends A_CmsResourceExtensionWrapper {
+public class CmsResourceExtensionWrapperXmlPage extends A_CmsResourceExtensionWrapper {
 
     /** The extension used for this resource type wrapper. */
     private static final String RESOURCE_TYPE_EXTENSION = "xml";
@@ -66,7 +66,7 @@ public class CmsResourceWrapperXmlContent extends A_CmsResourceExtensionWrapper 
 
         try {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeId);
-            if (resType instanceof CmsResourceTypeXmlContent) {
+            if (resType instanceof CmsResourceTypeXmlPage) {
                 return true;
             }
         } catch (CmsException ex) {
