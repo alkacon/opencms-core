@@ -87,6 +87,7 @@
 			</params>
 			<filter type="include">
 				<regex>/sites/.*</regex>
+				<regex>/system/</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*</regex>
 				<regex>/system/workplace/.*</regex>
@@ -101,7 +102,10 @@
 			</params>
 			<filter type="include">
 				<regex>/sites/.*</regex>
+				<regex>/system/</regex>
 				<regex>/system/galleries/.*</regex>
+				<regex>/system/modules/</regex>
+				<regex>/system/modules/[^/]*/</regex>
 				<regex>/system/modules/[^/]*/resources/.*</regex>
 			</filter>
 		</repository>

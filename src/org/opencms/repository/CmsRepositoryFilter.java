@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryFilter.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/23 13:59:01 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -169,7 +169,9 @@ public class CmsRepositoryFilter {
     /**
      * Returns if the given path matches or partially matches the pattern.<p>
      * 
-     * For example the regex "/system/modules/" should match the path "/system/".<p>
+     * For example the regex "/system/modules/" should match the path "/system/".
+     * That's not working with Java 1.4. Starting with Java 1.5 there are possiblities
+     * to do that. Until then you have to configure all parent paths as a regex filter.<p>
      * 
      * @param pattern the pattern to use
      * @param path the path to test if the pattern matches (partially)
@@ -182,6 +184,13 @@ public class CmsRepositoryFilter {
         if (matcher.matches()) {
             return true;
         }
-        return matcher.hitEnd();
+
+        if (!path.endsWith("/")) {
+            matcher = pattern.matcher(path + "/");
+            return matcher.matches();
+        }
+        
+        return false;
+        // return matcher.hitEnd();
     }
 }
