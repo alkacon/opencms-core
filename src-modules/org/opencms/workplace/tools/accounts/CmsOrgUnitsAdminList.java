@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/23 13:57:40 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -162,6 +162,12 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     public void forwardToSingleAdminOU() throws ServletException, IOException, CmsException {
 
         List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        
+        if (orgUnits.isEmpty()) {
+            OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, "/", null);
+            return;
+        }
+        
         Map params = new HashMap();
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ((CmsOrganizationalUnit)orgUnits.get(0)).getName());
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);

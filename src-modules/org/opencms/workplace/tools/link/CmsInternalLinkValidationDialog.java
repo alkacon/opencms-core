@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationDialog.java,v $
- * Date   : $Date: 2006/10/05 13:13:22 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/23 13:57:40 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,20 @@
 
 package org.opencms.workplace.tools.link;
 
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsVfsFileWidget;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,36 +57,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.3 
  */
 public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
 
-    /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGES = {"page1"};
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGES;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
-    }
-
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "internallinks";
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1"};
 
     /** Auxiliary Property for the VFS resources. */
     private List m_resources;
@@ -204,19 +191,52 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
+    }
+
+    /**
      * Initializes the session object to work with depending on the dialog state and request parameters.<p>
      */
     protected void initSessionObject() {
 
-        Object o = null;
         try {
-            o = getDialogObject();
-            m_resources = (List)o;
-            // test
-            m_resources.size();
+            if (!CmsStringUtil.isEmpty(getParamAction()) && !CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
+                m_resources = (List)getDialogObject();
+                // test
+                m_resources.size();
+            }
         } catch (Exception e) {
+            // ignore            
+        }
+        if (m_resources == null) {
             // create a new project object
             m_resources = new ArrayList();
+            try {
+                Iterator it = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    getCms(),
+                    getCms().getRequestContext().getOuFqn()).iterator();
+                while (it.hasNext()) {
+                    CmsResource res = (CmsResource)it.next();
+                    m_resources.add(getCms().getSitePath(res));
+                }
+            } catch (CmsException e1) {
+                // should never happen
+            }
         }
     }
 
