@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.14.4.2 $
+ * Date   : $Date: 2007/02/23 13:13:20 $
+ * Version: $Revision: 1.14.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -45,6 +46,8 @@ import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
@@ -68,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14.4.2 $ 
+ * @version $Revision: 1.14.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,13 +90,13 @@ public class CmsSessionsList extends A_CmsListDialog {
     public static final String LIST_COLUMN_CREATION = "cc";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_EMAIL = "ce";
-
-    /** list column id constant. */
     public static final String LIST_COLUMN_INACTIVE = "ci";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_MESSAGE = "cm";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "cou";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_PENDING = "cp";
@@ -108,10 +111,10 @@ public class CmsSessionsList extends A_CmsListDialog {
     public static final String LIST_COLUMN_USER = "cu";
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_EMAIL = "de";
-
-    /** list action id constant. */
     public static final String LIST_DEFACTION_MESSAGE = "dm";
+
+    /** list column id constant. */
+    public static final String LIST_DETAIL_EMAIL = "de";
 
     /** list id constant. */
     public static final String LIST_ID = "ls";
@@ -186,11 +189,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
-        if (getParamListAction().equals(LIST_DEFACTION_EMAIL)) {
-            // forward to the edit user screen
-            getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
-        } else if (getParamListAction().equals(LIST_ACTION_MESSAGE)
-            || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
+        if (getParamListAction().equals(LIST_ACTION_MESSAGE) || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
             getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
         } else {
             throwListUnsupportedActionException();
@@ -203,7 +202,26 @@ public class CmsSessionsList extends A_CmsListDialog {
      */
     protected void fillDetails(String detailId) {
 
-        // no details
+        // get content
+        List sessions = getList().getAllContent();
+        Iterator i = sessions.iterator();
+        while (i.hasNext()) {
+            CmsListItem item = (CmsListItem)i.next();
+            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(new CmsUUID(item.getId()));
+            StringBuffer html = new StringBuffer(32);
+            if (detailId.equals(LIST_DETAIL_EMAIL)) {
+                // email
+                try {
+                    CmsUser user = getCms().readUser(session.getUserId());
+                    html.append(user.getEmail());
+                } catch (CmsException e) {
+                    // should never happen
+                }
+            } else {
+                continue;
+            }
+            item.set(detailId, html.toString());
+        }
     }
 
     /**
@@ -211,6 +229,7 @@ public class CmsSessionsList extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
+        List manageableUsers = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
         List ret = new ArrayList();
         // get content
         List sessionInfos = OpenCms.getSessionManager().getSessionInfos();
@@ -219,8 +238,14 @@ public class CmsSessionsList extends A_CmsListDialog {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
             CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             CmsUser user = getCms().readUser(sessionInfo.getUserId());
+            if (!manageableUsers.contains(user)) {
+                continue;
+            }
             item.set(LIST_COLUMN_USER, user.getFullName());
-            item.set(LIST_COLUMN_EMAIL, user.getEmail());
+            item.set(
+                LIST_COLUMN_ORGUNIT,
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn()).getDisplayName(
+                    getLocale()));
             item.set(LIST_COLUMN_CREATION, new Date(sessionInfo.getTimeCreated()));
             item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
             try {
@@ -329,16 +354,11 @@ public class CmsSessionsList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(userCol);
 
-        // add column for email
-        CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL);
-        emailCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_EMAIL_0));
-        emailCol.setWidth("30%");
-        // create default edit email action
-        CmsListDefaultAction emailEditAction = new CmsListDefaultAction(LIST_DEFACTION_EMAIL);
-        emailEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0));
-        emailEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0));
-        emailCol.addDefaultAction(emailEditAction);
-        metadata.addColumn(emailCol);
+        // add column for organizational units
+        CmsListColumnDefinition ouCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        ouCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_ORGUNIT_0));
+        ouCol.setWidth("30%");
+        metadata.addColumn(ouCol);
 
         // add column for creation date
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
@@ -372,7 +392,17 @@ public class CmsSessionsList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // noop        
+        // create list item detail
+        CmsListItemDetails emailDetail = new CmsListItemDetails(LIST_DETAIL_EMAIL);
+        emailDetail.setAtColumn(LIST_COLUMN_USER);
+        emailDetail.setVisible(false);
+        emailDetail.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_SESSIONS_LABEL_EMAIL_0)));
+        emailDetail.setShowActionName(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_SHOW_EMAIL_NAME_0));
+        emailDetail.setShowActionHelpText(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_SHOW_EMAIL_HELP_0));
+        emailDetail.setHideActionName(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_HIDE_EMAIL_NAME_0));
+        emailDetail.setHideActionHelpText(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_HIDE_EMAIL_HELP_0));
+        metadata.addItemDetails(emailDetail);
     }
 
     /**

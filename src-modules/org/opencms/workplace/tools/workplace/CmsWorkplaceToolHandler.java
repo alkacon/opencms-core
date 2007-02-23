@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsWorkplaceToolHandler.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.1.8.2 $
+ * Date   : $Date: 2007/02/23 13:13:20 $
+ * Version: $Revision: 1.1.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.8.2 $ 
+ * @version $Revision: 1.1.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,11 @@ public class CmsWorkplaceToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
+        if (getPath().equals("/workplace/broadcast") || getPath().equals("/workplace")) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
+                return true;
+            }
+        }
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
     }
 
@@ -61,6 +66,6 @@ public class CmsWorkplaceToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
+        return isEnabled(cms);
     }
 }
