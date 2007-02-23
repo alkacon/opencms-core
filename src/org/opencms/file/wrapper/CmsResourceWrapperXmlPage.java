@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/02/23 13:59:51 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,6 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +71,7 @@ import java.util.Properties;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
  * @since 6.5.6
  */
@@ -81,26 +80,20 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /** The extension to use for elements. */
     private static final String EXTENSION_ELEMENT = "html";
 
+    /** The extension to use for the property file. */
+    private static final String EXTENSION_PROPERTIES = "properties";
+
     /** The name of the element to use for the controlcode. */
     private static final String NAME_ELEMENT_CONTROLCODE = "controlcode.xml";
 
-    /** The name of the element to use for the individual properties. */
-    private static final String NAME_ELEMENT_IND_PROPERTIES = "individual.properties";
+    /** The prefix used for a shared property entry. */
+    private static final String PREFIX_INDIVIDUAL = "individual.";
 
-    /** The name of the element to use for the shared properties. */
-    private static final String NAME_ELEMENT_SHARED_PROPERTIES = "shared.properties";
+    /** The prefix used for a shared property entry. */
+    private static final String PREFIX_SHARED = "shared.";
 
     /** Table with the states of the virtual files. */
     private static final Hashtable TMP_FILE_TABLE = new Hashtable();
-
-    /** Array with the names of the virtual files. */
-    private static final String[] VIRTUAL_FILES = {
-        NAME_ELEMENT_CONTROLCODE,
-        NAME_ELEMENT_IND_PROPERTIES,
-        NAME_ELEMENT_SHARED_PROPERTIES};
-
-    /** List containing the names of the virtual files. */
-    private static final List VIRTUAL_FILES_LIST = Arrays.asList(VIRTUAL_FILES);
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
@@ -183,8 +176,15 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         // creating new xml pages if type is a folder and the name ends with .html
         if ((type == CmsResourceTypeFolder.getStaticTypeId()) && resourcename.endsWith(".html")) {
 
+            // extract resource name
+            String name = resourcename;
+            int slash = resourcename.lastIndexOf("/");
+            if (slash > -1) {
+                name = resourcename.substring(slash + 1, resourcename.length());
+            }
+
             // mark in temp file table that the visual files does not exist yet
-            Iterator iter = VIRTUAL_FILES_LIST.iterator();
+            Iterator iter = getVirtualFiles(name).iterator();
             while (iter.hasNext()) {
                 TMP_FILE_TABLE.put(resourcename + "/" + (String)iter.next(), new Integer(0));
             }
@@ -205,25 +205,18 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             CmsFile file = CmsFile.upgrade(xmlPage, cms);
             CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
-            // mark visual files as created in temp file table
-            if (VIRTUAL_FILES_LIST.contains(path)) {
+            // mark virtual files as created in temp file table
+            if (getVirtualFiles(xmlPage.getName()).contains(path)) {
                 TMP_FILE_TABLE.remove(resourcename);
 
                 // lock the resource
                 cms.lockResource(rootPath);
 
                 // set individual properties
-                if (NAME_ELEMENT_IND_PROPERTIES.equals(path)) {
+                if (path.equals(xmlPage.getName() + "." + EXTENSION_PROPERTIES)) {
 
                     // set the properties read from the content
-                    setProperties(cms, rootPath, content, CmsProperty.TYPE_INDIVIDUAL);
-                }
-
-                // set shared properties
-                if (NAME_ELEMENT_SHARED_PROPERTIES.equals(path)) {
-
-                    // set the properties read from the content
-                    setProperties(cms, rootPath, content, CmsProperty.TYPE_SHARED);
+                    setProperties(cms, rootPath, content);
                 }
 
                 return file;
@@ -308,7 +301,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 cms.deleteResource(resourcename, siblingMode);
 
                 // remove all virtual files for this resource
-                Iterator iter = VIRTUAL_FILES_LIST.iterator();
+                Iterator iter = getVirtualFiles(xmlPage.getName()).iterator();
                 while (iter.hasNext()) {
                     TMP_FILE_TABLE.remove(resourcename + "/" + (String)iter.next());
                 }
@@ -323,7 +316,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             if (tokens.length == 1) {
 
                 // deleting a virtual file
-                if (VIRTUAL_FILES_LIST.contains(tokens[0])) {
+                if (getVirtualFiles(xmlPage.getName()).contains(tokens[0])) {
 
                     // mark the virtual file in the temp file table as deleted
                     TMP_FILE_TABLE.put(resourcename, new Integer(0));
@@ -401,7 +394,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
 
                 // check temp file table to add virtual file
-                iter = VIRTUAL_FILES_LIST.iterator();
+                iter = getVirtualFiles(xmlPage.getName()).iterator();
                 while (iter.hasNext()) {
 
                     String virtualFileName = (String)iter.next();
@@ -418,12 +411,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                                 + NAME_ELEMENT_CONTROLCODE, CmsResourceTypePlain.getStaticTypeId()));
                             tmpFile.setContents(file.getContents());
                             ret.add(tmpFile);
-                        } else if (virtualFileName.equals(NAME_ELEMENT_IND_PROPERTIES)) {
+                        } else if (virtualFileName.equals(xmlPage.getName() + "." + EXTENSION_PROPERTIES)) {
 
-                            ret.add(createPropertyResource(cms, xmlPage, CmsProperty.TYPE_INDIVIDUAL));
-                        } else if (virtualFileName.equals(NAME_ELEMENT_SHARED_PROPERTIES)) {
-
-                            ret.add(createPropertyResource(cms, xmlPage, CmsProperty.TYPE_SHARED));
+                            ret.add(createPropertyResource(cms, xmlPage));
                         }
                     }
                 }
@@ -578,12 +568,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         + NAME_ELEMENT_CONTROLCODE));
                     ret.setContents(file.getContents());
                     return ret;
-                } else if (tokens[0].equals(NAME_ELEMENT_IND_PROPERTIES)) {
+                } else if (tokens[0].equals(xmlPage.getName() + "." + EXTENSION_PROPERTIES)) {
 
-                    return createPropertyResource(cms, xmlPage, CmsProperty.TYPE_INDIVIDUAL);
-                } else if (tokens[0].equals(NAME_ELEMENT_SHARED_PROPERTIES)) {
-
-                    return createPropertyResource(cms, xmlPage, CmsProperty.TYPE_SHARED);
+                    return createPropertyResource(cms, xmlPage);
                 }
             } else if (tokens.length == 2) {
 
@@ -659,12 +646,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     if (tokens[0].equals(NAME_ELEMENT_CONTROLCODE)) {
 
                         return setRootPath(xmlPage, xmlPage.getRootPath() + "/" + NAME_ELEMENT_CONTROLCODE);
-                    } else if (tokens[0].equals(NAME_ELEMENT_IND_PROPERTIES)) {
+                    } else if (tokens[0].equals(xmlPage.getName() + "." + EXTENSION_PROPERTIES)) {
 
-                        return createPropertyResource(cms, xmlPage, CmsProperty.TYPE_INDIVIDUAL);
-                    } else if (tokens[0].equals(NAME_ELEMENT_SHARED_PROPERTIES)) {
-
-                        return createPropertyResource(cms, xmlPage, CmsProperty.TYPE_SHARED);
+                        return createPropertyResource(cms, xmlPage);
                     } else {
 
                         Locale locale = new Locale(tokens[0]);
@@ -717,7 +701,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             if (!path.endsWith("/")) {
                 path += "/";
             }
-            
+
             return path + NAME_ELEMENT_CONTROLCODE;
         }
 
@@ -756,30 +740,21 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             String path = getSubPath(cms, xmlPage, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
             String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
 
+            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+
             // set individual properties
-            if (NAME_ELEMENT_IND_PROPERTIES.equals(path)) {
+            if (path.equals(xmlPage.getName() + "." + EXTENSION_PROPERTIES)) {
 
                 // lock the resource
                 cms.lockResource(rootPath);
 
                 // set the properties read from the content
-                setProperties(cms, rootPath, resource.getContents(), CmsProperty.TYPE_INDIVIDUAL);
-            }
-
-            // set individual properties
-            if (NAME_ELEMENT_SHARED_PROPERTIES.equals(path)) {
-
-                // lock the resource
-                cms.lockResource(rootPath);
-
-                // set the properties read from the content
-                setProperties(cms, rootPath, resource.getContents(), CmsProperty.TYPE_SHARED);
+                setProperties(cms, rootPath, resource.getContents());
             }
 
             String[] tokens = path.split("/");
             if (tokens.length == 2) {
 
-                CmsFile file = CmsFile.upgrade(xmlPage, cms);
                 CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
                 // cut off the html suffix
@@ -797,9 +772,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 file.setContents(xml.marshal());
                 cms.writeFile(file);
 
-                return file;
             }
-
+            
+            return file;
         }
 
         return null;
@@ -882,7 +857,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
                 stylesheet = wrapper.rewriteLink(stylesheet);
             }
-            
+
             String base = OpenCms.getSystemInfo().getOpenCmsContext();
 
             StringBuffer result = new StringBuffer(content.length() + 1024);
@@ -908,15 +883,15 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * 
      * @param cms the initialized CmsObject
      * @param res the resource where to read the properties from
-     * @param type the type of the properties to read {@link CmsProperty#TYPE_INDIVIDUAL} / {@link CmsProperty#TYPE_SHARED} 
      * 
      * @return the created CmsFile with the individual properties as the content
      * 
      * @throws CmsException
      */
-    private CmsFile createPropertyResource(CmsObject cms, CmsResource res, String type) throws CmsException {
+    private CmsFile createPropertyResource(CmsObject cms, CmsResource res) throws CmsException {
 
-        StringBuffer content = new StringBuffer();
+        StringBuffer individual = new StringBuffer();
+        StringBuffer shared = new StringBuffer();
 
         List propertyDef = cms.readAllPropertyDefinitions();
         Map activeProperties = CmsPropertyAdvanced.getPropertyMap(cms.readPropertyObjects(res, false));
@@ -932,36 +907,36 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 currentProperty = new CmsProperty();
             }
 
-            String propValue = null;
-            if (CmsProperty.TYPE_SHARED.equals(type)) {
-                propValue = currentProperty.getResourceValue();
-            } else {
-                propValue = currentProperty.getStructureValue();
-            }
-            if (propValue == null) {
-                propValue = "";
+            String individualValue = currentProperty.getStructureValue();
+            String sharedValue = currentProperty.getResourceValue();
+
+            if (individualValue == null) {
+                individualValue = "";
             }
 
-            content.append(propName);
-            content.append("=");
-            content.append(propValue);
-            content.append("\n");
+            if (sharedValue == null) {
+                sharedValue = "";
+            }
+
+            shared.append(PREFIX_SHARED);
+            shared.append(propName);
+            shared.append("=");
+            shared.append(sharedValue);
+            shared.append("\n");
+
+            individual.append(PREFIX_INDIVIDUAL);
+            individual.append(propName);
+            individual.append("=");
+            individual.append(individualValue);
+            individual.append("\n");
         }
 
-        CmsFile ret = null;
-        if (CmsProperty.TYPE_SHARED.equals(type)) {
-            ret = new CmsFile(setRootPath(
-                res,
-                res.getRootPath() + "/" + NAME_ELEMENT_SHARED_PROPERTIES,
-                CmsResourceTypePlain.getStaticTypeId()));
-        } else {
-            ret = new CmsFile(setRootPath(
-                res,
-                res.getRootPath() + "/" + NAME_ELEMENT_IND_PROPERTIES,
-                CmsResourceTypePlain.getStaticTypeId()));
-        }
+        CmsFile ret = new CmsFile(setRootPath(
+            res,
+            res.getRootPath() + "/" + res.getName() + "." + EXTENSION_PROPERTIES,
+            CmsResourceTypePlain.getStaticTypeId()));
 
-        ret.setContents(content.toString().getBytes());
+        ret.setContents(individual.append(shared).toString().getBytes());
         return ret;
     }
 
@@ -1138,6 +1113,21 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
+     * Returns a list with virtual file names for the xml page.<p>
+     * 
+     * @param resourceName the name of resource to create the list of virtual files for
+     * @return a list containing strings with the names of the virtual files
+     */
+    private List getVirtualFiles(String resourceName) {
+
+        ArrayList list = new ArrayList();
+        list.add(NAME_ELEMENT_CONTROLCODE);
+        list.add(resourceName + "." + EXTENSION_PROPERTIES);
+
+        return list;
+    }
+
+    /**
      * Change the folder type of the resource.<p>
      * 
      * @param res the resource where to change the path
@@ -1177,11 +1167,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource where to set the properties
      * @param content the properties to set (formatted as a property file)
-     * @param type the type of the properties to read {@link CmsProperty#TYPE_INDIVIDUAL} / {@link CmsProperty#TYPE_SHARED}
      * 
      * @throws CmsException if something goes wrong
      */
-    private void setProperties(CmsObject cms, String resourcename, byte[] content, String type) throws CmsException {
+    private void setProperties(CmsObject cms, String resourcename, byte[] content) throws CmsException {
 
         Properties properties = new Properties();
         try {
@@ -1193,10 +1182,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 String key = (String)iter.next();
                 String value = (String)properties.get(key);
 
-                if (CmsProperty.TYPE_SHARED.equals(type)) {
-                    propList.add(new CmsProperty(key, null, value));
-                } else {
-                    propList.add(new CmsProperty(key, value, null));
+                if (key.startsWith(PREFIX_SHARED)) {
+                    propList.add(new CmsProperty(key.substring(PREFIX_SHARED.length(), key.length()), null, value));
+                } else if (key.startsWith(PREFIX_INDIVIDUAL)) {
+                    propList.add(new CmsProperty(key.substring(PREFIX_INDIVIDUAL.length(), key.length()), value, null));
                 }
             }
 
