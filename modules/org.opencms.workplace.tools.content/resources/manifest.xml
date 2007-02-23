@@ -428,7 +428,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.content.CmsPropertyContentToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsElementContentToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

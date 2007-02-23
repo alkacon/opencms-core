@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.28.8.6 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.28.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.workflow.I_CmsWorkflowManager;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.6 $ 
+ * @version $Revision: 1.28.8.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -67,11 +67,11 @@ public class CmsLock implements Cloneable {
         new CmsProject(),
         CmsLockType.UNLOCKED);
 
-    /** The child lock. */
-    private CmsLock m_childLock = NULL_LOCK;
-
     /** The project where the resource is locked. */
     private CmsProject m_project;
+
+    /** The related lock. */
+    private CmsLock m_relatedLock;
 
     /** The name of the locked resource. */
     private String m_resourceName;
@@ -146,7 +146,7 @@ public class CmsLock implements Cloneable {
     public CmsLock getEditionLock() {
 
         if (isSystemLock()) {
-            return getChildLock();
+            return getRelatedLock();
         }
         return this;
     }
@@ -188,10 +188,10 @@ public class CmsLock implements Cloneable {
      */
     public CmsLock getSystemLock() {
 
-        if (isSystemLock()) {
-            return this;
+        if (!isSystemLock()) {
+            return getRelatedLock();
         }
-        return NULL_LOCK;
+        return this;
     }
 
     /**
@@ -220,6 +220,16 @@ public class CmsLock implements Cloneable {
     public int hashCode() {
 
         return m_project.hashCode() + m_resourceName.hashCode() + m_userId.hashCode() + m_type.hashCode();
+    }
+
+    /**
+     * Returns <code>true</code> if this is an directly inherited lock.<p>
+     * 
+     * @return <code>true</code> if this is an directly inherited lock
+     */
+    public boolean isDirectlyInherited() {
+
+        return m_type.isDirectlyInherited();
     }
 
     /**
@@ -257,16 +267,6 @@ public class CmsLock implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this is an directly inherited lock.<p>
-     * 
-     * @return <code>true</code> if this is an directly inherited lock
-     */
-    public boolean isDirectlyInherited() {
-
-        return m_type.isDirectlyInherited();
-    }
-
-    /**
      * Returns <code>true</code> if the given project is the project of this lock.<p>
      * 
      * @param project the project to compare to the project of this lock
@@ -297,16 +297,17 @@ public class CmsLock implements Cloneable {
      */
     public boolean isLockableBy(CmsUser user) {
 
-        if (isPublish()) {
+        if (getSystemLock().isPublish()) {
             return false;
         }
-        if (isUnlocked()) {
+        if (getEditionLock().isUnlocked() && getSystemLock().isUnlocked()) {
             return true;
         }
-        if (isWorkflow() && m_wfManager != null) {
-            return m_wfManager.isLockableInWorkflow(user, getResourceName(), false);
+        if (getSystemLock().isWorkflow() && m_wfManager != null) {
+            return (m_wfManager.isLockableInWorkflow(user, getResourceName(), false) && (getEditionLock().isUnlocked() || getEditionLock().isOwnedBy(
+                user)));
         }
-        return isOwnedBy(user);
+        return getEditionLock().isOwnedBy(user);
     }
 
     /**
@@ -439,9 +440,9 @@ public class CmsLock implements Cloneable {
         buf.append(getProjectId());
         buf.append(", user: ");
         buf.append(getUserId());
-        if (getChildLock() != null) {
-            buf.append(", child lock: ");
-            buf.append(getChildLock());
+        if (getRelatedLock() != null) {
+            buf.append(", related lock: ");
+            buf.append(getRelatedLock().getType());
         }
         buf.append("]");
 
@@ -449,22 +450,45 @@ public class CmsLock implements Cloneable {
     }
 
     /**
-     * Returns the child Lock.<p>
+     * Returns the related Lock.<p>
      *
-     * @return the child Lock
+     * @return the related Lock
      */
-    protected CmsLock getChildLock() {
+    protected CmsLock getRelatedLock() {
 
-        return m_childLock;
+        if (m_relatedLock == null) {
+            CmsLockType type;
+            if (this.isSystemLock()) {
+                type = CmsLockType.UNLOCKED;
+            } else {
+                type = CmsLockType.SYSTEM_UNLOCKED;
+            }
+            CmsLock lock = new CmsLock(getResourceName(), getUserId(), getProject(), type);
+            lock.setRelatedLock(this);
+            if (this == NULL_LOCK) {
+                // prevent the null lock gets modified
+                return lock;
+            }
+            m_relatedLock = lock;
+        }
+        return m_relatedLock;
     }
 
     /**
-     * Sets the child Lock.<p>
+     * Sets the related Lock.<p>
      *
-     * @param childLock the child Lock to set
+     * @param relatedLock the related Lock to set
      */
-    protected void setChildLock(CmsLock childLock) {
+    protected void setRelatedLock(CmsLock relatedLock) {
 
-        m_childLock = childLock;
+        if (this == NULL_LOCK) {
+            throw new RuntimeException("null lock");
+        }
+        if ((relatedLock == null) || (relatedLock == NULL_LOCK)) {
+            m_relatedLock = null;
+        } else {
+            m_relatedLock = relatedLock;
+            m_relatedLock.m_relatedLock = this;
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -359,9 +359,9 @@ public final class CmsLockFilter implements Cloneable {
             match = m_types.contains(lock.getType());
             match = match || (m_includeParents && lock.isInherited());
         }
-        // check the child lock if available
-        if (!match && !lock.getChildLock().isNullLock()) {
-           match = match(rootPath, lock.getChildLock());
+        // check the related lock if available
+        if (!match && !lock.getRelatedLock().isNullLock()) {
+           match = match(rootPath, lock.getRelatedLock());
         }
         return match;
     }

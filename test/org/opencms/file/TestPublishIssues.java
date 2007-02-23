@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.21.4.9 $
+ * Date   : $Date: 2007/02/23 13:13:11 $
+ * Version: $Revision: 1.21.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.9 $
+ * @version $Revision: 1.21.4.10 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -517,14 +517,15 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         // lock sibling 
         cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
-
+        CmsUser user = cms.getRequestContext().currentUser();
+        
         // login as user test2
         cms.addUserToGroup("test2", "Projectmanagers");
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(project);
 
         // check lock
-        assertEquals(cms.getLock("/test/subtest/image1.gif").getType(), CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, "/test/subtest/image1.gif", CmsLockType.SHARED_EXCLUSIVE, user);
 
         // delete the folder
         cms.lockResource("/test/subtest");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/I_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
- * since 6.5.6
+ * @since 6.5.6
  */
 public interface I_CmsResourceWrapper {
 
@@ -168,20 +168,6 @@ public interface I_CmsResourceWrapper {
      * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
      */
     List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException;
-
-    /**
-     * Returns the system lock for the resource.<p>
-     * 
-     * @param cms the initialized CmsObject
-     * @param resource the resource to check the lock for
-     * 
-     * @return the system lock state of the resource
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#getSystemLock(CmsResource)
-     */
-    CmsLock getSystemLock(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
      * Is called to check if the given resource is handled by this wrapper.<p>

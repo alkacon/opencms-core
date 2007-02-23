@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/23 13:14:18 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6
  */
@@ -225,19 +225,6 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             path = validatePath(path);
 
             CmsResource res = m_cms.readResource(path, CmsResourceFilter.DEFAULT);
-
-            // check system lock
-            CmsLock sysLock = m_cms.getSystemLock(res);
-            if (!sysLock.isUnlocked()) {
-                lockInfo.setPath(path);
-
-                CmsUser owner = m_cms.readUser(sysLock.getUserId());
-                if (owner != null) {
-                    lockInfo.setUsername(owner.getName());
-                    lockInfo.setOwner(owner.getName() + "||" + owner.getEmail());
-                }
-                return lockInfo;
-            }
 
             // check user locks
             CmsLock cmsLock = m_cms.getLock(res);

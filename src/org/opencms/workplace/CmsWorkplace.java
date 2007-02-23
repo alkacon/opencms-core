@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/02/21 14:45:01 $
- * Version: $Revision: 1.156.4.16 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.156.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.16 $ 
+ * @version $Revision: 1.156.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -959,9 +959,8 @@ public abstract class CmsWorkplace {
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-        CmsLock lock = getCms().getSystemLock(res);
+        CmsLock lock = getCms().getLock(res);
         boolean lockable = lock.isLockableBy(getCms().getRequestContext().currentUser());
-        lockable = lockable && getCms().getLock(res).isLockableBy(getCms().getRequestContext().currentUser());
         
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource

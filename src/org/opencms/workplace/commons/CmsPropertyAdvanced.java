@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/01/09 10:47:33 $
- * Version: $Revision: 1.28.4.8 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.28.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.8 $ 
+ * @version $Revision: 1.28.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -826,10 +826,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 try {
                     // get the lock for the resource
-                    lock = getCms().getSystemLock(file);
-                    if (lock.isUnlocked()) {
-                        lock = getCms().getLock(file);
-                    }
+                    lock = getCms().getLock(file);
                 } catch (CmsException e) {
                     lock = CmsLock.getNullLock();
 

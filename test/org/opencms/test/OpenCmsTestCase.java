@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.90.4.15 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.90.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.15 $
+ * @version $Revision: 1.90.4.16 $
  * 
  * @since 6.0.0
  */
@@ -1935,12 +1935,12 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock;
             if (lockType.isSystem()) {
-                lock = cms.getSystemLock(res);
+                lock = cms.getLock(res).getSystemLock();
             } else {
-                lock = cms.getLock(res);
+                lock = cms.getLock(res).getEditionLock();
                 // for unlock check system lock also
                 if (lockType.isUnlocked()) {
-                    if (!cms.getSystemLock(res).isNullLock()) {
+                    if (!cms.getLock(res).isNullLock()) {
                         fail("[Lock " + resourceName + " must be unlocked]");
                     }
                 }

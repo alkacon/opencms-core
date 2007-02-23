@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
  * @since 6.5.6
  */
@@ -389,38 +389,6 @@ public class CmsObjectWrapper {
     public String getSitePath(CmsResource resource) {
 
         return m_cms.getSitePath(resource);
-    }
-
-    /**
-     * Calls the wrapper for the resource or delegate it to the {@link org.opencms.file.CmsObject#getSystemLock(CmsResource)}.<p>
-     * 
-     * @param resource the resource to return the system lock state for
-     * 
-     * @return the system lock state for the specified resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getSystemLock(CmsResource resource) throws CmsException {
-
-        CmsLock lock = null;
-
-        // iterate through all wrappers and call "getSystemLock" till one does not return null
-        List wrappers = getWrappers();
-        Iterator iter = wrappers.iterator();
-        while (iter.hasNext()) {
-            I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
-            lock = wrapper.getSystemLock(m_cms, resource);
-            if (lock != null) {
-                break;
-            }
-        }
-
-        // delegate the call to the CmsObject
-        if (lock == null) {
-            lock = m_cms.getSystemLock(resource);
-        }
-
-        return lock;
     }
 
     /**

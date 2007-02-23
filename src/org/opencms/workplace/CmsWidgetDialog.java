@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.60.4.6 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.60.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.6 $ 
+ * @version $Revision: 1.60.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,7 +337,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         }
         boolean onlyDisplay = true;
-        Iterator it = m_widgets.iterator();
+        Iterator it = getWidgets().iterator();
         while (it.hasNext()) {
             CmsWidgetDialogParameter wdp = (CmsWidgetDialogParameter)it.next();
             if (!(wdp.getWidget() instanceof CmsDisplayWidget)) {

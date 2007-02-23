@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/02/22 09:42:34 $
- * Version: $Revision: 1.570.2.62 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.570.2.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -773,7 +773,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // get the current lock
         CmsLock currentLock = getLock(dbc, resource);
         // check if the resource is locked at all
-        if (currentLock.isNullLock()) {
+        if (currentLock.getEditionLock().isUnlocked() && currentLock.getSystemLock().isUnlocked()) {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1,
                 dbc.getRequestContext().getSitePath(resource)));
@@ -1764,7 +1764,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             if (overwrittenResource == null) {
                 CmsLock lock = getLock(dbc, newResource);
-                if ((lock.isWorkflow() && lock.getEditionLock().isExclusive()) || lock.isExclusive()) {
+                if (lock.getEditionLock().isExclusive()) {
                     unlockResource(dbc, newResource, true, false);
                 }
                 // resource does not exist.
@@ -2363,7 +2363,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource currentFile = (CmsResource)modifiedFiles.get(i);
             if (currentFile.getState().isNew()) {
                 CmsLock lock = getLock(dbc, currentFile);
-                if (lock.isNullLock()) {
+                if (lock.getEditionLock().isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
                 } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
@@ -2412,7 +2412,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource currentFolder = (CmsResource)modifiedFolders.get(i);
             if ((currentFolder.getState().isChanged()) || (currentFolder.getState().isDeleted())) {
                 CmsLock lock = getLock(dbc, currentFolder);
-                if (lock.isNullLock()) {
+                if (lock.getEditionLock().isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFolder, CmsLockType.EXCLUSIVE);
                 } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
@@ -2432,7 +2432,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource currentFile = (CmsResource)modifiedFiles.get(i);
             if (currentFile.getState().isChanged() || currentFile.getState().isDeleted()) {
                 CmsLock lock = getLock(dbc, currentFile);
-                if (lock.isNullLock()) {
+                if (lock.getEditionLock().isNullLock()) {
                     // lock the resource
                     lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
                 } else if (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
@@ -2544,13 +2544,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(dbc, resource);
-        if (currentLock.isDirectlyInherited()) {
+        if (currentLock.getEditionLock().isDirectlyInherited()) {
             // upgrade the lock status if required
             lockResource(dbc, resource, CmsLockType.EXCLUSIVE);
         }
 
         // check if siblings of the resource exist and must be deleted as well
-
         if (resource.isFolder()) {
             // folder can have no siblings
             siblingMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
@@ -2581,7 +2580,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             for (int i = 0; i < size; i++) {
                 CmsResource currentResource = (CmsResource)resources.get(i);
                 currentLock = getLock(dbc, currentResource);
-                if (!currentLock.isUnlocked() && !currentLock.isOwnedBy(dbc.currentUser())) {
+                if (!currentLock.getEditionLock().isUnlocked() && !currentLock.isOwnedBy(dbc.currentUser())) {
                     // the resource is locked by a user different from the current user
                     CmsRequestContext context = dbc.getRequestContext();
                     me.addException(new CmsLockException(org.opencms.lock.Messages.get().container(
@@ -2986,7 +2985,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     CmsLock lock = getLock(dbc, directPublishResource);
                     if (!directPublishResource.getState().isUnchanged()
                         && lock.isLockableBy(dbc.currentUser())
-                        && !lock.isWorkflow()) {
+                        && !lock.getSystemLock().isWorkflow()) {
                         publishList.addFolder(directPublishResource);
                     }
 
@@ -3036,7 +3035,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // when publishing a file directly this file is the only candidate
                     // if it is modified and lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
-                    if (lock.isLockableBy(dbc.currentUser()) && !lock.isWorkflow()) {
+                    if (lock.isLockableBy(dbc.currentUser()) && !lock.getSystemLock().isWorkflow()) {
                         publishList.addFile(directPublishResource);
                     }
                 }
@@ -4948,34 +4947,34 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
             CmsLock lock = getLock(dbc, resource);
-            if (!lock.isSystemLock() && lock.isLockableBy(dbc.currentUser())) {
-                if (lock.isNullLock()) {
+            if (lock.getSystemLock().isUnlocked() && lock.isLockableBy(dbc.currentUser())) {
+                if (lock.getEditionLock().isNullLock()) {
                     lockResource(dbc, resource, CmsLockType.PUBLISH);
                 } else {
                     changeLock(dbc, resource, CmsLockType.PUBLISH);
                 }
-            } else if (lock.isPublish() && lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+            } else if (lock.getSystemLock().isPublish()
+                && lock.getSystemLock().isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
                 // this is a 'shared' publish lock
                 // lock this sibling, so during publishing 
                 // the siblings will be unlock when all siblings get published
                 lockResource(dbc, resource, CmsLockType.PUBLISH);
-            } else if (!lock.isWorkflow()) {
+            } else if (!lock.getSystemLock().isWorkflow()) {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
-            // now check the lock state
+            // now recheck the lock state
             lock = getLock(dbc, resource);
-            if (!lock.isPublish()) {
+            if (!lock.getSystemLock().isPublish()) {
                 if (report != null) {
                     report.println(Messages.get().container(
                         Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
                         dbc.removeSiteRoot(resource.getRootPath())), I_CmsReport.FORMAT_WARNING);
-                } else {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                            dbc.removeSiteRoot(resource.getRootPath())));
-                    }
+                }
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                        dbc.removeSiteRoot(resource.getRootPath())));
                 }
                 // remove files that could not be locked
                 publishList.remove(resource);
@@ -7874,7 +7873,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {
@@ -7924,7 +7923,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)i.next();
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {
@@ -8281,7 +8280,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         for (int j = 0; j < resources.size(); j++) {
             currentResource = (CmsResource)resources.get(j);
-            currentLock = getLock(dbc, currentResource);
+            currentLock = getLock(dbc, currentResource).getEditionLock();
 
             if (currentResource.getState() != CmsResource.STATE_UNCHANGED) {
                 if ((currentLock.isNullLock() && (currentResource.getProjectLastModified() == projectId))

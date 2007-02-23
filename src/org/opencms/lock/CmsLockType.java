@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2006/12/12 10:14:57 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,11 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.0.0
  */
 public final class CmsLockType extends A_CmsModeIntEnumeration {
-
-    /** serializable version id. */
-    private static final long serialVersionUID = 5333767594124738789L;
 
     /** 
      * A lock that allows the user to edit the resource's structure record, 
@@ -94,6 +91,12 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     /** A lock that indicates that the resource is assigned to a task in a workflow. */
     public static final CmsLockType WORKFLOW = new CmsLockType(5);
 
+    /** Type of the NULL system lock. */
+    protected static final CmsLockType SYSTEM_UNLOCKED = new CmsLockType(8);
+
+    /** serializable version id. */
+    private static final long serialVersionUID = 5333767594124738789L;
+
     /**
      * Creates a new lock type with the given name.<p>
      * 
@@ -130,9 +133,21 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
                 return TEMPORARY;
             case 7:
                 return PUBLISH;
+            case 8:
+                return SYSTEM_UNLOCKED;
             default:
                 return UNLOCKED;
         }
+    }
+
+    /**
+     * Returns <code>true</code> if this is an directly inherited lock.<p>
+     * 
+     * @return <code>true</code> if this is an directly inherited lock
+     */
+    public boolean isDirectlyInherited() {
+
+        return (this == CmsLockType.INHERITED);
     }
 
     /**
@@ -153,16 +168,6 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     public boolean isInherited() {
 
         return (isDirectlyInherited() || isSharedInherited());
-    }
-
-    /**
-     * Returns <code>true</code> if this is an directly inherited lock.<p>
-     * 
-     * @return <code>true</code> if this is an directly inherited lock
-     */
-    public boolean isDirectlyInherited() {
-
-        return (this == CmsLockType.INHERITED);
     }
 
     /**
@@ -222,7 +227,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isSystem() {
 
-        return (isWorkflow() || isPublish());
+        return (isWorkflow() || isPublish() || (this == CmsLockType.SYSTEM_UNLOCKED));
     }
 
     /**
@@ -234,7 +239,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
         return (this == CmsLockType.TEMPORARY);
     }
-    
+
     /**
      * Returns <code>true</code> if this lock is in fact unlocked.<p>
      * 
@@ -245,7 +250,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isUnlocked() {
 
-        return (this == CmsLockType.UNLOCKED);
+        return ((this == CmsLockType.UNLOCKED) || (this == CmsLockType.SYSTEM_UNLOCKED));
     }
 
     /**
@@ -278,6 +283,8 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
                 return "temporary exclusive";
             case 7:
                 return "publish";
+            case 8:
+                return "system unlocked";
             default:
                 return "unlocked";
         }

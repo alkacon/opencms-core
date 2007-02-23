@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/02/07 15:03:20 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/02/23 13:13:11 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -591,9 +591,9 @@ public final class CmsResourceUtil {
      */
     public CmsResourceProjectState getProjectState() {
 
-        if (getSystemLock().isPublish()) {
+        if (getLock().getSystemLock().isPublish()) {
             return STATE_LOCKED_FOR_PUBLISHING;
-        } else if (m_wfManager != null && getSystemLock().isWorkflow()) {
+        } else if (m_wfManager != null && getLock().getSystemLock().isWorkflow()) {
             boolean isLockable = false;
             if (getWorkflowProject() != null) {
                 isLockable = m_wfManager.isLockableInWorkflow(
@@ -816,22 +816,6 @@ public final class CmsResourceUtil {
     }
 
     /**
-     * Returns the system lock, or {@link CmsLock#getNullLock()} if no system lock is found.<p>
-     * 
-     * @return the system lock
-     */
-    public CmsLock getSystemLock() {
-
-        CmsLock lock = CmsLock.getNullLock();
-        try {
-            lock = getCms().getSystemLock(getResource());
-        } catch (CmsException e) {
-            LOG.error(e);
-        }
-        return lock;
-    }
-
-    /**
      * Returns the system lock information tooltip for the explorer view.<p>
      * 
      * @param forExplorer if the tool tip should be generated for the explorer view
@@ -840,9 +824,9 @@ public final class CmsResourceUtil {
      */
     public String getSystemLockInfo(boolean forExplorer) {
 
-        if (getSystemLock().isWorkflow()) {
+        if (getLock().getSystemLock().isWorkflow()) {
             return getWorkflowProjectInfo();
-        } else if (getSystemLock().isPublish()) {
+        } else if (getLock().getSystemLock().isPublish()) {
             if (!forExplorer) {
                 return getMessages().key(Messages.GUI_PUBLISH_TOOLTIP_0);
             } else {
@@ -967,7 +951,7 @@ public final class CmsResourceUtil {
      */
     public CmsProject getWorkflowProject() {
 
-        CmsLock lock = getSystemLock();
+        CmsLock lock = getLock().getSystemLock();
         if (m_wfManager == null || !lock.isWorkflow()) {
             return null;
         }

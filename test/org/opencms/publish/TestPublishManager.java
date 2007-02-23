@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/02/23 13:13:11 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -212,6 +212,13 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         // get the last enqueued publish job
         List queue = OpenCms.getPublishManager().getPublishQueue();
+        /////////////////////////////////////////////////////////////////////////////
+        // README:
+        // The assertions in this block may fail if the resources get published first.
+        // This is because we can not say the publish engine to wait until we do the
+        // checks before publishing...
+        // but it should work 90% of the time
+        //        
         CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)queue.get(queue.size() - 1);
         // abort it
         OpenCms.getPublishManager().abortPublishJob(cms, publishJob);

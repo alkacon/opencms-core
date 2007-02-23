@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/02/19 09:52:19 $
- * Version: $Revision: 1.37.4.15 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.37.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.15 $ 
+ * @version $Revision: 1.37.4.16 $ 
  * 
  * @since 6.0.0 
  * 
@@ -121,7 +121,7 @@ public final class CmsLockManager {
         boolean needNewLock = true;
         // prevent shared locks get compromised
         if (type.isExclusive()) {
-            if (!currentLock.isUnlocked() && !currentLock.isSystemLock()) {
+            if (!currentLock.getEditionLock().isUnlocked()) {
                 needNewLock = false;
             }
         }
@@ -134,7 +134,7 @@ public final class CmsLockManager {
         }
 
         // handle collisions with exclusive locked sub-resources in case of a folder
-        if (resource.isFolder() && !newLock.isSystemLock()) {
+        if (resource.isFolder() && newLock.getSystemLock().isUnlocked()) {
             String resourceName = resource.getRootPath();
             Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CMExceptions
             while (itLocks.hasNext()) {
@@ -215,14 +215,20 @@ public final class CmsLockManager {
 
         // check exclusive direct locks first
         CmsLock lock = getDirectLock(resource.getRootPath());
-        if (lock.isNullLock() && includeSiblings) {
+        if ((lock == null) && includeSiblings) {
             // check if siblings are exclusively locked
             List siblings = internalReadSiblings(dbc, resource);
             lock = getSiblingsLock(siblings, resource.getRootPath());
         }
-        if (lock.isNullLock()) {
+        if (lock == null) {
             // if there is no parent lock, this will be the null lock as well
             lock = getParentLock(resource.getRootPath());
+        }
+        if (lock.getSystemLock().isPublish()
+            || (lock.getSystemLock().isWorkflow() || !lock.isLockableBy(dbc.currentUser()))) {
+            lock = lock.getSystemLock();
+        } else {
+            lock = lock.getEditionLock();
         }
         return lock;
     }
@@ -284,7 +290,7 @@ public final class CmsLockManager {
         Iterator itLocks = m_locks.values().iterator();
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
-            if (!lock.isSystemLock()) {
+            if (lock.getSystemLock().isUnlocked()) {
                 // only system locks matter here
                 continue;
             }
@@ -322,11 +328,9 @@ public final class CmsLockManager {
         CmsLock lock = (CmsLock)m_locks.remove(source);
         if (lock != null) {
             CmsLock newLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
-            if (lock.isSystemLock() && !lock.getEditionLock().isUnlocked()) {
-                lock = lock.getEditionLock();
-                CmsLock editionLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
-                newLock.setChildLock(editionLock);
-            }
+            lock = lock.getRelatedLock();
+            CmsLock relatedLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
+            newLock.setRelatedLock(relatedLock);
             m_locks.put(destination, newLock);
         }
     }
@@ -392,10 +396,7 @@ public final class CmsLockManager {
     throws CmsException {
 
         String resourcename = resource.getRootPath();
-        CmsLock lock = getLock(dbc, resource);
-        if (lock.isSystemLock()) {
-            lock = lock.getEditionLock();
-        }
+        CmsLock lock = getLock(dbc, resource).getEditionLock();
 
         // check some abort conditions first
         if (!lock.isNullLock()) {
@@ -447,7 +448,7 @@ public final class CmsLockManager {
         }
 
         // remove system locks only if explicit required
-        if (unlockSystemLock && getLock(dbc, resource).isSystemLock()) {
+        if (unlockSystemLock && !getLock(dbc, resource).getSystemLock().isUnlocked()) {
             return unlockResource(resourcename, true);
         }
         return lock;
@@ -465,13 +466,15 @@ public final class CmsLockManager {
         Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CME
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
-            if (currentLock.isSystemLock()) {
-                if (!currentLock.getChildLock().isNullLock()) {
-                    if (forceUnlock || (currentLock.getChildLock().getProjectId() == projectId)) {
+            if (!currentLock.getSystemLock().isUnlocked()) {
+                if (!currentLock.getRelatedLock().isNullLock()) {
+                    if (forceUnlock || (currentLock.getRelatedLock().getProjectId() == projectId)) {
                         unlockResource(currentLock.getResourceName(), false);
                     }
                 }
-                if (removeWfLocks && currentLock.isWorkflow() && (currentLock.getProjectId() == projectId)) {
+                if (removeWfLocks
+                    && currentLock.getSystemLock().isWorkflow()
+                    && (currentLock.getProjectId() == projectId)) {
                     unlockResource(currentLock.getResourceName(), true);
                 }
             } else {
@@ -578,20 +581,20 @@ public final class CmsLockManager {
         if (!currentLock.isLockableBy(user)) {
             // check type, owner and project for system locks
             // this is required if publishing, or create a workflow for, several siblings
-            if (!currentLock.isSystemLock()
+            if (currentLock.getSystemLock().isUnlocked()
                 || currentLock.getType() != type
                 || !currentLock.isOwnedInProjectBy(user, project)) {
                 // display the right message
                 CmsMessageContainer message = null;
-                if (currentLock.isPublish()) {
+                if (currentLock.getSystemLock().isPublish()) {
                     message = Messages.get().container(
                         Messages.ERR_RESOURCE_LOCKED_FORPUBLISH_1,
                         dbc.getRequestContext().getSitePath(resource));
-                } else if (currentLock.isWorkflow()) {
+                } else if (currentLock.getSystemLock().isWorkflow()) {
                     message = Messages.get().container(
                         Messages.ERR_RESOURCE_LOCKED_INWORKFLOW_1,
                         dbc.getRequestContext().getSitePath(resource));
-                } else if (currentLock.isInherited()) {
+                } else if (currentLock.getEditionLock().isInherited()) {
                     message = Messages.get().container(
                         Messages.ERR_RESOURCE_LOCKED_INHERITED_1,
                         dbc.getRequestContext().getSitePath(resource));
@@ -610,16 +613,11 @@ public final class CmsLockManager {
      * 
      * @param resourcename the name of the resource
      * 
-     * @return the direct lock of the resource or the null lock
+     * @return the direct lock of the resource or <code>null</code> 
      */
     private CmsLock getDirectLock(String resourcename) {
 
-        CmsLock directLock = (CmsLock)m_locks.get(resourcename);
-        if (directLock != null) {
-            return directLock;
-        } else {
-            return CmsLock.getNullLock();
-        }
+        return (CmsLock)m_locks.get(resourcename);
     }
 
     /**
@@ -679,13 +677,13 @@ public final class CmsLockManager {
         for (int i = 0; i < siblings.size(); i++) {
             CmsResource sibling = (CmsResource)siblings.get(i);
             CmsLock exclusiveLock = getDirectLock(sibling.getRootPath());
-            if (!exclusiveLock.isNullLock()) {
+            if (exclusiveLock != null) {
                 // a sibling is already locked 
                 return internalSiblingLock(exclusiveLock, resourcename);
             }
         }
         // no locked siblings found
-        return CmsLock.getNullLock();
+        return null;
 
     }
 
@@ -700,14 +698,14 @@ public final class CmsLockManager {
 
         CmsLock currentLock = (CmsLock)m_locks.get(lock.getResourceName());
         if (currentLock != null) {
-            if (currentLock.equals(lock)) {
+            if (currentLock.getSystemLock().equals(lock) || currentLock.getEditionLock().equals(lock)) {
                 return;
             }
-            if (currentLock.isSystemLock() && !lock.isSystemLock()) {
-                currentLock.setChildLock(lock);
-            } else if (!currentLock.isSystemLock() && lock.isSystemLock()) {
-                lock.setChildLock(currentLock);
+            if (!currentLock.getSystemLock().isUnlocked() && lock.getSystemLock().isUnlocked()) {
+                lock.setRelatedLock(currentLock);
                 m_locks.put(lock.getResourceName(), lock);
+            } else if (currentLock.getSystemLock().isUnlocked() && !lock.getSystemLock().isUnlocked()) {
+                currentLock.setRelatedLock(lock);
             } else {
                 throw new CmsLockException(Messages.get().container(
                     Messages.ERR_LOCK_ILLEGAL_STATE_2,
@@ -754,12 +752,12 @@ public final class CmsLockManager {
     private CmsLock internalSiblingLock(CmsLock exclusiveLock, String siblingName) {
 
         CmsLock lock = null;
-        if (exclusiveLock.isSystemLock()) {
+        if (!exclusiveLock.getSystemLock().isUnlocked()) {
             lock = new CmsLock(
                 siblingName,
                 exclusiveLock.getUserId(),
                 exclusiveLock.getProject(),
-                exclusiveLock.getType());
+                exclusiveLock.getSystemLock().getType());
         }
         if (lock == null || !exclusiveLock.getEditionLock().isNullLock()) {
             CmsLockType type = CmsLockType.SHARED_EXCLUSIVE;
@@ -771,10 +769,10 @@ public final class CmsLockManager {
             } else {
                 CmsLock editionLock = new CmsLock(
                     siblingName,
-                    exclusiveLock.getEditionLock().getUserId(),
-                    exclusiveLock.getEditionLock().getProject(),
+                    exclusiveLock.getUserId(),
+                    exclusiveLock.getProject(),
                     type);
-                lock.setChildLock(editionLock);
+                lock.setRelatedLock(editionLock);
             }
         }
         return lock;
@@ -832,7 +830,7 @@ public final class CmsLockManager {
 
         // check the lock type (system or user) to remove
         if (systemLocks) {
-            if (lock.isSystemLock()) {
+            if (!lock.getSystemLock().isUnlocked()) {
                 // if a system lock has to be removed
                 // user locks are removed too
                 m_locks.remove(resourceName);
@@ -842,16 +840,21 @@ public final class CmsLockManager {
                 return CmsLock.getNullLock();
             }
         } else {
-            if (!lock.isSystemLock()) {
-                // if it is a edition lock juut remove it
+            if (lock.getSystemLock().isUnlocked()) {
+                // if it is just an edition lock just remove it
                 m_locks.remove(resourceName);
                 return lock;
             } else {
                 // if it is a system lock check the edition lock
-                if (!lock.getChildLock().isNullLock()) {
+                if (!lock.getEditionLock().isUnlocked()) {
                     // remove the edition lock
-                    CmsLock tmp = lock.getChildLock();
-                    lock.setChildLock(CmsLock.getNullLock());
+                    CmsLock tmp = lock.getEditionLock();
+                    CmsLock sysLock = lock.getSystemLock();
+                    sysLock.setRelatedLock(null);
+                    if (!sysLock.equals(lock)) {
+                        // replace the lock entry if needed
+                        m_locks.put(resourceName, sysLock);
+                    }
                     return tmp;
                 } else {
                     // if there is no edition lock, do nothing

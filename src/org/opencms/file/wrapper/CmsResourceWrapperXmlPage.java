@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Properties;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
  * @since 6.5.6
  */
@@ -445,19 +445,6 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             }
 
             return ret;
-        }
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getSystemLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    public CmsLock getSystemLock(CmsObject cms, CmsResource resource) throws CmsException {
-
-        CmsResource xmlPage = findXmlPage(cms, resource.getRootPath());
-        if (xmlPage != null) {
-            return cms.getSystemLock(xmlPage);
         }
 
         return null;

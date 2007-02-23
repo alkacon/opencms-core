@@ -241,7 +241,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         if (getParamGroup() != null) {
             ret.addAll(getCms().getUsersOfGroup(getParamGroup()));
         } else {
-            ret.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
+            ret.addAll(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
  * @since 6.5.6
  */
@@ -118,18 +118,6 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
 
         if (m_isWrappedResource) {
             return cms.getResourcesInFolder(resourcename, filter);
-        }
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#getSystemLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    public CmsLock getSystemLock(CmsObject cms, CmsResource resource) throws CmsException {
-
-        if (m_isWrappedResource) {
-            return cms.getSystemLock(resource);
         }
 
         return null;

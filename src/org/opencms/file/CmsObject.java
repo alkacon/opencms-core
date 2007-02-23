@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.146.4.28 $
+ * Date   : $Date: 2007/02/23 13:13:11 $
+ * Version: $Revision: 1.146.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.28 $
+ * @version $Revision: 1.146.4.29 $
  * 
  * @since 6.0.0 
  */
@@ -1152,7 +1152,7 @@ public final class CmsObject {
      */
     public CmsLock getLock(CmsResource resource) throws CmsException {
 
-        return m_securityManager.getLock(m_context, resource).getEditionLock();
+        return m_securityManager.getLock(m_context, resource);
     }
 
     /**
@@ -1515,23 +1515,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readChildResources(m_context, resource, filter, true, false);
-    }
-
-    /**
-     * Returns the system lock state for a specified resource.<p>
-     * 
-     * This can only be of type {@link CmsLockType#UNLOCKED}, or
-     * all types for them {@link CmsLockType#isSystem()} is <code>true</code>.<p>  
-     * 
-     * @param resource the resource to return the system lock state for
-     * 
-     * @return the system lock state for the specified resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getSystemLock(CmsResource resource) throws CmsException {
-
-        return m_securityManager.getLock(m_context, resource).getSystemLock();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.13.4.1 $
+ * Date   : $Date: 2007/02/23 13:13:09 $
+ * Version: $Revision: 1.13.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.1 $ 
+ * @version $Revision: 1.13.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -415,7 +415,6 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     public void commitValue(CmsWidgetDialog dialog) throws CmsException {
 
         if (m_baseCollection == null) {
-
             PropertyUtilsBean bean = new PropertyUtilsBean();
             ConvertUtilsBean converter = new ConvertUtilsBean();
             Object value = null;
