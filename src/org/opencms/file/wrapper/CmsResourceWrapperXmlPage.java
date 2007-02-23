@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/02/23 13:59:51 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/02/23 16:04:43 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.Properties;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
  * @since 6.5.6
  */
@@ -87,10 +87,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     private static final String NAME_ELEMENT_CONTROLCODE = "controlcode.xml";
 
     /** The prefix used for a shared property entry. */
-    private static final String PREFIX_INDIVIDUAL = "individual.";
+    private static final String SUFFIX_INDIVIDUAL = ".i";
 
     /** The prefix used for a shared property entry. */
-    private static final String PREFIX_SHARED = "shared.";
+    private static final String SUFFIX_SHARED = ".s";
 
     /** Table with the states of the virtual files. */
     private static final Hashtable TMP_FILE_TABLE = new Hashtable();
@@ -773,7 +773,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 cms.writeFile(file);
 
             }
-            
+
             return file;
         }
 
@@ -890,8 +890,16 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      */
     private CmsFile createPropertyResource(CmsObject cms, CmsResource res) throws CmsException {
 
-        StringBuffer individual = new StringBuffer();
-        StringBuffer shared = new StringBuffer();
+        StringBuffer content = new StringBuffer();
+
+        // header
+        content.append("# Properties for file ");
+        content.append(res.getRootPath());
+        content.append("\n");
+
+        content.append("#\n");
+        content.append("# ${property_name}.i : individual property\n");
+        content.append("# ${property_name}.s :     shared property\n\n");
 
         List propertyDef = cms.readAllPropertyDefinitions();
         Map activeProperties = CmsPropertyAdvanced.getPropertyMap(cms.readPropertyObjects(res, false));
@@ -918,17 +926,17 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 sharedValue = "";
             }
 
-            shared.append(PREFIX_SHARED);
-            shared.append(propName);
-            shared.append("=");
-            shared.append(sharedValue);
-            shared.append("\n");
+            content.append(propName);
+            content.append(SUFFIX_INDIVIDUAL);
+            content.append("=");
+            content.append(individualValue);
+            content.append("\n");
 
-            individual.append(PREFIX_INDIVIDUAL);
-            individual.append(propName);
-            individual.append("=");
-            individual.append(individualValue);
-            individual.append("\n");
+            content.append(propName);
+            content.append(SUFFIX_SHARED);
+            content.append("=");
+            content.append(sharedValue);
+            content.append("\n\n");
         }
 
         CmsFile ret = new CmsFile(setRootPath(
@@ -936,7 +944,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             res.getRootPath() + "/" + res.getName() + "." + EXTENSION_PROPERTIES,
             CmsResourceTypePlain.getStaticTypeId()));
 
-        ret.setContents(individual.append(shared).toString().getBytes());
+        ret.setContents(content.toString().getBytes());
         return ret;
     }
 
@@ -1182,10 +1190,13 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 String key = (String)iter.next();
                 String value = (String)properties.get(key);
 
-                if (key.startsWith(PREFIX_SHARED)) {
-                    propList.add(new CmsProperty(key.substring(PREFIX_SHARED.length(), key.length()), null, value));
-                } else if (key.startsWith(PREFIX_INDIVIDUAL)) {
-                    propList.add(new CmsProperty(key.substring(PREFIX_INDIVIDUAL.length(), key.length()), value, null));
+                if (key.endsWith(SUFFIX_SHARED)) {
+                    propList.add(new CmsProperty(key.substring(0, key.length() - SUFFIX_SHARED.length()), null, value));
+                } else if (key.endsWith(SUFFIX_INDIVIDUAL)) {
+                    propList.add(new CmsProperty(
+                        key.substring(0, key.length() - SUFFIX_INDIVIDUAL.length()),
+                        value,
+                        null));
                 }
             }
 
