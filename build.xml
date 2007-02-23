@@ -373,7 +373,8 @@ ${opencms.inputlib.textextraction}
             basedir="${opencms.output.classes}"
             includes="org/opencms/**" >      
             <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
-        </jar>        	            
+        </jar>        	
+    	
     </target>
 
 	<!-- 
@@ -859,4 +860,5 @@ ${opencms.inputlib.textextraction}
             todir="${opencms.input}/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/components/upload_applet/"
             file="${opencms.output}/upload/upload.jar" />
     </target>   
+	
 </project>

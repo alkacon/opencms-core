@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/02/23 16:23:06 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,9 @@ package org.opencms.configuration;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
+import org.opencms.repository.A_CmsRepository;
+import org.opencms.repository.CmsRepositoryFilter;
+import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -42,6 +45,7 @@ import org.opencms.staticexport.CmsStaticExportRfsRule;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.digester.Digester;
@@ -53,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  */
@@ -98,11 +102,26 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The import overwrite node name. */
     protected static final String N_OVERWRITE = "overwrite";
 
+    /** The node name of the repository params node. */
+    protected static final String N_PARAMS = "params";
+
+    /** The node name of the repository filter node. */
+    protected static final String N_FILTER = "filter";
+
+    /** The node name of the repository filter regex node. */
+    protected static final String N_REGEX = "regex";
+
     /** An individual principal translation node. */
     protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
 
     /** The principal translation node. */
     protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
+
+    /** The node name of the repositories node. */
+    protected static final String N_REPOSITORIES = "repositories";
+
+    /** The node name of the repository node. */
+    protected static final String N_REPOSITORY = "repository";
 
     /**  The main configuration node for static export name. */
     protected static final String N_STATICEXPORT = "staticexport";
@@ -202,6 +221,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
+
+    /** The configured repository manager. */
+    private CmsRepositoryManager m_repositoryManager;
 
     /** The configured static export manager. */
     private CmsStaticExportManager m_staticExportManager;
@@ -472,6 +494,44 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             "addRfsRuleSystemRes",
             1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
+
+        // creation of the static repository manager        
+        digester.addObjectCreate("*/" + N_REPOSITORIES, CmsRepositoryManager.class);
+        digester.addCallMethod("*/" + N_REPOSITORIES, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_REPOSITORIES, "setRepositoryManager");
+
+        // repository
+        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, A_CLASS, CmsConfigurationException.class);
+
+        // repository name
+        digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "setName", 1);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, 0, A_NAME);
+
+        // repository params
+        digester.addCallMethod(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAMS + "/" + N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAMS + "/" + N_PARAM,
+            0,
+            I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_PARAMS + "/" + N_PARAM, 1);
+
+        // repository filter
+        digester.addObjectCreate("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, CmsRepositoryFilter.class);
+
+        // repository filter type
+        digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, "setType", 1);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, 0, A_TYPE);
+
+        // repository filter rules
+        digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER + "/" + N_REGEX, "addFilterRule", 1);
+        digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER + "/" + N_REGEX, 0);
+        
+        digester.addSetNext("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, "setFilter");
+        
+        digester.addSetNext("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "addRepositoryClass");
     }
 
     /**
@@ -693,6 +753,56 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             }
 
         }
+
+        // <repositories> node
+        Element repositoriesElement = parent.addElement(N_REPOSITORIES);
+
+        i = m_repositoryManager.getRepositories().iterator();
+        while (i.hasNext()) {
+
+            // <repository> node
+            A_CmsRepository repository = (A_CmsRepository)i.next();
+            Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
+            repositoryElement.addAttribute(A_NAME, repository.getName());
+            repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
+
+            // <params> node
+            Map config = repository.getConfiguration();
+            if ((config != null) && (config.size() > 0)) {
+                Element paramsElement = repositoryElement.addElement(N_PARAMS);
+
+                Iterator it = config.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String)it.next();
+                    String[] value = (String[])config.get(key);
+
+                    // <param> nodes
+                    for (int j = 0; j < value.length; j++) {
+                        Element paramNode = paramsElement.addElement(N_PARAM);
+                        paramNode.addAttribute(A_NAME, key);
+                        paramNode.addText(value[j]);
+                    }
+                }
+            }
+            
+            // <filter> node
+            CmsRepositoryFilter filter = repository.getFilter();
+            if (filter != null) {
+                List rules = filter.getFilterRules();
+                if (rules.size() > 0) {
+                    Element filterElement = repositoryElement.addElement(N_FILTER);
+                    filterElement.addAttribute(A_TYPE, filter.getType());
+                    
+                    // <regex> nodes
+                    Iterator it = rules.iterator();
+                    while (it.hasNext()) {
+                        Pattern rule = (Pattern)it.next();
+                        filterElement.addElement(N_REGEX).addText(rule.pattern());
+                    }
+                }
+            }
+        }
+
         // return the configured node
         return importexportElement;
     }
@@ -713,6 +823,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public CmsImportExportManager getImportExportManager() {
 
         return m_importExportManager;
+    }
+
+    /**
+     * Returns the initialized repository manager.<p>
+     * 
+     * @return the initialized repository manager
+     */
+    public CmsRepositoryManager getRepositoryManager() {
+
+        return m_repositoryManager;
     }
 
     /**
@@ -746,6 +866,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_MANAGER_0));
         }
+    }
+
+    /**
+     * Sets the generated repository manager.<p>
+     * 
+     * @param manager the repository manager to set
+     */
+    public void setRepositoryManager(CmsRepositoryManager manager) {
+
+        m_repositoryManager = manager;
     }
 
     /**

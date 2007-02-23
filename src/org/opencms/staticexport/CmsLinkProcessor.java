@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2006/09/22 16:19:12 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/02/23 16:23:06 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlParser;
@@ -54,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -323,6 +324,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     if (CmsStringUtil.isNotEmpty(targetUri)) {
                         String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
                         if (internalUri != null) {
+                            internalUri = rewriteUri(internalUri);
                             // this is an internal link
                             link = m_linkTable.addLink(tag.getTagName(), internalUri, true);
                         } else {
@@ -366,6 +368,18 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             // _with_ server name / port so that the source code looks identical to code
             // that would normally created when running in a regular site.
 
+            // if an object wrapper is used, rewrite the uri
+            Object obj = m_cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (obj != null) {
+                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+
+                link = new CmsLink(
+                    link.getName(),
+                    link.getType(),
+                    wrapper.rewriteLink(link.getUri()),
+                    link.isInternal());
+            }
+
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!m_processEditorLinks && (m_cms.getRequestContext().getSiteRoot().length() == 0)) {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());
@@ -386,5 +400,26 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             // don't touch external links
             return link.getUri();
         }
+    }
+
+    /**
+     * Use the {@link org.opencms.file.wrapper.CmsObjectWrapper} to restore the link in the VFS.<p>
+     * 
+     * @param internalUri the internal uri to restore
+     * 
+     * @return the restored uri
+     */
+    private String rewriteUri(String internalUri) {
+
+        // if an object wrapper is used, rewrite the uri
+        if (m_cms != null) {
+            Object obj = m_cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (obj != null) {
+                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+                return wrapper.restoreLink(internalUri);
+            }
+        }
+
+        return internalUri;
     }
 }

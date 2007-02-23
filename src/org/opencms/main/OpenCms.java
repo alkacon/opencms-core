@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2006/05/12 16:05:48 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2007/02/23 16:23:06 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsRole;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,6 +305,16 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getPasswordHandler();
     }
 
+    /**
+     * Returns the repository manager.<p>
+     * 
+     * @return the repository manager
+     */
+    public static CmsRepositoryManager getRepositoryManager() {
+
+        return OpenCmsCore.getInstance().getRepositoryManager();
+    }
+    
     /**
      * Returns the resource manager.<p>
      * 
