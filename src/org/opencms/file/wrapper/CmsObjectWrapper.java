@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/02/23 16:23:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/02/28 16:11:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -324,56 +324,52 @@ public class CmsObjectWrapper {
      */
     public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        List list = null;
+        List list = new ArrayList();
 
-        // iterate through all wrappers and call "getResourcesInFolder" till one does not return null
+        // read children existing in the VFS
+        try {
+            list.addAll(m_cms.getResourcesInFolder(resourcename, filter));
+        } catch (CmsException ex) {
+            //noop
+        }
+
+        // iterate through all wrappers and call "getResourcesInFolder" and add the results to the list
         List wrappers = getWrappers();
         Iterator iter = wrappers.iterator();
         while (iter.hasNext()) {
             I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
-            list = wrapper.getResourcesInFolder(m_cms, resourcename, filter);
-            if (list != null) {
-                break;
+            List added = wrapper.getResourcesInFolder(m_cms, resourcename, filter);
+            if (added != null) {
+                list.addAll(added);
             }
         }
 
-        // default collecting of the resources for that resource name
-        if (list == null) {
-            list = m_cms.getResourcesInFolder(resourcename, filter);
-        }
+        // create a new list to add all resources
+        ArrayList wrapped = new ArrayList();
 
-        if (list != null) {
+        // eventually wrap the found resources
+        iter = list.iterator();
+        while (iter.hasNext()) {
+            CmsResource res = (CmsResource)iter.next();
 
-            // create a new list to add all resources
-            ArrayList wrapped = new ArrayList();
+            // get resource type wrapper for the resource
+            I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
 
-            // eventually wrap the found resources
-            iter = list.iterator();
-            while (iter.hasNext()) {
-                CmsResource res = (CmsResource)iter.next();
+            if (resWrapper != null) {
 
-                // get resource type wrapper for the resource
-                I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
+                // adds the wrapped resources
+                wrapped.add(resWrapper.wrapResource(m_cms, res));
+            } else {
 
-                if (resWrapper != null) {
-
-                    // adds the wrapped resources
-                    wrapped.add(resWrapper.wrapResource(m_cms, res));
-                } else {
-
-                    // add the resource unwrapped
-                    wrapped.add(res);
-                }
+                // add the resource unwrapped
+                wrapped.add(res);
             }
-
-            // sort the wrapped list correctly
-            Collections.sort(wrapped, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
-
-            return wrapped;
         }
 
-        // if nothing else fits
-        return m_cms.getResourcesInFolder(resourcename, filter);
+        // sort the wrapped list correctly
+        Collections.sort(wrapped, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
+
+        return wrapped;
     }
 
     /**

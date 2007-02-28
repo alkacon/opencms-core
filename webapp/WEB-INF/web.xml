@@ -67,26 +67,6 @@
         <load-on-startup>0</load-on-startup>
     </servlet>    
 
-	<servlet>
-        <servlet-name>OpenCmsWebDavServlet</servlet-name>
-        <description>
-            Creates an access to OpenCms through WebDAV.
-        </description>
-        <servlet-class>org.opencms.webdav.CmsWebdavServlet</servlet-class>
-        <init-param>
-          <param-name>listings</param-name>
-          <param-value>true</param-value>
-        </init-param>
-        <init-param>
-          <param-name>readonly</param-name>
-          <param-value>false</param-value>
-        </init-param>
-        <init-param>
-          <param-name>repository</param-name>
-          <param-value>standard</param-value>
-        </init-param>
-    </servlet>
-    
     <servlet-mapping>
         <servlet-name>OpenCmsServlet</servlet-name>
         <url-pattern>/opencms/*</url-pattern>
@@ -95,11 +75,6 @@
     <servlet-mapping>
         <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <url-pattern>/opencms-errorhandler/*</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-      <servlet-name>OpenCmsWebDavServlet</servlet-name>
-      <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
     
     <session-config>

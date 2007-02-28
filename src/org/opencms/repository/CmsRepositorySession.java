@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/23 16:23:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/02/28 16:11:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.lock.CmsLock;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -226,7 +227,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
             CmsResource res = m_cms.readResource(path, CmsResourceFilter.DEFAULT);
 
-            // check lock
+            // check user locks
             CmsLock cmsLock = m_cms.getLock(res);
             if (!cmsLock.isNullLock()) {
                 lockInfo.setPath(path);
@@ -259,12 +260,6 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_1, path));
-        }
-
-        // return empty list if resource is not a folder
-        CmsResource folder = m_cms.readResource(path, CmsResourceFilter.DEFAULT);
-        if ((folder == null) || (!folder.isFolder())) {
-            return ret;
         }
 
         List resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
@@ -362,16 +357,15 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         path = validatePath(path);
         byte[] content = CmsFileUtil.readFully(inputStream);
 
-        // check if file already exists
-        if (exists(path)) {
-
+        try {
+            CmsFile file = m_cms.readFile(path, CmsResourceFilter.DEFAULT);
+            
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_ITEM_1, path));
             }
 
             if (overwrite) {
-
-                CmsFile file = m_cms.readFile(path, CmsResourceFilter.DEFAULT);
+                
                 file.setContents(content);
 
                 CmsRepositoryLockInfo lock = getLock(path);
@@ -393,8 +387,8 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
                 throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(Messages.ERR_DEST_EXISTS_0));
             }
-        } else {
-
+        } catch (CmsVfsResourceNotFoundException ex) {
+            
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_ITEM_1, path));
             }
@@ -408,6 +402,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             // TODO: what to do if a parent folder is locked? Dreamweaver isnt able to lock/unlock folders
             m_cms.unlockResource(path);
         }
+        
     }
 
     /**

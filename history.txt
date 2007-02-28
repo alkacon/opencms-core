@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/02/28 13:10:04 $
- * Version: $Revision: 1.804 $
+ * Date   : $Date: 2007/02/28 16:11:50 $
+ * Version: $Revision: 1.805 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,7 +27,7 @@ OpenCms 6.2.x
 ! Added link check for xml content
 * History shows only existing resources and the icon for restoring is visible only if restoring is possible
 * Fixed issue with damaged admin user info preventing OpenCms from starting (IOException: invalid stream header)
-! Added WebDAV functionality
+! Added repository interface
 * XML content editor scrolls back to the correct position when adding/deleting or moving elements
 
 OpenCms 6.2.3 - November 30, 2006

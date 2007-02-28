@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/02/28 16:11:50 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -359,13 +359,54 @@ public final class CmsEncoder {
                 // this is intendend as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
-                // encoder can endoce this char
+                // encoder can encode this char
                 result.append((char)c);
             } else {
-                // append HTML entiry reference
+                // append HTML entity reference
                 result.append(ENTITY_PREFIX);
                 result.append(c);
                 result.append(";");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Encodes all characters that are contained in the String which can not displayed 
+     * in the given encodings charset with Java escaping like <code>\u20ac</code>.<p>
+     * 
+     * This can be used to escape values used in Java property files.<p>
+     * 
+     * @param input the input to encode for Java
+     * @param encoding the charset to encode the result with
+     * 
+     * @return the input with the encoded Java entities
+     */
+    public static String encodeJavaEntities(String input, String encoding) {
+
+        StringBuffer result = new StringBuffer(input.length() * 2);
+        CharBuffer buffer = CharBuffer.wrap(input.toCharArray());
+        Charset charset = Charset.forName(encoding);
+        CharsetEncoder encoder = charset.newEncoder();
+        for (int i = 0; i < buffer.length(); i++) {
+            int c = buffer.get(i);
+            if (c < 128) {
+                // first 128 chars are contained in almost every charset
+                result.append((char)c);
+                // this is intendend as performance improvement since 
+                // the canEncode() operation appears quite CPU heavy
+            } else if (encoder.canEncode((char)c)) {
+                // encoder can encode this char
+                result.append((char)c);
+            } else {
+                // append Java entity reference
+                result.append("\\u");
+                String hex = Integer.toHexString(c);
+                int pad = 4 - hex.length();
+                for (int p = 0; p < pad; p++) {
+                    result.append('0');
+                }
+                result.append(hex);
             }
         }
         return result.toString();
