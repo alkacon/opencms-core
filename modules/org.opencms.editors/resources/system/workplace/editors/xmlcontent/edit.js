@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2007/02/28 13:10:04 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/02/28 17:11:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.target = "_self";
 	submit(_form);
-	top.edit.buttonbar.focus();
+	try {
+		top.edit.buttonbar.focus();
+	} catch (e) {}
 
 	switch (para) {
 	case 1:
@@ -177,7 +179,9 @@ function removeElement(elemName, index) {
 
 // clears the last scroll position
 function clearLastPosition() {
-	top.edit.setLastPosY(0);
+	try {
+		top.edit.setLastPosY(0);
+	} catch (e) {}
 }
 
 // sets the last scroll position to return to
