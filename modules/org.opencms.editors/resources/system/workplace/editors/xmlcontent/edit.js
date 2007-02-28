@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2007/02/28 13:14:50 $
+ * Version: $Revision: 1.6.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.target = "_self";
 	submit(_form);
+	top.edit.buttonbar.focus();
 
 	switch (para) {
 	case 1:
@@ -63,11 +64,13 @@ function buttonAction(para) {
 		break;
 	case 3:
 		// save content
+		setLastPosition();
 		_form.action.value = actionSave;
 		_form.submit();
 		break;
 	case 4:
 		// change element (change locale)
+		clearLastPosition();
 		_form.action.value = actionChangeElement;
 		_form.submit();
 		break;
@@ -90,6 +93,7 @@ function buttonAction(para) {
 		break;
 	case 8:
 		// check elements before performing customized action
+		clearLastPosition();
 		_form.action.value = actionCheck;
 		_form.submit();
 		break;
@@ -116,6 +120,7 @@ function buttonAction(para) {
 		break;
 	case 14:
 		// delete the current locale content
+		clearLastPosition();
 		_form.action.value = actionDeleteLocale;
 		_form.submit();
 		break;
@@ -175,13 +180,18 @@ function removeElement(elemName, index) {
 	buttonAction(6);
 }
 
+// clears the last scroll position
+function clearLastPosition() {
+	top.edit.setLastPosY(0);
+}
+
 // sets the last scroll position to return to
 function setLastPosition() {
 	try {
 		if (browser.isIE) {
-			top.edit.buttonbar.lastPosY = document.body.scrollTop;
+			top.edit.setLastPosY(document.body.scrollTop);
 		} else {
-			top.edit.buttonbar.lastPosY = window.pageYOffset;
+			top.edit.setLastPosY(window.pageYOffset);
 		}
 	} catch (e) {
 		// ignore
@@ -198,10 +208,6 @@ function checkElementLanguage(newValue) {
 	} catch (e) {
 		// ignore
 	}
-
-
-	
-
 }
 
 // submits the checked form for customized action button and considers delayed string insertion
@@ -240,7 +246,7 @@ function checkPreview(fieldId) {
 function scrollForm() {
 	var posY = 0;
 	try {
-		posY = top.edit.buttonbar.lastPosY;
+		posY = top.edit.lastPosY;
 	} catch (e) {}
 	window.scrollTo(0, posY);
 }
@@ -373,11 +379,11 @@ function showEditorElement(elem, icon, xOffset, yOffset, alignToLeft) {
 	    if (x < scrollLeft) {
 	        x = scrollLeft;
 	    }
-	
+
 	    if (alignToLeft) {
 	    	x += xOffset;
 	    }
-	
+
 	    elem.style.left = x + "px";
 	    elem.style.top =  y + "px";
 	    elem.style.visibility = "visible";

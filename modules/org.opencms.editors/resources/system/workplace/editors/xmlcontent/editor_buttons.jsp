@@ -21,8 +21,6 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 <script type="text/javascript">
 <!--
 
-// stores the scroll target y coordinate when adding/removing an element in the input form
-var lastPosY = 0;
 // the frame of the input form
 var formFrame = top.edit.editform;
 
