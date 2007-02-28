@@ -19,10 +19,8 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
 <script type="text/javascript">
-<!--
+<!-- 
 
-// stores the scroll target y coordinate when adding/removing an element in the input form
-var lastPosY = 0;
 // the frame of the input form
 var formFrame = top.edit.editform;
 
