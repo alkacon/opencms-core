@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/02/28 11:00:23 $
+ * Version: $Revision: 1.49.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.i18n;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.49.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,6 +256,40 @@ public class CmsLocaleManager implements I_CmsEventListener {
             return null;
         }
         return getLocales(CmsStringUtil.splitAsList(localeNames, ','));
+    }
+
+    /**
+     * Returns the content encoding set for the given resource.<p>
+     * 
+     * The content encoding is controlled by the property {@link CmsPropertyDefinition#PROPERTY_CONTENT_ENCODING},
+     * which can be set on the resource or on a parent folder for all resources in this folder.<p>
+     * 
+     * In case no encoding has been set, the default encoding from 
+     * {@link org.opencms.main.CmsSystemInfo#getDefaultEncoding()} is returned.<p> 
+     * 
+     * @param cms the current OpenCms user context
+     * @param res the resource to read the encoding for
+     * 
+     * @return the content encoding set for the given resource
+     */
+    public static final String getResourceEncoding(CmsObject cms, CmsResource res) {
+
+        String encoding = null;
+        // get the encoding
+        try {
+            encoding = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+            if (encoding != null) {
+                encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+            }
+        } catch (CmsException e) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, res.getRootPath()), e);
+            }
+        }
+        if (encoding == null) {
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        }
+        return encoding;
     }
 
     /**

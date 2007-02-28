@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.24.4.4 $
+ * Date   : $Date: 2007/02/28 11:00:22 $
+ * Version: $Revision: 1.24.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -54,7 +56,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.4 $ 
+ * @version $Revision: 1.24.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +149,8 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     public List parseLinks(CmsObject cms, CmsFile file) {
 
         CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false);
-        String content = CmsEncoder.createString(file.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+        String encoding = CmsLocaleManager.getResourceEncoding(cms, file);
+        String content = CmsEncoder.createString(file.getContents(), encoding);
         macroResolver.resolveMacros(content); // ignore return value
         return macroResolver.getLinks();
     }
@@ -159,9 +162,15 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
         // actualize the link paths and/or ids
         CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, resource.getRootPath(), false);
-        String content = CmsEncoder.createString(resource.getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+        String encoding = CmsLocaleManager.getResourceEncoding(cms, resource);
+        String content = CmsEncoder.createString(resource.getContents(), encoding);
         content = macroResolver.resolveMacros(content);
-        resource.setContents(content.getBytes());
+        try {
+            resource.setContents(content.getBytes(encoding));
+        } catch (UnsupportedEncodingException e) {
+            // this should usually never happen since the encoding is already used before
+            resource.setContents(content.getBytes());
+        }
         // write the content with the 'right' links
         return super.writeFile(cms, securityManager, resource);
     }
