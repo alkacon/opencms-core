@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/02/28 13:14:50 $
- * Version: $Revision: 1.717.2.130 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.717.2.131 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ OpenCms 6.5.6 - xxx, 2007
 ! Added support for resource type permissions in explorer type definitions based on roles
 - Improved handling for user additional infos table
 * XML content editor scrolls back to the correct position when adding/deleting or moving elements
+- Search index now stores the VFS type name of an indexed resource, this is also available in the search result bean
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended

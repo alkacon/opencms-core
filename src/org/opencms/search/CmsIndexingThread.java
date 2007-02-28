@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2007/02/16 13:48:32 $
- * Version: $Revision: 1.26.4.6 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.26.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26.4.6 $ 
+ * @version $Revision: 1.26.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,8 +61,8 @@ public class CmsIndexingThread extends Thread {
     /** The cms object. */
     private CmsObject m_cms;
 
-    /** The document factory to use. */
-    private I_CmsDocumentFactory m_factory;
+    /** The document type factory to index the resource with. */
+    private I_CmsDocumentFactory m_documentType;
 
     /** The current index. */
     private CmsSearchIndex m_index;
@@ -82,7 +82,7 @@ public class CmsIndexingThread extends Thread {
      * @param cms the cms object
      * @param writer the writer
      * @param res the resource to index
-     * @param factory the document factory to index the resource with
+     * @param documentType the document type factory to index the resource with
      * @param index the index
      * @param report the report to write out progress information
      */
@@ -90,7 +90,7 @@ public class CmsIndexingThread extends Thread {
         CmsObject cms,
         IndexWriter writer,
         CmsResource res,
-        I_CmsDocumentFactory factory,
+        I_CmsDocumentFactory documentType,
         CmsSearchIndex index,
         I_CmsReport report) {
 
@@ -99,7 +99,7 @@ public class CmsIndexingThread extends Thread {
         m_cms = cms;
         m_writer = writer;
         m_res = res;
-        m_factory = factory;
+        m_documentType = documentType;
         m_index = index;
         m_report = report;
     }
@@ -115,7 +115,7 @@ public class CmsIndexingThread extends Thread {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEXING_WITH_FACTORY_2,
                 m_res.getRootPath(),
-                m_factory.getName()));
+                m_documentType.getName()));
         }
 
         // flag for logging in the "final" block
@@ -126,7 +126,7 @@ public class CmsIndexingThread extends Thread {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATING_INDEX_DOC_0));
             }
-            Document doc = m_factory.createDocument(m_cms, m_res, m_index);
+            Document doc = m_documentType.createDocument(m_cms, m_res, m_index);
 
             if (doc == null) {
                 throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));

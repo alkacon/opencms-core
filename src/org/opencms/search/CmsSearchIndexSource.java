@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,9 +99,9 @@ public class CmsSearchIndexSource implements Comparable {
     }
 
     /**
-     * Adds the key/name of a document type.<p>
+     * Adds the name of a document type.<p>
      * 
-     * @param key the key/name of a document type
+     * @param key the name of a document type to add
      */
     public void addDocumentType(String key) {
 
@@ -118,62 +119,43 @@ public class CmsSearchIndexSource implements Comparable {
     }
 
     /**
-     * Compares the internal name Strings of this instance and the argument casted 
-     * to this type. <p>
+     * Returns <code>0</code> if the given object is an index source with the same name. <p>
      * 
-     * Note that this method only should return 0 for the statement 
-     * <code>a.compareTo(a)</code> 
-     * as the name of a indexsource has 
-     * to be unique within OpenCms.<p>
+     * Note that the name of an index source has to be unique within OpenCms.<p>
      * 
-     * @param o another indexsource.
+     * @param obj another index source
      * 
-     * @return the comparison result (as specified in {@link String#compareTo(java.lang.String)} for the 
-     *         name member of both indexsource instances involved.
-     * 
-     * @throws ClassCastException if the given argument is not assignable from this class. 
+     * @return <code>0</code> if the given object is an index source with the same name
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) throws ClassCastException {
+    public int compareTo(Object obj) {
 
-        CmsSearchIndexSource other = (CmsSearchIndexSource)o;
-        String otherName = other.getName();
-        String myName = getName();
-        return myName.compareTo(otherName);
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsSearchIndexSource) {
+            return getName().compareTo(((CmsSearchIndexSource)obj).getName());
+        }
+        return -1;
     }
 
     /**
-     * Implemented to be consistent with overridden method 
-     * <code>{@link #compareTo(Object)}</code>.<p>
+     * Two index sources are consided equal if their names as returned by {@link #getName()} is equal.<p>
+     *
+     * Note that the name of an index source has to be unique within OpenCms.<p>
      * 
-     * Note that this method only should return true for the statement 
-     * <code>a.compareTo(a)</code> 
-     * as the name of a indexsource has 
-     * to be unique within OpenCms.<p>
-     * 
-     * @param obj another indexsource.
-     * 
-     * @return true if <code>{@link #compareTo(Object)}</code> with this argument returns 0, false else. 
-     * 
-     * @see java.lang.Object#equals(java.lang.Object) 
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
 
-        boolean ret = false;
-        try {
-            int cp = compareTo(obj);
-            ret = cp == 0;
-        } catch (Exception e) {
-            // remain false   
-        }
-        return ret;
+        return compareTo(obj) == 0;
     }
 
     /**
-     * Returns the list of Cms resource types to be indexed.<p>
+     * Returns the list of names (Strings) of the document types to be indexed.<p>
      *
-     * @return the list of Cms resource types to be indexed
+     * @return the list of names (Strings) of the document types to be indexed
      */
     public List getDocumentTypes() {
 
@@ -232,9 +214,9 @@ public class CmsSearchIndexSource implements Comparable {
     }
 
     /**
-     * Returns the list of Cms resources to be indexed.<p>
+     * Returns the list of VFS resources to be indexed.<p>
      *
-     * @return the list of Cms resources to be indexed
+     * @return the list of VFS resources to be indexed
      */
     public List getResourcesNames() {
 
@@ -253,11 +235,56 @@ public class CmsSearchIndexSource implements Comparable {
     }
 
     /**
-     * Removes the key/name of a document type.<p>
+     * Returns <code>true</code> in case the given resource root path is contained in the list of
+     * configured resource names of this index source.<p>
      * 
-     * @param key the key/name of a document type 
+     * @param rootPath the resource root path to check
      * 
-     * @return true if the given key was contained before thus could be removed successfully, false else.
+     * @return <code>true</code> in case the given resource root path is contained in the list of
+     *       configured resource names of this index source
+     *       
+     * @see #getResourcesNames()
+     */
+    public boolean isContaining(String rootPath) {
+
+        if ((rootPath != null) && (m_resourcesNames != null)) {
+            Iterator i = m_resourcesNames.iterator();
+            while (i.hasNext()) {
+                String path = (String)i.next();
+                if (rootPath.startsWith(path)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> in case the given resource root path is contained in the list of
+     * configured resource names, and the given document type name is contained in the
+     * list if configured document type names of this index source.<p>
+     * 
+     * @param rootPath the resource root path to check
+     * @param documentType the document type factory name to check
+     * 
+     * @return <code>true</code> in case the given resource root path is contained in the list of
+     *      configured resource names, and the given document type name is contained in the
+     *      list if configured document type names of this index source
+     *      
+     * @see #isContaining(String)
+     * @see #getDocumentTypes()
+     */
+    public boolean isIndexing(String rootPath, String documentType) {
+
+        return m_documentTypes.contains(documentType) && isContaining(rootPath);
+    }
+
+    /**
+     * Removes the name of a document type from the list of configured types of this index source.<p>
+     * 
+     * @param key the name of the document type to remove
+     * 
+     * @return true if the given document type name was contained before thus could be removed successfully, false otherwise
      */
     public boolean removeDocumentType(String key) {
 
@@ -265,9 +292,9 @@ public class CmsSearchIndexSource implements Comparable {
     }
 
     /**
-     * Sets the list of Cms resource types to be indexed.<p>
+     * Sets the list of document type names (Strings) to be indexed.<p>
      *
-     * @param documentTypes the list of Cms resource types to be indexed
+     * @param documentTypes the list of document type names (Strings) to be indexed
      */
     public void setDocumentTypes(List documentTypes) {
 

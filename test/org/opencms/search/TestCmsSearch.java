@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.16.4.5 $
+ * @version $Revision: 1.16.4.6 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -482,6 +482,11 @@ public class TestCmsSearch extends OpenCmsTestCase {
                 title = title.trim();
             }
             System.out.print(CmsStringUtil.padRight(title, 40));
+            String type = res.getDocumentType();
+            if (type == null) {
+                type = "";
+            }
+            System.out.print(CmsStringUtil.padRight(type, 10));            
             System.out.print(CmsStringUtil.padRight(""
                 + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
             System.out.println("score: " + res.getScore());

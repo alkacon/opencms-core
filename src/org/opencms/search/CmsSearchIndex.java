@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/12/11 13:31:28 $
- * Version: $Revision: 1.60.4.6 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.60.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,13 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
@@ -77,7 +79,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.6 $ 
+ * @version $Revision: 1.60.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -363,23 +365,58 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the configured document types of this index for the given resource path.<p>
+     * Returns the document type factory used for the given resource in this index, or <code>null</code>  
+     * in case the resource is not indexed by this index.<p>
      * 
-     * The result List contains Strings with the names of the document types.<p>
+     * A resource is indexed if the following is all true: <ol>
+     * <li>The index contains at last one index source matching the root path of the given resource.
+     * <li>For this matching index source, the document type factory needed by the resource is also configured.
+     * </ol>
+     * 
+     * @param res the resource to check
+     * 
+     * @return he document type factory used for the given resource in this index, or <code>null</code>  
+     * in case the resource is not indexed by this index
+     */
+    public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
+
+        if ((res != null) && (m_sources != null)) {
+            // the result can only be null or the type configured for the resource
+            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
+            if (result != null) {
+                // check the path of the resource if it matches with one (or more) of the configured index sources
+                Iterator i = m_sources.iterator();
+                while (i.hasNext()) {
+                    CmsSearchIndexSource source = (CmsSearchIndexSource)i.next();
+                    if (source.isIndexing(res.getRootPath(), result.getName())) {
+                        // we found an index source that indexes the resource
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a list of names (Strings) of configured document type factorys for the given resource path.<p>
      * 
      * @param path path of the folder 
      * 
-     * @return the configured document types of this index for the given resource path
+     * @return a list of names (Strings) of configured document type factorys for the given resource path
+     * 
+     * @deprecated use {@link #getDocumentFactory(CmsResource)} instead to find out if this index is 'interested' in a resource
      */
     public List getDocumenttypes(String path) {
 
         List documenttypes = null;
         if (m_documenttypes != null) {
-            for (Iterator i = m_documenttypes.keySet().iterator(); i.hasNext();) {
-                String key = (String)i.next();
+            for (Iterator i = m_documenttypes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry e = (Map.Entry)i.next();
+                String key = (String)e.getKey();
                 // NOTE: assumed that configured resource paths do not overlap, otherwise result is undefined
                 if (path.startsWith(key)) {
-                    documenttypes = (List)m_documenttypes.get(key);
+                    documenttypes = (List)e.getValue();
                     break;
                 }
             }
@@ -870,16 +907,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Sets the name of the field configuration used for this index.<p>
-     * 
-     * @param fieldConfigurationName the name of the field configuration to set
-     */
-    public void setFieldConfigurationName(String fieldConfigurationName) {
-
-        m_fieldConfigurationName = fieldConfigurationName;
-    }
-    
-    /**
      * Sets the field configuration used for this index.<p>
      * 
      * @param fieldConfiguration the field configuration to set
@@ -887,6 +914,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
 
         m_fieldConfiguration = fieldConfiguration;
+    }
+
+    /**
+     * Sets the name of the field configuration used for this index.<p>
+     * 
+     * @param fieldConfigurationName the name of the field configuration to set
+     */
+    public void setFieldConfigurationName(String fieldConfigurationName) {
+
+        m_fieldConfigurationName = fieldConfigurationName;
     }
 
     /**

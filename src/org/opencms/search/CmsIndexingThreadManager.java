@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -49,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25.4.4 $ 
+ * @version $Revision: 1.25.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,10 +106,9 @@ public class CmsIndexingThreadManager {
         CmsSearchIndex index,
         I_CmsReport report) {
 
-        I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactory(res);
-        if ((factory == null) || !index.getDocumenttypes(res.getRootPath()).contains(factory.getName())) {
-            // document type does not match the ones configured for the index, skip document
-
+        I_CmsDocumentFactory documentType = index.getDocumentFactory(res);
+        if (documentType == null) {
+            // this resource is not contained in the given search index
             m_startedCounter++;
             m_returnedCounter++;
             if (report != null) {
@@ -127,7 +125,7 @@ public class CmsIndexingThreadManager {
         }
 
         // extract the content from the resource in a separate Thread
-        CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, factory, index, report);
+        CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, documentType, index, report);
         m_startedCounter++;
         thread.start();
         try {

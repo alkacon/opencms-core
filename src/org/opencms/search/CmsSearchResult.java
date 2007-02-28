@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.20.4.3 $
+ * Date   : $Date: 2007/02/28 15:47:38 $
+ * Version: $Revision: 1.20.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20.4.3 $ 
+ * @version $Revision: 1.20.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +64,9 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
     /** The last modification date of this search result. */
     protected Date m_dateLastModified;
+
+    /** The document type of the search result. */
+    protected String m_documentType;
 
     /** The excerpt of this search result. */
     protected String m_excerpt;
@@ -138,6 +141,13 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
         } else {
             m_dateLastModified = null;
         }
+
+        f = doc.getField(CmsSearchField.FIELD_TYPE);
+        if (f != null) {
+            m_documentType = f.stringValue();
+        } else {
+            m_documentType = null;
+        }
     }
 
     /**
@@ -185,6 +195,24 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     public String getDescription() {
 
         return getField(CmsSearchField.FIELD_DESCRIPTION);
+    }
+
+    /**
+     * Returns the document type of the search result document.<p>
+     * 
+     * Usually this will be a VFS resource type String that can be used in the 
+     * resource type manager with {@link org.opencms.loader.CmsResourceManager#getResourceType(String)}.
+     * However, what is stored in the document type field depends only on the indexer used, and therefore it
+     * may also be some String not referring  a VFS resource type but some external type or application.
+     * It may also be <code>null</code> in case it has not been set by a non-standard indexer.<p>  
+     * 
+     * @return the document type of the search result document
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(String)
+     */
+    public String getDocumentType() {
+
+        return m_documentType;
     }
 
     /**
