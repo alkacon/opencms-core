@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2006/10/18 09:17:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/02/28 13:10:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
         result.append(widgetDialog.button(
-            "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');",
+            "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');return false;",
             null,
             getNameLower() + "gallery",
             Messages.getButtonName(getNameLower()),
@@ -151,7 +151,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
-            "javascript:preview" + getNameUpper() + "('" + id + "');",
+            "javascript:preview" + getNameUpper() + "('" + id + "');return false;",
             null,
             "preview.png",
             Messages.GUI_BUTTON_PREVIEW_0,

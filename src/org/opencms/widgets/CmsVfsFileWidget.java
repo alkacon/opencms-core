@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/02/28 13:10:46 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +199,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             buttonJs.append(cms.getRequestContext().getSiteRoot());
         }
         buttonJs.append("'");
-        buttonJs.append(");");
+        buttonJs.append(");return false;");
 
         result.append(widgetDialog.button(
             buttonJs.toString(),
