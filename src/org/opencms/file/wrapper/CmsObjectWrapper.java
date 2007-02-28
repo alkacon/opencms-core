@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/02/28 11:02:02 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
  * @since 6.5.6
  */
@@ -326,56 +326,52 @@ public class CmsObjectWrapper {
      */
     public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        List list = null;
+        List list = new ArrayList();
 
-        // iterate through all wrappers and call "getResourcesInFolder" till one does not return null
+        // read children existing in the VFS
+        try {
+            list.addAll(m_cms.getResourcesInFolder(resourcename, filter));
+        } catch (CmsException ex) {
+            //noop
+        }
+
+        // iterate through all wrappers and call "getResourcesInFolder" and add the results to the list
         List wrappers = getWrappers();
         Iterator iter = wrappers.iterator();
         while (iter.hasNext()) {
             I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
-            list = wrapper.getResourcesInFolder(m_cms, resourcename, filter);
-            if (list != null) {
-                break;
+            List added = wrapper.getResourcesInFolder(m_cms, resourcename, filter);
+            if (added != null) {
+                list.addAll(added);
             }
         }
 
-        // default collecting of the resources for that resource name
-        if (list == null) {
-            list = m_cms.getResourcesInFolder(resourcename, filter);
-        }
+        // create a new list to add all resources
+        ArrayList wrapped = new ArrayList();
 
-        if (list != null) {
+        // eventually wrap the found resources
+        iter = list.iterator();
+        while (iter.hasNext()) {
+            CmsResource res = (CmsResource)iter.next();
 
-            // create a new list to add all resources
-            ArrayList wrapped = new ArrayList();
+            // get resource type wrapper for the resource
+            I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
 
-            // eventually wrap the found resources
-            iter = list.iterator();
-            while (iter.hasNext()) {
-                CmsResource res = (CmsResource)iter.next();
+            if (resWrapper != null) {
 
-                // get resource type wrapper for the resource
-                I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
+                // adds the wrapped resources
+                wrapped.add(resWrapper.wrapResource(m_cms, res));
+            } else {
 
-                if (resWrapper != null) {
-
-                    // adds the wrapped resources
-                    wrapped.add(resWrapper.wrapResource(m_cms, res));
-                } else {
-
-                    // add the resource unwrapped
-                    wrapped.add(res);
-                }
+                // add the resource unwrapped
+                wrapped.add(res);
             }
-
-            // sort the wrapped list correctly
-            Collections.sort(wrapped, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
-
-            return wrapped;
         }
 
-        // if nothing else fits
-        return m_cms.getResourcesInFolder(resourcename, filter);
+        // sort the wrapped list correctly
+        Collections.sort(wrapped, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
+
+        return wrapped;
     }
 
     /**
@@ -522,6 +518,40 @@ public class CmsObjectWrapper {
     public CmsProperty readPropertyObject(CmsResource resource, String property, boolean search) throws CmsException {
 
         return m_cms.readPropertyObject(resource, property, search);
+    }
+
+    /**
+     * Reads a resource from the VFS,
+     * using the specified resource filter.<p>
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link org.opencms.file.CmsFolder}</code>. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutly
+     * required. To "upgrade" a resource to a file, 
+     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param structureID the ID of the structure to read
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see CmsObject#readFile(String, CmsResourceFilter)
+     * @see CmsObject#readFolder(String, CmsResourceFilter)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(CmsUUID structureID, CmsResourceFilter filter) throws CmsException {
+
+        return m_cms.readResource(structureID, filter);
     }
 
     /**

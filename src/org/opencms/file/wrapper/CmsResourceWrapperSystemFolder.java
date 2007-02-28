@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/02/28 11:02:02 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,14 +47,14 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
  * @since 6.5.6
  */
 public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
 
     /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getResourcesInFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getResourcesInFolder(CmsObject, String, CmsResourceFilter)
      */
     public List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -63,12 +64,13 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
         
         // if this is the root folder of a target site, add the system folder
         if (resourcename.equals("/")) {
-            List ret = cms.getResourcesInFolder(resourcename, filter);
+            List ret = new ArrayList();
             ret.add(readResource(cms, CmsWorkplace.VFS_PATH_SYSTEM, filter));
             return ret;
-        } else if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM)) {
-            return cms.getResourcesInFolder(resourcename, filter);
-        }
+        } 
+//        else if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM)) {
+//            return cms.getResourcesInFolder(resourcename, filter);
+//        }
 
         return null;
     }
@@ -87,7 +89,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
                     resourcename += "/";
                 }
                 
-                if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM) || resourcename.equals("/")) {
+                if (resourcename.equals("/")) {
                     return true;
                 }
             }
@@ -122,25 +124,10 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
                 cms.getRequestContext().setSiteRoot(siteRoot);
 
                 // adjust the root path in the resource
-                CmsResource ret = new CmsResource(
-                    res.getStructureId(),
-                    res.getResourceId(),
-                    cms.getRequestContext().getSiteRoot() + resourcename,
-                    res.getTypeId(),
-                    res.isFolder(),
-                    res.getFlags(),
-                    res.getProjectLastModified(),
-                    res.getState(),
-                    res.getDateCreated(),
-                    res.getUserCreated(),
-                    res.getDateLastModified(),
-                    res.getUserLastModified(),
-                    res.getDateReleased(),
-                    res.getDateExpired(),
-                    res.getSiblingCount(),
-                    res.getLength());
+                CmsWrappedResource wrap = new CmsWrappedResource(res);
+                wrap.setRootPath(cms.getRequestContext().getSiteRoot() + resourcename);
 
-                return ret;
+                return wrap.getResource();
             }
         }
 

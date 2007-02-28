@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/I_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/02/28 11:02:02 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
  * @since 6.5.6
  */
@@ -150,7 +150,7 @@ public interface I_CmsResourceWrapper {
     CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
-     * Returns all child resources of a resource, that is the resources
+     * Returns all additional child resources (not in the VFS) of a resource, that is the resources
      * contained in a folder.<p>
      * 
      * With the <code>{@link CmsResourceFilter}</code> provided as parameter
@@ -161,7 +161,7 @@ public interface I_CmsResourceWrapper {
      * @param resourcename the full path of the resource to return the child resources for
      * @param filter the resource filter to use
      * 
-     * @return a list of all child <code>{@link CmsResource}</code>s
+     * @return a list of all additionaly childs <code>{@link CmsResource}</code>s
      * 
      * @throws CmsException if something goes wrong
      * 

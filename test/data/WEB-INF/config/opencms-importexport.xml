@@ -77,26 +77,28 @@
 	</staticexport>
 	<repositories>
 		<repository name="standard" class="org.opencms.repository.CmsRepository">
-		<params>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlPage</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+			<params>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlPage</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
 			</params>
 			<filter type="include">
 				<regex>/sites/.*</regex>
 				<regex>/system/</regex>
+				<regex>/system/__properties/</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*</regex>
 				<regex>/system/workplace/.*</regex>
 			</filter>
 		</repository>
 		<repository name="extended" class="org.opencms.repository.CmsRepository">
-		  <params>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperXmlPage</param>
-  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+			<params>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
+	  			<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperXmlPage</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
 			</params>
 			<filter type="include">
 				<regex>/sites/.*</regex>

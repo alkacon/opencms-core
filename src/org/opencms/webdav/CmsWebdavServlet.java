@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/22 16:48:29 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/02/28 11:02:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -1069,7 +1069,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "COPY", src), ex);
             }
             return;
         }
@@ -1172,7 +1172,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "DELETE", path), ex);
             }
 
             return;
@@ -1468,7 +1468,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "LOCK", path), ex);
                 }
 
                 return;
@@ -1594,7 +1594,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "MKCOL", path), ex);
             }
 
             return;
@@ -1734,7 +1734,7 @@ public class CmsWebdavServlet extends HttpServlet {
             resp.setStatus(CmsWebdavStatus.SC_INTERNAL_SERVER_ERROR);
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), ex);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "MOVE", src), ex);
             }
 
             return;
@@ -2051,7 +2051,7 @@ public class CmsWebdavServlet extends HttpServlet {
         } catch (CmsException e) {
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "PUT", path), e);
             }
 
             result = false;
@@ -2469,7 +2469,7 @@ public class CmsWebdavServlet extends HttpServlet {
             while (iter.hasNext()) {
 
                 I_CmsRepositoryItem childItem = (I_CmsRepositoryItem)iter.next();
-                
+
                 String resourceName = childItem.getName();
                 if (resourceName.endsWith("/")) {
                     resourceName = resourceName.substring(0, resourceName.length() - 1);
@@ -2478,7 +2478,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 if (slash > -1) {
                     resourceName = resourceName.substring(slash + 1, resourceName.length());
                 }
-                
+
                 sb.append("<tr");
                 if (shade) {
                     sb.append(" bgcolor=\"#eeeeee\"");
