@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.18.8.2 $
+ * Date   : $Date: 2007/03/01 15:01:26 $
+ * Version: $Revision: 1.18.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.8.2 $
+ * @version $Revision: 1.18.8.3 $
  * 
  * @since 6.0.0 
  */
@@ -112,7 +112,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         String path,
         int type,
         int flags,
-        int projectId,
+        CmsUUID projectId,
         CmsResourceState state,
         long dateCreated,
         CmsUUID userCreated,

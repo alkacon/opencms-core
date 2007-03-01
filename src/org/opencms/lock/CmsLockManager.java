@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.37.4.16 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.37.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.16 $ 
+ * @version $Revision: 1.37.4.17 $ 
  * 
  * @since 6.0.0 
  * 
@@ -209,7 +209,7 @@ public final class CmsLockManager {
 
         // resources are never locked in the online project
         // and non-existent resources are never locked
-        if ((resource == null) || (dbc.currentProject().getId() == CmsProject.ONLINE_PROJECT_ID)) {
+        if ((resource == null) || (dbc.currentProject().isOnlineProject())) {
             return CmsLock.getNullLock();
         }
 
@@ -364,7 +364,7 @@ public final class CmsLockManager {
     public void removeDeletedResource(CmsDbContext dbc, String resourceName) throws CmsException {
 
         try {
-            m_driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
+            m_driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getUuid(), resourceName, false);
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
                 dbc.getRequestContext().removeSiteRoot(resourceName)));
@@ -461,24 +461,24 @@ public final class CmsLockManager {
      * @param forceUnlock if <code>true</code>, exclusive locks in other projects are removed for resources locked with a system lock
      * @param removeWfLocks if <code>true</code>, workflow locks are removed
      */
-    public void removeResourcesInProject(int projectId, boolean forceUnlock, boolean removeWfLocks) {
+    public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock, boolean removeWfLocks) {
 
         Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CME
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (!currentLock.getSystemLock().isUnlocked()) {
                 if (!currentLock.getRelatedLock().isNullLock()) {
-                    if (forceUnlock || (currentLock.getRelatedLock().getProjectId() == projectId)) {
+                    if (forceUnlock || (currentLock.getRelatedLock().getProjectId().equals(projectId))) {
                         unlockResource(currentLock.getResourceName(), false);
                     }
                 }
                 if (removeWfLocks
                     && currentLock.getSystemLock().isWorkflow()
-                    && (currentLock.getProjectId() == projectId)) {
+                    && (currentLock.getProjectId().equals(projectId))) {
                     unlockResource(currentLock.getResourceName(), true);
                 }
             } else {
-                if (currentLock.getProjectId() == projectId) {
+                if (currentLock.getProjectId().equals(projectId)) {
                     unlockResource(currentLock.getResourceName(), false);
                 }
             }

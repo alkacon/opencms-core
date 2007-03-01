@@ -33,12 +33,18 @@ var ouForm = null;
 var ouField = null;
 var ouDoc = null;
 
-function openOrgUnitWin(url, formName, fieldName, curDoc) {
+function openOrgUnitWin(url, formName, fieldName, curDoc, role) {
 	ouForm = formName;
 	ouField = fieldName;
 	ouDoc = curDoc;
+
+	var paramString = "?type=orgunitwidget";
+	if (role != null) {
+		paramString += "&role=";
+		paramString += role;
+	}
 	
-	var ouWin = window.open(url, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=450,height=450');
+	var ouWin = window.open(url + paramString, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=450,height=450');
 	if(ouWin != null) {
 		if (ouWin.opener == null) {
 			ouWin.opener = self;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.35.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.35.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35.4.4 $ 
+ * @version $Revision: 1.35.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -610,7 +610,7 @@ public class CmsModuleManager {
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
             // now unlock and publish the project
-            cms.unlockProject(deleteProject.getId());
+            cms.unlockProject(deleteProject.getUuid());
             OpenCms.getPublishManager().publishProject(cms, report);
             OpenCms.getPublishManager().waitWhileRunning();
 

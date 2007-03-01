@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.19.8.2 $
+ * Date   : $Date: 2007/03/01 15:01:26 $
+ * Version: $Revision: 1.19.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -46,32 +46,83 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.19.8.2 $
+ * @version $Revision: 1.19.8.3 $
  * 
  * @since 6.0.0 
  */
 public class CmsProject implements Cloneable, Comparable {
 
-    /** The id of the online project. */
-    public static final int ONLINE_PROJECT_ID = 1;
+    /**
+     *  Enumeration class for project types.<p>
+     */
+    public static final class CmsProjectType extends A_CmsModeIntEnumeration {
+
+        /** Project type normal. */
+        protected static final CmsProjectType MODE_PROJECT_NORMAL = new CmsProjectType(0);
+
+        /** Project type temporary. */
+        protected static final CmsProjectType MODE_PROJECT_TEMPORARY = new CmsProjectType(1);
+
+        /** Project type workflow. */
+        protected static final CmsProjectType MODE_PROJECT_WORKFLOW = new CmsProjectType(2);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = -8701314451776599534L;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param mode the copy mode integer representation
+         */
+        private CmsProjectType(int mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the copy mode object from the old copy mode integer.<p>
+         * 
+         * @param mode the old copy mode integer
+         * 
+         * @return the copy mode object
+         */
+        public static CmsProjectType valueOf(int mode) {
+
+            switch (mode) {
+                case 0:
+                    return CmsProjectType.MODE_PROJECT_NORMAL;
+                case 1:
+                    return CmsProjectType.MODE_PROJECT_TEMPORARY;
+                case 2:
+                default:
+                    return CmsProjectType.MODE_PROJECT_WORKFLOW;
+            }
+        }
+    }
 
     /** The name of the online project. */
     public static final String ONLINE_PROJECT_NAME = "Online";
 
-    /** Indicates that a project is invisible in the workplace. */
-    public static final int PROJECT_STATE_INVISIBLE = 3;
+    /** The id of the online project. */
+    public static final CmsUUID ONLINE_PROJECT_ID = CmsUUID.getConstantUUID(ONLINE_PROJECT_NAME);
 
-    /** Indicates an unlocked project. */
-    public static final int PROJECT_STATE_UNLOCKED = 0;
+    /** Indicates that a project is invisible in the workplace. */
+    public static final int PROJECT_FLAG_HIDDEN = 4;
+
+    /** Indicates that a normal project. */
+    public static final int PROJECT_FLAG_NONE = 0;
+
+    /** Indicates a project that is displayed in child ous. */
+    public static final int PROJECT_FLAG_SHOWINCHILDOUS = 2;
 
     /** Indicates a normal project. */
-    public static final int PROJECT_TYPE_NORMAL = 0;
+    public static final CmsProjectType PROJECT_TYPE_NORMAL = CmsProjectType.MODE_PROJECT_NORMAL;
 
     /** Indicates a temporary project that is deleted after it is published. */
-    public static final int PROJECT_TYPE_TEMPORARY = 1;
+    public static final CmsProjectType PROJECT_TYPE_TEMPORARY = CmsProjectType.MODE_PROJECT_TEMPORARY;
 
     /** Indicates a project that is used to bundle resources for a workflow task. */
-    public static final int PROJECT_TYPE_WORKFLOW = 2;
+    public static final CmsProjectType PROJECT_TYPE_WORKFLOW = CmsProjectType.MODE_PROJECT_WORKFLOW;
 
     /** The creation date of this project. */
     private long m_dateCreated;
@@ -89,7 +140,7 @@ public class CmsProject implements Cloneable, Comparable {
     private CmsUUID m_groupUsersId;
 
     /** The id of this project. */
-    private int m_id;
+    private CmsUUID m_id;
 
     /** The name of this project. */
     private String m_name;
@@ -98,7 +149,7 @@ public class CmsProject implements Cloneable, Comparable {
     private CmsUUID m_ownerId;
 
     /** The type of this project. */
-    private int m_type;
+    private CmsProjectType m_type;
 
     /**
      * Default constructor for gui usage.<p>
@@ -112,7 +163,7 @@ public class CmsProject implements Cloneable, Comparable {
      * Creates a new CmsProject.<p>
      *  
      * @param projectId the id to use for this project
-     * @param name the name for this project
+     * @param projectFqn the name for this project
      * @param description the description for this project
      * @param ownerId the owner id for this project
      * @param groupId the group id for this project
@@ -122,18 +173,18 @@ public class CmsProject implements Cloneable, Comparable {
      * @param type the type of this project
      */
     public CmsProject(
-        int projectId,
-        String name,
+        CmsUUID projectId,
+        String projectFqn,
         String description,
         CmsUUID ownerId,
         CmsUUID groupId,
         CmsUUID managerGroupId,
         int flags,
         long dateCreated,
-        int type) {
+        CmsProjectType type) {
 
         m_id = projectId;
-        m_name = name;
+        m_name = projectFqn;
         m_description = description;
         m_ownerId = ownerId;
         m_groupUsersId = groupId;
@@ -141,28 +192,6 @@ public class CmsProject implements Cloneable, Comparable {
         m_flags = flags;
         m_type = type;
         m_dateCreated = dateCreated;
-    }
-
-    /**
-     * Construct a new CmsProject from a SQL ResultSet.<p>
-     * 
-     * @param res the result set to create a project from
-     * @param sqlManager the SQL manager to use
-     * @throws SQLException in case something goes wrong
-     */
-    public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager sqlManager)
-    throws SQLException {
-
-        this(
-            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
-            res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
-            res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_USER_ID"))),
-            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
-            new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
-            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
-            res.getLong(sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
-            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
     }
 
     /**
@@ -212,9 +241,9 @@ public class CmsProject implements Cloneable, Comparable {
      * @param projectId the project id to check
      * @return true if the given project id is the online project id
      */
-    public static boolean isOnlineProject(int projectId) {
+    public static boolean isOnlineProject(CmsUUID projectId) {
 
-        return projectId == CmsProject.ONLINE_PROJECT_ID;
+        return projectId.equals(CmsProject.ONLINE_PROJECT_ID);
     }
 
     /**
@@ -266,7 +295,7 @@ public class CmsProject implements Cloneable, Comparable {
             return true;
         }
         if (obj instanceof CmsProject) {
-            return ((CmsProject)obj).m_id == m_id;
+            return ((CmsProject)obj).m_id.equals(m_id);
         }
         return false;
     }
@@ -315,10 +344,12 @@ public class CmsProject implements Cloneable, Comparable {
      * Returns the id of this project.<p>
      *
      * @return the id of this project
+     * 
+     * @deprecated Use {@link #getUuid()} instead
      */
     public int getId() {
 
-        return m_id;
+        return getUuid().hashCode();
     }
 
     /**
@@ -342,6 +373,16 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
+     * Returns the fully qualified name of the associated organizational unit.<p>
+     *
+     * @return the fully qualified name of the associated organizational unit
+     */
+    public String getOuFqn() {
+
+        return CmsOrganizationalUnit.getParentFqn(m_name);
+    }
+
+    /**
      * Returns the user id of the project owner.<p>
      *
      * @return the user id of the project owner
@@ -352,13 +393,33 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    public String getSimpleName() {
+
+        return CmsOrganizationalUnit.getSimpleName(m_name);
+    }
+
+    /**
      * Returns the type of this project.<p>
      *
      * @return the type of this project
      */
-    public int getType() {
+    public CmsProjectType getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns the id of this project.<p>
+     *
+     * @return the id of this project
+     */
+    public CmsUUID getUuid() {
+
+        return m_id;
     }
 
     /**
@@ -381,7 +442,19 @@ public class CmsProject implements Cloneable, Comparable {
      */
     public boolean isDeleteAfterPublishing() {
 
-        return m_type == CmsProject.PROJECT_TYPE_TEMPORARY;
+        return (m_type == CmsProject.PROJECT_TYPE_TEMPORARY);
+    }
+
+    /**
+     * Returns the 'hidden' flag.<p>
+     *
+     * @return the 'hidden' flag
+     * 
+     * @see #getFlags()
+     */
+    public boolean isHidden() {
+
+        return (getFlags() & PROJECT_FLAG_HIDDEN) == PROJECT_FLAG_HIDDEN;
     }
 
     /**
@@ -395,15 +468,27 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
+     * Returns the 'show in child organizational units' flag.<p>
+     *
+     * @return the 'show in child organizational units' flag
+     * 
+     * @see #getFlags()
+     */
+    public boolean isShowInChildOus() {
+
+        return (getFlags() & PROJECT_FLAG_SHOWINCHILDOUS) == PROJECT_FLAG_SHOWINCHILDOUS;
+    }
+
+    /**
      * Returns <code>true</code> if this project is a workflow project.<p>
      * 
      * @return <code>true</code> if this project is a workflow project
      */
     public boolean isWorkflowProject() {
-        
+
         return m_type == CmsProject.PROJECT_TYPE_WORKFLOW;
-    }                                       
-    
+    }
+
     /**
      * Sets the delete After Publishing flag.<p>
      *
@@ -446,6 +531,18 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
+     * Sets the 'hidden' flag.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setHidden(boolean value) {
+
+        if (isHidden() != value) {
+            setFlags(getFlags() ^ PROJECT_FLAG_HIDDEN);
+        }
+    }
+
+    /**
      * Sets the manager group id of this project.<p>
      *
      * @param id the manager group id of this project
@@ -481,6 +578,18 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
+     * Sets the 'show in child organizational units' flag.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setShowInChildOus(boolean value) {
+
+        if (isShowInChildOus() != value) {
+            setFlags(getFlags() ^ PROJECT_FLAG_SHOWINCHILDOUS);
+        }
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -490,7 +599,7 @@ public class CmsProject implements Cloneable, Comparable {
         result.append(m_name);
         result.append(" , Id=");
         result.append(m_id);
-        result.append(" :");
+        result.append(", Desc=");
         result.append(m_description);
         return result.toString();
     }
@@ -498,10 +607,10 @@ public class CmsProject implements Cloneable, Comparable {
     /**
      * Sets the type of this project.<p>
      *
-     * @param id the type to set
+     * @param type the type to set
      */
-    void setType(int id) {
+    void setType(CmsProjectType type) {
 
-        m_type = id;
+        m_type = type;
     }
 }

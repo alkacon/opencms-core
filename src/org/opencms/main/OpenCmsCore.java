@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/02/19 09:51:08 $
- * Version: $Revision: 1.218.4.27 $
+ * Date   : $Date: 2007/03/01 15:01:22 $
+ * Version: $Revision: 1.218.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.27 $ 
+ * @version $Revision: 1.218.4.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -849,7 +849,7 @@ public final class OpenCmsCore {
         CmsSite site = getSiteManager().matchRequest(req);
 
         // a user name is found in the session manager, reuse this user information
-        int project = sessionInfo.getProject();
+        CmsUUID project = sessionInfo.getProject();
 
         // initialize site root from request
         String siteroot = null;
@@ -1118,7 +1118,7 @@ public final class OpenCmsCore {
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
-            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null, null);
+            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), (String)null, (String)null);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
@@ -1612,7 +1612,7 @@ public final class OpenCmsCore {
             request,
             cms.getRequestContext().currentUser(),
             site.getSiteRoot(),
-            cms.getRequestContext().currentProject().getId(),
+            cms.getRequestContext().currentProject().getUuid(),
             cms.getRequestContext().getOuFqn());
     }
 
@@ -1892,7 +1892,7 @@ public final class OpenCmsCore {
         HttpServletRequest request,
         CmsUser user,
         String siteRoot,
-        int projectId,
+        CmsUUID projectId,
         String ouFqn) throws CmsException {
 
         CmsProject project = null;
@@ -1920,7 +1920,7 @@ public final class OpenCmsCore {
             }
 
             // check for special "time warp" browsing
-            if (!CmsProject.isOnlineProject(project.getId())) {
+            if (!CmsProject.isOnlineProject(project.getUuid())) {
                 // this feature is not available in the "online" project
                 HttpSession session = request.getSession(false);
                 if (session != null) {

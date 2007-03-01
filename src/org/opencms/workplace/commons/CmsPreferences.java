@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/02/21 14:45:00 $
- * Version: $Revision: 1.31.4.8 $
+ * Date   : $Date: 2007/03/01 15:01:14 $
+ * Version: $Revision: 1.31.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.8 $
+ * @version $Revision: 1.31.4.9 $
  * 
  * @since 6.0.0
  */
@@ -370,7 +370,7 @@ public class CmsPreferences extends CmsTabDialog {
             String projectName = m_userSettings.getStartProject();
             CmsProject project = getCms().readProject(projectName);
             getCms().getRequestContext().setCurrentProject(project);
-            getSettings().setProject(project.getId());
+            getSettings().setProject(project.getUuid());
         } catch (Exception e) {
             // should usually never happen
             LOG.error(e.getLocalizedMessage());

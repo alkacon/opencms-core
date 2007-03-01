@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/02/22 09:42:35 $
- * Version: $Revision: 1.32.4.15 $
+ * Date   : $Date: 2007/03/01 15:01:26 $
+ * Version: $Revision: 1.32.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -72,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.15 $
+ * @version $Revision: 1.32.4.16 $
  * 
  * @since 6.0.0
  * 
@@ -118,7 +117,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             "",
             "",
             "",
-            CmsDbUtil.UNKNOWN_ID,
+            0,
             I_CmsPrincipal.FLAG_ENABLED,
             System.currentTimeMillis(),
             Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, ""));

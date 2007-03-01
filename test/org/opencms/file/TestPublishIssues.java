@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.21.4.10 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.21.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.4.10 $
+ * @version $Revision: 1.21.4.11 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -193,8 +193,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
             OpenCms.getDefaultUsers().getGroupUsers());
 
         // check if the projects have different ids
-        int id1 = project.getId();
-        int id2 = newProject.getId();
+        CmsUUID id1 = project.getUuid();
+        CmsUUID id2 = newProject.getUuid();
         if (id1 == id2) {
             fail("Two different projects created with same name have the same id!");
         }
@@ -320,7 +320,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertEquals(1, publishList.getFileList().size());
 
         // project should have no locked resources 
-        int resourceProjectCount = cms.countLockedResources(project2.getId());
+        int resourceProjectCount = cms.countLockedResources(project2.getUuid());
         assertEquals(0, resourceProjectCount);
 
         // unlock the project
@@ -367,7 +367,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.writeFile(cmsFile);
 
         // now publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -561,7 +561,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sibA, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sibA, sibB, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -604,7 +604,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sib1, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sib1, sib2, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -649,7 +649,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource(sibX, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sibX, sibY, null);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

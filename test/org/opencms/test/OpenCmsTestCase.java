@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.90.4.16 $
+ * Date   : $Date: 2007/03/01 15:01:35 $
+ * Version: $Revision: 1.90.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.16 $
+ * @version $Revision: 1.90.4.17 $
  * 
  * @since 6.0.0
  */
@@ -720,7 +720,7 @@ public class OpenCmsTestCase extends TestCase {
                 m_shell.start(stream);
                 OpenCms.getPublishManager().waitWhileRunning();
             } else {
-                cms.unlockProject(cms.readProject("_setupProject").getId());
+                cms.unlockProject(cms.readProject("_setupProject").getUuid());
             }
 
             // switch to the "Offline" project
@@ -1661,7 +1661,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             // compare the project last modified if necessary
             if (filter.testProjectLastModified()) {
-                if (storedResource.getProjectLastModified() != res.getProjectLastModified()) {
+                if (!storedResource.getProjectLastModified().equals(res.getProjectLastModified())) {
                     noMatches += "[ProjectLastModified "
                         + storedResource.getProjectLastModified()
                         + " != "
@@ -1691,7 +1691,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             // compare the state if necessary
             if (filter.testState()) {
-                if (storedResource.getState() != res.getState()) {
+                if (!storedResource.getState().equals(res.getState())) {
                     noMatches += "[State " + storedResource.getState() + " != " + res.getState() + "]\n";
                 }
             }
@@ -1989,7 +1989,7 @@ public class OpenCmsTestCase extends TestCase {
             // the current resource has a red flag if it's state is changed/new/deleted
             hasRedFlag = !res.getState().isUnchanged();
             // and if it was modified in the current project
-            hasRedFlag &= (res.getProjectLastModified() == cms.getRequestContext().currentProject().getId());
+            hasRedFlag &= (res.getProjectLastModified().equals(cms.getRequestContext().currentProject().getUuid()));
             // and if it was modified by the current user
             hasRedFlag &= (res.getUserLastModified().equals(cms.getRequestContext().currentUser().getId()));
 
@@ -2049,8 +2049,8 @@ public class OpenCmsTestCase extends TestCase {
             // get the actual resource from the vfs
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
-            if (res.getProjectLastModified() != project.getId()) {
-                fail("[ProjectLastModified " + project.getId() + " != " + res.getProjectLastModified() + "]");
+            if (!res.getProjectLastModified().equals(project.getUuid())) {
+                fail("[ProjectLastModified " + project.getUuid() + " != " + res.getProjectLastModified() + "]");
             }
 
         } catch (CmsException e) {

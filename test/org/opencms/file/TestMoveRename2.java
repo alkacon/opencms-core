@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -164,7 +164,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -285,7 +285,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.lockResource("/");
         cms.setDateLastModified("/", System.currentTimeMillis(), true);
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -439,7 +439,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // folders don't have siblings
         assertSiblingCount(cms, destination, 1);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -499,7 +499,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         // check lock
         assertFalse(cms.getLockedResources(newFolder2, CmsLockFilter.FILTER_ALL).contains(newFolder2 + source));
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }

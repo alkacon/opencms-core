@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.4 
  */
@@ -71,7 +71,7 @@ public final class CmsLockFilter implements Cloneable {
     private boolean m_includeParents = false;
 
     /** If set the filter restricts the result to the given project. */
-    private int m_projectId = 0;
+    private CmsUUID m_projectId = null;
 
     /** If set the filter also matches shared exclusive locks. */
     private boolean m_sharedExclusive = false;
@@ -200,7 +200,7 @@ public final class CmsLockFilter implements Cloneable {
      *  
      * @return an extended filter with the given project restriction
      */
-    public CmsLockFilter filterProject(int projectId) {
+    public CmsLockFilter filterProject(CmsUUID projectId) {
 
         CmsLockFilter filter = (CmsLockFilter)this.clone();
         filter.m_projectId = projectId;
@@ -278,7 +278,7 @@ public final class CmsLockFilter implements Cloneable {
      *
      * @return the project restriction
      */
-    public int getProjectId() {
+    public CmsUUID getProjectId() {
 
         return m_projectId;
     }
@@ -340,8 +340,8 @@ public final class CmsLockFilter implements Cloneable {
         if (!match && m_includeParents) {
             match = rootPath.startsWith(lock.getResourceName());
         }
-        if (match && m_projectId != 0) {
-            match = (lock.getProjectId() == m_projectId);
+        if (match && (m_projectId != null)) {
+            match = lock.getProjectId().equals(m_projectId);
         }
         if (match && m_ownedByUserId != null && !m_ownedByUserId.isNullUUID()) {
             match = lock.getUserId().equals(m_ownedByUserId);

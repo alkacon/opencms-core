@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.110.2.21 $
+ * Date   : $Date: 2007/03/01 15:01:04 $
+ * Version: $Revision: 1.110.2.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.I_CmsDriver;
@@ -101,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.21 $
+ * @version $Revision: 1.110.2.22 $
  * 
  * @since 6.0.0 
  */
@@ -115,6 +114,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** Property for the organizational unit description. */
     private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
+
+    /** Property for the organizational unit default project id. */
+    private static final String ORGUNIT_PROPERTY_PROJECTID = CmsPropertyDefinition.PROPERTY_KEYWORDS;
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
@@ -146,19 +148,25 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     dbc.removeSiteRoot(resource.getRootPath())));
             }
 
-            // check resource scope for non root ous
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(orgUnit.getParentFqn())) {
-                // get the parent ou
-                CmsOrganizationalUnit parentOu = m_driverManager.readOrganizationalUnit(dbc, orgUnit.getParentFqn());
-                // validate
-                internalValidateResourceForOrgUnit(dbc, parentOu, resource.getRootPath());
-            }
-
             // read the resource representing the organizational unit
             CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
 
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
+
+            // check resource scope for non root ous
+            if (orgUnit.getParentFqn() != null) {
+                // get the parent ou
+                CmsOrganizationalUnit parentOu = m_driverManager.readOrganizationalUnit(dbc, orgUnit.getParentFqn());
+                // validate
+                internalValidateResourceForOrgUnit(dbc, parentOu, resource.getRootPath());
+            } else {
+                // allow to set the first resource
+                if (!vfsPaths.isEmpty()) {
+                    throw new CmsDataAccessException(org.opencms.security.Messages.get().container(
+                        org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
+                }
+            }
 
             // check if already associated
             Iterator itPaths = vfsPaths.iterator();
@@ -174,8 +182,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // add the new resource
             CmsRelation relation = new CmsRelation(ouResource, resource, CmsRelationType.OU_RESOURCE);
-            m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getId(), relation);
+            m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getUuid(), relation);
             m_driverManager.getVfsDriver().createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
+
+            // maintain the default project synchronized
+            m_driverManager.getProjectDriver().createProjectResource(
+                dbc,
+                orgUnit.getProjectId(),
+                resource.getRootPath());
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -197,7 +211,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE_5");
 
             stmt.setString(1, resource.toString());
@@ -320,42 +334,48 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsOrganizationalUnit ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
 
             if (ou.getParentFqn() != null) {
-                // if not the root ou, create roles
-                // the roles of the root ou, are created in #fillDefaults
-                Iterator itRoles = CmsRole.getSystemRoles().iterator();
-                while (itRoles.hasNext()) {
-                    CmsRole role = (CmsRole)itRoles.next();
-                    if (!role.isOrganizationalUnitIndependent()) {
-                        String groupName = ou.getName() + role.getGroupName();
-                        flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                        if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
-                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-                        }
-                        if (role == CmsRole.PROJECT_MANAGER) {
-                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-                        }
-                        createGroup(
-                            dbc,
-                            CmsUUID.getConstantUUID(groupName),
-                            groupName,
-                            "A system role group",
-                            flags,
-                            null);
-                    }
-                }
+                // if not the root ou, create default roles & groups
+                // for the root ou, are created in #fillDefaults
                 Locale locale = dbc.getRequestContext().getLocale();
                 if (locale == null) {
                     locale = CmsLocaleManager.getDefaultLocale();
                 }
                 // create default groups
                 internalCreateDefaultGroups(dbc, ou.getName(), ou.getDisplayName(locale));
+                // create default project
+                CmsProject project = m_driverManager.createProject(
+                    dbc,
+                    ou.getName() + OFFLINE_PROJECT_NAME,
+                    "",
+                    ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
+                    ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
+                    CmsProject.PROJECT_TYPE_NORMAL);
+
+                // write project id property
+                internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
+                    ORGUNIT_PROPERTY_PROJECTID,
+                    project.getUuid().toString(),
+                    null));
+            } else {
+                // write project id property
+                internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
+                    ORGUNIT_PROPERTY_PROJECTID,
+                    CmsUUID.getNullUUID().toString(),
+                    null));
             }
+            // reread the ou, to actualize the project id
+            ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
+            // add the given resource
             m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
+            // return the new created ou
             return ou;
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
     }
+
+    /** The name of the offline project. */
+    private static final String OFFLINE_PROJECT_NAME = "Offline";
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createRootOrganizationalUnit(org.opencms.db.CmsDbContext)
@@ -379,7 +399,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     try {
                         setupProject = m_driverManager.readProject(new CmsDbContext(), "Offline");
                     } catch (CmsException exc2) {
-                        // if no offline project found
+                        // there is nothing to do, if no offline project found
                     }
                 }
                 dbc.getRequestContext().setCurrentProject(setupProject);
@@ -479,7 +499,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 stmt.setString(1, groupId.toString());
                 stmt.setString(2, userId.toString());
                 // flag field is not used yet
-                stmt.setInt(3, CmsDbUtil.UNKNOWN_ID);
+                stmt.setInt(3, 0);
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 throw new CmsDbSqlException(Messages.get().container(
@@ -501,7 +521,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SET_FLAGS_ALL_2");
 
             stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
@@ -554,6 +574,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 organizationalUnit.getId(),
                 CmsResourceFilter.DEFAULT);
             internalDeleteOrgUnitResource(dbc, resource);
+            // maintain the default project synchronized
+            m_driverManager.deleteProject(dbc, m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -721,35 +743,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public void fillDefaults(CmsDbContext dbc) throws CmsInitException {
 
-        String rootAdminRole = CmsRole.ROOT_ADMIN.getGroupName();
-        try {
-            // only do something if really needed
-            if (!existsGroup(dbc, rootAdminRole)) {
-                // create the roles in the root ou
-                Iterator itRoles = CmsRole.getSystemRoles().iterator();
-                while (itRoles.hasNext()) {
-                    CmsRole role = (CmsRole)itRoles.next();
-                    String groupName = role.getGroupName();
-                    int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                    if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-                    }
-                    if (role == CmsRole.PROJECT_MANAGER) {
-                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-                    }
-                    createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
-                }
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
-                }
-            }
-        } catch (CmsException e) {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
-            }
-            throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
-        }
-
         try {
             internalCreateDefaultGroups(dbc, "", "");
         } catch (CmsException e) {
@@ -840,7 +833,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         while (parent != null) {
             Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
                 dbc,
-                dbc.currentProject().getId(),
+                dbc.currentProject().getUuid(),
                 filter.filterResource(parent)).iterator();
             while (itRelations.hasNext()) {
                 CmsRelation relation = (CmsRelation)itRelations.next();
@@ -849,7 +842,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
             parent = m_driverManager.getVfsDriver().readParentFolder(
                 dbc,
-                dbc.currentProject().getId(),
+                dbc.currentProject().getUuid(),
                 parent.getStructureId());
         }
         return orgUnits;
@@ -1533,7 +1526,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_1");
 
             stmt.setString(1, resource.toString());
@@ -1563,7 +1556,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
 
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
 
             stmt.setString(1, principal.toString());
@@ -1577,7 +1570,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_ONLINE_1");
 
             stmt.setString(1, principal.toString());
@@ -1601,7 +1594,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_2");
 
             stmt.setString(1, resource.toString());
@@ -1625,13 +1618,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         CmsOrganizationalUnit orgUnit,
         String resourceName) throws CmsDataAccessException {
 
+        // check for root ou
+        if (orgUnit.getParentFqn() == null) {
+            throw new CmsDataAccessException(org.opencms.security.Messages.get().container(
+                org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
+        }
+
         try {
             // read the representing resource
             CmsResource ouResource = m_driverManager.readResource(dbc, orgUnit.getId(), CmsResourceFilter.ALL);
 
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
-
             if (!resourceName.endsWith("/")) {
                 resourceName += "/";
             }
@@ -1652,8 +1650,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // remove the resource
             CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterPath(resourceName);
-            m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getId(), ouResource, filter);
+            m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
             m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
+
+            // maintain the default project synchronized
+            m_driverManager.getProjectDriver().deleteProjectResource(
+                dbc,
+                orgUnit.getProjectId(),
+                resourceName);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -1700,7 +1704,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY_2");
 
             stmt.setString(1, acEntry.getResource().toString());
@@ -1781,29 +1785,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 dbc,
                 organizationalUnit.getId(),
                 CmsResourceFilter.DEFAULT);
-            CmsOrganizationalUnit oldOu = internalCreateOrgUnitFromResource(dbc, resource);
 
-            if (!oldOu.getName().equals(organizationalUnit.getName())) {
-
-                // check if new parent/name is valid
-                m_driverManager.readOrganizationalUnit(dbc, organizationalUnit.getParentFqn());
-                boolean exists = true;
-                try {
-                    m_driverManager.readOrganizationalUnit(dbc, organizationalUnit.getName());
-                } catch (CmsException e) {
-                    exists = false;
-                }
-                if (exists) {
-                    throw new CmsDbEntryAlreadyExistsException(Messages.get().container(
-                        Messages.ERR_ORGUNIT_WITH_NAME_ALREADY_EXISTS_1,
-                        organizationalUnit.getName()));
-                }
-                // new name is valid so move the org unit
-                m_driverManager.moveOrgUnit(dbc, resource.getRootPath(), ORGUNIT_BASE_FOLDER
-                    + organizationalUnit.getName());
-                // update the other fields on the moved resources
-                resource = m_driverManager.readResource(dbc, organizationalUnit.getId(), CmsResourceFilter.DEFAULT);
-            }
             // write the properties
             internalWriteOrgUnitProperty(dbc, resource, new CmsProperty(
                 ORGUNIT_PROPERTY_DESCRIPTION,
@@ -1844,8 +1826,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        // TODO: if old password is not null, check if it is valid
-        int todo;
+        // check if the old password is valid
+        if (oldPassword != null) {
+            readUser(dbc, userFqn, oldPassword, dbc.getRequestContext().getRemoteAddress());
+        }
+
         try {
             conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SET_PWD_3");
@@ -1958,28 +1943,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Returns the macro resolver.<p>
-     * 
-     * @param dbc the current database context
-     * 
-     * @return the macro resolver
-     */
-    protected CmsMacroResolver getMacroResolver(CmsDbContext dbc) {
-
-        CmsMacroResolver macroResolver = new CmsMacroResolver();
-        Locale locale = null;
-        if (dbc.getRequestContext() != null) {
-            locale = dbc.getRequestContext().getLocale();
-        }
-        if (locale == null) {
-            macroResolver.setMessages(Messages.get().getBundle());
-        } else {
-            macroResolver.setMessages(Messages.get().getBundle(locale));
-        }
-        return macroResolver;
-    }
-
-    /**
      * Internal helper method to create an access control entry from a database record.<p>
      * 
      * @param res resultset of the current query
@@ -2025,6 +1988,46 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn, String ouDescription)
     throws CmsException {
 
+        // create roles
+        String rootAdminRole = CmsRole.ROOT_ADMIN.getGroupName();
+        try {
+            // only do something if really needed
+            if ((CmsOrganizationalUnit.getParentFqn(ouFqn) != null)
+                || ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && !existsGroup(dbc, rootAdminRole))) {
+                // create the roles in the given ou
+                Iterator itRoles = CmsRole.getSystemRoles().iterator();
+                while (itRoles.hasNext()) {
+                    CmsRole role = (CmsRole)itRoles.next();
+                    if (!role.isOrganizationalUnitIndependent() || (CmsOrganizationalUnit.getParentFqn(ouFqn) == null)) {
+                        String groupName = ouFqn + role.getGroupName();
+                        int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
+                        if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
+                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
+                        }
+                        if (role == CmsRole.PROJECT_MANAGER) {
+                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
+                        }
+                        createGroup(
+                            dbc,
+                            CmsUUID.getConstantUUID(groupName),
+                            groupName,
+                            "A system role group",
+                            flags,
+                            null);
+                    }
+                }
+                if ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
+                }
+            }
+        } catch (CmsException e) {
+            if ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
+            }
+            throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
+        }
+
+        // create groups
         String administratorsGroup = ouFqn + OpenCms.getDefaultUsers().getGroupAdministrators();
         String guestGroup = ouFqn + OpenCms.getDefaultUsers().getGroupGuests();
         String usersGroup = ouFqn + OpenCms.getDefaultUsers().getGroupUsers();
@@ -2101,8 +2104,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, getMacroResolver(dbc).resolveMacros(
-                CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0, null))));
+            Collections.singletonMap(
+                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
+                m_sqlManager.getMacroResolver(dbc).resolveMacros(
+                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0, null))));
         createUserInGroup(dbc, guest.getId(), guests.getId());
 
         CmsUser admin = createUser(
@@ -2116,8 +2121,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, getMacroResolver(dbc).resolveMacros(
-                CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0, null))));
+            Collections.singletonMap(
+                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
+                m_sqlManager.getMacroResolver(dbc).resolveMacros(
+                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0, null))));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(CmsRole.ROOT_ADMIN.getGroupName()));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(administratorsGroup));
 
@@ -2137,7 +2144,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    getMacroResolver(dbc).resolveMacros(
+                    m_sqlManager.getMacroResolver(dbc).resolveMacros(
                         CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null))));
             createUserInGroup(dbc, export.getId(), guests.getId());
         }
@@ -2159,7 +2166,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    getMacroResolver(dbc).resolveMacros(
+                    m_sqlManager.getMacroResolver(dbc).resolveMacros(
                         CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0, null))));
         }
 
@@ -2181,10 +2188,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0")).substring(1);
         String description = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0"));
-        return new CmsGroup(new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))), new CmsUUID(
-            res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))), ou
-            + res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME_0")), getMacroResolver(dbc).resolveMacros(
-            description), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS_0")));
+        return new CmsGroup(
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))),
+            ou + res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME_0")),
+            m_sqlManager.getMacroResolver(dbc).resolveMacros(description),
+            res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS_0")));
     }
 
     /**
@@ -2212,9 +2221,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
         String description = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_DESCRIPTION, false).getStructureValue();
         int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
+        String projectId = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_PROJECTID, false).getStructureValue();
         // create the object
-        return new CmsOrganizationalUnit(resource.getStructureId(), name, getMacroResolver(dbc).resolveMacros(
-            description), flags);
+        return new CmsOrganizationalUnit(
+            resource.getStructureId(),
+            name,
+            m_sqlManager.getMacroResolver(dbc).resolveMacros(description),
+            flags,
+            (projectId == null ? null : new CmsUUID(projectId)));
     }
 
     /**
@@ -2238,7 +2252,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             path,
             CmsResourceTypeFolder.RESOURCE_TYPE_ID,
             (CmsResource.FLAG_INTERNAL | flags),
-            dbc.currentProject().getId(),
+            dbc.currentProject().getUuid(),
             CmsResource.STATE_NEW,
             0,
             dbc.currentUser().getId(),
@@ -2334,7 +2348,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // delete relations
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
-                    dbc.getRequestContext().currentProject().getId(),
+                    dbc.getRequestContext().currentProject().getUuid(),
                     null,
                     filter);
             } finally {
@@ -2357,7 +2371,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // delete relations
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
-            dbc.getRequestContext().currentProject().getId(),
+            dbc.getRequestContext().currentProject().getUuid(),
             null,
             filter);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/01/15 18:48:35 $
- * Version: $Revision: 1.45.4.10 $
+ * Date   : $Date: 2007/03/01 15:01:26 $
+ * Version: $Revision: 1.45.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.10 $
+ * @version $Revision: 1.45.4.11 $
  * 
  * @since 6.0.0 
  */
@@ -91,12 +91,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             switch (mode) {
                 case 1:
-                    return CmsResource.COPY_AS_NEW;
+                    return CmsResourceCopyMode.MODE_COPY_AS_NEW;
                 case 2:
-                    return CmsResource.COPY_AS_SIBLING;
+                    return CmsResourceCopyMode.MODE_COPY_AS_SIBLING;
                 case 3:
                 default:
-                    return CmsResource.COPY_PRESERVE_SIBLING;
+                    return CmsResourceCopyMode.MODE_COPY_PRESERVE_SIBLING;
             }
         }
     }
@@ -136,10 +136,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             switch (mode) {
                 case 1:
-                    return CmsResource.DELETE_PRESERVE_SIBLINGS;
+                    return CmsResourceDeleteMode.MODE_DELETE_PRESERVE_SIBLINGS;
                 case 2:
                 default:
-                    return CmsResource.DELETE_REMOVE_SIBLINGS;
+                    return CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS;
             }
         }
     }
@@ -185,14 +185,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             switch (mode) {
                 case 1:
-                    return CmsResource.UNDO_CONTENT;
+                    return CmsResourceUndoMode.MODE_UNDO_CONTENT;
                 case 2:
-                    return CmsResource.UNDO_CONTENT_RECURSIVE;
+                    return CmsResourceUndoMode.MODE_UNDO_CONTENT_RECURSIVE;
                 case 3:
-                    return CmsResource.UNDO_MOVE_CONTENT;
+                    return CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT;
                 case 4:
                 default:
-                    return CmsResource.UNDO_MOVE_CONTENT_RECURSIVE;
+                    return CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT_RECURSIVE;
             }
         }
 
@@ -447,7 +447,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     private boolean m_isTouched;
 
     /** The project id where this resource has been last modified in. */
-    private int m_projectLastModified;
+    private CmsUUID m_projectLastModified;
 
     /** The id of the resource database record. */
     private CmsUUID m_resourceId;
@@ -500,7 +500,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         int type,
         boolean isFolder,
         int flags,
-        int projectId,
+        CmsUUID projectId,
         CmsResourceState state,
         long dateCreated,
         CmsUUID userCreated,
@@ -848,9 +848,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the id of the project where the resource has been last modified.<p>
      *
-     * @return the id of the project where the resource has been last modified
+     * @return the id of the project where the resource has been last modified, or <code>null</code>
      */
-    public int getProjectLastModified() {
+    public CmsUUID getProjectLastModified() {
 
         return m_projectLastModified;
     }

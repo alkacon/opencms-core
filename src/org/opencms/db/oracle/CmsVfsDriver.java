@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/24 16:27:52 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2007/03/01 15:01:32 $
+ * Version: $Revision: 1.36.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.36.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -72,7 +72,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
 
             // first insert new file without file_content, then update the file_content
@@ -115,7 +115,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         boolean wasInTransaction = false;
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getId());
+            conn = m_sqlManager.getConnection(dbc, project.getUuid());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
 
             wasInTransaction = !conn.getAutoCommit();

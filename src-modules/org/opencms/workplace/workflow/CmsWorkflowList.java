@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/workflow/Attic/CmsWorkflowList.java,v $
- * Date   : $Date: 2007/01/19 16:54:01 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/01 15:01:38 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.0 
  */
@@ -164,7 +165,7 @@ public class CmsWorkflowList extends A_CmsListDialog {
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
             CmsListItem item = (CmsListItem)itUsers.next();
-            int projectId = Integer.parseInt(item.getId());
+            CmsUUID projectId = new CmsUUID(item.getId());
             StringBuffer html = new StringBuffer(512);
             try {
                 if (detailId.equals(LIST_DETAIL_RESOURCES)) {
@@ -198,7 +199,7 @@ public class CmsWorkflowList extends A_CmsListDialog {
         Iterator itWorkflows = workflows.iterator();
         while (itWorkflows.hasNext()) {
             CmsProject workflow = (CmsProject)itWorkflows.next();
-            CmsListItem item = getList().newItem("" + workflow.getId());
+            CmsListItem item = getList().newItem("" + workflow.getUuid());
             item.set(LIST_COLUMN_NAME, OpenCms.getWorkflowManager().getTaskDescription(workflow));
             item.set(LIST_COLUMN_TYPE, OpenCms.getWorkflowManager().getTaskType(workflow, getLocale()));
             item.set(LIST_COLUMN_STATE, OpenCms.getWorkflowManager().getTaskState(workflow, getLocale()));

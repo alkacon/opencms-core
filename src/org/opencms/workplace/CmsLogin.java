@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/02/14 16:52:45 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2007/03/01 15:01:35 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -237,7 +237,7 @@ public class CmsLogin extends CmsJspLoginBean {
             }
             m_password = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_PASSWORD);
             m_actionLogin = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGIN);
-            m_oufqn = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_OUFQN);
+            m_oufqn = getRequest().getParameter(PARAM_OUFQN);
             if (m_oufqn == null) {
                 m_oufqn = (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
             }
@@ -401,7 +401,7 @@ public class CmsLogin extends CmsJspLoginBean {
         Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
             // only set the data is needed
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_oufqn)) {
+            if (m_oufqn == null) {
                 m_oufqn = ouFqnCookie.getValue();
             }
         }

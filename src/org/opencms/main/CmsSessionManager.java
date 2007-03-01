@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/02/21 14:45:01 $
- * Version: $Revision: 1.12.4.16 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.12.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.16 $ 
+ * @version $Revision: 1.12.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -431,7 +431,7 @@ public class CmsSessionManager {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
             // check is the project stored in this session is not existing anymore
             // if so, set it to the online project
-            int projectId = sessionInfo.getProject();
+            CmsUUID projectId = sessionInfo.getProject();
             try {
                 cms.readProject(projectId);
             } catch (CmsException e) {

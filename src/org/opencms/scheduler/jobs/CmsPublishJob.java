@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.10.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:39 $
+ * Version: $Revision: 1.10.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.10.4.4 $ 
+ * @version $Revision: 1.10.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,7 +97,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
 
             // check if the unlock parameter was given
             if (Boolean.valueOf(unlock).booleanValue()) {
-                cms.unlockProject(project.getId());
+                cms.unlockProject(project.getUuid());
             }
 
             // validate links if linkcheck parameter was given

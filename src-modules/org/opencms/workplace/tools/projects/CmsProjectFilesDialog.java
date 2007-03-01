@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2007/02/21 14:45:00 $
- * Version: $Revision: 1.17.4.12 $
+ * Date   : $Date: 2007/03/01 15:01:22 $
+ * Version: $Revision: 1.17.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsHtmlList;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.12 $ 
+ * @version $Revision: 1.17.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,7 +137,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            int projectId = new Integer(getProject().getId()).intValue();
+            CmsUUID projectId = getProject().getUuid();
             CmsResourceState state = CmsResource.STATE_KEEP;
             CmsHtmlList list = getList();
             if (list != null) {
@@ -228,7 +229,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
      */
     protected CmsProject getProject() {
 
-        int projectId = new Integer(getParamProjectid()).intValue();
+        CmsUUID projectId = new CmsUUID(getParamProjectid());
         try {
             return getCms().readProject(projectId);
         } catch (CmsException e) {
@@ -278,10 +279,10 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     protected void validateParamaters() throws Exception {
 
         try {
-            getCms().readProject(Integer.parseInt(getParamProjectid()));
+            getCms().readProject(new CmsUUID(getParamProjectid()));
         } catch (Exception e) {
             if (!getCms().getRequestContext().currentProject().isOnlineProject()) {
-                m_paramProjectid = new Integer(getCms().getRequestContext().currentProject().getId()).toString();
+                m_paramProjectid = getCms().getRequestContext().currentProject().getUuid().toString();
             } else {
                 throw e;
             }

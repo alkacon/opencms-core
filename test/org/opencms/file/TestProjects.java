@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.5 $
+ * @version $Revision: 1.16.4.6 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -126,18 +126,18 @@ public class TestProjects extends OpenCmsTestCase {
         List projects = cms.getAllAccessibleProjects();
         int i;
         for (i = 0; i < projects.size(); i++) {
-            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+            if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
                 break;
             }
         }
         if (i >= projects.size()) {
-            fail("Project " + project.getName() + "not accessible");
+            fail("Project " + project.getName() + " not accessible");
         }
 
         // ensure the project is manageable
         projects = cms.getAllManageableProjects();
         for (i = 0; i < projects.size(); i++) {
-            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+            if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
                 break;
             }
         }
@@ -148,12 +148,12 @@ public class TestProjects extends OpenCmsTestCase {
         echo("Testing deleting a project");
 
         // try to delete the project
-        cms.deleteProject(project.getId());
+        cms.deleteProject(project.getUuid());
 
         // ensure the project is not accessible anymore
         projects = cms.getAllAccessibleProjects();
         for (i = 0; i < projects.size(); i++) {
-            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+            if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
                 fail("Project " + project.getName() + "not deleted");
             }
         }
@@ -212,7 +212,7 @@ public class TestProjects extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
 
         // now delete the project - all changes in the project must be undone
-        cms.deleteProject(project.getId());
+        cms.deleteProject(project.getUuid());
 
         // ensure that the original resources are unchanged
         assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);

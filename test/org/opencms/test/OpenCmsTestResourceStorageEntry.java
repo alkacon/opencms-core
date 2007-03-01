@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.17.8.2 $
+ * Date   : $Date: 2007/03/01 15:01:36 $
+ * Version: $Revision: 1.17.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.17.8.2 $
+ * @version $Revision: 1.17.8.3 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -95,7 +95,7 @@ public class OpenCmsTestResourceStorageEntry {
     private String m_name;
 
     /** The project id where this resource has been last modified in. */
-    private int m_projectLastModified;
+    private CmsUUID m_projectLastModified;
 
     /** The properties of the resource. */
     private List m_properties;
@@ -322,7 +322,7 @@ public class OpenCmsTestResourceStorageEntry {
      *
      * @return the id of the project where the resource has been last modified
      */
-    public int getProjectLastModified() {
+    public CmsUUID getProjectLastModified() {
 
         return m_projectLastModified;
     }

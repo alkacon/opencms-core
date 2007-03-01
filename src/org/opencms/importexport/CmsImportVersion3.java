@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.75.4.6 $
+ * Date   : $Date: 2007/03/01 15:01:30 $
+ * Version: $Revision: 1.75.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.6 $ 
+ * @version $Revision: 1.75.4.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -465,7 +465,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 resType.getTypeId(),
                 resType.isFolder(),
                 new Integer(flags).intValue(),
-                m_cms.getRequestContext().currentProject().getId(),
+                m_cms.getRequestContext().currentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,
                 newUsercreated,

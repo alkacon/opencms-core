@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/02/12 11:50:49 $
- * Version: $Revision: 1.32.4.15 $
+ * Date   : $Date: 2007/03/01 15:01:27 $
+ * Version: $Revision: 1.32.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.15 $ 
+ * @version $Revision: 1.32.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -344,11 +344,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(resUtil.getTimeWindowLayoutType());
         content.append(',');
 
-        // position 9: project
-        content.append(resUtil.getProjectId());
-        content.append(",");
-
-        // position 10: date of last modification
+        // position 9: date of last modification
         if (showDateLastModified) {
             content.append("\"");
             content.append(getMessages().getDateTime(resource.getDateLastModified()));
@@ -358,7 +354,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 11: user who last modified the resource
+        // position 10: user who last modified the resource
         if (showUserWhoLastModified) {
             content.append("\"");
             content.append(resUtil.getUserLastModified());
@@ -367,7 +363,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 12: date of creation
+        // position 11: date of creation
         if (showDateCreated) {
             content.append("\"");
             content.append(getMessages().getDateTime(resource.getDateCreated()));
@@ -376,7 +372,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 13 : user who created the resource 
+        // position 12: user who created the resource 
         if (showUserWhoCreated) {
             content.append("\"");
             content.append(resUtil.getUserCreated());
@@ -385,7 +381,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 14: date of release
+        // position 13: date of release
         if (showDateReleased) {
             content.append("\"");
             content.append(resUtil.getDateReleased());
@@ -394,7 +390,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 15: date of expiration
+        // position 14: date of expiration
         if (showDateExpired) {
             content.append("\"");
             content.append(resUtil.getDateExpired());
@@ -403,7 +399,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 16: permissions
+        // position 15: permissions
         if (showPermissions) {
             content.append("\"");
             content.append(CmsStringUtil.escapeJavaScript(resUtil.getPermissions()));
@@ -412,26 +408,22 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 17: locked by
+        // position 16: locked by
         content.append("\"");
         content.append(CmsStringUtil.escapeJavaScript(resUtil.getLockedByName()));
         content.append("\",");
 
-        // position 18: type of lock
-        content.append(resUtil.getLock().getType().hashCode());
-        content.append(",");
-
-        // position 19: name of project where the resource is locked in
+        // position 17: name of project where the resource is locked in
         content.append("\"");
         content.append(resUtil.getLockedInProjectName());
         content.append("\",");
 
-        // position 20: id of project where resource belongs to
-        int lockedInProject = resUtil.getLockedInProjectId();
-        content.append(lockedInProject);
+        // position 18: id of project where resource belongs to
+        int lockState = resUtil.getLockState();
+        content.append(lockState);
         content.append(",\"");
 
-        // position 21: project state, I=resource is inside current project, O=resource is outside current project        
+        // position 19: project state, I=resource is inside current project, O=resource is outside current project        
         if (resUtil.isInsideProject()) {
             content.append("I");
         } else {
@@ -439,17 +431,17 @@ public class CmsExplorer extends CmsWorkplace {
         }
         content.append("\",\"");
 
-        // position 22: workflow project state
+        // position 20: workflow project state
         if (showWorkflowState) {
             content.append(resUtil.getWorkflowTaskState());
         }
         content.append("\",\"");
 
-        // position 23: system lock info, used as text for tool tip
+        // position 21: system lock info, used as text for tool tip
         content.append(resUtil.getSystemLockInfo(true));
         content.append("\", ");
 
-        // position 24: project state
+        // position 22: project state
         content.append(resUtil.getProjectState().getMode());
 
         // finish
@@ -575,17 +567,17 @@ public class CmsExplorer extends CmsWorkplace {
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");
         // the project
-        content.append("top.setProject(");
+        content.append("top.setProject('");
         if (!listView) {
             content.append(getSettings().getProject());
         } else {
             content.append(getSettings().getExplorerProjectId());
         }
-        content.append(");\n");
+        content.append("');\n");
         // the onlineProject
-        content.append("top.setOnlineProject(");
+        content.append("top.setOnlineProject('");
         content.append(CmsProject.ONLINE_PROJECT_ID);
-        content.append(");\n");
+        content.append("');\n");
         // set the writeAccess for the current Folder       
         boolean writeAccess = VIEW_EXPLORER.equals(getSettings().getExplorerMode());
         if (writeAccess && (!showSiblings)) {

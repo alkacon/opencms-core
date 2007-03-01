@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.38.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,18 +33,13 @@ package org.opencms.db.oracle;
 
 import org.opencms.db.generic.CmsSqlManager;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.38.8.1 $
  * 
  * @since 6.0.0 
  */
@@ -56,25 +51,5 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
-    }
-
-    /**
-     * Serialize object data to write it as byte array in the database.<p>
-     * 
-     * @param object the object
-     * @return byte[] the byte array with object data
-     * @throws IOException if something goes wrong
-     */
-    protected final byte[] internalSerializeObject(Serializable object) throws IOException {
-
-        // this method is final to allow the java compiler to inline this code!
-
-        // serialize the object
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(bout);
-        oout.writeObject(object);
-        oout.close();
-
-        return bout.toByteArray();
     }
 }

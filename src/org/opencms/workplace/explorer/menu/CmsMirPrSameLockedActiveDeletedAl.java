@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActiveDeletedAl.java,v $
- * Date   : $Date: 2007/02/20 08:30:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -68,7 +68,8 @@ public class CmsMirPrSameLockedActiveDeletedAl implements I_CmsMenuItemRule {
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState() == CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING;
-            return (!lockedForPublish && !lock.isShared() && lock.isOwnedBy(cms.getRequestContext().currentUser()) && lock.getProjectId() == cms.getRequestContext().currentProject().getId())
+            return (!lockedForPublish && !lock.isShared() && lock.isOwnedBy(cms.getRequestContext().currentUser()) && lock.getProjectId().equals(
+                cms.getRequestContext().currentProject().getUuid()))
                 || (!lockedForPublish && lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources());
         }
         // resource is not locked by the user in current project or not locked with enabled autolock, rule does not match

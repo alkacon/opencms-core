@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2007/02/06 15:08:13 $
- * Version: $Revision: 1.57.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:34 $
+ * Version: $Revision: 1.57.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.tools.CmsToolUserData;
 
@@ -50,7 +51,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57.4.4 $ 
+ * @version $Revision: 1.57.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +65,7 @@ public class CmsWorkplaceSettings {
     private String m_explorerMode;
     private int m_explorerPage;
     private String m_explorerProjectFilter;
-    private int m_explorerProjectId;
+    private CmsUUID m_explorerProjectId;
     private Map m_explorerResource;
     private boolean m_explorerShowLinks;
     private Map m_frameUris;
@@ -72,7 +73,7 @@ public class CmsWorkplaceSettings {
     private Map m_lastUsedGalleries;
     private Object m_listObject;
     private String m_permissionDetailView;
-    private int m_project;
+    private CmsUUID m_project;
     private CmsPublishList m_publishList;
     private CmsToolUserData m_toolUserData;
     private Map m_treeSite;
@@ -184,7 +185,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the explorer project id
      */
-    public int getExplorerProjectId() {
+    public CmsUUID getExplorerProjectId() {
 
         return m_explorerProjectId;
     }
@@ -286,7 +287,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the currently selected project of the workplace user
      */
-    public int getProject() {
+    public CmsUUID getProject() {
 
         return m_project;
     }
@@ -483,7 +484,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the explorer project id
      */
-    public void setExplorerProjectId(int value) {
+    public void setExplorerProjectId(CmsUUID value) {
 
         m_explorerProjectId = value;
     }
@@ -582,7 +583,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param project the currently selected project of thw workplace user
      */
-    public void setProject(int project) {
+    public void setProject(CmsUUID project) {
 
         m_project = project;
     }

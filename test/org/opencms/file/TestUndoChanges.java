@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.20.4.6 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.20.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20.4.6 $
+ * @version $Revision: 1.20.4.7 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -294,7 +294,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -340,7 +340,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.createResource(
             folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
             CmsResourceTypePlain.getStaticTypeId());
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -361,7 +361,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.undoChanges("/" + subsubfolder, CmsResource.UNDO_MOVE_CONTENT);
 
         // check intermediate state
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -380,7 +380,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.undoChanges(folder + "/" + subfolder, CmsResource.UNDO_MOVE_CONTENT);
 
         // check final state, the same starting state
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
@@ -431,7 +431,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -517,7 +517,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.deleteResource(source + newFile, CmsResource.DELETE_REMOVE_SIBLINGS);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -604,7 +604,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.deleteResource(source + newFile, CmsResource.DELETE_REMOVE_SIBLINGS);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -651,7 +651,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -683,7 +683,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -731,7 +731,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -784,7 +784,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertTrue(cms.existsResource(source + newFile));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -877,7 +877,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFalse(cms.existsResource(destination2, CmsResourceFilter.ALL));
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -896,7 +896,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         String file = "/a";
         cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -912,7 +912,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
             "undoChanges description");
         cms.writePropertyObject(sibling, property1);
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -943,7 +943,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertProject(cms, file, cms.getRequestContext().currentProject());
 
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }
@@ -977,7 +977,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.undoChanges(destination, CmsResource.UNDO_MOVE_CONTENT_RECURSIVE);
         // publishing may reveal problems with the id's
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }

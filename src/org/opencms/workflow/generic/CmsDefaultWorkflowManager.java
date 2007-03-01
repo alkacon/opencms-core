@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/03/01 15:01:39 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.15 $ 
+ * @version $Revision: 1.1.2.16 $ 
  * 
  * @since 7.0.0
  */
@@ -672,7 +672,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         I_CmsWorkflowAction action = null;
         if (accept) {
             // ensure that all workflow resources are unlocked
-            m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), false);
+            m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getUuid(), false);
             // signal
             action = m_workflowEngine.signal(wfProject, transition, message);
         } else {
@@ -741,9 +741,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         }
         m_cms.getRequestContext().setCurrentProject(wfProject);
         // remove all locks
-        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), true);
+        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getUuid(), true);
         // delete the project
-        m_cms.deleteProject(wfProject.getId());
+        m_cms.deleteProject(wfProject.getUuid());
     }
 
     /**
@@ -854,7 +854,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             pubList);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        m_cms.deleteProject(wfProject.getId());
+        m_cms.deleteProject(wfProject.getUuid());
     }
 
     /**
@@ -876,7 +876,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         }
         m_cms.getRequestContext().setCurrentProject(wfProject);
         // remove workflow locks
-        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getId(), true);
+        m_securityManager.unlockProject(m_cms.getRequestContext(), wfProject.getUuid(), true);
         // iterate the workflow resources
         for (Iterator i = getAssignedResources(wfProject).iterator(); i.hasNext();) {
             String resourceName = (String)i.next();
@@ -888,9 +888,9 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
             }
         }
         // unlock again
-        m_cms.unlockProject(wfProject.getId());
+        m_cms.unlockProject(wfProject.getUuid());
         // delete project
-        m_cms.deleteProject(wfProject.getId());
+        m_cms.deleteProject(wfProject.getUuid());
     }
 
     /**

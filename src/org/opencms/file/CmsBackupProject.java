@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.13.8.2 $
+ * Date   : $Date: 2007/03/01 15:01:26 $
+ * Version: $Revision: 1.13.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,8 @@
 
 package org.opencms.file;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -42,7 +40,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.13.8.2 $
+ * @version $Revision: 1.13.8.3 $
  * 
  * @since 6.0.0 
  */
@@ -94,15 +92,15 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      */
     public CmsBackupProject(
         int versionId,
-        int projectId,
+        CmsUUID projectId,
         String name,
         String description,
         CmsUUID ownerId,
         CmsUUID groupId,
         CmsUUID managerGroupId,
         long dateCreated,
-        int type,
-        Timestamp datePublished,
+        CmsProjectType type,
+        long datePublished,
         CmsUUID userPublished,
         String namePublisher,
         String nameOwner,
@@ -113,11 +111,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         super(projectId, name, description, ownerId, groupId, managerGroupId, 0, dateCreated, type);
 
         m_versionId = versionId;
-        if (datePublished != null) {
-            m_datePublished = datePublished.getTime();
-        } else {
-            m_datePublished = CmsDbUtil.UNKNOWN_ID;
-        }
+        m_datePublished = datePublished;
         m_userPublished = userPublished;
         m_namePublisher = namePublisher;
         m_nameOwner = nameOwner;
@@ -133,15 +127,15 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
 
         return new CmsBackupProject(
             m_versionId,
-            getId(),
+            getUuid(),
             getName(),
             getDescription(),
             getOwnerId(),
             getGroupId(),
             getManagerGroupId(),
-            this.getDateCreated(),
+            getDateCreated(),
             getType(),
-            new Timestamp(this.m_datePublished),
+            m_datePublished,
             m_userPublished,
             m_namePublisher,
             m_nameOwner,
@@ -159,7 +153,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
             return true;
         }
         if (obj instanceof CmsBackupProject) {
-            return ((CmsBackupProject)obj).getId() == getId();
+            return ((CmsBackupProject)obj).getUuid().equals(getUuid());
         }
         return false;
     }

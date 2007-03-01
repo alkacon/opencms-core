@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2006/07/21 09:30:15 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2007/03/01 15:01:22 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.3 $ 
+ * @version $Revision: 1.15.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +185,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     public void actionDeleteProject() throws Exception {
 
         String pId = getJsp().getRequest().getParameter(CmsEditProjectDialog.PARAM_PROJECTID);
-        getCms().deleteProject(new Integer(pId).intValue());
+        getCms().deleteProject(new CmsUUID(pId));
         refreshList();
         actionCloseDialog();
     }
@@ -206,7 +207,7 @@ public class CmsProjectsList extends A_CmsListDialog {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
                     CmsListItem listItem = (CmsListItem)itItems.next();
-                    int pId = new Integer(listItem.getId()).intValue();
+                    CmsUUID pId = new CmsUUID(listItem.getId());
                     getCms().deleteProject(pId);
                     removedItems.add(listItem.getId());
                 }
@@ -219,7 +220,7 @@ public class CmsProjectsList extends A_CmsListDialog {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
                     CmsListItem listItem = (CmsListItem)itItems.next();
-                    int pId = new Integer(listItem.getId()).intValue();
+                    CmsUUID pId = new CmsUUID(listItem.getId());
                     getCms().unlockProject(pId);
                 }
             } catch (CmsException e) {
@@ -236,7 +237,7 @@ public class CmsProjectsList extends A_CmsListDialog {
      */
     public void executeListSingleActions() throws IOException, ServletException {
 
-        Integer projectId = new Integer(getSelectedItem().getId());
+        CmsUUID projectId = new CmsUUID(getSelectedItem().getId());
         String projectName = getSelectedItem().get(LIST_COLUMN_NAME).toString();
 
         Map params = new HashMap();
@@ -257,7 +258,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // execute the delete action
             try {
-                getCms().deleteProject(projectId.intValue());
+                getCms().deleteProject(projectId);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_PROJECT_1, projectName), e);
             }
@@ -266,7 +267,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_UNLOCK)) {
             // execute the unlock action
             try {
-                getCms().unlockProject(projectId.intValue());
+                getCms().unlockProject(projectId);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_UNLOCK_PROJECT_1, projectName), e);
             }
@@ -287,7 +288,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             CmsListItem item = (CmsListItem)itProjects.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RESOURCES)) {
-                    CmsProject project = getCms().readProject(new Integer(item.getId()).intValue());
+                    CmsProject project = getCms().readProject(new CmsUUID(item.getId()));
                     StringBuffer html = new StringBuffer(512);
                     Iterator resources = getCms().readProjectResources(project).iterator();
                     while (resources.hasNext()) {
@@ -313,7 +314,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
-            CmsListItem item = getList().newItem(new Integer(project.getId()).toString());
+            CmsListItem item = getList().newItem(project.getUuid().toString());
             item.set(LIST_COLUMN_NAME, project.getName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
             try {
@@ -395,7 +396,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
                 if (getItem() != null) {
                     try {
-                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) == 0;
+                        return getCms().countLockedResources(new CmsUUID(getItem().getId())) == 0;
                     } catch (CmsException e) {
                         // noop
                     }
@@ -420,7 +421,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
                 if (getItem() != null) {
                     try {
-                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) != 0;
+                        return getCms().countLockedResources(new CmsUUID(getItem().getId())) != 0;
                     } catch (CmsException e) {
                         // noop
                     }
@@ -455,7 +456,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
                 if (getItem() != null) {
                     try {
-                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) == 0;
+                        return getCms().countLockedResources(new CmsUUID(getItem().getId())) == 0;
                     } catch (CmsException e) {
                         // noop
                     }
@@ -481,7 +482,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
                 if (getItem() != null) {
                     try {
-                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) != 0;
+                        return getCms().countLockedResources(new CmsUUID(getItem().getId())) != 0;
                     } catch (CmsException e) {
                         // noop
                     }

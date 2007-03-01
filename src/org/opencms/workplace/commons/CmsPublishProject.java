@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/02/13 14:20:54 $
- * Version: $Revision: 1.27.4.13 $
+ * Date   : $Date: 2007/03/01 15:01:15 $
+ * Version: $Revision: 1.27.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.report.CmsHtmlReport;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.CmsListExplorerColumn;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.13 $ 
+ * @version $Revision: 1.27.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,7 +252,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         nonBlockingFilter = nonBlockingFilter.filterLockableByUser(getCms().getRequestContext().currentUser());
         nonBlockingFilter = nonBlockingFilter.filterSharedExclusive();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
-            nonBlockingFilter = nonBlockingFilter.filterProject(Integer.parseInt(getParamProjectid()));
+            nonBlockingFilter = nonBlockingFilter.filterProject(new CmsUUID(getParamProjectid()));
         }
         return buildLockDialog(nonBlockingFilter, getBlockingFilter(), 0);
     }
@@ -720,14 +721,14 @@ public class CmsPublishProject extends CmsMultiDialog {
     private void computePublishProject() {
 
         String projectId = getParamProjectid();
-        int id;
+        CmsUUID id;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(projectId)) {
             // projectid not found in request parameter,
-            id = getCms().getRequestContext().currentProject().getId();
+            id = getCms().getRequestContext().currentProject().getUuid();
             setParamProjectname(getCms().getRequestContext().currentProject().getName());
             setParamProjectid("" + id);
         } else {
-            id = Integer.parseInt(projectId);
+            id = new CmsUUID(projectId);
             try {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
@@ -746,7 +747,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         CmsLockFilter blockingFilter = CmsLockFilter.FILTER_ALL;
         blockingFilter = blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
         if (!isDirectPublish()) {
-            blockingFilter = blockingFilter.filterProject(Integer.parseInt(getParamProjectid()));
+            blockingFilter = blockingFilter.filterProject(new CmsUUID(getParamProjectid()));
         }
         return blockingFilter;
     }
@@ -774,7 +775,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      */
     private String getProjectname() {
 
-        int id = Integer.parseInt(getParamProjectid());
+        CmsUUID id = new CmsUUID(getParamProjectid());
         try {
             return getCms().readProject(id).getName();
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/02/09 10:29:15 $
- * Version: $Revision: 1.15.4.16 $
+ * Date   : $Date: 2007/03/01 15:01:14 $
+ * Version: $Revision: 1.15.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,13 @@ package org.opencms.workplace.commons;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
-import org.opencms.util.CmsStringUtil;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.16 $ 
+ * @version $Revision: 1.15.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -800,9 +799,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_CURRENT_PWD_0 = "GUI_PREF_CURRENT_PWD_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_DEFAULTS_TASKS_0 = "GUI_PREF_DEFAULTS_TASKS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_DELETE_SIBLINGS_0 = "GUI_PREF_DELETE_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -822,18 +818,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_MSG_ACCEPTED_0 = "GUI_PREF_MSG_ACCEPTED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_MSG_COMPLETED_0 = "GUI_PREF_MSG_COMPLETED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_MSG_FORWARDED_0 = "GUI_PREF_MSG_FORWARDED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_MSG_MEMBERS_0 = "GUI_PREF_MSG_MEMBERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_NEW_PWD_0 = "GUI_PREF_NEW_PWD_0";
@@ -1190,42 +1174,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SYNCHRONIZATION_INFO_0 = "GUI_SYNCHRONIZATION_INFO_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_A1_0 = "GUI_TASK_FILTER_A1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_A2_0 = "GUI_TASK_FILTER_A2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_A3_0 = "GUI_TASK_FILTER_A3_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_B1_0 = "GUI_TASK_FILTER_B1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_B2_0 = "GUI_TASK_FILTER_B2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_B3_0 = "GUI_TASK_FILTER_B3_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_C1_0 = "GUI_TASK_FILTER_C1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_C2_0 = "GUI_TASK_FILTER_C2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_C3_0 = "GUI_TASK_FILTER_C3_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_D1_0 = "GUI_TASK_FILTER_D1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_D2_0 = "GUI_TASK_FILTER_D2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_FILTER_D3_0 = "GUI_TASK_FILTER_D3_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOUCH_0 = "GUI_TOUCH_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1339,12 +1287,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
-    /**Postfix to create task key. */
-    private static final String TASK_POSTFIX = "_0";
-
-    /**Prefix to create task key. */
-    private static final String TASK_PREFIX = "GUI_";
-
     /**
      * Hides the public constructor for this utility class.<p>
      */
@@ -1361,19 +1303,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     *  Convert old key like task.filter.a1 to new GUI_TASK_FILTER_A1_0.
-     * @param oldTaskKey key like "task.filter.a1"
-     * @return converted key as String
-     */
-    public static String getTaskKey(String oldTaskKey) {
-
-        StringBuffer sb = new StringBuffer(TASK_PREFIX);
-        sb.append(CmsStringUtil.substitute(oldTaskKey, ".", "_").toUpperCase());
-        sb.append(TASK_POSTFIX);
-        return sb.toString();
     }
 
     /**

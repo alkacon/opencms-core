@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.84.4.11 $
+ * Date   : $Date: 2007/03/01 15:01:30 $
+ * Version: $Revision: 1.84.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.11 $ 
+ * @version $Revision: 1.84.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1373,7 +1373,7 @@ public class CmsExport {
             // resource state is new or changed
             if (res.getState() == CmsResource.STATE_CHANGED || res.getState() == CmsResource.STATE_NEW) {
                 // the resource belongs not to the curent project, so it must not be exported    
-                if (res.getProjectLastModified() != m_cms.getRequestContext().currentProject().getId()) {
+                if (!res.getProjectLastModified().equals(m_cms.getRequestContext().currentProject().getUuid())) {
                     retValue = false;
                 }
             } else {

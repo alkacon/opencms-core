@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserAddInfoDialog.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,6 @@
  */
 
 package org.opencms.workplace.tools.accounts;
-
-import net.sf.cglib.beans.BeanGenerator;
-import net.sf.cglib.beans.BeanMap;
 
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
@@ -70,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -83,7 +80,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The additional information. */
-    protected Object m_addInfoBean;
+    protected List m_addInfoList;
 
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
@@ -131,32 +128,16 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
         try {
             if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
-                // create a map wrapper for easy access
-                Map addInfoMap = BeanMap.create(m_addInfoBean);
                 // fill the values
-                Iterator it = addInfoMap.keySet().iterator();
+                Iterator it = m_addInfoList.iterator();
                 while (it.hasNext()) {
-                    String infoName = (String)it.next();
-                    String infoValue = (String)addInfoMap.get(infoName);
-                    if (infoValue == null) {
-                        m_user.deleteAdditionalInfo(infoName);
+                    CmsUserAddInfoBean infoBean = (CmsUserAddInfoBean)it.next();
+                    if (infoBean.getValue() == null) {
+                        m_user.deleteAdditionalInfo(infoBean.getName());
                     } else {
-                        Class clazz = null;
-                        Iterator itBlocks = OpenCms.getWorkplaceManager().getUserInfoManager().getBlocks().iterator();
-                        while ((clazz == null) && itBlocks.hasNext()) {
-                            CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)itBlocks.next();
-                            Iterator itEntries = block.getEntries().iterator();
-                            while ((clazz == null) && itEntries.hasNext()) {
-                                CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
-                                if (entry.getKey().equals(infoName)) {
-                                    clazz = entry.getClassType();
-                                }
-                            }
-                        }
-                        if (clazz == null) {
-                            clazz = String.class;
-                        }
-                        m_user.setAdditionalInfo(CmsStringUtil.substitute(infoName, "__", "-"), CmsDataTypeUtil.parse(infoValue, clazz));
+                        m_user.setAdditionalInfo(infoBean.getName(), CmsDataTypeUtil.parse(
+                            infoBean.getValue(),
+                            infoBean.getType()));
                     }
                 }
             } else {
@@ -353,6 +334,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
 
+        int count = 0;
         if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
             // widgets to display
             Iterator itBlocks = OpenCms.getWorkplaceManager().getUserInfoManager().getBlocks().iterator();
@@ -365,7 +347,16 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
                     int min = entry.isOptional() ? 0 : 1;
                     I_CmsWidget widget = entry.getWidgetObject();
-                    addWidget(new CmsWidgetDialogParameter(m_addInfoBean, entry.getKey(), "", PAGES[0], widget, min, 1));
+                    addWidget(new CmsWidgetDialogParameter(
+                        m_addInfoList.get(count),
+                        "value",
+                        entry.getKey(),
+                        "",
+                        PAGES[0],
+                        widget,
+                        min,
+                        1));
+                    count++;
                 }
             }
         } else {
@@ -403,7 +394,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
                 // edit an existing user, get the user object from db
                 m_user = getCms().readUser(new CmsUUID(getParamUserid()));
                 if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
-                    m_addInfoBean = createAddInfoBean(m_user);
+                    m_addInfoList = createAddInfoList(m_user);
                 } else {
                     setAddInfoMaps();
                 }
@@ -412,7 +403,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
                 // this is not the initial call, get the user object from session
                 m_user = getCms().readUser(new CmsUUID(getParamUserid()));
                 if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
-                    m_addInfoBean = getDialogObject();
+                    m_addInfoList = (List)getDialogObject();
                 } else {
                     Map dObj = (Map)getDialogObject();
                     m_addInfoEditable = (SortedMap)dObj.get("editable");
@@ -430,7 +421,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
             // ignore
         }
         if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
-            m_addInfoBean = createAddInfoBean(m_user);
+            m_addInfoList = createAddInfoList(m_user);
         } else {
             setAddInfoMaps();
         }
@@ -446,7 +437,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
         // save the current state (may be changed because of the widget values)
         if (!Boolean.valueOf(getParamEditall()).booleanValue()) {
-            setDialogObject(m_addInfoBean);
+            setDialogObject(m_addInfoList);
         } else {
             Map dObj = new HashMap();
             dObj.put("editable", m_addInfoEditable);
@@ -472,34 +463,24 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
      * 
      * @return a new additional information bean object
      */
-    private Object createAddInfoBean(CmsUser user) {
+    private List createAddInfoList(CmsUser user) {
 
-        BeanGenerator bg = new BeanGenerator();
-        // add properties
+        List addInfoList = new ArrayList();
+        // add beans
         Iterator itBlocks = OpenCms.getWorkplaceManager().getUserInfoManager().getBlocks().iterator();
         while (itBlocks.hasNext()) {
             CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)itBlocks.next();
             Iterator itEntries = block.getEntries().iterator();
             while (itEntries.hasNext()) {
                 CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
-                bg.addProperty(entry.getKey(), String.class);
+                Object value = user.getAdditionalInfo(entry.getKey());
+                if (value == null) {
+                    value = "";
+                }
+                addInfoList.add(new CmsUserAddInfoBean(entry.getKey(), value.toString(), entry.getClassType()));
             }
         }
-        // create the bean
-        Object addInfoBean = bg.create();
-        // create a map wrapper for easy access
-        Map addInfoMap = BeanMap.create(addInfoBean);
-        // fill the values
-        Iterator it = addInfoMap.keySet().iterator();
-        while (it.hasNext()) {
-            String infoName = (String)it.next();
-            String infoValue = (String)user.getAdditionalInfo(CmsStringUtil.substitute(infoName, "__", "-"));
-            if (infoValue == null) {
-                infoValue = "";
-            }
-            addInfoMap.put(infoName, infoValue);
-        }
-        return addInfoBean;
+        return addInfoList;
     }
 
     /**

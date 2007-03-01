@@ -538,8 +538,8 @@
 	    	<user-info key='USER_COUNTRY' />
 	    </info-block>
         <info-block name='GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0' >
-	    	<user-info key='USERPREFERENCES_workplace__startupsettingssite' />
-	    	<user-info key='USERPREFERENCES_workplace__startupsettingslocale' />
+	    	<user-info key='USERPREFERENCES_workplace-startupsettingssite' />
+	    	<user-info key='USERPREFERENCES_workplace-startupsettingslocale' />
 	    </info-block>
     </user-infos>
     <default-preferences>

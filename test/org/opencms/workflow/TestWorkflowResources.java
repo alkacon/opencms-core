@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflowResources.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.0.0
  */
@@ -225,7 +225,7 @@ public class TestWorkflowResources extends OpenCmsTestCase {
 
         // the project of the lock must contain the value of the workflow project
         CmsLock lock = cms.getLock(cms.readResource("/index.html")).getSystemLock();
-        assertEquals(testProject.getId(), lock.getProjectId());
+        assertEquals(testProject.getUuid(), lock.getProjectId());
     }
 
     /**

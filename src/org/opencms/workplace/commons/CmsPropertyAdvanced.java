@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.28.4.9 $
+ * Date   : $Date: 2007/03/01 15:01:15 $
+ * Version: $Revision: 1.28.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -83,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.9 $ 
+ * @version $Revision: 1.28.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -792,7 +791,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
         if (m_isEditable == null) {
 
-            if ((getCms().getRequestContext().currentProject().getId() == CmsProject.ONLINE_PROJECT_ID)
+            if (getCms().getRequestContext().currentProject().isOnlineProject()
                 || !getCms().isInsideCurrentProject(getParamResource())) {
                 // we are in the online project or resource does not belong to project, no editing allowed
                 m_isEditable = Boolean.FALSE;

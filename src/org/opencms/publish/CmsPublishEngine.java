@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/01 15:01:16 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -342,26 +342,28 @@ public final class CmsPublishEngine implements Runnable {
     protected void abortPublishJob(String userName, CmsPublishJobEnqueued publishJob)
     throws CmsException, CmsPublishException {
 
-        if (m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
-            // collect all resources
-            List allResources = new ArrayList(publishJob.getPublishList().getFolderList());
-            allResources.addAll(publishJob.getPublishList().getDeletedFolderList());
-            allResources.addAll(publishJob.getPublishList().getFileList());
-            // unlock them
-            CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.m_publishJob.getCmsObject().getRequestContext());
-            try {
-                Iterator itResources = allResources.iterator();
-                while (itResources.hasNext()) {
-                    CmsResource resource = (CmsResource)itResources.next();
-                    m_driverManager.unlockResource(dbc, resource, true, true);
-                }
-            } finally {
-                dbc.clear();
-            }
-            m_listeners.fireAbort(userName, publishJob);
-        } else {
+        if (((m_currentPublishJob == null) || !publishJob.m_publishJob.equals(m_currentPublishJob.getPublishJob())) && !m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
         }
+        if ((m_currentPublishJob != null) && publishJob.m_publishJob.equals(m_currentPublishJob.getPublishJob())) {
+            m_currentPublishJob.abort();
+        }
+        // collect all resources
+        List allResources = new ArrayList(publishJob.getPublishList().getFolderList());
+        allResources.addAll(publishJob.getPublishList().getDeletedFolderList());
+        allResources.addAll(publishJob.getPublishList().getFileList());
+        // unlock them
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.m_publishJob.getCmsObject().getRequestContext());
+        try {
+            Iterator itResources = allResources.iterator();
+            while (itResources.hasNext()) {
+                CmsResource resource = (CmsResource)itResources.next();
+                m_driverManager.unlockResource(dbc, resource, true, true);
+            }
+        } finally {
+            dbc.clear();
+        }
+        m_listeners.fireAbort(userName, publishJob);
     }
 
     /**
@@ -441,6 +443,12 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected void publishThreadFinished() {
 
+        if (m_currentPublishJob.isAborted()) {
+            // try to start a new publish job
+            new Thread(this).start();
+            return;
+        }
+        
         // there is a finished publish job
         CmsPublishJobInfoBean publishJob = m_currentPublishJob.getPublishJob();
 
@@ -456,7 +464,7 @@ public final class CmsPublishEngine implements Runnable {
             eventData.put(
                 I_CmsEventListener.KEY_PUBLISHID,
                 publishJob.getPublishList().getPublishHistoryId().toString());
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(dbc.currentProject().getId()));
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
             CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(afterPublishEvent);
@@ -482,7 +490,7 @@ public final class CmsPublishEngine implements Runnable {
                 LOG.equals(t);
             }
         }
-        
+
         // try to start a new publish job
         new Thread(this).start();
     }
@@ -505,7 +513,7 @@ public final class CmsPublishEngine implements Runnable {
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_REPORT, publishJob.getPublishReport());
             eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishJob.getPublishList());
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(dbc.currentProject().getId()));
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
             CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(beforePublishEvent);

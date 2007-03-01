@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.28.8.7 $
+ * Date   : $Date: 2007/03/01 15:01:25 $
+ * Version: $Revision: 1.28.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.workflow.I_CmsWorkflowManager;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.7 $ 
+ * @version $Revision: 1.28.8.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -166,9 +166,9 @@ public class CmsLock implements Cloneable {
      * 
      * @return the ID of the project
      */
-    public int getProjectId() {
+    public CmsUUID getProjectId() {
 
-        return m_project.getId();
+        return m_project.getUuid();
     }
 
     /**

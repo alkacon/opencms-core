@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/02/15 11:12:53 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/03/01 15:01:32 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,12 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -145,16 +145,28 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             0,
             "/folder1");
 
+        // check default project
+        CmsProject defProj2 = cms.readProject(ou2.getName() + "Offline");
+
         // check the ou attributes
         assertEquals(0, ou2.getFlags());
         assertEquals("test/", ou2.getParentFqn());
         assertEquals("test/test2/", ou2.getName());
         assertEquals(cms.readFolder("/system/orgunits/test/test2").getStructureId(), ou2.getId());
+        assertEquals(defProj2.getUuid(), ou2.getProjectId());        
 
         // check ou resources
         List ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
         assertEquals(1, ou2Resources.size());
         assertTrue(ou2Resources.contains(cms.readResource("/folder1")));
+
+        // check the project resources
+        List projRes2 = cms.readProjectResources(defProj2);
+        assertEquals(ou2Resources.size(), projRes2.size());        
+        for (int i = 0; i < projRes2.size(); i++) {
+            assertTrue(projRes2.contains(((CmsResource)ou2Resources.get(i)).getRootPath()));
+            assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes2.get(i)))));
+        }
 
         // check the ous
         List rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
@@ -219,18 +231,30 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             0,
             "");
 
+        // check default project
+        CmsProject defProj = cms.readProject(ou.getName() + "Offline");
+
         // check the ou attributes
         assertEquals(0, ou.getFlags());
         assertEquals("", ou.getParentFqn());
         assertEquals("my test ou", ou.getDescription());
         assertEquals("test/", ou.getName());
         assertEquals(cms.readFolder("/system/orgunits/test").getStructureId(), ou.getId());
+        assertEquals(defProj.getUuid(), ou.getProjectId());
 
         // check ou resources
         List ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
         assertEquals(1, ouResources.size());
         assertTrue(ouResources.contains(cms.readResource("/")));
 
+        // check the project resources
+        List projRes = cms.readProjectResources(defProj);
+        assertEquals(ouResources.size(), projRes.size());        
+        for (int i = 0; i < projRes.size(); i++) {
+            assertTrue(projRes.contains(((CmsResource)ouResources.get(i)).getRootPath()));
+            assertTrue(ouResources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes.get(i)))));
+        }
+        
         // check the ous
         List rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
         assertEquals(1, rootOus.size());
@@ -259,6 +283,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals("test/", ou.getName());
         assertEquals(cms.readFolder("/system/orgunits/test").getStructureId(), ou.getId());
         assertTrue(cms.readFolder("/system/orgunits/test").isInternal());
+        assertEquals(defProj.getUuid(), ou.getProjectId());
 
         ou.setFlags(0);
         OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, ou);
@@ -275,17 +300,29 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             0,
             "");
 
+        // check default project
+        CmsProject defProj2 = cms.readProject(ou2.getName() + "Offline");
+
         // check the ou attributes
         assertEquals(0, ou2.getFlags());
         assertEquals("", ou2.getParentFqn());
         assertEquals("my test ou2 in the root", ou2.getDescription());
         assertEquals("test2/", ou2.getName());
         assertEquals(cms.readFolder("/system/orgunits/test2").getStructureId(), ou2.getId());
+        assertEquals(defProj2.getUuid(), ou2.getProjectId());
 
         // check ou resources
         List ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
         assertEquals(1, ou2Resources.size());
         assertTrue(ou2Resources.contains(cms.readResource("/")));
+
+        // check the project resources
+        List projRes2 = cms.readProjectResources(defProj2);
+        assertEquals(ou2Resources.size(), projRes2.size());        
+        for (int i = 0; i < projRes2.size(); i++) {
+            assertTrue(projRes2.contains(((CmsResource)ou2Resources.get(i)).getRootPath()));
+            assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes2.get(i)))));
+        }
 
         // check the ous
         rootOus = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, rootOu.getName(), false);
@@ -310,6 +347,20 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         try {
             OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou2.getName());
             fail("it should not be possible to read the deleted ou");
+        } catch (CmsDataAccessException e) {
+            // ok, ignore
+        }
+
+        try {
+            cms.readProject(defProj2.getUuid());
+            fail("it should not be possible to read the default project of a deleted ou");
+        } catch (CmsDataAccessException e) {
+            // ok, ignore
+        }
+
+        try {
+            cms.readProject(defProj2.getName());
+            fail("it should not be possible to read the default project of a deleted ou");
         } catch (CmsDataAccessException e) {
             // ok, ignore
         }
@@ -731,6 +782,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
                 cms.readResource("/folder1")));
         }
 
+        // check default project
+        CmsProject defProj = cms.readProject(ou.getName() + "Offline");
+
         // resource addition tests
         try {
             OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/folder1");
@@ -741,7 +795,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).contains(
                 cms.readResource("/")));
         }
-
+        // check the project resources
+        List projRes = cms.readProjectResources(defProj);
+        List ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
+        assertEquals(ouResources.size(), projRes.size());        
+        for (int i = 0; i < projRes.size(); i++) {
+            assertTrue(projRes.contains(((CmsResource)ouResources.get(i)).getRootPath()));
+            assertTrue(ouResources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes.get(i)))));
+        }
+        
         try {
             OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/sites/doesnotexist");
             fail("should not be possible to add an unexistent resource to an ou");
@@ -750,6 +812,14 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).size());
             assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).contains(
                 cms.readResource("/")));
+        }
+        // check the project resources
+        projRes = cms.readProjectResources(defProj);
+        ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
+        assertEquals(ouResources.size(), projRes.size());        
+        for (int i = 0; i < projRes.size(); i++) {
+            assertTrue(projRes.contains(((CmsResource)ouResources.get(i)).getRootPath()));
+            assertTrue(ouResources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes.get(i)))));
         }
 
         // add an additional resource
@@ -760,6 +830,16 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             cms.readResource("/folder1")));
         assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
             cms.readResource("/folder2")));
+
+        // check the project resources
+        CmsProject defProj2 = cms.readProject(ou2.getName() + "Offline");
+        List projRes2 = cms.readProjectResources(defProj2);
+        List ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
+        assertEquals(ou2Resources.size(), projRes2.size());        
+        for (int i = 0; i < projRes2.size(); i++) {
+            assertTrue(projRes2.contains(((CmsResource)ou2Resources.get(i)).getRootPath()));
+            assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes2.get(i)))));
+        }
 
         // resource remotion tests
         try {
@@ -773,6 +853,14 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
                 cms.readResource("/folder2")));
         }
+        // check the project resources
+        projRes2 = cms.readProjectResources(defProj2);
+        ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
+        assertEquals(ou2Resources.size(), projRes2.size());        
+        for (int i = 0; i < projRes2.size(); i++) {
+            assertTrue(projRes2.contains(((CmsResource)ou2Resources.get(i)).getRootPath()));
+            assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes2.get(i)))));
+        }
 
         // remove a resource
         OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou2.getName(), "/folder1");
@@ -780,6 +868,14 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).size());
         assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName()).contains(
             cms.readResource("/folder2")));
+        // check the project resources
+        projRes2 = cms.readProjectResources(defProj2);
+        ou2Resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou2.getName());
+        assertEquals(ou2Resources.size(), projRes2.size());        
+        for (int i = 0; i < projRes2.size(); i++) {
+            assertTrue(projRes2.contains(((CmsResource)ou2Resources.get(i)).getRootPath()));
+            assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot((String)projRes2.get(i)))));
+        }
     }
 
     /**
@@ -946,8 +1042,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertNull(rootOu.getParentFqn());
         assertEquals("The root organizational unit", rootOu.getDescription());
         assertEquals("", rootOu.getName());
+        assertEquals(CmsUUID.getNullUUID(), rootOu.getProjectId());
         assertEquals(cms.readFolder("/system/orgunits").getStructureId(), rootOu.getId());
-
+        
         // check root ou resources
         List rootResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, rootOu.getName());
         assertEquals(1, rootResources.size());
@@ -955,7 +1052,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/");
         assertTrue(rootResources.contains(cms.readResource("/")));
         cms.getRequestContext().setSiteRoot(site);
-
+        
         // check the root ou principals
         List rootGroups = OpenCms.getOrgUnitManager().getGroups(cms, rootOu.getName(), false);
         assertEquals(7, rootGroups.size());
@@ -997,17 +1094,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, rootOu);
 
         try {
-            rootOu.setName("abc");
-            OpenCms.getOrgUnitManager().writeOrganizationalUnit(cms, rootOu);
-            fail("should not be able to edit the root ou");
-        } catch (CmsIllegalStateException e) {
-            // ok, ignore
-        }
-
-        try {
             OpenCms.getOrgUnitManager().deleteOrganizationalUnit(cms, rootOu.getName());
             fail("should not be able to delete the root ou");
-        } catch (CmsDbConsistencyException e) {
+        } catch (CmsDataAccessException e) {
             // ok, ignore
         }
     }

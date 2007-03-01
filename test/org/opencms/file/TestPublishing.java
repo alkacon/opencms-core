@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.21.4.3 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.21.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.3 $
+ * @version $Revision: 1.21.4.4 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -725,7 +725,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.lockResource(res1);
         cms.setDateLastModified(res1, timestamp, false);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
 
         // create a new project
         CmsProject project = getTestProject(cms);
@@ -735,7 +735,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // and change another resource in this project
         cms.lockResource(res2);
         cms.setDateLastModified(res2, timestamp, false);
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         storeResources(cms, res2);
 
         // when the project is published, only the second resource will be published
@@ -766,7 +766,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish the test project
         cms.getRequestContext().setCurrentProject(project);
-        cms.unlockProject(project.getId());
+        cms.unlockProject(project.getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -919,7 +919,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.copyResource(source, sibling, CmsResource.COPY_AS_SIBLING);
 
         // be sure everything is published
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 

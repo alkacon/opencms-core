@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/01/26 13:50:46 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.5 $ 
+ * @version $Revision: 1.16.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     private String m_ouFqn;
 
     /** The current project id of the user. */
-    private int m_projectId;
+    private CmsUUID m_projectId;
 
     /** The id of the (http) session this session info belongs to. */
     private CmsUUID m_sessionId;
@@ -172,7 +172,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
      * 
      * @return the id of the project
      */
-    public int getProject() {
+    public CmsUUID getProject() {
 
         return m_projectId;
     }
@@ -275,7 +275,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
      * 
      * @param projectId the project id to set
      */
-    protected void setProject(int projectId) {
+    protected void setProject(CmsUUID projectId) {
 
         m_projectId = projectId;
     }
@@ -290,7 +290,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
 
         m_timeUpdated = System.currentTimeMillis();
         m_siteRoot = context.getSiteRoot();
-        setProject(context.currentProject().getId());
+        setProject(context.currentProject().getUuid());
         m_ouFqn = context.getOuFqn();
     }
 }

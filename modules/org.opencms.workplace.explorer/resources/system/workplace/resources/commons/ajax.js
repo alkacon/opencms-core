@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/ajax.js,v $
- * Date   : $Date: 2007/03/01 13:46:07 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@
  *
  * The given method is used to communicate the result of the request.<p>
  *
- * The method needs to have following signature:<br>
- * <code>method(result, params, state);</code><p>
+ * The method parameter needs to have following signature:<br>
+ * <code>method(result, state);</code><p>
  *
  * Normally you have to call this method using following syntax:<br>
  * <code>makeRequest('url', 'param1=value1&...','method')</code><p>

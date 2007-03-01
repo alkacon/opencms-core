@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.2.4.6 $
+ * Date   : $Date: 2007/03/01 15:01:22 $
+ * Version: $Revision: 1.2.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2.4.6 $ 
+ * @version $Revision: 1.2.4.7 $ 
  * 
  * @since 6.1.0 
  */
@@ -82,7 +83,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
      * @param projectId the id of the project 
      * @param state the state of the resources to filter
      */
-    public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, int projectId, CmsResourceState state) {
+    public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, CmsUUID projectId, CmsResourceState state) {
 
         super(wp);
         m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_STATE + I_CmsListResourceCollector.SEP_KEYVAL + state;
@@ -104,9 +105,9 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
      */
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
-        int projectId = CmsProject.ONLINE_PROJECT_ID;
+        CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
         try {
-            projectId = Integer.parseInt((String)params.get(PARAM_PROJECT));
+            projectId = new CmsUUID((String)params.get(PARAM_PROJECT));
         } catch (Throwable e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(e);

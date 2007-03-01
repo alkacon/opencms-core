@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.83.4.10 $
+ * Date   : $Date: 2007/03/01 15:01:23 $
+ * Version: $Revision: 1.83.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.10 $ 
+ * @version $Revision: 1.83.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -342,18 +342,20 @@ class CmsShellCommands implements I_CmsShellCommands {
 
      * @throws Exception if something goes wrong
      * 
-     * @see CmsObject#deleteProject(int)
+     * @see CmsObject#deleteProject(CmsUUID)
      */
     public void deleteProject(String name) throws Exception {
 
-        m_cms.deleteProject(m_cms.readProject(name).getId());
+        m_cms.deleteProject(m_cms.readProject(name).getUuid());
     }
 
     /**
      * Delete a property definition for a resource.<p>
      *
      * @param name the name of the property definition to delete
+     * 
      * @throws Exception if something goes wrong
+     * 
      * @see CmsObject#deletePropertyDefinition(String)
      */
     public void deletepropertydefinition(String name) throws Exception {
@@ -661,7 +663,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
-        int id = project.getId();
+        CmsUUID id = project.getUuid();
         m_cms.getRequestContext().setCurrentProject(project);
         m_cms.copyResourceToProject("/");
         OpenCms.getImportExportManager().importData(
@@ -914,7 +916,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the users group of the project
      * @throws Exception if something goes wrong
      */
-    public CmsGroup readGroupOfProject(int project) throws Exception {
+    public CmsGroup readGroupOfProject(CmsUUID project) throws Exception {
 
         return m_cms.readGroup(m_cms.readProject(project));
     }
@@ -926,7 +928,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the manager group of the project
      * @throws Exception if something goes wrong
      */
-    public CmsGroup readManagerGroup(int project) throws Exception {
+    public CmsGroup readManagerGroup(CmsUUID project) throws Exception {
 
         return m_cms.readManagerGroup(m_cms.readProject(project));
     }
@@ -938,7 +940,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the owner of the project
      * @throws Exception if something goes wrong
      */
-    public CmsUser readOwnerOfProject(int project) throws Exception {
+    public CmsUser readOwnerOfProject(CmsUUID project) throws Exception {
 
         return m_cms.readOwner(m_cms.readProject(project));
     }
@@ -1020,7 +1022,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the project set
      * @throws Exception if something goes wrong
      */
-    public CmsProject setCurrentProject(int id) throws Exception {
+    public CmsProject setCurrentProject(CmsUUID id) throws Exception {
 
         return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(id));
     }
@@ -1099,7 +1101,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void unlockCurrentProject() throws Exception {
 
-        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
+        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getUuid());
     }
 
     /**

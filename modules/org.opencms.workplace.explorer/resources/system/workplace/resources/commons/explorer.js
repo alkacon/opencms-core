@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/02/12 11:50:49 $
- * Version: $Revision: 1.13.4.21 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.13.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,8 @@ function windowStore(body, head, tree, files) {
 }
 
 
-//            1     2     3      4     5         6     7      8            9        10                11                   12           13              14            15           16           17        18        19                   20                 21                      22             23           24          
-function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
+//            1     2     3      4     5         6     7      8            9                 10                   11           12              13            14           15           16        17                   18         19                      20             21           22          
+function file(name, path, title, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
 	this.title = decodeURIComponent(title);
@@ -80,7 +80,6 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.size = size;
 	this.state = state;
 	this.layoutstyle = layoutstyle;
-	this.project = project;
 	this.dateLastModified = dateLastModified;
 	this.userWhoLastModified = userWhoLastModified
 	this.dateCreated = dateCreated;
@@ -89,9 +88,8 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.dateExpired = dateExpired;
 	this.permissions = permissions;
 	this.lockedBy = lockedBy;
-	this.lockType = lockType;
 	this.lockedInProjectName = lockedInProjectName;
-	this.lockedInProjectId = lockedInProjectId;
+	this.lockState = lockState;
 	this.isInsideCurrentProject = (isInsideCurrentProject=='I');
 	this.workflowState = workflowState;
 	this.sysLockInfo = sysLockInfo;
@@ -100,11 +98,11 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState) {
+function aF(name, path, title, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, workflowState, sysLockInfo, projectState) {
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject, workflowState, sysLockInfo, projectState);
+	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, workflowState, sysLockInfo, projectState);
 }
 
 
@@ -584,9 +582,7 @@ function linkOut(obj) {
 
 
 function printList(wo) {
-	var i;
-	var lockedBystring;
-	var ssclass;
+
 	var temp =
 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
 	+ "<html><head>"
@@ -707,7 +703,7 @@ function printList(wo) {
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
-		ssclass = "class=\"";
+		var ssclass = "class=\"";
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
 			ssclass += "fp";
 		} else {
@@ -752,22 +748,23 @@ function printList(wo) {
 		wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
 		// the resource is in the current project, so display the lock and project state
 
-		var lockIcon;
 		if (vi.liste[i].lockedBy != "") {
-			if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vr.actProject)) {
-				if (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2) {
-					lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
-				} else {
-					lockIcon = vi.skinPath + 'explorer/lock_user.gif';
-				}
-				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
-			  	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
-			} else {
+			var lockIcon = '';
+			var lockedBystring;	
+	        if (vi.liste[i].lockState == 1) {
 				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
-				wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+			} else if (vi.liste[i].lockState == 2) {
+				lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
+			} else if (vi.liste[i].lockState == 3) {
+				lockIcon = vi.skinPath + 'explorer/lock_user.gif';
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
 			}
-		}
+			if (lockIcon != '') {
+	        	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+	        }
+		}        
 		wo.write("</td>");
 
 		wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");

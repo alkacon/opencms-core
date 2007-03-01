@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsOrgUnitWidget.java,v $
- * Date   : $Date: 2007/02/12 14:27:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/01 15:01:37 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,18 +33,27 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Provides a OpenCms orgaizational unit selection widget, for use on a widget dialog.<p>
  *
  * @author Raphael Schnuck
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
 public class CmsOrgUnitWidget extends A_CmsWidget {
+
+    /** Configuration parameter to set the role the current user must have in the selected ou, optional. */
+    public static final String CONFIGURATION_ROLE = "role";
+
+    /** The role used in the popup window. */
+    private CmsRole m_role;
 
     /**
      * Creates a new organizational unit selection widget.<p>
@@ -56,6 +65,16 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
     }
 
     /**
+     * Creates a new user selection widget with the parameters to configure the popup window behaviour.<p>
+     * 
+     * @param role the role to restrict the organizational unit selection, can be <code>null</code>
+     */
+    public CmsOrgUnitWidget(CmsRole role) {
+
+        m_role = role;
+    }
+
+    /**
      * Creates a new organizational unit selection widget with the given configuration.<p>
      * 
      * @param configuration the configuration to use
@@ -64,6 +83,26 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
 
         super(configuration);
 
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
+     */
+    public String getConfiguration() {
+
+        StringBuffer result = new StringBuffer(8);
+
+        // append flags to configuration
+        if (m_role != null) {
+            if (result.length() > 0) {
+                result.append("|");
+            }
+            result.append(CONFIGURATION_ROLE);
+            result.append("=");
+            result.append(m_role.getGroupName());
+        }
+
+        return result.toString();
     }
 
     /**
@@ -106,7 +145,15 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
         buttonJs.append("/system/workplace/commons/orgunit_selection.jsp");
         buttonJs.append("','EDITOR',  '");
         buttonJs.append(id);
-        buttonJs.append("', document);");
+        buttonJs.append("', document, ");
+        if (m_role != null) {
+            buttonJs.append("'");
+            buttonJs.append(m_role.getGroupName());
+            buttonJs.append("'");
+        } else {
+            buttonJs.append("null");
+        }
+        buttonJs.append(");");
 
         result.append(widgetDialog.button(
             buttonJs.toString(),
@@ -123,11 +170,41 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
     }
 
     /**
+     * Returns the role, or <code>null</code> if none.<p>
+     *
+     * @return the role, or <code>null</code> if none
+     */
+    public CmsRole getRole() {
+
+        return m_role;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsUserWidget(getConfiguration());
+        return new CmsOrgUnitWidget(getConfiguration());
     }
 
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
+     */
+    public void setConfiguration(String configuration) {
+
+        m_role = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            int roleIndex = configuration.indexOf(CONFIGURATION_ROLE);
+            if (roleIndex != -1) {
+                // role is given
+                String groupName = configuration.substring(CONFIGURATION_ROLE.length() + 1);
+                if (groupName.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    groupName = groupName.substring(0, groupName.indexOf('|'));
+                }
+                m_role = CmsRole.valueOf(groupName);
+            }
+        }
+        super.setConfiguration(configuration);
+    }
 }

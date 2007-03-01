@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/02/12 14:29:43 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/01 15:01:29 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.security;
 
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -43,7 +42,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.6 
  */
@@ -59,11 +58,14 @@ public class CmsOrganizationalUnit {
     private int m_flags;
 
     /** The unique id of this organizational unit. */
-    private CmsUUID m_id;
+    private final CmsUUID m_id;
 
     /** The fully qualified name of this organizational unit. */
-    private String m_name;
+    private final String m_name;
 
+    /** The id of the related default project. */
+    private final CmsUUID m_projectId;
+    
     /**
      * Creates a new OpenCms organizational unit principal.
      * 
@@ -71,17 +73,22 @@ public class CmsOrganizationalUnit {
      * @param fqn the fully qualified name of the this organizational unit (should end with slash)
      * @param description the description of the organizational unit
      * @param flags the flags of the organizational unit
+     * @param projectId the id of the related default project
      */
-    public CmsOrganizationalUnit(CmsUUID id, String fqn, String description, int flags) {
+    public CmsOrganizationalUnit(CmsUUID id, String fqn, String description, int flags, CmsUUID projectId) {
 
         m_id = id;
         m_name = fqn;
         m_description = description;
         m_flags = flags;
+        m_projectId = projectId;
     }
 
     /**
      * Returns the parent fully qualified name.<p>
+     * 
+     * This is <code>null</code> for the root ou, and 
+     * the empty string for first level ous.<p>
      * 
      * @param fqn the fully qualified name to get the parent from
      * 
@@ -141,7 +148,7 @@ public class CmsOrganizationalUnit {
      */
     public Object clone() {
 
-        return new CmsOrganizationalUnit(m_id, m_name, m_description, m_flags);
+        return new CmsOrganizationalUnit(m_id, m_name, m_description, m_flags, m_projectId);
     }
 
     /**
@@ -226,11 +233,23 @@ public class CmsOrganizationalUnit {
     /**
      * Returns the full qualified name of the parent organizational unit of this organizational unit.<p>
      * 
+     * This is <code>null</code> for the root ou, and the empty string for first level ous.<p>
+     * 
      * @return the full qualified name of the parent organizational unit of this organizational unit
      */
     public String getParentFqn() {
 
         return getParentFqn(m_name);
+    }
+
+    /**
+     * Returns the id of the related default project.<p>
+     *
+     * @return the id of the related default project
+     */
+    public CmsUUID getProjectId() {
+    
+        return m_projectId;
     }
 
     /**
@@ -276,19 +295,6 @@ public class CmsOrganizationalUnit {
     public void setFlags(int value) {
 
         m_flags = value;
-    }
-
-    /**
-     * Sets the name.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        if (m_name.length() <= 1) {
-            throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_ORGUNIT_ROOT_EDITION_0));
-        }
-        m_name = name;
     }
 
     /**

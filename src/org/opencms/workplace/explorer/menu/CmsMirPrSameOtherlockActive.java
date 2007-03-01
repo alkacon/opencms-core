@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameOtherlockActive.java,v $
- * Date   : $Date: 2007/02/20 08:30:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/01 15:01:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -67,7 +67,8 @@ public class CmsMirPrSameOtherlockActive implements I_CmsMenuItemRule {
             CmsLock lock = resourceUtil[0].getLock();
             return !(resourceUtil[0].getProjectState() != CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING
                 && !lock.isNullLock()
-                && lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()) && lock.getProjectId() == cms.getRequestContext().currentProject().getId());
+                && lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()) && lock.getProjectId().equals(
+                cms.getRequestContext().currentProject().getUuid()));
         }
         // resource is not in current project, rule does not match
         return false;

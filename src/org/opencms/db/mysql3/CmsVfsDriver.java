@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql3/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/11/08 09:28:53 $
- * Version: $Revision: 1.1.8.1 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.1.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,17 +50,17 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.8.1 $
+ * @version $Revision: 1.1.8.2 $
  * @since 6.0.0 
  */
 public class CmsVfsDriver extends org.opencms.db.mysql.CmsVfsDriver {
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, String, String)
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID, String, String)
      */
     public List readResourcesWithProperty(
         CmsDbContext dbc,
-        int projectId,
+        CmsUUID projectId,
         CmsUUID propertyDef,
         String path,
         String value) throws CmsDataAccessException {

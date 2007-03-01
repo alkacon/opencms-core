@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/02/07 16:57:29 $
- * Version: $Revision: 1.25.2.9 $
+ * Date   : $Date: 2007/03/01 15:01:12 $
+ * Version: $Revision: 1.25.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.9 $
+ * @version $Revision: 1.25.2.10 $
  * 
  * @since 6.0.0 
  */
@@ -164,6 +164,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2 = "ERR_PATH_NOT_IN_PARENT_ORGUNIT_SCOPE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_QUERY_NOT_FOUND_1 = "ERR_QUERY_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -191,18 +194,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCE_WITH_ID_1 = "ERR_READ_RESOURCE_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_TASK_1 = "ERR_READ_TASK_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_TASK_LOG_0 = "ERR_READ_TASK_LOG_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_TASK_LOGS_0 = "ERR_READ_TASK_LOGS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_TASKS_0 = "ERR_READ_TASKS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_ADDITIONAL_INFO_1 = "ERR_READING_ADDITIONAL_INFO_1";
 
     /** Message constant for key in the resource bundle. */
@@ -227,9 +218,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1 = "ERR_SIBLING_WITH_NAME_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_TASK_PROJECT_NOT_FOUND_1 = "ERR_TASK_PROJECT_NOT_FOUND_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_TOO_MANY_PROPERTIES_3 = "ERR_TOO_MANY_PROPERTIES_3";
 
     /** Message constant for key in the resource bundle. */
@@ -243,6 +231,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_PROJECT_OFFLINE_DESCRIPTION_1 = "GUI_DEFAULT_PROJECT_OFFLINE_DESCRIPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_PROJECT_ONLINE_DESCRIPTION_0 = "GUI_DEFAULT_PROJECT_ONLINE_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_PROJECT_SETUP_DESCRIPTION_0 = "GUI_DEFAULT_PROJECT_SETUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1 = "GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1";

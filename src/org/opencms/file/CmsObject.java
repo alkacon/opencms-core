@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.146.4.29 $
+ * Date   : $Date: 2007/03/01 15:01:25 $
+ * Version: $Revision: 1.146.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
@@ -92,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.29 $
+ * @version $Revision: 1.146.4.30 $
  * 
  * @since 6.0.0 
  */
@@ -422,9 +423,25 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public int countLockedResources(int id) throws CmsException {
+    public int countLockedResources(CmsUUID id) throws CmsException {
 
         return m_securityManager.countLockedResources(m_context, id);
+    }
+
+    /**
+     * Counts the locked resources in a project.<p>
+     *
+     * @param id the id of the project
+     * 
+     * @return the number of locked resources in this project
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #countLockedResources(CmsUUID)} instead
+     */
+    public int countLockedResources(int id) throws CmsException {
+
+        return countLockedResources(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -503,7 +520,7 @@ public final class CmsObject {
         String description,
         String groupname,
         String managergroupname,
-        int projecttype) throws CmsException {
+        CmsProjectType projecttype) throws CmsException {
 
         return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
@@ -685,9 +702,25 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public void deleteProject(int id) throws CmsException {
+    public void deleteProject(CmsUUID id) throws CmsException {
 
         m_securityManager.deleteProject(m_context, id);
+    }
+
+    /**
+     * Deletes a project.<p>
+     *
+     * All resources inside the project have to be be reset to their online state.<p>
+     * 
+     * @param id the id of the project to delete
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #deleteProject(CmsUUID)} instead
+     */
+    public void deleteProject(int id) throws CmsException {
+
+        deleteProject(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -1681,6 +1714,47 @@ public final class CmsObject {
      * @param id the id of the user
      * @param name the new name for the user
      * @param password the new password for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
+     * @param dateCreated the creation date
+     * @param additionalInfos the additional user infos
+     * 
+     * @return the imported user
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser importUser(
+        String id,
+        String name,
+        String password,
+        String firstname,
+        String lastname,
+        String email,
+        int flags,
+        long dateCreated,
+        Map additionalInfos) throws CmsException {
+
+        return m_securityManager.importUser(
+            m_context,
+            id,
+            name,
+            password,
+            firstname,
+            lastname,
+            email,
+            flags,
+            dateCreated,
+            additionalInfos);
+    }
+
+    /**
+     * Creates a new user by import.<p>
+     * 
+     * @param id the id of the user
+     * @param name the new name for the user
+     * @param password the new password for the user
      * @param description the description for the user
      * @param firstname the firstname of the user
      * @param lastname the lastname of the user
@@ -1726,47 +1800,6 @@ public final class CmsObject {
             email,
             flags,
             System.currentTimeMillis(),
-            additionalInfos);
-    }
-
-    /**
-     * Creates a new user by import.<p>
-     * 
-     * @param id the id of the user
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
-     * @param email the email of the user
-     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param dateCreated the creation date
-     * @param additionalInfos the additional user infos
-     * 
-     * @return the imported user
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser importUser(
-        String id,
-        String name,
-        String password,
-        String firstname,
-        String lastname,
-        String email,
-        int flags,
-        long dateCreated,
-        Map additionalInfos) throws CmsException {
-
-        return m_securityManager.importUser(
-            m_context,
-            id,
-            name,
-            password,
-            firstname,
-            lastname,
-            email,
-            flags,
-            dateCreated,
             additionalInfos);
     }
 
@@ -2307,7 +2340,7 @@ public final class CmsObject {
     public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, filter);
-        return m_securityManager.readFile(m_context, resource, filter);
+        return m_securityManager.readFile(m_context, resource);
     }
 
     /**
@@ -2447,7 +2480,7 @@ public final class CmsObject {
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readPath(m_context, m_context.currentProject().getId(), addSiteRoot(path), filter);
+        return m_securityManager.readPath(m_context, m_context.currentProject().getUuid(), addSiteRoot(path), filter);
     }
 
     /**
@@ -2459,9 +2492,25 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public CmsProject readProject(int id) throws CmsException {
+    public CmsProject readProject(CmsUUID id) throws CmsException {
 
         return m_securityManager.readProject(id);
+    }
+
+    /**
+     * Reads the project with the given id.<p>
+     *
+     * @param id the id of the project
+     * 
+     * @return the project with the given id
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #readProject(CmsUUID)} instead
+     */
+    public CmsProject readProject(int id) throws CmsException {
+
+        return readProject(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -2511,9 +2560,26 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readProjectView(int projectId, CmsResourceState state) throws CmsException {
+    public List readProjectView(CmsUUID projectId, CmsResourceState state) throws CmsException {
 
         return m_securityManager.readProjectView(m_context, projectId, state);
+    }
+
+    /**
+     * @see #readProjectView(CmsUUID, CmsResourceState)
+     * 
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match
+     *
+     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #readProjectView(CmsUUID, CmsResourceState)} instead
+     */
+    public List readProjectView(int projectId, CmsResourceState state) throws CmsException {
+
+        return readProjectView(m_securityManager.getProjectId(m_context, projectId), state);
     }
 
     /**
@@ -3415,9 +3481,23 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public void unlockProject(int id) throws CmsException {
+    public void unlockProject(CmsUUID id) throws CmsException {
 
         m_securityManager.unlockProject(m_context, id, false);
+    }
+
+    /**
+     * Unlocks all resources of a project.
+     *
+     * @param id the id of the project to be unlocked
+     *
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #unlockProject(CmsUUID)} instead
+     */
+    public void unlockProject(int id) throws CmsException {
+
+        unlockProject(m_securityManager.getProjectId(m_context, id));
     }
 
     /**

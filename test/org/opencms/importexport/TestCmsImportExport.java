@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.16.4.5 $
+ * Date   : $Date: 2007/03/01 15:01:38 $
+ * Version: $Revision: 1.16.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -249,7 +249,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.writeFile(file1);
 
             // publish the files
-            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
             OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
 
@@ -274,7 +274,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.deleteResource(filename1, CmsResource.DELETE_REMOVE_SIBLINGS);
             cms.deleteResource(filename2, CmsResource.DELETE_REMOVE_SIBLINGS);
             // publish the deleted files
-            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
             OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
         } finally {
@@ -365,7 +365,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.writeFile(file1);
 
         // publish the files
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -390,7 +390,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.deleteResource(filename1, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.deleteResource(filename2, CmsResource.DELETE_REMOVE_SIBLINGS);
         // publish the deleted files
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -770,7 +770,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.createSibling(filename1, filename2, null);
 
             // publish the files
-            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
             OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
 
@@ -1178,7 +1178,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.createSibling(filename1, filename2, null);
 
             // publish the files
-            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
             OpenCms.getPublishManager().publishProject(cms);
             OpenCms.getPublishManager().waitWhileRunning();
 

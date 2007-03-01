@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.31.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:17 $
+ * Version: $Revision: 1.31.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,11 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.4.4 $
+ * @version $Revision: 1.31.4.5 $
  * 
  * @since 6.0.0
  * 
- * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
+ * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, CmsUUID, CmsUUID)
  */
 public class CmsPublishedResource implements Serializable, Comparable {
 

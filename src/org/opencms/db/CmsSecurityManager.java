@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.97.4.36 $
+ * Date   : $Date: 2007/03/01 15:01:21 $
+ * Version: $Revision: 1.97.4.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -44,6 +45,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
@@ -252,7 +254,7 @@ public final class CmsSecurityManager {
                 new Object[] {
                     new Integer(tagId),
                     dbc.currentProject().getName(),
-                    new Integer(dbc.currentProject().getId()),
+                    dbc.currentProject().getUuid(),
                     new Long(publishDate)}), e);
         } finally {
             dbc.clear();
@@ -414,14 +416,6 @@ public final class CmsSecurityManager {
 
         // is the current project an "offline" project?
         checkOfflineProject(dbc);
-
-        // check if the current project is unlocked
-        if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
-            CmsMessageContainer errMsg = org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_RESOURCE_LOCKED_1,
-                dbc.currentProject().getName());
-            throw new CmsLockException(errMsg);
-        }
 
         // check if this is a "direct publish" attempt        
         if (!publishList.isDirectPublish()) {
@@ -751,11 +745,6 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkManagerOfProjectRole(dbc, context.currentProject());
-            if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
-                throw new CmsLockException(org.opencms.lock.Messages.get().container(
-                    org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
-                    dbc.currentProject().getName()));
-            }
 
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
@@ -779,7 +768,8 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not have management access to the project.
      */
-    public int countLockedResources(CmsRequestContext context, int id) throws CmsException, CmsRoleViolationException {
+    public int countLockedResources(CmsRequestContext context, CmsUUID id)
+    throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject project = null;
@@ -792,7 +782,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
                 (project == null) ? "<failed to read>" : project.getName(),
-                new Integer(id)), e);
+                id), e);
         } finally {
             dbc.clear();
         }
@@ -894,7 +884,7 @@ public final class CmsSecurityManager {
         String description,
         String groupname,
         String managergroupname,
-        int projecttype) throws CmsException, CmsRoleViolationException {
+        CmsProjectType projecttype) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject result = null;
@@ -1230,6 +1220,12 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            // check for root ou
+            if (organizationalUnit.getParentFqn() == null) {
+                throw new CmsDataAccessException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
+            }
+
             checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(organizationalUnit.getName())));
             checkOfflineProject(dbc);
             m_driverManager.deleteOrganizationalUnit(dbc, organizationalUnit);
@@ -1251,9 +1247,10 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own management access to the project
      */
-    public void deleteProject(CmsRequestContext context, int projectId) throws CmsException, CmsRoleViolationException {
+    public void deleteProject(CmsRequestContext context, CmsUUID projectId)
+    throws CmsException, CmsRoleViolationException {
 
-        if (projectId == CmsProject.ONLINE_PROJECT_ID) {
+        if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // online project must not be deleted
             throw new CmsVfsException(org.opencms.file.Messages.get().container(
                 org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
@@ -1267,7 +1264,7 @@ public final class CmsSecurityManager {
             checkManagerOfProjectRole(dbc, deleteProject);
             m_driverManager.deleteProject(dbc, deleteProject);
         } catch (Exception e) {
-            String projectName = deleteProject == null ? String.valueOf(projectId) : deleteProject.getName();
+            String projectName = (deleteProject == null ? String.valueOf(projectId) : deleteProject.getName());
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_PROJECT_1, projectName), e);
         } finally {
             dbc.clear();
@@ -1946,6 +1943,34 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns all the organizational units for which the current user has the given role.<p>
+     * 
+     * @param requestContext the current request context
+     * @param role the role to check
+     * @param includeSubOus if sub organizational units should be included in the search 
+     *  
+     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getOrgUnitsForRole(CmsRequestContext requestContext, CmsRole role, boolean includeSubOus)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
+        List result = null;
+        try {
+            result = m_driverManager.getOrgUnitsForRole(dbc, role, includeSubOus);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_GET_ORGUNITS_ROLE_1,
+                role.getName(requestContext.getLocale())), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns the parent group of a group.<p>
      *
      * @param context the current request context
@@ -1992,6 +2017,31 @@ public final class CmsSecurityManager {
                 Messages.ERR_GET_PERMISSIONS_2,
                 user.getName(),
                 context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the uuid id for the given id, remove this method
+     * as soon as possible.<p>
+     * 
+     * @param context the current cms context
+     * @param id the old project id
+     * 
+     * @return the new uuid for the given id
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsUUID getProjectId(CmsRequestContext context, int id) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsUUID result = null;
+        try {
+            result = m_driverManager.getProjectId(dbc, id);
+        } catch (CmsException e) {
+            dbc.report(null, e.getMessageContainer(), e);
         } finally {
             dbc.clear();
         }
@@ -3166,24 +3216,19 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param resource the resource to be read
-     * @param filter the filter object
      * 
      * @return the file read from the VFS
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsFile readFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter)
-    throws CmsException {
+    public CmsFile readFile(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsFile result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readFile(dbc, resource, filter);
+            result = m_driverManager.readFile(dbc, resource);
         } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(Messages.ERR_READ_FILE_2, context.getSitePath(resource), filter),
-                e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -3370,7 +3415,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_OWNER_FOR_PROJECT_2,
                 project.getName(),
-                new Integer(project.getId())), e);
+                project.getUuid()), e);
         } finally {
             dbc.clear();
         }
@@ -3389,7 +3434,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPath(CmsRequestContext context, int projectId, String path, CmsResourceFilter filter)
+    public List readPath(CmsRequestContext context, CmsUUID projectId, String path, CmsResourceFilter filter)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -3397,7 +3442,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPath(dbc, projectId, path, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_PATH_2, new Integer(projectId), path), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_PATH_2, projectId, path), e);
         } finally {
             dbc.clear();
         }
@@ -3413,14 +3458,14 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsProject readProject(int id) throws CmsException {
+    public CmsProject readProject(CmsUUID id) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         CmsProject result = null;
         try {
             result = m_driverManager.readProject(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_FOR_ID_1, new Integer(id)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_FOR_ID_1, id), e);
         } finally {
             dbc.clear();
         }
@@ -3433,7 +3478,7 @@ public final class CmsSecurityManager {
      * Important: Since a project name can be used multiple times, this is NOT the most efficient 
      * way to read the project. This is only a convenience for front end developing.
      * Reading a project by name will return the first project with that name. 
-     * All core classes must use the id version {@link #readProject(int)} to ensure the right project is read.<p>
+     * All core classes must use the id version {@link #readProject(CmsUUID)} to ensure the right project is read.<p>
      * 
      * @param name the name of the project
      * 
@@ -3476,7 +3521,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PROJECT_RESOURCES_2,
                 project.getName(),
-                new Integer(project.getId())), e);
+                project.getUuid()), e);
         } finally {
             dbc.clear();
         }
@@ -3502,16 +3547,17 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#readProjectView(int, CmsResourceState)
+     * @see CmsObject#readProjectView(CmsUUID, CmsResourceState)
      */
-    public List readProjectView(CmsRequestContext context, int projectId, CmsResourceState state) throws CmsException {
+    public List readProjectView(CmsRequestContext context, CmsUUID projectId, CmsResourceState state)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
             result = m_driverManager.readProjectView(dbc, projectId, state);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_VIEW_1, new Integer(projectId)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_VIEW_1, projectId), e);
         } finally {
             dbc.clear();
         }
@@ -4094,12 +4140,6 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkManagerOfProjectRole(dbc, context.currentProject());
 
-            if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
-                throw new CmsLockException(org.opencms.lock.Messages.get().container(
-                    org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
-                    dbc.currentProject().getName()));
-            }
-
             m_driverManager.removeResourceFromProject(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -4511,7 +4551,7 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#PROJECT_MANAGER} for the current project. 
      */
-    public void unlockProject(CmsRequestContext context, int projectId, boolean removeWfLocks)
+    public void unlockProject(CmsRequestContext context, CmsUUID projectId, boolean removeWfLocks)
     throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4523,7 +4563,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_PROJECT_2,
-                new Integer(projectId),
+                projectId,
                 dbc.currentUser().getName()), e);
         } finally {
             dbc.clear();

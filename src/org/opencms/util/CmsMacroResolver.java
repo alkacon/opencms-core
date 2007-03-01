@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2007/02/07 16:57:29 $
- * Version: $Revision: 1.18.4.7 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.18.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.7 $ 
+ * @version $Revision: 1.18.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -464,7 +464,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
                 String result = m_jspPageContext.getRequest().getParameter(macro);
                 if (result == null && macro.equals(KEY_PROJECT_ID)) {
-                    result = new Integer(m_cms.getRequestContext().currentProject().getId()).toString();
+                    result = m_cms.getRequestContext().currentProject().getUuid().toString();
                 }
                 return result;
             }

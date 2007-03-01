@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/02/22 09:42:34 $
- * Version: $Revision: 1.86.4.10 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.86.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.10 $ 
+ * @version $Revision: 1.86.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,22 +236,39 @@ public class CmsFrameset extends CmsWorkplace {
 
         List options = new ArrayList();
         List values = new ArrayList();
-        int selectedIndex = 0;
+        int selectedIndex = -1;
+        int ouDefaultProjIndex = -1;
+
+        CmsOrganizationalUnit ou = null;
+        try {
+            ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getCms().getRequestContext().getOuFqn());
+        } catch (CmsException e) {
+            // should never happen, ignore
+        }
 
         // now loop through all projects and fill the result vectors
         for (int i = 0, n = allProjects.size(); i < n; i++) {
             CmsProject loopProject = (CmsProject)allProjects.get(i);
             String loopProjectName = loopProject.getName();
-            String loopProjectId = Integer.toString(loopProject.getId());
+            String loopProjectId = loopProject.getUuid().toString();
 
             values.add(loopProjectId);
             options.add(loopProjectName);
 
-            if (loopProject.getId() == getSettings().getProject()) {
+            if (loopProject.getUuid().equals(getSettings().getProject())) {
                 // this is the user's current project
                 selectedIndex = i;
             }
-            // check the length of the project name, to optionallly adjust the size of the selector
+            if ((ou != null) && loopProject.getUuid().equals(ou.getProjectId())) {
+                ouDefaultProjIndex = i;
+            }
+        }
+        if (selectedIndex == -1) {
+            if (ouDefaultProjIndex == -1) {
+                selectedIndex = 0;
+            } else {
+                selectedIndex = ouDefaultProjIndex;
+            }
         }
         if (CmsStringUtil.isNotEmpty(htmlWidth)) {
             StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 2);

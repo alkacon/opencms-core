@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2007/01/23 13:03:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/01 15:01:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.5 
  */
@@ -53,6 +53,9 @@ final class CmsPublishThread extends A_CmsReportThread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishThread.class);
+
+    /** the aborted flag. */
+    private boolean m_abort;
 
     /** The publish engine instance. */
     private final CmsPublishEngine m_publishEngine;
@@ -62,6 +65,9 @@ final class CmsPublishThread extends A_CmsReportThread {
 
     /** The report to use during the publish process. */
     private I_CmsReport m_report;
+
+    /** Flag to indicate that the is no longer possible to abort the current publish job. */
+    private boolean m_started;
 
     /** Flag for updating the user info. */
     private final boolean m_updateSessionInfo;
@@ -99,6 +105,16 @@ final class CmsPublishThread extends A_CmsReportThread {
     }
 
     /**
+     * Checks if the current publish job has been aborted.<p>
+     * 
+     * @return <code>true</code> if the current publish job has been aborted
+     */
+    public boolean isAborted() {
+
+        return m_abort;
+    }
+
+    /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
@@ -106,12 +122,18 @@ final class CmsPublishThread extends A_CmsReportThread {
         try {
             // signalize that the thread has been started
             m_publishEngine.publishThreadStarted();
+            m_started = true;
+            if (isAborted()) {
+                return;
+            }
 
             // set the report
             m_report = m_publishJob.getPublishReport();
 
             // start
-            m_report.println(Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+            m_report.println(
+                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
+                I_CmsReport.FORMAT_HEADLINE);
 
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
             try {
@@ -136,6 +158,21 @@ final class CmsPublishThread extends A_CmsReportThread {
             // signalize that the thread has been finished
             m_publishEngine.publishThreadFinished();
         }
+    }
+
+    /**
+     * Aborts the current job.<p>
+     * 
+     * This can only be done until the publish job started event is fired.<p>
+     *  
+     * @throws CmsPublishException if the current publish can not be aborted
+     */
+    protected void abort() throws CmsPublishException {
+
+        if (m_started) {
+            throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
+        }
+        m_abort = true;
     }
 
     /**

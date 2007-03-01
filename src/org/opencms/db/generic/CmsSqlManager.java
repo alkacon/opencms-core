@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/01/08 14:02:57 $
- * Version: $Revision: 1.65.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:12 $
+ * Version: $Revision: 1.65.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,12 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
-import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -46,6 +48,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -56,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.4 $
+ * @version $Revision: 1.65.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -131,14 +134,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param query the SQL query
      * @return String the SQL query with the table key search pattern replaced
      */
-    protected static String replaceProjectPattern(int projectId, String query) {
+    protected static String replaceProjectPattern(CmsUUID projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = ((projectId == CmsProject.ONLINE_PROJECT_ID) || (projectId < 0)) ? "_ONLINE_"
+        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID)) ? "_ONLINE_"
         : "_OFFLINE_";
-        query = CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
-
-        return query;
+        return CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
     }
 
     /**
@@ -224,7 +225,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
 
-        return getConnection(dbc, 0);
+        return getConnection(dbc, CmsProject.ONLINE_PROJECT_ID);
     }
 
     /**
@@ -239,37 +240,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @return a JDBC connection
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
+    public Connection getConnection(CmsDbContext dbc, CmsUUID projectId) throws SQLException {
 
         if (dbc == null) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
         return getConnection(projectId);
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param dbc the current database context
-     * @param reservedParam the reserved JDBC pool id
-     * 
-     * @return a JDBC connection
-     * 
-     * @throws SQLException if a database access error occurs
-     * 
-     * @deprecated should be removed, the reserved param should be inside the dbc
-     */
-    public Connection getConnection(CmsDbContext dbc, Object reservedParam) throws SQLException {
-
-        if (reservedParam == null) {
-            // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-            return getConnection(dbc);
-        }
-        // get a JDBC connection from the reserved JDBC pools
-        return getConnection(dbc, ((Integer)reservedParam).intValue());
     }
 
     /**
@@ -279,13 +255,15 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param con the JDBC connection
      * @param project the specified CmsProject
      * @param queryKey the key of the SQL query
+     * 
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * 
      * @throws SQLException if a database access error occurs
      */
     public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
     throws SQLException {
 
-        return getPreparedStatement(con, project.getId(), queryKey);
+        return getPreparedStatement(con, project.getUuid(), queryKey);
     }
 
     /**
@@ -295,10 +273,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param con the JDBC connection
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the SQL query
+     * 
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
+    throws SQLException {
 
         String rawSql = readQuery(projectId, queryKey);
         return getPreparedStatementForSql(con, rawSql);
@@ -314,7 +295,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
 
-        String rawSql = readQuery(0, queryKey);
+        String rawSql = readQuery((CmsUUID)null, queryKey);
         return getPreparedStatementForSql(con, rawSql);
     }
 
@@ -351,20 +332,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     }
 
     /**
-     * Generates a new primary key for a given database table name.<p>
-     * 
-     * This method makes only sense for old-style tables where the primary key is NOT a CmsUUID!
-     * 
-     * @param tableName the table for which a new primary key should be generated.
-     * @return int the new primary key
-     * @throws CmsDataAccessException if an error occurs
-     */
-    public int nextId(String tableName) throws CmsDataAccessException {
-
-        return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
-    }
-
-    /**
      * Searches for the SQL query with the specified key and CmsProject.<p>
      * 
      * @param project the specified CmsProject
@@ -373,7 +340,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public String readQuery(CmsProject project, String queryKey) {
 
-        return readQuery(project.getId(), queryKey);
+        return readQuery(project.getUuid(), queryKey);
     }
 
     /**
@@ -387,14 +354,14 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param queryKey the key of the SQL query
      * @return the the SQL query in this property list with the specified key
      */
-    public String readQuery(int projectId, String queryKey) {
+    public String readQuery(CmsUUID projectId, String queryKey) {
 
         String key;
-        if (projectId != 0) {
+        if (projectId != null) {
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
-            if ((projectId == CmsProject.ONLINE_PROJECT_ID) || (projectId < 0)) {
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
                 buffer.append("_ONLINE");
             } else {
                 buffer.append("_OFFLINE");
@@ -412,11 +379,15 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
             // get the SQL statement from the properties hash
             query = readQuery(queryKey);
 
+            if (query == null) {
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_QUERY_NOT_FOUND_1, queryKey));
+            }
+
             // replace control chars.
             query = CmsStringUtil.substitute(query, "\t", " ");
             query = CmsStringUtil.substitute(query, "\n", " ");
 
-            if (projectId != 0) {
+            if (projectId != null) {
                 // a project ID = 0 is an internal indicator that a project-independent 
                 // query was requested - further regex operations are not required then
                 query = CmsSqlManager.replaceProjectPattern(projectId, query);
@@ -514,23 +485,47 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * such as files, folders.<p>
      * 
      * @param projectId the ID of a Cms project (e.g. the current project from the request context)
-     * @return a JDBC connection from the pool specified by the project-ID 
+     * 
+     * @return a JDBC connection from the pool specified by the project-ID
+     *  
      * @throws SQLException if a database access error occurs
      */
-    protected Connection getConnection(int projectId) throws SQLException {
+    protected Connection getConnection(CmsUUID projectId) throws SQLException {
 
         // the specified project ID is not evaluated in this implementation.
         // extensions of this object might evaluate the project ID to return
         // different connections...        
 
-        if (projectId < 0) {
+        if (projectId == null) {
             throw new SQLException(Messages.get().getBundle().key(
                 Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1,
-                new Integer(projectId)));
+                projectId));
         }
 
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
         return getConnectionByUrl(m_poolUrl);
+    }
+
+    /**
+     * Returns the macro resolver.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @return the macro resolver
+     */
+    protected CmsMacroResolver getMacroResolver(CmsDbContext dbc) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        Locale locale = null;
+        if (dbc.getRequestContext() != null) {
+            locale = dbc.getRequestContext().getLocale();
+        }
+        if (locale == null) {
+            macroResolver.setMessages(Messages.get().getBundle());
+        } else {
+            macroResolver.setMessages(Messages.get().getBundle(locale));
+        }
+        return macroResolver;
     }
 
     /**

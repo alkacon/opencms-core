@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/02/13 14:21:55 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 6.5.6
  */
@@ -137,10 +137,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 while (itResourceNamesNew.hasNext()) {
                     String resourceNameNew = (String)itResourceNamesNew.next();
                     if (!resourceNamesOld.contains(resourceNameNew)) {
-                        OpenCms.getOrgUnitManager().addResourceToOrgUnit(
-                            getCms(),
-                            m_orgunit.getName(),
-                            resourceNameNew);
+                        OpenCms.getOrgUnitManager().addResourceToOrgUnit(getCms(), m_orgunit.getName(), resourceNameNew);
                     }
                 }
                 Iterator itResourceNamesOld = resourceNamesOld.iterator();
@@ -228,7 +225,8 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "description", PAGES[0], new CmsTextareaWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOu", PAGES[0], new CmsOrgUnitWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOu", PAGES[0], new CmsOrgUnitWidget(
+            CmsRole.ADMINISTRATOR)));
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "resources", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot())));

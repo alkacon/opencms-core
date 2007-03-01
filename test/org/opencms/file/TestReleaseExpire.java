@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpire.java,v $
- * Date   : $Date: 2006/10/05 14:31:13 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  * 
  * @author Jan Baudisch
- * @version $Revision: 1.3.4.2 $
+ * @version $Revision: 1.3.4.3 $
  */
 public class TestReleaseExpire extends OpenCmsTestCase {
 
@@ -164,7 +164,7 @@ public class TestReleaseExpire extends OpenCmsTestCase {
         CmsResource resource = testOutsideTimeRange(cms);
         assertEquals(resource.getDateExpired(), yesterday);
 
-        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getId());
+        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getUuid());
     }
 
     /**
@@ -185,7 +185,7 @@ public class TestReleaseExpire extends OpenCmsTestCase {
         CmsResource resource = testOutsideTimeRange(cms);
         assertEquals(resource.getDateReleased(), tomorrow);
 
-        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getId());
+        assertEquals(resource.getProjectLastModified(), cms.getRequestContext().currentProject().getUuid());
     }
 
     private CmsResource testOutsideTimeRange(CmsObject cms) throws CmsException {

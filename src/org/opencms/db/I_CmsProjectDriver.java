@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/01/08 14:03:01 $
- * Version: $Revision: 1.76.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:16 $
+ * Version: $Revision: 1.76.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
@@ -52,7 +53,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.4 $
+ * @version $Revision: 1.76.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -71,6 +72,7 @@ public interface I_CmsProjectDriver {
      * Creates a new project.<p>
      * 
      * @param dbc the current database context
+     * @param id the project id
      * @param owner the owner of the project
      * @param group the group for the project
      * @param managergroup the managergroup for the project
@@ -78,7 +80,6 @@ public interface I_CmsProjectDriver {
      * @param description the description for the project
      * @param flags the flags for the project
      * @param type the type for the project
-     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations
      * 
      * @return the created <code>{@link CmsProject}</code> instance
      * 
@@ -86,14 +87,14 @@ public interface I_CmsProjectDriver {
      */
     CmsProject createProject(
         CmsDbContext dbc,
+        CmsUUID id,
         CmsUser owner,
         CmsGroup group,
         CmsGroup managergroup,
         String name,
         String description,
         int flags,
-        int type,
-        Object reservedParam) throws CmsDataAccessException;
+        CmsProjectType type) throws CmsDataAccessException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
@@ -101,11 +102,10 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param projectId The project in which the resource will be used
      * @param resourceName The resource to be written to the Cms
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createProjectResource(CmsDbContext dbc, int projectId, String resourceName, Object reservedParam)
+    void createProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName)
     throws CmsDataAccessException;
 
     /**
@@ -140,7 +140,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsDataAccessException;
+    void deleteProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName) throws CmsDataAccessException;
 
     /**
      * Deletes a specified project.<p>
@@ -161,7 +161,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsDataAccessException;
+    void deletePublishHistory(CmsDbContext dbc, CmsUUID projectId, int maxBackupTagId) throws CmsDataAccessException;
 
     /**
      * Deletes a publish history entry with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
@@ -175,7 +175,7 @@ public interface I_CmsProjectDriver {
      */
     void deletePublishHistoryEntry(
         CmsDbContext dbc,
-        int projectId,
+        CmsUUID projectId,
         CmsUUID publishHistoryId,
         CmsPublishedResource publishResource) throws CmsDataAccessException;
 
@@ -396,7 +396,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsProject readProject(CmsDbContext dbc, int id) throws CmsDataAccessException;
+    CmsProject readProject(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException;
 
     /**
      * Reads a project.<p>
@@ -416,12 +416,11 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param projectId the ID of the project for which the resource path is read
      * @param resourcename the project's resource path
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return String the project's resource path
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readProjectResource(CmsDbContext dbc, int projectId, String resourcename, Object reservedParam)
+    String readProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourcename)
     throws CmsDataAccessException;
 
     /**
@@ -437,16 +436,16 @@ public interface I_CmsProjectDriver {
     List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Returns all projects with the given state.<p>
+     * Returns all projects in the given organizational unit.<p>
      *
      * @param dbc the current database context
-     * @param state the requested project state
+     * @param ouFqn the fully qualified name of the organizational unit to get the projects for
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjects(CmsDbContext dbc, int state) throws CmsDataAccessException;
+    List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -493,7 +492,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId)
+    List readPublishedResources(CmsDbContext dbc, CmsUUID projectId, CmsUUID publishHistoryId)
     throws CmsDataAccessException;
 
     /**

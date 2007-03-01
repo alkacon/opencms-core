@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.141.4.7 $
+ * Date   : $Date: 2007/03/01 15:01:10 $
+ * Version: $Revision: 1.141.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.I_CmsBackupDriver;
@@ -52,6 +51,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -60,7 +60,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.7 $
+ * @version $Revision: 1.141.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -135,7 +134,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        int projectLastModified = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED"));
+        CmsUUID projectLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
@@ -268,7 +267,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         try {
             if ((internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0)
-                || (internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0)) {
+                || (internalCountProperties(dbc, metadef, CmsUUID.getOpenCmsUUID()) != 0)) { // HACK: to get an offline project
 
                 throw new CmsDbConsistencyException(Messages.get().container(
                     Messages.ERR_ERROR_DELETING_PROPERTYDEF_1,
@@ -610,23 +609,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             if (res.next()) {
                 List projectresources = readBackupProjectResources(dbc, tagId);
-                project = new CmsBackupProject(
-                    res.getInt("PUBLISH_TAG"),
-                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
-                    res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
-                    res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
-                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
-                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
-                    res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
-                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")),
-                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                    res.getString("USER_NAME"),
-                    res.getString("GROUP_NAME"),
-                    res.getString("MANAGERGROUP_NAME"),
-                    projectresources);
+                project = internalCreateBackupProject(res, projectresources);
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1,
@@ -693,23 +676,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             while (res.next() && (i < max)) {
                 List resources = readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.add(new CmsBackupProject(
-                    res.getInt("PUBLISH_TAG"),
-                    res.getInt("PROJECT_ID"),
-                    res.getString("PROJECT_NAME"),
-                    res.getString("PROJECT_DESCRIPTION"),
-                    new CmsUUID(res.getString("USER_ID")),
-                    new CmsUUID(res.getString("GROUP_ID")),
-                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                    res.getLong("DATE_CREATED"),
-                    res.getInt("PROJECT_TYPE"),
-                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                    res.getString("USER_NAME"),
-                    res.getString("GROUP_NAME"),
-                    res.getString("MANAGERGROUP_NAME"),
-                    resources));
+                projects.add(internalCreateBackupProject(res, resources));
                 i++;
             }
         } catch (SQLException e) {
@@ -735,8 +702,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_MAXVERSION");
-            int todo; // this will return different values for mysql and for oracle!
-            stmt.setTimestamp(1, new Timestamp(maxdate));
+            stmt.setLong(1, maxdate);
             res = stmt.executeQuery();
             if (res.next()) {
                 maxVersion = res.getInt(1);
@@ -987,9 +953,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_CREATE_BACKUP");
             // first write the project
             stmt.setInt(1, tagId);
-            stmt.setInt(2, currentProject.getId());
-            stmt.setString(3, currentProject.getName());
-            stmt.setTimestamp(4, new Timestamp(publishDate));
+            stmt.setString(2, currentProject.getUuid().toString());
+            stmt.setString(3, currentProject.getSimpleName());
+            stmt.setLong(4, publishDate);
             stmt.setString(5, currentUser.getId().toString());
             stmt.setString(6, currentUser.getName()
                 + " "
@@ -1004,9 +970,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(12, managerGroup);
             stmt.setString(13, currentProject.getDescription());
             stmt.setLong(14, currentProject.getDateCreated());
-            stmt.setInt(15, currentProject.getType());
-            int todo = 0; // remove field
-            stmt.setInt(16, 0);
+            stmt.setInt(15, currentProject.getType().getMode());
+            stmt.setString(16, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(currentProject.getName()));
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1016,7 +981,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             Iterator i = projectresources.iterator();
             while (i.hasNext()) {
                 stmt.setInt(1, tagId);
-                stmt.setInt(2, currentProject.getId());
+                stmt.setString(2, currentProject.getUuid().toString());
                 stmt.setString(3, (String)i.next());
                 stmt.executeUpdate();
                 stmt.clearParameters();
@@ -1160,7 +1125,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setString(7, resource.getUserLastModified().toString());
                     stmt.setInt(8, resource.getState().getState());
                     stmt.setInt(9, resource.getLength());
-                    stmt.setInt(10, dbc.currentProject().getId());
+                    stmt.setString(10, dbc.currentProject().getUuid().toString());
                     stmt.setInt(11, resource.getSiblingCount());
                     stmt.setInt(12, tagId);
                     stmt.setInt(13, versionId);
@@ -1226,7 +1191,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @return the amount of properties for a propertydefinition
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, int projectId)
+    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, CmsUUID projectId)
     throws CmsDataAccessException {
 
         ResultSet res = null;
@@ -1256,6 +1221,37 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return returnValue;
+    }
+
+    /**
+     * Creates a backup project from the given result set and resources.<p>
+     * 
+     * @param res the resource set
+     * @param resources the backup resources
+     * 
+     * @return the backup project
+     *  
+     * @throws SQLException if something goes wrong
+     */
+    protected CmsBackupProject internalCreateBackupProject(ResultSet res, List resources) throws SQLException {
+
+        return new CmsBackupProject(
+            res.getInt("PUBLISH_TAG"),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID"))),
+            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+            res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
+            CmsProject.CmsProjectType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))),
+            res.getLong("PROJECT_PUBLISHDATE"),
+            new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
+            res.getString("PROJECT_PUBLISHED_BY_NAME"),
+            res.getString("USER_NAME"),
+            res.getString("GROUP_NAME"),
+            res.getString("MANAGERGROUP_NAME"),
+            resources);
     }
 
     /**

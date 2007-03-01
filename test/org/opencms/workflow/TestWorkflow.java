@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/TestWorkflow.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 7.0.0
  */
@@ -196,7 +196,7 @@ public class TestWorkflow extends OpenCmsTestCase {
         // modify a resource
         cms.lockResource(resource);
         cms.writePropertyObject(resource, new CmsProperty("Title", resource, null));
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
 
         // add one or more resources to it
         wfm.addResource(cms, wfp, resource);
@@ -227,7 +227,7 @@ public class TestWorkflow extends OpenCmsTestCase {
         }
         // try to direct publish the folder
         try {
-            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
             OpenCms.getPublishManager().publishResource(cms, folder, false, new CmsShellReport(cms.getRequestContext().getLocale()));
             OpenCms.getPublishManager().waitWhileRunning();
         } catch (CmsLockException e) {
@@ -305,7 +305,7 @@ public class TestWorkflow extends OpenCmsTestCase {
         // modify a resource
         cms.lockResource(resource);
         cms.writePropertyObject(resource, new CmsProperty("Title", resource, null));
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
 
         // add one or more resources to it
         wfm.addResource(getCmsObject(), wfp, resource);

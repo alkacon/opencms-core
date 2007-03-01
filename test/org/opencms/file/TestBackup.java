@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.7.8.6 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.7.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7.8.6 $
+ * @version $Revision: 1.7.8.7 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -359,7 +359,7 @@ public class TestBackup extends OpenCmsTestCase {
                 //create Sibling and publish it 6 times. 
                 if (i == 3) {
 
-                    System.out.println("Time to deleted: " + new Timestamp(timeToDeleted));
+                    System.out.println("Time to deleted: " + new Date(timeToDeleted));
                     // create a sibling
                     cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
                     cms.unlockResource(siblingname);
@@ -442,7 +442,6 @@ public class TestBackup extends OpenCmsTestCase {
 
             // assert that the content and version fit together
             restoredContent = getContentString(cms, file.getContents());
-            int todo; // fails with oracle, i guess it is the timestamp field fault
             assertEquals(3, allFiles.size());
             assertEquals(siblingContent, restoredContent);
             prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);

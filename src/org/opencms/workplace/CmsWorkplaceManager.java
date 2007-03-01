@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.76.4.13 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.76.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
@@ -98,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.13 $ 
+ * @version $Revision: 1.76.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -849,12 +850,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return the id of the temporary file project required by the editors
      */
-    public int getTempFileProjectId() {
+    public CmsUUID getTempFileProjectId() {
 
         if (m_tempFileProject != null) {
-            return m_tempFileProject.getId();
+            return m_tempFileProject.getUuid();
         } else {
-            return -1;
+            return null;
         }
     }
 

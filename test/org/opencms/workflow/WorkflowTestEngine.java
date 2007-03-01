@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workflow/Attic/WorkflowTestEngine.java,v $
- * Date   : $Date: 2006/08/21 17:04:18 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/01 15:01:31 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workflow;
 
 import org.opencms.file.CmsProject;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.generic.CmsDefaultWorkflowAction;
 import org.opencms.workflow.generic.Messages;
 
@@ -112,7 +113,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
      */
     static class TestWorkflowTask {
 
-        private int m_id;
+        private CmsUUID m_id;
 
         private long m_startTime;
 
@@ -127,7 +128,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
          * @param type type of the workflow
          * @param state the initial state
          */
-        public TestWorkflowTask(int id, I_CmsWorkflowType type, I_CmsWorkflowState state) {
+        public TestWorkflowTask(CmsUUID id, I_CmsWorkflowType type, I_CmsWorkflowState state) {
 
             m_id = id;
             m_type = type;
@@ -140,7 +141,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
          * 
          * @return the id of the task
          */
-        public int getId() {
+        public CmsUUID getId() {
 
             return m_id;
         }
@@ -360,7 +361,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
     public Principal getAgent(CmsProject wfProject) {
 
         // only members of group2 are allowed to work with initialized workflow instances
-        if (m_tasks.containsKey(Integer.toString(wfProject.getId()))) {
+        if (m_tasks.containsKey(wfProject.getUuid())) {
             return new TestPrincipal("group2");
         } else {
             return new TestPrincipal("Users");
@@ -413,7 +414,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
      */
     public long getStartTime(CmsProject wfProject) {
 
-        return ((TestWorkflowTask)m_tasks.get(Integer.toString(wfProject.getId()))).getStartTime();
+        return ((TestWorkflowTask)m_tasks.get(wfProject.getUuid())).getStartTime();
     }
 
     /**
@@ -421,7 +422,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
      */
     public I_CmsWorkflowState getState(CmsProject wfProject) {
 
-        return ((TestWorkflowTask)m_tasks.get(Integer.toString(wfProject.getId()))).getState();
+        return ((TestWorkflowTask)m_tasks.get(wfProject.getUuid())).getState();
     }
 
     /**
@@ -456,7 +457,7 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
      */
     public I_CmsWorkflowType getType(CmsProject wfProject) {
 
-        return ((TestWorkflowTask)m_tasks.get(Integer.toString(wfProject.getId()))).getType();
+        return ((TestWorkflowTask)m_tasks.get(wfProject.getUuid())).getType();
     }
 
     /**
@@ -481,11 +482,11 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
     public I_CmsWorkflowAction init(CmsProject wfProject, I_CmsWorkflowType type, String message) {
 
         TestWorkflowTask newTask = new TestWorkflowTask(
-            wfProject.getId(),
+            wfProject.getUuid(),
             type,
             (I_CmsWorkflowState)WORKFLOW_STATES.get(0));
         newTask.setStartTime(System.currentTimeMillis());
-        m_tasks.put(Integer.toString(wfProject.getId()), newTask);
+        m_tasks.put(wfProject.getUuid(), newTask);
 
         return CmsDefaultWorkflowAction.NOOP;
     }
@@ -581,6 +582,6 @@ public class WorkflowTestEngine implements I_CmsWorkflowEngine {
      */
     private TestWorkflowTask getTask(CmsProject wfProject) {
 
-        return (TestWorkflowTask)m_tasks.get(Integer.toString(wfProject.getId()));
+        return (TestWorkflowTask)m_tasks.get(wfProject.getUuid());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/02/07 15:03:22 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/03/01 15:01:29 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 6.5.6
  */
@@ -192,20 +192,7 @@ public class CmsRoleManager {
      */
     public List getOrgUnitsForRole(CmsObject cms, CmsRole role, boolean includeSubOus) throws CmsException {
 
-        List orgUnits = new ArrayList();
-        if (hasRole(cms, role)) {
-            orgUnits.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, role.getOuFqn()));
-        }
-        if (includeSubOus) {
-            Iterator it = OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, role.getOuFqn(), true).iterator();
-            while (it.hasNext()) {
-                CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
-                if (hasRole(cms, role.forOrgUnit(orgUnit.getName()))) {
-                    orgUnits.add(orgUnit);
-                }
-            }
-        }
-        return orgUnits;
+        return m_securityManager.getOrgUnitsForRole(cms.getRequestContext(), role, includeSubOus);
     }
 
     /**

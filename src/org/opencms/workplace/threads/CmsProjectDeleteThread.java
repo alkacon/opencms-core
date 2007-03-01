@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/03/01 15:01:40 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsUUID;
 
 import org.apache.commons.logging.Log;
 
@@ -43,7 +44,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +54,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     private static final Log LOG = CmsLog.getLog(CmsProjectDeleteThread.class);
 
     private Throwable m_error;
-    private int m_projectId;
+    private CmsUUID m_projectId;
 
     /**
      * Creates the project delete thread.<p>
@@ -61,9 +62,9 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param projectId the project id to delete
      */
-    public CmsProjectDeleteThread(CmsObject cms, int projectId) {
+    public CmsProjectDeleteThread(CmsObject cms, CmsUUID projectId) {
 
-        super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_PROJECT_THREAD_NAME_1, new Integer(projectId)));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_PROJECT_THREAD_NAME_1, projectId));
         m_projectId = projectId;
     }
 
@@ -92,7 +93,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
             getCms().deleteProject(m_projectId);
         } catch (CmsException e) {
             m_error = e;
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_PROJECT_DELETE_FAILED_1, new Integer(m_projectId)), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_PROJECT_DELETE_FAILED_1, m_projectId), e);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/01 15:01:28 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -50,6 +49,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsTouch;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,7 +338,7 @@ public final class CmsResourceUtil {
         String iconPath = null;
         if (!lock.isUnlocked() && (m_request != null) && isInsideProject()) {
             if (getLock().isOwnedBy(m_request.currentUser())
-                && (getLockedInProjectId() == getReferenceProject().getId())) {
+                && (getLockedInProjectId().equals(getReferenceProject().getUuid()))) {
                 if (lock.isShared()) {
                     iconPath = "shared";
                 } else {
@@ -468,9 +468,9 @@ public final class CmsResourceUtil {
      * 
      * @return the id of the project in which the given resource is locked
      */
-    public int getLockedInProjectId() {
+    public CmsUUID getLockedInProjectId() {
 
-        int lockedInProject = CmsDbUtil.UNKNOWN_ID;
+        CmsUUID lockedInProject = null;
         if (getLock().isNullLock() && !getResource().getState().isUnchanged()) {
             // resource is unlocked and modified
             lockedInProject = getResource().getProjectLastModified();
@@ -492,8 +492,8 @@ public final class CmsResourceUtil {
     public String getLockedInProjectName() {
 
         try {
-            int pId = getLockedInProjectId();
-            if (pId == CmsDbUtil.UNKNOWN_ID) {
+            CmsUUID pId = getLockedInProjectId();
+            if (pId == null) {
                 // the resource is unlocked and unchanged
                 return "";
             }
@@ -502,6 +502,30 @@ public final class CmsResourceUtil {
             LOG.error(e);
             return "";
         }
+    }
+
+    /**
+     * Returns the lock state of the current resource.<p>
+     * 
+     * @return the lock state of the current resource
+     */
+    public int getLockState() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getLockedByName())) {
+            // unlocked
+            return 0;
+        }
+        if (!getLockedByName().equals(m_request.currentUser().getName())
+            || !getLockedInProjectId().equals(m_request.currentProject().getUuid())) {
+            // locked by other user and/or project
+            return 1;
+        }
+        if (getLock().getType().isShared()) {
+            // shared lock
+            return 2;
+        }
+        // exclusive lock
+        return 3;
     }
 
     /**
@@ -568,9 +592,9 @@ public final class CmsResourceUtil {
      * 
      * @return the id of the project which the resource belongs to
      */
-    public int getProjectId() {
+    public CmsUUID getProjectId() {
 
-        int projectId = m_resource.getProjectLastModified();
+        CmsUUID projectId = m_resource.getProjectLastModified();
         if (!getLock().isUnlocked() && !getLock().isInherited()) {
             // use lock project ID only if lock is not inherited
             projectId = getLock().getProjectId();
@@ -608,9 +632,9 @@ public final class CmsResourceUtil {
             }
         }
         if (!getLock().isUnlocked() && !getResource().getState().isUnchanged()) {
-            if (getLockedInProjectId() == getReferenceProject().getId()) {
+            if (getLockedInProjectId().equals(getReferenceProject().getUuid())) {
                 return STATE_LOCKED_IN_CURRENT_PROJECT;
-            } else if (getLockedInProjectId() != getReferenceProject().getId()) {
+            } else if (!getLockedInProjectId().equals(getReferenceProject().getUuid())) {
                 return STATE_LOCKED_IN_OTHER_PROJECT;
             }
         }

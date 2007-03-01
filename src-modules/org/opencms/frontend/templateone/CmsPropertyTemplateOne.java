@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2006/07/20 10:31:59 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.frontend.templateone.modules.CmsLayoutXmlContentHandler;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.30.4.1 $ 
+ * @version $Revision: 1.30.4.2 $ 
  * 
  * @since 6.0.0 
  */

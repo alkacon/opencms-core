@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2007/02/21 14:27:09 $
- * Version: $Revision: 1.48.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:23 $
+ * Version: $Revision: 1.48.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.4 $ 
+ * @version $Revision: 1.48.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -606,10 +606,14 @@ public class CmsShell {
     public void printPrompt() {
 
         String prompt = m_prompt;
-        prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
-        prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        try {
+            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
+            prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        } catch (Throwable t) {
+            // ignore
+        }
         System.out.print(prompt);
     }
 

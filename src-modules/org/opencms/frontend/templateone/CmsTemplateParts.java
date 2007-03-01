@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.20.4.1 $
+ * Date   : $Date: 2007/03/01 15:01:02 $
+ * Version: $Revision: 1.20.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20.4.1 $ 
+ * @version $Revision: 1.20.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,7 +171,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 element,
                 layout,
                 jsp.getRequestContext().getLocale(),
-                jsp.getRequestContext().currentProject().getId());
+                jsp.getRequestContext().currentProject().getUuid());
             // try to get the part
             part = (String)m_parts.get(partKey);
             if (part == null) {
@@ -210,7 +211,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * 
      * @return a unique part key
      */
-    private String generateKey(String target, String element, String layout, Locale locale, int project) {
+    private String generateKey(String target, String element, String layout, Locale locale, CmsUUID project) {
 
         try {
             if (element == null) {

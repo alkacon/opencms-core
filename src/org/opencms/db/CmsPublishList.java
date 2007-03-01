@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.25.4.2 $
+ * Date   : $Date: 2007/03/01 15:01:16 $
+ * Version: $Revision: 1.25.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.2 $
+ * @version $Revision: 1.25.4.3 $
  * 
  * @since 6.0.0
  * 
@@ -78,7 +78,7 @@ public class CmsPublishList {
     private List m_folderList;
 
     /** The id of the project that is to be published. */
-    private int m_projectId;
+    private CmsUUID m_projectId;
 
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
@@ -153,7 +153,7 @@ public class CmsPublishList {
         m_publishHistoryId = new CmsUUID();
         m_publishSiblings = publishSiblings;
         m_publishSubResources = publishSubResources;
-        m_projectId = (project != null) ? project.getId() : -1;
+        m_projectId = (project != null) ? project.getUuid() : null;
         if (directPublishResources != null) {
             // reduce list of folders to minimum
             m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
@@ -209,7 +209,7 @@ public class CmsPublishList {
      * 
      * @return the id of the project that should be published, or <code>-1</code>
      */
-    public int getProjectId() {
+    public CmsUUID getProjectId() {
 
         return m_projectId;
     }
@@ -231,7 +231,7 @@ public class CmsPublishList {
      */
     public boolean isDirectPublish() {
 
-        return m_projectId < 0;
+        return (m_projectId == null);
     }
 
     /**

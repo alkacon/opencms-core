@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -427,7 +427,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         // check the links before publishing
         CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         Map validation = cms.validateRelations(Collections.singletonList(res1), report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
@@ -502,7 +502,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertTrue(validation.isEmpty());
 
         // publish
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms, report);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -587,7 +587,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         }
         List resources = new ArrayList(resAll);
         resources.remove(res5);
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         validation = cms.validateRelations(resources, report);
         assertTrue(validation.isEmpty());
         switch (mode) {
@@ -631,7 +631,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         }
         resources = new ArrayList(resAll);
         resources.remove(res2);
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         validation = cms.validateRelations(resources, report);
         assertTrue(validation.isEmpty());
         switch (mode) {
@@ -673,7 +673,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 break;
 
         }
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         validation = cms.validateRelations(Collections.singletonList(res7), report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename7)));
@@ -734,7 +734,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
             delete(cms, resName, report);
             otherRes.remove(resource);
         }
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         Map validation = cms.validateRelations(otherRes, report);
         itRes = resources.iterator();
         while (itRes.hasNext()) {

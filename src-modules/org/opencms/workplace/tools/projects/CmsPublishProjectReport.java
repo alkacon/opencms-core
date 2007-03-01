@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.9.4.4 $
+ * Date   : $Date: 2007/03/01 15:01:22 $
+ * Version: $Revision: 1.9.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.Messages;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9.4.4 $ 
+ * @version $Revision: 1.9.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +115,7 @@ public class CmsPublishProjectReport extends CmsReport {
             case ACTION_DEFAULT:
             default:
                 try {
-                    if (getCms().readProject(new Integer(getParamProjectid()).intValue()).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+                    if (getCms().readProject(new CmsUUID(getParamProjectid())).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                         // set the flag that this is a temporary project
                         setParamRefreshWorkplace(CmsStringUtil.TRUE);
                     }
@@ -126,7 +127,7 @@ public class CmsPublishProjectReport extends CmsReport {
                 try {
                     CmsProject currentProject = getCms().getRequestContext().currentProject();
                     getCms().getRequestContext().setCurrentProject(
-                        getCms().readProject(new Integer(getParamProjectid()).intValue()));
+                        getCms().readProject(new CmsUUID(getParamProjectid())));
                     list = OpenCms.getPublishManager().getPublishList(getCms());
                     getCms().getRequestContext().setCurrentProject(currentProject);
                 } catch (CmsException e) {

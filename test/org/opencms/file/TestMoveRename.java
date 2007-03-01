@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.16.8.5 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.16.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.5 $
+ * @version $Revision: 1.16.8.6 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -262,7 +262,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // now assert the filter for the rest of the attributes        
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
 
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
     }

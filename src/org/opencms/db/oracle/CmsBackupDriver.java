@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.56.8.2 $
+ * Date   : $Date: 2007/03/01 15:01:32 $
+ * Version: $Revision: 1.56.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,8 @@ import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
-import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
@@ -65,7 +63,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.56.8.2 $
+ * @version $Revision: 1.56.8.3 $
  * 
  * @since 6.0.0 
  */
@@ -160,23 +158,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 List resources = m_driverManager.getBackupDriver().readBackupProjectResources(
                     dbc,
                     res.getInt("PUBLISH_TAG"));
-                projects.add(new CmsBackupProject(
-                    res.getInt("PUBLISH_TAG"),
-                    res.getInt("PROJECT_ID"),
-                    res.getString("PROJECT_NAME"),
-                    res.getString("PROJECT_DESCRIPTION"),
-                    new CmsUUID(res.getString("USER_ID")),
-                    new CmsUUID(res.getString("GROUP_ID")),
-                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                    res.getLong("DATE_CREATED"),
-                    res.getInt("PROJECT_TYPE"),
-                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                    res.getString("USER_NAME"),
-                    res.getString("GROUP_NAME"),
-                    res.getString("MANAGERGROUP_NAME"),
-                    resources));
+                projects.add(internalCreateBackupProject(res, resources));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(

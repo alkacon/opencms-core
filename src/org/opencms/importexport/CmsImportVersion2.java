@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.113.4.7 $
+ * Date   : $Date: 2007/03/01 15:01:29 $
+ * Version: $Revision: 1.113.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -82,7 +81,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.7 $ 
+ * @version $Revision: 1.113.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -406,7 +405,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         Element currentElement = null, currentEntry = null;
         String source = null, destination = null, resourceTypeName = null, timestamp = null, uuid = null, uuidresource = null;
         long lastmodified = 0;
-        int resourceTypeId = CmsDbUtil.UNKNOWN_ID;
+        int resourceTypeId = CmsResourceTypePlain.getStaticTypeId();
         List properties = null;
         boolean old_overwriteCollidingResources = false;
         try {
@@ -711,7 +710,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeId,
                 isFolder,
                 0,
-                m_cms.getRequestContext().currentProject().getId(),
+                m_cms.getRequestContext().currentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 lastmodified,
                 curUser,

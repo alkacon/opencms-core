@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.6.4.10 $
+ * Date   : $Date: 2007/03/01 15:01:39 $
+ * Version: $Revision: 1.6.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.10 $ 
+ * @version $Revision: 1.6.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -664,7 +664,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     new Integer(lockedResources.size())), I_CmsReport.FORMAT_HEADLINE);
             }
             cms.removeResourceFromProject(CmsWorkplace.VFS_PATH_SYSTEM);
-            cms.deleteProject(unlockProject.getId());
+            cms.deleteProject(unlockProject.getUuid());
         } finally {
             if (storedSiteRoot != null) {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);

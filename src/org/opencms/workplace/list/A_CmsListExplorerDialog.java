@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.4.4.7 $
+ * Date   : $Date: 2007/03/01 15:01:38 $
+ * Version: $Revision: 1.4.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsTouch;
@@ -54,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.7 $ 
+ * @version $Revision: 1.4.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +194,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
             getSettings().setCollector(getCollector());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
-            getSettings().setExplorerProjectId(getProject().getId());
+            getSettings().setExplorerProjectId(getProject().getUuid());
             setShowExplorer(true);
             try {
                 getToolManager().jspForwardPage(this, PATH_EXPLORER_LIST, params);
@@ -392,7 +393,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         super.initWorkplaceRequestValues(settings, request);
         // this to show first the exlorer view
         if (getShowExplorer()) {
-            int projectId = getProject().getId();
+            CmsUUID projectId = getProject().getUuid();
             Map params = new HashMap();
             // set action parameter to initial dialog call
             params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);

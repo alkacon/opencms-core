@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2007/02/06 17:03:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/01 15:01:14 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -86,6 +86,9 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the organizational unit fqn. */
     private String m_paramOufqn;
+
+    /** Stores the value of the request parameter for the role group name to use to filter the selection. */
+    private String m_paramRole;
 
     /**
      * Public constructor.<p>
@@ -161,6 +164,16 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the value of the role parameter.<p>
+     *
+     * @return the value of the role parameter
+     */
+    public String getParamRole() {
+
+        return m_paramRole;
+    }
+
+    /**
      * Sets the organizational unit fqn parameter value.<p>
      * 
      * @param ouFqn the organizational unit fqn parameter value
@@ -171,6 +184,16 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
             ouFqn = "";
         }
         m_paramOufqn = ouFqn;
+    }
+
+    /**
+     * Sets the value of the role parameter.<p>
+     *
+     * @param paramRole the value to set
+     */
+    public void setParamRole(String paramRole) {
+
+        m_paramRole = paramRole;
     }
 
     /**
@@ -212,13 +235,18 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     protected List getOrgUnits() throws CmsException {
 
         List ret = new ArrayList();
-        if (getParamOufqn() != null) {
-            ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(
-                getCms(),
-                CmsRole.ADMINISTRATOR.forOrgUnit(getParamOufqn()),
-                true));
+        CmsRole role = null;
+        if (getParamRole() != null) {
+            role = CmsRole.valueOf(getParamRole());
+        }
+        String ou = getParamOufqn();
+        if (ou == null) {
+            ou = "";
+        }
+        if (role != null) {
+            ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), role.forOrgUnit(ou), true));
         } else {
-            ret.addAll(OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(""), true));
+            ret.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), ou, true));
         }
         return ret;
     }

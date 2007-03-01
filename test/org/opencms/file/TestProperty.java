@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2007/01/29 09:44:54 $
- * Version: $Revision: 1.23.4.6 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.23.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23.4.6 $
+ * @version $Revision: 1.23.4.7 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -572,7 +572,7 @@ public class TestProperty extends OpenCmsTestCase {
         assertTrue(property1.isIdentical(property2));        
         
         // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);    
         OpenCms.getPublishManager().waitWhileRunning();
         
@@ -603,7 +603,7 @@ public class TestProperty extends OpenCmsTestCase {
         String dest = "/folder1/testprop2.txt";
 
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        cms.unlockProject(offline.getId());
+        cms.unlockProject(offline.getUuid());
         OpenCms.getPublishManager().publishResource(cms, source);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -611,14 +611,14 @@ public class TestProperty extends OpenCmsTestCase {
         cms.lockResource(source);
         CmsProperty descProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "A shared value");
         cms.writePropertyObject(source, descProperty);
-        cms.unlockProject(offline.getId());
+        cms.unlockProject(offline.getUuid());
         OpenCms.getPublishManager().publishResource(cms, source);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // now move the resource to a new name and publish again, ensure the property is still there
         cms.lockResource(source);
         cms.moveResource(source, dest);
-        cms.unlockProject(offline.getId());
+        cms.unlockProject(offline.getUuid());
         OpenCms.getPublishManager().publishResource(cms, dest, true, new CmsShellReport(Locale.ENGLISH));
         OpenCms.getPublishManager().waitWhileRunning();
 

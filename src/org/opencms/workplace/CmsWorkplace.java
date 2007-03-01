@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.156.4.17 $
+ * Date   : $Date: 2007/03/01 15:01:33 $
+ * Version: $Revision: 1.156.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.17 $ 
+ * @version $Revision: 1.156.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +211,7 @@ public abstract class CmsWorkplace {
     private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
-    private int m_currentProjectId = -1;
+    private CmsUUID m_currentProjectId = null;
 
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;
@@ -473,7 +474,7 @@ public abstract class CmsWorkplace {
         settings = initUserSettings(cms, settings, update);
 
         // save current project
-        settings.setProject(cms.getRequestContext().currentProject().getId());
+        settings.setProject(cms.getRequestContext().currentProject().getUuid());
 
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
@@ -1303,19 +1304,19 @@ public abstract class CmsWorkplace {
         if (project != null) {
             reloadRequired = true;
             try {
-                getCms().readProject(Integer.parseInt(project));
+                getCms().readProject(new CmsUUID(project));
             } catch (Exception e) {
                 // project not found, set online project
                 project = String.valueOf(CmsProject.ONLINE_PROJECT_ID);
             }
             try {
-                m_cms.getRequestContext().setCurrentProject(getCms().readProject(Integer.parseInt(project)));
+                m_cms.getRequestContext().setCurrentProject(getCms().readProject(new CmsUUID(project)));
             } catch (Exception e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
             }
-            settings.setProject(Integer.parseInt(project));
+            settings.setProject(new CmsUUID(project));
         }
 
         // check if the user requested a site change
@@ -1904,7 +1905,7 @@ public abstract class CmsWorkplace {
      */
     protected void switchToCurrentProject() throws CmsException {
 
-        if (m_currentProjectId != -1) {
+        if (m_currentProjectId != null) {
             // switch back to the current users project
             getCms().getRequestContext().setCurrentProject(getCms().readProject(m_currentProjectId));
         }
@@ -1918,11 +1919,11 @@ public abstract class CmsWorkplace {
      * @return the id of the tempfileproject
      * @throws CmsException if getting the tempfileproject id fails
      */
-    protected int switchToTempProject() throws CmsException {
+    protected CmsUUID switchToTempProject() throws CmsException {
 
         // store the current project id in member variable
         m_currentProjectId = getSettings().getProject();
-        int tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+        CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
         getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
         return tempProjectId;
     }
@@ -1939,7 +1940,7 @@ public abstract class CmsWorkplace {
         CmsRequestContext reqCont = cms.getRequestContext();
 
         // check project setting        
-        if (settings.getProject() != reqCont.currentProject().getId()) {
+        if (!settings.getProject().equals(reqCont.currentProject().getUuid())) {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsDbEntryNotFoundException e) {

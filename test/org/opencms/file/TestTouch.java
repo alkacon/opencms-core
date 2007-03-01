@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2006/09/20 14:38:00 $
- * Version: $Revision: 1.19.4.2 $
+ * Date   : $Date: 2007/03/01 15:01:03 $
+ * Version: $Revision: 1.19.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19.4.2 $
+ * @version $Revision: 1.19.4.3 $
  */
 public class TestTouch extends OpenCmsTestCase {
 
@@ -156,7 +156,7 @@ public class TestTouch extends OpenCmsTestCase {
             CmsResource res = (CmsResource)i.next();
             String resName = cms.getSitePath(res);
             // now evaluate the result
-            int todo; // fails with transactions, due to wrong cached values read by the static export scrubfolder thread
+            int todo; // may fail with transactions, due to wrong cached values read by the static export scrubfolder thread
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
         }
     }
