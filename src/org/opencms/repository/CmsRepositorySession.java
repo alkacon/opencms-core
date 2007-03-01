@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/28 16:11:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/03/01 16:58:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.4
  */
@@ -266,7 +266,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         Iterator iter = resources.iterator();
         while (iter.hasNext()) {
             CmsResource res = (CmsResource)iter.next();
-            if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()))) {
+            
+            String uri = m_cms.restoreLink(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+            if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(uri))) {
                 ret.add(new CmsRepositoryItem(res, m_cms));
             }
         }

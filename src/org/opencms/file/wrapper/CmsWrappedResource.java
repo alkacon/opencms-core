@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/02/28 16:11:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/03/01 16:58:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Properties;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.6
  */
@@ -200,9 +200,9 @@ public class CmsWrappedResource {
         CmsFile ret = wrap.getFile();
         try {
 
-            ret.setContents(addUtf8Marker(content.toString().getBytes(CmsEncoder.ENCODING_UTF_8)));
+            ret.setContents(content.toString().getBytes(CmsEncoder.ENCODING_UTF_8));
         } catch (UnsupportedEncodingException e) {
-            
+
             // this will never happen since UTF-8 is always supported
             ret.setContents(content.toString().getBytes());
         }
@@ -333,10 +333,13 @@ public class CmsWrappedResource {
      * 
      * @return the byte with the added UTF-8 marker at the beginning
      */
-    private static byte[] addUtf8Marker(byte[] content) {
+    public static byte[] addUtf8Marker(byte[] content) {
 
+        if ((content[0] == (byte)0xEF) && (content[1] == (byte)0xBB) && (content[2] == (byte)0xBF)) {
+            return content;
+        }
+        
         byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
-
         byte[] ret = new byte[bom.length + content.length];
 
         System.arraycopy(bom, 0, ret, 0, bom.length);
