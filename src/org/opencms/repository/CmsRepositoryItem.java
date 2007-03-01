@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/01 12:57:20 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6
  */
@@ -147,9 +147,6 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
                     encoding,
                     CmsResourceManager.MIMETYPE_TEXT);
                 
-                if ((encoding != null) && m_mimeType.startsWith("text") && (m_mimeType.indexOf("charset") == -1)) {
-                    m_mimeType += "; charset=" + encoding;
-                }
             } catch (CmsException ex) {
                 // noop
             }

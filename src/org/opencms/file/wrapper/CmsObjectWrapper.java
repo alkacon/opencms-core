@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/03/01 12:57:20 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,15 +40,22 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Depending on the configured resource type wrappers this class handles the
@@ -58,12 +65,15 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
  * @since 6.5.6
  */
 public class CmsObjectWrapper {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsObjectWrapper.class);
+    
     /** The name of the attribute in the {@link org.opencms.file.CmsRequestContext}. */
     public static final String ATTRIBUTE_NAME = "org.opencms.file.wrapper.CmsObjectWrapper";
 
@@ -496,6 +506,25 @@ public class CmsObjectWrapper {
         // delegate the call to the CmsObject
         if (res == null) {
             res = m_cms.readFile(resourcename, filter);
+        }
+
+        // for text based resources which are encoded in UTF-8 add the UTF-marker at the start
+        // of the content
+        String encoding = CmsLocaleManager.getResourceEncoding(m_cms, res);
+        if (CmsEncoder.ENCODING_UTF_8.equals(encoding)) {
+            String contentType = OpenCms.getResourceManager().getMimeType(
+                res.getRootPath(),
+                encoding,
+                CmsResourceManager.MIMETYPE_TEXT);
+            
+            if ((contentType != null) && (contentType.startsWith("text"))) {
+                
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_UTF8_MARKER_1, res.getRootPath()));
+                }
+                
+                res.setContents(CmsWrappedResource.addUtf8Marker(res.getContents()));
+            }
         }
 
         return res;

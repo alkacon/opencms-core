@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.4.7 $
+ * Date   : $Date: 2007/03/01 12:57:20 $
+ * Version: $Revision: 1.1.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -52,6 +54,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -66,7 +69,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.7 $
+ * @version $Revision: 1.1.4.8 $
  * 
  * @since 6.5.6
  */
@@ -428,9 +431,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 while (iter.hasNext()) {
                     String name = (String)iter.next();
                     String content = xml.getStringValue(cms, name, locale);
-                    content = prepareContent(content, cms, xmlPage, false);
+                    String fullPath = xmlPage.getRootPath() + "/" + path + "/" + name + "." + EXTENSION_ELEMENT;
+                    content = prepareContent(content, cms, xmlPage, fullPath);
 
-                    ret.add(getResourceForElement(xmlPage, path, name, content.getBytes().length));
+                    ret.add(getResourceForElement(xmlPage, fullPath, content.getBytes().length));
                 }
 
             }
@@ -597,10 +601,17 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 if (xml.hasValue(name, new Locale(tokens[0]))) {
 
                     String contentString = xml.getStringValue(cms, name, new Locale(tokens[0]));
-                    contentString = prepareContent(contentString, cms, xmlPage, false);
+                    String fullPath = xmlPage.getRootPath() + "/" + tokens[0] + "/" + name + "." + EXTENSION_ELEMENT;
+                    contentString = prepareContent(contentString, cms, xmlPage, fullPath);
 
-                    byte[] content = contentString.getBytes();
-                    CmsResource resElem = getResourceForElement(xmlPage, tokens[0], name, content.length);
+                    byte[] content;
+                    try {
+                        content = contentString.getBytes(CmsLocaleManager.getResourceEncoding(cms, xmlPage));
+                    } catch (UnsupportedEncodingException e) {
+                        // should never happen
+                        content = contentString.getBytes();
+                    }
+                    CmsResource resElem = getResourceForElement(xmlPage, fullPath, content.length);
                     CmsFile fileElem = new CmsFile(resElem);
 
                     fileElem.setContents(content);
@@ -664,7 +675,8 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                         CmsWrappedResource wrap = new CmsWrappedResource(CmsWrappedResource.createPropertyFile(
                             cms,
-                            xmlPage, xmlPage.getRootPath() + "/" + xmlPage.getName()));
+                            xmlPage,
+                            xmlPage.getRootPath() + "/" + xmlPage.getName()));
                         wrap.setRootPath(xmlPage.getRootPath()
                             + "/"
                             + xmlPage.getName()
@@ -686,11 +698,19 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                         name = name.substring(0, name.length() - 5);
                     }
 
-                    if (xml.hasValue(name, new Locale(tokens[0]))) {
-                        String content = xml.getStringValue(cms, name, new Locale(tokens[0]));
-                        content = prepareContent(content, cms, xmlPage, false);
+                    Locale locale = new Locale(tokens[0]);
+                    if (xml.hasValue(name, locale)) {
+                        String content = xml.getStringValue(cms, name, locale);
+                        String fullPath = xmlPage.getRootPath()
+                            + "/"
+                            + tokens[0]
+                            + "/"
+                            + name
+                            + "."
+                            + EXTENSION_ELEMENT;
+                        content = prepareContent(content, cms, xmlPage, fullPath);
 
-                        return getResourceForElement(xmlPage, tokens[0], name, content.getBytes().length);
+                        return getResourceForElement(xmlPage, fullPath, content.getBytes().length);
                     }
                 }
 
@@ -790,7 +810,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 // set content
                 String content = getStringValue(cms, file, resource.getContents());
-                content = prepareContent(content, cms, xmlPage, true);
+                content = CmsStringUtil.extractHtmlBody(content).trim();
                 xml.setStringValue(cms, name, new Locale(tokens[0]), content);
 
                 // write file
@@ -859,46 +879,58 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * @param content the origin content of the xml page element
      * @param cms the initialized CmsObject
      * @param xmlPage the xml page resource
-     * @param save if the content should be prepared for saving or not
+     * @param path the full path to set as the title in the html head
      * 
      * @return the prepared content with the added html structure
      */
-    protected String prepareContent(String content, CmsObject cms, CmsResource xmlPage, boolean save) {
+    protected String prepareContent(String content, CmsObject cms, CmsResource xmlPage, String path) {
 
-        // extract content of <body>...</body> tag
+        // cut off eventually existing html skeleton
         content = CmsStringUtil.extractHtmlBody(content);
 
-        // remove unwanted "&amp;" from links
-        // content = filterAnchors(content);
+        // add tags for stylesheet
+        String stylesheet = getUriStyleSheet(cms, xmlPage);
 
-        if (!save) {
+        // content-type
+        String encoding = CmsLocaleManager.getResourceEncoding(cms, xmlPage);
+        String contentType = CmsResourceManager.MIMETYPE_HTML + "; charset=" + encoding;
 
-            // add tags for stylesheet
-            String stylesheet = getUriStyleSheet(cms, xmlPage);
+        content = CmsEncoder.adjustHtmlEncoding(content, encoding);
 
-            // rewrite uri
-            Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
-            if (obj != null) {
-                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
-                stylesheet = wrapper.rewriteLink(stylesheet);
-            }
-
-            String base = OpenCms.getSystemInfo().getOpenCmsContext();
-
-            StringBuffer result = new StringBuffer(content.length() + 1024);
-            result.append("<html><head>");
-            if (!"".equals(stylesheet)) {
-                result.append("<link href=\"");
-                result.append(base);
-                result.append(stylesheet);
-                result.append("\" rel=\"stylesheet\" type=\"text/css\">");
-            }
-
-            result.append("</head><body>");
-            result.append(content);
-            result.append("</body></html>");
-            content = result.toString();
+        // rewrite uri
+        Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
+        if (obj != null) {
+            CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
+            stylesheet = wrapper.rewriteLink(stylesheet);
         }
+
+        String base = OpenCms.getSystemInfo().getOpenCmsContext();
+
+        StringBuffer result = new StringBuffer(content.length() + 1024);
+        result.append("<html><head>");
+
+        // meta: content-type
+        result.append("<meta http-equiv=\"content-type\" content=\"");
+        result.append(contentType);
+        result.append("\">");
+
+        // title as full path
+        result.append("<title>");
+        result.append(cms.getRequestContext().removeSiteRoot(path));
+        result.append("</title>");
+
+        // stylesheet
+        if (!"".equals(stylesheet)) {
+            result.append("<link href=\"");
+            result.append(base);
+            result.append(stylesheet);
+            result.append("\" rel=\"stylesheet\" type=\"text/css\">");
+        }
+
+        result.append("</head><body>");
+        result.append(content);
+        result.append("</body></html>");
+        content = result.toString();
 
         return content.trim();
     }
@@ -961,16 +993,15 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
      * new created resource uses the values of the origin resource of the xml page where it is possible.<p>
      * 
      * @param xmlPage the xml page resource with the element to create a resource
-     * @param locale the locale to use for the element
-     * @param name the name of the element to use
+     * @param path the full path to set for the resource
      * @param length the length of the element content
      * 
      * @return a new created CmsResource
      */
-    private CmsResource getResourceForElement(CmsResource xmlPage, String locale, String name, int length) {
+    private CmsResource getResourceForElement(CmsResource xmlPage, String path, int length) {
 
         CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
-        wrap.setRootPath(xmlPage.getRootPath() + "/" + locale + "/" + name + "." + EXTENSION_ELEMENT);
+        wrap.setRootPath(path);
         wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
         wrap.setFolder(false);
         wrap.setLength(length);
