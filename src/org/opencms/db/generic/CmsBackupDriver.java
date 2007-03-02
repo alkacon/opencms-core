@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:10 $
- * Version: $Revision: 1.141.4.8 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.141.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.8 $
+ * @version $Revision: 1.141.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        CmsUUID projectLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
+        CmsUUID projectLastModified = new CmsUUID(
+            res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
@@ -971,7 +972,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(13, currentProject.getDescription());
             stmt.setLong(14, currentProject.getDateCreated());
             stmt.setInt(15, currentProject.getType().getMode());
-            stmt.setString(16, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(currentProject.getName()));
+            stmt.setString(16, CmsOrganizationalUnit.SEPARATOR + currentProject.getOuFqn());
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1235,10 +1236,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      */
     protected CmsBackupProject internalCreateBackupProject(ResultSet res, List resources) throws SQLException {
 
+        String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_OU_0")));
         return new CmsBackupProject(
             res.getInt("PUBLISH_TAG"),
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID"))),
-            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+            ou + res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
             res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),

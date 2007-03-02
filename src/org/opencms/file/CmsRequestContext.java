@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/02/05 16:02:49 $
- * Version: $Revision: 1.29.4.10 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.29.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.10 $
+ * @version $Revision: 1.29.4.11 $
  * 
  * @since 6.0.0 
  */
@@ -594,5 +594,6 @@ public final class CmsRequestContext {
         } else {
             m_ouFqn = userOu;
         }
+        m_ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
     }
 }

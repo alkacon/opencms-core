@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/03/01 15:01:29 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.6 
  */
@@ -65,7 +65,7 @@ public class CmsOrganizationalUnit {
 
     /** The id of the related default project. */
     private final CmsUUID m_projectId;
-    
+
     /**
      * Creates a new OpenCms organizational unit principal.
      * 
@@ -83,7 +83,7 @@ public class CmsOrganizationalUnit {
         m_flags = flags;
         m_projectId = projectId;
     }
-
+    
     /**
      * Returns the parent fully qualified name.<p>
      * 
@@ -125,6 +125,21 @@ public class CmsOrganizationalUnit {
         String parentFqn = getParentFqn(fqn);
         if (parentFqn != null) {
             return fqn.substring(parentFqn.length());
+        }
+        return fqn;
+    }
+
+    /**
+     * Returns the given fully qualified name without leading separator.<p> 
+     * 
+     * @param fqn the fully qualified name to fix
+     * 
+     * @return the given fully qualified name without leading separator
+     */
+    public static String removeLeadingSeparator(String fqn) {
+
+        if ((fqn != null) && fqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            return fqn.substring(1);
         }
         return fqn;
     }

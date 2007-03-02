@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:05 $
- * Version: $Revision: 1.241.4.19 $
+ * Date   : $Date: 2007/03/02 08:46:50 $
+ * Version: $Revision: 1.241.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.19 $
+ * @version $Revision: 1.241.4.20 $
  * 
  * @since 6.0.0 
  */
@@ -2142,7 +2142,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     protected CmsProject internalCreateProject(CmsDbContext dbc, ResultSet res) throws SQLException {
 
-        String ou = res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_OU_0")).substring(1);
+        String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_OU_0")));
         return new CmsProject(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID_0"))),
             ou + res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME_0")),

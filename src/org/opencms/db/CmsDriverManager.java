@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:17 $
- * Version: $Revision: 1.570.2.64 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.570.2.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3176,12 +3176,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // get the groups of the user if needed
         Set userGroupIds = new HashSet();
-        if (ous.isEmpty()) {
-            Iterator itGroups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false).iterator();
-            while (itGroups.hasNext()) {
-                CmsGroup group = (CmsGroup)itGroups.next();
-                userGroupIds.add(group.getId());
-            }
+        Iterator itGroups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false).iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            userGroupIds.add(group.getId());
         }
         
         // get all projects
@@ -3191,26 +3189,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
+            // if hidden
             if (project.isHidden()) {
-                // remove hidden projects
                 itProjects.remove();
                 continue;
             }
+
             boolean accessible = false;
+            // online project
+            accessible = accessible || project.isOnlineProject();
+            // if owner
+            accessible = accessible || project.getOwnerId().equals(dbc.currentUser().getId());
+
+            // project managers
             Iterator itOus = ous.iterator();
             while (!accessible && itOus.hasNext()) {
                 CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
-                // for project managers just check visibility
+                // for project managers check visibility
                 accessible = accessible || project.getOuFqn().startsWith(ou.getName());
                 accessible = accessible || (project.isShowInChildOus() && ou.getName().startsWith(project.getOuFqn()));
             }
-            // if owner
-            accessible = accessible || project.getOwnerId().equals(dbc.currentUser().getId());
-            // online project
-            accessible = accessible || project.isOnlineProject();
             
             if (!accessible) {
-                // if user or manager of project 
+                // if direct user or manager of project 
                 CmsUUID groupId = null;
                 if (userGroupIds.contains(project.getGroupId())) {
                     groupId = project.getGroupId();
@@ -3224,7 +3225,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             if (!accessible) {
-                // remove project from other ous
+                // remove not accessible project
                 itProjects.remove();
             }
         }
@@ -3649,7 +3650,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getOrgUnitsForRole(CmsDbContext dbc, CmsRole role, boolean includeSubOus) throws CmsException {
 
-        String ouFqn = m_securityManager.removeLeadingSlash(role.getOuFqn());
+        String ouFqn = role.getOuFqn();
         if (ouFqn == null) {
             ouFqn = "";
         }

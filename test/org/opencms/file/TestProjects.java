@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.16.4.6 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.16.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -51,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.6 $
+ * @version $Revision: 1.16.4.7 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -81,6 +82,7 @@ public class TestProjects extends OpenCmsTestCase {
         suite.addTest(new TestProjects("testCopyResourceToProject"));
         suite.addTest(new TestProjects("testDeleteProjectWithResources"));
         suite.addTest(new TestProjects("testReadProjectResources"));
+        suite.addTest(new TestProjects("testAccessibleProjects"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -316,5 +318,62 @@ public class TestProjects extends OpenCmsTestCase {
         assertEquals(2, projectResources.size());
         assertTrue(projectResources.contains("/sites/default/index.html"));
         assertTrue(projectResources.contains("/sites/default/folder1/"));
+    }
+    
+    /**
+     * Test the "getAllAccessibleProjects" method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testAccessibleProjects() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing to read all accessible projects");
+
+        // restore the after setup scenario
+        cms.deleteProject(cms.readProject("UnitTest1").getUuid());
+        cms.deleteProject(cms.readProject("UnitTest4").getUuid());
+        
+        List projects = cms.getAllAccessibleProjects();
+        assertEquals(2, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("Offline")));
+        
+        OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/test/", "test ou", 0, "/folder1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(3, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("Offline")));
+        assertTrue(projects.contains(cms.readProject("test/Offline")));
+        
+        cms.createUser("/test/user1", "user1", "my test user", null);
+        cms.loginUser("/test/user1", "user1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(1, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+
+        cms = getCmsObject();
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit("/test/"), "/test/user1");
+        cms.loginUser("/test/user1", "user1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(2, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("test/Offline")));
+        
+        cms = getCmsObject();
+        CmsProject prj = cms.readProject("Offline");
+        prj.setShowInChildOus(true);
+        cms.writeProject(prj);
+        cms.loginUser("/test/user1", "user1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(3, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("Offline")));
+        assertTrue(projects.contains(cms.readProject("test/Offline")));
     }
 }

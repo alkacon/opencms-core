@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:04 $
- * Version: $Revision: 1.110.2.22 $
+ * Date   : $Date: 2007/03/02 08:46:50 $
+ * Version: $Revision: 1.110.2.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.22 $
+ * @version $Revision: 1.110.2.23 $
  * 
  * @since 6.0.0 
  */
@@ -1654,10 +1654,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
             // maintain the default project synchronized
-            m_driverManager.getProjectDriver().deleteProjectResource(
-                dbc,
-                orgUnit.getProjectId(),
-                resourceName);
+            m_driverManager.getProjectDriver().deleteProjectResource(dbc, orgUnit.getProjectId(), resourceName);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -2186,7 +2183,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected CmsGroup internalCreateGroup(CmsDbContext dbc, ResultSet res) throws SQLException {
 
-        String ou = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0")).substring(1);
+        String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0")));
         String description = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0"));
         return new CmsGroup(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
@@ -2294,7 +2291,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsUser internalCreateUser(CmsDbContext dbc, ResultSet res) throws CmsDataAccessException, SQLException {
 
         String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME_0"));
-        String ou = res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0")).substring(1);
+        String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_USERS_USER_OU_0")));
         CmsUUID userId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID_0")));
         Map info = readUserInfos(dbc, userId);
         return new CmsUser(

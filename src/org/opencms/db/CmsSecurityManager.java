@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:21 $
- * Version: $Revision: 1.97.4.37 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.97.4.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -226,7 +226,11 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
-            m_driverManager.addUserToGroup(dbc, removeLeadingSlash(username), removeLeadingSlash(groupname), readRoles);
+            m_driverManager.addUserToGroup(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname),
+                readRoles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2, username, groupname), e);
         } finally {
@@ -851,7 +855,7 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             result = m_driverManager.createOrganizationalUnit(
                 dbc,
-                removeLeadingSlash(ouFqn),
+                CmsOrganizationalUnit.removeLeadingSeparator(ouFqn),
                 description,
                 flags,
                 resource);
@@ -889,13 +893,13 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject result = null;
         try {
-            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(getParentOrganizationalUnit(managergroupname)));
+            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
             result = m_driverManager.createProject(
                 dbc,
-                name,
+                CmsOrganizationalUnit.removeLeadingSeparator(name),
                 description,
-                removeLeadingSlash(groupname),
-                removeLeadingSlash(managergroupname),
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname),
+                CmsOrganizationalUnit.removeLeadingSeparator(managergroupname),
                 projecttype);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROJECT_1, name), e);
@@ -1064,7 +1068,12 @@ public final class CmsSecurityManager {
         CmsUser result = null;
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(name)));
-            result = m_driverManager.createUser(dbc, removeLeadingSlash(name), password, description, additionalInfos);
+            result = m_driverManager.createUser(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(name),
+                password,
+                description,
+                additionalInfos);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_USER_1, name), e);
         } finally {
@@ -1716,7 +1725,9 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getChild(dbc, m_driverManager.readGroup(dbc, removeLeadingSlash(groupname)));
+            result = m_driverManager.getChild(dbc, m_driverManager.readGroup(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname)));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_1, groupname), e);
         } finally {
@@ -1742,7 +1753,9 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getChilds(dbc, m_driverManager.readGroup(dbc, removeLeadingSlash(groupname)));
+            result = m_driverManager.getChilds(dbc, m_driverManager.readGroup(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname)));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_TRANSITIVE_1, groupname), e);
         } finally {
@@ -1814,8 +1827,8 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getGroupsOfUser(
                 dbc,
-                removeLeadingSlash(username),
-                removeLeadingSlash(ouFqn),
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                CmsOrganizationalUnit.removeLeadingSeparator(ouFqn),
                 includeChildOus,
                 readRoles,
                 directGroupsOnly,
@@ -1985,7 +1998,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsGroup result = null;
         try {
-            result = m_driverManager.getParent(dbc, removeLeadingSlash(groupname));
+            result = m_driverManager.getParent(dbc, CmsOrganizationalUnit.removeLeadingSeparator(groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_PARENT_GROUP_1, groupname), e);
         } finally {
@@ -2219,7 +2232,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getUsersOfGroup(
                 dbc,
-                removeLeadingSlash(groupname),
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname),
                 includeOtherOuUsers,
                 directUsersOnly,
                 readRoles);
@@ -2574,7 +2587,7 @@ public final class CmsSecurityManager {
             newUser = m_driverManager.importUser(
                 dbc,
                 id,
-                removeLeadingSlash(name),
+                CmsOrganizationalUnit.removeLeadingSeparator(name),
                 password,
                 firstname,
                 lastname,
@@ -2773,7 +2786,11 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
         try {
-            result = m_driverManager.loginUser(dbc, removeLeadingSlash(username), password, remoteAddress);
+            result = m_driverManager.loginUser(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                password,
+                remoteAddress);
         } finally {
             dbc.clear();
         }
@@ -2813,7 +2830,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         I_CmsPrincipal result = null;
         try {
-            result = m_driverManager.lookupPrincipal(dbc, removeLeadingSlash(principalName));
+            result = m_driverManager.lookupPrincipal(dbc, CmsOrganizationalUnit.removeLeadingSeparator(principalName));
         } finally {
             dbc.clear();
         }
@@ -3327,7 +3344,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsGroup result = null;
         try {
-            result = m_driverManager.readGroup(dbc, removeLeadingSlash(groupname));
+            result = m_driverManager.readGroup(dbc, CmsOrganizationalUnit.removeLeadingSeparator(groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_GROUP_FOR_NAME_1, groupname), e);
         } finally {
@@ -3386,7 +3403,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsOrganizationalUnit result = null;
         try {
-            result = m_driverManager.readOrganizationalUnit(dbc, removeLeadingSlash(ouFqn));
+            result = m_driverManager.readOrganizationalUnit(dbc, CmsOrganizationalUnit.removeLeadingSeparator(ouFqn));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_ORGUNIT_1, ouFqn), e);
         } finally {
@@ -3491,7 +3508,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         CmsProject result = null;
         try {
-            result = m_driverManager.readProject(dbc, name);
+            result = m_driverManager.readProject(dbc, CmsOrganizationalUnit.removeLeadingSeparator(name));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_FOR_NAME_1, name), e);
         } finally {
@@ -4028,7 +4045,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
         try {
-            result = m_driverManager.readUser(dbc, removeLeadingSlash(username));
+            result = m_driverManager.readUser(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
         } finally {
@@ -4055,7 +4072,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
         try {
-            result = m_driverManager.readUser(dbc, removeLeadingSlash(username), password);
+            result = m_driverManager.readUser(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username), password);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_USER_FOR_NAME_1, username), e);
         } finally {
@@ -4171,8 +4188,8 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
             m_driverManager.removeUserFromGroup(
                 dbc,
-                removeLeadingSlash(username),
-                removeLeadingSlash(groupname),
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname),
                 readRoles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_REMOVE_USER_FROM_GROUP_2, username, groupname), e);
@@ -4234,7 +4251,11 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.resetPassword(dbc, removeLeadingSlash(username), oldPassword, newPassword);
+            m_driverManager.resetPassword(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                oldPassword,
+                newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
         } finally {
@@ -4418,7 +4439,10 @@ public final class CmsSecurityManager {
 
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupName)));
-            m_driverManager.setParentGroup(dbc, removeLeadingSlash(groupName), removeLeadingSlash(parentGroupName));
+            m_driverManager.setParentGroup(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(groupName),
+                CmsOrganizationalUnit.removeLeadingSeparator(parentGroupName));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PARENT_GROUP_2, parentGroupName, groupName), e);
         } finally {
@@ -4442,7 +4466,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(username)));
-            m_driverManager.setPassword(dbc, removeLeadingSlash(username), newPassword);
+            m_driverManager.setPassword(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username), newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PASSWORD_1, username), e);
         } finally {
@@ -4645,8 +4669,8 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.userInGroup(
                 dbc,
-                removeLeadingSlash(username),
-                removeLeadingSlash(groupname),
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname),
                 false);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_USER_IN_GROUP_2, username, groupname), e);
@@ -5256,7 +5280,7 @@ public final class CmsSecurityManager {
      */
     protected String getParentOrganizationalUnit(String fqn) {
 
-        String ouFqn = CmsOrganizationalUnit.getParentFqn(removeLeadingSlash(fqn));
+        String ouFqn = CmsOrganizationalUnit.getParentFqn(CmsOrganizationalUnit.removeLeadingSeparator(fqn));
         if (ouFqn == null) {
             ouFqn = "";
         }
@@ -5566,20 +5590,5 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
-    }
-
-    /**
-     * Returns the given fully qualified name without leading slash.<p> 
-     * 
-     * @param fqn the fully qualified name to fix
-     * 
-     * @return the given fully qualified name without leading slash
-     */
-    protected String removeLeadingSlash(String fqn) {
-
-        if ((fqn != null) && fqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            return fqn.substring(1);
-        }
-        return fqn;
     }
 }

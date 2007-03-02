@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/02/07 15:03:21 $
- * Version: $Revision: 1.11.4.12 $
+ * Date   : $Date: 2007/03/02 08:46:51 $
+ * Version: $Revision: 1.11.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.12 $ 
+ * @version $Revision: 1.11.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -503,7 +503,7 @@ public final class CmsRole {
      */
     public String getOuFqn() {
 
-        return m_ouFqn;
+        return CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
     }
 
     /**
