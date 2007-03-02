@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/03/01 16:58:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/03/02 11:43:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.2.4
  */
@@ -348,7 +348,7 @@ public class CmsObjectWrapper {
         Iterator iter = wrappers.iterator();
         while (iter.hasNext()) {
             I_CmsResourceWrapper wrapper = (I_CmsResourceWrapper)iter.next();
-            List added = wrapper.getResourcesInFolder(m_cms, resourcename, filter);
+            List added = wrapper.addResourcesToFolder(m_cms, resourcename, filter);
             if (added != null) {
                 list.addAll(added);
             }

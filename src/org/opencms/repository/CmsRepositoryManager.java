@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryManager.java,v $
- * Date   : $Date: 2007/02/23 16:23:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/03/02 11:43:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,14 @@ import java.util.Map;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.4
  */
 public class CmsRepositoryManager {
+
+    /** Determines if the repository manager was configured or not. */
+    private boolean m_configured;
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
@@ -74,6 +77,23 @@ public class CmsRepositoryManager {
         m_repositoryList = new ArrayList();
         m_repositoryMap = new HashMap();
         m_frozen = false;
+        m_configured = true;
+    }
+
+    /**
+     * Creates a new unconfigured instance of the repository manager.<p>
+     * 
+     * Is used if there are no repositories configured.<p>
+     * 
+     * @param configured determines if the repository manager was configured
+     */
+    public CmsRepositoryManager(boolean configured) {
+
+        this();
+        m_configured = configured;
+        
+        m_repositoryList = Collections.unmodifiableList(m_repositoryList);
+        m_frozen = true;
     }
 
     /**
@@ -144,6 +164,16 @@ public class CmsRepositoryManager {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_REPOSITORY_CONFIG_FINISHED_0));
         }
 
+    }
+
+    /**
+     * Returns the configured.<p>
+     *
+     * @return the configured
+     */
+    public boolean isConfigured() {
+
+        return m_configured;
     }
 
 }

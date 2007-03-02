@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/03/01 16:58:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/03/02 11:43:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,9 @@ import java.util.Properties;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public class CmsWrappedResource {
 
@@ -335,8 +335,16 @@ public class CmsWrappedResource {
      */
     public static byte[] addUtf8Marker(byte[] content) {
 
-        if ((content[0] == (byte)0xEF) && (content[1] == (byte)0xBB) && (content[2] == (byte)0xBF)) {
+        if ((content != null)
+            && (content.length >= 3)
+            && (content[0] == (byte)0xEF)
+            && (content[1] == (byte)0xBB)
+            && (content[2] == (byte)0xBF)) {
             return content;
+        }
+
+        if (content == null) {
+            content = new byte[0];
         }
         
         byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
