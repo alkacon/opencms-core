@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/03/01 15:01:14 $
- * Version: $Revision: 1.31.4.9 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.31.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.9 $
+ * @version $Revision: 1.31.4.10 $
  * 
  * @since 6.0.0
  */
@@ -634,6 +634,27 @@ public class CmsPreferences extends CmsTabDialog {
 
         try {
             List allProjects = getCms().getAllAccessibleProjects();
+
+            boolean singleOu = true;
+            String ouFqn = null;
+            Iterator itProjects = allProjects.iterator();
+            while (itProjects.hasNext()) {
+                CmsProject prj = (CmsProject)itProjects.next();
+                if (prj.isOnlineProject()) {
+                    // skip the online project
+                    continue;
+                }
+                if (ouFqn == null) {
+                    // set the first ou
+                    ouFqn = prj.getOuFqn();
+                }
+                if (!ouFqn.equals(prj.getOuFqn())) {
+                    // break if one different ou is found
+                    singleOu = false;
+                    break;
+                }
+            }
+
             List options = new ArrayList(allProjects.size());
             List values = new ArrayList(allProjects.size());
             int checkedIndex = 0;
@@ -642,9 +663,19 @@ public class CmsPreferences extends CmsTabDialog {
             startProject = getParamTabWpProject();
 
             for (int i = 0, n = allProjects.size(); i < n; i++) {
-                CmsProject project = (CmsProject)allProjects.get(i);
-                options.add(project.getName());
-                // values.add("" + project.getId());
+                CmsProject project = (CmsProject)allProjects.get(i);                
+                String projectName = project.getSimpleName();
+                if (!singleOu && !project.isOnlineProject()) {
+                    try {
+                        projectName = projectName
+                            + " - "
+                            + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
+                                getLocale());
+                    } catch (CmsException e) {
+                        projectName = projectName + " - " + project.getOuFqn();
+                    }
+                }
+                options.add(projectName);
                 values.add(project.getName());
                 if (startProject.equals(project.getName())) {
                     checkedIndex = i;

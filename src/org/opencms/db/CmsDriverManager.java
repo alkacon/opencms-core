@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.570.2.65 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.570.2.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2311,6 +2311,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             deleteGroup(dbc, group, null);
         }
 
+        // delete projects
+        Iterator itProjects = m_projectDriver.readProjects(dbc, organizationalUnit.getName()).iterator();
+        while (itProjects.hasNext()) {
+            CmsProject project = (CmsProject)itProjects.next();
+            deleteProject(dbc, project);
+        }
+
         // delete roles
         Iterator itRoles = getGroups(dbc, organizationalUnit, true, true).iterator();
         while (itRoles.hasNext()) {
@@ -3181,7 +3188,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsGroup group = (CmsGroup)itGroups.next();
             userGroupIds.add(group.getId());
         }
-        
+
         // get all projects
         projects.addAll(m_projectDriver.readProjects(dbc, ""));
 
@@ -3207,9 +3214,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
                 // for project managers check visibility
                 accessible = accessible || project.getOuFqn().startsWith(ou.getName());
-                accessible = accessible || (project.isShowInChildOus() && ou.getName().startsWith(project.getOuFqn()));
             }
-            
+
             if (!accessible) {
                 // if direct user or manager of project 
                 CmsUUID groupId = null;
@@ -3221,7 +3227,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (groupId != null) {
                     String oufqn = readGroup(dbc, groupId).getOuFqn();
                     accessible = accessible || (oufqn.startsWith(dbc.getRequestContext().getOuFqn()));
-                    accessible = accessible || (project.isShowInChildOus() && oufqn.startsWith(project.getOuFqn()));
                 }
             }
             if (!accessible) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2007/02/22 11:14:16 $
- * Version: $Revision: 1.8.4.5 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.8.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.5 $ 
+ * @version $Revision: 1.8.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,6 +292,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_LIST_COLS_NAME_0 = "GUI_PROJECTS_LIST_COLS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_LIST_COLS_ORGUNIT_0 = "GUI_PROJECTS_LIST_COLS_ORGUNIT_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_OWNER_0 = "GUI_PROJECTS_LIST_COLS_OWNER_0";
 
     /** Message contant for key in the resource bundle. */
@@ -337,16 +340,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_LIST_NAME_0 = "GUI_PROJECTS_LIST_NAME_0";
     
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0";
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0";
     
     /** Message contant for key in the resource bundle. */
     public static final String GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0";
     
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0";
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.projects.messages";

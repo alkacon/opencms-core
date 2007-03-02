@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.15.4.4 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.15.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -71,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.4 $ 
+ * @version $Revision: 1.15.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,6 +149,9 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/projects/buttons/";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ORGUNIT = "cou";
 
     /**
      * Public constructor.<p>
@@ -315,20 +319,24 @@ public class CmsProjectsList extends A_CmsListDialog {
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
             CmsListItem item = getList().newItem(project.getUuid().toString());
-            item.set(LIST_COLUMN_NAME, project.getName());
+            item.set(LIST_COLUMN_NAME, project.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
+            item.set(
+                LIST_COLUMN_ORGUNIT,
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
+                    getLocale()));
             try {
                 item.set(LIST_COLUMN_OWNER, getCms().readUser(project.getOwnerId()).getName());
             } catch (Exception e) {
                 // ignore
             }
             try {
-                item.set(LIST_COLUMN_MANAGER, getCms().readGroup(project.getManagerGroupId()).getName());
+                item.set(LIST_COLUMN_MANAGER, getCms().readGroup(project.getManagerGroupId()).getSimpleName());
             } catch (Exception e) {
                 // ignore
             }
             try {
-                item.set(LIST_COLUMN_USER, getCms().readGroup(project.getGroupId()).getName());
+                item.set(LIST_COLUMN_USER, getCms().readGroup(project.getGroupId()).getSimpleName());
             } catch (Exception e) {
                 // ignore
             }
@@ -551,9 +559,15 @@ public class CmsProjectsList extends A_CmsListDialog {
         // add column for description
         CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
         descriptionCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_DESCRIPTION_0));
-        descriptionCol.setWidth("35%");
+        descriptionCol.setWidth("20%");
         descriptionCol.setTextWrapping(true);
         metadata.addColumn(descriptionCol);
+
+        // add column for organizational units
+        CmsListColumnDefinition ouCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
+        ouCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_ORGUNIT_0));
+        ouCol.setWidth("15%");
+        metadata.addColumn(ouCol);
 
         // add column for owner user
         CmsListColumnDefinition ownerCol = new CmsListColumnDefinition(LIST_COLUMN_OWNER);

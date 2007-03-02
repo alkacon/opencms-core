@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/02/21 14:45:00 $
- * Version: $Revision: 1.36.4.17 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.36.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.17 $
+ * @version $Revision: 1.36.4.18 $
  * 
  * @since 6.0.0
  */
@@ -793,6 +793,7 @@ public class CmsUserSettings {
         }
         if (m_project == null) {
             m_project = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
+            m_project = user.getOuFqn() + m_project;
         }
         // start view
         m_view = (String)m_user.getAdditionalInfo(PREFERENCES

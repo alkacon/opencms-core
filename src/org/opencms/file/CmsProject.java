@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2007/03/01 15:01:26 $
- * Version: $Revision: 1.19.8.3 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.19.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.19.8.3 $
+ * @version $Revision: 1.19.8.4 $
  * 
  * @since 6.0.0 
  */
@@ -111,9 +111,6 @@ public class CmsProject implements Cloneable, Comparable {
 
     /** Indicates that a normal project. */
     public static final int PROJECT_FLAG_NONE = 0;
-
-    /** Indicates a project that is displayed in child ous. */
-    public static final int PROJECT_FLAG_SHOWINCHILDOUS = 2;
 
     /** Indicates a normal project. */
     public static final CmsProjectType PROJECT_TYPE_NORMAL = CmsProjectType.MODE_PROJECT_NORMAL;
@@ -468,18 +465,6 @@ public class CmsProject implements Cloneable, Comparable {
     }
 
     /**
-     * Returns the 'show in child organizational units' flag.<p>
-     *
-     * @return the 'show in child organizational units' flag
-     * 
-     * @see #getFlags()
-     */
-    public boolean isShowInChildOus() {
-
-        return (getFlags() & PROJECT_FLAG_SHOWINCHILDOUS) == PROJECT_FLAG_SHOWINCHILDOUS;
-    }
-
-    /**
      * Returns <code>true</code> if this project is a workflow project.<p>
      * 
      * @return <code>true</code> if this project is a workflow project
@@ -575,18 +560,6 @@ public class CmsProject implements Cloneable, Comparable {
 
         CmsUUID.checkId(id, false);
         m_ownerId = id;
-    }
-
-    /**
-     * Sets the 'show in child organizational units' flag.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setShowInChildOus(boolean value) {
-
-        if (isShowInChildOus() != value) {
-            setFlags(getFlags() ^ PROJECT_FLAG_SHOWINCHILDOUS);
-        }
     }
 
     /**

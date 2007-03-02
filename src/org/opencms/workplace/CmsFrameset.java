@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/03/01 15:01:33 $
- * Version: $Revision: 1.86.4.11 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.86.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
@@ -53,7 +52,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -73,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.86.4.11 $ 
+ * @version $Revision: 1.86.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,40 +137,6 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * Returns a html select box filled with groups of the current user.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @return a html select box filled with groups of the current user
-     */
-    public String getGroupSelect(String htmlAttributes) {
-
-        // get the users groups from the request context
-        List allGroups = new Vector();
-        try {
-            allGroups = getCms().getGroupsOfUser(getSettings().getUser().getName(), false);
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }
-        }
-
-        List options = new ArrayList();
-        List values = new ArrayList();
-
-        // loop through all groups and build the result vectors
-        int numGroups = allGroups.size();
-        for (int i = 0; i < numGroups; i++) {
-            CmsGroup loopGroup = (CmsGroup)allGroups.get(i);
-            String loopGroupName = loopGroup.getName();
-            values.add(loopGroupName);
-            options.add(loopGroupName);
-        }
-
-        return buildSelect(htmlAttributes, options, values, 0);
-    }
-
-    /**
      * Returns the remote ip address of the current user.<p>
      * 
      * @return the remote ip address of the current user
@@ -234,6 +198,26 @@ public class CmsFrameset extends CmsWorkplace {
             allProjects = Collections.EMPTY_LIST;
         }
 
+        boolean singleOu = true;
+        String ouFqn = null;
+        Iterator itProjects = allProjects.iterator();
+        while (itProjects.hasNext()) {
+            CmsProject prj = (CmsProject)itProjects.next();
+            if (prj.isOnlineProject()) {
+                // skip the online project
+                continue;
+            }
+            if (ouFqn == null) {
+                // set the first ou
+                ouFqn = prj.getOuFqn();
+            }
+            if (!ouFqn.equals(prj.getOuFqn())) {
+                // break if one different ou is found
+                singleOu = false;
+                break;
+            }
+        }
+
         List options = new ArrayList();
         List values = new ArrayList();
         int selectedIndex = -1;
@@ -248,18 +232,28 @@ public class CmsFrameset extends CmsWorkplace {
 
         // now loop through all projects and fill the result vectors
         for (int i = 0, n = allProjects.size(); i < n; i++) {
-            CmsProject loopProject = (CmsProject)allProjects.get(i);
-            String loopProjectName = loopProject.getName();
-            String loopProjectId = loopProject.getUuid().toString();
+            CmsProject project = (CmsProject)allProjects.get(i);
+            String projectId = project.getUuid().toString();
+            String projectName = project.getSimpleName();
+            if (!singleOu && !project.isOnlineProject()) {
+                try {
+                    projectName = projectName
+                        + " - "
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
+                            getLocale());
+                } catch (CmsException e) {
+                    projectName = projectName + " - " + project.getOuFqn();
+                }
+            }
 
-            values.add(loopProjectId);
-            options.add(loopProjectName);
+            values.add(projectId);
+            options.add(projectName);
 
-            if (loopProject.getUuid().equals(getSettings().getProject())) {
+            if (project.getUuid().equals(getSettings().getProject())) {
                 // this is the user's current project
                 selectedIndex = i;
             }
-            if ((ou != null) && loopProject.getUuid().equals(ou.getProjectId())) {
+            if ((ou != null) && project.getUuid().equals(ou.getProjectId())) {
                 ouDefaultProjIndex = i;
             }
         }

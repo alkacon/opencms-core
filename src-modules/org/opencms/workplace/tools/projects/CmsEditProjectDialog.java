@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.16.4.2 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.16.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16.4.2 $ 
+ * @version $Revision: 1.16.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,8 +131,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
                     getUserGroup(),
                     getManagerGroup(),
                     m_project.getType());
-                newProject.setShowInChildOus(m_project.isShowInChildOus());
-                getCms().writeProject(newProject);
                 m_project = newProject;
             } else {
                 m_project.setGroupId(getCms().readGroup(getUserGroup()).getId());
@@ -214,7 +212,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
      * @return the simple name of the project
      */
     public String getName() {
-        
+
         return m_project.getSimpleName();
     }
 
@@ -267,7 +265,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
      * @param name the name to set
      */
     public void setName(String name) {
-        
+
         m_project.setName(name);
     }
 
@@ -290,7 +288,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
         m_paramProjectid = projectId;
     }
-    
+
     /**
      * Sets the resources of this project.<p>
      * 
@@ -304,7 +302,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         }
         m_resources = CmsFileUtil.removeRedundancies(value);
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
@@ -320,12 +318,12 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 6));
+            result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_PROJECT_EDITOR_LABEL_CONTENT_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(7, 7));
+            result.append(createDialogRowsHtml(6, 6));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -371,7 +369,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_project, "showInChildOus", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
     }
 
@@ -411,7 +408,12 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         try {
             setUserGroup(getCms().readGroup(m_project).getName());
         } catch (Exception e) {
-            // ignore
+            try {
+                setUserGroup(getCms().readGroup(
+                    getCms().getRequestContext().getOuFqn() + OpenCms.getDefaultUsers().getGroupUsers()).getName());
+            } catch (CmsException e1) {
+                // should never happen
+            }
         }
         try {
             setResources(getCms().readProjectResources(m_project));
@@ -419,14 +421,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             // ignore
         }
         if (m_oufqn == null) {
-            try {
-                m_oufqn = ((CmsOrganizationalUnit)OpenCms.getRoleManager().getOrgUnitsForRole(
-                    getCms(),
-                    CmsRole.PROJECT_MANAGER,
-                    true).get(0)).getName();
-            } catch (CmsException e) {
-                m_oufqn = getCms().getRequestContext().getOuFqn();
-            }
+            m_oufqn = getCms().getRequestContext().getOuFqn();
         }
     }
 

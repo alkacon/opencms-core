@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/03/02 08:46:50 $
- * Version: $Revision: 1.110.2.23 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.110.2.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.23 $
+ * @version $Revision: 1.110.2.24 $
  * 
  * @since 6.0.0 
  */
@@ -108,6 +108,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
+
+    /** The name of the offline project. */
+    private static final String OFFLINE_PROJECT_NAME = "Offline";
 
     /** The root path for organizational units. */
     private static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
@@ -185,11 +188,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_driverManager.getVfsDriver().createRelation(dbc, dbc.currentProject().getUuid(), relation);
             m_driverManager.getVfsDriver().createRelation(dbc, CmsProject.ONLINE_PROJECT_ID, relation);
 
-            // maintain the default project synchronized
-            m_driverManager.getProjectDriver().createProjectResource(
-                dbc,
-                orgUnit.getProjectId(),
-                resource.getRootPath());
+            try {
+                // be sure the project was not deleted
+                m_driverManager.readProject(dbc, orgUnit.getProjectId());
+                // maintain the default project synchronized
+                m_driverManager.getProjectDriver().createProjectResource(
+                    dbc,
+                    orgUnit.getProjectId(),
+                    resource.getRootPath());
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -373,9 +382,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
     }
-
-    /** The name of the offline project. */
-    private static final String OFFLINE_PROJECT_NAME = "Offline";
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createRootOrganizationalUnit(org.opencms.db.CmsDbContext)
@@ -574,8 +580,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 organizationalUnit.getId(),
                 CmsResourceFilter.DEFAULT);
             internalDeleteOrgUnitResource(dbc, resource);
-            // maintain the default project synchronized
-            m_driverManager.deleteProject(dbc, m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+            try {
+                // be sure the project was not deleted
+                m_driverManager.readProject(dbc, organizationalUnit.getProjectId());
+                // maintain the default project synchronized
+                m_driverManager.deleteProject(dbc, m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }
@@ -1653,8 +1665,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
             m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
-            // maintain the default project synchronized
-            m_driverManager.getProjectDriver().deleteProjectResource(dbc, orgUnit.getProjectId(), resourceName);
+            try {
+                // be sure the project was not deleted
+                m_driverManager.readProject(dbc, orgUnit.getProjectId());
+                // maintain the default project synchronized
+                m_driverManager.getProjectDriver().deleteProjectResource(dbc, orgUnit.getProjectId(), resourceName);
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2007/03/02 13:25:15 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.7 $
+ * @version $Revision: 1.16.4.8 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -362,18 +362,6 @@ public class TestProjects extends OpenCmsTestCase {
         projects = cms.getAllAccessibleProjects();
         assertEquals(2, projects.size());
         assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-        assertTrue(projects.contains(cms.readProject("test/Offline")));
-        
-        cms = getCmsObject();
-        CmsProject prj = cms.readProject("Offline");
-        prj.setShowInChildOus(true);
-        cms.writeProject(prj);
-        cms.loginUser("/test/user1", "user1");
-        
-        projects = cms.getAllAccessibleProjects();
-        assertEquals(3, projects.size());
-        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-        assertTrue(projects.contains(cms.readProject("Offline")));
         assertTrue(projects.contains(cms.readProject("test/Offline")));
     }
 }
