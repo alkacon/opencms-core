@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:39 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2007/03/05 16:04:43 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.16 $ 
+ * @version $Revision: 1.1.2.17 $ 
  * 
  * @since 7.0.0
  */
@@ -578,39 +578,43 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, String, boolean)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, CmsLock, boolean)
      */
-    public boolean isLockableInWorkflow(CmsUser user, String rootPath, boolean managersOnly) {
+    public boolean isLockableInWorkflow(CmsUser user, CmsLock lock, boolean managersOnly) {
 
+        if (!lock.getSystemLock().isWorkflow()) {
+            return false;
+        }
         boolean isLockable = false;
         try {
-            CmsLock lock = m_cms.getLock(m_cms.readResource(rootPath, CmsResourceFilter.ALL)).getSystemLock();
-            if (lock.isWorkflow()) {
-                if (OpenCms.getRoleManager().hasRoleForResource(m_cms, user.getName(), CmsRole.VFS_MANAGER, rootPath)) {
-                    // VFS managers may lock resources in a workflow anyway
-                    return true;
+            if (OpenCms.getRoleManager().hasRoleForResource(
+                m_cms,
+                user.getName(),
+                CmsRole.VFS_MANAGER,
+                lock.getResourceName())) {
+                // VFS managers may lock resources in a workflow anyway
+                return true;
+            }
+            CmsProject project = lock.getSystemLock().getProject();
+            if (!managersOnly) {
+                I_CmsPrincipal agents = getTaskAgent(project);
+                if (agents.isGroup()) {
+                    isLockable = m_cms.userInGroup(user.getName(), agents.getName());
+                } else {
+                    isLockable = (user.getId().equals(agents.getId()));
                 }
-                CmsProject project = lock.getProject();
-                isLockable = false;
-                if (!managersOnly) {
-                    I_CmsPrincipal agents = getTaskAgent(project);
-                    if (agents.isGroup()) {
-                        isLockable = m_cms.userInGroup(user.getName(), agents.getName());
-                    } else {
-                        isLockable = (user.getId().equals(agents.getId()));
-                    }
-                }
-                if (!isLockable) {
-                    I_CmsPrincipal managers = getTaskManager(project);
-                    if (managers.isGroup()) {
-                        isLockable = m_cms.userInGroup(user.getName(), managers.getName());
-                    } else {
-                        isLockable = (user.getId().equals(managers.getId()));
-                    }
+            }
+            if (!isLockable) {
+                I_CmsPrincipal managers = getTaskManager(project);
+                if (managers.isGroup()) {
+                    isLockable = m_cms.userInGroup(user.getName(), managers.getName());
+                } else {
+                    isLockable = (user.getId().equals(managers.getId()));
                 }
             }
         } catch (CmsException exc) {
-            LOG.error(exc);
+            // should never happens
+            LOG.error(exc.getLocalizedMessage(), exc);
         }
         return isLockable;
     }
@@ -834,7 +838,10 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         for (Iterator i = assignedResources.iterator(); i.hasNext();) {
             String resourceName = (String)i.next();
             CmsResource resource = m_cms.readResource(resourceName);
-            m_cms.unlockResource(resourceName);
+            if (!m_cms.getLock(resource).isUnlocked()) {
+                m_cms.unlockResource(resourceName);
+            }
+            // TODO: this should be done through the driver manager to prevent caching problems
             m_securityManager.getLockManager().removeResource(
                 new CmsDbContext(m_cms.getRequestContext()),
                 resource,

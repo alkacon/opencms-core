@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2007/03/01 15:01:25 $
- * Version: $Revision: 1.28.8.8 $
+ * Date   : $Date: 2007/03/05 16:04:37 $
+ * Version: $Revision: 1.28.8.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.workflow.I_CmsWorkflowManager;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.8 $ 
+ * @version $Revision: 1.28.8.9 $ 
  * 
  * @since 6.0.0 
  * 
@@ -257,6 +257,21 @@ public class CmsLock implements Cloneable {
     }
 
     /**
+     * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock,
+     * and the given user is the owner and the given project is the project of this lock.<p>
+     * 
+     * @param user the user to compare to the owner of this lock
+     * @param project the project to compare to the project of this lock
+     * 
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock, 
+     *      and the given user is the owner and the given project is the project of this lock
+     */
+    public boolean isExclusiveOwnedInProjectBy(CmsUser user, CmsProject project) {
+
+        return isExclusive() && isOwnedInProjectBy(user, project);
+    }
+
+    /**
      * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
      * 
      * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
@@ -286,7 +301,7 @@ public class CmsLock implements Cloneable {
      * The resource is lockable either
      * - if it is currently unlocked
      * - if it is a workflow lock and the user can lock the resource for edition, 
-     *       see {@link org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, String, boolean)} 
+     *       see {@link org.opencms.workflow.I_CmsWorkflowManager#isLockableInWorkflow(CmsUser, CmsLock, boolean)} 
      * - if it is not a workflow lock and already has a lock of another type set and the user is the lock owner
      * 
      * This may change by the implementation of the workflow lock.
@@ -304,7 +319,7 @@ public class CmsLock implements Cloneable {
             return true;
         }
         if (getSystemLock().isWorkflow() && m_wfManager != null) {
-            return (m_wfManager.isLockableInWorkflow(user, getResourceName(), false) && (getEditionLock().isUnlocked() || getEditionLock().isOwnedBy(
+            return (m_wfManager.isLockableInWorkflow(user, this, false) && (getEditionLock().isUnlocked() || getEditionLock().isOwnedBy(
                 user)));
         }
         return getEditionLock().isOwnedBy(user);

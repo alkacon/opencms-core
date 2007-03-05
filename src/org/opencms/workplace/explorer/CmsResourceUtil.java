@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/03/01 15:01:28 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/03/05 16:04:41 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,24 @@ public final class CmsResourceUtil {
      * Enumeration class for defining the resource project state.<p>
      */
     public static class CmsResourceProjectState extends A_CmsModeIntEnumeration {
+
+        /** Constant for the project state of a resource in a workflow that the current user can lock. */
+        protected static final CmsResourceProjectState LOCKABLE_WORKFLOW = new CmsResourceProjectState(3);
+
+        /** Constant for the project state locked for publishing. */
+        protected static final CmsResourceProjectState LOCKED_FOR_PUBLISHING = new CmsResourceProjectState(5);
+
+        /** Constant for the project state locked in current project. */
+        protected static final CmsResourceProjectState LOCKED_IN_CURRENT_PROJECT = new CmsResourceProjectState(1);
+
+        /** Constant for the project state locked in other project. */
+        protected static final CmsResourceProjectState LOCKED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
+
+        /** Constant for the project state of a resource in a workflow that the current user can not lock. */
+        protected static final CmsResourceProjectState NOT_LOCKABLE_WORKFLOW = new CmsResourceProjectState(4);
+
+        /** Constant for the project state unlocked. */
+        protected static final CmsResourceProjectState UNLOCKED = new CmsResourceProjectState(0);
 
         private static final long serialVersionUID = 4580450220255428716L;
 
@@ -89,6 +107,66 @@ public final class CmsResourceUtil {
         protected CmsResourceProjectState(int mode) {
 
             super(mode);
+        }
+
+        /**
+         * Checks if this is a {@link #LOCKABLE_WORKFLOW} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #LOCKABLE_WORKFLOW} state
+         */
+        public boolean isLockableInWorkflow() {
+
+            return (this == LOCKABLE_WORKFLOW);
+        }
+
+        /**
+         * Checks if this is a {@link #LOCKED_FOR_PUBLISHING} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #LOCKED_FOR_PUBLISHING} state
+         */
+        public boolean isLockedForPublishing() {
+
+            return (this == LOCKED_FOR_PUBLISHING);
+        }
+
+        /**
+         * Checks if this is a {@link #LOCKED_IN_CURRENT_PROJECT} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #LOCKED_IN_CURRENT_PROJECT} state
+         */
+        public boolean isLockedInCurrentProject() {
+
+            return (this == LOCKED_IN_CURRENT_PROJECT);
+        }
+
+        /**
+         * Checks if this is a {@link #LOCKED_IN_OTHER_PROJECT} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #LOCKED_IN_OTHER_PROJECT} state
+         */
+        public boolean isLockedInOtherProject() {
+
+            return (this == LOCKED_IN_OTHER_PROJECT);
+        }
+
+        /**
+         * Checks if this is a {@link #NOT_LOCKABLE_WORKFLOW} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #NOT_LOCKABLE_WORKFLOW} state
+         */
+        public boolean isNotLockableInWorkflow() {
+
+            return (this == NOT_LOCKABLE_WORKFLOW);
+        }
+
+        /**
+         * Checks if this is a {@link #UNLOCKED} state.<p>
+         * 
+         * @return <code>true</code> if this is a {@link #UNLOCKED} state
+         */
+        public boolean isUnlocked() {
+
+            return (this == UNLOCKED);
         }
     }
 
@@ -125,22 +203,19 @@ public final class CmsResourceUtil {
     public static final CmsResourceUtilSiteMode SITE_MODE_ROOT = new CmsResourceUtilSiteMode();
 
     /** Constant for the project state of a resource in a workflow that the current user can lock. */
-    public static final CmsResourceProjectState STATE_LOCKABLE_WORKFLOW = new CmsResourceProjectState(3);
+    public static final CmsResourceProjectState STATE_LOCKABLE_WORKFLOW = CmsResourceProjectState.LOCKABLE_WORKFLOW;
 
     /** Constant for the project state locked for publishing. */
-    public static final CmsResourceProjectState STATE_LOCKED_FOR_PUBLISHING = new CmsResourceProjectState(5);
+    public static final CmsResourceProjectState STATE_LOCKED_FOR_PUBLISHING = CmsResourceProjectState.LOCKED_FOR_PUBLISHING;
 
     /** Constant for the project state locked in current project. */
-    public static final CmsResourceProjectState STATE_LOCKED_IN_CURRENT_PROJECT = new CmsResourceProjectState(1);
+    public static final CmsResourceProjectState STATE_LOCKED_IN_CURRENT_PROJECT = CmsResourceProjectState.LOCKED_IN_CURRENT_PROJECT;
 
     /** Constant for the project state locked in other project. */
-    public static final CmsResourceProjectState STATE_LOCKED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
+    public static final CmsResourceProjectState STATE_LOCKED_IN_OTHER_PROJECT = CmsResourceProjectState.LOCKED_IN_OTHER_PROJECT;
 
     /** Constant for the project state of a resource in a workflow that the current user can not lock. */
-    public static final CmsResourceProjectState STATE_NOT_LOCKABLE_WORKFLOW = new CmsResourceProjectState(4);
-
-    /** Constant for the project state unlocked. */
-    public static final CmsResourceProjectState STATE_UNLOCKED = new CmsResourceProjectState(0);
+    public static final CmsResourceProjectState STATE_NOT_LOCKABLE_WORKFLOW = CmsResourceProjectState.NOT_LOCKABLE_WORKFLOW;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceUtil.class);
@@ -150,6 +225,9 @@ public final class CmsResourceUtil {
 
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
+
+    /** Constant for the project state unlocked. */
+    private static final CmsResourceProjectState STATE_UNLOCKED = CmsResourceProjectState.UNLOCKED;
 
     /** If greater than zero, the path will be formatted to this number of chars. */
     private int m_abbrevLength;
@@ -622,7 +700,7 @@ public final class CmsResourceUtil {
             if (getWorkflowProject() != null) {
                 isLockable = m_wfManager.isLockableInWorkflow(
                     getCms().getRequestContext().currentUser(),
-                    getResource().getRootPath(),
+                    getLock(),
                     false);
             }
             if (isLockable) {

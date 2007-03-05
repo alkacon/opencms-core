@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:24 $
- * Version: $Revision: 1.37.4.17 $
+ * Date   : $Date: 2007/03/05 16:04:37 $
+ * Version: $Revision: 1.37.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.17 $ 
+ * @version $Revision: 1.37.4.18 $ 
  * 
  * @since 6.0.0 
  * 
@@ -225,7 +225,7 @@ public final class CmsLockManager {
             lock = getParentLock(resource.getRootPath());
         }
         if (lock.getSystemLock().isPublish()
-            || (lock.getSystemLock().isWorkflow() || !lock.isLockableBy(dbc.currentUser()))) {
+            || (lock.getSystemLock().isWorkflow() && !lock.isLockableBy(dbc.currentUser()))) {
             lock = lock.getSystemLock();
         } else {
             lock = lock.getEditionLock();
@@ -467,8 +467,8 @@ public final class CmsLockManager {
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (!currentLock.getSystemLock().isUnlocked()) {
-                if (!currentLock.getRelatedLock().isNullLock()) {
-                    if (forceUnlock || (currentLock.getRelatedLock().getProjectId().equals(projectId))) {
+                if (!currentLock.getEditionLock().isUnlocked()) {
+                    if (forceUnlock || (currentLock.getEditionLock().getProjectId().equals(projectId))) {
                         unlockResource(currentLock.getResourceName(), false);
                     }
                 }

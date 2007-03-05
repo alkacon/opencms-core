@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/I_CmsWorkflowManager.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/05 16:04:43 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.security.I_CmsPrincipal;
 
@@ -51,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.0 
  */
@@ -349,12 +350,12 @@ public interface I_CmsWorkflowManager {
      * and if the user is a manager for this task or optionally an agent.
      * 
      * @param user the user to check lockability for
-     * @param rootPath the name of the resource to check (root path)
+     * @param lock the current lock on the resource to check
      * @param managersOnly <code>true</code> if agents are not allowed
      * 
      * @return if a resource assigned to a task is lockable for the current user
      */
-    boolean isLockableInWorkflow(CmsUser user, String rootPath, boolean managersOnly);
+    boolean isLockableInWorkflow(CmsUser user, CmsLock lock, boolean managersOnly);
 
     /**
      * Publishes the resources in the workflow project assigned to a task.<p>

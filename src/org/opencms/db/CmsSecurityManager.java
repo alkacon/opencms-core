@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.97.4.38 $
+ * Date   : $Date: 2007/03/05 16:04:41 $
+ * Version: $Revision: 1.97.4.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -343,7 +343,16 @@ public final class CmsSecurityManager {
      */
     public void checkManagerOfProjectRole(CmsDbContext dbc, CmsProject project) throws CmsRoleViolationException {
 
-        if (!hasManagerOfProjectRole(dbc, project)) {
+        boolean hasRole = false;
+        try {
+            hasRole = m_driverManager.getAllManageableProjects(dbc).contains(project);
+        } catch (CmsException e) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (!hasRole) {
             throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_NOT_MANAGER_OF_PROJECT_2,
                 dbc.currentUser().getName(),
@@ -468,14 +477,6 @@ public final class CmsSecurityManager {
                     permissionIssues.addException(new CmsSecurityException(Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1,
                         dbc.removeSiteRoot(res.getRootPath()))));
-                }
-            }
-
-            if (permissionIssues.hasExceptions()) {
-                // there have been permission issues
-                if (hasManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject())) {
-                    // if user is a manager of the project, permission issues are void because he can publish anyway
-                    permissionIssues = new CmsMultiException();
                 }
             }
             if (resourceIssues.hasExceptions() || permissionIssues.hasExceptions()) {
@@ -2245,70 +2246,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the current user has management access to the given project.<p>
-     * 
-     * @param dbc the current database context
-     * @param project the project to check
-     *
-     * @return <code>true</code>, if the user has management access to the project
-     */
-    public boolean hasManagerOfProjectRole(CmsDbContext dbc, CmsProject project) {
-
-        if (project.isOnlineProject()) {
-            // no user is the project manager of the "Online" project
-            return false;
-        }
-
-        if (dbc.currentUser().getId().equals(project.getOwnerId())) {
-            // user is the owner of the current project
-            return true;
-        }
-
-        try {
-            if (hasRole(
-                dbc,
-                dbc.currentUser(),
-                CmsRole.PROJECT_MANAGER.forOrgUnit(getParentOrganizationalUnit(m_driverManager.readGroup(
-                    dbc,
-                    project.getManagerGroupId()).getName())))) {
-                // user is admin            
-                return true;
-            }
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
-
-        // get all groups of the user
-        List groups;
-        try {
-            groups = m_driverManager.getGroupsOfUser(
-                dbc,
-                dbc.currentUser().getName(),
-                "",
-                true,
-                false,
-                false,
-                dbc.getRequestContext().getRemoteAddress());
-        } catch (CmsException e) {
-            // any exception: result is false
-            return false;
-        }
-
-        for (int i = 0; i < groups.size(); i++) {
-            // check if the user is a member in the current projects manager group
-            if (((CmsGroup)groups.get(i)).getId().equals(project.getManagerGroupId())) {
-                // this group is manager of the project
-                return true;
-            }
-        }
-
-        // the user is not manager of the current project
-        return false;
-    }
-
-    /**
      * Performs a non-blocking permission check on a resource.<p>
      * 
      * This test will not throw an exception in case the required permissions are not
@@ -2725,8 +2662,15 @@ public final class CmsSecurityManager {
      */
     public boolean isManagerOfProject(CmsRequestContext context) {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        return hasManagerOfProjectRole(dbc, context.currentProject());
+        try {
+            return getAllManageableProjects(context).contains(context.currentProject());
+        } catch (CmsException e) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            return false;
+        }
     }
 
     /**
@@ -4573,7 +4517,7 @@ public final class CmsSecurityManager {
      * @param removeWfLocks if the workflow lock should be removed too
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#PROJECT_MANAGER} for the current project. 
+     * @throws CmsRoleViolationException if the current user does not own the required permissions. 
      */
     public void unlockProject(CmsRequestContext context, CmsUUID projectId, boolean removeWfLocks)
     throws CmsException, CmsRoleViolationException {
@@ -4877,7 +4821,7 @@ public final class CmsSecurityManager {
      * @param project the project that should be written
      * @param context the current request context
      * 
-     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER} for the current project. 
+     * @throws CmsRoleViolationException if the current user does not own the required permissions. 
      * @throws CmsException if operation was not successful
      */
     public void writeProject(CmsRequestContext context, CmsProject project)
@@ -4885,9 +4829,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(m_driverManager.readGroup(
-                dbc,
-                project.getManagerGroupId()).getName()));
+            checkManagerOfProjectRole(dbc, project);
             m_driverManager.writeProject(dbc, project);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_PROJECT_1, project.getName()), e);
@@ -5393,6 +5335,37 @@ public final class CmsSecurityManager {
                 // modify permissions so that view is allowed
                     permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
                     permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_VIEW);
+            }
+        }
+
+        if (requiredPermissions.requiresDirectPublishPermission()) {
+            // direct publish permission is required
+            if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_DIRECT_PUBLISH) == 0) {
+                // but the user has no direct publish permission, so check if the user has the project manager role
+                boolean canIgnorePublishPermission = hasRoleForResource(
+                    dbc,
+                    dbc.currentUser(),
+                    CmsRole.PROJECT_MANAGER,
+                    resource);
+                // if not, check the manageable projects
+                if (!canIgnorePublishPermission) {
+                    Iterator itProjects = m_driverManager.getAllManageableProjects(dbc).iterator();
+                    while (itProjects.hasNext()) {
+                        CmsProject project = (CmsProject)itProjects.next();
+                        if (CmsProject.isInsideProject(m_driverManager.readProjectResources(dbc, project), resource)) {
+                            canIgnorePublishPermission = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (canIgnorePublishPermission) {
+                    // direct publish permission can be ignored
+                    permissions.setPermissions(
+                    // modify permissions so that direct publish is allowed
+                        permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_DIRECT_PUBLISH,
+                        permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+                }
             }
         }
 

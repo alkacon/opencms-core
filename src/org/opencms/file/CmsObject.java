@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/03/01 15:01:25 $
- * Version: $Revision: 1.146.4.30 $
+ * Date   : $Date: 2007/03/05 16:04:42 $
+ * Version: $Revision: 1.146.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.30 $
+ * @version $Revision: 1.146.4.31 $
  * 
  * @since 6.0.0 
  */
@@ -152,7 +152,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
@@ -836,7 +836,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
 
@@ -1266,11 +1266,7 @@ public final class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
 
-        // reading permissions is allowed even if the resource is marked as deleted
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        CmsUser user = m_context.currentUser();
-
-        return m_securityManager.getPermissions(m_context, resource, user);
+        return getPermissions(resourceName, m_context.currentUser().getName());
     }
 
     /**
@@ -1285,9 +1281,10 @@ public final class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
 
-        CmsAccessControlList acList = getAccessControlList(resourceName);
+        // reading permissions is allowed even if the resource is marked as deleted
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         CmsUser user = readUser(userName);
-        return acList.getPermissions(user, getGroupsOfUser(userName, false));
+        return m_securityManager.getPermissions(m_context, resource, user);
     }
 
     /**
@@ -1925,7 +1922,7 @@ public final class CmsObject {
      *
      * @throws CmsException if the login was not successful
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public String loginWebUser(String username, String password) throws CmsException {
 
@@ -3171,7 +3168,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not succesful
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public CmsUser readWebUser(String username) throws CmsException {
 
@@ -3190,7 +3187,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
@@ -3794,7 +3791,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @deprecated there are no more webusers
+     * @deprecated there are no more webusers, use a user without any role!
      */
     public void writeWebUser(CmsUser user) throws CmsException {
 

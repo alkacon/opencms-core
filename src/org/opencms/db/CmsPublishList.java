@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/03/01 15:01:16 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2007/03/05 16:04:40 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.3 $
+ * @version $Revision: 1.25.4.4 $
  * 
  * @since 6.0.0
  * 
@@ -279,6 +279,7 @@ public class CmsPublishList {
         result.append("publish history ID: ").append(m_publishHistoryId.toString()).append("\n");
         result.append("resources: ").append(m_fileList.toString()).append("\n");
         result.append("folders: ").append(m_folderList.toString()).append("\n");
+        result.append("deletedFolders: ").append(m_deletedFolderList.toString()).append("\n");
         result.append("]\n");
         return result.toString();
     }

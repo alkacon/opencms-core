@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.16.4.8 $
+ * Date   : $Date: 2007/03/05 16:04:43 $
+ * Version: $Revision: 1.16.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.8 $
+ * @version $Revision: 1.16.4.9 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -98,6 +98,96 @@ public class TestProjects extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test the "getAllAccessibleProjects" method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testAccessibleProjects() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing to read all accessible projects");
+
+        // restore the after setup scenario
+        cms.deleteProject(cms.readProject("UnitTest1").getUuid());
+        cms.deleteProject(cms.readProject("UnitTest4").getUuid());
+        
+        List projects = cms.getAllAccessibleProjects();
+        assertEquals(2, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("Offline")));
+        
+        OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/test/", "test ou", 0, "/folder1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(3, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("Offline")));
+        assertTrue(projects.contains(cms.readProject("test/Offline")));
+        
+        cms.createUser("/test/user1", "user1", "my test user", null);
+        cms.loginUser("/test/user1", "user1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(1, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+
+        cms = getCmsObject();
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit("/test/"), "/test/user1");
+        cms.loginUser("/test/user1", "user1");
+        
+        projects = cms.getAllAccessibleProjects();
+        assertEquals(2, projects.size());
+        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
+        assertTrue(projects.contains(cms.readProject("test/Offline")));
+    }
+
+    /**
+     * Test the "copy resource to project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyResourceToProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing copying a resource to a project");
+
+        String projectName = "UnitTest1";
+
+        String oldSite = cms.getRequestContext().getSiteRoot();
+        cms.getRequestContext().setSiteRoot("/");
+        try {
+            CmsProject project = cms.createProject(
+                projectName,
+                "Unit test project 1",
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                CmsProject.PROJECT_TYPE_NORMAL);
+            cms.getRequestContext().setCurrentProject(project);
+            cms.copyResourceToProject("/sites/default/index.html");
+            cms.copyResourceToProject("/sites/default/folder1/");
+        } finally {
+            cms.getRequestContext().setSiteRoot(oldSite);
+        }
+
+        CmsProject current = cms.readProject(projectName);
+        cms.getRequestContext().setCurrentProject(current);
+
+        // some basic project tests
+        assertEquals(projectName, current.getName());
+        assertFalse(current.isOnlineProject());
+
+        // check the project resources
+        List currentResources = cms.readProjectResources(current);
+        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/index.html"));
+        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/folder1/"));
+        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/folder1/subfolder11/index.html"));
+        assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/"));
+        assertFalse(CmsProject.isInsideProject(currentResources, "/"));
+        assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/folder2/index.html"));
     }
 
     /**
@@ -160,7 +250,7 @@ public class TestProjects extends OpenCmsTestCase {
             }
         }
     }
-
+    
     /**
      * Test the "delete project with resources" function.<p>
      * 
@@ -231,51 +321,6 @@ public class TestProjects extends OpenCmsTestCase {
     }
 
     /**
-     * Test the "copy resource to project" function.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testCopyResourceToProject() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing copying a resource to a project");
-
-        String projectName = "UnitTest1";
-
-        String oldSite = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().setSiteRoot("/");
-        try {
-            CmsProject project = cms.createProject(
-                projectName,
-                "Unit test project 1",
-                OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-                CmsProject.PROJECT_TYPE_NORMAL);
-            cms.getRequestContext().setCurrentProject(project);
-            cms.copyResourceToProject("/sites/default/index.html");
-            cms.copyResourceToProject("/sites/default/folder1/");
-        } finally {
-            cms.getRequestContext().setSiteRoot(oldSite);
-        }
-
-        CmsProject current = cms.readProject(projectName);
-        cms.getRequestContext().setCurrentProject(current);
-
-        // some basic project tests
-        assertEquals(projectName, current.getName());
-        assertFalse(current.isOnlineProject());
-
-        // check the project resources
-        List currentResources = cms.readProjectResources(current);
-        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/index.html"));
-        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/folder1/"));
-        assertTrue(CmsProject.isInsideProject(currentResources, "/sites/default/folder1/subfolder11/index.html"));
-        assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/"));
-        assertFalse(CmsProject.isInsideProject(currentResources, "/"));
-        assertFalse(CmsProject.isInsideProject(currentResources, "/sites/default/folder2/index.html"));
-    }
-
-    /**
      * Test the "readProjectResources" method.<p>
      * 
      * @throws Exception if the test fails
@@ -318,50 +363,5 @@ public class TestProjects extends OpenCmsTestCase {
         assertEquals(2, projectResources.size());
         assertTrue(projectResources.contains("/sites/default/index.html"));
         assertTrue(projectResources.contains("/sites/default/folder1/"));
-    }
-    
-    /**
-     * Test the "getAllAccessibleProjects" method.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testAccessibleProjects() throws Exception {
-
-        CmsObject cms = getCmsObject();
-
-        echo("Testing to read all accessible projects");
-
-        // restore the after setup scenario
-        cms.deleteProject(cms.readProject("UnitTest1").getUuid());
-        cms.deleteProject(cms.readProject("UnitTest4").getUuid());
-        
-        List projects = cms.getAllAccessibleProjects();
-        assertEquals(2, projects.size());
-        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-        assertTrue(projects.contains(cms.readProject("Offline")));
-        
-        OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/test/", "test ou", 0, "/folder1");
-        
-        projects = cms.getAllAccessibleProjects();
-        assertEquals(3, projects.size());
-        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-        assertTrue(projects.contains(cms.readProject("Offline")));
-        assertTrue(projects.contains(cms.readProject("test/Offline")));
-        
-        cms.createUser("/test/user1", "user1", "my test user", null);
-        cms.loginUser("/test/user1", "user1");
-        
-        projects = cms.getAllAccessibleProjects();
-        assertEquals(1, projects.size());
-        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-
-        cms = getCmsObject();
-        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit("/test/"), "/test/user1");
-        cms.loginUser("/test/user1", "user1");
-        
-        projects = cms.getAllAccessibleProjects();
-        assertEquals(2, projects.size());
-        assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
-        assertTrue(projects.contains(cms.readProject("test/Offline")));
     }
 }

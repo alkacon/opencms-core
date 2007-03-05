@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.17.8.5 $
+ * Date   : $Date: 2007/03/05 16:04:43 $
+ * Version: $Revision: 1.17.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -42,6 +44,9 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -49,6 +54,7 @@ import org.opencms.util.CmsResourceTranslator;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -59,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.8.5 $
+ * @version $Revision: 1.17.8.6 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -177,6 +183,8 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testDeleteAllSiblings"));
         suite.addTest(new TestSiblings("testSiblingStateIssue"));
         suite.addTest(new TestSiblings("testSiblingsRelations"));
+        suite.addTest(new TestSiblings("testSiblingProjects"));
+        suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -424,6 +432,131 @@ public class TestSiblings extends OpenCmsTestCase {
      */
 
     /**
+     * Tests the "project last modified" state with sibling operations across different projects.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingProjects() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the 'project last modified' state of siblings across different projects");
+
+        String source = "/folder1/image1.gif";
+        String target = "/folder2/image1_sibling2.gif";
+        createSibling(this, cms, source, target);
+
+        OpenCms.getPublishManager().publishResource(cms, target, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+        assertLock(cms, target, CmsLockType.UNLOCKED);
+
+        // create a new org unit, that will automatically create a new project...
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            "/test",
+            "test",
+            0,
+            "/folder1");
+
+        // this user will have publish permissions on the test ou project, but not on the root Offline project
+        cms.createUser("/test/myuser", "myuser", "blah-blah", null);
+        cms.addUserToGroup("/test/myuser", ou.getName() + OpenCms.getDefaultUsers().getGroupUsers());
+        // the default permissions for the user are: +r+w+v+c since it is indirect user of the /Users group, 
+        // so we need to explicitly remove the w flag, but we can not do that on the sibling itself, 
+        // since the ACEs are bound to the resource entries, so we do it on the folder
+        cms.lockResource("/folder2/");
+        cms.chacc("/folder2/", I_CmsPrincipal.PRINCIPAL_USER, "/test/myuser", "-w");
+
+        OpenCms.getPublishManager().publishResource(cms, "/folder2/");
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject prj = cms.readProject(ou.getProjectId());
+
+        cms.loginUser("/test/myuser", "myuser");
+        cms.getRequestContext().setCurrentProject(prj);
+
+        // check the permissions
+        assertTrue(cms.hasPermissions(
+            cms.readResource(source, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ALL));
+        assertFalse(cms.hasPermissions(
+            cms.readResource(target, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ALL));
+
+        // change a resource attribute
+        cms.lockResource(source);
+        cms.setDateLastModified(source, System.currentTimeMillis(), false);
+        // check the project las modified
+        assertProject(cms, source, prj);
+        // the sibling has the same project last modified
+        assertProject(cms, target, prj);
+
+        // check the publish list
+        CmsPublishList pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source), true);
+        assertEquals(2, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source)));
+        assertTrue(pl.getFileList().contains(cms.readResource("/folder1/image1_sibling.gif")));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        // the sibling has been published, since we just changed a resource attribute, this is ok so
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // now the same for an structure property
+        cms.lockResource(source);
+        cms.writePropertyObject(source, new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "desc", null));
+        // check the project las modified
+        assertProject(cms, source, prj);
+        // the sibling has the same project last modified
+        assertProject(cms, target, prj);
+        // the sibling is still unchanged since no shared property has been changed
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // check the publish list
+        pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source), true);
+        assertEquals(1, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source)));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // now check deleting the sibling
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_REMOVE_SIBLINGS);
+        assertState(cms, source, CmsResourceState.STATE_DELETED);
+        // the sibling has not been deleted, since the current user has no write permissions on the sibling!
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // check the publish list
+        pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source, CmsResourceFilter.ALL), true);
+        assertEquals(2, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source, CmsResourceFilter.ALL)));
+        assertTrue(pl.getFileList().contains(cms.readResource("/folder1/image1_sibling.gif", CmsResourceFilter.ALL)));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+        assertFalse(cms.existsResource(source));
+        // the sibling has not been published!
+        assertTrue(cms.existsResource(target));
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+        assertSiblingCount(cms, target, 1);
+    }
+
+    /**
      * Tests the "copy as new sibling" function.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -436,7 +569,32 @@ public class TestSiblings extends OpenCmsTestCase {
         echo("Creating a new sibling " + target + " from " + source);
         createSibling(this, cms, source, target);
     }
+    
+    /**
+     * Tests creating 2 new siblings and publishing just one of them.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCreateIssue() throws Throwable {
 
+        CmsObject cms = getCmsObject();
+        echo("Testing creating 2 new siblings and publishing just one of them");
+
+        String source = "/folder1/newsource.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        String target = "/folder1/newsibling.txt";
+        cms.createSibling(source, target, null);
+        
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+        assertState(cms, target, CmsResourceState.STATE_NEW);
+        
+        OpenCms.getPublishManager().publishResource(cms, source);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_NEW);
+    }
+    
     /**
      * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
      * 

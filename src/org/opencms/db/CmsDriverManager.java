@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.570.2.66 $
+ * Date   : $Date: 2007/03/05 16:04:38 $
+ * Version: $Revision: 1.570.2.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2974,7 +2974,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // iterate all resources in the direct publish list
                 CmsResource directPublishResource = (CmsResource)it.next();
                 if (directPublishResource.isFolder()) {
-
                     // when publishing a folder directly, 
                     // the folder and all modified resources within the tree below this folder 
                     // and with the last change done in the current project are candidates if lockable
@@ -2982,12 +2981,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (!directPublishResource.getState().isUnchanged()
                         && lock.isLockableBy(dbc.currentUser())
                         && !lock.getSystemLock().isWorkflow()) {
-                        publishList.addFolder(directPublishResource);
+
+                        try {
+                            m_securityManager.checkPermissions(dbc, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                            publishList.addFolder(directPublishResource);
+                        } catch (CmsException e) {
+                            // skip if not enough permissions
+                        }
                     }
 
                     if (publishList.isPublishSubResources()) {
                         // add all sub resources of the folder
-
                         List folderList = m_vfsDriver.readResourceTree(
                             dbc,
                             dbc.currentProject().getUuid(),
@@ -3032,7 +3036,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // if it is modified and lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
                     if (lock.isLockableBy(dbc.currentUser()) && !lock.getSystemLock().isWorkflow()) {
-                        publishList.addFile(directPublishResource);
+                        // check permissions
+                        try {
+                            m_securityManager.checkPermissions(dbc, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                            publishList.addFile(directPublishResource);
+                        } catch (CmsException e) {
+                            // skip if not enough permissions
+                        }
                     }
                 }
             }
@@ -3040,7 +3050,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // Step 2: if desired, extend the list of files to publish with related siblings
         if (publishList.isPublishSiblings()) {
-
             List publishFiles = publishList.getFileList();
             int size = publishFiles.size();
 
@@ -3054,7 +3063,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             publishList.addFiles(filterSiblings(dbc, publishList, siblingsClosure));
         }
-
         publishList.initialize();
     }
 
@@ -3303,6 +3311,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 continue;
             }
         }
+
         // return the list of projects
         ArrayList manageableProjects = new ArrayList(projects);
         Collections.sort(manageableProjects);
@@ -7493,29 +7502,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         putUserInCache(user);
     }
 
-    /**
-     * Updates the user information of a web user.<br>
-     * 
-     * Only a web user can be updated this way.<p>
-     *
-     * The user id has to be a valid OpenCms user id.<br>
-     * 
-     * The user with the given id will be completely overriden
-     * by the given data.<p>
-     * 
-     * @param dbc the current database context
-     * @param user the user to be updated
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public void writeWebUser(CmsDbContext dbc, CmsUser user) throws CmsException {
-
-        clearUserCache(user);
-        m_userDriver.writeUser(dbc, user);
-        // update the cache
-        putUserInCache(user);
-    }
-
     /** 
      * Converts a resource to a folder (if possible).<p>
      * 
@@ -7552,30 +7538,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
-    }
-
-    /**
-     * Checks if this is a valid group for webusers.<p>
-     * 
-     * @param dbc the current database context
-     * @param group the group to be checked
-     *
-     * @return true if the group does not belong to users, administrators or projectmanagers
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    protected boolean isWebgroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
-
-        if (OpenCms.getDefaultUsers().isGroupGuests(group.getName())) {
-            return true;
-        } else {
-            // check if the group belongs to Users, Administrators or Projectmanager
-            if (!group.getParentId().isNullUUID()) {
-                // check is the parentgroup is a webgroup
-                return isWebgroup(dbc, m_userDriver.readGroup(dbc, group.getParentId()));
-            }
-        }
-        return false;
     }
 
     /**
@@ -7851,6 +7813,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!"/".equals(res.getRootPath()) && !checkParentResource(dbc, newFolderList, res)) {
                     continue;
                 }
+                // check permissions
+                try {
+                    m_securityManager.checkPermissions(dbc, res, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                } catch (CmsException e) {
+                    // skip if not enough permissions
+                    continue;
+                }
                 if (res.isFolder()) {
                     newFolderList.add(res);
                 }
@@ -7900,6 +7869,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 if (!"/".equals(res.getRootPath()) && !checkParentResource(dbc, publishList.getFolderList(), res)) {
                     // don't add resources that have no parent in the online project
+                    continue;
+                }
+                // check permissions
+                try {
+                    m_securityManager.checkPermissions(dbc, res, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                } catch (CmsException e) {
+                    // skip if not enough permissions
                     continue;
                 }
                 result.add(res);
