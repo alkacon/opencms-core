@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepository.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-
 import org.apache.commons.logging.Log;
 
 /**
@@ -53,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -75,14 +73,6 @@ public class CmsRepository extends A_CmsRepository {
 
         super();
         m_wrappers = new ArrayList();
-    }
-
-    /**
-     * @see org.opencms.repository.I_CmsRepository#init(javax.servlet.ServletConfig)
-     */
-    public void init(ServletConfig servletConfig) {
-
-        // noop
     }
 
     /**

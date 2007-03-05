@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.4 $
+ * @version $Revision: 1.25.4.5 $
  * 
  * @since 6.0.0
  */
@@ -538,12 +538,20 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, 0, A_TYPE);
 
         // repository filter rules
-        digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER + "/" + N_REGEX, "addFilterRule", 1);
+        digester.addCallMethod(
+            "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER + "/" + N_REGEX,
+            "addFilterRule",
+            1);
         digester.addCallParam("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER + "/" + N_REGEX, 0);
-        
+
         digester.addSetNext("*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILTER, "setFilter");
-        
+
         digester.addSetNext("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "addRepositoryClass");
+
+        // create at least a repository manager though no repositories are configured
+        if (m_repositoryManager == null) {
+            m_repositoryManager = new CmsRepositoryManager(false);
+        }
     }
 
     /**
@@ -789,50 +797,56 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         }
 
-        // <repositories> node
-        Element repositoriesElement = parent.addElement(N_REPOSITORIES);
+        if (m_repositoryManager.isConfigured()) {
+            List repositories = m_repositoryManager.getRepositories();
+            if (repositories != null) {
 
-        i = m_repositoryManager.getRepositories().iterator();
-        while (i.hasNext()) {
+                // <repositories> node
+                Element repositoriesElement = parent.addElement(N_REPOSITORIES);
 
-            // <repository> node
-            A_CmsRepository repository = (A_CmsRepository)i.next();
-            Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
-            repositoryElement.addAttribute(A_NAME, repository.getName());
-            repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
+                i = repositories.iterator();
+                while (i.hasNext()) {
 
-            // <params> node
-            Map config = repository.getConfiguration();
-            if ((config != null) && (config.size() > 0)) {
-                Element paramsElement = repositoryElement.addElement(N_PARAMS);
+                    // <repository> node
+                    A_CmsRepository repository = (A_CmsRepository)i.next();
+                    Element repositoryElement = repositoriesElement.addElement(N_REPOSITORY);
+                    repositoryElement.addAttribute(A_NAME, repository.getName());
+                    repositoryElement.addAttribute(A_CLASS, repository.getClass().getName());
 
-                Iterator it = config.keySet().iterator();
-                while (it.hasNext()) {
-                    String key = (String)it.next();
-                    String[] value = (String[])config.get(key);
+                    // <params> node
+                    Map config = repository.getConfiguration();
+                    if ((config != null) && (config.size() > 0)) {
+                        Element paramsElement = repositoryElement.addElement(N_PARAMS);
 
-                    // <param> nodes
-                    for (int j = 0; j < value.length; j++) {
-                        Element paramNode = paramsElement.addElement(N_PARAM);
-                        paramNode.addAttribute(A_NAME, key);
-                        paramNode.addText(value[j]);
+                        Iterator it = config.keySet().iterator();
+                        while (it.hasNext()) {
+                            String key = (String)it.next();
+                            String[] value = (String[])config.get(key);
+
+                            // <param> nodes
+                            for (int j = 0; j < value.length; j++) {
+                                Element paramNode = paramsElement.addElement(N_PARAM);
+                                paramNode.addAttribute(A_NAME, key);
+                                paramNode.addText(value[j]);
+                            }
+                        }
                     }
-                }
-            }
-            
-            // <filter> node
-            CmsRepositoryFilter filter = repository.getFilter();
-            if (filter != null) {
-                List rules = filter.getFilterRules();
-                if (rules.size() > 0) {
-                    Element filterElement = repositoryElement.addElement(N_FILTER);
-                    filterElement.addAttribute(A_TYPE, filter.getType());
-                    
-                    // <regex> nodes
-                    Iterator it = rules.iterator();
-                    while (it.hasNext()) {
-                        Pattern rule = (Pattern)it.next();
-                        filterElement.addElement(N_REGEX).addText(rule.pattern());
+
+                    // <filter> node
+                    CmsRepositoryFilter filter = repository.getFilter();
+                    if (filter != null) {
+                        List rules = filter.getFilterRules();
+                        if (rules.size() > 0) {
+                            Element filterElement = repositoryElement.addElement(N_FILTER);
+                            filterElement.addAttribute(A_TYPE, filter.getType());
+
+                            // <regex> nodes
+                            Iterator it = rules.iterator();
+                            while (it.hasNext()) {
+                                Pattern rule = (Pattern)it.next();
+                                filterElement.addElement(N_REGEX).addText(rule.pattern());
+                            }
+                        }
                     }
                 }
             }

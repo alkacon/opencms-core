@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -511,7 +511,6 @@ public class CmsWebdavServlet extends HttpServlet {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_USE_REPOSITORY_1, repositoryName));
         }
-        m_repository.init(getServletConfig());
     }
 
     /**

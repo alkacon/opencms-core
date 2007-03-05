@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepository.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,6 @@ package org.opencms.repository;
 
 import org.opencms.main.CmsException;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-
 /**
  * The entry point into the content repository.<p>
  * 
@@ -43,7 +40,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  * 
  * @since 6.5.6
  */
@@ -55,14 +52,6 @@ public interface I_CmsRepository {
      * @return the name of the repository
      */
     String getName();
-
-    /**
-     * Initialize the repository with the servlet context.<p>
-     * 
-     * @param servletConfig The servlet config
-     * @throws ServletException if something goes wrong
-     */
-    void init(ServletConfig servletConfig) throws ServletException;
 
     /**
      * Login a user given the session data.<p> 

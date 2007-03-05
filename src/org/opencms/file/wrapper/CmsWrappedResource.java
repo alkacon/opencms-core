@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/03/01 12:57:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.ByteArrayInputStream;
@@ -56,7 +57,7 @@ import java.util.Properties;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -179,6 +180,9 @@ public class CmsWrappedResource {
                 sharedValue = "";
             }
 
+            individualValue = CmsStringUtil.substitute(individualValue, "\n", "\\n");
+            sharedValue = CmsStringUtil.substitute(sharedValue, "\n", "\\n");
+            
             content.append(propName);
             content.append(SUFFIX_PROP_INDIVIDUAL);
             content.append("=");
@@ -335,8 +339,16 @@ public class CmsWrappedResource {
      */
     public static byte[] addUtf8Marker(byte[] content) {
 
-        if ((content[0] == (byte)0xEF) && (content[1] == (byte)0xBB) && (content[2] == (byte)0xBF)) {
+        if ((content != null)
+            && (content.length >= 3)
+            && (content[0] == (byte)0xEF)
+            && (content[1] == (byte)0xBB)
+            && (content[2] == (byte)0xBF)) {
             return content;
+        }
+
+        if (content == null) {
+            content = new byte[0];
         }
         
         byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperPropertyFile.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,45 +35,46 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Generates a property file for every resource.<p>
+ * Generates a property file for a resource.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
 public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
+    /** The prefix for folders to keep correct sorting. */
+    private static final String FOLDER_PREFIX = "__";
+
+    /** The name to use for the folder where all property files are listed in. */
     private static final String PROPERTY_DIR = "__properties";
 
-    /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
+    /** The time in seconds to wait till the properties (and the property folder) are visible. */
+    private static final int TIME_DELAY = 60;
 
-        CmsResource org = cms.readResource(resource.getStructureId());
-        //CmsResource org = getResource(cms, resource.getRootPath(), CmsResourceFilter.DEFAULT);
-        if (org != null) {
-
-            return cms.getLock(org);
-        }
-
-        return null;
-    }
+    /** Table with the states of the virtual files. */
+    private static final Hashtable TMP_FILE_TABLE = new Hashtable();
 
     /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getResourcesInFolder(CmsObject, String, CmsResourceFilter)
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
-    public List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         String path = resourcename;
         if (!path.endsWith("/")) {
@@ -91,24 +92,117 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             while (iter.hasNext()) {
                 CmsResource res = (CmsResource)iter.next();
 
-                // add the generated property file
-                ret.add(CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res)));
+                // check "existance" of resource
+                if (existsResource(res)) {
+
+                    // add the generated property file
+                    ret.add(CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res)));
+                }
             }
 
             return ret;
         } else {
 
-            CmsResource folder = cms.readResource(resourcename);
-            if (folder.isFolder()) {
+            try {
+                CmsResource folder = cms.readResource(resourcename);
+                if (folder.isFolder()) {
 
-                List ret = new ArrayList();
+                    // check if folder is empty
+                    if (!cms.getResourcesInFolder(resourcename, CmsResourceFilter.DEFAULT).isEmpty()) {
 
-                CmsWrappedResource wrap = new CmsWrappedResource(folder);
-                wrap.setRootPath(folder.getRootPath() + PROPERTY_DIR + "/");
+                        // check "existance" of folder
+                        if (existsResource(folder)) {
+                            List ret = new ArrayList();
 
-                ret.add(wrap.getResource());
-                return ret;
+                            CmsWrappedResource wrap = new CmsWrappedResource(folder);
+                            wrap.setRootPath(folder.getRootPath() + PROPERTY_DIR + "/");
+
+                            ret.add(wrap.getResource());
+                            return ret;
+                        }
+                    }
+                }
+            } catch (CmsVfsResourceNotFoundException ex) {
+                return null;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#createResource(org.opencms.file.CmsObject, java.lang.String, int, byte[], java.util.List)
+     */
+    public CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
+    throws CmsException, CmsIllegalArgumentException {
+
+        CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
+        if (res != null) {
+
+            // cut off trailing slash
+            if (resourcename.endsWith("/")) {
+                resourcename = resourcename.substring(0, resourcename.length() - 1);
+            }
+
+            // check "existance" of resource
+            if (existsResource(res)) {
+
+                throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                    resourcename));
+            }
+
+            // mark file as created in tmp file table
+            TMP_FILE_TABLE.put(res.getRootPath(), new Integer(1));
+
+            // lock the resource because this is the expected behaviour
+            cms.lockResource(cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+
+            if (resourcename.endsWith(PROPERTY_DIR)) {
+
+                CmsWrappedResource wrap = new CmsWrappedResource(res);
+                wrap.setRootPath(res.getRootPath() + PROPERTY_DIR + "/");
+                wrap.setFolder(true);
+                return wrap.getResource();
+            } else if (resourcename.endsWith(CmsWrappedResource.EXTENSION_PROPERTIES)) {
+
+                CmsWrappedResource.writePropertyFile(
+                    cms,
+                    cms.getRequestContext().removeSiteRoot(res.getRootPath()),
+                    content);
+                return res;
+            }
+
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#deleteResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResource.CmsResourceDeleteMode)
+     */
+    public boolean deleteResource(CmsObject cms, String resourcename, CmsResourceDeleteMode siblingMode)
+    throws CmsException {
+
+        CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
+        if (res != null) {
+            TMP_FILE_TABLE.remove(res.getRootPath());
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsResource org = cms.readResource(resource.getStructureId());
+        //CmsResource org = getResource(cms, resource.getRootPath(), CmsResourceFilter.DEFAULT);
+        if (org != null) {
+
+            return cms.getLock(org);
         }
 
         return null;
@@ -153,6 +247,17 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         if (!resourcename.endsWith(PROPERTY_DIR)) {
             CmsResource res = getResource(cms, resourcename, filter);
             if (res != null) {
+
+                // Workaround for Dreamweaver:
+                // Dreamweaver copies folders through creating folder for folder and file for file.
+                // So there is first a call if the property folder already exists and afterwards create
+                // it. If the folder already exists, the copy action fails.
+                // In the first time after creating a folder, the property dir does not exists until it is
+                // created or the time expired.
+                if (!existsResource(res)) {
+                    return null;
+                }
+
                 return CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res));
             }
         }
@@ -167,20 +272,49 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
         CmsResource res = getResource(cms, resourcename, filter);
         if (res != null) {
-            
+
+            // Workaround for Dreamweaver:
+            // Dreamweaver copies folders through creating folder for folder and file for file.
+            // So there is first a call if the property folder already exists and afterwards create
+            // it. If the folder already exists, the copy action fails.
+            // In the first time after creating a folder, the property dir does not exists until it is
+            // created or the time expired.
+            if (!existsResource(res)) {
+                return null;
+            }
+
             // cut off trailing slash
             if (resourcename.endsWith("/")) {
                 resourcename = resourcename.substring(0, resourcename.length() - 1);
             }
-            
+
+            // create property file and return the resource for it
             if (!resourcename.endsWith(PROPERTY_DIR)) {
                 return CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res));
             }
 
+            // create a resource for the __property folder
             CmsWrappedResource wrap = new CmsWrappedResource(res);
             wrap.setRootPath(res.getRootPath() + PROPERTY_DIR);
             wrap.setFolder(true);
             return wrap.getResource();
+        }
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String restoreLink(CmsObject cms, String uri) {
+
+        try {
+            CmsResource res = getResource(cms, uri, CmsResourceFilter.DEFAULT);
+            if (res != null) {
+                return res.getRootPath();
+            }
+        } catch (CmsException ex) {
+            // noop
         }
 
         return null;
@@ -206,10 +340,10 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
         CmsResource res = cms.readResource(resource.getStructureId());
-//        CmsResource res = getResource(
-//            cms,
-//            cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-//            CmsResourceFilter.ALL);
+        //        CmsResource res = getResource(
+        //            cms,
+        //            cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+        //            CmsResourceFilter.ALL);
         if (res != null) {
             CmsWrappedResource.writePropertyFile(
                 cms,
@@ -219,6 +353,42 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         }
 
         return null;
+    }
+
+    /**
+     * Checks if a resource exists depending on the creation date and the temp files saved.<p>
+     * 
+     * Dreamweaver copies folders through creating folder for folder and file for file. 
+     * So there is first a call if the property folder already exists and afterwards create 
+     * it. If the folder already exists, the copy action fails.
+     * In the first time after creating a folder, the property dir does not exists until it is
+     * created or the time expired.<p>
+     * 
+     * @param res the resource to check if it exists
+     * 
+     * @return return if the folder exists otherwise false
+     */
+    private boolean existsResource(CmsResource res) {
+
+        long now = new Date().getTime();
+        long created = res.getDateCreated();
+        long diff = (now - created) / 1000;
+
+        if (diff <= TIME_DELAY) {
+
+            // check tmp file table
+            if (TMP_FILE_TABLE.containsKey(res.getRootPath())) {
+                return true;
+            }
+
+            return false;
+        } else {
+
+            // remove from tmp file table
+            TMP_FILE_TABLE.remove(res.getRootPath());
+        }
+
+        return true;
     }
 
     /**
@@ -247,7 +417,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
         // if resource is a folder add the prefix "__"
         if (res.isFolder()) {
-            ret.append("__");
+            ret.append(FOLDER_PREFIX);
         }
 
         // append the name of the resource
@@ -287,13 +457,13 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             return cms.readResource(path, filter);
         }
 
-        if (name.endsWith(CmsWrappedResource.EXTENSION_PROPERTIES)) {
+        if ((path.endsWith(PROPERTY_DIR + "/")) && (name.endsWith(CmsWrappedResource.EXTENSION_PROPERTIES))) {
             CmsResource res = null;
 
-            if (name.startsWith("__")) {
+            if (name.startsWith(FOLDER_PREFIX)) {
                 name = name.substring(2);
             }
-            
+
             try {
                 String resPath = CmsWrappedResource.removeFileExtension(
                     cms,

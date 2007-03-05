@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/I_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,16 +44,39 @@ import org.opencms.main.CmsIllegalArgumentException;
 import java.util.List;
 
 /**
- * Interface to make it possible to work with the CmsObjectWrapper to handle resources
- * of the configured type different.<p>
+ * Interface which is used by the {@link CmsObjectWrapper} to handle resources in the
+ * VFS different.<p>
+ *
+ * Each method in the implementing classes first have to check in every method if it is
+ * responsible for the action to execute.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public interface I_CmsResourceWrapper {
+
+    /**
+     * Returns all additional child resources (not in the VFS) of a resource, that is the resources
+     * contained in a folder.<p>
+     * 
+     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
+     * you can control if you want to include deleted, invisible or 
+     * time-invalid resources in the result.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param resourcename the full path of the resource to return the child resources for
+     * @param filter the resource filter to use
+     * 
+     * @return a list of all additionaly childs <code>{@link CmsResource}</code>s
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
+     */
+    List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException;
 
     /**
      * Copies a resource.<p>
@@ -148,26 +171,6 @@ public interface I_CmsResourceWrapper {
      * @see CmsObject#getLock(CmsResource)
      */
     CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException;
-
-    /**
-     * Returns all additional child resources (not in the VFS) of a resource, that is the resources
-     * contained in a folder.<p>
-     * 
-     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
-     * you can control if you want to include deleted, invisible or 
-     * time-invalid resources in the result.<p>
-     * 
-     * @param cms the current users OpenCms context
-     * @param resourcename the full path of the resource to return the child resources for
-     * @param filter the resource filter to use
-     * 
-     * @return a list of all additionaly childs <code>{@link CmsResource}</code>s
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
-     */
-    List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException;
 
     /**
      * Is called to check if the given resource is handled by this wrapper.<p>

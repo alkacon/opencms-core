@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
  * @since 6.5.6
  */
@@ -112,9 +112,9 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
     }
 
     /**
-     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#getResourcesInFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
-    public List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         if (m_isWrappedResource) {
             return cms.getResourcesInFolder(resourcename, filter);

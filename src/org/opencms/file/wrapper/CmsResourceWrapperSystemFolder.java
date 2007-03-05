@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/03/05 14:04:57 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,16 +47,16 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
  * @since 6.5.6
  */
 public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
 
     /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getResourcesInFolder(CmsObject, String, CmsResourceFilter)
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
-    public List getResourcesInFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         if (!resourcename.endsWith("/")) {
             resourcename += "/";
