@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/01 15:01:33 $
- * Version: $Revision: 1.717.2.132 $
+ * Date   : $Date: 2007/03/05 15:59:32 $
+ * Version: $Revision: 1.717.2.133 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,8 @@ OpenCms 6.5.6 - xxx, 2007
 - Search index now stores the VFS type name of an indexed resource, this is also available in the search result bean
 - Ids of projects are no longer integers, UUIDs are now used. CMS_SYSTEMID table removed no longer needed
 * Last timestamp field replaced by long, so are now backups always consistent along different database providers
-- Improved handling of project flags and type
+- Improved handling of project flags and type 
+* Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended

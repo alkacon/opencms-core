@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/12/28 15:00:33 $
- * Version: $Revision: 1.19.4.5 $
+ * Date   : $Date: 2007/03/05 15:58:19 $
+ * Version: $Revision: 1.19.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.5 $ 
+ * @version $Revision: 1.19.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -922,32 +922,38 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
                     // create the zipfile  
                     m_outputMode = 2;
-                    File targetFile = createZipFile(files);
-                    // check the size of the zip files
-                    if ((targetFile == null) || ((m_maxsize > 0) && (targetFile.length() > m_maxsize))) {
-                        // show some details in the applet itself
-                        m_outputMode = 4;
-                        if (targetFile == null) {
-                            m_message = m_messageOutputErrorZip;
+                    if (files.length > 0) {
+                        File targetFile = createZipFile(files);
+                        // check the size of the zip files
+                        if ((targetFile == null) || ((m_maxsize > 0) && (targetFile.length() > m_maxsize))) {
+                            // show some details in the applet itself
+                            m_outputMode = 4;
+                            if (targetFile == null) {
+                                m_message = m_messageOutputErrorZip;
+                            } else {
+                                m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
+                            }
+                            m_action = m_actionOutputError;
+                            repaint();
+                            // show an error-alertbog
+                            JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
                         } else {
-                            m_message = m_messageOutputErrorSize + " " + targetFile.length() + " > " + m_maxsize;
+                            m_outputMode = 3;
+                            m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
+                            repaint();
+                            // upload the zipfile
+                            FileUploadThread uploadThreat = new FileUploadThread();
+
+                            uploadThreat.init(this);
+                            uploadThreat.start();
+
+                            uploadZipFile(targetFile);
+                            ok = false;
                         }
-                        m_action = m_actionOutputError;
-                        repaint();
-                        // show an error-alertbog
-                        JOptionPane.showMessageDialog(this, m_message, m_action, JOptionPane.ERROR_MESSAGE);
                     } else {
-                        m_outputMode = 3;
-                        m_message = m_messageOutputUpload + " (" + targetFile.length() / 1024 + " kb)";
-                        repaint();
-                        // upload the zipfile
-                        FileUploadThread uploadThreat = new FileUploadThread();
-
-                        uploadThreat.init(this);
-                        uploadThreat.start();
-
-                        uploadZipFile(targetFile);
+                        // zero files were selected for upload (might be that all potential overwrites were deselected)
                         ok = false;
+                        getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
                     }
 
                 } else {
