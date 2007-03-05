@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameUnlockedActiveUnchanged.java,v $
- * Date   : $Date: 2007/02/20 08:30:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/05 16:01:23 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.explorer.menu;
 
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -42,7 +41,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -53,7 +52,7 @@ public class CmsMirPrSameUnlockedActiveUnchanged implements I_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (resourceUtil[0].getStateAbbreviation() == CmsResourceState.STATE_CHANGED.getAbbreviation()) {
+        if (resourceUtil[0].getResource().getState().isChanged()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -65,8 +64,7 @@ public class CmsMirPrSameUnlockedActiveUnchanged implements I_CmsMenuItemRule {
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         if (resourceUtil[0].isInsideProject()) {
-            //return resourceUtil.getLock().isNullLock();
-            return (resourceUtil[0].getProjectState() != CmsResourceUtil.STATE_LOCKED_FOR_PUBLISHING)
+            return (!resourceUtil[0].getProjectState().isLockedForPublishing())
                 && (CmsStringUtil.isEmptyOrWhitespaceOnly(resourceUtil[0].getLockedByName()))
                 || (resourceUtil[0].getLock().getType().isWorkflow());
         }

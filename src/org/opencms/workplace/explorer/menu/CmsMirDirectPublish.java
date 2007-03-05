@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2007/03/01 15:01:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/05 16:01:23 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.explorer.menu;
 
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -44,7 +43,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -57,18 +56,20 @@ public class CmsMirDirectPublish implements I_CmsMenuItemRule {
 
         CmsLock lock = resourceUtil[0].getLock();
         if (lock.isNullLock()
-            || (lock.isExclusiveOwnedBy(cms.getRequestContext().currentUser()) && lock.getProjectId().equals(cms.getRequestContext().currentProject().getUuid()))) {
+            || (lock.isExclusiveOwnedInProjectBy(
+                cms.getRequestContext().currentUser(),
+                cms.getRequestContext().currentProject()))) {
             // resource is not locked or exclusively locked by current user in current project
 
             try {
                 if (cms.hasPermissions(resourceUtil[0].getResource(), CmsPermissionSet.ACCESS_DIRECT_PUBLISH)) {
                     // only activate if user has direct publish permissions
                     if (resourceUtil[0].getResource().isFolder()
-                        || resourceUtil[0].getStateAbbreviation() != CmsResourceState.STATE_UNCHANGED.getAbbreviation()) {
+                        || !resourceUtil[0].getResource().getState().isUnchanged()) {
                         // resource is a folder or not unchanged
                         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                     } else if (!resourceUtil[0].getResource().isFolder()
-                        && resourceUtil[0].getStateAbbreviation() == CmsResourceState.STATE_UNCHANGED.getAbbreviation()) {
+                        && resourceUtil[0].getResource().getState().isUnchanged()) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
                     }
                 }
