@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/03/02 11:43:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/03/05 13:40:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.ByteArrayInputStream;
@@ -56,7 +57,7 @@ import java.util.Properties;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.2.4
  */
@@ -179,6 +180,9 @@ public class CmsWrappedResource {
                 sharedValue = "";
             }
 
+            individualValue = CmsStringUtil.substitute(individualValue, "\n", "\\n");
+            sharedValue = CmsStringUtil.substitute(sharedValue, "\n", "\\n");
+            
             content.append(propName);
             content.append(SUFFIX_PROP_INDIVIDUAL);
             content.append("=");
