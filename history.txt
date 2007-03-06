@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/06 09:25:43 $
- * Version: $Revision: 1.717.2.134 $
+ * Date   : $Date: 2007/03/06 09:29:24 $
+ * Version: $Revision: 1.717.2.135 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,26 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 7.0.0 - 4. July, 2007
+
+
+OpenCms 6.9.2 (aka 7.0 RC2) - 6. June, 2007
+
+
+OpenCms 6.9.1 (aka 7.0 RC1) - 2nd May, 2007
+
+
+OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
+
+- Improved handling for user additional infos table
+* XML content editor scrolls back to the correct position when adding/deleting or moving elements
+- Search index now stores the VFS type name of an indexed resource, this is also available in the search result bean
+- Ids of projects are no longer integers, UUIDs are now used. CMS_SYSTEMID table removed since no longer needed
+* Last timestamp field replaced by long, so are now backups always consistent along different database providers
+- Improved handling of project flags and type 
+* Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
+- Improved publish permission check
 
 OpenCms 6.7.1 - (aka 7.0 alpha) 14. February, 2007
 
