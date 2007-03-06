@@ -574,6 +574,7 @@
 				</explorer-generaloptions>
 				<explorer-displayoptions>
 					<show-title>true</show-title>
+					<show-navtext>true</show-navtext>
 					<show-type>true</show-type>
 					<show-datelastmodified>true</show-datelastmodified>
 					<show-datecreated>false</show-datecreated>

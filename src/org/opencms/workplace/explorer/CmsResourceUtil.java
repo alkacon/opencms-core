@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/03/05 16:04:41 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,6 +582,42 @@ public final class CmsResourceUtil {
         }
     }
 
+    /**
+     * Returns the navtext of a resource.<p>
+     * 
+     * @return the navtext for that resource
+     */
+    public String getNavText() {
+        
+        String navText = "";
+        try {
+            navText = getCms().readPropertyObject(
+                getCms().getSitePath(m_resource),
+                CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                false).getValue();
+        } catch (Throwable e) {
+            String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
+            try {
+                getCms().getRequestContext().setSiteRoot("/");
+                navText = getCms().readPropertyObject(
+                    m_resource.getRootPath(),
+                    CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                    false).getValue();
+            } catch (Exception e1) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+            } finally {
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
+        if (navText == null) {
+            navText = "";
+        }
+        return navText;  
+    }
+    
     /**
      * Returns the lock state of the current resource.<p>
      * 

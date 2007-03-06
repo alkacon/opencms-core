@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.40.4.15 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.40.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.15 $
+ * @version $Revision: 1.40.4.16 $
  * 
  * @since 6.0.0
  */
@@ -308,6 +308,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the context menu node. */
     public static final String N_MULTICONTEXTMENU = "multicontextmenu";
 
+    /** The node name of the navtext column node. */
+    public static final String N_NAVTEXT = "show-navtext";
+    
     /** The name of the "create new folder with index page" node. */
     public static final String N_NEWFOLDERCREATEINDEXPAGE = "newfolder-createindexpage";
 
@@ -1094,6 +1097,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <show-title> node
         explorerDisplayoptions.addElement(N_TITLE).setText(
             m_workplaceManager.getDefaultUserSettings().getShowExplorerFileTitle());
+        // add the <show-navtext> node
+        explorerDisplayoptions.addElement(N_NAVTEXT).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileNavText());
         // add the <show-type> node
         explorerDisplayoptions.addElement(N_TYPE).setText(
             m_workplaceManager.getDefaultUserSettings().getShowExplorerFileType());
@@ -1570,6 +1576,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_EXPLORERDISPLAYOPTIONS
             + "/"
             + N_TITLE, "setShowExplorerFileTitle", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERDISPLAYOPTIONS
+            + "/"
+            + N_NAVTEXT, "setShowExplorerFileNavText", 0);        
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"

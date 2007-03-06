@@ -18,6 +18,7 @@ this.stati = new Array(
 this.descr = new Array(
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0) %>",  						
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0) %>",  						 
+		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_NAVTEXT_0) %>",  						 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0) %>", 
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0) %>",
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_WORKFLOW_STATE_0) %>",	

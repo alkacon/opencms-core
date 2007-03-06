@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.31.4.10 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.31.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.10 $
+ * @version $Revision: 1.31.4.11 $
  * 
  * @since 6.0.0
  */
@@ -171,6 +171,9 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the explorer file locked by. */
     public static final String PARAM_EXPLORER_FILELOCKEDBY = "tabexfilelockedby";
 
+    /** Request parameter name for the explorer file navtext. */
+    public static final String PARAM_EXPLORER_FILENAVTEXT = "tabexfilenavtext";
+    
     /** Request parameter name for the explorer file permissions. */
     public static final String PARAM_EXPLORER_FILEPERMISSIONS = "tabexfilepermissions";
 
@@ -1157,6 +1160,16 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Returns the "display navtext" setting.<p>
+     * 
+     * @return <code>"true"</code> if the file navtext input field is checked, otherwise ""
+     */
+    public String getParamTabExFileNavText() {
+
+        return isParamEnabled(m_userSettings.showExplorerFileNavText());
+    }
+    
+    /**
      * Returns the "display file permissions" setting.<p>
      * 
      * @return <code>"true"</code> if the file permissions input field is checked, otherwise ""
@@ -1618,6 +1631,16 @@ public class CmsPreferences extends CmsTabDialog {
         m_userSettings.setShowExplorerFileLockedBy(Boolean.valueOf(value).booleanValue());
     }
 
+    /**
+     * Sets the "display file navtext" setting.<p>
+     * 
+     * @param value <code>"true"</code> to enable the "display file navtext" setting, all others to disable
+     */
+    public void setParamTabExFileNavText(String value) {
+
+        m_userSettings.setShowExplorerFileNavText(Boolean.valueOf(value).booleanValue());
+    }
+    
     /**
      * Sets the "display file permissions" setting.<p>
      * 

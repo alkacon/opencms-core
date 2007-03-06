@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/03/01 15:01:27 $
- * Version: $Revision: 1.32.4.16 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.32.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.16 $ 
+ * @version $Revision: 1.32.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,6 +213,7 @@ public class CmsExplorer extends CmsWorkplace {
         int preferences = getUserPreferences();
 
         boolean showTitle = (preferences & CmsUserSettings.FILELIST_TITLE) > 0;
+        boolean showNavText = (preferences & CmsUserSettings.FILELIST_NAVTEXT) > 0;
         boolean showPermissions = (preferences & CmsUserSettings.FILELIST_PERMISSIONS) > 0;
         boolean showDateLastModified = (preferences & CmsUserSettings.FILELIST_DATE_LASTMODIFIED) > 0;
         boolean showUserWhoLastModified = (preferences & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0;
@@ -246,6 +247,7 @@ public class CmsExplorer extends CmsWorkplace {
                 resUtil,
                 fullPath,
                 showTitle,
+                showNavText,
                 showPermissions,
                 showDateLastModified,
                 showUserWhoLastModified,
@@ -266,6 +268,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param resUtil the resource util object to generate the entry for
      * @param showPath if the path should be given or taken from <code>top.setDirectory</code>
      * @param showTitle if the title should be shown
+     * @param showNavText if the navtext should be shown
      * @param showPermissions if the permissions should be shown
      * @param showDateLastModified if the date of modification should be shown
      * @param showUserWhoLastModified if the user who last modified the resource should be shown
@@ -284,6 +287,7 @@ public class CmsExplorer extends CmsWorkplace {
         CmsResourceUtil resUtil,
         boolean showPath,
         boolean showTitle,
+        boolean showNavText,
         boolean showPermissions,
         boolean showDateLastModified,
         boolean showUserWhoLastModified,
@@ -324,27 +328,41 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 4: type
+        // position 4: navtext
+        if (showNavText) {
+            String navText = resUtil.getNavText();
+            content.append("\"");
+            content.append(CmsEncoder.escapeWBlanks(navText, CmsEncoder.ENCODING_UTF_8));
+            content.append("\",");
+        } else {
+            content.append("\"\",");
+        }
+        
+        // position 5: type
         content.append(resource.getTypeId());
         content.append(",");
 
-        // position 5: link type
+        // position 6: link type
         content.append(resUtil.getLinkType());
         content.append(",");
 
-        // position 6: size
+        // position 7: size
         content.append(resource.getLength());
         content.append(",");
 
-        // position 7: state
+        // position 8: state
         content.append(resource.getState());
         content.append(",");
 
-        // position 8: layoutstyle
+        // position 9: layoutstyle
         content.append(resUtil.getTimeWindowLayoutType());
         content.append(',');
 
-        // position 9: date of last modification
+        // position 10: project
+        content.append(resUtil.getProjectId());
+        content.append(",");
+
+        // position 11: date of last modification
         if (showDateLastModified) {
             content.append("\"");
             content.append(getMessages().getDateTime(resource.getDateLastModified()));
@@ -354,7 +372,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 10: user who last modified the resource
+        // position 12: user who last modified the resource
         if (showUserWhoLastModified) {
             content.append("\"");
             content.append(resUtil.getUserLastModified());
@@ -363,7 +381,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 11: date of creation
+        // position 13: date of creation
         if (showDateCreated) {
             content.append("\"");
             content.append(getMessages().getDateTime(resource.getDateCreated()));
@@ -372,7 +390,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 12: user who created the resource 
+        // position 14 : user who created the resource 
         if (showUserWhoCreated) {
             content.append("\"");
             content.append(resUtil.getUserCreated());
@@ -381,7 +399,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 13: date of release
+        // position 15: date of release
         if (showDateReleased) {
             content.append("\"");
             content.append(resUtil.getDateReleased());
@@ -390,7 +408,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 14: date of expiration
+        // position 16: date of expiration
         if (showDateExpired) {
             content.append("\"");
             content.append(resUtil.getDateExpired());
@@ -399,7 +417,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 15: permissions
+        // position 17: permissions
         if (showPermissions) {
             content.append("\"");
             content.append(CmsStringUtil.escapeJavaScript(resUtil.getPermissions()));
@@ -408,22 +426,22 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 16: locked by
+        // position 18: locked by
         content.append("\"");
         content.append(CmsStringUtil.escapeJavaScript(resUtil.getLockedByName()));
         content.append("\",");
 
-        // position 17: name of project where the resource is locked in
+        // position 19: name of project where the resource is locked in
         content.append("\"");
         content.append(resUtil.getLockedInProjectName());
         content.append("\",");
 
-        // position 18: id of project where resource belongs to
+        // position 20: id of project where resource belongs to
         int lockState = resUtil.getLockState();
         content.append(lockState);
         content.append(",\"");
 
-        // position 19: project state, I=resource is inside current project, O=resource is outside current project        
+        // position 21: project state, I=resource is inside current project, O=resource is outside current project        
         if (resUtil.isInsideProject()) {
             content.append("I");
         } else {
@@ -431,17 +449,17 @@ public class CmsExplorer extends CmsWorkplace {
         }
         content.append("\",\"");
 
-        // position 20: workflow project state
+        // position 22: workflow project state
         if (showWorkflowState) {
             content.append(resUtil.getWorkflowTaskState());
         }
         content.append("\",\"");
 
-        // position 21: system lock info, used as text for tool tip
+        // position 23: system lock info, used as text for tool tip
         content.append(resUtil.getSystemLockInfo(true));
         content.append("\", ");
 
-        // position 22: project state
+        // position 24: project state
         content.append(resUtil.getProjectState().getMode());
 
         // finish

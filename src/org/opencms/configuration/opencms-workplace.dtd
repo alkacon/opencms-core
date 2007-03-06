@@ -544,6 +544,7 @@
 # Each of the sub elements can either have the values "true" or "false".
 -->	
 <!ELEMENT explorer-displayoptions (show-title,
+								   show-navtext,	
 								   show-type,
 								   show-datelastmodified,
 								   show-datecreated,
@@ -556,6 +557,7 @@
 								   show-datereleased,
 								   show-dateexpired)>																		
 <!ELEMENT show-title (#PCDATA)>	
+<!ELEMENT show-navtext (#PCDATA)>
 <!ELEMENT show-type (#PCDATA)>	
 <!ELEMENT show-datelastmodified (#PCDATA)>	
 <!ELEMENT show-datecreated (#PCDATA)>	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.17.4.7 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.17.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.7 $
+ * @version $Revision: 1.17.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -302,6 +302,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         return getExplorerSetting(CmsUserSettings.FILELIST_LOCKEDBY);
     }
 
+    /**
+     * Gets if the file navtext should be shown in explorer view.<p>
+     * 
+     * @return <code>"true"</code> if the file navtext should be shown, otherwise <code>"false"</code>
+     */
+    public String getShowExplorerFileNavText() {
+
+        return getExplorerSetting(CmsUserSettings.FILELIST_NAVTEXT);
+    }
+    
     /**
      * Gets if the file permissions should be shown in explorer view.<p>
      * 
@@ -690,6 +700,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         setShowExplorerFileLockedBy(Boolean.valueOf(show).booleanValue());
     }
 
+    /**
+     * Sets if the file navtext should be shown in explorer view.<p>
+     * 
+     * @param show true if the file locked by should be shown, otherwise false
+     */
+    public void setShowExplorerFileNavText(String show) {
+
+        setShowExplorerFileNavText(Boolean.valueOf(show).booleanValue());
+    }
+    
     /**
      * Sets if the file permissions should be shown in explorer view.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.36.4.18 $
+ * Date   : $Date: 2007/03/06 10:34:35 $
+ * Version: $Revision: 1.36.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.18 $
+ * @version $Revision: 1.36.4.19 $
  * 
  * @since 6.0.0
  */
@@ -196,6 +196,9 @@ public class CmsUserSettings {
     /** Flag for displaying the name column. */
     public static final int FILELIST_NAME = 512;
 
+    /** Flag for displaying the navtext column. */
+    public static final int FILELIST_NAVTEXT = 64;
+    
     /** Flag for displaying the access column. */
     public static final int FILELIST_PERMISSIONS = 128;
 
@@ -1578,6 +1581,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets if the file navtext should be shown in explorer view.<p>
+     * 
+     * @param show true if the file navtext should be shown, otherwise false
+     */
+    public void setShowExplorerFileNavText(boolean show) {
+        
+        setExplorerSetting(show, CmsUserSettings.FILELIST_NAVTEXT);
+    }
+    
+    /**
      * Sets if the file permissions should be shown in explorer view.<p>
      * 
      * @param show true if the file permissions should be shown, otherwise false
@@ -1866,6 +1879,16 @@ public class CmsUserSettings {
         return ((m_explorerSettings & CmsUserSettings.FILELIST_LOCKEDBY) > 0);
     }
 
+    /**
+     * Determines if the file navtext should be shown in explorer view.<p>
+     * 
+     * @return true if the file navtext should be shown, otherwise false
+     */
+    public boolean showExplorerFileNavText() {
+
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_NAVTEXT) > 0);
+    }
+    
     /**
      * Determines if the file permissions should be shown in explorer view.<p>
      * 

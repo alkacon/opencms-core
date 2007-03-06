@@ -126,6 +126,7 @@ case 2:
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEENTRIES %>.selectedIndex = 2;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_BUTTONSTYLE %>.selectedIndex = 1;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILETITLE %>.checked = true;
+				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILENAVTEXT %>.checked = true;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILETYPE %>.checked = true;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEDATELASTMODIFIED %>.checked = true;				
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>.checked = false;
@@ -166,30 +167,32 @@ case 2:
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %></td>			
 			<td style="width: 40px;">&nbsp;</td>		
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_WORKFLOW_STATUS %>" value="true"<%= wp.isChecked(wp.getParamTabExWorkflowStatus()) %>> <%= wp.key(Messages.GUI_LABEL_WORKFLOW_STATUS_0) %></td>			
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key(Messages.GUI_LABEL_TYPE_0) %></td>
-			<td>&nbsp;</td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILENAVTEXT %>" value="true"<%= wp.isChecked(wp.getParamTabExFileNavText()) %>> <%= wp.key(Messages.GUI_LABEL_NAVTEXT_0) %></td>
+			<td style="width: 40px;">&nbsp;</td>				
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_USER_LAST_MODIFIED_0) %></td>
-			<td>&nbsp;</td>
+			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATEEXPIRED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateExpired()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key(Messages.GUI_LABEL_PERMISSIONS_0) %></td>
 			<td>&nbsp;</td>		
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key(Messages.GUI_LABEL_SIZE_0) %></td>
-			<td>&nbsp;</td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key(Messages.GUI_LABEL_TYPE_0) %></td>
+			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_CREATED_0) %></td>
-			<td>&nbsp;</td>
+			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key(Messages.GUI_LABEL_STATE_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
 			<td>&nbsp;</td>		
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key(Messages.GUI_LABEL_PERMISSIONS_0) %></td>
-			<td>&nbsp;</td>
+			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key(Messages.GUI_LABEL_SIZE_0) %></td>
+			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key(Messages.GUI_LABEL_CREATED_BY_0) %></td>
-			<td>&nbsp;</td>
+			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key(Messages.GUI_LABEL_LOCKED_BY_0) %></td>		
 			<td style="width: 40px;">&nbsp;</td>		
 			<td>&nbsp;</td>		
