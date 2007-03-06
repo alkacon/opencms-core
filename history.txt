@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/02/07 15:05:57 $
- * Version: $Revision: 1.717.2.128 $
+ * Date   : $Date: 2007/03/06 09:25:43 $
+ * Version: $Revision: 1.717.2.134 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.6 - xxx, 2007
+OpenCms 6.7.1 - (aka 7.0 alpha) 14. February, 2007
 
 ! Upload applet preselects the file filter of the file chooser in dependency of the folder type (gallery)
 ! Upload applet shows potential overwrites of files on the server and offers to avoid them
