@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/wrapper/TestPropertyFile.java,v $
- * Date   : $Date: 2007/03/05 14:07:25 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/06 11:49:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestPropertyFile extends OpenCmsTestCase {
 
@@ -74,7 +74,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPropertyFile.class.getName());
 
-        suite.addTest(new TestPropertyFile("testLineBreaks"));
+        suite.addTest(new TestPropertyFile("testEscapedCharacters"));
         suite.addTest(new TestPropertyFile("testReadUnicodeChars"));
         suite.addTest(new TestPropertyFile("testWriteUnicodeChars"));
 
@@ -99,12 +99,12 @@ public class TestPropertyFile extends OpenCmsTestCase {
      * 
      * @throws Throwable if an error occurs while the test is running
      */
-    public void testLineBreaks() throws Throwable {
+    public void testEscapedCharacters() throws Throwable {
 
         String resourcename = "/folder1/subfolder11/index.html";
         getCmsObject().lockResource(resourcename);
 
-        String propertyValue = "First Line \n SecondLine";
+        String propertyValue = "Start \n \t \r \" \' \\ \u2297 \\\" \\\' End";
 
         // set a property with a line break
         CmsProperty property = new CmsProperty();
@@ -123,7 +123,8 @@ public class TestPropertyFile extends OpenCmsTestCase {
         assertTrue(pos >= 0);
 
         int start = content.indexOf("=", pos) + 1;
-        assertEquals("First Line \\n SecondLine", content.substring(start, start + 24));
+        String expected = "Start \\n \\t \\r \" \' \\ \u2297 \\\" \\\' End";
+        assertEquals(expected, content.substring(start, start + expected.length()));
     }
 
     /**
