@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/03/01 15:01:16 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/06 15:11:10 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.5
  */
@@ -77,7 +77,7 @@ public final class CmsPublishEngine implements Runnable {
     private static final Log LOG = CmsLog.getLog(CmsPublishEngine.class);
 
     /** The current running publish job. */
-    private CmsPublishThread m_currentPublishJob;
+    private CmsPublishThread m_currentPublishThread;
 
     /** The runtime info factory used during publishing. */
     private final I_CmsDbContextFactory m_dbContextFactory;
@@ -192,9 +192,9 @@ public final class CmsPublishEngine implements Runnable {
     public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
 
         // try current running job
-        if ((m_currentPublishJob != null)
-            && m_currentPublishJob.getPublishJob().getPublishHistoryId().equals(publishHistoryId)) {
-            return new CmsPublishJobRunning(m_currentPublishJob.getPublishJob());
+        if ((m_currentPublishThread != null)
+            && m_currentPublishThread.getPublishJob().getPublishHistoryId().equals(publishHistoryId)) {
+            return new CmsPublishJobRunning(m_currentPublishThread.getPublishJob());
         }
         // try enqueued jobs
         Iterator itEnqueuedJobs = getPublishQueue().asList().iterator();
@@ -236,14 +236,14 @@ public final class CmsPublishEngine implements Runnable {
             return;
         }
         // there is no running publish job
-        if (m_currentPublishJob == null) {
+        if (m_currentPublishThread == null) {
             // but something is waiting in the queue
             if (!m_publishQueue.isEmpty()) {
                 // start the next waiting publish job
                 CmsPublishJobInfoBean publishJob = m_publishQueue.next();
                 CmsPublishThread publishThread = new CmsPublishThread(this, publishJob);
                 publishThread.start();
-                m_currentPublishJob = publishThread;
+                m_currentPublishThread = publishThread;
             } else {
                 // nothing to do
                 if (LOG.isDebugEnabled()) {
@@ -253,7 +253,7 @@ public final class CmsPublishEngine implements Runnable {
             return;
         }
         // there is a still running publish job
-        if (m_currentPublishJob.isAlive()) {
+        if (m_currentPublishThread.isAlive()) {
             // wait until it is finished
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_WAITING_0));
@@ -264,7 +264,7 @@ public final class CmsPublishEngine implements Runnable {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_DEAD_JOB_0));
             }
             // just throw it away
-            m_currentPublishJob = null;
+            m_currentPublishThread = null;
             // and try again
             run();
         }
@@ -304,7 +304,7 @@ public final class CmsPublishEngine implements Runnable {
 
         // wait until the running job ends
         int count = 0;
-        while (m_currentPublishJob != null) {
+        while (m_currentPublishThread != null) {
             count++;
             try {
                 if (CmsLog.INIT.isInfoEnabled()) {
@@ -335,18 +335,19 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @param userName the name of user that wants to abort the given publish job 
      * @param publishJob the publish job to abort
+     * @param removeJob indicates if the job will be removed or added to history
      * 
      * @throws CmsException if there is some problem during unlocking the resources
      * @throws CmsPublishException if the publish job can not be aborted 
      */
-    protected void abortPublishJob(String userName, CmsPublishJobEnqueued publishJob)
+    protected void abortPublishJob(String userName, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsPublishException {
 
-        if (((m_currentPublishJob == null) || !publishJob.m_publishJob.equals(m_currentPublishJob.getPublishJob())) && !m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
+        if (((m_currentPublishThread == null) || !publishJob.m_publishJob.equals(m_currentPublishThread.getPublishJob())) && !m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
         }
-        if ((m_currentPublishJob != null) && publishJob.m_publishJob.equals(m_currentPublishJob.getPublishJob())) {
-            m_currentPublishJob.abort();
+        if ((m_currentPublishThread != null) && publishJob.m_publishJob.equals(m_currentPublishThread.getPublishJob())) {
+            m_currentPublishThread.abort();
         }
         // collect all resources
         List allResources = new ArrayList(publishJob.getPublishList().getFolderList());
@@ -362,6 +363,12 @@ public final class CmsPublishEngine implements Runnable {
             }
         } finally {
             dbc.clear();
+        }
+        // keep job if requested
+        if (!removeJob) {
+            // set finish info
+            publishJob.m_publishJob.finish();
+            getPublishHistory().add(new CmsPublishJobFinished(publishJob.m_publishJob));
         }
         m_listeners.fireAbort(userName, publishJob);
     }
@@ -383,7 +390,7 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected CmsPublishThread getCurrentPublishJob() {
 
-        return m_currentPublishJob;
+        return m_currentPublishThread;
     }
 
     /**
@@ -435,7 +442,7 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected boolean isRunning() {
 
-        return (!m_publishQueue.isEmpty() || (m_currentPublishJob != null));
+        return (!m_publishQueue.isEmpty() || (m_currentPublishThread != null));
     }
 
     /**
@@ -443,14 +450,14 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected void publishThreadFinished() {
 
-        if (m_currentPublishJob.isAborted()) {
+        if (m_currentPublishThread.isAborted()) {
             // try to start a new publish job
             new Thread(this).start();
             return;
         }
         
         // there is a finished publish job
-        CmsPublishJobInfoBean publishJob = m_currentPublishJob.getPublishJob();
+        CmsPublishJobInfoBean publishJob = m_currentPublishThread.getPublishJob();
 
         // trigger the old event mechanism
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
@@ -483,7 +490,7 @@ public final class CmsPublishEngine implements Runnable {
             // put the publish job into the history list
             m_publishHistory.add(new CmsPublishJobFinished(publishJob));
             // wipe the dead thread
-            m_currentPublishJob = null;
+            m_currentPublishThread = null;
         } catch (Throwable t) {
             // catch every thing including runtime exceptions
             if (LOG.isErrorEnabled()) {
@@ -501,7 +508,7 @@ public final class CmsPublishEngine implements Runnable {
     protected void publishThreadStarted() {
 
         // get the publish job
-        CmsPublishJobInfoBean publishJob = m_currentPublishJob.getPublishJob();
+        CmsPublishJobInfoBean publishJob = m_currentPublishThread.getPublishJob();
 
         // trigger the old event mechanism
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
@@ -522,11 +529,13 @@ public final class CmsPublishEngine implements Runnable {
         } finally {
             dbc.clear();
         }
-
+        int todo = 0;
+        // this looks wrong, but start just sets some information
+        // potentially neccessary for event handler
+        // start the job
+        publishJob.start(m_currentPublishThread.getUUID());
         // fire the publish start event
         m_listeners.fireStart(new CmsPublishJobEnqueued(publishJob));
-        // start the job
-        publishJob.start(m_currentPublishJob.getUUID());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/06 15:11:10 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -86,12 +86,13 @@ public class CmsPublishManager {
      * 
      * @param cms the cms context
      * @param publishJob the publish job to abort
+     * @param removeJob indicates if the job will be removed or added to history
      * 
      * @throws CmsException if there is some problem during unlocking the resources
      * @throws CmsSecurityException if the current user has not enough permissions 
      * @throws CmsPublishException if the publish job can not been aborted 
      */
-    public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob)
+    public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
 
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
@@ -101,7 +102,7 @@ public class CmsPublishManager {
                 Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
                 cms.getRequestContext().currentUser().getName()));
         }
-        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob);
+        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob , removeJob);
     }
 
     /**

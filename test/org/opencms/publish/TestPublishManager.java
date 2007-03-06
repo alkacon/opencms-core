@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2007/02/23 13:13:11 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/06 15:11:10 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -129,7 +129,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.loginUser("test1", "test1");
         try {
             // try to abort the last enqueued publish job
-            OpenCms.getPublishManager().abortPublishJob(cms, publishJob);
+            OpenCms.getPublishManager().abortPublishJob(cms, publishJob, true);
             fail("should not be possible to abort a publish job by another user");
         } catch (CmsSecurityException e) {
             // ok, ignore
@@ -138,11 +138,11 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
 
         // abort the last enqueued publish job
-        OpenCms.getPublishManager().abortPublishJob(cms, publishJob);
+        OpenCms.getPublishManager().abortPublishJob(cms, publishJob, true);
 
         // try to abort the publish job again
         try {
-            OpenCms.getPublishManager().abortPublishJob(cms, publishJob);
+            OpenCms.getPublishManager().abortPublishJob(cms, publishJob, true);
             fail("should not be possible to abort a publish job that has been already aborted");
         } catch (CmsPublishException e) {
             // ok, ignore
@@ -221,7 +221,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         //        
         CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)queue.get(queue.size() - 1);
         // abort it
-        OpenCms.getPublishManager().abortPublishJob(cms, publishJob);
+        OpenCms.getPublishManager().abortPublishJob(cms, publishJob, true);
 
         // wait until finished
         OpenCms.getPublishManager().waitWhileRunning();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/02/09 16:41:00 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/06 15:11:10 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.5
  */
@@ -209,7 +209,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
                 CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)itJobs.next();
                 if (userName.equals(publishJob.getUserName()) && (enqueueTime == publishJob.getEnqueueTime())) {
                     try {
-                        OpenCms.getPublishManager().abortPublishJob(getCms(), publishJob);
+                        OpenCms.getPublishManager().abortPublishJob(getCms(), publishJob, true);
                     } catch (CmsException e) {
                         throw new CmsRuntimeException(e.getMessageContainer(), e);
                     }
