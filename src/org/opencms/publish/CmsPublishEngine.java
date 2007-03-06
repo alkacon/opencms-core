@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/03/06 15:11:10 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/06 15:25:06 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.5
  */
@@ -128,9 +128,7 @@ public final class CmsPublishEngine implements Runnable {
         // initialize publish history
         m_publishHistory = new CmsPublishHistory(this, historySize);
         // initialize event handling
-        m_listeners = new CmsPublishListenerCollection();
-        // initialize default event listener
-        addPublishListener(new CmsPublishDefaultEventListener(this));
+        m_listeners = new CmsPublishListenerCollection(this);
         // initialize publish report repository path
         setReportsRepositoryPath(reportsRepositoryPath);
         // read the publish history from the repository

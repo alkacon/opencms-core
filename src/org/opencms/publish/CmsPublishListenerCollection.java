@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/01/11 11:07:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/06 15:25:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.publish;
 
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsAfterPublishStaticExportHandler;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -43,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -54,6 +56,19 @@ public final class CmsPublishListenerCollection extends Vector {
 
     /** serializable version id. */
     private static final long serialVersionUID = -4945973010986412449L;
+
+    /** Publish engine. */
+    private CmsPublishEngine m_publishEngine;
+
+    /**
+     * Default constructor.<p>
+     * 
+     * @param publishEngine the publish engine
+     */
+    protected CmsPublishListenerCollection(CmsPublishEngine publishEngine) {
+
+        m_publishEngine = publishEngine;
+    }
 
     /**
      * Fires an abort event to all listeners.<p>
@@ -73,13 +88,25 @@ public final class CmsPublishListenerCollection extends Vector {
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_ABORT_ERROR_1, listener.getClass().getName()), t);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_PUBLISH_JOB_ABORT_ERROR_1,
+                        listener.getClass().getName()), t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
                 }
             }
         }
+        if (userName.equals(publishJob.getUserName())) {
+            // prevent showing messages if the owner aborted the job by himself 
+            return;
+        }
+        // popup the abort message
+        String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
+            Messages.GUI_PUBLISH_JOB_ABORTED_2,
+            new Long(publishJob.getEnqueueTime()),
+            userName);
+        m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
     }
 
     /**
@@ -99,7 +126,9 @@ public final class CmsPublishListenerCollection extends Vector {
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_ENQUEUE_ERROR_1, listener.getClass().getName()), t);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_PUBLISH_JOB_ENQUEUE_ERROR_1,
+                        listener.getClass().getName()), t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -125,13 +154,31 @@ public final class CmsPublishListenerCollection extends Vector {
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_FINISH_ERROR_1, listener.getClass().getName()), t);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_PUBLISH_JOB_FINISH_ERROR_1,
+                        listener.getClass().getName()), t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
                 }
             }
         }
+        // popup the finish message
+        String msgText;
+        if (!publishJob.getReport().hasError() && !publishJob.getReport().hasWarning()) {
+            msgText = Messages.get().getBundle(publishJob.getLocale()).key(
+                Messages.GUI_PUBLISH_JOB_FINISHED_1,
+                new Long(publishJob.getEnqueueTime()));
+        } else {
+            Object[] params = new Object[] {
+                new Long(publishJob.getEnqueueTime()),
+                new Integer(publishJob.getReport().getErrors().size()),
+                new Integer(publishJob.getReport().getWarnings().size())};
+            msgText = Messages.get().getBundle(publishJob.getLocale()).key(
+                Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_3,
+                params);
+        }
+        m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
     }
 
     /**
@@ -151,7 +198,9 @@ public final class CmsPublishListenerCollection extends Vector {
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_REMOVE_ERROR_1, listener.getClass().getName()), t);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_PUBLISH_JOB_REMOVE_ERROR_1,
+                        listener.getClass().getName()), t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -177,12 +226,23 @@ public final class CmsPublishListenerCollection extends Vector {
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_JOB_START_ERROR_1, listener.getClass().getName()), t);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_PUBLISH_JOB_START_ERROR_1,
+                        listener.getClass().getName()), t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
                 }
             }
+        }
+        // popup the start message
+        boolean busyStart = ((System.currentTimeMillis() - publishJob.getEnqueueTime()) > 2000);
+        boolean bigJob = ((publishJob.getPublishList().size() > 25) || (OpenCms.getStaticExportManager().getHandler() instanceof CmsAfterPublishStaticExportHandler));
+        if (busyStart || bigJob) {
+            String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
+                Messages.GUI_PUBLISH_JOB_STARTED_1,
+                new Long(publishJob.getEnqueueTime()));
+            m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
         }
     }
 }
