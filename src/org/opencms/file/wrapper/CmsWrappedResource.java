@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/03/05 13:40:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/03/06 11:44:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,10 +46,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Creates "virtual" resources not existing in the vfs which are
@@ -57,7 +60,7 @@ import java.util.Properties;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.4
  */
@@ -65,6 +68,9 @@ public class CmsWrappedResource {
 
     /** The extension to use for the property file. */
     public static final String EXTENSION_PROPERTIES = "properties";
+
+    /** Pattern to use for incoming strings before storing in OpenCms. */
+    private static final Pattern PATTERN_UNESCAPE = Pattern.compile("\\\\([^ntru\n\r])");
 
     /** The prefix used for a shared property entry. */
     private static final String SUFFIX_PROP_INDIVIDUAL = ".i";
@@ -132,6 +138,36 @@ public class CmsWrappedResource {
     }
 
     /**
+     * Adds the UTF-8 marker add the beginning of the byte array.<p>
+     * 
+     * @param content the byte array where to add the UTF-8 marker
+     * 
+     * @return the byte with the added UTF-8 marker at the beginning
+     */
+    public static byte[] addUtf8Marker(byte[] content) {
+
+        if ((content != null)
+            && (content.length >= 3)
+            && (content[0] == (byte)0xEF)
+            && (content[1] == (byte)0xBB)
+            && (content[2] == (byte)0xBF)) {
+            return content;
+        }
+
+        if (content == null) {
+            content = new byte[0];
+        }
+
+        byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
+        byte[] ret = new byte[bom.length + content.length];
+
+        System.arraycopy(bom, 0, ret, 0, bom.length);
+        System.arraycopy(content, 0, ret, bom.length, content.length);
+
+        return ret;
+    }
+
+    /**
      * Creates a CmsFile with the individual and shared properties as content.<p>
      * 
      * @param cms the initialized CmsObject
@@ -180,9 +216,9 @@ public class CmsWrappedResource {
                 sharedValue = "";
             }
 
-            individualValue = CmsStringUtil.substitute(individualValue, "\n", "\\n");
-            sharedValue = CmsStringUtil.substitute(sharedValue, "\n", "\\n");
-            
+            individualValue = escapeString(individualValue);
+            sharedValue = escapeString(sharedValue);
+
             content.append(propName);
             content.append(SUFFIX_PROP_INDIVIDUAL);
             content.append("=");
@@ -299,8 +335,9 @@ public class CmsWrappedResource {
         Properties properties = new Properties();
         try {
             String props = CmsEncoder.createString(content, CmsEncoder.ENCODING_UTF_8);
-            props = CmsEncoder.encodeJavaEntities(props, CmsEncoder.ENCODING_US_ASCII);
-            byte[] modContent = props.getBytes(CmsEncoder.ENCODING_US_ASCII);
+            props = unescapeString(props);
+            props = CmsEncoder.encodeJavaEntities(props, CmsEncoder.ENCODING_ISO_8859_1);
+            byte[] modContent = props.getBytes(CmsEncoder.ENCODING_ISO_8859_1);
 
             properties.load(new ByteArrayInputStream(modContent));
 
@@ -331,33 +368,33 @@ public class CmsWrappedResource {
     }
 
     /**
-     * Adds the UTF-8 marker add the beginning of the byte array.<p>
+     * Escapes the value to be displayed correctly in the property file.<p>
      * 
-     * @param content the byte array where to add the UTF-8 marker
+     * @param value the value with the string to be escaped
      * 
-     * @return the byte with the added UTF-8 marker at the beginning
+     * @return the escaped string
      */
-    public static byte[] addUtf8Marker(byte[] content) {
+    private static String escapeString(String value) {
 
-        if ((content != null)
-            && (content.length >= 3)
-            && (content[0] == (byte)0xEF)
-            && (content[1] == (byte)0xBB)
-            && (content[2] == (byte)0xBF)) {
-            return content;
-        }
+        Map substitutions = new HashMap();
+        substitutions.put("\n", "\\n");
+        substitutions.put("\t", "\\t");
+        substitutions.put("\r", "\\r");
 
-        if (content == null) {
-            content = new byte[0];
-        }
-        
-        byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
-        byte[] ret = new byte[bom.length + content.length];
+        return CmsStringUtil.substitute(value, substitutions);
+    }
 
-        System.arraycopy(bom, 0, ret, 0, bom.length);
-        System.arraycopy(content, 0, ret, bom.length, content.length);
+    /**
+     * Unescapes the value to be saved correctly in OpenCms.<p>
+     * 
+     * @param value the value taken form the property file
+     * 
+     * @return the unescaped string value
+     */
+    private static String unescapeString(String value) {
 
-        return ret;
+        Matcher matcher = PATTERN_UNESCAPE.matcher(value);
+        return matcher.replaceAll("\\\\\\\\$1");
     }
 
     /**
