@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/03/06 10:35:36 $
- * Version: $Revision: 1.13.4.23 $
+ * Date   : $Date: 2007/03/06 10:48:36 $
+ * Version: $Revision: 1.13.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,13 +67,6 @@ function windowStore(body, head, tree, files) {
 	this.tree = tree;
 	this.files = files.document;
 	this.fileswin = files;
-}
-
-function menuItem(name, link, target, rules){
-	this.name = name;
-	this.link = link;
-	this.target = target;
-	this.rules = rules;
 }
 
 //            1     2     3      4        5     6         7     8      9            10                11                   12           13              14            15           16           17        18                   19         20                      21             22           23          
