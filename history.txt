@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/05 15:59:32 $
- * Version: $Revision: 1.717.2.133 $
+ * Date   : $Date: 2007/03/06 09:25:43 $
+ * Version: $Revision: 1.717.2.134 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.5.6 - xxx, 2007
+OpenCms 6.7.1 - (aka 7.0 alpha) 14. February, 2007
 
 ! Upload applet preselects the file filter of the file chooser in dependency of the folder type (gallery)
 ! Upload applet shows potential overwrites of files on the server and offers to avoid them
@@ -35,13 +35,6 @@ OpenCms 6.5.6 - xxx, 2007
 ! New user interfaces for organizational unit usage inside the OpenCms user management
 ! Creating new XML content resource allows the selection of a "model file" in explorer and direct edit mode if configured
 ! Added support for resource type permissions in explorer type definitions based on roles
-- Improved handling for user additional infos table
-* XML content editor scrolls back to the correct position when adding/deleting or moving elements
-- Search index now stores the VFS type name of an indexed resource, this is also available in the search result bean
-- Ids of projects are no longer integers, UUIDs are now used. CMS_SYSTEMID table removed no longer needed
-* Last timestamp field replaced by long, so are now backups always consistent along different database providers
-- Improved handling of project flags and type 
-* Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
 
 OpenCms 6.5.5 - 14. December, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended
