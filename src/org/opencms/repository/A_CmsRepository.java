@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepository.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,14 @@ import java.util.TreeMap;
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
  * 
- * Handles the functionality of basic configuration.<p>
+ * Handles the functionality of basic configuration. This is actually the configuration
+ * of param/values and the filters ({@link CmsRepositoryFilter}) to use of the repository.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $ 
+ * @version $Revision: 1.1.4.4 $ 
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public abstract class A_CmsRepository implements I_CmsRepository, I_CmsConfigurationParameterHandler {
 

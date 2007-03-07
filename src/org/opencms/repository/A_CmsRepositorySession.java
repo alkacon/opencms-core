@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.repository;
 
 /**
- * Abstract super class to use for a repository session to make the functionality
- * of filters available.<p>
+ * Abstract implementation of the interface {@link I_CmsRepositorySession} to provide
+ * the functionality of filtering items.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -117,14 +117,13 @@ import org.dom4j.io.SAXReader;
 import org.xml.sax.InputSource;
 
 /**
- * Servlet which adds support for WebDAV level 2. All the basic HTTP requests
- * are handled by the DefaultServlet.<p>
+ * Servlet which adds support for WebDAV level 2.<p>
  *
  * @author Remy Maucherat
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -408,8 +407,9 @@ public class CmsWebdavServlet extends HttpServlet {
      * Adds an xml element to the given parent and sets the appropriate namespace and 
      * prefix.<p>
      * 
-     * @param parent The parent node to add the element
-     * @param name The name of the new element
+     * @param parent the parent node to add the element
+     * @param name the name of the new element
+     * 
      * @return the created element with the given name which was added to the given parent
      */
     public static Element addElement(Element parent, String name) {
@@ -420,7 +420,7 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Initialize this servlet.<p>
      * 
-     * @throws ServletException if something went wrong
+     * @throws ServletException if something goes wrong
      */
     public void init() throws ServletException {
 
@@ -438,7 +438,9 @@ public class CmsWebdavServlet extends HttpServlet {
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_INIT_PARAM_ERROR_2, INIT_PARAM_LIST, value), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_READ_INIT_PARAM_ERROR_2, INIT_PARAM_LIST, value),
+                    e);
             }
         }
 
@@ -518,11 +520,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param is The input stream to copy from
-     * @param writer The writer to write to
+     * @param item the RepositoryItem
+     * @param is the input stream to copy from
+     * @param writer the writer to write to
      *
-     * @exception IOException if an input/output error occurs
+     * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, InputStream is, PrintWriter writer) throws IOException {
 
@@ -560,11 +562,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param is The input stream to copy from
-     * @param ostream The output stream to write to
+     * @param item the RepositoryItem
+     * @param is the input stream to copy from
+     * @param ostream the output stream to write to
      *
-     * @exception IOException if an input/output error occurs
+     * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, InputStream is, ServletOutputStream ostream) throws IOException {
 
@@ -609,10 +611,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param writer The writer to write to
-     * @param range Range the client wanted to retrieve
-     * @exception IOException if an input/output error occurs
+     * @param item the RepositoryItem
+     * @param writer the writer to write to
+     * @param range the range the client wants to retrieve
+     * 
+     * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, PrintWriter writer, CmsWebdavRange range) throws IOException {
 
@@ -643,11 +646,12 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param writer The writer to write to
-     * @param ranges Iterator of the ranges the client wanted to retrieve
-     * @param contentType Content type of the resource
-     * @exception IOException if an input/output error occurs
+     * @param item the RepositoryItem
+     * @param writer the writer to write to
+     * @param ranges iterator of the ranges the client wants to retrieve
+     * @param contentType the content type of the resource
+     * 
+     * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, PrintWriter writer, Iterator ranges, String contentType)
     throws IOException {
@@ -702,9 +706,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param ostream The output stream to write to
-     * @param range Range the client wanted to retrieve
+     * @param item the RepositoryItem
+     * @param ostream the output stream to write to
+     * @param range the range the client wants to retrieve
+     * 
      * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, ServletOutputStream ostream, CmsWebdavRange range) throws IOException {
@@ -735,10 +740,11 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param item The RepositoryItem
-     * @param ostream The output stream to write to
-     * @param ranges Iterator of the ranges the client wanted to retrieve
-     * @param contentType Content type of the resource
+     * @param item the RepositoryItem
+     * @param ostream the output stream to write to
+     * @param ranges iterator of the ranges the client wants to retrieve
+     * @param contentType the content type of the resource
+     * 
      * @throws IOException if an input/output error occurs
      */
     protected void copy(I_CmsRepositoryItem item, ServletOutputStream ostream, Iterator ranges, String contentType)
@@ -794,9 +800,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param istream The input stream to read from
-     * @param ostream The output stream to write to
-     * @return Exception which occurred during processing
+     * @param istream the input stream to read from
+     * @param ostream the output stream to write to
+     * 
+     * @return the exception which occurred during processing
      */
     protected IOException copyRange(InputStream istream, ServletOutputStream ostream) {
 
@@ -825,11 +832,12 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param istream The input stream to read from
-     * @param ostream The output stream to write to
-     * @param start Start of the range which will be copied
-     * @param end End of the range which will be copied
-     * @return Exception which occurred during processing
+     * @param istream the input stream to read from
+     * @param ostream the output stream to write to
+     * @param start the start of the range which will be copied
+     * @param end the end of the range which will be copied
+     * 
+     * @return the exception which occurred during processing
      */
     protected IOException copyRange(InputStream istream, ServletOutputStream ostream, long start, long end) {
 
@@ -876,9 +884,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param reader The reader to read from
-     * @param writer The writer to write to
-     * @return Exception which occurred during processing
+     * @param reader the reader to read from
+     * @param writer the writer to write to
+     * 
+     * @return the exception which occurred during processing
      */
     protected IOException copyRange(Reader reader, PrintWriter writer) {
 
@@ -907,11 +916,12 @@ public class CmsWebdavServlet extends HttpServlet {
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).<p>
      *
-     * @param reader The reader to read from
-     * @param writer The writer to write to
-     * @param start Start of the range which will be copied
-     * @param end End of the range which will be copied
-     * @return Exception which occurred during processing
+     * @param reader the reader to read from
+     * @param writer the writer to write to
+     * @param start the start of the range which will be copied
+     * @param end the end of the range which will be copied
+     * 
+     * @return the exception which occurred during processing
      */
     protected IOException copyRange(Reader reader, PrintWriter writer, long start, long end) {
 
@@ -952,8 +962,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a COPY WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      */
     protected void doCopy(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -1081,8 +1091,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a DELETE WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      * 
      * @throws IOException if an input/output error occurs
      */
@@ -1187,8 +1197,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a GET request for the specified resource.<p>
      *
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
+     * @param request the servlet request we are processing
+     * @param response the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -1201,8 +1211,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a HEAD request for the specified resource.<p>
      *
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
+     * @param request the servlet request we are processing
+     * @param response the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -1215,8 +1225,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a LOCK WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -1493,8 +1503,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a MKCOL WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -1609,8 +1619,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a MOVE WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      */
     protected void doMove(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -1747,8 +1757,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a OPTIONS WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      */
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -1763,8 +1773,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a PROPFIND WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -1950,8 +1960,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * Not implemented yet.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      */
     protected void doProppatch(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -1985,8 +1995,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a POST request for the specified resource.<p>
      *
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      */
@@ -2087,8 +2097,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Process a UNLOCK WebDAV request for the specified resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      */
     protected void doUnlock(HttpServletRequest req, HttpServletResponse resp) {
 
@@ -2128,14 +2138,17 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
-     * Handle a partial PUT.  New content specified in request is appended to
+     * Handle a partial PUT.<p>
+     * 
+     * New content specified in request is appended to
      * existing content in oldRevisionContent (if present). This code does
      * not support simultaneous partial updates to the same resource.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param range The range of the content in the file
-     * @param path The path where to find the resource
-     * @return The new content file with the appended data
+     * @param req the servlet request we are processing
+     * @param range the range of the content in the file
+     * @param path the path where to find the resource
+     * 
+     * @return the new content file with the appended data
      * 
      * @throws IOException if an input/output error occurs
      */
@@ -2195,8 +2208,9 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Get the ETag associated with a file.<p>
      *
-     * @param item The WebDavItem
-     * @return The created ETag for the resource attributes
+     * @param item the WebDavItem
+     * 
+     * @return the created ETag for the resource attributes
      */
     protected String getETag(I_CmsRepositoryItem item) {
 
@@ -2206,9 +2220,10 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Parse the range header.<p>
      *
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
-     * @param item The WebdavItem with the information
+     * @param request the servlet request we are processing
+     * @param response the servlet response we are creating
+     * @param item the WebdavItem with the information
+     * 
      * @return Vector of ranges
      */
     protected ArrayList parseRange(HttpServletRequest request, HttpServletResponse response, I_CmsRepositoryItem item) {
@@ -2336,9 +2351,10 @@ public class CmsWebdavServlet extends HttpServlet {
      * Return an InputStream to an HTML representation of the contents
      * of this directory.<p>
      *
-     * @param contextPath Context path to which our internal paths are relative
-     * @param path The path of the resource to render the html for 
-     * @return An input stream with the rendered html
+     * @param contextPath context path to which our internal paths are relative
+     * @param path the path of the resource to render the html for
+     *  
+     * @return an input stream with the rendered html
      * 
      * @throws IOException if an input/output error occurs
      */
@@ -2537,8 +2553,9 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Render the specified file size (in bytes).<p>
      *
-     * @param size File size (in bytes)
-     * @return A string with the given size formatted to output to user
+     * @param size file size (in bytes)
+     * 
+     * @return a string with the given size formatted to output to user
      */
     protected String renderSize(long size) {
 
@@ -2554,8 +2571,9 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * URL rewriter.<p>
      *
-     * @param path Path which has to be rewriten
-     * @return A string with the encoded path
+     * @param path path which has to be rewritten
+     * 
+     * @return a string with the encoded path
      * 
      * @throws UnsupportedEncodingException if something goes wrong while encoding the url
      */
@@ -2567,9 +2585,9 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Serve the specified resource, optionally including the data content.<p>
      *
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
-     * @param content Should the content be included?
+     * @param request the servlet request we are processing
+     * @param response the servlet response we are creating
+     * @param content should the content be included?
      *
      * @throws IOException if an input/output error occurs
      */
@@ -2798,8 +2816,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Handles the special WebDAV methods.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are creating
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are creating
      *
      * @throws IOException if an input/output error occurs
      * @throws ServletException if a servlet-specified error occurs
@@ -2812,7 +2830,7 @@ public class CmsWebdavServlet extends HttpServlet {
             String path = getRelativePath(req);
             LOG.debug("[" + method + "] " + path);
         }
-        
+
         // check authorization
         String auth = req.getHeader(HEADER_AUTHORIZATION);
         if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
@@ -2875,16 +2893,16 @@ public class CmsWebdavServlet extends HttpServlet {
             // DefaultServlet processing
             super.service(req, resp);
         }
-        
+
     }
 
     /**
      * Generate a dom element from the given information with all needed subelements to
      * add to the parent.<p>
      * 
-     * @param lock The lock with the information to create the subelements
-     * @param parent The parent element where to add the created element
-     * @param lockToken The lock token to use
+     * @param lock the lock with the information to create the subelements
+     * @param parent the parent element where to add the created element
+     * @param lockToken the lock token to use
      */
     private void addLockElement(CmsRepositoryLockInfo lock, Element parent, String lockToken) {
 
@@ -2915,9 +2933,9 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Checks if the items in the path or in a subpath are locked.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param path The path to check the items for locks
-     * @param errorList The error list where to put the found errors
+     * @param req the servlet request we are processing
+     * @param path the path to check the items for locks
+     * @param errorList the error list where to put the found errors
      */
     private void checkChildLocks(HttpServletRequest req, String path, Hashtable errorList) {
 
@@ -2949,7 +2967,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Determines the methods normally allowed for the resource.<p>
      *
-     * @param path The path to the resource
+     * @param path the path to the resource
+     * 
      * @return a StringBuffer with the WebDAV methods allowed for the resource at the given path
      */
     private StringBuffer determineMethodsAllowed(String path) {
@@ -3002,9 +3021,10 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Print the lock discovery information associated with a path.<p>
      *
-     * @param path The path to the resource
-     * @param elem The dom element where to add the lock discovery elements
-     * @param req The servlet request we are processing
+     * @param path the path to the resource
+     * @param elem the dom element where to add the lock discovery elements
+     * @param req the servlet request we are processing
+     * 
      * @return true if at least one lock was displayed
      */
     private boolean generateLockDiscovery(String path, Element elem, HttpServletRequest req) {
@@ -3026,8 +3046,9 @@ public class CmsWebdavServlet extends HttpServlet {
      * Generates a lock token out of the lock and some information out of the
      * request to make it unique.<p>
      * 
-     * @param req The servlet request we are processing
-     * @param lock The lock with the information for the lock token
+     * @param req the servlet request we are processing
+     * @param lock the lock with the information for the lock token
+     * 
      * @return the generated lock token
      */
     private String generateLockToken(HttpServletRequest req, CmsRepositoryLockInfo lock) {
@@ -3048,7 +3069,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Return the relative path associated with this servlet.<p>
      *
-     * @param request The servlet request we are processing
+     * @param request the servlet request we are processing
+     * 
      * @return the relative path of the resource
      */
     private String getRelativePath(HttpServletRequest request) {
@@ -3064,14 +3086,11 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
-     * Check to see if a resource is currently write locked. The method
-     * will look at the "If" header to make sure the client
-     * has give the appropriate lock tokens.<p>
-     *
-     * @param req Servlet request
-     * @return boolean true if the resource is locked (and no appropriate
-     * lock token has been found for at least one of the non-shared locks which
-     * are present on the resource).
+     * Check to see if a resource is currently write locked.<p>
+     * 
+     * @param req the servlet request we are processing
+     * 
+     * @return true if the resource is locked otherwise false
      */
     private boolean isLocked(HttpServletRequest req) {
 
@@ -3079,14 +3098,11 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
-     * Check to see if a resource is currently write locked. The method
-     * will look at the "If" header to make sure the client
-     * has give the appropriate lock tokens.<p>
-     *
-     * @param path The path where to find the resource to check the lock
-     * @return boolean true if the resource is locked (and no appropriate
-     *          lock token has been found for at least one of the non-shared locks which
-     *          are present on the resource).
+     * Check to see if a resource is currently write locked.<p>
+     * 
+     * @param path the path where to find the resource to check the lock
+     * 
+     * @return true if the resource is locked otherwise false
      */
     private boolean isLocked(String path) {
 
@@ -3110,13 +3126,15 @@ public class CmsWebdavServlet extends HttpServlet {
     }
 
     /**
-     * Return a context-relative path, beginning with a "/", that represents
-     * the canonical version of the specified path after ".." and "." elements
-     * are resolved out.  If the specified path attempts to go outside the
-     * boundaries of the current context (i.e. too many ".." path elements
-     * are present), return <code>null</code> instead.<p>
+     * Return a context-relative path, beginning with a "/".<p>
+     * 
+     * That represents the canonical version of the specified path after ".." 
+     * and "." elements are resolved out. If the specified path attempts to go 
+     * outside the boundaries of the current context (i.e. too many ".." path 
+     * elements are present), return <code>null</code> instead.<p>
      *
-     * @param path Path to be normalized
+     * @param path the path to be normalized
+     * 
      * @return the normalized path
      */
     private String normalize(String path) {
@@ -3180,10 +3198,10 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Parse the content-range header.<p>
      *
-     * @param request The servlet request we are processing
-     * @param response The servlet response we are creating
+     * @param request the servlet request we are processing
+     * @param response the servlet response we are creating
      * 
-     * @return Range the range of the content read from the header
+     * @return the range of the content read from the header
      */
     private CmsWebdavRange parseContentRange(HttpServletRequest request, HttpServletResponse response) {
 
@@ -3238,7 +3256,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * Reads the information about a destination path out of the header of the
      * request.<p>
      * 
-     * @param req The servlet request we are processing
+     * @param req the servlet request we are processing
      * 
      * @return the destination path
      */
@@ -3309,7 +3327,8 @@ public class CmsWebdavServlet extends HttpServlet {
      * Reads the information about overwriting out of the header of the
      * request.<p>
      * 
-     * @param req The servlet request we are processing
+     * @param req the servlet request we are processing
+     * 
      * @return true if overwrite was set in the header otherwise false
      */
     private boolean parseOverwriteHeader(HttpServletRequest req) {
@@ -3331,7 +3350,7 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Propfind helper method.<p>
      *
-     * @param req The servlet request
+     * @param req the servlet request
      * @param elem the parent element where to add the generated subelements
      * @param item the current item where to parse the properties
      * @param type the propfind type
@@ -3541,7 +3560,8 @@ public class CmsWebdavServlet extends HttpServlet {
     /**
      * Sends a response back to authenticate the user.<p>
      * 
-     * @param resp The servlet response we are processing
+     * @param resp the servlet response we are processing
+     * 
      * @throws IOException if errors while writing to response occurs
      */
     private void requestAuthorization(HttpServletResponse resp) throws IOException {
@@ -3556,9 +3576,9 @@ public class CmsWebdavServlet extends HttpServlet {
      * Send a multistatus element containing a complete error report to the
      * client.<p>
      *
-     * @param req The servlet request we are processing
-     * @param resp The servlet response we are processing
-     * @param errors The errors to be displayed
+     * @param req the servlet request we are processing
+     * @param resp the servlet response we are processing
+     * @param errors the errors to be displayed
      * 
      * @throws IOException if errors while writing to response occurs
      */

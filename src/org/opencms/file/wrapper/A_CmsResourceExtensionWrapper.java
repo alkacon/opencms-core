@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceExtensionWrapper.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,12 @@ import org.opencms.main.CmsIllegalArgumentException;
 import java.util.List;
 
 /**
- * Abstract class which makes it possible to add or remove a file extension to a resource.<p>
+ * Abstract base class which implements {@link I_CmsResourceWrapper} and 
+ * makes it possible to add and remove file extensions to resources.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
  * @since 6.5.6
  */
@@ -64,8 +65,8 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (res != null) {
 
             cms.copyResource(
-                CmsWrappedResource.removeFileExtension(cms, source, getExtension()),
-                CmsWrappedResource.removeFileExtension(cms, destination, getExtension()),
+                CmsResourceWrapperUtils.removeFileExtension(cms, source, getExtension()),
+                CmsResourceWrapperUtils.removeFileExtension(cms, destination, getExtension()),
                 siblingMode);
             return true;
         }
@@ -82,7 +83,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (checkTypeId(type)) {
 
             return cms.createResource(
-                CmsWrappedResource.removeFileExtension(cms, resourcename, getExtension()),
+                CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()),
                 type,
                 content,
                 properties);
@@ -100,7 +101,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = getResource(cms, resourcename);
         if (res != null) {
 
-            cms.deleteResource(CmsWrappedResource.removeFileExtension(cms, resourcename, getExtension()), siblingMode);
+            cms.deleteResource(CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()), siblingMode);
             return true;
         }
 
@@ -115,7 +116,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (checkTypeId(resource.getTypeId())) {
 
             CmsWrappedResource wrap = new CmsWrappedResource(resource);
-            wrap.setRootPath(CmsWrappedResource.removeFileExtension(cms, resource.getRootPath(), getExtension()));
+            wrap.setRootPath(CmsResourceWrapperUtils.removeFileExtension(cms, resource.getRootPath(), getExtension()));
 
             return cms.getLock(wrap.getResource());
         }
@@ -163,8 +164,8 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
             }
 
             cms.moveResource(
-                CmsWrappedResource.removeFileExtension(cms, source, getExtension()),
-                CmsWrappedResource.removeFileExtension(cms, destination, getExtension()));
+                CmsResourceWrapperUtils.removeFileExtension(cms, source, getExtension()),
+                CmsResourceWrapperUtils.removeFileExtension(cms, destination, getExtension()));
             return true;
         }
 
@@ -181,7 +182,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
             CmsFile file = CmsFile.upgrade(res, cms);
             CmsWrappedResource wrap = new CmsWrappedResource(file);
-            wrap.setRootPath(CmsWrappedResource.addFileExtension(cms, res.getRootPath(), getExtension()));
+            wrap.setRootPath(CmsResourceWrapperUtils.addFileExtension(cms, res.getRootPath(), getExtension()));
 
             return wrap.getFile();
         }
@@ -198,7 +199,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (res != null) {
 
             CmsWrappedResource wrap = new CmsWrappedResource(res);
-            wrap.setRootPath(CmsWrappedResource.addFileExtension(cms, res.getRootPath(), getExtension()));
+            wrap.setRootPath(CmsResourceWrapperUtils.addFileExtension(cms, res.getRootPath(), getExtension()));
 
             return wrap.getResource();
         }
@@ -225,7 +226,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
     public String rewriteLink(CmsObject cms, CmsResource res) {
 
         if (checkTypeId(res.getTypeId())) {
-            return CmsWrappedResource.addFileExtension(cms, res.getRootPath(), getExtension());
+            return CmsResourceWrapperUtils.addFileExtension(cms, res.getRootPath(), getExtension());
         }
 
         return null;
@@ -253,7 +254,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (checkTypeId(res.getTypeId())) {
 
             CmsWrappedResource wrap = new CmsWrappedResource(res);
-            wrap.setRootPath(CmsWrappedResource.addFileExtension(cms, res.getRootPath(), getExtension()));
+            wrap.setRootPath(CmsResourceWrapperUtils.addFileExtension(cms, res.getRootPath(), getExtension()));
 
             return wrap.getResource();
         }
@@ -269,7 +270,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         if (checkTypeId(resource.getTypeId())) {
 
             CmsWrappedResource wrap = new CmsWrappedResource(resource);
-            wrap.setRootPath(CmsWrappedResource.removeFileExtension(cms, resource.getRootPath(), getExtension()));
+            wrap.setRootPath(CmsResourceWrapperUtils.removeFileExtension(cms, resource.getRootPath(), getExtension()));
 
             return cms.writeFile(wrap.getFile());
         }
@@ -286,7 +287,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
     protected abstract boolean checkTypeId(int typeId);
 
     /**
-     * Returns the extension to add or remove to the resource.<p>
+     * Returns the extension to add and/or remove to/from the resource.<p>
      * 
      * @return the extension to use
      */
@@ -308,7 +309,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
     /**
      * Trys to read the resourcename after removing the file extension and return the
-     * resource of the type id is correct.<p>
+     * resource if the type id is correct.<p>
      * 
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource to read
@@ -321,7 +322,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = null;
 
         try {
-            res = cms.readResource(CmsWrappedResource.removeFileExtension(cms, resourcename, getExtension()), filter);
+            res = cms.readResource(CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()), filter);
         } catch (CmsException ex) {
             return null;
         }

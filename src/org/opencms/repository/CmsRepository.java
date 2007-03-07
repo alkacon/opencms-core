@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepository.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,20 @@ import org.apache.commons.logging.Log;
 /**
  * Creates a repository session to access OpenCms.<p>
  * 
+ * The configuration of the used {@link I_CmsResourceWrapper} is done here.
+ * This is the main class to get access to the resources in the VFS of 
+ * OpenCms. The method {@link #login(String, String)} logs in to OpenCms
+ * and returns a {@link CmsRepositorySession} to use for basic file and
+ * folder operations.<p>
+ * 
+ * The project and the site to use for the access to OpenCms is read out
+ * of the user settings.<p>
+ * 
+ * @see CmsObjectWrapper
+ * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6
  */
@@ -137,16 +148,16 @@ public class CmsRepository extends A_CmsRepository {
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         cms.loginUser(userName, password);
 
-        //CmsUser user = cms.readUser(userName);
         CmsUserSettings settings = new CmsUserSettings(cms);
 
         cms.getRequestContext().setSiteRoot(settings.getStartSite());
         cms.getRequestContext().setCurrentProject(cms.readProject(settings.getStartProject()));
 
-        // set a link table wrapper to handle links in xml pages
+        // set the object wrapper as an attribute in the request context, so that it can be
+        // used everywhere a CmsObject is accessible.
         CmsObjectWrapper objWrapper = new CmsObjectWrapper(cms, m_wrappers);
         cms.getRequestContext().setAttribute(CmsObjectWrapper.ATTRIBUTE_NAME, objWrapper);
-        
+
         return new CmsRepositorySession(objWrapper, getFilter());
     }
 

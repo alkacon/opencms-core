@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/package.html,v $
- Date   : $Date: 2007/02/22 16:48:29 $
- Version: $Revision: 1.1.2.1 $
+ Date   : $Date: 2007/03/07 14:15:05 $
+ Version: $Revision: 1.1.2.2 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,9 +36,33 @@
 </head>
 <body bgcolor="white">
 
-Used to get a WebDAV access to OpenCms. Handles all issues belonging to the WebDAV protocol.<p>
+Provides a WebDAV access to OpenCms.<p> 
 
-@version $Revision: 1.1.2.1 $ 
+Handles all issues belonging to the WebDAV protocol.<p>
+
+The {@link org.opencms.webdav.CmsWebdavServlet} has to be configured in the <code>web.xml</code>,
+where the name of the {@link org.opencms.repository.I_CmsRepository} has to be specified to use
+with WebDAV.<p>
+
+Additionally it is possible to browse the resources in the VFS through a Web Browser by using the
+url where the WebdavServlet is configured in the <code>web.xml</code>.<p>
+
+The following WebDAV clients were tested:<br/>
+<ul>
+<li>Macromedia Dreamweaver</li>
+<li>Microsoft WebFolder</li>
+<li>WebDAV Mount in Mac OS X</li>
+<li>WebDrive (South River Technologies)</li>
+<li>DAV Explorer (http://www.davexplorer.org/)</li>
+</ul>
+
+Limitations:<br/>
+<ul>
+<li>The WebDAV method PROPPATCH is not implemented yet.</li>
+<li>Does not work with Apache Tomcat &lt; 5.5</li>
+</ul>
+
+@version $Revision: 1.1.2.2 $ 
 
 @since 6.5.6
 

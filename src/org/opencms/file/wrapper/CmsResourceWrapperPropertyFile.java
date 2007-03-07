@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperPropertyFile.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,25 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Generates a property file for a resource.<p>
+ * Adds a folder in every existing folder with the name "__properties" which
+ * contains property files for every resource in the existing folder.<p>
+ * 
+ * Empty folders don't have the property folder visible.<p>
+ * 
+ * The names of the property files are the same as the resource they belong to
+ * with the extension "properties". To keep the correct sorting the names of
+ * folders gets additionaly the prefix "__" to keep them at the beginning of the
+ * list.<p>
+ * 
+ * When creating new folders, the property folder gets visible after a time period
+ * of 60 seconds. For new resources the property file appears after that period too.
+ * In this time period it is possible to create the property folder and the property
+ * files manually. The properties in the created property files will be set at the
+ * resource they belong to.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -96,7 +110,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
                 if (existsResource(res)) {
 
                     // add the generated property file
-                    ret.add(CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res)));
+                    ret.add(CmsResourceWrapperUtils.createPropertyFile(cms, res, getPropertyFileName(res)));
                 }
             }
 
@@ -164,9 +178,9 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
                 wrap.setRootPath(res.getRootPath() + PROPERTY_DIR + "/");
                 wrap.setFolder(true);
                 return wrap.getResource();
-            } else if (resourcename.endsWith(CmsWrappedResource.EXTENSION_PROPERTIES)) {
+            } else if (resourcename.endsWith(CmsResourceWrapperUtils.EXTENSION_PROPERTIES)) {
 
-                CmsWrappedResource.writePropertyFile(
+                CmsResourceWrapperUtils.writePropertyFile(
                     cms,
                     cms.getRequestContext().removeSiteRoot(res.getRootPath()),
                     content);
@@ -258,7 +272,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
                     return null;
                 }
 
-                return CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res));
+                return CmsResourceWrapperUtils.createPropertyFile(cms, res, getPropertyFileName(res));
             }
         }
 
@@ -290,7 +304,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
             // create property file and return the resource for it
             if (!resourcename.endsWith(PROPERTY_DIR)) {
-                return CmsWrappedResource.createPropertyFile(cms, res, getPropertyFileName(res));
+                return CmsResourceWrapperUtils.createPropertyFile(cms, res, getPropertyFileName(res));
             }
 
             // create a resource for the __property folder
@@ -345,7 +359,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         //            cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
         //            CmsResourceFilter.ALL);
         if (res != null) {
-            CmsWrappedResource.writePropertyFile(
+            CmsResourceWrapperUtils.writePropertyFile(
                 cms,
                 cms.getRequestContext().removeSiteRoot(res.getRootPath()),
                 resource.getContents());
@@ -457,7 +471,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             return cms.readResource(path, filter);
         }
 
-        if ((path.endsWith(PROPERTY_DIR + "/")) && (name.endsWith(CmsWrappedResource.EXTENSION_PROPERTIES))) {
+        if ((path.endsWith(PROPERTY_DIR + "/")) && (name.endsWith(CmsResourceWrapperUtils.EXTENSION_PROPERTIES))) {
             CmsResource res = null;
 
             if (name.startsWith(FOLDER_PREFIX)) {
@@ -465,10 +479,10 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             }
 
             try {
-                String resPath = CmsWrappedResource.removeFileExtension(
+                String resPath = CmsResourceWrapperUtils.removeFileExtension(
                     cms,
                     parent + name,
-                    CmsWrappedResource.EXTENSION_PROPERTIES);
+                    CmsResourceWrapperUtils.EXTENSION_PROPERTIES);
 
                 res = cms.readResource(resPath, filter);
             } catch (CmsException ex) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceExtensionWrapperJsp.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,12 @@ package org.opencms.file.wrapper;
 import org.opencms.file.types.CmsResourceTypeJsp;
 
 /**
- * A resource type wrapper for jsp files, which mainly adds the correct file extensions
+ * A resource type wrapper for jsp files, which adds the correct file extension "jsp"
  * to the resources.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -50,14 +50,6 @@ public class CmsResourceExtensionWrapperJsp extends A_CmsResourceExtensionWrappe
 
     /** The resource type id for this wrapper. */
     private static final int RESOURCE_TYPE_ID = CmsResourceTypeJsp.getStaticTypeId();
-    
-    /**
-     * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#getExtension()
-     */
-    protected String getExtension() {
-
-        return RESOURCE_TYPE_EXTENSION;
-    }
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#checkTypeId(int)
@@ -65,6 +57,14 @@ public class CmsResourceExtensionWrapperJsp extends A_CmsResourceExtensionWrappe
     protected boolean checkTypeId(int typeId) {
 
         return typeId == RESOURCE_TYPE_ID;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#getExtension()
+     */
+    protected String getExtension() {
+
+        return RESOURCE_TYPE_EXTENSION;
     }
 
 }

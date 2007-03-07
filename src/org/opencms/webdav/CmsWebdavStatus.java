@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavStatus.java,v $
- * Date   : $Date: 2007/02/22 16:48:29 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,15 +55,12 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Wraps the HttpServletResponse class to abstract the
- * specific protocol used.  To support other protocols
- * we would only need to modify this class and the
- * WebDavRetCode classes.
+ * Contains all possible return values for the WebDAV/HTTP protocol.<p>
  *
  * @author Marc Eaddy
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */

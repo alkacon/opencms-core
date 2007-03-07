@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryLockInfo.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,13 @@ package org.opencms.repository;
 import java.util.Date;
 
 /**
- * The class represents a lock to a resource with all information
- * a lock needs for WebDAV.<p>
+ * The class represents a lock to a {@link I_CmsRepositoryItem}.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public class CmsRepositoryLockInfo {
 
@@ -53,7 +52,7 @@ public class CmsRepositoryLockInfo {
 
     /** Infinite timeout for the lock. */
     public static final int TIMEOUT_INFINITE_VALUE = -1;
-    
+
     /** The lock type "write". */
     public static final String TYPE_WRITE = "write";
 
@@ -75,7 +74,7 @@ public class CmsRepositoryLockInfo {
     /** The time when the lock expires. */
     private long m_expiresAt = TIMEOUT_INFINITE_VALUE;
 
-    /** The owner of the lock (submitted while creation). */
+    /** The owner of the lock. */
     private String m_owner = "";
 
     /** The path of the resource item the lock belongs to. */
@@ -91,7 +90,7 @@ public class CmsRepositoryLockInfo {
     private String m_username = "";
 
     /**
-     * Constructor.
+     * Empty default constructor.<p>
      */
     public CmsRepositoryLockInfo() {
 
@@ -270,9 +269,9 @@ public class CmsRepositoryLockInfo {
     }
 
     /**
-     * Get a String representation of this lock token.
+     * Get a string representation of this lock info.<p>
      * 
-     * @return a String representation of this lock
+     * @return a string representation of this lock
      */
     public String toString() {
 

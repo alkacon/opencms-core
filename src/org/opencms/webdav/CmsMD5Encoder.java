@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsMD5Encoder.java,v $
- * Date   : $Date: 2007/02/22 16:48:29 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.webdav;
  * @author Remy Maucherat
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -71,10 +71,11 @@ public final class CmsMD5Encoder {
      'a', 'b', 'c', 'd', 'e', 'f'};
 
     /**
-     * Encodes the 128 bit (16 bytes) MD5 into a 32 character String.
+     * Encodes the 128 bit (16 bytes) MD5 into a 32 character String.<p>
      *
-     * @param binaryData Array containing the digest
-     * @return Encoded MD5, or null if encoding failed
+     * @param binaryData array containing the digest
+     * 
+     * @return encoded MD5, or null if encoding failed
      */
     public String encode(byte[] binaryData) {
 

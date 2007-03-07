@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepository.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,15 +34,17 @@ package org.opencms.repository;
 import org.opencms.main.CmsException;
 
 /**
- * The entry point into the content repository.<p>
- * 
- * Represents the entry point into the content repository.<p>
+ * Represents the entry point into the repository.<p>
+ *
+ * Get a {@link I_CmsRepositorySession} through login in with the
+ * username and password ({@link #login(String, String)}).<p>
  * 
  * @author Michael Moossen
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public interface I_CmsRepository {
 
@@ -54,7 +56,7 @@ public interface I_CmsRepository {
     String getName();
 
     /**
-     * Login a user given the session data.<p> 
+     * Login a user given the username and the password.<p> 
      * 
      * @param userName the user name
      * @param password the user's password

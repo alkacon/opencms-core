@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.7 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,36 +58,47 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * Depending on the configured resource type wrappers this class handles the
- * resources to behave different.<p>
+ * This class contains a subset of the methods of {@link CmsObject} and uses the
+ * configured resource wrappers ({@link I_CmsResourceWrapper}) to change the view
+ * to the existing resources in the VFS.<p>
  * 
- * Acts mostly like a wrapper for the CmsObject.<p>
+ * Almost every method in this class iterates through the configured list of 
+ * {@link I_CmsResourceWrapper} and calls the same method there. The first resource 
+ * wrapper in the list which feels responsible for that action handles it and the 
+ * iteration ends. So the resource wrappers should check in every method if it is 
+ * responsible or not. Be careful if there are more than one resource wrapper for 
+ * the same resource in the VFS, because the first in the list wins. If the iteration is
+ * finished and no resource wrapper felt responsible the default action is to call the 
+ * method in the {@link CmsObject}.<p> 
+ * 
+ * It is possible to create an unchanged access to the resource in the VFS by creating 
+ * a new instance of the CmsObjectWrapper with an empty list of resource wrappers.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.7 $
+ * @version $Revision: 1.1.4.8 $
  * 
  * @since 6.2.4
  */
 public class CmsObjectWrapper {
 
+    /** The name of the attribute in the {@link CmsRequestContext} where the current CmsObjectWrapper can be found. */
+    public static final String ATTRIBUTE_NAME = "org.opencms.file.wrapper.CmsObjectWrapper";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsObjectWrapper.class);
-    
-    /** The name of the attribute in the {@link org.opencms.file.CmsRequestContext}. */
-    public static final String ATTRIBUTE_NAME = "org.opencms.file.wrapper.CmsObjectWrapper";
 
     /** The initialized CmsObject. */
     private CmsObject m_cms;
 
-    /** The list with the configured wrappers. */
+    /** The list with the configured wrappers (entries of type {@link I_CmsResourceWrapper}). */
     private List m_wrappers;
 
     /**
-     * Constructor with the CmsObject to wrap.<p>
+     * Constructor with the CmsObject to wrap and the resource wrappers to use.<p>
      * 
      * @param cms the initialized CmsObject
-     * @param wrappers the configured wrappers to use
+     * @param wrappers the configured wrappers to use (entries of type {@link I_CmsResourceWrapper})
      */
     public CmsObjectWrapper(CmsObject cms, List wrappers) {
 
@@ -98,17 +109,10 @@ public class CmsObjectWrapper {
     /**
      * Copies a resource.<p>
      * 
-     * The copied resource will always be locked to the current user
-     * after the copy operation.<p>
+     * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      * 
-     * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the copy operation.<br>
-     * Possible values for this parameter are: <br>
-     * <ul>
-     * <li><code>{@link CmsResource#COPY_AS_NEW}</code></li>
-     * <li><code>{@link CmsResource#COPY_AS_SIBLING}</code></li>
-     * <li><code>{@link CmsResource#COPY_PRESERVE_SIBLING}</code></li>
-     * </ul><p>
+     * @see I_CmsResourceWrapper#copyResource(CmsObject, String, String, CmsResource.CmsResourceCopyMode)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
      * 
      * @param source the name of the resource to copy (full path)
      * @param destination the name of the copy destination (full path)
@@ -141,8 +145,9 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Creates a new resource of the given resource type with 
-     * empty content and no properties.<p>
+     * Creates a new resource of the given resource type with empty content and no properties.<p>
+     * 
+     * @see #createResource(String, int, byte[], List)
      * 
      * @param resourcename the name of the resource to create (full path)
      * @param type the type of the resource to create
@@ -151,8 +156,6 @@ public class CmsObjectWrapper {
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the given <code>resourcename</code> is null or of length 0
-     * 
-     * @see org.opencms.file.CmsObject#createResource(String, int, byte[], List)
      */
     public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
 
@@ -160,8 +163,12 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Creates a new resource of the given resource type
-     * with the provided content and properties.<p>
+     * Creates a new resource of the given resource type with the provided content and properties.<p>
+     * 
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
+     * 
+     * @see I_CmsResourceWrapper#createResource(CmsObject, String, int, byte[], List)
+     * @see CmsObject#createResource(String, int, byte[], List)
      * 
      * @param resourcename the name of the resource to create (full path)
      * @param type the type of the resource to create
@@ -200,13 +207,10 @@ public class CmsObjectWrapper {
     /**
      * Deletes a resource given its name.<p>
      * 
-     * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the delete operation.<br>
-     * Possible values for this parameter are: <br>
-     * <ul>
-     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
-     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
-     * </ul><p>
+     * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
+     * 
+     * @see I_CmsResourceWrapper#deleteResource(CmsObject, String, CmsResource.CmsResourceDeleteMode)
+     * @see CmsObject#deleteResource(String, CmsResource.CmsResourceDeleteMode)
      * 
      * @param resourcename the name of the resource to delete (full path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
@@ -236,15 +240,16 @@ public class CmsObjectWrapper {
 
     /**
      * Checks the availability of a resource in the VFS,
-     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
+     * using the {@link CmsResourceFilter#DEFAULT} filter.<p>
      * 
-     * @see CmsObject#existsResource(String)
+     * Here it will be first checked if the resource exists in the VFS by calling 
+     * {@link org.opencms.file.CmsObject#existsResource(String)}. Only if it doesn't exist
+     * in the VFS the method {@link I_CmsResourceWrapper#readResource(CmsObject, String, CmsResourceFilter)}
+     * in the configured resource wrappers are called till the first does not throw an exception or returns 
+     * <code>null</code>.<p>
      *
-     * Adds additional functionality for virtual resourcenames created by
-     * the wrapper. For example: xmlpages are now folders with resources.
-     * The resources belonging to the folder of the xmlpage exists too.
-     * 
      * @param resourcename the name of the resource to check (full path)
+     * 
      * @return <code>true</code> if the resource is available
      */
     public boolean existsResource(String resourcename) {
@@ -276,11 +281,16 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Calls the wrapper for the resource or delegate it to the {@link org.opencms.file.CmsObject#getLock(CmsResource)}.<p>
+     * Returns the lock state for a specified resource.<p>
      * 
-     * @param resource the resource to return the edition lock state for
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
      * 
-     * @return the edition lock state for the specified resource
+     * @see I_CmsResourceWrapper#getLock(CmsObject, CmsResource)
+     * @see CmsObject#getLock(CmsResource)
+     * 
+     * @param resource the resource to return the lock state for
+     * 
+     * @return the lock state for the specified resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -308,9 +318,9 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Delegate method for the CmsObject.<p>
+     * Delegate method for {@link CmsObject#getRequestContext()}.<p>
      * 
-     * @see org.opencms.file.CmsObject#getRequestContext()
+     * @see CmsObject#getRequestContext()
 
      * @return the current users request context
      */
@@ -323,9 +333,16 @@ public class CmsObjectWrapper {
      * Returns all child resources of a resource, that is the resources
      * contained in a folder.<p>
      * 
-     * With the <code>{@link CmsResourceFilter}</code> provided as parameter
-     * you can control if you want to include deleted, invisible or 
-     * time-invalid resources in the result.<p>
+     * First fetch all child resources from VFS by calling {@link CmsObject#getResourcesInFolder(String, CmsResourceFilter)}.
+     * After that all resource wrapper are called {@link I_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)}
+     * to have the chance to add additional resources to those already existing. In that list every resource is given to
+     * the appropriate resource wrapper ({@link I_CmsResourceWrapper#wrapResource(CmsObject, CmsResource)}) to have the 
+     * possibility to change the existing resources. The matching resource wrapper for a resource is found by a call to
+     * {@link I_CmsResourceWrapper#isWrappedResource(CmsObject, CmsResource)}.<p>
+     * 
+     * @see #getResourceTypeWrapper(CmsResource)
+     * @see I_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
+     * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
      * 
      * @param resourcename the full path of the resource to return the child resources for
      * @param filter the resource filter to use
@@ -345,7 +362,7 @@ public class CmsObjectWrapper {
             //noop
         }
 
-        // iterate through all wrappers and call "getResourcesInFolder" and add the results to the list
+        // iterate through all wrappers and call "addResourcesToFolder" and add the results to the list
         List wrappers = getWrappers();
         Iterator iter = wrappers.iterator();
         while (iter.hasNext()) {
@@ -385,11 +402,12 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Delegate method for the CmsObject.<p>
+     * Delegate method for {@link CmsObject#getSitePath(CmsResource)}.<p>
      * 
-     * @see org.opencms.file.CmsObject#getSitePath(org.opencms.file.CmsResource)
+     * @see CmsObject#getSitePath(org.opencms.file.CmsResource)
      * 
      * @param resource the resource to get the adjusted site root path for
+     * 
      * @return the absolute resource path adjusted for the current site
      */
     public String getSitePath(CmsResource resource) {
@@ -398,9 +416,11 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Returns the wrappers.<p>
+     * Returns the configured resource wrappers used by this instance.<p>
+     * 
+     * Entries in list are from type {@link I_CmsResourceWrapper}.<p>
      *
-     * @return the wrappers
+     * @return the configured resource wrappers for this instance
      */
     public List getWrappers() {
 
@@ -410,7 +430,10 @@ public class CmsObjectWrapper {
     /**
      * Locks a resource.<p>
      *
-     * This will be an exclusive, persistant lock that is removed only if the user unlocks it.<p>
+     * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
+     *
+     * @see I_CmsResourceWrapper#lockResource(CmsObject, String)
+     * @see CmsObject#lockResource(String)
      *
      * @param resourcename the name of the resource to lock (full path)
      * 
@@ -439,18 +462,16 @@ public class CmsObjectWrapper {
 
     /**
      * Moves a resource to the given destination.<p>
+     *
+     * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      * 
-     * A move operation in OpenCms is always a copy (as sibling) followed by a delete,
-     * this is a result of the online/offline structure of the 
-     * OpenCms VFS. This way you can see the deleted files/folders in the offline
-     * project, and you will be unable to undelete them.<p>
+     * @see I_CmsResourceWrapper#moveResource(CmsObject, String, String)
+     * @see CmsObject#moveResource(String, String)
      * 
      * @param source the name of the resource to move (full path)
      * @param destination the destination resource name (full path)
      *
      * @throws CmsException if something goes wrong
-     * 
-     * @see org.opencms.file.CmsObject#renameResource(String, String)
      */
     public void moveResource(String source, String destination) throws CmsException {
 
@@ -477,13 +498,18 @@ public class CmsObjectWrapper {
      * Reads a file resource (including it's binary content) from the VFS,
      * using the specified resource filter.<p>
      * 
-     * If the resource with the resource name can't be found by the CmsObject,
-     * all configured resource type wrappers are asked to handle this action.
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
      * 
-     * @see org.opencms.file.CmsObject#readFile(java.lang.String, org.opencms.file.CmsResourceFilter)
+     * If the resource contains textual content and the encoding is UTF-8, then the byte order mask
+     * for UTF-8 is added at the start of the content to make sure that a client using this content
+     * displays it correctly.<p>
+     * 
+     * @see I_CmsResourceWrapper#readFile(CmsObject, String, CmsResourceFilter)
+     * @see CmsObject#readFile(String, CmsResourceFilter)
      * 
      * @param resourcename the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
+     * 
      * @return the file resource that was read
      *
      * @throws CmsException if the file resource could not be read for any reason
@@ -516,14 +542,14 @@ public class CmsObjectWrapper {
                 res.getRootPath(),
                 encoding,
                 CmsResourceManager.MIMETYPE_TEXT);
-            
+
             if ((contentType != null) && (contentType.startsWith("text"))) {
-                
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_UTF8_MARKER_1, res.getRootPath()));
                 }
-                
-                res.setContents(CmsWrappedResource.addUtf8Marker(res.getContents()));
+
+                res.setContents(CmsResourceWrapperUtils.addUtf8Marker(res.getContents()));
             }
         }
 
@@ -531,7 +557,9 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Delegate method for the CmsObject.<p>
+     * Delegate method for {@link CmsObject#readPropertyObject(CmsResource, String, boolean)}.<p>
+     * 
+     * @see CmsObject#readPropertyObject(CmsResource, String, boolean)
      * 
      * @param resource the resource where the property is attached to
      * @param property the property name
@@ -541,8 +569,6 @@ public class CmsObjectWrapper {
      * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
      * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see org.opencms.file.CmsObject#readPropertyObject(org.opencms.file.CmsResource, java.lang.String, boolean)
      */
     public CmsProperty readPropertyObject(CmsResource resource, String property, boolean search) throws CmsException {
 
@@ -550,22 +576,9 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Reads a resource from the VFS,
-     * using the specified resource filter.<p>
+     * Delegate method for {@link CmsObject#readResource(CmsUUID, CmsResourceFilter)}.<p>
      *
-     * A resource may be of type <code>{@link CmsFile}</code> or 
-     * <code>{@link org.opencms.file.CmsFolder}</code>. In case of
-     * a file, the resource will not contain the binary file content. Since reading 
-     * the binary content is a cost-expensive database operation, it's recommended 
-     * to work with resources if possible, and only read the file content when absolutly
-     * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
-     *
-     * The specified filter controls what kind of resources should be "found" 
-     * during the read operation. This will depend on the application. For example, 
-     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
-     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
-     * will ignore the date release / date expired information of the resource.<p>
+     * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
      * 
      * @param structureID the ID of the structure to read
      * @param filter the resource filter to use while reading
@@ -573,10 +586,6 @@ public class CmsObjectWrapper {
      * @return the resource that was read
      *
      * @throws CmsException if the resource could not be read for any reason
-     * 
-     * @see CmsObject#readFile(String, CmsResourceFilter)
-     * @see CmsObject#readFolder(String, CmsResourceFilter)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(CmsUUID structureID, CmsResourceFilter filter) throws CmsException {
 
@@ -587,8 +596,10 @@ public class CmsObjectWrapper {
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      * 
-     * If the resource with the resource name can't be found by the CmsObject,
-     * all configured resource type wrappers are asked to handle this action.
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
+     * 
+     * @see I_CmsResourceWrapper#readResource(CmsObject, String, CmsResourceFilter)
+     * @see CmsObject#readResource(String, CmsResourceFilter)
      * 
      * @param resourcename The name of the resource to read (full path)
      * @param filter the resource filter to use while reading
@@ -596,8 +607,6 @@ public class CmsObjectWrapper {
      * @return the resource that was read
      * 
      * @throws CmsException if the resource could not be read for any reason
-     * 
-     * @see CmsObject#readResource(String)
      */
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
@@ -623,9 +632,9 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Delegate method for the CmsObject.<p>
+     * Delegate method for {@link CmsObject#readUser(CmsUUID)}.<p>
      * 
-     * @see org.opencms.file.CmsObject#readUser(org.opencms.util.CmsUUID)
+     * @see CmsObject#readUser(CmsUUID)
      * 
      * @param userId the id of the user to be read
      * 
@@ -639,11 +648,20 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Restores the uri for the resource at the rewritten path.<p>
+     * Returns a link to an existing resource in the VFS.<p>
      * 
-     * @param path the path where to find the resource
+     * Because it is possible through the <code>CmsObjectWrapper</code> to create "virtual" resources,
+     * which can not be found in the VFS, it is necessary to change the links in pages
+     * as well, so that they point to resources which really exists in the VFS.<p>
      * 
-     * @return the restored path for the resource
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
+     * 
+     * @see #rewriteLink(String)
+     * @see I_CmsResourceWrapper#restoreLink(CmsObject, String)
+     * 
+     * @param path the path to the resource
+     * 
+     * @return the path for the resource which exists in the VFS
      */
     public String restoreLink(String path) {
 
@@ -664,9 +682,22 @@ public class CmsObjectWrapper {
     }
 
     /**
-     * Rewrite the link for the resource at the path.<p>
+     * Returns a link to a resource after it was wrapped by the CmsObjectWrapper.<p>
      * 
-     * Used for the link processing ({@link org.opencms.relations.CmsLink}).<p>
+     * Because it is possible to change the names of resources inside the VFS by this
+     * <code>CmsObjectWrapper</code>, it is necessary to change the links used in pages
+     * as well, so that they point to the changed name of the resource.<p>
+     * 
+     * For example: <code>/sites/default/index.html</code> becomes to 
+     * <code>/sites/default/index.html.jsp</code>, because it is a jsp page, the links
+     * in pages where corrected so that they point to the new name (with extension "jsp").<p>
+     * 
+     * Used for the link processing in the class {@link org.opencms.relations.CmsLink}.<p>
+     * 
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
+     * 
+     * @see #restoreLink(String)
+     * @see I_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
      * 
      * @param path the full path where to find the resource
      * 
@@ -702,6 +733,11 @@ public class CmsObjectWrapper {
     /**
      * Unlocks a resource.<p>
      * 
+     * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
+     * 
+     * @see I_CmsResourceWrapper#unlockResource(CmsObject, String)
+     * @see CmsObject#unlockResource(String)
+     * 
      * @param resourcename the name of the resource to unlock (full path)
      * 
      * @throws CmsException if something goes wrong
@@ -730,9 +766,9 @@ public class CmsObjectWrapper {
     /**
      * Writes a resource to the OpenCms VFS, including it's content.<p>
      * 
-     * If the file does not exist in the VFS, the responsible wrapper is
-     * called to save the resource.
+     * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
      * 
+     * @see I_CmsResourceWrapper#writeFile(CmsObject, CmsFile)
      * @see CmsObject#writeFile(CmsFile)
      * 
      * @param resource the resource to write
@@ -776,6 +812,8 @@ public class CmsObjectWrapper {
      * Takes all configured resource type wrappers and ask if one of them is responsible 
      * for that resource. The first in the list which feels responsible is returned. 
      * If no wrapper could be found null will be returned.<p>
+     * 
+     * @see I_CmsResourceWrapper#isWrappedResource(CmsObject, CmsResource)
      * 
      * @param res the resource to find a resource type wrapper for
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/wrapper/TestPropertyFile.java,v $
- * Date   : $Date: 2007/03/06 11:49:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for the <code>{@link org.opencms.file.wrapper.CmsWrappedResource#createPropertyFile(org.opencms.file.CmsObject, org.opencms.file.CmsResource, String)}</code> 
+ * Unit test for the <code>{@link org.opencms.file.wrapper.CmsResourceWrapperUtils#createPropertyFile(org.opencms.file.CmsObject, org.opencms.file.CmsResource, String)}</code> 
  * method.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestPropertyFile extends OpenCmsTestCase {
 
@@ -114,7 +114,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
 
         // create the property file
         CmsResource res = getCmsObject().readResource(resourcename);
-        CmsFile propFile = CmsWrappedResource.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
+        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
 
         String content = CmsEncoder.createString(propFile.getContents(), CmsEncoder.ENCODING_UTF_8);
 
@@ -147,7 +147,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
 
         // create the property file
         CmsResource res = getCmsObject().readResource(resourcename);
-        CmsFile propFile = CmsWrappedResource.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
+        CmsFile propFile = CmsResourceWrapperUtils.createPropertyFile(getCmsObject(), res, res.getRootPath() + ".properties");
 
         String content = CmsEncoder.createString(propFile.getContents(), CmsEncoder.ENCODING_UTF_8);
 
@@ -175,7 +175,7 @@ public class TestPropertyFile extends OpenCmsTestCase {
         content.append(propValue);
 
         // write the property file to the resource
-        CmsWrappedResource.writePropertyFile(getCmsObject(), resourcename, content.toString().getBytes(
+        CmsResourceWrapperUtils.writePropertyFile(getCmsObject(), resourcename, content.toString().getBytes(
             CmsEncoder.ENCODING_UTF_8));
 
         // read property

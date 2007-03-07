@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceExtensionWrapperXmlContent.java,v $
- * Date   : $Date: 2007/02/22 12:35:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 /**
- * A resource type wrapper for xml content files, which mainly adds the correct file extensions
+ * A resource type wrapper for xml content files, which adds the correct file extension "xml"
  * to the resources.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -50,14 +50,6 @@ public class CmsResourceExtensionWrapperXmlContent extends A_CmsResourceExtensio
 
     /** The extension used for this resource type wrapper. */
     private static final String RESOURCE_TYPE_EXTENSION = "xml";
-
-    /**
-     * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#getExtension()
-     */
-    protected String getExtension() {
-
-        return RESOURCE_TYPE_EXTENSION;
-    }
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#checkTypeId(int)
@@ -74,6 +66,14 @@ public class CmsResourceExtensionWrapperXmlContent extends A_CmsResourceExtensio
         }
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceExtensionWrapper#getExtension()
+     */
+    protected String getExtension() {
+
+        return RESOURCE_TYPE_EXTENSION;
     }
 
 }

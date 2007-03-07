@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/28 11:02:02 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,12 +55,20 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * This is the session class to work with OpenCms. You should get an instance
- * of this class by calling {@link CmsRepository#login(String, String)}.<p>
+ * This is the session class to work with the {@link CmsRepository}.<p> 
+ * 
+ * You can get an instance of this class by calling 
+ * {@link CmsRepository#login(String, String)}.<p>
+ *
+ * This class provides basic file and folder operations on the resources
+ * in the VFS of OpenCms.<p>
+ * 
+ * @see A_CmsRepositorySession
+ * @see I_CmsRepositorySession
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.6
  */
@@ -69,13 +77,14 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepositorySession.class);
 
-    /** The initialized CmsObjectWrapper. */
+    /** The initialized {@link CmsObjectWrapper}. */
     private final CmsObjectWrapper m_cms;
 
     /**
-     * Constructor with an initialized CmsObject and a filter to use.<p>
+     * Constructor with an initialized {@link CmsObjectWrapper} and a 
+     * {@link CmsRepositoryFilter} to use.<p>
      * 
-     * @param cms The initialized CmsObject
+     * @param cms the initialized CmsObject
      * @param filter the repository filter to use
      */
     public CmsRepositorySession(CmsObjectWrapper cms, CmsRepositoryFilter filter) {
@@ -431,7 +440,8 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     }
 
     /**
-     * Adds the site root to the path name.<p>
+     * Adds the site root to the path name and checks then if the path
+     * is filtered.<p>
      * 
      * @see org.opencms.repository.A_CmsRepositorySession#isFiltered(java.lang.String)
      */

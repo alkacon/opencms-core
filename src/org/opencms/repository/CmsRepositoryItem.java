@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/03/01 12:57:20 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,15 +42,18 @@ import org.opencms.main.OpenCms;
 
 /**
  * Represents a single entry in the repository. In the context of OpenCms
- * this means a single resource.<p>
+ * this means a single {@link CmsResource}.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.6
  */
 public class CmsRepositoryItem implements I_CmsRepositoryItem {
+
+    /** The actual {@link CmsObjectWrapper}. */
+    private CmsObjectWrapper m_cms;
 
     /** The content of the item as a byte array. */
     private byte[] m_content = null;
@@ -58,18 +61,15 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
     /** The mime type of the item. */
     private String m_mimeType = null;
 
-    /** The CmsResource the CmsRepositoryItem is for. */
+    /** The {@link CmsResource} the CmsRepositoryItem is for. */
     private CmsResource m_resource;
 
-    /** The actual CmsObjectWrapper. */
-    private CmsObjectWrapper m_cms;
-
     /**
-     * Construct a new CmsRepositoryItem initialized with the CmsResource to use
-     * and the CmsObject needed for some operations.<p>
+     * Construct a new CmsRepositoryItem initialized with the {@link CmsResource}
+     * to use and the {@link CmsObjectWrapper} needed for some operations.<p>
      * 
-     * @param res The CmsResource this CmsRepositoryItem is used for
-     * @param cms The actual CmsObjectWrapper
+     * @param res the CmsResource this CmsRepositoryItem is used for
+     * @param cms the actual CmsObjectWrapper
      */
     public CmsRepositoryItem(CmsResource res, CmsObjectWrapper cms) {
 
@@ -146,7 +146,7 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
                     m_resource.getRootPath(),
                     encoding,
                     CmsResourceManager.MIMETYPE_TEXT);
-                
+
             } catch (CmsException ex) {
                 // noop
             }

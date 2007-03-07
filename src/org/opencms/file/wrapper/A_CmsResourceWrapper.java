@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,17 @@ import org.opencms.main.CmsIllegalArgumentException;
 import java.util.List;
 
 /**
- * Default abstract implementation of the interface {@link org.opencms.file.wrapper.I_CmsResourceWrapper}.<p>
+ * Default abstract implementation of the interface {@link I_CmsResourceWrapper}.<p>
  *
- * This class delegates all methods back to the {@link org.opencms.file.CmsObject}.<p>
+ * This class returns for all methods that the action is not handled by the 
+ * resource wrapper.<p>
+ * 
+ * Subclasses can only implement those methods where they want to change the default
+ * behaviour.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
  * @since 6.5.6
  */
@@ -58,6 +62,18 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
 
     /** Is handled by this resource wrapper. */
     protected boolean m_isWrappedResource = false;
+
+    /**
+     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
+     */
+    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        if (m_isWrappedResource) {
+            return cms.getResourcesInFolder(resourcename, filter);
+        }
+
+        return null;
+    }
 
     /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
@@ -106,18 +122,6 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
 
         if (m_isWrappedResource) {
             return cms.getLock(resource);
-        }
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.wrapper.I_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
-     */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
-
-        if (m_isWrappedResource) {
-            return cms.getResourcesInFolder(resourcename, filter);
         }
 
         return null;

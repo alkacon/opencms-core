@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.9 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,12 +65,15 @@ import java.util.Locale;
 /**
  * A resource type wrapper for xml page files, which explodes the xml pages to folders.<p>
  *
- * The created folder contains the locales as folders and the elements as files. Additionaly
- * you find files for the control code, the individual properties and the shared properties.<p>
+ * Every resource of type "xmlpage" becomes a folder with the same name. That folder 
+ * contains the locales of the xml page as folders too. In the locale folder there are 
+ * the elements for that locale as files. The files have the names of the elements with the
+ * extension "html". Additionaly there is a file in the root folder of that xml page that
+ * contains the controlcode of the xml page. This file has the name "controlcode.xml".<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.9 $
+ * @version $Revision: 1.1.4.10 $
  * 
  * @since 6.5.6
  */
@@ -84,6 +87,82 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
     /** Table with the states of the virtual files. */
     private static final Hashtable TMP_FILE_TABLE = new Hashtable();
+
+    /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
+     */
+    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        CmsResource xmlPage = findXmlPage(cms, resourcename);
+        if (xmlPage != null) {
+            String path = getSubPath(cms, xmlPage, resourcename);
+            String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
+
+            ArrayList ret = new ArrayList();
+
+            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+            CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+
+                // sub path is empty -> return all existing locales for the resource
+                if (file.getLength() == 0) {
+                    return ret;
+                }
+
+                List locales = xml.getLocales();
+                Iterator iter = locales.iterator();
+                while (iter.hasNext()) {
+                    Locale locale = (Locale)iter.next();
+                    ret.add(getResourceForLocale(xmlPage, locale));
+                }
+
+                // check temp file table to add virtual file
+                iter = getVirtualFiles().iterator();
+                while (iter.hasNext()) {
+
+                    String virtualFileName = (String)iter.next();
+                    String virtualFilePath = rootPath + "/" + virtualFileName;
+
+                    if ((!TMP_FILE_TABLE.containsKey(virtualFilePath))
+                        || (!TMP_FILE_TABLE.get(virtualFilePath).equals(new Integer(0)))) {
+
+                        // read the control code resource
+                        if (virtualFileName.equals(NAME_ELEMENT_CONTROLCODE)) {
+
+                            CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
+                            wrap.setRootPath(xmlPage.getRootPath() + "/" + NAME_ELEMENT_CONTROLCODE);
+                            wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
+
+                            CmsFile tmpFile = wrap.getFile();
+                            tmpFile.setContents(file.getContents());
+                            ret.add(tmpFile);
+                        }
+                    }
+                }
+
+            } else {
+
+                // sub path is a locale -> return all elements for this locale
+                Locale locale = new Locale(path);
+                List names = xml.getNames(locale);
+                Iterator iter = names.iterator();
+                while (iter.hasNext()) {
+                    String name = (String)iter.next();
+                    String content = xml.getStringValue(cms, name, locale);
+                    String fullPath = xmlPage.getRootPath() + "/" + path + "/" + name + "." + EXTENSION_ELEMENT;
+                    content = prepareContent(content, cms, xmlPage, fullPath);
+
+                    ret.add(getResourceForElement(xmlPage, fullPath, content.getBytes().length));
+                }
+
+            }
+
+            return ret;
+        }
+
+        return null;
+    }
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
@@ -194,7 +273,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 // at least lock file, because creating resources usually locks the resource
                 cms.lockResource(rootPath);
-                
+
                 return file;
             }
 
@@ -336,82 +415,6 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         //CmsResource xmlPage = findXmlPage(cms, resource.getRootPath());
         if (xmlPage != null) {
             return cms.getLock(xmlPage);
-        }
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
-     */
-    public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
-
-        CmsResource xmlPage = findXmlPage(cms, resourcename);
-        if (xmlPage != null) {
-            String path = getSubPath(cms, xmlPage, resourcename);
-            String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
-
-            ArrayList ret = new ArrayList();
-
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
-            CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
-
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-
-                // sub path is empty -> return all existing locales for the resource
-                if (file.getLength() == 0) {
-                    return ret;
-                }
-
-                List locales = xml.getLocales();
-                Iterator iter = locales.iterator();
-                while (iter.hasNext()) {
-                    Locale locale = (Locale)iter.next();
-                    ret.add(getResourceForLocale(xmlPage, locale));
-                }
-
-                // check temp file table to add virtual file
-                iter = getVirtualFiles().iterator();
-                while (iter.hasNext()) {
-
-                    String virtualFileName = (String)iter.next();
-                    String virtualFilePath = rootPath + "/" + virtualFileName;
-
-                    if ((!TMP_FILE_TABLE.containsKey(virtualFilePath))
-                        || (!TMP_FILE_TABLE.get(virtualFilePath).equals(new Integer(0)))) {
-
-                        // read the control code resource
-                        if (virtualFileName.equals(NAME_ELEMENT_CONTROLCODE)) {
-
-                            CmsWrappedResource wrap = new CmsWrappedResource(xmlPage);
-                            wrap.setRootPath(xmlPage.getRootPath() + "/" + NAME_ELEMENT_CONTROLCODE);
-                            wrap.setTypeId(CmsResourceTypePlain.getStaticTypeId());
-
-                            CmsFile tmpFile = wrap.getFile();
-                            tmpFile.setContents(file.getContents());
-                            ret.add(tmpFile);
-                        }
-                    }
-                }
-
-            } else {
-
-                // sub path is a locale -> return all elements for this locale
-                Locale locale = new Locale(path);
-                List names = xml.getNames(locale);
-                Iterator iter = names.iterator();
-                while (iter.hasNext()) {
-                    String name = (String)iter.next();
-                    String content = xml.getStringValue(cms, name, locale);
-                    String fullPath = xmlPage.getRootPath() + "/" + path + "/" + name + "." + EXTENSION_ELEMENT;
-                    content = prepareContent(content, cms, xmlPage, fullPath);
-
-                    ret.add(getResourceForElement(xmlPage, fullPath, content.getBytes().length));
-                }
-
-            }
-
-            return ret;
         }
 
         return null;
@@ -873,10 +876,12 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
-     * Checks if the given resource name (full path) belongs to a xml page.<p>
+     * Returns the {@link CmsResource} of the xml page which belongs to 
+     * the given resource name (full path).<p>
      * 
-     * It works up the path till a resource for the path exists in the VFS. If the found resource is a xml page, 
-     * this resource is returned. If the path does not belong to a xml page null will be returned.<p> 
+     * It works up the path till a resource for the path exists in the VFS. 
+     * If the found resource is a xml page, this resource is returned. If 
+     * the path does not belong to a xml page <code>null</code> will be returned.<p> 
      * 
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource (full path) to check
@@ -924,16 +929,17 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
-     * Returns the element for the locale and the name as a virtual resource.<p>
+     * Returns a virtual resource for an element inside a locale.<p>
      * 
-     * A new (virtual) resource is created with the element of the locale found in the xml page resource. The
-     * new created resource uses the values of the origin resource of the xml page where it is possible.<p>
+     * A new (virtual) resource is created with the given path and length. The
+     * new created resource uses the values of the origin resource of the xml page 
+     * where it is possible.<p>
      * 
-     * @param xmlPage the xml page resource with the element to create a resource
+     * @param xmlPage the xml page resource with the element to create a virtual resource
      * @param path the full path to set for the resource
      * @param length the length of the element content
      * 
-     * @return a new created CmsResource
+     * @return a new created virtual {@link CmsResource}
      */
     private CmsResource getResourceForElement(CmsResource xmlPage, String path, int length) {
 
@@ -947,7 +953,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
-     * Creates a new virtual resource for the locale in the xml page.<p>
+     * Creates a new virtual resource for the locale in the xml page as a folder.<p>
      * 
      * The new created resource uses the values of the origin resource of the xml page where it is possible.<p>
      * 
@@ -967,12 +973,10 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     }
 
     /**
-     * Returns the content as a string.<p>
-     * 
-     * Uses the correct encoding.<p>
+     * Returns the content as a string while using the correct encoding.<p>
      * 
      * @param cms the initialized CmsObject
-     * @param resource the resource where the content belongs to to find the correct encoding
+     * @param resource the resource where the content belongs to
      * @param content the byte array which should be converted into a string
      * 
      * @return the content as a string
@@ -995,11 +999,13 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * Returns the path inside a xml page.<p>
      * 
-     * The remaining path inside a xml page can be the locale and the element name.<p>
+     * The remaining path inside a xml page can be the locale and the element name
+     * or the name of the control code file.<p>
      * 
      * @param cms the initialized CmsObject
      * @param xmlPage the xml page where the resourcename belongs to
      * @param resourcename the full path of the resource (pointing inside the xml page)
+     * 
      * @return the remaining path inside the xml page without the leading slash
      */
     private String getSubPath(CmsObject cms, CmsResource xmlPage, String resourcename) {
@@ -1025,13 +1031,14 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * Returns a list with virtual file names for the xml page.<p>
      * 
+     * Actually that is only the name of the control code file.<p>
+     * 
      * @return a list containing strings with the names of the virtual files
      */
     private List getVirtualFiles() {
 
         ArrayList list = new ArrayList();
         list.add(NAME_ELEMENT_CONTROLCODE);
-        //list.add(resourceName + "." + EXTENSION_PROPERTIES);
 
         return list;
     }

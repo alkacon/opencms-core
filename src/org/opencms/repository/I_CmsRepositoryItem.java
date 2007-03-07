@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepositoryItem.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,63 +31,62 @@
 
 package org.opencms.repository;
 
-
 /**
- * This class represents items for the WebDAV interface. This can be
+ * This class represents items in the repository interface. That can be
  * files or folders (collections). <p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public interface I_CmsRepositoryItem {
 
     /**
-     * Returns the content of this item as a byte array.
+     * Returns the content of this item as a byte array.<p>
      * 
      * @return the content of this item as a byte array
      */
     byte[] getContent();
 
     /**
-     * Returns the length of the content of this item.
+     * Returns the length of the content of this item.<p>
      * 
      * @return the content length of this item as long
      */
     long getContentLength();
 
     /**
-     * Returns the date of the creation of this item.
+     * Returns the date of the creation of this item.<p>
      * 
      * @return the creation date if this item as long.
      */
     long getCreationDate();
 
     /**
-     * Returns the date of the last modification of this item.
+     * Returns the date of the last modification of this item.<p>
      * 
      * @return the last modification date of the item as long
      */
     long getLastModifiedDate();
 
     /**
-     * Returns the mime type of this item.
+     * Returns the mime type of this item.<p>
      * 
      * @return the mime type of this item
      */
     String getMimeType();
 
     /**
-     * Returns the name of this item.
+     * Returns the name of this item.<p>
      * 
      * @return the name of this item
      */
     String getName();
 
     /**
-     * Checks if this item is a collection.
+     * Checks if this item is a collection.<p>
      * 
      * @return true if this item is a collection otherwise false
      */

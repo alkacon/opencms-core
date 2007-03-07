@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.5 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,18 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper class for folder resources to add the system folder to every root folder
- * of target sites.<p>
+ * Adds the system folder to every root folder of target sites.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.5 $
+ * @version $Revision: 1.1.4.6 $
  * 
  * @since 6.5.6
  */
@@ -61,16 +61,15 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
         if (!resourcename.endsWith("/")) {
             resourcename += "/";
         }
-        
+
         // if this is the root folder of a target site, add the system folder
         if (resourcename.equals("/")) {
-            List ret = new ArrayList();
-            ret.add(readResource(cms, CmsWorkplace.VFS_PATH_SYSTEM, filter));
-            return ret;
-        } 
-//        else if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM)) {
-//            return cms.getResourcesInFolder(resourcename, filter);
-//        }
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(cms.getRequestContext().getSiteRoot())) {
+                List ret = new ArrayList();
+                ret.add(readResource(cms, CmsWorkplace.VFS_PATH_SYSTEM, filter));
+                return ret;
+            }
+        }
 
         return null;
     }
@@ -84,11 +83,11 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
             if (!cms.getRequestContext().getSiteRoot().equals("/")) {
 
                 String resourcename = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-                
+
                 if (!resourcename.endsWith("/")) {
                     resourcename += "/";
                 }
-                
+
                 if (resourcename.equals("/")) {
                     return true;
                 }
@@ -109,7 +108,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
             if (!resourcename.endsWith("/")) {
                 resourcename += "/";
             }
-            
+
             // if accessing the system folder switch temporarily to the root site
             if (resourcename.equals(CmsWorkplace.VFS_PATH_SYSTEM) || resourcename.equals("/")) {
 

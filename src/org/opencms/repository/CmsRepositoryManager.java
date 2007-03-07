@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryManager.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/03/07 14:15:05 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Provides the functionaility to access OpenCms through a repository.<p>
+ * The RepositoryManager keeps a list with all configured {@link I_CmsRepository}
+ * and can be used to get a repository by its name.<p>
+ *
+ * The configuration of the repositories is done in the configuration file
+ * <code>opencms-importexport.xml</code>.<p>
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.3 $ 
+ * @version $Revision: 1.1.4.4 $ 
  * 
  * @since 6.2.4
  */
@@ -91,7 +95,7 @@ public class CmsRepositoryManager {
 
         this();
         m_configured = configured;
-        
+
         m_repositoryList = Collections.unmodifiableList(m_repositoryList);
         m_frozen = true;
     }
