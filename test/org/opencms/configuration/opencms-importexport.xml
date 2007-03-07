@@ -163,9 +163,11 @@
   				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
 			</params>
 			<filter type="include">
+				<regex>/</regex>
+				<regex>/__properties/.*</regex>
 				<regex>/sites/.*</regex>
 				<regex>/system/</regex>
-				<regex>/system/__properties/</regex>
+				<regex>/system/__properties/.*</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*</regex>
 				<regex>/system/workplace/.*</regex>
@@ -180,13 +182,15 @@
 				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
 			</params>
 			<filter type="include">
+				<regex>/</regex>
+				<regex>/__properties/.*</regex>
 				<regex>/sites/.*</regex>
 				<regex>/system/</regex>
-				<regex>/system/__properties/</regex>
+				<regex>/system/__properties/.*</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/</regex>
 				<regex>/system/modules/[^/]*/</regex>
-				<regex>/system/modules/[^/]*/__properties/</regex>
+				<regex>/system/modules/[^/]*/__properties/.*</regex>
 				<regex>/system/modules/[^/]*/resources/.*</regex>
 			</filter>
 		</repository>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/03/07 14:15:05 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/07 16:12:09 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.6
  */
@@ -275,12 +275,17 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         Iterator iter = resources.iterator();
         while (iter.hasNext()) {
             CmsResource res = (CmsResource)iter.next();
-            
-            // open the original resource (for virtual files this is the resource in the VFS
-            // which the virtual resource is based on
-            CmsResource org = m_cms.readResource(res.getStructureId(), CmsResourceFilter.DEFAULT);
-            if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(org.getRootPath()))) {
-                ret.add(new CmsRepositoryItem(res, m_cms));
+
+            if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()))) {
+
+                // open the original resource (for virtual files this is the resource in the VFS
+                // which the virtual resource is based on)
+                // this filters e.g. property files for resources that are filtered out and thus
+                // should not be displayed
+                CmsResource org = m_cms.readResource(res.getStructureId(), CmsResourceFilter.DEFAULT);
+                if (!isFiltered(m_cms.getRequestContext().removeSiteRoot(org.getRootPath()))) {
+                    ret.add(new CmsRepositoryItem(res, m_cms));
+                }
             }
         }
 
@@ -372,13 +377,13 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
         try {
             CmsFile file = m_cms.readFile(path, CmsResourceFilter.DEFAULT);
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_ITEM_1, path));
             }
 
             if (overwrite) {
-                
+
                 file.setContents(content);
 
                 CmsRepositoryLockInfo lock = getLock(path);
@@ -401,7 +406,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
                 throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(Messages.ERR_DEST_EXISTS_0));
             }
         } catch (CmsVfsResourceNotFoundException ex) {
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_ITEM_1, path));
             }
@@ -415,7 +420,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             // TODO: what to do if a parent folder is locked? Dreamweaver isnt able to lock/unlock folders
             m_cms.unlockResource(path);
         }
-        
+
     }
 
     /**
