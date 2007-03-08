@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/06 10:38:37 $
- * Version: $Revision: 1.717.2.137 $
+ * Date   : $Date: 2007/03/08 08:57:46 $
+ * Version: $Revision: 1.717.2.138 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
 - Improved handling of project flags and type 
 * Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
 - Improved publish permission check
+* Fixes issue #1323: 304 Not Modified Status not working because seconds where compared to milliseconds
 
 OpenCms 6.7.1 (aka 7.0 alpha) - 14. February, 2007
 
