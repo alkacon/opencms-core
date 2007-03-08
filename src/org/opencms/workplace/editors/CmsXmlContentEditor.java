@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.68.4.9 $
+ * Date   : $Date: 2007/03/08 08:39:53 $
+ * Version: $Revision: 1.68.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.9 $ 
+ * @version $Revision: 1.68.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -416,9 +416,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             boolean useModelFile = false;
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamModelFile())) {
-                getCms().getRequestContext().setAttribute(
-                    CmsRequestContext.ATTRIBUTE_MODEL,
-                    getParamModelFile());
+                getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, getParamModelFile());
                 useModelFile = true;
             }
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
@@ -946,6 +944,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public boolean useNewStyle() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.CmsEditor#commitTempFile()
+     */
+    protected void commitTempFile() throws CmsException {
+
+        super.commitTempFile();
+        m_file = getCloneCms().readFile(getParamResource());
+        m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
     }
 
     /**
