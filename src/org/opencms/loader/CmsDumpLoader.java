@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2007/03/08 08:55:33 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2007/03/08 09:16:05 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -285,36 +285,33 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * Checks id the requested resource must be send to the client by checking the "If-Modified-Since" http header.<p>
+     * Checks if the requested resource must be send to the client by checking the "If-Modified-Since" http header.<p>
      * 
-     * If the resource has not been modified, the header is send to the client and <code>true</code>
+     * If the resource has not been modified, the "304 - not modified" 
+     * header is send to the client and <code>true</code>
      * is returned, otherwise nothing is send and <code>false</code> is returned.<p>
      * 
      * @param resource the resource to check
      * @param req the current request
      * @param res the current response
      * 
-     * @return <code>true</code> if the last modified header has been send to the client
+     * @return <code>true</code> if the "304 - not modified" header has been send to the client
      */
     protected boolean canSendLastModifiedHeader(CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
 
-        // check if the current request was done by a workplace user
-        boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(req);
-
-        if (!isWorkplaceUser) {
-            // check if the request contains a last modified header
-            long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
-            if (lastModifiedHeader > -1) {
-                // last modified header is set, compare it to the requested resource (remove Msec from resource)
-                if ((resource.getState() == CmsResource.STATE_UNCHANGED)
-                    && ((resource.getDateLastModified() / 1000L) == lastModifiedHeader)) {
-                    long now = System.currentTimeMillis();
-                    if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
-                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
-                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                        return true;
-                    }
-                }
+        // resource state must be unchanged
+        if ((resource.getState() == CmsResource.STATE_UNCHANGED)
+            // the request must not have been send by a workplace user (we can't use "304 - not modified" in workplace
+            && !CmsWorkplaceManager.isWorkplaceUser(req)
+            // last modified header must match the time form the resource
+            && CmsFlexController.isNotModifiedSince(req, resource.getDateLastModified())) {
+            long now = System.currentTimeMillis();
+            if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
+                // resource is available and not expired 
+                CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
+                // set status 304 - not modified
+                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return true;
             }
         }
         return false;
