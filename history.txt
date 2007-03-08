@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/02/28 16:11:50 $
- * Version: $Revision: 1.805 $
+ * Date   : $Date: 2007/03/08 08:58:41 $
+ * Version: $Revision: 1.806 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.x
+OpenCms 6.2.4 - xxxx, 2007
 
 ! Added option in export to export only those files modifed in the current project
 * Static export works with links containing a "&amp;"
@@ -29,6 +29,7 @@ OpenCms 6.2.x
 * Fixed issue with damaged admin user info preventing OpenCms from starting (IOException: invalid stream header)
 ! Added repository interface
 * XML content editor scrolls back to the correct position when adding/deleting or moving elements
+* Fixes issue #1323: 304 Not Modified Status not working because seconds where compared to milliseconds
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
