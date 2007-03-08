@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2007/03/08 08:55:33 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,9 +305,9 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             // check if the request contains a last modified header
             long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
             if (lastModifiedHeader > -1) {
-                // last modified header is set, compare it to the requested resource 
+                // last modified header is set, compare it to the requested resource (remove Msec from resource)
                 if ((resource.getState() == CmsResource.STATE_UNCHANGED)
-                    && (resource.getDateLastModified() == lastModifiedHeader)) {
+                    && ((resource.getDateLastModified() / 1000L) == lastModifiedHeader)) {
                     long now = System.currentTimeMillis();
                     if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
                         CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
