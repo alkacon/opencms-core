@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2007/02/06 11:29:35 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/03/09 14:19:47 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -119,6 +119,46 @@ public class CmsExplorerInit extends CmsWorkplace {
         return value;
     }
 
+    /**
+     * Returns the server name for initializing the explorer view.<p>
+     * 
+     * @return the server name
+     */
+    public String getServerName() {
+        
+        return getJsp().getRequest().getServerName();
+    }
+    
+    /**
+     * Returns the server path for initializing the explorer view.<p>
+     * 
+     * @return the server path
+     */
+    public String getServerPath() {
+    
+        return OpenCms.getStaticExportManager().getVfsPrefix();
+    }
+    
+    /**
+     * Returns the setting for the upload button for initializing the explorer view.<p>
+     * 
+     * @return the setting for the upload button
+     */
+    public String getShowFileUploadButtons() {
+        
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowFileUploadButtonString();
+    }
+    
+    /**
+     * Returns the name of the current user for initializing the explorer view.<p>
+     * 
+     * @return the name of the user
+     */
+    public String getUserName() {
+    
+        return getSettings().getUser().getName();
+    }
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
