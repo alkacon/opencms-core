@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/03/06 10:34:35 $
- * Version: $Revision: 1.40.4.16 $
+ * Date   : $Date: 2007/03/09 15:13:08 $
+ * Version: $Revision: 1.40.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.configuration;
 
 import org.opencms.db.CmsExportPoint;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRfsFileViewer;
@@ -68,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.16 $
+ * @version $Revision: 1.40.4.17 $
  * 
  * @since 6.0.0
  */
@@ -601,7 +602,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
                 }
                 newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
-                newResElement.addAttribute(A_URI, settings.getNewResourceUri());
+                newResElement.addAttribute(A_URI, CmsEncoder.escapeXml(settings.getNewResourceUri()));
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
