@@ -38,11 +38,11 @@ this.actProject;
 this.onlineProject;
 this.actDirectory;
 this.actDirId;
-this.showUpload = <%= OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowFileUploadButtonString() %>
+this.showUpload = <%= wp.getShowFileUploadButtons() %>
 
-this.userName="<%= wp.getSettings().getUser().getName() %>";
-this.servpath="<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
-this.serverName="<%= request.getServerName() %>";
+this.userName="<%= wp.getUserName() %>";
+this.servpath="<%= wp.getServerPath() %>";
+this.serverName="<%= wp.getServerName() %>";
 
 this.lockedBy="<%=    wp.key(org.opencms.workplace.explorer.Messages.GUI_TITLE_LOCKED_0) %>";
 this.langback="<%=    wp.key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_BACK_0) %>";
