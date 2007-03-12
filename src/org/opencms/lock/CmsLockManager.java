@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/03/05 16:04:37 $
- * Version: $Revision: 1.37.4.18 $
+ * Date   : $Date: 2007/03/12 16:38:00 $
+ * Version: $Revision: 1.37.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.18 $ 
+ * @version $Revision: 1.37.4.19 $ 
  * 
  * @since 6.0.0 
  * 
@@ -375,6 +375,22 @@ public final class CmsLockManager {
         unlockResource(resourceName, false);
     }
 
+    /**
+     * Removes all locks of a user
+     * 
+     * @param userId the id of the user whose locks should be removed
+     */
+    public void removeLocks (CmsUUID userId) {
+
+        Iterator itLocks = m_locks.values().iterator();
+        while (itLocks.hasNext()) {
+            CmsLock currentLock = (CmsLock)itLocks.next();
+            if (currentLock.getUserId().equals(userId)) {
+                unlockResource(currentLock.getResourceName(), false);
+            }
+        }
+    }
+    
     /**
      * Removes a resource from the lock manager.<p>
      * 

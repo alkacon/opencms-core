@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/12 16:37:55 $
- * Version: $Revision: 1.570.2.68 $
+ * Date   : $Date: 2007/03/12 16:42:22 $
+ * Version: $Revision: 1.570.2.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2807,7 +2807,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-
+        // remove all locks set for the deleted user
+        m_lockManager.removeLocks(user.getId());
         // offline
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         // online
