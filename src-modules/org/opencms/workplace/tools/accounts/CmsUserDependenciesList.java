@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.4.4.3 $
+ * Date   : $Date: 2007/03/12 16:31:30 $
+ * Version: $Revision: 1.4.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4.4.3 $ 
+ * @version $Revision: 1.4.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -350,11 +350,23 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
                     CmsResource resource = (CmsResource)itRes.next();
                     CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
                     if (item == null) {
+                        String userCreated = resource.getUserCreated().toString();
+                        try {
+                            userCreated = getCms().readUser(resource.getUserCreated()).getFullName();
+                        } catch (CmsException exc) {
+                            // noop - user id could not be resolved, so display it
+                        }
+                        String userLastmodified = resource.getUserLastModified().toString();
+                        try {
+                            userLastmodified = getCms().readUser(resource.getUserLastModified()).getFullName();
+                        } catch (CmsException exc) {
+                            // noop - user id could not be resolved, so display it
+                        }
                         item = getList().newItem(resource.getResourceId().toString());
                         item.set(LIST_COLUMN_NAME, resource.getRootPath());
                         item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
-                        item.set(LIST_COLUMN_CREATED, getCms().readUser(resource.getUserCreated()).getFullName());
-                        item.set(LIST_COLUMN_LASTMODIFIED, getCms().readUser(resource.getUserLastModified()).getFullName());
+                        item.set(LIST_COLUMN_CREATED, userCreated);
+                        item.set(LIST_COLUMN_LASTMODIFIED, userLastmodified);
                         Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
                         while (itAces.hasNext()) {
                             CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
