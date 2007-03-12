@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/03/06 15:11:10 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/12 16:47:02 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.5
  */
@@ -292,15 +292,17 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         // get the current job to display it at the top of the publish queue
         if (OpenCms.getPublishManager().isRunning()) {
             CmsPublishJobRunning currentJob = OpenCms.getPublishManager().getCurrentPublishJob();
-            CmsListItem item = getList().newItem(currentJob.getPublishList().getPublishHistoryId().toString());
-            item.set(LIST_COLUMN_STATE, new Integer(STATE_PROCEED));
-            item.set(LIST_COLUMN_NUMBER, new Integer(number));
-            item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName(getLocale()));
-            item.set(LIST_COLUMN_STARTTIME, new Date(currentJob.getEnqueueTime()));
-            item.set(LIST_COLUMN_USER, currentJob.getUserName());
-            item.set(LIST_COLUMN_RESCOUNT, new Integer(currentJob.getSize()));
-            ret.add(item);
-            number++;
+            if (currentJob != null) {
+                CmsListItem item = getList().newItem(new Long(currentJob.getEnqueueTime()).toString());
+                item.set(LIST_COLUMN_STATE, new Integer(STATE_PROCEED));
+                item.set(LIST_COLUMN_NUMBER, new Integer(number));
+                item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName(getLocale()));
+                item.set(LIST_COLUMN_STARTTIME, new Date(currentJob.getEnqueueTime()));
+                item.set(LIST_COLUMN_USER, currentJob.getUserName());
+                item.set(LIST_COLUMN_RESCOUNT, new Integer(currentJob.getSize()));
+                ret.add(item);
+                number++;
+            }
         }
 
         Iterator iter = OpenCms.getPublishManager().getPublishQueue().iterator();
