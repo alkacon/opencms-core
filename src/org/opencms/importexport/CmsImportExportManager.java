@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.30.4.4 $
+ * Date   : $Date: 2007/03/12 16:37:55 $
+ * Version: $Revision: 1.30.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsUserExportSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
@@ -68,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.4 $ 
+ * @version $Revision: 1.30.4.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -274,6 +275,9 @@ public class CmsImportExportManager {
 
     /** Boolean flag whether colliding resources should be overwritten during the import. */
     private boolean m_overwriteCollidingResources;
+
+    /** The user export settings. */
+    private CmsUserExportSettings m_userExportSettings;
 
     /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
     private String m_webAppUrl;
@@ -596,6 +600,16 @@ public class CmsImportExportManager {
     }
 
     /**
+     * Returns the user settings for export.<p>
+     * 
+     * @return the user settings for export
+     */
+    public CmsUserExportSettings getUserExportSettings() {
+
+        return m_userExportSettings;
+    }
+
+    /**
      * Checks if the current user has permissions to import data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
      * 
@@ -711,6 +725,16 @@ public class CmsImportExportManager {
     public void setOverwriteCollidingResources(String overwriteCollidingResources) {
 
         setOverwriteCollidingResources(Boolean.valueOf(overwriteCollidingResources).booleanValue());
+    }
+
+    /**
+     * Sets the user export settings.<p>
+     *
+     * @param userExportSettings the user export settings to set
+     */
+    public void setUserExportSettings(CmsUserExportSettings userExportSettings) {
+
+        m_userExportSettings = userExportSettings;
     }
 
     /**

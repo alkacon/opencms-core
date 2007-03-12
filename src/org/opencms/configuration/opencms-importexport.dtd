@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, repositories?)>
+<!ELEMENT opencms (importexport, staticexport, usercsvexport?, repositories?)>
 
 <!--
 # <importexport> configuration:
@@ -349,6 +349,25 @@
 <!ELEMENT related-system-res (regex*)>
 
 <!--
+# In this node the import and export values for the im- / export of user data are configured.
+-->
+<!ELEMENT usercsvexport (
+	separator,
+	columns)>
+
+<!--
+# The separator used in the im- / export csv file.
+-->
+<!ELEMENT separator (#PCDATA)>
+
+<!--
+# List of values how data is ordered inside the import list or 
+# what user data will be exported and this data is ordered inside the export file.
+-->
+<!ELEMENT columns (column*)>
+<!ELEMENT column (#PCDATA)>
+
+<!--
 # <repositories> configuration:
 #
 # In this node repositories to access OpenCms are configured.
@@ -361,7 +380,7 @@
 <!ELEMENT params (param*)>
 
 <!ELEMENT param (#PCDATA)>
-<!ATTLIST param name CDATA #REQUIRED>
+<!ATTLIST param name CDATA #REQUIRED><!ATTLIST param name CDATA #REQUIRED>
 
 <!ELEMENT filter (regex*)>
 <!ATTLIST filter type CDATA #REQUIRED>

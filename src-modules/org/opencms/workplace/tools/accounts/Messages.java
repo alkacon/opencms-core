@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.9.4.21 $
+ * Date   : $Date: 2007/03/12 16:37:56 $
+ * Version: $Revision: 1.9.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.21 $ 
+ * @version $Revision: 1.9.4.22 $ 
+ * @version $Revision: 1.9.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EDIT_USERS_0 = "ERR_EDIT_USERS_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_FORWARDING_TO_PARENT_TOOL_0 = "ERR_FORWARDING_TO_PARENT_TOOL_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_REMOVE_SELECTED_GROUP_0 = "ERR_REMOVE_SELECTED_GROUP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -131,6 +135,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_TRANSFER_USER_1 = "ERR_TRANSFER_USER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_USERDATA_IMPORT_CSV_MISSING_NAME_0 = "ERR_USERDATA_IMPORT_CSV_MISSING_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_USERDATA_IMPORT_CSV_MISSING_PASSWORD_0 = "ERR_USERDATA_IMPORT_CSV_MISSING_PASSWORD_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_USERDATA_IMPORT_NO_CONTENT_0 = "ERR_USERDATA_IMPORT_NO_CONTENT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_USERGROUPS_DIRECT_GROUP_1 = "ERR_USERGROUPS_DIRECT_GROUP_1";
@@ -703,6 +716,42 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_IMPORTCSV_ADMIN_TOOL_NAME_0 = "GUI_IMPORTCSV_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_ADMIN_TOOL_NAME_0 = "GUI_IMPORTLISTCSV_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_ALREADY_EXISTS_0 = "GUI_IMPORTLISTCSV_ALREADY_EXISTS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_HELP_0 = "GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_NAME_0 = "GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_DETAIL_REASON_NAME_0 = "GUI_IMPORTLISTCSV_DETAIL_REASON_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_HELP_0 = "GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_NAME_0 = "GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_LIST_COLS_PASSWORD_0 = "GUI_IMPORTLISTCSV_LIST_COLS_PASSWORD_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_LIST_COLS_VAIDATION_0 = "GUI_IMPORTLISTCSV_LIST_COLS_VAIDATION_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_LIST_MACTION_SELECT_HELP_0 = "GUI_IMPORTLISTCSV_LIST_MACTION_SELECT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_LIST_MACTION_SELECT_NAME_0 = "GUI_IMPORTLISTCSV_LIST_MACTION_SELECT_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_IMPORTLISTCSV_LIST_NAME_0 = "GUI_IMPORTLISTCSV_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_NEWGROUP_ADMIN_TOOL_GROUP_0 = "GUI_NEWGROUP_ADMIN_TOOL_GROUP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -1241,6 +1290,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_SENDEMAIL_ADMIN_TOOL_NAME_0 = "GUI_USER_SENDEMAIL_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERDATA_EXPORT_LABEL_GROUPS_BLOCK_0 = "GUI_USERDATA_EXPORT_LABEL_GROUPS_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERDATA_EXPORT_LABEL_ROLES_BLOCK_0 = "GUI_USERDATA_EXPORT_LABEL_ROLES_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERDATA_IMPORT_LABEL_DATA_BLOCK_0 = "GUI_USERDATA_IMPORT_LABEL_DATA_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0 = "GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0";

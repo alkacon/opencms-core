@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/03/05 14:04:57 $
- * Version: $Revision: 1.25.4.5 $
+ * Date   : $Date: 2007/03/12 16:37:56 $
+ * Version: $Revision: 1.25.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.CmsUserExportSettings;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
@@ -57,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.5 $
+ * @version $Revision: 1.25.4.6 $
  * 
  * @since 6.0.0
  */
@@ -69,8 +70,17 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
+    /**  The node name of the column node. */
+    protected static final String N_COLUMN = "column";
+
+    /**  The node name of the columns node. */
+    protected static final String N_COLUMNS = "columns";
+
     /** Node that indicates page conversion. */
     protected static final String N_CONVERT = "convert";
+
+    /** The node name of the repository filter node. */
+    protected static final String N_FILTER = "filter";
 
     /** Node that contains a list of properties ignored during import. */
     protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
@@ -105,23 +115,23 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The node name of the repository params node. */
     protected static final String N_PARAMS = "params";
 
-    /** The node name of the repository filter node. */
-    protected static final String N_FILTER = "filter";
-
-    /** The node name of the repository filter regex node. */
-    protected static final String N_REGEX = "regex";
-
     /** An individual principal translation node. */
     protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
 
     /** The principal translation node. */
     protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
 
+    /** The node name of the repository filter regex node. */
+    protected static final String N_REGEX = "regex";
+
     /** The node name of the repositories node. */
     protected static final String N_REPOSITORIES = "repositories";
 
     /** The node name of the repository node. */
     protected static final String N_REPOSITORY = "repository";
+
+    /**  The node name of the separator node. */
+    protected static final String N_SEPARATOR = "separator";
 
     /**  The main configuration node for static export name. */
     protected static final String N_STATICEXPORT = "staticexport";
@@ -224,6 +234,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /**  The node name of the static export vfx-prefix node. */
     protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
+
+    /**  The node name of the user csv export node. */
+    protected static final String N_USERCSVEXPORT = "usercsvexport";
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
@@ -506,6 +519,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             "addRfsRuleSystemRes",
             1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
+
+        // add rules for the user data export
+        digester.addObjectCreate("*/" + N_USERCSVEXPORT, CmsUserExportSettings.class);
+        digester.addCallMethod("*/" + N_USERCSVEXPORT + "/" + N_SEPARATOR, "setSeparator", 0);
+        digester.addCallMethod("*/" + N_USERCSVEXPORT + "/" + N_COLUMNS + "/" + N_COLUMN, "addColumn", 0);
+        digester.addSetNext("*/" + N_USERCSVEXPORT, "setUserExportSettings");
 
         // creation of the static repository manager        
         digester.addObjectCreate("*/" + N_REPOSITORIES, CmsRepositoryManager.class);
@@ -797,6 +816,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         }
 
+        // <usercsvexport>
+        Element userExportElement = parent.addElement(N_USERCSVEXPORT);
+
+        userExportElement.addElement(N_SEPARATOR).setText(m_importExportManager.getUserExportSettings().getSeparator());
+        Element exportColumns = userExportElement.addElement(N_COLUMNS);
+        List exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
+        Iterator itExportColumnList = exportColumnList.iterator();
+        while (itExportColumnList.hasNext()) {
+            exportColumns.addElement(N_COLUMN).setText((String)itExportColumnList.next());
+        }
+        // </usercsvexport>
+
         if (m_repositoryManager.isConfigured()) {
             List repositories = m_repositoryManager.getRepositories();
             if (repositories != null) {
@@ -938,5 +969,15 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATEXP_MANAGER_0));
         }
+    }
+
+    /**
+     * Sets the user settings for export and import.<p>
+     * 
+     * @param userExportSettings the user settings for export and import
+     */
+    public void setUserExportSettings(CmsUserExportSettings userExportSettings) {
+
+        m_importExportManager.setUserExportSettings(userExportSettings);
     }
 }

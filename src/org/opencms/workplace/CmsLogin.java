@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/03/01 15:01:35 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2007/03/12 16:37:55 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,7 +191,8 @@ public class CmsLogin extends CmsJspLoginBean {
         while (itOus.hasNext()) {
             CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
             String selected = "";
-            if (ou.getName().equals(m_oufqn) || ou.getName().equals(m_oufqn.substring(1))) {
+            if (ou.getName().equals(m_oufqn)
+                || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn) && ou.getName().equals(m_oufqn.substring(1)))) {
                 selected = " selected='selected'";
             }
             html.append("<option value='").append(ou.getName()).append("'").append(selected).append(">");

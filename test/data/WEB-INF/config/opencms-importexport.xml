@@ -75,6 +75,14 @@
 			</resourcestorender>
 		</rendersettings>
 	</staticexport>
+	<usercsvexport>
+        <separator>,</separator>
+        <columns>
+            <column>lastname</column>
+            <column>firstname</column>
+            <column>email</column>
+        </columns>
+	</usercsvexport>
 	<repositories>
 		<repository name="standard" class="org.opencms.repository.CmsRepository">
 			<params>

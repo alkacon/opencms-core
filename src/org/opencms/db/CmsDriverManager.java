@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/05 16:04:38 $
- * Version: $Revision: 1.570.2.67 $
+ * Date   : $Date: 2007/03/12 16:37:55 $
+ * Version: $Revision: 1.570.2.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2785,7 +2785,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER);
 
         for (boolean readRoles = false; !readRoles; readRoles = !readRoles) {
-            Iterator itGroups = getGroupsOfUser(dbc, username, readRoles).iterator();
+            Iterator itGroups = getGroupsOfUser(
+                dbc,
+                username,
+                "",
+                true,
+                readRoles,
+                true,
+                dbc.getRequestContext().getRemoteAddress()).iterator();
             while (itGroups.hasNext()) {
                 CmsGroup group = (CmsGroup)itGroups.next();
                 if (!isVfsManager) {
@@ -2983,7 +2990,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         && !lock.getSystemLock().isWorkflow()) {
 
                         try {
-                            m_securityManager.checkPermissions(dbc, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                            m_securityManager.checkPermissions(
+                                dbc,
+                                directPublishResource,
+                                CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                                false,
+                                CmsResourceFilter.ALL);
                             publishList.addFolder(directPublishResource);
                         } catch (CmsException e) {
                             // skip if not enough permissions
@@ -3038,7 +3050,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (lock.isLockableBy(dbc.currentUser()) && !lock.getSystemLock().isWorkflow()) {
                         // check permissions
                         try {
-                            m_securityManager.checkPermissions(dbc, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                            m_securityManager.checkPermissions(
+                                dbc,
+                                directPublishResource,
+                                CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                                false,
+                                CmsResourceFilter.ALL);
                             publishList.addFile(directPublishResource);
                         } catch (CmsException e) {
                             // skip if not enough permissions
@@ -4021,7 +4038,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // no space before or after the name
         name = name.trim();
         // check the username
-        OpenCms.getValidationHandler().checkUserName(name);
+        OpenCms.getValidationHandler().checkUserName(CmsOrganizationalUnit.getSimpleName(name));
 
         CmsUser newUser = m_userDriver.createUser(
             dbc,
@@ -7815,7 +7832,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 // check permissions
                 try {
-                    m_securityManager.checkPermissions(dbc, res, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                    m_securityManager.checkPermissions(
+                        dbc,
+                        res,
+                        CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                        false,
+                        CmsResourceFilter.ALL);
                 } catch (CmsException e) {
                     // skip if not enough permissions
                     continue;
@@ -7873,7 +7895,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 // check permissions
                 try {
-                    m_securityManager.checkPermissions(dbc, res, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL);
+                    m_securityManager.checkPermissions(
+                        dbc,
+                        res,
+                        CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                        false,
+                        CmsResourceFilter.ALL);
                 } catch (CmsException e) {
                     // skip if not enough permissions
                     continue;

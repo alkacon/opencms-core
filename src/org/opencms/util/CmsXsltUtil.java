@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXsltUtil.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.2.2.3 $
+ * Date   : $Date: 2007/03/12 16:37:56 $
+ * Version: $Revision: 1.2.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.2.2.3 $ 
+ * @version $Revision: 1.2.2.4 $ 
  * 
  * @since 6.2.1
  */
@@ -79,6 +79,28 @@ public final class CmsXsltUtil {
     private CmsXsltUtil() {
 
         // noop
+    }
+
+    /**
+     * Returns the delimiter that most often occures in the CSV content and is therefore best applicable for the CSV data .<p>
+     * 
+     * @param csvData the comma separated values
+     * 
+     * @return the delimiter that is best applicable for the CSV data
+     */
+    public static String getPreferredDelimiter(String csvData) {
+
+        String bestMatch = "";
+        int bestMatchCount = 0;
+        // find for each delimiter, how often it occures in the String csvData
+        for (int i = 0; i < DELIMITERS.length; i++) {
+            int currentCount = csvData.split(DELIMITERS[i]).length;
+            if (currentCount > bestMatchCount) {
+                bestMatch = DELIMITERS[i];
+                bestMatchCount = currentCount;
+            }
+        }
+        return bestMatch;
     }
 
     /**
@@ -189,28 +211,6 @@ public final class CmsXsltUtil {
             colgroup.append("\"/>");
         }
         return colgroup.append("</colgroup>").toString();
-    }
-
-    /**
-     * returns the delimiter that most often occures in the CSV content and is therefore best applicable for the CSV data .<p>
-     * 
-     * @param csvData the comma separated values
-     * 
-     * @return the delimiter that is best applicable for the CSV data
-     */
-    private static String getPreferredDelimiter(String csvData) {
-
-        String bestMatch = "";
-        int bestMatchCount = 0;
-        // find for each delimiter, how often it occures in the String csvData
-        for (int i = 0; i < DELIMITERS.length; i++) {
-            int currentCount = csvData.split(DELIMITERS[i]).length;
-            if (currentCount > bestMatchCount) {
-                bestMatch = DELIMITERS[i];
-                bestMatchCount = currentCount;
-            }
-        }
-        return bestMatch;
     }
 
     /**
