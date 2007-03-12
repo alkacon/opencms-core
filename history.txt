@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/12 16:32:06 $
- * Version: $Revision: 1.717.2.140 $
+ * Date   : $Date: 2007/03/12 16:43:23 $
+ * Version: $Revision: 1.717.2.141 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ OpenCms 6.9.1 (aka 7.0 RC1) - 2nd May, 2007
 
 OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
 
+! When deleting a user, additionally all locks of this user are removed.
 * Fixed display error when displaying a user dependencies list while deleting a user
 * Fixed issue #1325: Uri attribute of newresource element is now encoded for xml before writing it to the manifest
 ! Added new optional column for nav text to file explorer view and to preferences
