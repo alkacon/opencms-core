@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2007/03/12 16:37:56 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/13 08:28:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -632,6 +632,29 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     }
 
     /**
+     * Checks if the given user name is already available inside the current ou.<p>
+     * 
+     * @param userName the user name to check
+     * @return <code>true</code> if the user name is already available, otherwise return <code>false</code>
+     */
+    protected boolean isAlreadyAvailable(String userName) {
+
+        List availableUsers;
+        try {
+            availableUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
+        } catch (CmsException e) {
+            availableUsers = new ArrayList();
+        }
+        Iterator itAvailableUsers = availableUsers.iterator();
+        while (itAvailableUsers.hasNext()) {
+            if (userName.equals(((CmsUser)itAvailableUsers.next()).getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
     protected CmsUser readUser(String name) {
@@ -749,28 +772,5 @@ public class CmsUserDataImportList extends A_CmsUsersList {
         selectUser.setHelpText(Messages.get().container(Messages.GUI_IMPORTLISTCSV_LIST_MACTION_SELECT_HELP_0));
         selectUser.setIconPath(ICON_MULTI_ADD);
         metadata.addMultiAction(selectUser);
-    }
-
-    /**
-     * Checks if the given user name is already available inside the current ou.<p>
-     * 
-     * @param userName the user name to check
-     * @return <code>true</code> if the user name is already available, otherwise return <code>false</code>
-     */
-    private boolean isAlreadyAvailable(String userName) {
-
-        List availableUsers;
-        try {
-            availableUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
-        } catch (CmsException e) {
-            availableUsers = new ArrayList();
-        }
-        Iterator itAvailableUsers = availableUsers.iterator();
-        while (itAvailableUsers.hasNext()) {
-            if (userName.equals(((CmsUser)itAvailableUsers.next()).getSimpleName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }
