@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2006/10/25 11:58:35 $
- * Version: $Revision: 1.20.4.4 $
+ * Date   : $Date: 2007/03/13 09:04:26 $
+ * Version: $Revision: 1.20.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20.4.4 $ 
+ * @version $Revision: 1.20.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,7 +329,8 @@ public class CmsMove extends CmsMultiDialog {
     protected void performSingleMoveOperation(String source, String target, String sitePrefix) throws CmsException {
 
         // calculate the target name
-        String finalTarget = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));
+        String finalTarget = getCms().getRequestContext().getFileTranslator().translateResource(target);
+        finalTarget = CmsLinkManager.getAbsoluteUri(finalTarget, CmsResource.getParentFolder(source));
 
         if (finalTarget.equals(source) || (isMultiOperation() && finalTarget.startsWith(source))) {
             throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_ONTO_ITSELF_1, finalTarget));
