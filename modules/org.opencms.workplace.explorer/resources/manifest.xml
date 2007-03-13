@@ -91,10 +91,12 @@
 			<resource uri="/system/workplace/resources/buttons/upload_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/user.png"/>
 			<resource uri="/system/workplace/resources/commons/ajax.js"/>
+			<resource uri="/system/workplace/resources/commons/all_others.png"/>
 			<resource uri="/system/workplace/resources/commons/empty.html"/>
 			<resource uri="/system/workplace/resources/commons/explorer.js"/>
 			<resource uri="/system/workplace/resources/commons/group.png"/>
 			<resource uri="/system/workplace/resources/commons/minus.png"/>
+			<resource uri="/system/workplace/resources/commons/overwrite_all.png"/>
 			<resource uri="/system/workplace/resources/commons/plus.png"/>
 			<resource uri="/system/workplace/resources/commons/tree.js"/>
 			<resource uri="/system/workplace/resources/commons/user.png"/>
@@ -2104,6 +2106,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/principal_selection.jsp</source>
+			<destination>system/workplace/commons/principal_selection.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>be6586d0-d0a4-11db-b073-075bba0c4c47</uuidstructure>
+			<uuidresource>be6586d1-d0a4-11db-b073-075bba0c4c47</uuidresource>
+			<datelastmodified>Mon, 12 Mar 2007 14:28:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 12 Mar 2007 14:19:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Principal Selection]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/property.jsp</source>
 			<destination>system/workplace/commons/property.jsp</destination>
 			<type>jsp</type>
@@ -2791,6 +2816,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/commons/all_others.png</source>
+			<destination>system/workplace/resources/commons/all_others.png</destination>
+			<type>image</type>
+			<uuidstructure>1981cb3d-cbe4-11db-934a-075bba0c4c47</uuidstructure>
+			<uuidresource>1981cb3e-cbe4-11db-934a-075bba0c4c47</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 06 Mar 2007 13:10:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/commons/empty.html</source>
 			<destination>system/workplace/resources/commons/empty.html</destination>
 			<type>plain</type>
@@ -2862,6 +2906,25 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/overwrite_all.png</source>
+			<destination>system/workplace/resources/commons/overwrite_all.png</destination>
+			<type>image</type>
+			<uuidstructure>74760673-ce32-11db-9b41-075bba0c4c47</uuidstructure>
+			<uuidresource>74760674-ce32-11db-9b41-075bba0c4c47</uuidresource>
+			<datelastmodified>Fri, 09 Mar 2007 11:36:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 09 Mar 2007 11:36:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

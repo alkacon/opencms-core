@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/03/01 15:01:29 $
- * Version: $Revision: 1.84.4.9 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.84.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.9 $ 
+ * @version $Revision: 1.84.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -439,7 +439,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         try {
             m_cms.importAccessControlEntries(resource, aceList);
         } catch (CmsException exc) {
-
             m_report.println(
                 Messages.get().container(Messages.RPT_IMPORT_ACL_DATA_FAILED_0),
                 I_CmsReport.FORMAT_WARNING);

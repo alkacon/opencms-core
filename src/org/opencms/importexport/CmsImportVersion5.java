@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/03/01 15:01:30 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/13 09:55:15 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
@@ -72,7 +73,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.3.0 
  * 
@@ -511,9 +512,13 @@ public class CmsImportVersion5 extends A_CmsImport {
                                 if (id.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                                     principal = OpenCms.getImportExportManager().translateGroup(principal);
                                     principalId = m_cms.readGroup(principal).getId().toString();
-                                } else {
+                                } else if (id.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
                                     principal = OpenCms.getImportExportManager().translateUser(principal);
                                     principalId = m_cms.readUser(principal).getId().toString();
+                                } else if (id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+                                    principalId = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString();
+                                } else if (id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+                                    principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString();
                                 }
 
                                 String acflags = CmsImport.getChildElementTextValue(

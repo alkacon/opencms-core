@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/03/05 16:04:42 $
- * Version: $Revision: 1.32.4.17 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.32.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.17 $
+ * @version $Revision: 1.32.4.18 $
  * 
  * @since 6.0.0
  * 
@@ -158,7 +158,11 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         m_lastlogin = lastlogin;
         m_flags = flags;
         m_dateCreated = dateCreated;
-        m_additionalInfo = new HashMap(additionalInfo);
+        if (additionalInfo != null) {
+            m_additionalInfo = new HashMap(additionalInfo);
+        } else {
+            m_additionalInfo = new HashMap();
+        }
         if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_ADDRESS) == null) {
             m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, "");
         }

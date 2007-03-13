@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/02/12 14:22:59 $
- * Version: $Revision: 1.24.4.8 $
+ * Date   : $Date: 2007/03/13 09:55:13 $
+ * Version: $Revision: 1.24.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -54,6 +54,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.8 $ 
+ * @version $Revision: 1.24.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,13 +160,21 @@ public class CmsChacc extends CmsDialog {
     private boolean m_showInheritedPermissions;
 
     /** The possible types of new access control entries. */
-    private String[] m_types = {I_CmsPrincipal.PRINCIPAL_GROUP, I_CmsPrincipal.PRINCIPAL_USER};
+    private String[] m_types = {
+        I_CmsPrincipal.PRINCIPAL_GROUP,
+        I_CmsPrincipal.PRINCIPAL_USER,
+        CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+        CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME};
 
     /** The possible type values of access control entries. */
-    private int[] m_typesInt = {CmsAccessControlEntry.ACCESS_FLAGS_GROUP, CmsAccessControlEntry.ACCESS_FLAGS_USER};
+    private int[] m_typesInt = {
+        CmsAccessControlEntry.ACCESS_FLAGS_GROUP,
+        CmsAccessControlEntry.ACCESS_FLAGS_USER,
+        CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS,
+        CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL};
 
     /** The possible localized types of new access control entries. */
-    private String[] m_typesLocalized = new String[2];
+    private String[] m_typesLocalized = new String[4];
 
     /**
      * Public constructor.<p>
@@ -267,7 +276,21 @@ public class CmsChacc extends CmsDialog {
             try {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
-                getCms().chacc(file, getTypes()[arrayPosition], name, permissionString);
+                if (name.equals(key(Messages.GUI_LABEL_ALLOTHERS_0))) {
+                    getCms().chacc(
+                        file,
+                        getTypes(false)[arrayPosition],
+                        CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+                        permissionString);
+                } else if (name.equals(key(Messages.GUI_LABEL_OVERWRITEALL_0))) {
+                    getCms().chacc(
+                        file,
+                        getTypes(false)[arrayPosition],
+                        CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME,
+                        permissionString);
+                } else {
+                    getCms().chacc(file, getTypes(false)[arrayPosition], name, permissionString);
+                }
                 return true;
             } catch (CmsException e) {
                 m_errorMessages.add(e.getMessage());
@@ -297,13 +320,9 @@ public class CmsChacc extends CmsDialog {
             int flags = resource.getFlags();
 
             if (internalValue) {
-                if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
-                    flags += CmsResource.FLAG_INTERNAL;
-                }
+                flags |= CmsResource.FLAG_INTERNAL;
             } else {
-                if ((flags & CmsResource.FLAG_INTERNAL) > 0) {
-                    flags -= CmsResource.FLAG_INTERNAL;
-                }
+                flags &= ~CmsResource.FLAG_INTERNAL;
             }
 
             getCms().lockResource(getParamResource());
@@ -375,9 +394,13 @@ public class CmsChacc extends CmsDialog {
             int flags = 0;
             for (int k = 0; k < allEntries.size(); k++) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(k);
-                String curType = getEntryType(curEntry.getFlags());
-                String curName = getCms().lookupPrincipal(curEntry.getPrincipal()).getName();
-                if (curName.equals(name) && curType.equals(type)) {
+                String curType = getEntryType(curEntry.getFlags(), false);
+                I_CmsPrincipal p = getCms().lookupPrincipal(curEntry.getPrincipal());
+                if (((p != null) && p.getName().equals(name) && curType.equals(type))) {
+                    flags = curEntry.getFlags();
+                    break;
+                } else if ((p == null)
+                    && (name.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString()) || name.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString()))) {
                     flags = curEntry.getFlags();
                     break;
                 }
@@ -405,11 +428,32 @@ public class CmsChacc extends CmsDialog {
 
             // lock resource if autolock is enabled
             checkLock(getParamResource());
-            // try to change the access entry           
-            getCms().chacc(file, type, name, allowValue, denyValue, flags);
+            // try to change the access entry   
+            if (name.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
+                getCms().chacc(
+                    file,
+                    type,
+                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+                    allowValue,
+                    denyValue,
+                    flags);
+            } else if (name.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
+                getCms().chacc(
+                    file,
+                    type,
+                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME,
+                    allowValue,
+                    denyValue,
+                    flags);
+            } else {
+                getCms().chacc(file, type, name, allowValue, denyValue, flags);
+            }
             return true;
         } catch (CmsException e) {
             m_errorMessages.add(key(Messages.ERR_CHACC_MODIFY_ENTRY_0));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return false;
         }
     }
@@ -447,7 +491,18 @@ public class CmsChacc extends CmsDialog {
             "userpermissions",
             getSettings().getUserSettings().getDialogExpandUserPermissions()));
         result.append(dialogWhiteBoxStart());
-        result.append(buildPermissionEntryForm(getSettings().getUser().getId(), getCurPermissions(), false, false));
+        try {
+            result.append(buildPermissionEntryForm(
+                getSettings().getUser().getId(),
+                buildPermissionsForCurrentUser(),
+                false,
+                false));
+        } catch (CmsException e) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         result.append(dialogWhiteBoxEnd());
         result.append("</div>\n");
         return result.toString();
@@ -559,9 +614,11 @@ public class CmsChacc extends CmsDialog {
             }
             if (ou != null) {
                 result.append("<br>");
-                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("&nbsp;");                
+                result.append("<img src='").append(getSkinUri()).append(
+                    "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("<img src='").append(getSkinUri()).append(
+                    "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                result.append("&nbsp;");
                 try {
                     result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
                         getLocale()));
@@ -588,17 +645,6 @@ public class CmsChacc extends CmsDialog {
             "inheritedpermissions",
             getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()));
 
-        // get all access control entries of the current file
-        List allEntries = new ArrayList();
-        try {
-            allEntries = getCms().getAccessControlEntries(getParamResource(), true);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }
-        }
-
         // store all parent folder ids together with path in a map
         Map parents = new HashMap();
         String path = CmsResource.getParentFolder(getParamResource());
@@ -620,19 +666,37 @@ public class CmsChacc extends CmsDialog {
         }
 
         // create new ArrayLists in which inherited and non inherited entries are stored
-        ArrayList ownEntries = new ArrayList(0);
-        ArrayList inheritedEntries = new ArrayList(0);
+        ArrayList ownEntries = new ArrayList();
+        try {
+            Iterator itAces = getCms().getAccessControlEntries(getParamResource(), false).iterator();
+            while (itAces.hasNext()) {
+                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)itAces.next();
+                if (!curEntry.isInherited()) {
+                    // add the entry to the own rights list
+                    ownEntries.add(curEntry);
+                }
+            }
+        } catch (CmsException e) {
+            // can usually be ignored
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
+            }
+        }
 
-        for (int i = 0; i < allEntries.size(); i++) {
-            CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(i);
-            if (curEntry.isInherited()) {
+        ArrayList inheritedEntries = new ArrayList();
+        try {
+            Iterator itAces = getCms().getAccessControlEntries(path, true).iterator();
+            while (itAces.hasNext()) {
+                CmsAccessControlEntry curEntry = (CmsAccessControlEntry)itAces.next();
                 // add the entry to the inherited rights list for the "long" view
                 if ("long".equals(getSettings().getPermissionDetailView())) {
                     inheritedEntries.add(curEntry);
                 }
-            } else {
-                // add the entry to the own rights list
-                ownEntries.add(curEntry);
+            }
+        } catch (CmsException e) {
+            // can usually be ignored
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
 
@@ -754,6 +818,8 @@ public class CmsChacc extends CmsDialog {
         if (m_typesLocalized[0] == null) {
             m_typesLocalized[0] = key(Messages.GUI_LABEL_GROUP_0);
             m_typesLocalized[1] = key(Messages.GUI_LABEL_USER_0);
+            m_typesLocalized[2] = key(Messages.GUI_LABEL_ALLOTHERS_0);
+            m_typesLocalized[3] = key(Messages.GUI_LABEL_OVERWRITEALL_0);
         }
 
         // set flags to show editable or non editable entries
@@ -815,13 +881,14 @@ public class CmsChacc extends CmsDialog {
      * 
      * @param name the name of the new user/group
      * @param arrayPosition the position in the types array
+     * 
      * @return true if everything is ok, otherwise false
      */
     protected boolean checkNewEntry(String name, int arrayPosition) {
 
         m_errorMessages.clear();
         boolean inArray = false;
-        if (getTypes()[arrayPosition] != null) {
+        if (getTypes(false)[arrayPosition] != null) {
             inArray = true;
         }
         if (!inArray) {
@@ -867,13 +934,15 @@ public class CmsChacc extends CmsDialog {
      * Determines the type of the current access control entry.<p>
      * 
      * @param flags the value of the current flags
+     * @param all to include all types, or just user and groups 
+     * 
      * @return String representation of the ace type
      */
-    protected String getEntryType(int flags) {
+    protected String getEntryType(int flags, boolean all) {
 
-        for (int i = 0; i < getTypes().length; i++) {
+        for (int i = 0; i < getTypes(all).length; i++) {
             if ((flags & getTypesInt()[i]) > 0) {
-                return getTypes()[i];
+                return getTypes(all)[i];
             }
         }
         return "Unknown";
@@ -887,7 +956,7 @@ public class CmsChacc extends CmsDialog {
      */
     protected int getEntryTypeInt(int flags) {
 
-        for (int i = 0; i < getTypes().length; i++) {
+        for (int i = 0; i < getTypesInt().length; i++) {
             if ((flags & getTypesInt()[i]) > 0) {
                 return i;
             }
@@ -908,10 +977,16 @@ public class CmsChacc extends CmsDialog {
     /**
      * Returns a String array with the possible entry types.<p>
      * 
+     * @param all to include all types, or just user and groups 
+     * 
      * @return the possible types
      */
-    protected String[] getTypes() {
+    protected String[] getTypes(boolean all) {
 
+        if (!all) {
+            String[] array = new String[2];
+            return (String[])Arrays.asList(m_types).subList(0, 1).toArray(array);
+        }
         return m_types;
     }
 
@@ -1092,7 +1167,7 @@ public class CmsChacc extends CmsDialog {
             // get all possible entry types
             ArrayList options = new ArrayList();
             ArrayList optionValues = new ArrayList();
-            for (int i = 0; i < getTypes().length; i++) {
+            for (int i = 0; i < getTypes(false).length; i++) {
                 options.add(getTypesLocalized()[i]);
                 optionValues.add(Integer.toString(i));
             }
@@ -1149,11 +1224,10 @@ public class CmsChacc extends CmsDialog {
 
         StringBuffer result = new StringBuffer(32);
         String view = getSettings().getPermissionDetailView();
-        Iterator i;
 
         // display the long view
         if ("long".equals(view)) {
-            i = entries.iterator();
+            Iterator i = entries.iterator();
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
                 // build the list with enabled extended view and resource name
@@ -1163,15 +1237,17 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                CmsAccessControlList acList = getCms().getAccessControlList(getParamResource(), true);
-                Set principalSet = acList.getPrincipals();
-                i = principalSet.iterator();
+                CmsAccessControlList acList = getCms().getAccessControlList(
+                    CmsResource.getParentFolder(getParamResource()),
+                    false);
+                Iterator i = acList.getPrincipals().iterator();
                 while (i.hasNext()) {
                     CmsUUID principalId = (CmsUUID)i.next();
-                    I_CmsPrincipal principal = getCms().lookupPrincipal(principalId);
-                    CmsPermissionSet permissions = acList.getPermissions(principal);
-                    // build the list with enabled extended view only
-                    result.append(buildPermissionEntryForm(principalId, permissions, false, true));
+                    if (!principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                        CmsPermissionSet permissions = acList.getPermissions(principalId);
+                        // build the list with enabled extended view only
+                        result.append(buildPermissionEntryForm(principalId, permissions, false, true));
+                    }
                 }
             } catch (CmsException e) {
                 // can usually be ignored
@@ -1266,11 +1342,15 @@ public class CmsChacc extends CmsDialog {
         } else if (principal instanceof CmsUser) {
             name = ((CmsUser)principal).getFullName();
             ou = CmsOrganizationalUnit.getParentFqn(id);
+        } else if ((id != null) && id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
+            name = key(Messages.GUI_LABEL_ALLOTHERS_0);
+        } else if ((id != null) && id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
+            name = key(Messages.GUI_LABEL_OVERWRITEALL_0);
         } else {
             name = entry.getPrincipal().toString();
         }
 
-        String type = getEntryType(entry.getFlags());
+        String type = getEntryType(entry.getFlags(), false);
 
         if (id == null) {
             id = "";
@@ -1287,7 +1367,7 @@ public class CmsChacc extends CmsDialog {
         String typeLocalized = getTypesLocalized()[getEntryTypeInt(entry.getFlags())];
 
         // determine the right image to display
-        String typeImg = getEntryType(entry.getFlags()).toLowerCase();
+        String typeImg = getEntryType(entry.getFlags(), true).toLowerCase();
 
         // get all permissions of the current entry
         CmsPermissionSet permissions = entry.getPermissions();
@@ -1299,180 +1379,219 @@ public class CmsChacc extends CmsDialog {
         }
 
         // build the heading
-        result.append(dialogRow(HTML_START));
-        if (extendedView) {
-            // for extended view, add toggle symbol and link to output
-            result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
-            result.append("<img src=\"").append(getSkinUri()).append("commons/plus.png\" class=\"noborder\" id=\"ic-").append(
-                idValue).append("\"></a>");
-        } else {
-            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-        }
-        result.append("<img src=\"").append(getSkinUri()).append("commons/");
-        result.append(typeImg);
-        result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
-        result.append(typeLocalized);
-        result.append("\" title=\"");
-        result.append(typeLocalized);
-        result.append("\">&nbsp;<span class=\"textbold\">");
-        result.append(name);
-        result.append("</span>");
-
-        if (extendedView) {
-            // for extended view, add short permissions
-            result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(
-                entry.getResponsibleString()).append(")");
-        }
-        if (ou != null) {
-            result.append("<br>");
-            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-            result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-            result.append("&nbsp;");                
-            try {
-                result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
-                    getLocale()));
-            } catch (CmsException e) {
-                result.append(ou);
+        if (!id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
+            result.append(dialogRow(HTML_START));
+            if (extendedView) {
+                // for extended view, add toggle symbol and link to output
+                result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
+                result.append("<img src=\"").append(getSkinUri()).append(
+                    "commons/plus.png\" class=\"noborder\" id=\"ic-").append(idValue).append("\"></a>");
+            } else {
+                result.append("<img src='").append(getSkinUri()).append(
+                    "explorer/project_none.gif' class='noborder' width='16' height='16' >");
             }
-        }
-        result.append(dialogRow(HTML_END));
-        if (extendedView) {
-            // show the resource from which the ace is inherited if present
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inheritRes)) {
-                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("<img src='").append(getSkinUri()).append("explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("&nbsp;");                
-                result.append("<div class=\"dialogpermissioninherit\">");
-                result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {inheritRes}));
-                result.append("</div>\n");
+            result.append("<img src=\"").append(getSkinUri()).append("commons/");
+            result.append(typeImg);
+            result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
+            result.append(typeLocalized);
+            result.append("\" title=\"");
+            result.append(typeLocalized);
+            result.append("\">&nbsp;<span class=\"textbold\">");
+            result.append(name);
+            result.append("</span>");
+            if (!id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
+                if (extendedView) {
+                    // for extended view, add short permissions
+                    result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(
+                        entry.getResponsibleString()).append(")");
+                }
+                if (ou != null) {
+                    result.append("<br>");
+                    result.append("<img src='").append(getSkinUri()).append(
+                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                    result.append("<img src='").append(getSkinUri()).append(
+                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                    result.append("&nbsp;");
+                    try {
+                        result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                            getLocale()));
+                    } catch (CmsException e) {
+                        result.append(ou);
+                    }
+                }
             }
-            result.append("<div id =\"").append(idValue).append("\" class=\"hide\">");
-        }
+            result.append(dialogRow(HTML_END));
+            if (extendedView) {
+                // show the resource from which the ace is inherited if present
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inheritRes)) {
+                    result.append("<div class=\"dialogpermissioninherit\">");
+                    result.append("<img src='").append(getSkinUri()).append(
+                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                    result.append("&nbsp;");
+                    result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {inheritRes}));
+                    result.append("</div>\n");
+                }
+                result.append("<div id =\"").append(idValue).append("\" class=\"hide\">");
+            }
+            result.append("<table class=\"dialogpermissiondetails\">\n");
 
-        result.append("<table class=\"dialogpermissiondetails\">\n");
+            // build the form depending on the editable flag
+            if (editable) {
+                result.append("<form action=\"").append(getDialogUri()).append(
+                    "\" method=\"post\" class=\"nomargin\" name=\"set").append(idValue).append("\">\n");
+                // set parameters to show correct hidden input fields
+                setParamAction(DIALOG_SET);
+                result.append(paramsAsHidden());
+            } else {
+                result.append("<form class=\"nomargin\">\n");
+            }
 
-        // build the form depending on the editable flag
-        if (editable) {
-            result.append("<form action=\"").append(getDialogUri()).append(
-                "\" method=\"post\" class=\"nomargin\" name=\"set").append(idValue).append("\">\n");
-            // set parameters to show correct hidden input fields
-            setParamAction(DIALOG_SET);
-            result.append(paramsAsHidden());
-        } else {
-            result.append("<form class=\"nomargin\">\n");
-        }
-
-        // build headings for permission descriptions
-        result.append("<tr>\n");
-        result.append("\t<td class=\"dialogpermissioncell\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key(Messages.GUI_PERMISSION_0)).append("</span></td>\n");
-        result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key(Messages.GUI_PERMISSION_ALLOWED_0)).append("</span></td>\n");
-        result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key(Messages.GUI_PERMISSION_DENIED_0)).append("</span></td>\n");
-        result.append("</tr>");
-
-        Iterator i = m_permissionKeys.iterator();
-
-        // show all possible permissions in the form
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            int value = CmsPermissionSet.getPermissionValue(key);
-            String keyMessage = key(key);
+            // build headings for permission descriptions
             result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(keyMessage).append("</td>\n");
-            result.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"");
-            result.append(value).append(PERMISSION_ALLOW).append("\" value=\"").append(value).append("\"").append(
-                disabled);
-            if (isAllowed(permissions, value)) {
-                result.append(" checked=\"checked\"");
-            }
-            result.append("></td>\n");
-            result.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"");
-            result.append(value).append(PERMISSION_DENY).append("\" value=\"").append(value).append("\"").append(
-                disabled);
-            if (isDenied(permissions, value)) {
-                result.append(" checked=\"checked\"");
-            }
-            result.append("></td>\n");
-            result.append("</tr>\n");
-        }
+            result.append("\t<td class=\"dialogpermissioncell\"><span class=\"textbold\" unselectable=\"on\">");
+            result.append(key(Messages.GUI_PERMISSION_0)).append("</span></td>\n");
+            result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
+            result.append(key(Messages.GUI_PERMISSION_ALLOWED_0)).append("</span></td>\n");
+            result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
+            result.append(key(Messages.GUI_PERMISSION_DENIED_0)).append("</span></td>\n");
+            result.append("</tr>");
 
-        // show overwrite checkbox and buttons only for editable entries
-        if (editable) {
+            Iterator i = m_permissionKeys.iterator();
 
-            // show owner checkbox
-            result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_LABEL_RESPONSIBLE_0)).append(
-                "</td>\n");
-            result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-            result.append("<input type=\"checkbox\" name=\"").append(PARAM_RESPONSIBLE).append("\" value=\"true\"").append(
-                disabled);
-            if (isResponsible(entry.getFlags())) {
-                result.append(" checked=\"checked\"");
+            // show all possible permissions in the form
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                int value = CmsPermissionSet.getPermissionValue(key);
+                String keyMessage = key(key);
+                result.append("<tr>\n");
+                result.append("\t<td class=\"dialogpermissioncell\">").append(keyMessage).append("</td>\n");
+                result.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"");
+                result.append(value).append(PERMISSION_ALLOW).append("\" value=\"").append(value).append("\"").append(
+                    disabled);
+                if (isAllowed(permissions, value)) {
+                    result.append(" checked=\"checked\"");
+                }
+                result.append("></td>\n");
+                result.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"");
+                result.append(value).append(PERMISSION_DENY).append("\" value=\"").append(value).append("\"").append(
+                    disabled);
+                if (isDenied(permissions, value)) {
+                    result.append(" checked=\"checked\"");
+                }
+                result.append("></td>\n");
+                result.append("</tr>\n");
             }
-            result.append("></td>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
-            result.append("</tr>\n");
 
-            // show overwrite inherited checkbox
-            result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(
-                key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append("</td>\n");
-            result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-            result.append("<input type=\"checkbox\" name=\"").append(PARAM_OVERWRITEINHERITED).append(
-                "\" value=\"true\"").append(disabled);
-            if (isOverWritingInherited(entry.getFlags())) {
-                result.append(" checked=\"checked\"");
-            }
-            result.append("></td>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
-            result.append("</tr>\n");
-
-            // show inherit permissions checkbox on folders
-            if (getInheritOption()) {
+            // show overwrite checkbox and buttons only for editable entries
+            if (editable) {
+                // do not show the responsible option for the 'all others' ace
+                if (!id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
+                    // show owner checkbox
+                    result.append("<tr>\n");
+                    result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_LABEL_RESPONSIBLE_0)).append(
+                        "</td>\n");
+                    result.append("\t<td class=\"dialogpermissioncell textcenter\">");
+                    result.append("<input type=\"checkbox\" name=\"").append(PARAM_RESPONSIBLE).append(
+                        "\" value=\"true\"").append(disabled);
+                    if (isResponsible(entry.getFlags())) {
+                        result.append(" checked=\"checked\"");
+                    }
+                    result.append("></td>\n");
+                    result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
+                    result.append("</tr>\n");
+                }
+                // show overwrite inherited checkbox
                 result.append("<tr>\n");
                 result.append("\t<td class=\"dialogpermissioncell\">").append(
-                    key(Messages.GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0)).append("</td>\n");
+                    key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append("</td>\n");
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
-                result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
-                    disabled);
-                if (entry.isInheriting()) {
+                result.append("<input type=\"checkbox\" name=\"").append(PARAM_OVERWRITEINHERITED).append(
+                    "\" value=\"true\"").append(disabled);
+                if (isOverWritingInherited(entry.getFlags())) {
                     result.append(" checked=\"checked\"");
                 }
                 result.append("></td>\n");
                 result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
                 result.append("</tr>\n");
+
+                // show inherit permissions checkbox on folders
+                if (getInheritOption()) {
+                    result.append("<tr>\n");
+                    result.append("\t<td class=\"dialogpermissioncell\">").append(
+                        key(Messages.GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0)).append("</td>\n");
+                    result.append("\t<td class=\"dialogpermissioncell textcenter\">");
+                    result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
+                        disabled);
+                    if (entry.isInheriting()) {
+                        result.append(" checked=\"checked\"");
+                    }
+                    result.append("></td>\n");
+                    result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
+                    result.append("</tr>\n");
+                }
+
+                // show "set" and "delete" buttons    
+                result.append("<tr>\n");
+                result.append("\t<td>&nbsp;</td>\n");
+                result.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
+                    key(Messages.GUI_LABEL_SET_0)).append("\"></form></td>\n");
+                result.append("\t<td class=\"textcenter\">\n");
+                // build the form for the "delete" button            
+                result.append("\t\t<form class=\"nomargin\" action=\"").append(getDialogUri()).append(
+                    "\" method=\"post\" name=\"delete").append(idValue).append("\">\n");
+                // set parameters to show correct hidden input fields
+                setParamAction(DIALOG_DELETE);
+                result.append(paramsAsHidden());
+                result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(
+                    key(Messages.GUI_LABEL_DELETE_0)).append("\">\n");
+                result.append("\t\t</form>\n");
+                result.append("\t</td>\n");
+                result.append("</tr>\n");
+            } else {
+                // close the form
+                result.append("</form>\n");
             }
 
-            // show "set" and "delete" buttons    
-            result.append("<tr>\n");
-            result.append("\t<td>&nbsp;</td>\n");
-            result.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
-                key(Messages.GUI_LABEL_SET_0)).append("\"></form></td>\n");
-            result.append("\t<td class=\"textcenter\">\n");
-            // build the form for the "delete" button            
-            result.append("\t\t<form class=\"nomargin\" action=\"").append(getDialogUri()).append(
-                "\" method=\"post\" name=\"delete").append(idValue).append("\">\n");
-            // set parameters to show correct hidden input fields
-            setParamAction(DIALOG_DELETE);
-            result.append(paramsAsHidden());
-            result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(
-                key(Messages.GUI_LABEL_DELETE_0)).append("\">\n");
-            result.append("\t\t</form>\n");
-            result.append("\t</td>\n");
-            result.append("</tr>\n");
+            result.append("</table>\n");
+            if (extendedView) {
+                // close the hidden div for extended view
+                result.append("</div>");
+            }
         } else {
-            // close the form
-            result.append("</form>\n");
-        }
+            if (editable) {
+                result.append(dialogRow(HTML_START));
 
-        result.append("</table>\n");
-        if (extendedView) {
-            // close the hidden div for extended view
-            result.append("</div>");
-        }
+                result.append("<table class=\"dialogpermissiondetails\">\n");
+                // build headings for permission descriptions
+                result.append("<tr>\n");
+                result.append("\t<td style=\"width: 280px;\"><span class=\"textbold\" unselectable=\"on\">");
 
+                result.append("<img src=\"").append(getSkinUri()).append("commons/");
+                result.append(typeImg);
+                result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
+                result.append(typeLocalized);
+                result.append("\" title=\"");
+                result.append(typeLocalized);
+                result.append("\">&nbsp;<span class=\"textbold\">");
+                result.append(name);
+                result.append("</span></td>\n");
+                result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
+                // build the form for the "delete" button            
+                result.append("\t\t<form class=\"nomargin\" action=\"").append(getDialogUri()).append(
+                    "\" method=\"post\" name=\"delete").append(idValue).append("\">\n");
+                // set parameters to show correct hidden input fields
+                setParamAction(DIALOG_DELETE);
+                result.append(paramsAsHidden());
+                result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(
+                    key(Messages.GUI_LABEL_DELETE_0)).append("\">\n");
+                result.append("\t\t</form>\n");
+                result.append("</td>\n");
+                result.append("</tr>");
+                result.append("</table>\n");
+                result.append(dialogRow(HTML_END));
+            }
+
+        }
         return result;
     }
 
@@ -1494,18 +1613,17 @@ public class CmsChacc extends CmsDialog {
         String fileName = getParamResource();
         int flags = 0;
         try {
-            try {
-                if (CmsPrincipal.readPrincipal(getCms(), id).isGroup()) {
-                    flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
-                } else {
-                    flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
-                }
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
+            I_CmsPrincipal p = getCms().lookupPrincipal(id);
+            if ((p != null) && p.isGroup()) {
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
+            } else if ((p != null) && p.isUser()) {
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
+            } else if ((p == null) && id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS;
+            } else {
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL;
             }
+
             CmsResource res = getCms().readResource(fileName, CmsResourceFilter.ALL);
             CmsAccessControlEntry entry = new CmsAccessControlEntry(res.getResourceId(), id, curSet, flags);
             return buildPermissionEntryForm(entry, editable, extendedView, null);
@@ -1516,6 +1634,35 @@ public class CmsChacc extends CmsDialog {
             }
             return new StringBuffer("");
         }
+    }
+
+    /**
+     * Returns the actual real permissions (including role, and any other special check) for the current user.<p>
+     * 
+     * @return the actual real permissions for the current user
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    private CmsPermissionSet buildPermissionsForCurrentUser() throws CmsException {
+
+        CmsPermissionSetCustom pset = new CmsPermissionSetCustom();
+        CmsResource resource = getCms().readResource(getParamResource());
+        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.ALL)) {
+            pset.addPermissions(CmsPermissionSet.ACCESS_CONTROL);
+        }
+        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL)) {
+            pset.addPermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH);
+        }
+        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL)) {
+            pset.addPermissions(CmsPermissionSet.ACCESS_READ);
+        }
+        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL)) {
+            pset.addPermissions(CmsPermissionSet.ACCESS_VIEW);
+        }
+        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {
+            pset.addPermissions(CmsPermissionSet.ACCESS_WRITE);
+        }
+        return pset;
     }
 
     /**

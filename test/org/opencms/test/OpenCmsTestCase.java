@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/03/01 15:01:35 $
- * Version: $Revision: 1.90.4.17 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.90.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.17 $
+ * @version $Revision: 1.90.4.18 $
  * 
  * @since 6.0.0
  */
@@ -1120,7 +1120,6 @@ public class OpenCmsTestCase extends TestCase {
     public void assertAce(CmsObject cms, String resourceName, CmsAccessControlEntry ace) {
 
         try {
-
             // create the exclude list
             List excludeList = new ArrayList();
             if (ace != null) {
@@ -1129,9 +1128,7 @@ public class OpenCmsTestCase extends TestCase {
 
             // get the stored resource
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-
             String noMatches = compareAccessEntries(cms, resourceName, storedResource, excludeList);
-
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
                 fail("error comparing ace of resource " + resourceName + " with stored values: " + noMatches);
@@ -1156,6 +1153,7 @@ public class OpenCmsTestCase extends TestCase {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
@@ -2900,11 +2898,22 @@ public class OpenCmsTestCase extends TestCase {
      */
     private List compareAce(List source, List target, List exclude) {
 
+        boolean isOverwriteAll = false;
+        Iterator itTargets = target.iterator();
+        while (itTargets.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)itTargets.next();
+            if (ace.isOverwriteAll()) {
+                isOverwriteAll = true;
+            }
+        }
         List result = new ArrayList();
         Iterator i = source.iterator();
         while (i.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
-            if (!target.contains(ace)) {
+            // here would be best to check the path of the overwrite all entry
+            // but since we have just the resource id, instead of the structure id
+            // we are not able to do that here :(
+            if (!target.contains(ace) && !isOverwriteAll) {
                 result.add(ace);
             }
         }
@@ -2930,6 +2939,15 @@ public class OpenCmsTestCase extends TestCase {
      */
     private List compareList(CmsAccessControlList source, CmsAccessControlList target, List exclude) {
 
+        boolean isOverwriteAll = false;
+        Iterator itTargets = target.getPermissionMap().keySet().iterator();
+        while (itTargets.hasNext()) {
+            CmsUUID principalId = (CmsUUID)itTargets.next();
+            if (principalId.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                isOverwriteAll = true;
+            }
+        }
+
         HashMap result = new HashMap();
 
         HashMap destinationMap = target.getPermissionMap();
@@ -2945,7 +2963,10 @@ public class OpenCmsTestCase extends TestCase {
                 if (!destValue.equals(value)) {
                     result.put(key, key + " " + value + " != " + destValue);
                 }
-            } else {
+            } else if (!isOverwriteAll) {
+                // here would be best to check the path of the overwrite all entry
+                // but since we have just the resource id, instead of the structure id
+                // we are not able to do that here :(
                 result.put(key, "missing " + key);
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/02/09 10:29:15 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/13 09:55:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,13 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -50,11 +52,15 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.I_CmsListItemComparator;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -107,6 +113,73 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
+
+    /** Item comparator to ensure that special principals go first. */
+    private static final I_CmsListItemComparator LIST_ITEM_COMPARATOR = new I_CmsListItemComparator() {
+
+        /**
+         * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
+         */
+        public Comparator getComparator(final String columnId, final Locale locale) {
+
+            final Collator collator = Collator.getInstance(locale);
+            final String overwriteAll = Messages.get().getBundle(locale).key(Messages.GUI_LABEL_OVERWRITEALL_0);
+            final String allOthers = Messages.get().getBundle(locale).key(Messages.GUI_LABEL_ALLOTHERS_0);
+
+            return new Comparator() {
+
+                /**
+                 * @see org.opencms.security.CmsAccessControlEntry#COMPARATOR_PRINCIPALS
+                 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+                 */
+                public int compare(Object o1, Object o2) {
+
+                    if ((o1 == o2) || !(o1 instanceof CmsListItem) || !(o2 instanceof CmsListItem)) {
+                        return 0;
+                    }
+                    CmsListItem li1 = (CmsListItem)o1;
+                    CmsListItem li2 = (CmsListItem)o2;
+
+                    String id1 = (String)li1.get(LIST_COLUMN_DISPLAY);
+                    String id2 = (String)li2.get(LIST_COLUMN_DISPLAY);
+                    if (id1.equals(id2)) {
+                        return 0;
+                    } else if (id1.equals(overwriteAll)) {
+                        return -1;
+                    } else if (id1.equals(allOthers)) {
+                        if (id2.equals(overwriteAll)) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if (id2.equals(allOthers)) {
+                        if (id1.equals(overwriteAll)) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    } else if (id2.equals(overwriteAll)) {
+                        return 1;
+                    }
+                    
+                    Comparable c1 = (Comparable)li1.get(columnId);
+                    Comparable c2 = (Comparable)li2.get(columnId);
+                    if ((c1 instanceof String) && (c2 instanceof String)) {
+                        return collator.compare(c1, c2);
+                    } else if (c1 != null) {
+                        if (c2 == null) {
+                            return 1;
+                        }
+                        return c1.compareTo(c2);
+                    } else if (c2 != null) {
+                        return -1;
+                    }
+                    return 0;
+                }
+            };
+        }
+
+    };
 
     /** Cached value. */
     private Boolean m_hasPrincipalsInOtherOus;
@@ -223,7 +296,11 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
                 }
             }
         } catch (CmsException e) {
-            if (showingUsers) {
+            if (item.get(LIST_COLUMN_DISPLAY).equals(key(Messages.GUI_LABEL_OVERWRITEALL_0))) {
+                return "commons/" + CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME + ".png";
+            } else if (item.get(LIST_COLUMN_DISPLAY).equals(key(Messages.GUI_LABEL_ALLOTHERS_0))) {
+                return "commons/" + CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME + ".png";
+            } else if (showingUsers) {
                 return PATH_BUTTONS + "user.png";
             } else {
                 return PATH_BUTTONS + "group.png";
@@ -335,38 +412,50 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
      */
     protected List getPrincipals(boolean includeOtherOus) throws CmsException {
 
+        String ou = getCms().getRequestContext().currentUser().getOuFqn();
         Set principals = new HashSet();
         if (isShowingUsers()) {
+            // include special principals
+            CmsUser user = new CmsUser(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, ou
+                + key(Messages.GUI_LABEL_OVERWRITEALL_0), "", "", "", "", 0, 0, 0, null);
+            user.setDescription(key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
+            principals.add(user);
+            user = new CmsUser(
+                CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                ou + key(Messages.GUI_LABEL_ALLOTHERS_0),
+                "",
+                "",
+                "",
+                "",
+                0,
+                0,
+                0,
+                null);
+            user.setDescription(key(Messages.GUI_DESCRIPTION_ALLOTHERS_0));
+            principals.add(user);
             if (includeOtherOus) {
                 // add all manageable users
                 principals.addAll(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
                 // add own ou users
-                principals.addAll(OpenCms.getOrgUnitManager().getUsers(
-                    getCms(),
-                    getCms().getRequestContext().currentUser().getOuFqn(),
-                    true));
+                principals.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), ou, true));
             } else {
                 // add own ou users
-                principals.addAll(OpenCms.getOrgUnitManager().getUsers(
-                    getCms(),
-                    getCms().getRequestContext().currentUser().getOuFqn(),
-                    false));
+                principals.addAll(OpenCms.getOrgUnitManager().getUsers(getCms(), ou, false));
             }
         } else {
+            // include special principals
+            principals.add(new CmsGroup(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, null, ou
+                + key(Messages.GUI_LABEL_OVERWRITEALL_0), key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0), 0));
+            principals.add(new CmsGroup(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, null, ou
+                + key(Messages.GUI_LABEL_ALLOTHERS_0), key(Messages.GUI_DESCRIPTION_ALLOTHERS_0), 0));
             if (includeOtherOus) {
                 // add all manageable users
                 principals.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
                 // add own ou users
-                principals.addAll(OpenCms.getOrgUnitManager().getGroups(
-                    getCms(),
-                    getCms().getRequestContext().currentUser().getOuFqn(),
-                    true));
+                principals.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), ou, true));
             } else {
                 // add own ou users
-                principals.addAll(OpenCms.getOrgUnitManager().getGroups(
-                    getCms(),
-                    getCms().getRequestContext().currentUser().getOuFqn(),
-                    false));
+                principals.addAll(OpenCms.getOrgUnitManager().getGroups(getCms(), ou, false));
             }
         }
         List ret = new ArrayList(principals);
@@ -430,6 +519,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         CmsListColumnDefinition displayNameCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
         displayNameCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_NAME_0));
         displayNameCol.setWidth("40%");
+        displayNameCol.setListItemComparator(LIST_ITEM_COMPARATOR);
         CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
 
             /**
@@ -455,14 +545,16 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         descriptionCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_DESCRIPTION_0));
         descriptionCol.setWidth("60%");
         descriptionCol.setTextWrapping(true);
+        descriptionCol.setListItemComparator(LIST_ITEM_COMPARATOR);
         // add it to the list definition
         metadata.addColumn(descriptionCol);
 
-        // create column for description
+        // create column for org unit
         CmsListColumnDefinition ouCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
         ouCol.setName(Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_COLS_ORGUNIT_0));
         ouCol.setWidth("40%");
         ouCol.setTextWrapping(true);
+        ouCol.setListItemComparator(LIST_ITEM_COMPARATOR);
         // add it to the list definition
         metadata.addColumn(ouCol);
     }

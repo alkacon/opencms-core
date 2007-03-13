@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/02/21 14:27:04 $
- * Version: $Revision: 1.58.8.6 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.58.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.6 $
+ * @version $Revision: 1.58.8.7 $
  * 
  * @since 6.0.0 
  */
@@ -536,7 +536,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Reads a user from the database, only if the password is correct.<p>
      *
      * @param dbc the current database context
-     * @param name the name of the user
+     * @param userFqn the name of the user
      * @param password the password of the user
      * @param remoteAddress the remote address of the request, may be <code>null</code>
      * 
@@ -545,7 +545,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress)
+    CmsUser readUser(CmsDbContext dbc, String userFqn, String password, String remoteAddress)
     throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**

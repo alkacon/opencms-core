@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2007/02/09 12:49:57 $
- * Version: $Revision: 1.12.4.4 $
+ * Date   : $Date: 2007/03/13 09:55:17 $
+ * Version: $Revision: 1.12.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.4 $ 
+ * @version $Revision: 1.12.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,7 +235,7 @@ public class CmsExplorerTypeAccess {
         // add the default permissions to the acl
         if ((defaultPermissions != null) && !user.isGuestUser()) {
             boolean found = false;
-            if (acl.getPermissions(user) != null) {
+            if (acl.getPermissions(user.getId()) != null) {
                 // acl already contains the user, no need for default
                 found = true;
             }
@@ -244,7 +244,7 @@ public class CmsExplorerTypeAccess {
                 Iterator i = groups.iterator();
                 while (i.hasNext()) {
                     I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
-                    if (acl.getPermissions(principal) != null) {
+                    if (acl.getPermissions(principal.getId()) != null) {
                         // acl already contains the group, no need for default
                         found = true;
                         break;

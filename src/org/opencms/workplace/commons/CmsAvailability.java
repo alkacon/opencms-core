@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/10/20 15:36:11 $
- * Version: $Revision: 1.2.4.5 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.2.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.5 $ 
+ * @version $Revision: 1.2.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -343,7 +343,9 @@ public class CmsAvailability extends CmsMultiDialog {
                         CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
                         if (ace.isResponsible()) {
                             I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                            responsibles.put(principal, resourceSitePath.equals(sitePath) ? null : sitePath);
+                            if (principal != null) {
+                                responsibles.put(principal, resourceSitePath.equals(sitePath) ? null : sitePath);
+                            }
                         }
                     }
                 } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/03/01 15:01:30 $
- * Version: $Revision: 1.84.4.12 $
+ * Date   : $Date: 2007/03/13 09:55:15 $
+ * Version: $Revision: 1.84.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.12 $ 
+ * @version $Revision: 1.84.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1064,7 +1064,11 @@ public class CmsExport {
                 int flags = ace.getFlags();
                 String acePrincipalName = "";
                 CmsUUID acePrincipal = ace.getPrincipal();
-                if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
+                if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS) > 0) {
+                    acePrincipalName = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME;
+                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL) > 0) {
+                    acePrincipalName = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
+                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
                     acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
                 } else {

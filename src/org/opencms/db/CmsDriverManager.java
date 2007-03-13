@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/12 16:42:22 $
- * Version: $Revision: 1.570.2.69 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.570.2.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3101,19 +3101,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // get the ACE of the resource itself
         List ace = m_userDriver.readAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId(), false);
 
+        // sort and check if we got the 'overwrite all' ace to stop looking up
+        boolean overwriteAll = sortAceList(ace);
+
         // get the ACE of each parent folder
         // Note: for the immediate parent, get non-inherited access control entries too,
         // if the resource is not a folder
         String parentPath = CmsResource.getParentFolder(resource.getRootPath());
         int d = (resource.isFolder()) ? 1 : 0;
 
-        while (getInherited && (parentPath != null)) {
+        while (!overwriteAll && getInherited && (parentPath != null)) {
             resource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
             List entries = m_userDriver.readAccessControlEntries(
                 dbc,
                 dbc.currentProject(),
                 resource.getResourceId(),
                 d > 0);
+
+            // sort and check if we got the 'overwrite all' ace to stop looking up
+            overwriteAll = sortAceList(entries);
 
             for (Iterator i = entries.iterator(); i.hasNext();) {
                 CmsAccessControlEntry e = (CmsAccessControlEntry)i.next();
@@ -6020,7 +6026,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (aces.hasNext()) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)aces.next();
             if (ace.isResponsible()) {
-                result.add(lookupPrincipal(dbc, ace.getPrincipal()));
+                I_CmsPrincipal p = lookupPrincipal(dbc, ace.getPrincipal());
+                if (p != null) {
+                    result.add(p);
+                }
             }
         }
         return result;
@@ -7948,38 +7957,49 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return acl;
         }
 
-        // otherwise, get the acl of the parent or a new one
-        CmsResource parentResource = null;
-        try {
-            // try to recurse over the id
-            parentResource = m_vfsDriver.readParentFolder(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource.getStructureId());
-        } catch (CmsVfsResourceNotFoundException e) {
-            // should never happen, but try with the path
-            String parentPath = CmsResource.getParentFolder(resource.getRootPath());
-            if (parentPath != null) {
-                parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
+        List aces = m_userDriver.readAccessControlEntries(
+            dbc,
+            dbc.currentProject(),
+            resource.getResourceId(),
+            (depth > 1) || ((depth > 0) && forFolder));
+
+        // sort the list of aces
+        boolean overwriteAll = sortAceList(aces);
+
+        // if no 'overwrite all' ace was found
+        if (!overwriteAll) {
+            // get the acl of the parent
+            CmsResource parentResource = null;
+            try {
+                // try to recurse over the id
+                parentResource = m_vfsDriver.readParentFolder(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    resource.getStructureId());
+            } catch (CmsVfsResourceNotFoundException e) {
+                // should never happen, but try with the path
+                String parentPath = CmsResource.getParentFolder(resource.getRootPath());
+                if (parentPath != null) {
+                    parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getUuid(), parentPath);
+                }
             }
-        }
-        if (parentResource != null) {
-            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, inheritedOnly, forFolder, depth + 1).clone();
+            if (parentResource != null) {
+                acl = (CmsAccessControlList)getAccessControlList(
+                    dbc,
+                    parentResource,
+                    inheritedOnly,
+                    forFolder,
+                    depth + 1).clone();
+            }
         }
         if (acl == null) {
             acl = new CmsAccessControlList();
         }
 
         if (!((depth == 0) && inheritedOnly)) {
-
-            ListIterator ace = m_userDriver.readAccessControlEntries(
-                dbc,
-                dbc.currentProject(),
-                resource.getResourceId(),
-                (depth > 1) || ((depth > 0) && forFolder)).listIterator();
-
-            while (ace.hasNext()) {
-                CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
+            Iterator itAces = aces.iterator();
+            while (itAces.hasNext()) {
+                CmsAccessControlEntry acEntry = (CmsAccessControlEntry)itAces.next();
                 if (depth > 0) {
                     acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
                 }
@@ -7996,6 +8016,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_accessControlListCache.put(cacheKey, acl);
         return acl;
+    }
+
+    /**
+     * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
+     * 
+     * The the 'all others' ace in first place, the 'overwrite all' ace in second.<p>
+     * 
+     * @param aces the list of ACEs to sort
+     * 
+     * @return <code>true</code> if the list contains the 'overwrite all' ace
+     */
+    private boolean sortAceList(List aces) {
+
+        // sort the list of entries 
+        Collections.sort(aces, CmsAccessControlEntry.COMPARATOR_ACE);
+        // after sorting just the first 2 positions come in question
+        for (int i = 0; i < Math.min(aces.size(), 2); i++) {
+            CmsAccessControlEntry acEntry = (CmsAccessControlEntry)aces.get(i);
+            if (acEntry.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

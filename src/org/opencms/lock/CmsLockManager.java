@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/03/12 16:38:00 $
- * Version: $Revision: 1.37.4.19 $
+ * Date   : $Date: 2007/03/13 09:55:16 $
+ * Version: $Revision: 1.37.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.19 $ 
+ * @version $Revision: 1.37.4.20 $ 
  * 
  * @since 6.0.0 
  * 
@@ -376,21 +376,28 @@ public final class CmsLockManager {
     }
 
     /**
-     * Removes all locks of a user
+     * Removes all locks of a user.<p>
+     * 
+     * Edition and system locks are removed.<p>
      * 
      * @param userId the id of the user whose locks should be removed
      */
-    public void removeLocks (CmsUUID userId) {
+    public void removeLocks(CmsUUID userId) {
 
-        Iterator itLocks = m_locks.values().iterator();
+        Iterator itLocks = new ArrayList(m_locks.values()).iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
-            if (currentLock.getUserId().equals(userId)) {
+            boolean editLock = currentLock.getEditionLock().getUserId().equals(userId);
+            boolean sysLock = currentLock.getSystemLock().getUserId().equals(userId);
+            if (editLock) {
                 unlockResource(currentLock.getResourceName(), false);
+            }
+            if (sysLock) {
+                unlockResource(currentLock.getResourceName(), true);
             }
         }
     }
-    
+
     /**
      * Removes a resource from the lock manager.<p>
      * 
@@ -504,11 +511,13 @@ public final class CmsLockManager {
     /**
      * Removes all exclusive temporary locks of a user.<p>
      * 
+     * Only edition lock can be temporary, so no system locks are removed.<p>
+     * 
      * @param userId the id of the user whose locks has to be removed
      */
     public void removeTempLocks(CmsUUID userId) {
 
-        Iterator itLocks = m_locks.values().iterator();
+        Iterator itLocks = new ArrayList(m_locks.values()).iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (currentLock.isTemporary() && currentLock.getUserId().equals(userId)) {
@@ -821,7 +830,7 @@ public final class CmsLockManager {
      * 
      * @param resourceName the name of the resource to unlock
      * @param systemLocks <code>true</code> if only system locks should be removed, 
-     *              if only exclusive locks should be removed
+     *              and <code>false</code> if only exclusive locks should be removed
      * 
      * @return the removed lock object
      */

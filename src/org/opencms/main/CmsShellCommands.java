@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/03/05 16:04:43 $
- * Version: $Revision: 1.83.4.12 $
+ * Date   : $Date: 2007/03/13 09:55:16 $
+ * Version: $Revision: 1.83.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.12 $ 
+ * @version $Revision: 1.83.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -512,7 +512,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Displays the access control list of a given resource.<p>
      * 
      * @param resourceName the name of the resource
+     * 
      * @throws Exception if something goes wrong
+     * 
      * @see CmsObject#getAccessControlList(String)
      */
     public void getAcl(String resourceName) throws Exception {
@@ -521,17 +523,16 @@ class CmsShellCommands implements I_CmsShellCommands {
         Iterator principals = acList.getPrincipals().iterator();
         while (principals.hasNext()) {
             I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next());
-            System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
+            System.out.println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
         }
     }
 
     /**
      * Returns the Locales available on the system ready to use on Method 
-     * {@link #setLocale(String)} from the <code>CmsShell</code>. <p>
+     * {@link #setLocale(String)} from the <code>{@link CmsShell}</code>. <p>
      * 
      * Note that the full name containing language, country and optional variant seperated 
      * by underscores is returned always but the latter two parts may be left out. <p>
-     *
      */
     public void getLocales() {
 
@@ -740,10 +741,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         for (int i = 0; i < acList.size(); i++) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-            if (true) {
-                String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
-            }
+            String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
+            System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
         }
     }
 

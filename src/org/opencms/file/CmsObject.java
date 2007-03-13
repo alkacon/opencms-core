@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/03/05 16:04:42 $
- * Version: $Revision: 1.146.4.31 $
+ * Date   : $Date: 2007/03/13 09:55:14 $
+ * Version: $Revision: 1.146.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 
 package org.opencms.file;
 
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsProject.CmsProjectType;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.31 $
+ * @version $Revision: 1.146.4.32 $
  * 
  * @since 6.0.0 
  */
@@ -201,14 +201,41 @@ public final class CmsObject {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
 
-        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        I_CmsPrincipal principal = null;
+        try {
+            principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        } catch (CmsException e) {
+            // check for special ids
+            if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
+                && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+                throw e;
+            }
+        }
+
+        CmsUUID principalId = null;
+        if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+            principalId = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID;
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID;
+        } else if (principal != null) {
+            principalId = principal.getId();
+        }
+
         CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
             res.getResourceId(),
-            principal.getId(),
+            principalId,
             allowedPermissions,
             deniedPermissions,
             flags);
-        acEntry.setFlagsForPrincipal(principal);
+
+        if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
+            && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            acEntry.setFlagsForPrincipal(principal);
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
+        }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
@@ -232,12 +259,36 @@ public final class CmsObject {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
 
-        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
-        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
-            res.getResourceId(),
-            principal.getId(),
-            permissionString);
-        acEntry.setFlagsForPrincipal(principal);
+        I_CmsPrincipal principal = null;
+        try {
+            principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        } catch (CmsException e) {
+            // check for special ids
+            if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
+                && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+                throw e;
+            }
+        }
+
+        CmsUUID principalId = null;
+        if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+            principalId = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID;
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID;
+        } else if (principal != null) {
+            principalId = principal.getId();
+        }
+
+        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principalId, permissionString);
+
+        if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
+            && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            acEntry.setFlagsForPrincipal(principal);
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
+        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
+        }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
