@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/03/13 09:55:13 $
- * Version: $Revision: 1.24.4.9 $
+ * Date   : $Date: 2007/03/13 16:20:50 $
+ * Version: $Revision: 1.24.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.9 $ 
+ * @version $Revision: 1.24.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1558,24 +1558,24 @@ public class CmsChacc extends CmsDialog {
                 result.append("</div>");
             }
         } else {
+            result.append(dialogRow(HTML_START));
+
+            result.append("<table class=\"dialogpermissiondetails\">\n");
+            // build headings for permission descriptions
+            result.append("<tr>\n");
+            result.append("\t<td style=\"width: 280px;\"><span class=\"textbold\" unselectable=\"on\">");
+
+            result.append("<img src=\"").append(getSkinUri()).append("commons/");
+            result.append(typeImg);
+            result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
+            result.append(typeLocalized);
+            result.append("\" title=\"");
+            result.append(typeLocalized);
+            result.append("\">&nbsp;<span class=\"textbold\">");
+            result.append(name);
+            result.append("</span></td>\n");
+            result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
             if (editable) {
-                result.append(dialogRow(HTML_START));
-
-                result.append("<table class=\"dialogpermissiondetails\">\n");
-                // build headings for permission descriptions
-                result.append("<tr>\n");
-                result.append("\t<td style=\"width: 280px;\"><span class=\"textbold\" unselectable=\"on\">");
-
-                result.append("<img src=\"").append(getSkinUri()).append("commons/");
-                result.append(typeImg);
-                result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
-                result.append(typeLocalized);
-                result.append("\" title=\"");
-                result.append(typeLocalized);
-                result.append("\">&nbsp;<span class=\"textbold\">");
-                result.append(name);
-                result.append("</span></td>\n");
-                result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
                 // build the form for the "delete" button            
                 result.append("\t\t<form class=\"nomargin\" action=\"").append(getDialogUri()).append(
                     "\" method=\"post\" name=\"delete").append(idValue).append("\">\n");
@@ -1585,11 +1585,11 @@ public class CmsChacc extends CmsDialog {
                 result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(
                     key(Messages.GUI_LABEL_DELETE_0)).append("\">\n");
                 result.append("\t\t</form>\n");
-                result.append("</td>\n");
-                result.append("</tr>");
-                result.append("</table>\n");
-                result.append(dialogRow(HTML_END));
             }
+            result.append("</td>\n");
+            result.append("</tr>");
+            result.append("</table>\n");
+            result.append(dialogRow(HTML_END));
 
         }
         return result;
@@ -1648,19 +1648,29 @@ public class CmsChacc extends CmsDialog {
         CmsPermissionSetCustom pset = new CmsPermissionSetCustom();
         CmsResource resource = getCms().readResource(getParamResource());
         if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.ALL)) {
-            pset.addPermissions(CmsPermissionSet.ACCESS_CONTROL);
+            pset.grantPermissions(CmsPermissionSet.PERMISSION_CONTROL);
+        } else {
+            pset.denyPermissions(CmsPermissionSet.PERMISSION_CONTROL);
         }
         if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL)) {
-            pset.addPermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH);
+            pset.grantPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+        } else {
+            pset.denyPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
         }
         if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL)) {
-            pset.addPermissions(CmsPermissionSet.ACCESS_READ);
+            pset.grantPermissions(CmsPermissionSet.PERMISSION_READ);
+        } else {
+            pset.denyPermissions(CmsPermissionSet.PERMISSION_READ);
         }
         if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL)) {
-            pset.addPermissions(CmsPermissionSet.ACCESS_VIEW);
+            pset.grantPermissions(CmsPermissionSet.PERMISSION_VIEW);
+        } else {
+            pset.denyPermissions(CmsPermissionSet.PERMISSION_VIEW);
         }
         if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {
-            pset.addPermissions(CmsPermissionSet.ACCESS_WRITE);
+            pset.grantPermissions(CmsPermissionSet.PERMISSION_WRITE);
+        } else {
+            pset.denyPermissions(CmsPermissionSet.PERMISSION_WRITE);
         }
         return pset;
     }

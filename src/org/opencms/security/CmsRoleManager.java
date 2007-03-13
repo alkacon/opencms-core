@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:29 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/03/13 16:20:50 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.5.6
  */
@@ -353,7 +354,7 @@ public class CmsRoleManager {
 
         CmsResource resource;
         try {
-            resource = cms.readResource(resourceName);
+            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // ignore
             return false;

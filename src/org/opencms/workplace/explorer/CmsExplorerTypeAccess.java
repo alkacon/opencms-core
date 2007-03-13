@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2007/03/13 09:55:17 $
- * Version: $Revision: 1.12.4.5 $
+ * Date   : $Date: 2007/03/13 16:20:50 $
+ * Version: $Revision: 1.12.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.5 $ 
+ * @version $Revision: 1.12.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -241,10 +241,10 @@ public class CmsExplorerTypeAccess {
             }
             if (!found && (groups != null)) {
                 // look up all groups to see if we need the default
-                Iterator i = groups.iterator();
-                while (i.hasNext()) {
-                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
-                    if (acl.getPermissions(principal.getId()) != null) {
+                Iterator itGroups = groups.iterator();
+                while (itGroups.hasNext()) {
+                    CmsGroup group = (CmsGroup)itGroups.next();
+                    if (acl.getPermissions(group.getId()) != null) {
                         // acl already contains the group, no need for default
                         found = true;
                         break;
@@ -257,9 +257,9 @@ public class CmsExplorerTypeAccess {
                 acl.add(entry);
             }
         }
-
-        // get permissions of the current user based on the role
         permissions = acl.getPermissions(user, groups);
+
+        // add permissions of the current user based on the role
         Iterator itPerm = acl.getPermissionMap().entrySet().iterator();
         while (itPerm.hasNext()) {
             Map.Entry entry = (Map.Entry)itPerm.next();

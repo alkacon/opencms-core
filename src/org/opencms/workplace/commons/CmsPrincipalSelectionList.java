@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/03/13 09:55:13 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/13 16:20:50 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -161,7 +161,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
                     } else if (id2.equals(overwriteAll)) {
                         return 1;
                     }
-                    
+
                     Comparable c1 = (Comparable)li1.get(columnId);
                     Comparable c2 = (Comparable)li2.get(columnId);
                     if ((c1 instanceof String) && (c2 instanceof String)) {
@@ -391,7 +391,12 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, principal.getName());
             item.set(LIST_COLUMN_DISPLAY, principal.getSimpleName());
             if (principal.isUser()) {
-                item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getFullName());
+                if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)
+                    || principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                    item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getDescription());
+                } else {
+                    item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getFullName());
+                }
             } else {
                 item.set(LIST_COLUMN_DESCRIPTION, principal.getDescription());
             }
