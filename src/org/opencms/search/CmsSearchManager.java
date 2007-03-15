@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.55.4.10 $
+ * Date   : $Date: 2007/03/15 16:36:35 $
+ * Version: $Revision: 1.55.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.10 $ 
+ * @version $Revision: 1.55.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private HashMap m_analyzers;
 
     /** A map of document factory configurations. */
-    private Map m_documentTypeConfigs;
+    private List m_documentTypeConfigs;
 
     /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
     private Map m_documentTypes;
@@ -206,7 +206,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public CmsSearchManager() {
 
         m_documentTypes = new HashMap();
-        m_documentTypeConfigs = new HashMap();
+        m_documentTypeConfigs = new ArrayList();
         m_analyzers = new HashMap();
         m_indexes = new ArrayList();
         m_indexSources = new HashMap();
@@ -246,7 +246,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void addDocumentTypeConfig(CmsSearchDocumentType documentType) {
 
-        m_documentTypeConfigs.put(documentType.getName(), documentType);
+        m_documentTypeConfigs.add(documentType);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -396,7 +396,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchDocumentType getDocumentTypeConfig(String name) {
 
-        return (CmsSearchDocumentType)m_documentTypeConfigs.get(name);
+        // this is really used only for the search manager GUI, 
+        // so performance is not an issue and no lookup map is generated
+        for (int i = 0; i < m_documentTypeConfigs.size(); i++) {
+            CmsSearchDocumentType type = (CmsSearchDocumentType)m_documentTypeConfigs.get(i);
+            if (type.getName().equals(name)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     /**
@@ -404,9 +412,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return an unmodifiable view (read-only) of the DocumentTypeConfigs Map
      */
-    public Map getDocumentTypeConfigs() {
+    public List getDocumentTypeConfigs() {
 
-        return Collections.unmodifiableMap(m_documentTypeConfigs);
+        return Collections.unmodifiableList(m_documentTypeConfigs);
     }
 
     /**
@@ -1264,10 +1272,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_documentTypes = new HashMap();
 
-        List keys = new ArrayList(m_documentTypeConfigs.keySet());
-        for (int i = 0, n = keys.size(); i < n; i++) {
+        for (int i = 0, n = m_documentTypeConfigs.size(); i < n; i++) {
 
-            documenttype = (CmsSearchDocumentType)(m_documentTypeConfigs.get(keys.get(i)));
+            documenttype = (CmsSearchDocumentType)m_documentTypeConfigs.get(i);
             name = documenttype.getName();
 
             try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.10.8.1 $
+ * Date   : $Date: 2007/03/15 16:36:35 $
+ * Version: $Revision: 1.10.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import java.util.List;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10.8.1 $ 
+ * @version $Revision: 1.10.8.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchDocumentType implements Cloneable {
+public class CmsSearchDocumentType {
 
     /** The name of the document factory class. */
     private String m_className;
@@ -170,5 +170,4 @@ public class CmsSearchDocumentType implements Cloneable {
 
         m_resourceTypes = resourceTypes;
     }
-
 }

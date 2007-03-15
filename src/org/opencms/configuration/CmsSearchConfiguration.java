@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/12/12 14:52:57 $
- * Version: $Revision: 1.17.4.4 $
+ * Date   : $Date: 2007/03/15 16:36:36 $
+ * Version: $Revision: 1.17.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.17.4.4 $
+ * @version $Revision: 1.17.4.5 $
  * 
  * @since 6.0.0
  */
@@ -357,15 +357,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // <documenttypes> 
         Element documenttypesElement = searchElement.addElement(N_DOCUMENTTYPES);
-        List docTypeKeyList = new ArrayList(m_searchManager.getDocumentTypeConfigs().keySet());
-        Collections.sort(docTypeKeyList);
-        List sortedDocTypeList = new ArrayList();
-        Iterator i = docTypeKeyList.iterator();
-        while (i.hasNext()) {
-            CmsSearchDocumentType currDocType = m_searchManager.getDocumentTypeConfig((String)i.next());
-            sortedDocTypeList.add(currDocType);
-        }
-        Iterator docTypeIterator = sortedDocTypeList.iterator();
+        List docTypeKeyList = m_searchManager.getDocumentTypeConfigs();
+        Iterator docTypeIterator = docTypeKeyList.iterator();
         while (docTypeIterator.hasNext()) {
             CmsSearchDocumentType currSearchDocType = (CmsSearchDocumentType)docTypeIterator.next();
             // add the next <documenttype> element

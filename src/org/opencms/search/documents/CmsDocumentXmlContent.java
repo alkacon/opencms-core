@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.8.8.4 $
+ * Date   : $Date: 2007/03/15 16:36:36 $
+ * Version: $Revision: 1.8.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8.8.4 $ 
+ * @version $Revision: 1.8.8.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,12 +126,15 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
 
         if (resourceTypes.contains("*")) {
+            // we need to find all configured XML content types
             ArrayList allTypes = new ArrayList();
             for (Iterator i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
                 I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
                 if ((resourceType instanceof CmsResourceTypeXmlContent)
-                    && ((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)) {
+                // either we need a configured schema, or another class name (which must then contain an inline schema)
+                    && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
+                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA) || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
+                    // add the XML content resource type name
                     allTypes.add(resourceType.getTypeName());
                 }
             }
