@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/12/28 10:02:54 $
- * Version: $Revision: 1.22.4.10 $
+ * Date   : $Date: 2007/03/15 17:23:28 $
+ * Version: $Revision: 1.22.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.10 $ 
+ * @version $Revision: 1.22.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -414,7 +414,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // collect some required server data first
         String scheme = getJsp().getRequest().getScheme();
         String host = getJsp().getRequest().getServerName();
-        String path = OpenCms.getSystemInfo().getContextPath() + OpenCms.getSystemInfo().getServletPath();
+        String path = OpenCms.getStaticExportManager().getVfsPrefix();
         int port = getJsp().getRequest().getServerPort();
         String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
 

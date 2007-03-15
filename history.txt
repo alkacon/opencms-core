@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/15 15:57:35 $
- * Version: $Revision: 1.717.2.145 $
+ * Date   : $Date: 2007/03/15 17:23:27 $
+ * Version: $Revision: 1.717.2.146 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,12 @@ OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
 - Improved handling of project flags and type 
 * Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
 - Improved publish permission check
-* Fixes issue #1323: 304 Not Modified Status not working because seconds where compared to milliseconds
+* Fixes issue #1323: 304 Not Modified Status not working because seconds were compared to milliseconds
 ! Added new functionality to import and export user data via csv files
 - New special access control entries for 'All other principals' & 'Overwrite all inherited'
 - Different tempfile handling for new operation in direct edit mode of xml contents
+* Fixed issue with upload applet not working with apache redirects
+
 
 OpenCms 6.7.1 (aka 7.0 alpha) - 14. February, 2007
 
