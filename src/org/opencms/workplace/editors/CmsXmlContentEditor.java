@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/11/21 09:25:00 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2007/03/15 11:25:41 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -425,7 +425,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } finally {
             try {
                 // delete the new file
-                getCms().deleteResource(newFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                getCms().deleteResource(newFileName, CmsResource.DELETE_REMOVE_SIBLINGS);
             } catch (CmsException e) {
                 // ignore
             }
