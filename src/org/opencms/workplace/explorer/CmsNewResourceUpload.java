@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/03/15 17:26:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -362,7 +362,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // collect some required server data first
         String scheme = getJsp().getRequest().getScheme();
         String host = getJsp().getRequest().getServerName();
-        String path = OpenCms.getSystemInfo().getContextPath() + OpenCms.getSystemInfo().getServletPath();
+        String path = OpenCms.getStaticExportManager().getVfsPrefix();
         int port = getJsp().getRequest().getServerPort();
         String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
 
@@ -442,7 +442,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(":");
         applet.append(port);
         applet.append(path);
-        applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
+        applet.append("/system/workplace/views/explorer/explorer_files.jsp\">\n");
         applet.append("<param name=\"sessionId\" value=\"");
         applet.append(sessionId);
         applet.append("\">\n");
