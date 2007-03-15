@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDocumentTypeRemoveList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/03/15 13:53:27 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.0.0
  */
@@ -349,7 +349,7 @@ public class CmsDocumentTypeRemoveList extends A_CmsEmbeddedListDialog {
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nameCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_NAME_0));
         nameCol.setWidth("50%");
-        metadata.addColumn(nameCol);
+
         // add a duplicate action 
         CmsListDefaultAction remAction2 = new CmsListDefaultAction(LIST_ACTION_REMOVE_DOCTYPE2);
         remAction2.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_ACTION_REMOVE_DOCTYPE_NAME_0));
