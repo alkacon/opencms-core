@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolMacroResolver.java,v $
- * Date   : $Date: 2007/03/01 15:01:29 $
- * Version: $Revision: 1.2.8.4 $
+ * Date   : $Date: 2007/03/15 16:30:45 $
+ * Version: $Revision: 1.2.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.8.4 $ 
+ * @version $Revision: 1.2.8.5 $ 
  * @since 6.0.0 
  */
 public class CmsToolMacroResolver implements I_CmsMacroResolver {
@@ -161,7 +161,7 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
                 return m_wp.getCms().readGroup(new CmsUUID(id)).getSimpleName();
             }
             if (macro == CmsToolMacroResolver.KEY_PROJECTNAME) {
-                return m_wp.getCms().readProject(new CmsUUID(id)).getName();
+                return m_wp.getCms().readProject(new CmsUUID(id)).getSimpleName();
             }
             if (macro == CmsToolMacroResolver.KEY_JOBNAME) {
                 return OpenCms.getScheduleManager().getJob(id).getJobName();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/03/13 16:20:50 $
- * Version: $Revision: 1.24.4.10 $
+ * Date   : $Date: 2007/03/15 16:30:41 $
+ * Version: $Revision: 1.24.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.10 $ 
+ * @version $Revision: 1.24.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public class CmsChacc extends CmsDialog {
     private boolean m_editable;
 
     /** Stores eventual error message Strings. */
-    private ArrayList m_errorMessages = new ArrayList();
+    private List m_errorMessages = new ArrayList();
 
     /** Indicates if inheritance flags are set as hidden fields for resource folders. */
     private boolean m_inherit;
@@ -294,6 +294,9 @@ public class CmsChacc extends CmsDialog {
                 return true;
             } catch (CmsException e) {
                 m_errorMessages.add(e.getMessage());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
         return false;
@@ -330,6 +333,9 @@ public class CmsChacc extends CmsDialog {
 
         } catch (CmsException e) {
             m_errorMessages.add(key(Messages.ERR_MODIFY_INTERNAL_FLAG_0));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return false;
         }
         return true;
@@ -475,6 +481,9 @@ public class CmsChacc extends CmsDialog {
             return true;
         } catch (CmsException e) {
             m_errorMessages.add(key(Messages.ERR_CHACC_DELETE_ENTRY_0));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return false;
         }
     }
@@ -519,7 +528,7 @@ public class CmsChacc extends CmsDialog {
         String errorMessages = getErrorMessagesString();
         if (!"".equals(errorMessages)) {
             result.append(dialogBlock(HTML_START, key(Messages.GUI_PERMISSION_ERROR_0), true));
-            result.append(errorMessages);
+            result.append("<font color='red'>").append(errorMessages).append("</font>");
             result.append(dialogBlockEnd());
         }
         return result.toString();
@@ -542,8 +551,8 @@ public class CmsChacc extends CmsDialog {
             parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // can usually be ignored
-            if (CmsChacc.LOG.isInfoEnabled()) {
-                CmsChacc.LOG.info(e.getLocalizedMessage());
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
             }
         }
         Iterator i = parentResources.iterator();
@@ -612,18 +621,25 @@ public class CmsChacc extends CmsDialog {
                     result.append("</div>");
                 }
             }
-            if (ou != null) {
-                result.append("<br>");
-                result.append("<img src='").append(getSkinUri()).append(
-                    "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("<img src='").append(getSkinUri()).append(
-                    "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                result.append("&nbsp;");
-                try {
-                    result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
-                        getLocale()));
-                } catch (CmsException e) {
-                    result.append(ou);
+            try {
+                if ((ou != null) && (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).size() > 1)) {
+                    result.append("<br>");
+                    result.append("<img src='").append(getSkinUri()).append(
+                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                    result.append("<img src='").append(getSkinUri()).append(
+                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                    result.append("&nbsp;");
+                    try {
+                        result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                            getLocale()));
+                    } catch (CmsException e) {
+                        result.append(ou);
+                    }
+                }
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             result.append("</div>\n");
@@ -732,7 +748,7 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return List of error message Strings
      */
-    public ArrayList getErrorMessages() {
+    public List getErrorMessages() {
 
         return m_errorMessages;
     }
@@ -985,7 +1001,7 @@ public class CmsChacc extends CmsDialog {
 
         if (!all) {
             String[] array = new String[2];
-            return (String[])Arrays.asList(m_types).subList(0, 1).toArray(array);
+            return (String[])Arrays.asList(m_types).subList(0, 2).toArray(array);
         }
         return m_types;
     }
@@ -1337,7 +1353,9 @@ public class CmsChacc extends CmsDialog {
         String name;
         String ou = null;
         if (principal instanceof CmsGroup) {
-            name = principal.getDescription() + "(" + principal.getSimpleName() + ")";
+            name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
+                principal.getDescription(),
+                principal.getSimpleName()});
             ou = CmsOrganizationalUnit.getParentFqn(id);
         } else if (principal instanceof CmsUser) {
             name = ((CmsUser)principal).getFullName();
@@ -1402,21 +1420,28 @@ public class CmsChacc extends CmsDialog {
             if (!id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
                 if (extendedView) {
                     // for extended view, add short permissions
-                    result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(
-                        entry.getResponsibleString()).append(")");
+                    result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(")");
                 }
-                if (ou != null) {
-                    result.append("<br>");
-                    result.append("<img src='").append(getSkinUri()).append(
-                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                    result.append("<img src='").append(getSkinUri()).append(
-                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                    result.append("&nbsp;");
-                    try {
-                        result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
-                            getLocale()));
-                    } catch (CmsException e) {
-                        result.append(ou);
+                try {
+                    if ((ou != null)
+                        && (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).size() > 1)) {
+                        result.append("<br>");
+                        result.append("<img src='").append(getSkinUri()).append(
+                            "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                        result.append("<img src='").append(getSkinUri()).append(
+                            "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                        result.append("&nbsp;");
+                        try {
+                            result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                                getLocale()));
+                        } catch (CmsException e) {
+                            result.append(ou);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }
                 }
             }
@@ -1560,7 +1585,7 @@ public class CmsChacc extends CmsDialog {
         } else {
             result.append(dialogRow(HTML_START));
 
-            result.append("<table class=\"dialogpermissiondetails\">\n");
+            result.append("<table style='margin-left: 13px;' class=\"dialogpermissiondetails\">\n");
             // build headings for permission descriptions
             result.append("<tr>\n");
             result.append("\t<td style=\"width: 280px;\"><span class=\"textbold\" unselectable=\"on\">");

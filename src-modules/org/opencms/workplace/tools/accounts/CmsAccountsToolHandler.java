@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/02/13 14:21:55 $
- * Version: $Revision: 1.8.4.13 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.8.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceUserInfoManager;
 import org.opencms.workplace.tools.CmsDefaultToolHandler;
 
 import java.util.Iterator;
@@ -51,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.13 $ 
+ * @version $Revision: 1.8.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +75,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
     /** Overview file path constant. */
     private static final String OVERVIEW_FILE = "/system/workplace/admin/accounts/unit_overview.jsp";
+
+    /** Additional info file path constant. */
+    private static final String ADDINFO_FILE = "/system/workplace/admin/accounts/user_allinfo.jsp";
 
     /** Visibility flag module parameter name. */
     private static final String PARAM_VISIBILITY_FLAG = "visibility";
@@ -157,6 +161,12 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
         }
+        if (getLink().equals(ADDINFO_FILE)) {
+            CmsWorkplaceUserInfoManager manager = OpenCms.getWorkplaceManager().getUserInfoManager();
+            if ((manager == null) || (manager.getBlocks() == null) || manager.getBlocks().isEmpty()) {
+                return false;
+            }
+        }
         CmsObject cms = wp.getCms();
         String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
         if (ouFqn == null) {
@@ -205,7 +215,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             } catch (CmsException e) {
                 return super.isVisible(cms);
             }
-        } 
+        }
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
     }
 

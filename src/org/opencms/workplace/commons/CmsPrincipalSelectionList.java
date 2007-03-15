@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/03/13 16:20:50 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,14 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -72,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -226,7 +228,14 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         html.append("\t<table width='100%' cellspacing='0'>\n");
         html.append("\t\t<tr>\n");
         html.append("\t\t\t<td>\n");
-        html.append(key(Messages.GUI_PRINCIPALSELECTION_INTRO_TITLE_0));
+        if (getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+            html.append(key(Messages.GUI_GROUPSELECTION_INTRO_TITLE_0));
+            getList().setName(Messages.get().container(Messages.GUI_GROUPSELECTION_LIST_NAME_0));
+            getList().getMetadata().getIndependentAction(LIST_DETAIL_OTHEROU);
+        } else {
+            html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {""}));
+            getList().setName(Messages.get().container(Messages.GUI_USERSELECTION_LIST_NAME_0));
+        }
         html.append("\n\t\t\t</td>");
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
@@ -421,13 +430,24 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         Set principals = new HashSet();
         if (isShowingUsers()) {
             // include special principals
-            CmsUser user = new CmsUser(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, ou
-                + key(Messages.GUI_LABEL_OVERWRITEALL_0), "", "", "", "", 0, 0, 0, null);
-            user.setDescription(key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
-            principals.add(user);
-            user = new CmsUser(
+            if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+                CmsUser user = new CmsUser(
+                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                    key(Messages.GUI_LABEL_OVERWRITEALL_0),
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    0,
+                    0,
+                    null);
+                user.setDescription(key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
+                principals.add(user);
+            }
+            CmsUser user = new CmsUser(
                 CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
-                ou + key(Messages.GUI_LABEL_ALLOTHERS_0),
+                key(Messages.GUI_LABEL_ALLOTHERS_0),
                 "",
                 "",
                 "",
@@ -449,10 +469,20 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
         } else {
             // include special principals
-            principals.add(new CmsGroup(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, null, ou
-                + key(Messages.GUI_LABEL_OVERWRITEALL_0), key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0), 0));
-            principals.add(new CmsGroup(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, null, ou
-                + key(Messages.GUI_LABEL_ALLOTHERS_0), key(Messages.GUI_DESCRIPTION_ALLOTHERS_0), 0));
+            if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+                principals.add(new CmsGroup(
+                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                    null,
+                    key(Messages.GUI_LABEL_OVERWRITEALL_0),
+                    key(Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
+                    0));
+            }
+            principals.add(new CmsGroup(
+                CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                null,
+                key(Messages.GUI_LABEL_ALLOTHERS_0),
+                key(Messages.GUI_DESCRIPTION_ALLOTHERS_0),
+                0));
             if (includeOtherOus) {
                 // add all manageable users
                 principals.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
@@ -589,6 +619,30 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
                 return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
             }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            public CmsMessageContainer getName() {
+
+                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0);
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0);
+                }
+            }
         });
         otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
 
@@ -607,13 +661,31 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
                 return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
             }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            public CmsMessageContainer getName() {
+
+                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0);
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0);
+                }
+            }
         });
-        otherOuDetails.setShowActionName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_NAME_0));
-        otherOuDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_HELP_0));
-        otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_NAME_0));
-        otherOuDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_HELP_0));
         otherOuDetails.setName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0));
         otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0)));

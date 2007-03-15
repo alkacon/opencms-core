@@ -2101,6 +2101,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/group_other_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/group_other_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>59778510-d23b-11db-9147-0195cffc70b7</uuidstructure>
+			<uuidresource>59778511-d23b-11db-9147-0195cffc70b7</uuidresource>
+			<datelastmodified>Wed, 14 Mar 2007 14:50:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Mar 2007 14:50:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/accounts/buttons/orgunit.png</source>
 			<destination>system/workplace/resources/tools/accounts/buttons/orgunit.png</destination>
 			<type>image</type>

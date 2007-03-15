@@ -37,8 +37,9 @@ createFolder "/sites/" "default/"
 # Apply folder permissions
 chacc "/" "group" "Administrators" "+v+w+r+c+d+i"
 chacc "/" "group" "Projectmanagers" "+v+w+r+c+d+i"
-chacc "/" "group" "Users" "+v+r+i"
+chacc "/" "group" "Users" "+v+w+r+i"
 chacc "/" "group" "Guests" "+v+r+i"
+chacc "/system/orgunits" "group" "Users" "-v"
 
 # Publish the project
 unlockCurrentProject

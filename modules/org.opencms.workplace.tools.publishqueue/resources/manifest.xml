@@ -756,10 +756,25 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[history2]]></value>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
 				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/publishqueue/icons/big/publish_queue_disabled.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/icons/big/publish_queue_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>39e10fb1-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>39e10fb2-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:14:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:14:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:32,h:32]]></value>
@@ -788,6 +803,25 @@
 			<datelastmodified>Fri, 10 Nov 2006 08:40:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Nov 2006 16:36:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/publishqueue/icons/small/publish_queue_disabled.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/icons/small/publish_queue_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>4c488488-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>4c488489-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:14:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:14:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

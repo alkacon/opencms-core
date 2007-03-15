@@ -530,19 +530,6 @@
     	</menurule>
    	  </menurules>
     </explorertypes>
-    <user-infos>
-      <info-block name='GUI_USER_EDITOR_LABEL_SELECTEDINFO_BLOCK_0' >
-	  	<user-info key='USER_DESCRIPTION' widget='org.opencms.widgets.CmsTextareaWidget' optional='true' />
-	   	<user-info key='USER_ADDRESS' />
-	   	<user-info key='USER_ZIPCODE' />
-	   	<user-info key='USER_TOWN' />
-	   	<user-info key='USER_COUNTRY' />
-	  </info-block>
-      <info-block name='GUI_USER_EDITOR_LABEL_STARTUPSETTINGS_BLOCK_0' >
-	   	<user-info key='USERPREFERENCES_workplace-startupsettingssite' />
-	   	<user-info key='USERPREFERENCES_workplace-startupsettingslocale' />
-	  </info-block>
-    </user-infos>
     <default-preferences>
       <workplace-preferences>
         <workplace-generaloptions>

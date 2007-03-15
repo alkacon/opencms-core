@@ -766,6 +766,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/projects/icons/big/project_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/icons/big/project_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>0ea9fc29-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>0ea9fc2a-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:13:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:13:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/projects/icons/big/project_history.png</source>
 			<destination>system/workplace/resources/tools/projects/icons/big/project_history.png</destination>
 			<type>image</type>
@@ -804,6 +823,25 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/projects/icons/big/projects_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/icons/big/projects_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>0ecdb0ce-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>0ecdb0cf-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:13:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:13:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/projects/icons/small</destination>
 			<type>folder</type>
 			<uuidstructure>d57036bd-11b7-11db-91cd-fdbae480bac9</uuidstructure>
@@ -823,6 +861,44 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/projects/icons/small/project_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/icons/small/project_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>25c0a135-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>25c0a136-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:13:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:13:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/projects/icons/small/projects_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/icons/small/projects_disabled.png</destination>
+			<type>image</type>
+			<uuidstructure>25d1430a-d310-11db-a74f-0195cffc70b7</uuidstructure>
+			<uuidresource>25d1430b-d310-11db-a74f-0195cffc70b7</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 16:13:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 16:13:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

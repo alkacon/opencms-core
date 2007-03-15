@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/02/22 09:42:35 $
- * Version: $Revision: 1.4.4.9 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.4.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.9 $ 
+ * @version $Revision: 1.4.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,6 +166,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 CmsUserSettings settings = new CmsUserSettings(m_user);
                 settings.setLocale(CmsLocaleManager.getLocale(getLanguage()));
                 settings.setStartSite(getSite());
+                try {
+                    String prj = getCms().readProject(
+                        getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject()).getName();
+                    settings.setStartProject(prj);
+                } catch (CmsException e) {
+                    // use root ou project, if project not found
+                    settings.setStartProject(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
+                }
                 settings.save(getCms());
             }
             // refresh the list
@@ -232,6 +240,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     public String getName() {
 
+        if (m_user.getSimpleName().endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            return "";
+        }
         return m_user.getSimpleName();
     }
 
@@ -547,7 +558,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             // noop
         }
         // create a new user object
-        m_user = new CmsUser();
+        m_user = new CmsUser(null, getParamOufqn(), "", "", "", "", 0, 0, 0, null);
         m_pwdInfo = new CmsPasswordInfo();
         m_group = getParamOufqn() + OpenCms.getDefaultUsers().getGroupUsers();
         m_language = CmsLocaleManager.getDefaultLocale().toString();
@@ -648,9 +659,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     private List getSites() {
 
         List sites = new ArrayList();
-        Iterator itSites = CmsSiteManager.getAvailableSites(getCms(), true, getParamOufqn()).iterator();
+        List sitesList = CmsSiteManager.getAvailableSites(getCms(), true, getParamOufqn());
+        Iterator itSites = sitesList.iterator();
         while (itSites.hasNext()) {
             CmsSite site = (CmsSite)itSites.next();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getSiteRoot())) {
+                if (sitesList.size() > 1) {
+                    // skip the root site if possible
+                    continue;
+                }
+            }
             sites.add(new CmsSelectWidgetOption(site.getSiteRoot(), false, site.getTitle(), null));
         }
         return sites;

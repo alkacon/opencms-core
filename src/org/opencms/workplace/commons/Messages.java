@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/03/13 09:55:13 $
- * Version: $Revision: 1.15.4.18 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.15.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.18 $ 
+ * @version $Revision: 1.15.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -365,6 +365,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_OTHEROU_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPSELECTION_INTRO_TITLE_0 = "GUI_GROUPSELECTION_INTRO_TITLE_0";
@@ -928,19 +940,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_USE_UPLOAD_APPLET_0 = "GUI_PREF_USE_UPLOAD_APPLET_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_HELP_0 = "GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_NAME_0 = "GUI_PRINCIPALS_DETAIL_HIDE_OTHEROU_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0 = "GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_HELP_0 = "GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_NAME_0 = "GUI_PRINCIPALS_DETAIL_SHOW_OTHEROU_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PRINCIPALS_IA_GROUPS_HELP_0 = "GUI_PRINCIPALS_IA_GROUPS_HELP_0";
@@ -1247,6 +1247,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MOVE_OPERATION_INFO_2 = "GUI_UNDO_MOVE_OPERATION_INFO_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0 = "GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0 = "GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0 = "GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0 = "GUI_USERS_DETAIL_SHOW_OTHEROU_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSELECTION_GROUP_BLOCK_1 = "GUI_USERSELECTION_GROUP_BLOCK_1";

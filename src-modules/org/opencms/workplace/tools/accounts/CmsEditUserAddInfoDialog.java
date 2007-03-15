@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserAddInfoDialog.java,v $
- * Date   : $Date: 2007/03/01 15:01:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
 import org.opencms.workplace.CmsWorkplaceUserInfoEntry;
+import org.opencms.workplace.CmsWorkplaceUserInfoManager;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -146,7 +147,10 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
                 while (itEntries.hasNext()) {
                     Map.Entry entry = (Map.Entry)itEntries.next();
                     if (!CmsDataTypeUtil.isParseable(entry.getValue().getClass())) {
-                        String key = entry.getKey() + "@" + entry.getValue().getClass().getName();
+                        String key = entry.getKey().toString();
+                        if (!entry.getValue().getClass().equals(String.class)) {
+                            key += "@" + entry.getValue().getClass().getName();
+                        }
                         if (m_addInfoReadOnly.containsKey(key)) {
                             readOnly.put(entry.getKey(), entry.getValue());
                         }
@@ -217,6 +221,11 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
      */
     public String getParamEditall() {
 
+        CmsWorkplaceUserInfoManager manager = OpenCms.getWorkplaceManager().getUserInfoManager();
+        if ((manager == null) || (manager.getBlocks() == null) || manager.getBlocks().isEmpty()) {
+            // if the configuration is empty
+            return Boolean.TRUE.toString();
+        }
         return m_paramEditall;
     }
 
@@ -241,13 +250,13 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the job parameters.<p>
+     * Sets the modified additional information.<p>
      *
-     * @param parameters the parameters to set
+     * @param addInfo the additional information to set
      */
-    public void setInfo(SortedMap parameters) {
+    public void setInfo(SortedMap addInfo) {
 
-        m_addInfoEditable = new TreeMap(parameters);
+        m_addInfoEditable = new TreeMap(addInfo);
     }
 
     /**
@@ -493,7 +502,15 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
         Iterator itEntries = m_user.getAdditionalInfo().entrySet().iterator();
         while (itEntries.hasNext()) {
             Map.Entry entry = (Map.Entry)itEntries.next();
-            String key = entry.getKey() + "@" + entry.getValue().getClass().getName();
+            String key = entry.getKey().toString();
+            if ((entry.getValue() == null) || CmsStringUtil.isEmptyOrWhitespaceOnly(entry.getValue().toString())) {
+                // skip empty entries
+                continue;
+            }
+            if (!entry.getValue().getClass().equals(String.class)) {
+                // only show type different to string
+                key += "@" + entry.getValue().getClass().getName();
+            }
             if (CmsDataTypeUtil.isParseable(entry.getValue().getClass())) {
                 m_addInfoEditable.put(key, entry.getValue());
             } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/02/12 11:50:02 $
- * Version: $Revision: 1.51.4.6 $
+ * Date   : $Date: 2007/03/15 16:30:39 $
+ * Version: $Revision: 1.51.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.6 $ 
+ * @version $Revision: 1.51.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +207,6 @@ public final class CmsSiteManager implements Cloneable {
                                 title,
                                 (CmsSiteMatcher)siteServers.get(folder)));
                         }
-
                     } catch (CmsException e) {
                         // user probably has no read access to the folder, ignore and continue iterating            
                     }

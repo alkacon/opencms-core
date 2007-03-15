@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/05 16:04:41 $
- * Version: $Revision: 1.97.4.39 $
+ * Date   : $Date: 2007/03/15 16:30:44 $
+ * Version: $Revision: 1.97.4.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4686,6 +4686,10 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
+            if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                // only vfs managers can set the overwrite all ACE
+                checkRoleForResource(dbc, CmsRole.VFS_MANAGER, resource);
+            }
             m_driverManager.writeAccessControlEntry(dbc, resource, ace);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)), e);
