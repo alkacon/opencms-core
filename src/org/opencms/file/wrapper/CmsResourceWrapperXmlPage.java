@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/03/07 14:15:05 $
- * Version: $Revision: 1.1.4.10 $
+ * Date   : $Date: 2007/03/15 10:04:34 $
+ * Version: $Revision: 1.1.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.10 $
+ * @version $Revision: 1.1.4.11 $
  * 
  * @since 6.5.6
  */
@@ -153,7 +153,14 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     String fullPath = xmlPage.getRootPath() + "/" + path + "/" + name + "." + EXTENSION_ELEMENT;
                     content = prepareContent(content, cms, xmlPage, fullPath);
 
-                    ret.add(getResourceForElement(xmlPage, fullPath, content.getBytes().length));
+                    int length = content.length();
+                    try {
+                        length = content.getBytes(CmsLocaleManager.getResourceEncoding(cms, xmlPage)).length;
+                    } catch (UnsupportedEncodingException e) {
+                        // this will never happen since UTF-8 is always supported
+                    }
+                    
+                    ret.add(getResourceForElement(xmlPage, fullPath, length));
                 }
 
             }
@@ -661,7 +668,14 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                             + EXTENSION_ELEMENT;
                         content = prepareContent(content, cms, xmlPage, fullPath);
 
-                        return getResourceForElement(xmlPage, fullPath, content.getBytes().length);
+                        int length = content.length();
+                        try {
+                            length = content.getBytes(CmsLocaleManager.getResourceEncoding(cms, xmlPage)).length;
+                        } catch (UnsupportedEncodingException e) {
+                            // this will never happen since UTF-8 is always supported
+                        }
+
+                        return getResourceForElement(xmlPage, fullPath, length);
                     }
                 }
 

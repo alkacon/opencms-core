@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/03/07 14:15:05 $
- * Version: $Revision: 1.1.4.8 $
+ * Date   : $Date: 2007/03/15 10:04:34 $
+ * Version: $Revision: 1.1.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,14 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.loader.CmsResourceManager;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -76,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.8 $
+ * @version $Revision: 1.1.4.9 $
  * 
  * @since 6.2.4
  */
@@ -381,6 +386,14 @@ public class CmsObjectWrapper {
         while (iter.hasNext()) {
             CmsResource res = (CmsResource)iter.next();
 
+            // correct the length of the content if an UTF-8 marker would be added later
+            if (needUtf8Marker(res)) {
+                CmsWrappedResource wrap = new CmsWrappedResource(res);
+                wrap.setLength(res.getLength() + CmsResourceWrapperUtils.UTF8_MARKER.length);
+
+                res = wrap.getResource();
+            }
+            
             // get resource type wrapper for the resource
             I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
 
@@ -534,23 +547,15 @@ public class CmsObjectWrapper {
             res = m_cms.readFile(resourcename, filter);
         }
 
-        // for text based resources which are encoded in UTF-8 add the UTF-marker at the start
+        // for text based resources which are encoded in UTF-8 add the UTF marker at the start
         // of the content
-        String encoding = CmsLocaleManager.getResourceEncoding(m_cms, res);
-        if (CmsEncoder.ENCODING_UTF_8.equals(encoding)) {
-            String contentType = OpenCms.getResourceManager().getMimeType(
-                res.getRootPath(),
-                encoding,
-                CmsResourceManager.MIMETYPE_TEXT);
+        if (needUtf8Marker(res)) {
 
-            if ((contentType != null) && (contentType.startsWith("text"))) {
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_UTF8_MARKER_1, res.getRootPath()));
-                }
-
-                res.setContents(CmsResourceWrapperUtils.addUtf8Marker(res.getContents()));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_UTF8_MARKER_1, res.getRootPath()));
             }
+
+            res.setContents(CmsResourceWrapperUtils.addUtf8Marker(res.getContents()));
         }
 
         return res;
@@ -626,6 +631,14 @@ public class CmsObjectWrapper {
         // delegate the call to the CmsObject
         if (res == null) {
             res = m_cms.readResource(resourcename, filter);
+        }
+
+        // correct the length of the content if an UTF-8 marker would be added later
+        if (needUtf8Marker(res)) {
+            CmsWrappedResource wrap = new CmsWrappedResource(res);
+            wrap.setLength(res.getLength() + CmsResourceWrapperUtils.UTF8_MARKER.length);
+
+            return wrap.getResource();
         }
 
         return res;
@@ -781,6 +794,11 @@ public class CmsObjectWrapper {
 
         CmsFile res = null;
 
+        // remove the added UTF-8 marker
+        if (needUtf8Marker(resource)) {
+            resource.setContents(CmsResourceWrapperUtils.removeUtf8Marker(resource.getContents()));
+        }
+        
         String resourcename = resource.getRootPath();
         if (!m_cms.existsResource(resourcename)) {
 
@@ -831,6 +849,54 @@ public class CmsObjectWrapper {
         }
 
         return null;
+    }
+
+    /**
+     * Checks if the resource type needs an UTF-8 marker.<p>
+     *
+     * If the encoding of the resource is "UTF-8" and the resource
+     * type is one of the following:<br/>
+     * <ul>
+     * <li>{@link CmsResourceTypeJsp}</li>
+     * <li>{@link CmsResourceTypePlain}</li>
+     * <li>{@link CmsResourceTypeXmlContent}</li>
+     * <li>{@link CmsResourceTypeXmlPage}</li>
+     * </ul>
+     * 
+     * it needs an UTF-8 marker.<p>
+     * 
+     * @param res the resource to check if the content needs a UTF-8 marker
+     * 
+     * @return <code>true</code> if the resource needs an UTF-8 maker otherwise <code>false</code> 
+     */
+    private boolean needUtf8Marker(CmsResource res) {
+
+        // if the encoding of the resource is not UTF-8 return false
+        String encoding = CmsLocaleManager.getResourceEncoding(m_cms, res);
+        if (!CmsEncoder.ENCODING_UTF_8.equals(encoding)) {
+            return false;
+        }
+
+        try {
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+
+            boolean typeMatch = false;
+            if (resType instanceof CmsResourceTypeJsp) {
+                typeMatch = true;
+            } else if (resType instanceof CmsResourceTypePlain) {
+                typeMatch = true;
+            } else if (resType instanceof CmsResourceTypeXmlContent) {
+                typeMatch = true;
+            } else if (resType instanceof CmsResourceTypeXmlPage) {
+                typeMatch = true;
+            }
+
+            return typeMatch;
+        } catch (CmsLoaderException e) {
+            // noop
+        }
+
+        return false;
     }
 
 }

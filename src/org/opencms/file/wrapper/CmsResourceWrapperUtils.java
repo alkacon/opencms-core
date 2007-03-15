@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperUtils.java,v $
- * Date   : $Date: 2007/03/07 16:12:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/15 10:04:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,9 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
- * @since 6.5.6
+ * @since 6.2.4
  */
 public final class CmsResourceWrapperUtils {
 
@@ -78,6 +78,9 @@ public final class CmsResourceWrapperUtils {
 
     /** The prefix used for a shared property entry. */
     public static final String SUFFIX_PROP_SHARED = ".s";
+
+    /** The UTF-8 bytes to add to the beginning of text contents. */
+    public static final byte[] UTF8_MARKER = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
 
     /** Pattern to use for incoming strings before storing in OpenCms. */
     private static final Pattern PATTERN_UNESCAPE = Pattern.compile("\\\\([^ntru\n\r])");
@@ -137,9 +140,9 @@ public final class CmsResourceWrapperUtils {
 
         if ((content != null)
             && (content.length >= 3)
-            && (content[0] == (byte)0xEF)
-            && (content[1] == (byte)0xBB)
-            && (content[2] == (byte)0xBF)) {
+            && (content[0] == UTF8_MARKER[0])
+            && (content[1] == UTF8_MARKER[1])
+            && (content[2] == UTF8_MARKER[2])) {
             return content;
         }
 
@@ -147,11 +150,10 @@ public final class CmsResourceWrapperUtils {
             content = new byte[0];
         }
 
-        byte[] bom = new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF};
-        byte[] ret = new byte[bom.length + content.length];
+        byte[] ret = new byte[UTF8_MARKER.length + content.length];
 
-        System.arraycopy(bom, 0, ret, 0, bom.length);
-        System.arraycopy(content, 0, ret, bom.length, content.length);
+        System.arraycopy(UTF8_MARKER, 0, ret, 0, UTF8_MARKER.length);
+        System.arraycopy(content, 0, ret, UTF8_MARKER.length, content.length);
 
         return ret;
     }
@@ -317,6 +319,30 @@ public final class CmsResourceWrapperUtils {
     }
 
     /**
+     * Removes the UTF-8 marker from the beginning of the byte array.<p>
+     * 
+     * @param content the byte array where to remove the UTF-8 marker
+     * 
+     * @return the byte with the removed UTF-8 marker at the beginning
+     */
+    public static byte[] removeUtf8Marker(byte[] content) {
+
+        if ((content != null)
+            && (content.length >= 3)
+            && (content[0] == UTF8_MARKER[0])
+            && (content[1] == UTF8_MARKER[1])
+            && (content[2] == UTF8_MARKER[2])) {
+
+            byte[] ret = new byte[content.length - UTF8_MARKER.length];
+            System.arraycopy(content, 3, ret, 0, content.length - UTF8_MARKER.length);
+
+            return ret;
+        }
+
+        return content;
+    }
+
+    /**
      * Takes the content which should be formatted as a property file and set them
      * as properties to the resource.<p>
      * 
@@ -366,24 +392,6 @@ public final class CmsResourceWrapperUtils {
     }
 
     /**
-     * Unescapes the value of a property in a property file to 
-     * be saved correctly in OpenCms.<p>
-     * 
-     * Mainly handles all escaping sequences that start with a backslash.<p>
-     * 
-     * @see #escapeString(String)
-     * 
-     * @param value the value taken form the property file
-     * 
-     * @return the unescaped string value
-     */
-    private static String unescapeString(String value) {
-
-        Matcher matcher = PATTERN_UNESCAPE.matcher(value);
-        return matcher.replaceAll("\\\\\\\\$1");
-    }
-
-    /**
      * Escapes the value of a property in OpenCms to be displayed 
      * correctly in a property file.<p>
      * 
@@ -403,6 +411,24 @@ public final class CmsResourceWrapperUtils {
         substitutions.put("\r", "\\r");
 
         return CmsStringUtil.substitute(value, substitutions);
+    }
+
+    /**
+     * Unescapes the value of a property in a property file to 
+     * be saved correctly in OpenCms.<p>
+     * 
+     * Mainly handles all escaping sequences that start with a backslash.<p>
+     * 
+     * @see #escapeString(String)
+     * 
+     * @param value the value taken form the property file
+     * 
+     * @return the unescaped string value
+     */
+    private static String unescapeString(String value) {
+
+        Matcher matcher = PATTERN_UNESCAPE.matcher(value);
+        return matcher.replaceAll("\\\\\\\\$1");
     }
 
 }
