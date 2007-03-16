@@ -24,6 +24,7 @@
         <antcall target="copy.images" />
         <javadoc destdir="${destdir}" 
           nohelp="true"
+          classpath="${opencms.input}/bin"
           access="protected" 
           use="false" 
           notree="true" 
