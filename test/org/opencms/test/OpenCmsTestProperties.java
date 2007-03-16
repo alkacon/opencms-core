@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.12.8.1 $
+ * Date   : $Date: 2007/03/16 12:44:43 $
+ * Version: $Revision: 1.12.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.8.1 $
+ * @version $Revision: 1.12.8.2 $
  * 
  * @since 6.0.0
  */
@@ -180,13 +182,29 @@ public final class OpenCmsTestProperties {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
-
+        
+        try {
+            // read environment and store it to the map
+            Map environment = System.getenv();
+            Iterator i = environment.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry e = (Map.Entry)i.next();
+                String key = String.valueOf(e.getKey());
+                // only add relevant properties from environment
+                if (key.startsWith("db.") || key.startsWith("test.")) {
+                    m_configuration.setProperty(key, e.getValue());
+                }
+            }
+        } catch (SecurityException e) {
+            // unable to read environment, use only properties from file
+            e.printStackTrace(System.out);
+        }
+        
         m_testSingleton.m_testDataPath = m_configuration.getString("test.data.path");
         m_testSingleton.m_testWebappPath = m_configuration.getString("test.webapp.path");
         m_testSingleton.m_dbProduct = m_configuration.getString("db.product");
-
     }
-
+    
     /**
      * @return Returns the path to the test.properties file
      */
