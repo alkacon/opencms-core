@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/03/07 14:15:05 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/16 10:11:59 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.6
  */
@@ -2214,7 +2214,7 @@ public class CmsWebdavServlet extends HttpServlet {
      */
     protected String getETag(I_CmsRepositoryItem item) {
 
-        return "W/\"" + item.getContentLength() + "-" + item.getLastModifiedDate() + "\"";
+        return "\"" + item.getContentLength() + "-" + item.getLastModifiedDate() + "\"";
     }
 
     /**
