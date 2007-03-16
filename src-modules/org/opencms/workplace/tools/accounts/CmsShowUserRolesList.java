@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/03/16 10:58:43 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/03/16 13:07:49 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.6 
  */
@@ -149,7 +149,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             }
 
             CmsRole role = CmsRole.valueOf(getCms().readGroup((String)item.get(LIST_COLUMN_GROUP_NAME)));
-            if (role.getParentRole() != null && roleObjects.contains(role.getParentRole())) {
+            if ((role.getParentRole() != null) && roleObjects.contains(role.getParentRole())) {
                 if (role.getOuFqn().equals(getParamOufqn())) {
                     return PATH_BUTTONS + "role_child.png";
                 } else {

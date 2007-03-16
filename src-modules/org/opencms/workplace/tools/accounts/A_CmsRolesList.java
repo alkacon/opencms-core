@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRolesList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/16 13:07:49 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -191,8 +191,25 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
                 dependency = roleName + dependency;
                 parent = parent.getParentRole();
             }
-            item.set(LIST_COLUMN_DEPENDENCY, dependency);
             String hiddenName = dependency;
+            if (role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
+                // add all roles as parent of the workplace user role
+                dependency = "";
+                Iterator itWuParents = getRoles().iterator();
+                while (itWuParents.hasNext()) {
+                    CmsRole wuParent = (CmsRole)itWuParents.next();
+                    if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)
+                        || (wuParent.forOrgUnit(null).equals(CmsRole.ROOT_ADMIN))) {
+                        continue;
+                    }
+                    String roleName = wuParent.getName(locale);
+                    if (dependency.length() > 0) {
+                        roleName += ", ";
+                    }
+                    dependency = roleName + dependency;
+                }
+            }
+            item.set(LIST_COLUMN_DEPENDENCY, dependency);
             if (hiddenName.length() > 0) {
                 hiddenName = CmsRole.ROOT_ADMIN.getName(locale) + ", " + hiddenName;
             } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleOverviewDialog.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/16 13:07:49 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -48,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6
  */
@@ -114,6 +116,29 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
             role = role.getParentRole();
             if (role.getParentRole() != null) {
                 dependency = dependency + ", ";
+            }
+        }
+        if (m_role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
+            // add all roles as parent of the workplace user role
+            dependency = "";
+            Iterator itWuParents;
+            try {
+                itWuParents = OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false).iterator();
+            } catch (CmsException e) {
+                // should never happen
+                return dependency;
+            }
+            while (itWuParents.hasNext()) {
+                CmsRole wuParent = (CmsRole)itWuParents.next();
+                if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
+                    // skip the wu role itself
+                    continue;
+                }
+                String roleName = wuParent.getName(getCms().getRequestContext().getLocale());
+                if (dependency.length() > 0) {
+                    roleName += ", ";
+                }
+                dependency = roleName + dependency;
             }
         }
         return dependency;
