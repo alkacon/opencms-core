@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/03/16 10:58:43 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,11 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 
 import java.util.ArrayList;
@@ -54,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.6 
  */
@@ -62,6 +66,9 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /** list id constant. */
     public static final String LIST_ID = "lsur";
+
+    /** Cached value. */
+    private Boolean m_hasRolesInOtherOus;
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
@@ -219,23 +226,93 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     }
 
     /**
+     * Returns true if the list of users has users of other organizational units.<p>
+     * 
+     * @return <code>true</code> if the list of users has users of other organizational units
+     */
+    protected boolean hasRolesInOtherOus() {
+
+        if (m_hasRolesInOtherOus == null) {
+            m_hasRolesInOtherOus = Boolean.FALSE;
+            try {
+                Iterator itRoles = getRoles().iterator();
+                while (itRoles.hasNext()) {
+                    CmsRole role = (CmsRole)itRoles.next();
+                    if (!role.getOuFqn().equals(getParamOufqn())) {
+                        m_hasRolesInOtherOus = Boolean.TRUE;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return m_hasRolesInOtherOus.booleanValue();
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
      */
     protected boolean includeOuDetails() {
 
-        try {
-            boolean otherOu = false;
-            Iterator itRoles = getRoles().iterator();
-            while (itRoles.hasNext()) {
-                CmsRole role = (CmsRole)itRoles.next();
-                if (!role.getOuFqn().equals(getParamOufqn())) {
-                    otherOu = true;
-                }
+        return false;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        super.setIndependentActions(metadata);
+
+        // add other ou button
+        CmsListItemDetails pathDetails = new CmsListItemDetails(LIST_DETAIL_PATH);
+        pathDetails.setAtColumn(LIST_COLUMN_NAME);
+        pathDetails.setVisible(false);
+        pathDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_PATH) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_HIDE;
             }
-            return otherOu;
-        } catch (CmsException e) {
-            return super.includeOuDetails();
-        }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((CmsShowUserRolesList)getWp()).hasRolesInOtherOus();
+            }
+        });
+        pathDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_PATH) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return A_CmsListDialog.ICON_DETAILS_SHOW;
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((CmsShowUserRolesList)getWp()).hasRolesInOtherOus();
+            }
+        });
+        pathDetails.setShowActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_NAME_0));
+        pathDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_SHOW_PATH_HELP_0));
+        pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
+        pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
+        pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
+        pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
+        metadata.addItemDetails(pathDetails);
     }
 
     /**

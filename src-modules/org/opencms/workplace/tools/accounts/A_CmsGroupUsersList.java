@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/02/12 15:39:31 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2007/03/16 10:58:43 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.4.7 $ 
+ * @version $Revision: 1.16.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,9 +185,9 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Returns if the list of users has users of other organizational units.<p>
+     * Returns true if the list of users has users of other organizational units.<p>
      * 
-     * @return if the list of users has users of other organizational units
+     * @return <code>true</code> if the list of users has users of other organizational units
      */
     public boolean hasUsersInOtherOus() {
 

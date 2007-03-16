@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2007/02/06 10:22:08 $
- * Version: $Revision: 1.9.4.8 $
+ * Date   : $Date: 2007/03/16 10:58:43 $
+ * Version: $Revision: 1.9.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.4.8 $ 
+ * @version $Revision: 1.9.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,6 +208,16 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
         iconAction.setEnabled(false);
         iconCol.addDirectAction(iconAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        super.setIndependentActions(metadata);
+
+        metadata.getItemDetailDefinition(LIST_DETAIL_OTHEROU).setVisible(false);
     }
 
     /**
