@@ -78,11 +78,19 @@
 		</rendersettings>
 	</staticexport>
 	<usercsvexport>
-        <separator>,</separator>
+        <separator>;</separator>
         <columns>
+        	<column>description</column>
             <column>lastname</column>
             <column>firstname</column>
             <column>email</column>
+            <column>address</column>
+            <column>zipcode</column>
+            <column>city</column>
+            <column>country</column>
+            <column>USERPREFERENCES_workplace-startupsettingssite</column>
+            <column>USERPREFERENCES_workplace-startupsettingslocale</column>
+            <column>password</column>
         </columns>
 	</usercsvexport>
 	<repositories>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/02/06 15:55:08 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -184,7 +184,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
      */
     protected String defaultActionHtmlStart() {
 
-        return getList().listJs() + dialogContentStart(getParamTitle());
+        return dialogContentStart(getParamTitle());
     }
 
     /**
@@ -216,6 +216,26 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             }
         }
         return allRoles;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
+     */
+    protected boolean includeOuDetails() {
+
+        try {
+            boolean otherOu = false;
+            Iterator itRoles = getRoles().iterator();
+            while (itRoles.hasNext()) {
+                CmsRole role = (CmsRole)itRoles.next();
+                if (!role.getOuFqn().equals(getParamOufqn())) {
+                    otherOu = true;
+                }
+            }
+            return otherOu;
+        } catch (CmsException e) {
+            return super.includeOuDetails();
+        }
     }
 
     /**

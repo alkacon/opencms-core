@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/03/13 10:12:36 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.5.6
  */
@@ -269,7 +269,22 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
                 try {
                     CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
                     if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
-                        return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                            ((A_CmsRoleUsersList)getWp()).getCms(),
+                            user.getName(),
+                            ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
+                            false,
+                            true,
+                            true);
+                        Iterator itUserRoles = userRoles.iterator();
+                        while (itUserRoles.hasNext()) {
+                            CmsRole role = (CmsRole)itUserRoles.next();
+                            if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
+                                return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                            }
+                        }
+                        return A_CmsUsersList.PATH_BUTTONS + "user_indirect.png";
+
                     } else {
                         return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportDialog.java,v $
- * Date   : $Date: 2007/03/12 16:37:56 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -249,6 +249,9 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
+            result.append(dialogBlockStart(key(Messages.GUI_USERDATA_IMPORT_LABEL_HINT_BLOCK_0)));
+            result.append(key(Messages.GUI_USERDATA_IMPORT_LABEL_HINT_TEXT_0));
+            result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USERDATA_IMPORT_LABEL_DATA_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 3));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/03/15 16:30:39 $
- * Version: $Revision: 1.8.4.14 $
+ * Date   : $Date: 2007/03/16 09:03:55 $
+ * Version: $Revision: 1.8.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8.4.14 $ 
+ * @version $Revision: 1.8.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +85,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Parent file path constant. */
     private static final String PARENT_FILE = "/system/workplace/admin/accounts/unit_parent.jsp";
 
+    /** Role users edit file path constant. */
+    private static final String ROLEUSERS_EDIT_FILE = "/system/workplace/admin/accounts/role_users.jsp";
+
     /** Visibility parameter value constant. */
     private static final String VISIBILITY_ALL = "all";
 
@@ -99,6 +102,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
             if (getLink().equals(GROUPUSERS_FILE)) {
                 return "${key." + Messages.GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0 + "}";
+            }
+            if (getLink().equals(ROLEUSERS_EDIT_FILE)) {
+                return "${key." + Messages.GUI_ROLEUSERS_EDIT_DISABLED_HELP_0 + "}";
             }
             return "${key." + Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_DELETE_HELP_0 + "}";
         }
@@ -147,6 +153,13 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 }
             } catch (CmsException e) {
                 // noop
+            }
+        }
+
+        if (getLink().equals(ROLEUSERS_EDIT_FILE)) {
+            String roleName = wp.getJsp().getRequest().getParameter(CmsRolesList.PARAM_ROLE);
+            if (!OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.valueOf(roleName))) {
+                return false;
             }
         }
 

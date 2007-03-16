@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2007/03/12 16:37:56 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsUserExportSettings;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +48,8 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -63,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.7.1
  */
@@ -103,52 +107,63 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
+        // key CmsUser uuid, value CmsUser object
+        Map exportUsers = new HashMap();
         try {
-            // key CmsUser uuid, value CmsUser object
-            Map exportUsers = new HashMap();
             if ((getGroups() == null || getGroups().size() < 1) && (getRoles() == null || getRoles().size() < 1)) {
                 exportUsers = getExportAllUsers(exportUsers);
             } else {
                 exportUsers = getExportUsersFromGroups(exportUsers);
                 exportUsers = getExportUsersFromRoles(exportUsers);
             }
+        } catch (CmsException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_GET_EXPORT_USERS_0), e);
+        }
 
+        FileWriter fileWriter;
+        BufferedWriter bufferedWriter;
+        try {
             m_downloadFile = File.createTempFile("export_users", ".csv");
-            FileWriter fileWriter;
-            BufferedWriter bufferedWriter;
-
             fileWriter = new FileWriter(m_downloadFile);
             bufferedWriter = new BufferedWriter(fileWriter);
+        } catch (IOException e) {
+            throw e;
+        }
 
-            CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
+        CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
 
-            String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
-            List values = settings.getColumns();
+        String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
+        List values = settings.getColumns();
 
-            String headline = "";
-            headline += "name";
-            Iterator itValues = values.iterator();
-            while (itValues.hasNext()) {
-                headline += separator;
-                headline += (String)itValues.next();
-            }
-            headline += "\n";
+        String headline = "";
+        headline += "name";
+        Iterator itValues = values.iterator();
+        while (itValues.hasNext()) {
+            headline += separator;
+            headline += (String)itValues.next();
+        }
+        headline += "\n";
+        try {
             bufferedWriter.write(headline);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
+        }
 
-            Object[] users = exportUsers.values().toArray();
+        Object[] users = exportUsers.values().toArray();
 
-            for (int i = 0; i < users.length; i++) {
-                CmsUser exportUser = (CmsUser)users[i];
-                if (exportUser.getOuFqn().equals(getParamOufqn())) {
-                    String output = "";
-                    output += exportUser.getSimpleName();
-                    itValues = values.iterator();
-                    while (itValues.hasNext()) {
-                        output += separator;
-                        String curValue = (String)itValues.next();
+        for (int i = 0; i < users.length; i++) {
+            CmsUser exportUser = (CmsUser)users[i];
+            if (exportUser.getOuFqn().equals(getParamOufqn())) {
+                String output = "";
+                output += exportUser.getSimpleName();
+                itValues = values.iterator();
+                while (itValues.hasNext()) {
+                    output += separator;
+                    String curValue = (String)itValues.next();
+                    try {
                         Method method = CmsUser.class.getMethod("get"
                             + curValue.substring(0, 1).toUpperCase()
                             + curValue.substring(1), null);
@@ -164,22 +179,37 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
                         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
                             output += curOutput;
                         }
+                    } catch (NoSuchMethodException e) {
+                        String curOutput = (String)exportUser.getAdditionalInfo(curValue);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
+                            output += curOutput;
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ILLEGAL_ACCESS_0), e);
+                    } catch (InvocationTargetException e) {
+                        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVOCATION_TARGET_0), e);
                     }
-                    output += "\n";
+                }
+                output += "\n";
+                try {
                     bufferedWriter.write(output);
+                } catch (IOException e) {
+                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
                 }
             }
-
-            bufferedWriter.close();
-
-            Map params = new HashMap();
-            params.put("exportfile", m_downloadFile.getAbsolutePath().replace('\\', '/'));
-            params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
-            params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
-            getToolManager().jspForwardTool(this, getCurrentToolPath(), params);
-        } catch (Exception e) {
-            errors.add(e);
         }
+        
+        try {
+            bufferedWriter.close();
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
+        }
+        
+        Map params = new HashMap();
+        params.put("exportfile", m_downloadFile.getAbsolutePath().replace('\\', '/'));
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
+        params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
+        getToolManager().jspForwardTool(this, getCurrentToolPath(), params);
         setCommitErrors(errors);
     }
 
@@ -337,6 +367,9 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
+            result.append(dialogBlockStart(key(Messages.GUI_USERDATA_EXPORT_LABEL_HINT_BLOCK_0)));
+            result.append(key(Messages.GUI_USERDATA_EXPORT_LABEL_HINT_TEXT_0));
+            result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USERDATA_EXPORT_LABEL_GROUPS_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 0));

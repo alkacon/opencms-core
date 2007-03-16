@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.7.1</opencms_version>
-		<createdate>Mon, 12 Mar 2007 16:15:35 GMT</createdate>
+		<createdate>Fri, 16 Mar 2007 08:46:28 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the user accounts and groups.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.12</version>
+		<version>1.2.13</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -212,19 +212,19 @@
 			<type>jsp</type>
 			<uuidstructure>ffe10d99-b68b-11db-8046-4bc37e9d90a1</uuidstructure>
 			<uuidresource>ffe10d9a-b68b-11db-8046-4bc37e9d90a1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 07 Feb 2007 09:17:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -263,7 +263,7 @@
 			<type>jsp</type>
 			<uuidstructure>99f1cc54-b5ff-11db-b7ce-4bc37e9d90a1</uuidstructure>
 			<uuidresource>99f1cc55-b5ff-11db-b7ce-4bc37e9d90a1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 06 Feb 2007 16:32:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -314,7 +314,7 @@
 			<type>jsp</type>
 			<uuidstructure>e94daa8c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -365,19 +365,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9574787-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>7d30fde9-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -416,7 +416,7 @@
 			<type>jsp</type>
 			<uuidstructure>e95e7382-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ee7e38a-d726-11d9-9ecc-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -463,7 +463,7 @@
 			<type>jsp</type>
 			<uuidstructure>e9659f7c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>14bd19e6-d6a7-11d9-814d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -514,7 +514,7 @@
 			<type>jsp</type>
 			<uuidstructure>e96ca367-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>37e713a1-0a6b-11da-9201-1d873b0b8abd</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 11 Aug 2005 13:24:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -537,19 +537,19 @@
 			<type>jsp</type>
 			<uuidstructure>e96f146b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>75dee83d-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -587,19 +587,19 @@
 			<type>jsp</type>
 			<uuidstructure>e973cf66-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>38b64705-d83b-11d9-9459-efaaea26ed93</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -638,7 +638,7 @@
 			<type>jsp</type>
 			<uuidstructure>e9764070-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>54c29019-d68d-11d9-aa6d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -685,7 +685,7 @@
 			<type>jsp</type>
 			<uuidstructure>491902ba-a53f-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>491902bb-a53f-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 08:55:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -704,7 +704,7 @@
 			<type>jsp</type>
 			<uuidstructure>974fac97-abab-11db-ad82-c7b5ef626300</uuidstructure>
 			<uuidresource>974fac98-abab-11db-ad82-c7b5ef626300</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 24 Jan 2007 13:05:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -743,7 +743,7 @@
 			<type>jsp</type>
 			<uuidstructure>8e76a8cc-abab-11db-ad82-c7b5ef626300</uuidstructure>
 			<uuidresource>8e76a8cd-abab-11db-ad82-c7b5ef626300</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 24 Jan 2007 13:05:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -790,7 +790,7 @@
 			<type>jsp</type>
 			<uuidstructure>81d8087d-ab00-11db-a795-c7b5ef626300</uuidstructure>
 			<uuidresource>81d8087e-ab00-11db-a795-c7b5ef626300</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 23 Jan 2007 16:41:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -837,7 +837,7 @@
 			<type>jsp</type>
 			<uuidstructure>4453044f-a541-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>44530450-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 09:09:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -884,7 +884,7 @@
 			<type>jsp</type>
 			<uuidstructure>56a96223-a541-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>56a96224-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 09:09:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -931,7 +931,7 @@
 			<type>jsp</type>
 			<uuidstructure>61e275f7-a541-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>61e275f8-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 09:10:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -978,7 +978,7 @@
 			<type>jsp</type>
 			<uuidstructure>7029660b-a541-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>7029660c-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Mon, 12 Mar 2007 14:57:28 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 09:10:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1013,7 +1013,7 @@
 			<type>jsp</type>
 			<uuidstructure>a558dbc7-bc49-11db-b67c-edbe706a5d23</uuidstructure>
 			<uuidresource>a558dbc8-bc49-11db-b67c-edbe706a5d23</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:51 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 14 Feb 2007 16:37:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1060,7 +1060,7 @@
 			<type>jsp</type>
 			<uuidstructure>79aba21f-a541-11db-886b-75cc2042336b</uuidstructure>
 			<uuidresource>79aba220-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 09:10:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1107,7 +1107,7 @@
 			<type>jsp</type>
 			<uuidstructure>61356484-a54f-11db-94ae-75cc2042336b</uuidstructure>
 			<uuidresource>61356485-a54f-11db-94ae-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Jan 2007 10:50:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1154,7 +1154,7 @@
 			<type>jsp</type>
 			<uuidstructure>5376b17f-b210-11db-9866-4bc37e9d90a1</uuidstructure>
 			<uuidresource>5376b180-b210-11db-9866-4bc37e9d90a1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 01 Feb 2007 16:21:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1201,19 +1201,19 @@
 			<type>jsp</type>
 			<uuidstructure>b1f7ef4d-c01a-11db-9b43-e9e9e6393f7a</uuidstructure>
 			<uuidresource>b1f7ef4e-c01a-11db-9b43-e9e9e6393f7a</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 19 Feb 2007 13:11:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1252,19 +1252,19 @@
 			<type>jsp</type>
 			<uuidstructure>c4e24a22-c0f0-11db-b19e-e9e9e6393f7a</uuidstructure>
 			<uuidresource>c4e24a23-c0f0-11db-b19e-e9e9e6393f7a</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 20 Feb 2007 14:43:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1303,7 +1303,7 @@
 			<type>jsp</type>
 			<uuidstructure>5b51e111-a63d-11db-889b-75cc2042336b</uuidstructure>
 			<uuidresource>5b51e112-a63d-11db-889b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 17 Jan 2007 15:13:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1350,19 +1350,19 @@
 			<type>jsp</type>
 			<uuidstructure>e97afb6a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1401,19 +1401,19 @@
 			<type>jsp</type>
 			<uuidstructure>e97d6c75-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1452,19 +1452,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9822770-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>4fb1c05b-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1503,7 +1503,7 @@
 			<type>jsp</type>
 			<uuidstructure>e986e26b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>794610f3-d42a-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1550,19 +1550,19 @@
 			<type>jsp</type>
 			<uuidstructure>e9895375-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>442ed246-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1601,19 +1601,19 @@
 			<type>jsp</type>
 			<uuidstructure>a9062dba-a79d-11db-8295-75cc2042336b</uuidstructure>
 			<uuidresource>a9062dbb-a79d-11db-8295-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 19 Jan 2007 09:15:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1652,19 +1652,19 @@
 			<type>jsp</type>
 			<uuidstructure>74bb489d-64e9-11db-8108-bf6fa13020a5</uuidstructure>
 			<uuidresource>74bb489e-64e9-11db-8108-bf6fa13020a5</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 26 Oct 2006 11:59:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1703,7 +1703,7 @@
 			<type>jsp</type>
 			<uuidstructure>e98e0e70-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6dbcc0c3-0a57-11da-81e3-1d873b0b8abd</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 11 Aug 2005 11:02:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1725,19 +1725,19 @@
 			<type>jsp</type>
 			<uuidstructure>e98e0e74-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1776,19 +1776,19 @@
 			<type>jsp</type>
 			<uuidstructure>e992c96e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fb553117-aa75-11d9-bdd4-733e319ca5ea</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -1872,7 +1872,7 @@
 			<type>jsp</type>
 			<uuidstructure>ce4d6bd6-c574-11db-bdd9-6b9f86bc881c</uuidstructure>
 			<uuidresource>ce4d6bd7-c574-11db-bdd9-6b9f86bc881c</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 26 Feb 2007 08:39:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1895,7 +1895,7 @@
 			<type>jsp</type>
 			<uuidstructure>b64b1aee-b755-11db-889f-417220e76ee8</uuidstructure>
 			<uuidresource>b64b1aef-b755-11db-889f-417220e76ee8</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 08 Feb 2007 09:21:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1942,7 +1942,7 @@
 			<type>jsp</type>
 			<uuidstructure>b6714099-b755-11db-889f-417220e76ee8</uuidstructure>
 			<uuidresource>b671409a-b755-11db-889f-417220e76ee8</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 08 Feb 2007 09:21:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1989,7 +1989,7 @@
 			<type>jsp</type>
 			<uuidstructure>f4d30df6-c64f-11db-8908-6b9f86bc881c</uuidstructure>
 			<uuidresource>f4d30df7-c64f-11db-8908-6b9f86bc881c</uuidresource>
-			<datelastmodified>Wed, 07 Mar 2007 10:10:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Feb 2007 10:47:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2299,6 +2299,25 @@
 			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/user_indirect.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/user_indirect.png</destination>
+			<type>image</type>
+			<uuidstructure>de8a2041-d2fb-11db-9529-871f936c639e</uuidstructure>
+			<uuidresource>de8a2042-d2fb-11db-9529-871f936c639e</uuidresource>
+			<datelastmodified>Thu, 15 Mar 2007 13:49:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Mar 2007 13:48:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

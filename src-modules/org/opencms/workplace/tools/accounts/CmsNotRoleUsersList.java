@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotRoleUsersList.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -159,46 +160,6 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        super.setColumns(metadata);
-        
-        // create column for state change
-        CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
-        stateCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_0));
-        stateCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_HELP_0));
-        stateCol.setWidth("20");
-        stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        stateCol.setSorteable(false);
-        // add add action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
-        stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
-        stateAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
-        stateAction.setIconPath(ICON_ADD);
-        stateCol.addDirectAction(stateAction);
-        // add it to the list definition
-        metadata.addColumn(stateCol, 1);
-        // keep the id
-        m_addActionIds.add(stateAction.getId());
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // add add multi action
-        CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_MACTION_ADD);
-        addMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_NAME_0));
-        addMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_HELP_0));
-        addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_CONF_0));
-        addMultiAction.setIconPath(ICON_MULTI_ADD);
-        metadata.addMultiAction(addMultiAction);
-    }
-
-    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
      */
     protected List getUsers(boolean withOtherOus) throws CmsException {
@@ -216,5 +177,82 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
         }
         users.removeAll(roleUsers);
         return users;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        super.setColumns(metadata);
+
+        // create column for state change
+        CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
+        stateCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_0));
+        stateCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_HELP_0));
+        stateCol.setWidth("20");
+        stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        stateCol.setSorteable(false);
+        // add add action
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
+        stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
+        stateAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
+        stateAction.setIconPath(ICON_ADD);
+        stateCol.addDirectAction(stateAction);
+        // add it to the list definition
+        metadata.addColumn(stateCol, 1);
+        // keep the id
+        m_addActionIds.add(stateAction.getId());
+
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                try {
+                    CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
+                    if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
+                        return A_CmsUsersList.PATH_BUTTONS + "user.png";
+
+                    } else {
+                        return A_CmsUsersList.PATH_BUTTONS + "user_other_ou.png";
+                    }
+                } catch (CmsException e) {
+                    return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                }
+            }
+        };
+        iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INROLE_NAME_0));
+        iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INROLE_HELP_0));
+        iconAction.setIconPath(PATH_BUTTONS + "user.png");
+        iconAction.setEnabled(false);
+        metadata.getColumnDefinition(LIST_COLUMN_ICON).removeDirectAction(LIST_ACTION_ICON);
+        metadata.getColumnDefinition(LIST_COLUMN_ICON).addDirectAction(iconAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        super.setIndependentActions(metadata);
+
+        metadata.getItemDetailDefinition(LIST_DETAIL_ORGUNIT).setVisible(false);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // add add multi action
+        CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_MACTION_ADD);
+        addMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_NAME_0));
+        addMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_HELP_0));
+        addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_CONF_0));
+        addMultiAction.setIconPath(ICON_MULTI_ADD);
+        metadata.addMultiAction(addMultiAction);
     }
 }

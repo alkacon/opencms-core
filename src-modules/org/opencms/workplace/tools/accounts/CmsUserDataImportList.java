@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2007/03/13 08:28:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/16 09:03:22 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -47,9 +48,9 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
-import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,6 +63,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -75,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -157,18 +159,24 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                 Iterator itUsers = users.iterator();
                 while (itUsers.hasNext()) {
                     CmsUser user = (CmsUser)itUsers.next();
-                    try {
-                        if (((m_reasons == null) || !m_reasons.containsKey(user.getName()))
-                            && !isAlreadyAvailable(user.getName())) {
+                    if (((m_reasons == null) || !m_reasons.containsKey(user.getName()))
+                        && !isAlreadyAvailable(user.getName())) {
 
-                            String password = user.getPassword();
-                            if (password.indexOf("_") == -1) {
+                        String password = user.getPassword();
+                        if (password.indexOf("_") == -1) {
+                            try {
                                 password = OpenCms.getPasswordHandler().digest(password);
-                            } else {
-                                password = password.substring(password.indexOf("_") + 1);
+                            } catch (CmsPasswordEncryptionException e) {
+                                throw new CmsRuntimeException(
+                                    Messages.get().container(Messages.ERR_DIGEST_PASSWORD_0),
+                                    e);
                             }
-
-                            CmsUser createdUser = getCms().importUser(
+                        } else {
+                            password = password.substring(password.indexOf("_") + 1);
+                        }
+                        CmsUser createdUser;
+                        try {
+                            createdUser = getCms().importUser(
                                 new CmsUUID().toString(),
                                 getParamOufqn() + user.getName(),
                                 password,
@@ -178,28 +186,38 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 user.getFlags(),
                                 System.currentTimeMillis(),
                                 user.getAdditionalInfo());
+                        } catch (CmsException e) {
+                            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_IMPORT_USER_0), e);
+                        }
 
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroups())) {
-                                List groups = CmsStringUtil.splitAsList(getParamGroups(), ",");
-                                Iterator itGroups = groups.iterator();
-                                while (itGroups.hasNext()) {
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroups())) {
+                            List groups = CmsStringUtil.splitAsList(getParamGroups(), ",");
+                            Iterator itGroups = groups.iterator();
+                            while (itGroups.hasNext()) {
+                                try {
                                     getCms().addUserToGroup(createdUser.getName(), (String)itGroups.next());
+                                } catch (CmsException e) {
+                                    throw new CmsRuntimeException(Messages.get().container(
+                                        Messages.ERR_ADD_USER_TO_GROUP_0), e);
                                 }
                             }
+                        }
 
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamRoles())) {
-                                List roles = CmsStringUtil.splitAsList(getParamRoles(), ",");
-                                Iterator itRoles = roles.iterator();
-                                while (itRoles.hasNext()) {
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamRoles())) {
+                            List roles = CmsStringUtil.splitAsList(getParamRoles(), ",");
+                            Iterator itRoles = roles.iterator();
+                            while (itRoles.hasNext()) {
+                                try {
                                     OpenCms.getRoleManager().addUserToRole(
                                         getCms(),
                                         CmsRole.valueOf((String)itRoles.next()),
                                         createdUser.getName());
+                                } catch (CmsException e) {
+                                    throw new CmsRuntimeException(Messages.get().container(
+                                        Messages.ERR_ADD_USER_TO_ROLE_0), e);
                                 }
                             }
                         }
-                    } catch (CmsException e) {
-                        // noop
                     }
                 }
                 setAction(ACTION_CANCEL);
@@ -417,6 +435,19 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
+     */
+    protected String customHtmlStart() {
+
+        StringBuffer result = new StringBuffer(1024);
+        result.append(dialogBlockStart(key(Messages.GUI_USERDATA_IMPORT_LABEL_HINT_BLOCK_0)));
+        result.append(key(Messages.GUI_IMPORTLISTCSV_IMPORT_LABEL_HINT_TEXT_0));
+        result.append(dialogBlockEnd());
+        result.append("<div class=\"dialogspacer\" unselectable=\"on\">&nbsp;</div>");
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
@@ -432,7 +463,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                 if (detailId.equals(LIST_DETAIL_REASON) && m_reasons != null && m_reasons.containsKey(userName)) {
                     html.append(m_reasons.get(userName));
                 } else {
-                    continue;
+                    html.append(key(Messages.GUI_IMPORTLISTCSV_VALID_USER_0));
                 }
             } catch (Exception e) {
                 // noop
@@ -748,7 +779,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
         // add reason details
         CmsListItemDetails reasonDetails = new CmsListItemDetails(LIST_DETAIL_REASON);
         reasonDetails.setAtColumn(LIST_COLUMN_DISPLAY);
-        reasonDetails.setVisible(false);
+        reasonDetails.setVisible(true);
         reasonDetails.setShowActionName(Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_NAME_0));
         reasonDetails.setShowActionHelpText(Messages.get().container(
             Messages.GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_HELP_0));
@@ -756,8 +787,26 @@ public class CmsUserDataImportList extends A_CmsUsersList {
         reasonDetails.setHideActionHelpText(Messages.get().container(
             Messages.GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_HELP_0));
         reasonDetails.setName(Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_REASON_NAME_0));
-        reasonDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_IMPORTLISTCSV_DETAIL_REASON_NAME_0)));
+        reasonDetails.setFormatter(new I_CmsListFormatter() {
+
+            /**
+             * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
+             */
+            public String format(Object data, Locale locale) {
+
+                StringBuffer html = new StringBuffer(512);
+                html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
+                html.append("\t<tr>\n");
+                html.append("\t\t<td style='white-space:normal;' >\n");
+                html.append("\t\t\t");
+                html.append(data == null ? "" : data);
+                html.append("\n");
+                html.append("\t\t</td>\n");
+                html.append("\t</tr>\n");
+                html.append("</table>\n");
+                return html.toString();
+            }
+        });
         metadata.addItemDetails(reasonDetails);
     }
 
