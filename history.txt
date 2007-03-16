@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/16 12:42:18 $
- * Version: $Revision: 1.717.2.147 $
+ * Date   : $Date: 2007/03/16 12:43:39 $
+ * Version: $Revision: 1.717.2.148 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,16 +19,16 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.0.0 - 4. July, 2007
+OpenCms 7.0.0 - July 4, 2007
 
 
-OpenCms 6.9.2 (aka 7.0 RC2) - 6. June, 2007
+OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 
 
-OpenCms 6.9.1 (aka 7.0 RC1) - 2nd May, 2007
+OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 
 
-OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
+OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation
 ! When deleting a user, additionally all locks of this user are removed from the lock manager
 * Fixed display error when displaying a user dependencies list while deleting a user
@@ -49,7 +49,7 @@ OpenCms 6.7.2 (aka 7.0 beta) - 21. March, 2007
 - Document types in opencms-search.xml are now processed exactly in the configured order
 * Fixed issue with upload applet not working with apache redirects
 
-OpenCms 6.7.1 (aka 7.0 alpha) - 14. February, 2007
+OpenCms 6.7.1 (aka 7.0 alpha) - February 14, 2007
 ! Upload applet preselects the file filter of the file chooser in dependency of the folder type (gallery)
 ! Upload applet shows potential overwrites of files on the server and offers to avoid them
 * Upload applet file chooser uses workplace language localization
@@ -65,7 +65,7 @@ OpenCms 6.7.1 (aka 7.0 alpha) - 14. February, 2007
 ! Creating new XML content resource allows the selection of a "model file" in explorer and direct edit mode if configured
 ! Added support for resource type permissions in explorer type definitions based on roles
 
-OpenCms 6.5.5 - 14. December, 2006
+OpenCms 6.5.5 - December 14, 2006
 * Improved logic in new dialog to decide if default .html suffix should be appended
 ! The Lucene search index fields generated from the OpenCms content are now fully configurable
 ! Text extraction results for the full text search are now cached and reused to speed up index generation
