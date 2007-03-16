@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/03/15 16:30:39 $
- * Version: $Revision: 1.4.4.10 $
+ * Date   : $Date: 2007/03/16 10:52:36 $
+ * Version: $Revision: 1.4.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.10 $ 
+ * @version $Revision: 1.4.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -558,7 +558,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             // noop
         }
         // create a new user object
-        m_user = new CmsUser(null, getParamOufqn(), "", "", "", "", 0, 0, 0, null);
+        m_user = new CmsUser();
         m_pwdInfo = new CmsPasswordInfo();
         m_group = getParamOufqn() + OpenCms.getDefaultUsers().getGroupUsers();
         m_language = CmsLocaleManager.getDefaultLocale().toString();
@@ -665,8 +665,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             CmsSite site = (CmsSite)itSites.next();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getSiteRoot())) {
                 if (sitesList.size() > 1) {
-                    // skip the root site if possible
-                    continue;
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
+                        if (!OpenCms.getRoleManager().hasRole(getCms(), m_user.getName(), CmsRole.DEVELOPER)) {
+                            // skip the root site if not accessible
+                            continue;
+                        }
+                    }
                 }
             }
             sites.add(new CmsSelectWidgetOption(site.getSiteRoot(), false, site.getTitle(), null));
