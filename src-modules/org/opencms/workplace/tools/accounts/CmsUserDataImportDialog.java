@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportDialog.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/16 16:39:09 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -293,7 +293,6 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
         initImportObject();
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(this, "importFile", PAGES[0], new CmsHttpUploadWidget()));
         addWidget(new CmsWidgetDialogParameter(
             this,
             "groups",
@@ -301,6 +300,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
             new CmsGroupWidget(null, null, getParamOufqn())));
         addWidget(new CmsWidgetDialogParameter(this, "roles", PAGES[0], new CmsSelectWidget(getSelectRoles())));
         addWidget(new CmsWidgetDialogParameter(this, "password", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "importFile", PAGES[0], new CmsHttpUploadWidget()));
     }
 
     /**
