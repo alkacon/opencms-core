@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.12.4.4 $
+ * Date   : $Date: 2007/03/16 16:07:12 $
+ * Version: $Revision: 1.12.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.4.4 $ 
+ * @version $Revision: 1.12.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,6 +162,16 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
         iconCol.addDirectAction(indirAction);
 
         iconCol.setListItemComparator(new CmsListItemActionIconComparator());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        super.setIndependentActions(metadata);
+
+        metadata.getItemDetailDefinition(LIST_DETAIL_OTHEROU).setVisible(false);
     }
 
     /**

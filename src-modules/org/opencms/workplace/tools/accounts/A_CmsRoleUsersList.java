@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/03/16 16:07:12 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -48,6 +49,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,7 +60,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 6.5.6
  */
@@ -262,6 +264,60 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
 
             /**
+             * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+             */
+            public String buttonHtml(CmsWorkplace wp) {
+
+                if (!isVisible()) {
+                    return "";
+                }
+                return A_CmsHtmlIconButton.defaultButtonHtml(
+                    resolveButtonStyle(),
+                    getId() + getItem().getId(),
+                    getId() + getItem().getId(),
+                    resolveName(wp.getLocale()),
+                    resolveHelpText(wp.getLocale()),
+                    isEnabled(),
+                    getIconPath(),
+                    null,
+                    resolveOnClic(wp.getLocale()),
+                    false,
+                    null);
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                try {
+                    CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
+                    if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
+                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                            ((A_CmsRoleUsersList)getWp()).getCms(),
+                            user.getName(),
+                            ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
+                            false,
+                            true,
+                            true);
+                        Iterator itUserRoles = userRoles.iterator();
+                        while (itUserRoles.hasNext()) {
+                            CmsRole role = (CmsRole)itUserRoles.next();
+                            if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
+                                return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_HELP_0);
+                            }
+                        }
+                        return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_INDIRECT_HELP_0);
+
+                    } else {
+                        return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_OTHEROU_HELP_0);
+                    }
+                } catch (CmsException e) {
+                    return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_HELP_0);
+                }
+            }
+
+            /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
             public String getIconPath() {
@@ -290,6 +346,38 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
                     }
                 } catch (CmsException e) {
                     return A_CmsUsersList.PATH_BUTTONS + "user.png";
+                }
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            public CmsMessageContainer getName() {
+
+                try {
+                    CmsUser user = getCms().readUser((String)getItem().get(LIST_COLUMN_LOGIN));
+                    if (user.getOuFqn().equals(((A_CmsRoleUsersList)getWp()).getParamOufqn())) {
+                        List userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                            ((A_CmsRoleUsersList)getWp()).getCms(),
+                            user.getName(),
+                            ((A_CmsRoleUsersList)getWp()).getParamOufqn(),
+                            false,
+                            true,
+                            true);
+                        Iterator itUserRoles = userRoles.iterator();
+                        while (itUserRoles.hasNext()) {
+                            CmsRole role = (CmsRole)itUserRoles.next();
+                            if (role.getGroupName().equals(((A_CmsRoleUsersList)getWp()).getParamRole())) {
+                                return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_NAME_0);
+                            }
+                        }
+                        return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_INDIRECT_NAME_0);
+
+                    } else {
+                        return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_OTHEROU_NAME_0);
+                    }
+                } catch (CmsException e) {
+                    return Messages.get().container(Messages.GUI_USERS_LIST_INROLE_NAME_0);
                 }
             }
         };
