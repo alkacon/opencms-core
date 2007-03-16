@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:12 $
- * Version: $Revision: 1.65.4.5 $
+ * Date   : $Date: 2007/03/16 16:37:33 $
+ * Version: $Revision: 1.65.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.5 $
+ * @version $Revision: 1.65.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -295,7 +295,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
 
-        String rawSql = readQuery((CmsUUID)null, queryKey);
+        String rawSql = readQuery(CmsUUID.getNullUUID(), queryKey);
         return getPreparedStatementForSql(con, rawSql);
     }
 
