@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperPropertyFile.java,v $
- * Date   : $Date: 2007/03/07 14:15:05 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/19 08:45:42 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.6
  */
@@ -455,7 +455,10 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
         // the path without trailing slash
         String path = CmsResource.getParentFolder(resourcename);
-
+        if (path == null) {
+            return null;
+        }
+        
         // the parent path
         String parent = CmsResource.getParentFolder(path);
 
