@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2007/02/28 15:47:38 $
- * Version: $Revision: 1.14.4.3 $
+ * Date   : $Date: 2007/03/20 15:08:58 $
+ * Version: $Revision: 1.14.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.3 $ 
+ * @version $Revision: 1.14.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,21 +110,22 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Creates a document factory lookup key for the given resource id / MIME type configuration.<p>
+     * Creates a document factory lookup key for the given resource type name / MIME type configuration.<p>
      * 
      * If the given <code>mimeType</code> is <code>null</code>, this indicates that the key should 
-     * match all VFS resource of the given resource type id regardless of the MIME type.<p>
+     * match all VFS resource of the given resource type regardless of the MIME type.<p>
      * 
-     * @param id the resource id to use
+     * @param type the resource type name to use
      * @param mimeType the MIME type to use
      * 
      * @return a document factory lookup key for the given resource id / MIME type configuration
      */
-    public static String getDocumentKey(int id, String mimeType) {
+    public static String getDocumentKey(String type, String mimeType) {
 
         StringBuffer result = new StringBuffer(16);
         result.append(A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX);
-        result.append(id);
+        result.append('_');
+        result.append(type);
         if (mimeType != null) {
             result.append(':');
             result.append(mimeType);
@@ -302,12 +303,12 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         try {
             for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
 
-                int id = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeId();
+                String typeName = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeName();
                 for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
-                    keys.add(getDocumentKey(id, (String)j.next()));
+                    keys.add(getDocumentKey(typeName, (String)j.next()));
                 }
                 if (mimeTypes.isEmpty()) {
-                    keys.add(getDocumentKey(id, null));
+                    keys.add(getDocumentKey(typeName, null));
                 }
             }
         } catch (Exception exc) {

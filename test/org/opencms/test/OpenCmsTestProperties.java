@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2007/03/16 12:44:43 $
- * Version: $Revision: 1.12.8.2 $
+ * Date   : $Date: 2007/03/20 15:08:57 $
+ * Version: $Revision: 1.12.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
@@ -52,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.8.2 $
+ * @version $Revision: 1.12.8.3 $
  * 
  * @since 6.0.0
  */
@@ -60,6 +58,15 @@ public final class OpenCmsTestProperties {
 
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(OpenCmsTestProperties.class);
+
+    /** Property / Environmant name for "db.product". */
+    public static final String PROP_DB_PRODUCT = "db.product";
+
+    /** Property / Environmant name for "test.data.path".  */
+    public static final String PROP_TEST_DATA_PATH = "test.data.path";
+
+    /** Property / Environmant name for "test.webapp.path". */
+    public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
 
     /** The configuration from <code>opencms.properties</code>. */
     private static ExtendedProperties m_configuration;
@@ -182,29 +189,28 @@ public final class OpenCmsTestProperties {
             e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
-        
+
         try {
-            // read environment and store it to the map
-            Map environment = System.getenv();
-            Iterator i = environment.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry e = (Map.Entry)i.next();
-                String key = String.valueOf(e.getKey());
-                // only add relevant properties from environment
-                if (key.startsWith("db.") || key.startsWith("test.")) {
-                    m_configuration.setProperty(key, e.getValue());
-                }
+            // read environment and update configuration if required
+            if (System.getenv(PROP_TEST_DATA_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
+            }
+            if (System.getenv(PROP_TEST_WEBAPP_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
+            }
+            if (System.getenv(PROP_DB_PRODUCT) != null) {
+                m_configuration.setProperty(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
             }
         } catch (SecurityException e) {
             // unable to read environment, use only properties from file
             e.printStackTrace(System.out);
         }
-        
-        m_testSingleton.m_testDataPath = m_configuration.getString("test.data.path");
-        m_testSingleton.m_testWebappPath = m_configuration.getString("test.webapp.path");
-        m_testSingleton.m_dbProduct = m_configuration.getString("db.product");
+
+        m_testSingleton.m_testDataPath = m_configuration.getString(PROP_TEST_DATA_PATH);
+        m_testSingleton.m_testWebappPath = m_configuration.getString(PROP_TEST_WEBAPP_PATH);
+        m_testSingleton.m_dbProduct = m_configuration.getString(PROP_DB_PRODUCT);
     }
-    
+
     /**
      * @return Returns the path to the test.properties file
      */
@@ -223,8 +229,7 @@ public final class OpenCmsTestProperties {
     }
 
     /**
-     * 
-     * @return a String identifying the db.product property value of the 'test.properties' value.
+     * @return the name of the db product used
      */
     public String getDbProduct() {
 

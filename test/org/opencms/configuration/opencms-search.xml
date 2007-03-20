@@ -89,17 +89,6 @@
 				</resourcetypes>
 			</documenttype>
 			<documenttype>
-				<name>rtf</name>
-				<class>org.opencms.search.documents.CmsDocumentRtf</class>
-				<mimetypes>
-					<mimetype>application/rtf</mimetype>
-				</mimetypes>
-				<resourcetypes>
-					<resourcetype>binary</resourcetype>
-					<resourcetype>plain</resourcetype>
-				</resourcetypes>
-			</documenttype>		
-			<documenttype>
 				<name>text</name>
 				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
 				<mimetypes>
@@ -128,6 +117,17 @@
 					<resourcetype>xmlpage</resourcetype>
 				</resourcetypes>
 			</documenttype>	
+			<documenttype>
+				<name>rtf</name>
+				<class>org.opencms.search.documents.CmsDocumentRtf</class>
+				<mimetypes>
+					<mimetype>application/rtf</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>					
 		</documenttypes>
 		<analyzers>
 			<analyzer>

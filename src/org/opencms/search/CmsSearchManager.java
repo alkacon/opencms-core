@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/03/15 16:36:35 $
- * Version: $Revision: 1.55.4.11 $
+ * Date   : $Date: 2007/03/20 15:08:57 $
+ * Version: $Revision: 1.55.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -85,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.11 $ 
+ * @version $Revision: 1.55.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1105,7 +1106,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             // if index is unlocked do nothing
             if (indexLocked) {
-                if (m_forceUnlockMode != null && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
+                if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
                     try {
                         // try to force unlock on the index
                         IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
@@ -1117,7 +1118,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         report.println(msg, I_CmsReport.FORMAT_ERROR);
                         throw new CmsIndexException(msg, e);
                     }
-                } else if (m_forceUnlockMode != null && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.NEVER)) {
+                } else if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.NEVER)) {
                     // wait if index will be unlocked during waiting
                     indexLocked = waitIndexLock(index, report, indexLocked);
                     // if index is still locked throw an exception
@@ -1217,18 +1218,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             resource.getRootPath(),
             null,
             CmsResourceManager.MIMETYPE_TEXT);
-        // create the factory lookup key for the document
-        String documentTypeKey = A_CmsVfsDocument.getDocumentKey(resource.getTypeId(), mimeType);
-        // check if a setting is available for this specific MIME type
-        I_CmsDocumentFactory result = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
-        if (result == null) {
-            // no setting is available, try to use a generic setting without MIME type
-            result = (I_CmsDocumentFactory)m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(
-                resource.getTypeId(),
-                null));
-            // please note: the result may still be null
+        I_CmsDocumentFactory result = null;
+        String typeName = null;
+        try {
+            typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+        } catch (CmsLoaderException e) {
+            // ignore, unknown resource type, resource can not be indexed
         }
-
+        if (typeName != null) {
+            // create the factory lookup key for the document
+            String documentTypeKey = A_CmsVfsDocument.getDocumentKey(typeName, mimeType);
+            // check if a setting is available for this specific MIME type
+            result = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
+            if (result == null) {
+                // no setting is available, try to use a generic setting without MIME type
+                result = (I_CmsDocumentFactory)m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(typeName, null));
+                // please note: the result may still be null
+            }
+        }
         return result;
     }
 

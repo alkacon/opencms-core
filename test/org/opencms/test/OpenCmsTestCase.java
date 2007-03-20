@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/03/13 09:55:14 $
- * Version: $Revision: 1.90.4.18 $
+ * Date   : $Date: 2007/03/20 15:08:57 $
+ * Version: $Revision: 1.90.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.18 $
+ * @version $Revision: 1.90.4.19 $
  * 
  * @since 6.0.0
  */
@@ -3074,8 +3074,8 @@ public class OpenCmsTestCase extends TestCase {
             boolean cont;
             do {
                 cont = false;
-                if (m_configuration.containsKey("test.data.path." + index)) {
-                    addTestDataPath(m_configuration.getString("test.data.path." + index));
+                if (m_configuration.containsKey(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
+                    addTestDataPath(m_configuration.getString(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index));
                     cont = true;
                     index++;
                 }
