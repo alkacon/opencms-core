@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.218.4.28 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.218.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
@@ -139,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.28 $ 
+ * @version $Revision: 1.218.4.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -962,7 +963,8 @@ public final class OpenCmsCore {
 
         // initialize the memory monitor
         CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
-        m_memoryMonitor.initialize(memoryMonitorConfiguration);
+        CmsCacheSettings cacheSettings = systemConfiguration.getCacheSettings();
+        m_memoryMonitor.initialize(memoryMonitorConfiguration, cacheSettings);
 
         // set version history information        
         getSystemInfo().setVersionHistorySettings(
@@ -1568,6 +1570,15 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_memoryMonitor != null) {
+                        m_memoryMonitor.shutdown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());

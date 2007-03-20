@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/01/08 14:03:03 $
- * Version: $Revision: 1.121.4.13 $
+ * Date   : $Date: 2007/03/20 14:38:49 $
+ * Version: $Revision: 1.121.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.13 $ 
+ * @version $Revision: 1.121.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1405,31 +1405,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         LRUMap lruMap1 = new LRUMap(2048);
         m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheOnlineLinks", lruMap1);
-        }
+        // map must be of type "LRUMap" so that memory monitor can acecss all information
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheOnlineLinks", lruMap1);
 
         LRUMap lruMap2 = new LRUMap(2048);
         m_cacheExportUris = Collections.synchronizedMap(lruMap2);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", lruMap2);
-        }
+        // map must be of type "LRUMap" so that memory monitor can acecss all information
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", lruMap2);
 
         LRUMap lruMap3 = new LRUMap(2048);
         m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", lruMap3);
-        }
+        // map must be of type "LRUMap" so that memory monitor can acecss all information
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", lruMap3);
 
         LRUMap lruMap4 = new LRUMap(2048);
         m_cacheExportLinks = Collections.synchronizedMap(lruMap4);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportLinks", lruMap4);
-        }
+        // map must be of type "LRUMap" so that memory monitor can acecss all information
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportLinks", lruMap4);
 
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {

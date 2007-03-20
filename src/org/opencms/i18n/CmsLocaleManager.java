@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2007/02/28 11:00:23 $
- * Version: $Revision: 1.49.4.1 $
+ * Date   : $Date: 2007/03/20 14:38:49 $
+ * Version: $Revision: 1.49.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,20 +41,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -65,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49.4.1 $ 
+ * @version $Revision: 1.49.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,9 +81,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /** The default locale, this is the first configured locale. */
     private static Locale m_defaultLocale;
-
-    /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache. */
-    private static Map m_localeCache;
 
     /** The set of available locale names. */
     private List m_availableLocales;
@@ -113,15 +106,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_I18N_CONFIG_START_0));
         }
-
-        LRUMap lruMap = new LRUMap(256);
-        m_localeCache = Collections.synchronizedMap(lruMap);
-        CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
-        if ((monitor != null) && monitor.enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            monitor.register(this.getClass().getName() + ".m_localeCache", lruMap);
-        }
-
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
     }
@@ -139,7 +123,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_availableLocales = new ArrayList();
         m_defaultLocales = new ArrayList();
         m_localeHandler = new CmsDefaultLocaleHandler();
-        m_localeCache = Collections.synchronizedMap(new LRUMap(256));
 
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
@@ -183,21 +166,28 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (CmsStringUtil.isEmpty(localeName)) {
             return getDefaultLocale();
         }
-        Locale locale;
-        locale = (Locale)m_localeCache.get(localeName);
-        if (locale == null) {
-            try {
-                String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
-                locale = new Locale(
-                    localeNames[0],
-                    (localeNames.length > 1) ? localeNames[1] : "",
-                    (localeNames.length > 2) ? localeNames[2] : "");
-            } catch (Throwable t) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
-                // map this error to the default locale
-                locale = getDefaultLocale();
-            }
-            m_localeCache.put(localeName, locale);
+        Locale locale = null;
+        if (OpenCms.getMemoryMonitor() != null) {
+            // this may be used AFTER shutdown
+            locale = OpenCms.getMemoryMonitor().getCachedLocale(localeName);
+        }
+        if (locale != null) {
+            return locale;
+        }
+        try {
+            String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
+            locale = new Locale(
+                localeNames[0],
+                (localeNames.length > 1) ? localeNames[1] : "",
+                (localeNames.length > 2) ? localeNames[2] : "");
+        } catch (Throwable t) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
+            // map this error to the default locale
+            locale = getDefaultLocale();
+        }
+        if (OpenCms.getMemoryMonitor() != null) {
+            // this may be used AFTER shutdown
+            OpenCms.getMemoryMonitor().cacheLocale(localeName, locale);
         }
         return locale;
     }
@@ -803,7 +793,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private void clearCaches() {
 
         // flush all caches   
-        m_localeCache.clear();
+        OpenCms.getMemoryMonitor().flushLocales();
         CmsResourceBundleLoader.flushBundleCache();
 
         if (LOG.isDebugEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/15 16:30:44 $
- * Version: $Revision: 1.97.4.40 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.97.4.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,15 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsProject.CmsProjectType;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
+import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -84,7 +84,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -92,7 +91,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -123,12 +121,6 @@ public final class CmsSecurityManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
 
-    /** Indicates allowed permissions. */
-    private static final Integer PERM_ALLOWED_INTEGER = new Integer(PERM_ALLOWED);
-
-    /** Indicates denied permissions. */
-    private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED);
-
     /** The factory to create runtime info objects. */
     protected I_CmsDbContextFactory m_dbContextFactory;
 
@@ -140,9 +132,6 @@ public final class CmsSecurityManager {
 
     /** The lock manager. */
     private CmsLockManager m_lockManager;
-
-    /** Cache for permission checks. */
-    private Map m_permissionCache;
 
     /**
      * Default constructor.<p>
@@ -2573,8 +2562,8 @@ public final class CmsSecurityManager {
 
         m_dbContextFactory = dbContextFactory;
 
-        CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
-        CmsCacheSettings settings = systemConfiguation.getCacheSettings();
+        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        CmsCacheSettings settings = systemConfiguration.getCacheSettings();
 
         String className = settings.getCacheKeyGenerator();
         try {
@@ -2584,12 +2573,6 @@ public final class CmsSecurityManager {
             throw new CmsInitException(org.opencms.main.Messages.get().container(
                 org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
                 className));
-        }
-
-        LRUMap lruMap = new LRUMap(settings.getPermissionCacheSize());
-        m_permissionCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", lruMap);
         }
 
         // create the driver manager
@@ -5086,14 +5069,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Clears the permission cache.<p>
-     */
-    protected void clearPermissionCache() {
-
-        m_permissionCache.clear();
-    }
-
-    /**
      * Internal recursive method for deleting a resource.<p>
      * 
      * @param dbc the db context
@@ -5277,7 +5252,7 @@ public final class CmsSecurityManager {
             dbc,
             resource,
             requiredPermissions);
-        Integer cacheResult = (Integer)m_permissionCache.get(cacheKey);
+        Integer cacheResult = OpenCms.getMemoryMonitor().getCachedPermission(cacheKey);
         if (cacheResult != null) {
             return cacheResult.intValue();
         }
@@ -5373,11 +5348,11 @@ public final class CmsSecurityManager {
             }
         }
 
-        Integer result;
+        int result;
         if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions()) {
-            result = PERM_ALLOWED_INTEGER;
+            result = PERM_ALLOWED;
         } else {
-            result = PERM_DENIED_INTEGER;
+            result = PERM_DENIED;
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_NO_PERMISSION_RESOURCE_USER_4,
@@ -5388,9 +5363,8 @@ public final class CmsSecurityManager {
                         permissions.getPermissionString()}));
             }
         }
-        m_permissionCache.put(cacheKey, result);
-
-        return result.intValue();
+        OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2007/03/01 15:01:29 $
- * Version: $Revision: 1.113.4.8 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.113.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.8 $ 
+ * @version $Revision: 1.113.4.9 $ 
  * 
  * @since 6.0.0 
  * 
@@ -182,14 +182,12 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_linkPropertyStorage = new HashMap();
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_folderStorage", m_folderStorage);
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_pageStorage", m_pageStorage);
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_linkStorage", m_linkStorage);
-                OpenCms.getMemoryMonitor().register(
-                    this.getClass().getName() + ".m_linkPropertyStorage",
-                    m_linkPropertyStorage);
-            }
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_folderStorage", m_folderStorage);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_pageStorage", m_pageStorage);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_linkStorage", m_linkStorage);
+            OpenCms.getMemoryMonitor().register(
+                this.getClass().getName() + ".m_linkPropertyStorage",
+                m_linkPropertyStorage);
         }
 
         try {

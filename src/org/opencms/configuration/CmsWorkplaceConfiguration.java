@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/03/09 15:13:08 $
- * Version: $Revision: 1.40.4.17 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.40.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.17 $
+ * @version $Revision: 1.40.4.18 $
  * 
  * @since 6.0.0
  */
@@ -990,33 +990,35 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         }
 
         // add the user-infos node
-        Element userInfosElement = workplaceElement.addElement(N_USERINFOS);
-        i = m_workplaceManager.getUserInfoManager().getBlocks().iterator();
-        while (i.hasNext()) {
-            CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)i.next();
-            Element infoBlockElement = userInfosElement.addElement(N_INFOBLOCK);
-            infoBlockElement.addAttribute(A_NAME, block.getTitle());
-
-            Iterator itEntries = block.getEntries().iterator();
-            while (itEntries.hasNext()) {
-                CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
-                Element userInfoElement = infoBlockElement.addElement(N_USERINFO);
-                userInfoElement.addAttribute(A_KEY, entry.getKey());
-                if (entry.getType() != null) {
-                    userInfoElement.addAttribute(A_TYPE, entry.getType());
-                }
-                if (entry.getWidget() != null) {
-                    userInfoElement.addAttribute(A_WIDGET, entry.getWidget());
-                }
-                if (entry.getParams() != null) {
-                    userInfoElement.addAttribute(A_PARAMS, entry.getParams());
-                }
-                if (entry.getOptional() != null) {
-                    userInfoElement.addAttribute(A_OPTIONAL, entry.getOptional());
+        if (m_workplaceManager.getUserInfoManager() != null) {
+            Element userInfosElement = workplaceElement.addElement(N_USERINFOS);
+            i = m_workplaceManager.getUserInfoManager().getBlocks().iterator();
+            while (i.hasNext()) {
+                CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)i.next();
+                Element infoBlockElement = userInfosElement.addElement(N_INFOBLOCK);
+                infoBlockElement.addAttribute(A_NAME, block.getTitle());
+    
+                Iterator itEntries = block.getEntries().iterator();
+                while (itEntries.hasNext()) {
+                    CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
+                    Element userInfoElement = infoBlockElement.addElement(N_USERINFO);
+                    userInfoElement.addAttribute(A_KEY, entry.getKey());
+                    if (entry.getType() != null) {
+                        userInfoElement.addAttribute(A_TYPE, entry.getType());
+                    }
+                    if (entry.getWidget() != null) {
+                        userInfoElement.addAttribute(A_WIDGET, entry.getWidget());
+                    }
+                    if (entry.getParams() != null) {
+                        userInfoElement.addAttribute(A_PARAMS, entry.getParams());
+                    }
+                    if (entry.getOptional() != null) {
+                        userInfoElement.addAttribute(A_OPTIONAL, entry.getOptional());
+                    }
                 }
             }
         }
-
+        
         // add the <default-preferences> user settings main node
         Element defaultPreferences = workplaceElement.addElement(N_DEFAULTPREFERENCES);
         // add the <workplace-preferences> node

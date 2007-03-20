@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static void initCaches() {
 
         if (m_cacheTemporary == null) {
-
             LRUMap cacheTemporary = new LRUMap(128);
             m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
 
@@ -169,20 +168,18 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
 
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                    // map must be of type "LRUMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cacheTemporary",
-                        cacheTemporary);
-                    // map must be of type "HashMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cachePermanent",
-                        cachePermanent);
-                    // map must be of type "LRUMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cacheContentDefinitions",
-                        cacheContentDefinitions);
-                }
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".m_cacheTemporary",
+                    cacheTemporary);
+                // map must be of type "HashMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".m_cachePermanent",
+                    cachePermanent);
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".m_cacheContentDefinitions",
+                    cacheContentDefinitions);
             }
         }
     }

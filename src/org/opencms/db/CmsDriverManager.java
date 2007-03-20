@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/15 16:30:41 $
- * Version: $Revision: 1.570.2.71 $
+ * Date   : $Date: 2007/03/20 14:38:48 $
+ * Version: $Revision: 1.570.2.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
 import org.apache.commons.pool.ObjectPool;
@@ -128,144 +127,6 @@ import org.apache.commons.pool.ObjectPool;
  * @since 6.0.0
  */
 public final class CmsDriverManager implements I_CmsEventListener {
-
-    /**
-     * Provides a method to build cache keys for groups and users that depend either on 
-     * a name string or an id.<p>
-     *
-     * @author Alexander Kandzior 
-     */
-    private static class CacheId extends Object {
-
-        /** Name prefix for organizational units. */
-        public static final String ORGUNIT_PREFIX = "_ou_";
-
-        /**
-         * Name of the object.
-         */
-        public String m_name;
-
-        /**
-         * Id of the object.
-         */
-        public CmsUUID m_uuid;
-
-        /**
-         * Creates a new {@link CacheId} for a {@link CmsGroup}.<p>
-         * 
-         * @param group the group to create a cache id from
-         */
-        public CacheId(CmsGroup group) {
-
-            m_name = group.getName();
-            m_uuid = group.getId();
-        }
-
-        /**
-         * Creates a new {@link CacheId} for a {@link CmsOrganizationalUnit}.<p>
-         * 
-         * @param orgUnit the organizational unit to create a cache id from
-         */
-        public CacheId(CmsOrganizationalUnit orgUnit) {
-
-            m_name = ORGUNIT_PREFIX + orgUnit.getName();
-            m_uuid = orgUnit.getId();
-        }
-
-        /**
-         * Creates a new {@link CacheId} for a {@link CmsResource}.<p>
-         * 
-         * @param resource the resource to create a cache id from
-         */
-        public CacheId(CmsResource resource) {
-
-            m_name = resource.getName();
-            m_uuid = resource.getResourceId();
-        }
-
-        /**
-         * Creates a new {@link CacheId} for a {@link CmsUser}.<p>
-         * 
-         * @param user the user to create a cache id from
-         */
-        public CacheId(CmsUser user) {
-
-            m_name = user.getName();
-            m_uuid = user.getId();
-        }
-
-        /**
-         * Creates a new CacheId for a CmsUUID.<p>
-         * 
-         * @param uuid the uuid to create a cache id from
-         */
-        public CacheId(CmsUUID uuid) {
-
-            m_uuid = uuid;
-        }
-
-        /**
-         * Creates a new CacheId for a String.<p>
-         * 
-         * @param str the string to create a cache id from
-         */
-        public CacheId(String str) {
-
-            m_name = str;
-        }
-
-        /**
-         * Creates a new CacheId for a String and CmsUUID.<p>
-         * 
-         * @param name the string to create a cache id from
-         * @param uuid the uuid to create a cache id from
-         */
-        public CacheId(String name, CmsUUID uuid) {
-
-            m_name = name;
-            m_uuid = uuid;
-        }
-
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        public boolean equals(Object obj) {
-
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof CacheId)) {
-                return false;
-            }
-            CacheId other = (CacheId)obj;
-            boolean result;
-            if (m_uuid != null) {
-                result = m_uuid.equals(other.m_uuid);
-                if (result) {
-                    return true;
-                }
-            }
-            if (m_name != null) {
-                result = m_name.equals(other.m_name);
-                if (result) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * @see java.lang.Object#hashCode()
-         */
-        public int hashCode() {
-
-            if (m_uuid == null) {
-                return 509;
-            } else {
-                return m_uuid.hashCode();
-            }
-        }
-    }
 
     /**
      * Enumeration class for the mode parameter in the 
@@ -401,9 +262,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
-    /** Cache for access control lists. */
-    private Map m_accessControlListCache;
-
     /** The backup driver. */
     private I_CmsBackupDriver m_backupDriver;
 
@@ -412,9 +270,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
-
-    /** Cache for groups. */
-    private Map m_groupCache;
 
     /** The HTML link validator. */
     private CmsRelationSystemValidator m_htmlLinkValidator;
@@ -425,17 +280,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The lock manager. */
     private CmsLockManager m_lockManager;
 
-    /** Cache for organizational units. */
-    private Map m_orgUnitCache;
-
-    /** Cache for offline projects. */
-    private Map m_projectCache;
-
     /** The project driver. */
     private I_CmsProjectDriver m_projectDriver;
-
-    /** Cache for properties. */
-    private Map m_propertyCache;
 
     /** The the configuration read from the <code>opencms.properties</code> file. */
     private ExtendedProperties m_propertyConfiguration;
@@ -443,26 +289,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /* the publish engine. */
     private CmsPublishEngine m_publishEngine;
 
-    /** Cache for resources. */
-    private Map m_resourceCache;
-
-    /** Cache for resource lists. */
-    private Map m_resourceListCache;
-
     /** The security manager (for access checks). */
     private CmsSecurityManager m_securityManager;
 
     /** The sql manager. */
     private CmsSqlManager m_sqlManager;
 
-    /** Cache for user data. */
-    private Map m_userCache;
-
     /** The user driver. */
     private I_CmsUserDriver m_userDriver;
-
-    /** Cache for user groups. */
-    private Map m_userGroupsCache;
 
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
@@ -730,8 +564,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         //add this user to the group
         m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
-        // update the cache
-        m_userGroupsCache.clear();
+        // flush the cache
+        OpenCms.getMemoryMonitor().flushUserGroups();
     }
 
     /**
@@ -1227,6 +1061,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
+                OpenCms.getMemoryMonitor().flushProjectResources();
+
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
                     "project",
                     dbc.currentProject())));
@@ -1302,7 +1138,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // put it into the cache
-        m_groupCache.put(new CacheId(group), group);
+        OpenCms.getMemoryMonitor().cacheGroup(group);
         // return it
         return group;
     }
@@ -1350,7 +1186,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             parent,
             resource.getRootPath());
         // put the new created org unit into the cache
-        m_orgUnitCache.put(new CacheId(orgUnit), orgUnit);
+        OpenCms.getMemoryMonitor().cacheOrgUnit(orgUnit);
         // return it
         return orgUnit;
     }
@@ -1798,7 +1634,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // clear the internal caches
             clearAccessControlListCache();
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
 
             if (newResource != null) {
                 // fire an event that a new resource has been created
@@ -2088,7 +1925,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         } finally {
             // clear the driver manager cache
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
 
             // fire an event that all properties of a resource have been deleted
             OpenCms.fireCmsEvent(new CmsEvent(
@@ -2241,7 +2079,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the group
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
         m_userDriver.deleteGroup(dbc, group.getName());
-        m_groupCache.remove(new CacheId(group));
+
+        // clear the relevant caches
+        OpenCms.getMemoryMonitor().uncacheGroup(group);
+        OpenCms.getMemoryMonitor().flushUserGroups();
+        OpenCms.getMemoryMonitor().flushACLs();
     }
 
     /**
@@ -2328,11 +2170,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the organizational unit itself
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
 
-        // remove it from the cache
-        m_orgUnitCache.remove(new CacheId(organizationalUnit));
-        // flush all caches
+        // flush relevant caches
         clearAccessControlListCache();
-        m_propertyCache.clear();
+        OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
     }
 
     /**
@@ -2457,8 +2299,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // delete the project itself
         m_projectDriver.deleteProject(dbc, deleteProject);
-        m_projectCache.remove(projectId);
-        m_projectCache.remove(deleteProject.getName());
+        OpenCms.getMemoryMonitor().uncacheProject(deleteProject);
 
         // fire the corresponding event
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
@@ -2721,7 +2562,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush all caches
         clearAccessControlListCache();
-        m_propertyCache.clear();
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
+        OpenCms.getMemoryMonitor().flushProjectResources();
 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
             "resources",
@@ -2878,20 +2721,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_connectionPools = null;
             }
 
-            if (m_userCache != null) {
-                // check only user cache for null, usually if this is not null all others should also be not null
-                clearcache(false);
-            }
-
-            m_userCache = null;
-            m_groupCache = null;
-            m_orgUnitCache = null;
-            m_userGroupsCache = null;
-            m_projectCache = null;
-            m_propertyCache = null;
-            m_resourceCache = null;
-            m_resourceListCache = null;
-            m_accessControlListCache = null;
+            clearcache(false);
 
             m_lockManager = null;
             m_htmlLinkValidator = null;
@@ -3477,7 +3307,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser user = readUser(dbc, username);
         String prefix = ouFqn + "_" + includeChildOus + "_" + directGroupsOnly + "_" + readRoles + "_" + remoteAddress;
         String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(prefix, dbc, user);
-        List groups = (List)m_userGroupsCache.get(cacheKey);
+        List groups = OpenCms.getMemoryMonitor().getCachedUserGroups(cacheKey);
         if (groups == null) {
             // get all groups of the user
             List directGroups = m_userDriver.readGroupsOfUser(
@@ -3562,7 +3392,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // make group list unmodifiable for caching
             groups = Collections.unmodifiableList(new ArrayList(allGroups));
-            m_userGroupsCache.put(cacheKey, groups);
+            OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, groups);
         }
 
         return groups;
@@ -3734,10 +3564,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // try to read from cache
-        CmsGroup parent = (CmsGroup)m_groupCache.get(new CacheId(group.getParentId()));
+        CmsGroup parent = OpenCms.getMemoryMonitor().getCachedGroup(group.getParentId().toString());
         if (parent == null) {
             parent = m_userDriver.readGroup(dbc, group.getParentId());
-            m_groupCache.put(new CacheId(parent), parent);
+            OpenCms.getMemoryMonitor().cacheGroup(parent);
         }
         return parent;
     }
@@ -4090,61 +3920,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // initialize the key generator
         m_keyGenerator = (I_CmsCacheKey)Class.forName(settings.getCacheKeyGenerator()).newInstance();
 
-        // initalize the caches
-        LRUMap lruMap = new LRUMap(settings.getUserCacheSize());
-        m_userCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getGroupCacheSize());
-        m_groupCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_groupCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getOrgUnitCacheSize());
-        m_orgUnitCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_orgUnitCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getUserGroupsCacheSize());
-        m_userGroupsCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userGroupsCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getProjectCacheSize());
-        m_projectCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_projectCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getResourceCacheSize());
-        m_resourceCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getResourcelistCacheSize());
-        m_resourceListCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceListCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getPropertyCacheSize());
-        m_propertyCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_propertyCache", lruMap);
-        }
-
-        lruMap = new LRUMap(settings.getAclCacheSize());
-        m_accessControlListCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_accessControlListCache", lruMap);
-        }
-
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsRelationSystemValidator(this);
 
@@ -4369,7 +4144,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // we must also clear the permission cache
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushPermissions();
 
         // fire resource modification event
         HashMap data = new HashMap(2);
@@ -4472,15 +4247,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.writeUser(dbc, newUser);
 
         // update cache
-        putUserInCache(newUser);
+        OpenCms.getMemoryMonitor().cacheUser(newUser);
 
         // invalidate all user dependent caches
-        m_accessControlListCache.clear();
-        m_groupCache.clear();
-        m_orgUnitCache.clear();
-        m_userGroupsCache.clear();
-        m_resourceListCache.clear();
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushACLs();
+        OpenCms.getMemoryMonitor().flushGroups();
+        OpenCms.getMemoryMonitor().flushOrgUnits();
+        OpenCms.getMemoryMonitor().flushUserGroups();
+        OpenCms.getMemoryMonitor().flushPermissions();
+        OpenCms.getMemoryMonitor().flushResourceLists();
 
         // return the user object read from the driver
         return newUser;
@@ -4612,7 +4387,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // flush all relevant caches
             clearAccessControlListCache();
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
+            OpenCms.getMemoryMonitor().flushProjectResources();
 
             List resources = new ArrayList(4);
             // source
@@ -5153,7 +4930,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             filter.getCacheId(),
             resource.getRootPath()}, dbc.currentProject());
 
-        List resourceList = (List)m_resourceListCache.get(cacheKey);
+        List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
             // read the result form the database
             resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
@@ -5163,7 +4940,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resourceList = filterPermissions(dbc, resourceList, filter);
             }
             // cache the sub resources
-            m_resourceListCache.put(cacheKey, resourceList);
+            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
         }
 
         // we must always apply the result filter and update the context dates
@@ -5331,10 +5108,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsGroup group = null;
         // try to read group from cache
-        group = (CmsGroup)m_groupCache.get(new CacheId(groupId));
+        group = OpenCms.getMemoryMonitor().getCachedGroup(groupId.toString());
         if (group == null) {
             group = m_userDriver.readGroup(dbc, groupId);
-            m_groupCache.put(new CacheId(group), group);
+            OpenCms.getMemoryMonitor().cacheGroup(group);
         }
         return group;
     }
@@ -5353,10 +5130,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsGroup group = null;
         // try to read group from cache
-        group = (CmsGroup)m_groupCache.get(new CacheId(groupname));
+        group = OpenCms.getMemoryMonitor().getCachedGroup(groupname);
         if (group == null) {
             group = m_userDriver.readGroup(dbc, groupname);
-            m_groupCache.put(new CacheId(group), group);
+            OpenCms.getMemoryMonitor().cacheGroup(group);
         }
         return group;
     }
@@ -5410,10 +5187,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsOrganizationalUnit organizationalUnit = null;
         // try to read organizational unit from cache
-        organizationalUnit = (CmsOrganizationalUnit)m_orgUnitCache.get(new CacheId(CacheId.ORGUNIT_PREFIX + ouFqn));
+        organizationalUnit = OpenCms.getMemoryMonitor().getCachedOrgUnit(ouFqn);
         if (organizationalUnit == null) {
             organizationalUnit = m_userDriver.readOrganizationalUnit(dbc, ouFqn);
-            m_orgUnitCache.put(new CacheId(organizationalUnit), organizationalUnit);
+            OpenCms.getMemoryMonitor().cacheOrgUnit(organizationalUnit);
         }
         return organizationalUnit;
     }
@@ -5482,10 +5259,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         String cp = currentPath.toString();
         cacheKey = getCacheKey(null, false, projectId, cp);
-        currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+        currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
         if (currentResource == null) {
             currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
-            m_resourceCache.put(cacheKey, currentResource);
+            OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
         }
 
         pathList.add(0, currentResource);
@@ -5505,10 +5282,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the folder
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
-            currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+            currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
             if (currentResource == null) {
                 currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
-                m_resourceCache.put(cacheKey, currentResource);
+                OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
             }
 
             pathList.add(i, currentResource);
@@ -5530,10 +5307,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the file
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
-            currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+            currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
             if (currentResource == null) {
                 currentResource = m_vfsDriver.readResource(dbc, projectId, cp, filter.includeDeleted());
-                m_resourceCache.put(cacheKey, currentResource);
+                OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
             }
 
             pathList.add(i, currentResource);
@@ -5555,10 +5332,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsProject readProject(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException {
 
         CmsProject project = null;
-        project = (CmsProject)m_projectCache.get(id);
+        project = OpenCms.getMemoryMonitor().getCachedProject(id.toString());
         if (project == null) {
             project = m_projectDriver.readProject(dbc, id);
-            m_projectCache.put(id, project);
+            OpenCms.getMemoryMonitor().cacheProject(project);
         }
         return project;
     }
@@ -5581,10 +5358,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsProject readProject(CmsDbContext dbc, String name) throws CmsException {
 
         CmsProject project = null;
-        project = (CmsProject)m_projectCache.get(name);
+        project = OpenCms.getMemoryMonitor().getCachedProject(name);
         if (project == null) {
             project = m_projectDriver.readProject(dbc, name);
-            m_projectCache.put(name, project);
+            OpenCms.getMemoryMonitor().cacheProject(project);
         }
         return project;
     }
@@ -5688,7 +5465,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // check if we have the result already cached
         String cacheKey = getCacheKey(key, search, dbc.currentProject().getUuid(), resource.getRootPath());
-        CmsProperty value = (CmsProperty)m_propertyCache.get(cacheKey);
+        CmsProperty value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey);
 
         if (value == null) {
             // check if the map of all properties for this resource is already cached
@@ -5698,7 +5475,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.currentProject().getUuid(),
                 resource.getRootPath());
 
-            List allProperties = (List)m_propertyCache.get(cacheKey2);
+            List allProperties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey2);
 
             if (allProperties != null) {
                 // list of properties already read, look up value there 
@@ -5712,7 +5489,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
                 String cacheKey3 = getCacheKey(key, search, dbc.currentProject().getUuid(), resource.getRootPath());
-                value = (CmsProperty)m_propertyCache.get(cacheKey3);
+                value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey3);
 
                 if ((value == null) || value.isNullProperty()) {
                     boolean cont;
@@ -5745,7 +5522,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // freeze the value
             value.setFrozen(true);
             // store the result in the cache
-            m_propertyCache.put(cacheKey, value);
+            OpenCms.getMemoryMonitor().cacheProperty(cacheKey, value);
         }
 
         // ensure the result value is not frozen
@@ -5778,7 +5555,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc.currentProject().getUuid(),
             resource.getRootPath());
 
-        List properties = (List)m_propertyCache.get(cacheKey);
+        List properties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey);
 
         if (properties == null) {
             // result not cached, let's look it up in the DB
@@ -5819,7 +5596,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // set all properties in the result lisst as frozen
             CmsProperty.setFrozen(properties);
             // store the result in the driver manager's cache
-            m_propertyCache.put(cacheKey, properties);
+            OpenCms.getMemoryMonitor().cachePropertyList(cacheKey, properties);
         }
 
         return new ArrayList(properties);
@@ -5929,7 +5706,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             readTree ? "+" : "-",
             parent.getRootPath()}, dbc.currentProject());
 
-        List resourceList = (List)m_resourceListCache.get(cacheKey);
+        List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
             // read the result from the database
             resourceList = m_vfsDriver.readResourceTree(
@@ -5957,7 +5734,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resourceList = filterPermissions(dbc, resourceList, filter);
             }
             // store the result in the resourceList cache
-            m_resourceListCache.put(cacheKey, resourceList);
+            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
         }
         // we must always apply the result filter and update the context dates
         return updateContextDates(dbc, resourceList, filter);
@@ -5997,7 +5774,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 propertyDefinition,
                 value}, dbc.currentProject());
         }
-        List resourceList = (List)m_resourceListCache.get(cacheKey);
+        List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
@@ -6011,7 +5788,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // apply permission filter
             resourceList = filterPermissions(dbc, resourceList, CmsResourceFilter.ALL);
             // store the result in the resourceList cache
-            m_resourceListCache.put(cacheKey, resourceList);
+            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
         }
         return resourceList;
     }
@@ -6144,10 +5921,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException {
 
         CmsUser user = null;
-        user = getUserFromCache(id);
+        user = OpenCms.getMemoryMonitor().getCachedUser(id.toString());
         if (user == null) {
             user = m_userDriver.readUser(dbc, id);
-            putUserInCache(user);
+            OpenCms.getMemoryMonitor().cacheUser(user);
         }
         return user;
     }
@@ -6164,10 +5941,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUser readUser(CmsDbContext dbc, String username) throws CmsDataAccessException {
 
-        CmsUser user = getUserFromCache(username);
+        CmsUser user = OpenCms.getMemoryMonitor().getCachedUser(username);
         if (user == null) {
             user = m_userDriver.readUser(dbc, username);
-            putUserInCache(user);
+            OpenCms.getMemoryMonitor().cacheUser(user);
         }
         return user;
     }
@@ -6189,7 +5966,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // don't read user from cache here because password may have changed
         CmsUser user = m_userDriver.readUser(dbc, username, password, null);
-        putUserInCache(user);
+        OpenCms.getMemoryMonitor().cacheUser(user);
         return user;
     }
 
@@ -6269,6 +6046,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } catch (CmsException exc) {
                 // if the subfolder exists already - all is ok
             } finally {
+                OpenCms.getMemoryMonitor().flushProjectResources();
+
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
                     "project",
                     dbc.currentProject())));
@@ -6359,7 +6138,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
-        m_userGroupsCache.clear();
+        OpenCms.getMemoryMonitor().flushUserGroups();
     }
 
     /**
@@ -6385,7 +6164,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if ((properties != null) && (properties != Collections.EMPTY_LIST)) {
             // write the properties
             m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), resource, properties);
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
         }
 
         // update the resource state
@@ -6804,9 +6584,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // unlock all resources in the project
         m_lockManager.removeResourcesInProject(project.getUuid(), false, removeWfLocks);
         clearResourceCache();
-        m_projectCache.clear();
+        OpenCms.getMemoryMonitor().flushProjects();
         // we must also clear the permission cache
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushPermissions();
     }
 
     /**
@@ -6832,7 +6612,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_lockManager.removeResource(dbc, resource, force, unlockSystemLock);
 
         // we must also clear the permission cache
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushPermissions();
 
         // fire resource modification event
         HashMap data = new HashMap(2);
@@ -7285,9 +7065,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
-        m_groupCache.remove(new CacheId(group));
+        OpenCms.getMemoryMonitor().uncacheGroup(group);
         m_userDriver.writeGroup(dbc, group);
-        m_groupCache.put(new CacheId(group), group);
+        OpenCms.getMemoryMonitor().cacheGroup(group);
     }
 
     /**
@@ -7322,9 +7102,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit organizationalUnit) throws CmsException {
 
-        m_orgUnitCache.remove(new CacheId(organizationalUnit));
+        OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
         m_userDriver.writeOrganizationalUnit(dbc, organizationalUnit);
-        m_orgUnitCache.put(new CacheId(organizationalUnit), organizationalUnit);
+        OpenCms.getMemoryMonitor().cacheOrgUnit(organizationalUnit);
     }
 
     /**
@@ -7342,9 +7122,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeProject(CmsDbContext dbc, CmsProject project) throws CmsException {
 
+        OpenCms.getMemoryMonitor().uncacheProject(project);
         m_projectDriver.writeProject(dbc, project);
-        m_projectCache.put(project.getName(), project);
-        m_projectCache.put(project.getUuid(), project);
+        OpenCms.getMemoryMonitor().cacheProject(project);
     }
 
     /**
@@ -7380,7 +7160,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } finally {
             // update the driver manager cache
             clearResourceCache();
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
 
             // fire an event that a property of a resource has been modified
             Map data = new HashMap();
@@ -7449,7 +7230,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } finally {
             // update the driver manager cache
             clearResourceCache();
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
 
             // fire an event that the properties of a resource have been modified
             OpenCms.fireCmsEvent(new CmsEvent(
@@ -7533,7 +7315,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
         // update the cache
-        putUserInCache(user);
+        OpenCms.getMemoryMonitor().cacheUser(user);
     }
 
     /** 
@@ -7726,8 +7508,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void clearAccessControlListCache() {
 
-        m_accessControlListCache.clear();
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushACLs();
+        OpenCms.getMemoryMonitor().flushPermissions();
         clearResourceCache();
     }
 
@@ -7738,18 +7520,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void clearcache(boolean principalsOnly) {
 
-        m_userCache.clear();
-        m_groupCache.clear();
-        m_orgUnitCache.clear();
-        m_userGroupsCache.clear();
-        m_accessControlListCache.clear();
-        m_securityManager.clearPermissionCache();
+        OpenCms.getMemoryMonitor().flushUsers();
+        OpenCms.getMemoryMonitor().flushGroups();
+        OpenCms.getMemoryMonitor().flushOrgUnits();
+        OpenCms.getMemoryMonitor().flushUserGroups();
+        OpenCms.getMemoryMonitor().flushACLs();
+        OpenCms.getMemoryMonitor().flushPermissions();
 
         if (!principalsOnly) {
-            m_projectCache.clear();
-            m_resourceCache.clear();
-            m_resourceListCache.clear();
-            m_propertyCache.clear();
+            OpenCms.getMemoryMonitor().flushProjects();
+            OpenCms.getMemoryMonitor().flushResources();
+            OpenCms.getMemoryMonitor().flushResourceLists();
+            OpenCms.getMemoryMonitor().flushProperties();
+            OpenCms.getMemoryMonitor().flushPropertyLists();
+            OpenCms.getMemoryMonitor().flushProjectResources();
         }
     }
 
@@ -7758,8 +7542,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void clearResourceCache() {
 
-        m_resourceCache.clear();
-        m_resourceListCache.clear();
+        OpenCms.getMemoryMonitor().flushResources();
+        OpenCms.getMemoryMonitor().flushResourceLists();
     }
 
     /**
@@ -7768,8 +7552,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private void clearUserCache(CmsUser user) {
 
-        removeUserFromCache(user);
-        m_resourceListCache.clear();
+        OpenCms.getMemoryMonitor().uncacheUser(user);
+        OpenCms.getMemoryMonitor().flushResourceLists();
     }
 
     /**
@@ -7957,7 +7741,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Integer.toString(depth),
             resource.getStructureId().toString()}, dbc.currentProject());
 
-        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
+        CmsAccessControlList acl = OpenCms.getMemoryMonitor().getCachedACL(cacheKey);
 
         // return the cached acl if already available
         if (acl != null) {
@@ -8020,8 +7804,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-
-        m_accessControlListCache.put(cacheKey, acl);
+        OpenCms.getMemoryMonitor().cacheACL(cacheKey, acl);
         return acl;
     }
 
@@ -8055,6 +7838,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param flag a boolean flag for the key (only used if prefix is not null)
      * @param projectId the project for which to generate the key
      * @param resource the resource for which to generate the key
+     * 
      * @return String a cache key build from the provided information
      */
     private String getCacheKey(String prefix, boolean flag, CmsUUID projectId, String resource) {
@@ -8156,54 +7940,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Gets a user cache key.<p>
-     * 
-     * @param id the user uuid
-     * @return the user cache key
-     */
-    private String getUserCacheKey(CmsUUID id) {
-
-        return id.toString();
-    }
-
-    /**
-     * Gets a user cache key.<p>
-     * 
-     * @param username the name of the user
-     * 
-     * @return the user cache key
-     */
-    private String getUserCacheKey(String username) {
-
-        StringBuffer result = new StringBuffer(32);
-        result.append(username);
-        return result.toString();
-    }
-
-    /**
-     * Gets a user from cache.<p>
-     * 
-     * @param id the user uuid
-     * @return CmsUser from cache
-     */
-    private CmsUser getUserFromCache(CmsUUID id) {
-
-        return (CmsUser)m_userCache.get(getUserCacheKey(id));
-    }
-
-    /**
-     * Gets a user from cache.<p>
-     * 
-     * @param username the username
-     * 
-     * @return CmsUser from cache
-     */
-    private CmsUser getUserFromCache(String username) {
-
-        return (CmsUser)m_userCache.get(getUserCacheKey(username));
-    }
-
-    /**
      * Returns all groups that are virtualizing the given role in the given ou.<p>
      * 
      * @param dbc the database context
@@ -8269,7 +8005,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if ((group != null) && ((!readRoles && !group.isRole()) || (readRoles && group.isRole()))) {
             String prefix = "_" + includeOtherOuUsers + "_" + directUsersOnly + "_" + ouFqn;
             String cacheKey = m_keyGenerator.getCacheKeyForGroupUsers(prefix, dbc, group);
-            List allUsers = (List)m_userGroupsCache.get(cacheKey);
+            List allUsers = OpenCms.getMemoryMonitor().getCachedUserGroups(cacheKey);
             if (allUsers == null) {
                 Set users = new HashSet(m_userDriver.readUsersOfGroup(dbc, groupname, includeOtherOuUsers));
                 if (readRoles && !directUsersOnly) {
@@ -8317,23 +8053,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 // make user list unmodifiable for caching
                 allUsers = Collections.unmodifiableList(new ArrayList(users));
-                m_userGroupsCache.put(cacheKey, allUsers);
+                OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, allUsers);
             }
             return allUsers;
         } else {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
         }
-    }
-
-    /**
-     * Stores a user in the user cache.<p>
-     * 
-     * @param user the user to be stored in the cache
-     */
-    private void putUserInCache(CmsUser user) {
-
-        m_userCache.put(getUserCacheKey(user.getName()), user);
-        m_userCache.put(getUserCacheKey(user.getId()), user);
     }
 
     /**
@@ -8352,8 +8077,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUUID projectId,
         CmsReadChangedProjectResourceMode mode) throws CmsException {
 
+        String cacheKey = projectId + "_" + mode.toString();
+        List result = OpenCms.getMemoryMonitor().getCachedProjectResources(cacheKey);
+        if (result != null) {
+            return result;
+        }
         List projectResources = readProjectResources(dbc, readProject(dbc, projectId));
-        List result = new ArrayList();
+        result = new ArrayList();
         String currentProjectResource = null;
         List resources = new ArrayList();
         CmsResource currentResource = null;
@@ -8402,21 +8132,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resources.clear();
         resources = null;
 
-        // TODO the calculated resource lists should be cached
-        int todo;
-
+        OpenCms.getMemoryMonitor().cacheProjectResources(cacheKey, result);
         return result;
-    }
-
-    /**
-     * Removes user from Cache.<p>
-     * 
-     * @param user the user to remove
-     */
-    private void removeUserFromCache(CmsUser user) {
-
-        m_userCache.remove(getUserCacheKey(user.getName()));
-        m_userCache.remove(getUserCacheKey(user.getId()));
     }
 
     /**
@@ -8657,7 +8374,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // update the cache
         clearResourceCache();
-        m_propertyCache.clear();
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
 
         if (offlineResource != null) {
             OpenCms.fireCmsEvent(new CmsEvent(

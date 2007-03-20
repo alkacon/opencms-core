@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/16 12:43:39 $
- * Version: $Revision: 1.717.2.148 $
+ * Date   : $Date: 2007/03/20 14:41:56 $
+ * Version: $Revision: 1.717.2.149 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 - Different tempfile handling for "new" operation in direct edit mode of xml contents
 - Document types in opencms-search.xml are now processed exactly in the configured order
 * Fixed issue with upload applet not working with apache redirects
+- Memory Monitor now centralizes all core caches
 
 OpenCms 6.7.1 (aka 7.0 alpha) - February 14, 2007
 ! Upload applet preselects the file filter of the file chooser in dependency of the folder type (gallery)
