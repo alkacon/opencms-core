@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/03/13 09:55:16 $
- * Version: $Revision: 1.37.4.20 $
+ * Date   : $Date: 2007/03/21 09:45:19 $
+ * Version: $Revision: 1.37.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,13 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The CmsLockManager is used by the Cms application to detect 
@@ -62,7 +61,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.20 $ 
+ * @version $Revision: 1.37.4.21 $ 
  * 
  * @since 6.0.0 
  * 
@@ -77,9 +76,6 @@ public final class CmsLockManager {
     /** The flag to indicate if the lcoks should be written to the db. */
     private boolean m_isDirty = false;
 
-    /** A map holding all the {@link CmsLock}s. */
-    private Map m_locks;
-
     /**
      * Default constructor, creates a new lock manager.<p>
      * 
@@ -87,7 +83,6 @@ public final class CmsLockManager {
      */
     public CmsLockManager(CmsDriverManager driverManager) {
 
-        m_locks = new Hashtable();
         m_driverManager = driverManager;
     }
 
@@ -136,7 +131,7 @@ public final class CmsLockManager {
         // handle collisions with exclusive locked sub-resources in case of a folder
         if (resource.isFolder() && newLock.getSystemLock().isUnlocked()) {
             String resourceName = resource.getRootPath();
-            Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CMExceptions
+            Iterator itLocks = new ArrayList(OpenCms.getMemoryMonitor().getAllCachedLocks()).iterator(); // prevent CMExceptions
             while (itLocks.hasNext()) {
                 CmsLock lock = (CmsLock)itLocks.next();
                 String lockedPath = lock.getResourceName();
@@ -157,7 +152,7 @@ public final class CmsLockManager {
     public int countExclusiveLocksInProject(CmsProject project) {
 
         int count = 0;
-        Iterator itLocks = m_locks.values().iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
             if (lock.getEditionLock().isInProject(project)) {
@@ -247,7 +242,7 @@ public final class CmsLockManager {
     public List getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
         List locks = new ArrayList();
-        Iterator itLocks = m_locks.values().iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
             if (filter.isSharedExclusive()) {
@@ -287,7 +282,7 @@ public final class CmsLockManager {
         if (resource == null) {
             return false;
         }
-        Iterator itLocks = m_locks.values().iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
             if (lock.getSystemLock().isUnlocked()) {
@@ -325,13 +320,16 @@ public final class CmsLockManager {
      */
     public void moveResource(String source, String destination) {
 
-        CmsLock lock = (CmsLock)m_locks.remove(source);
+        CmsLock lock = OpenCms.getMemoryMonitor().getCachedLock(source);
         if (lock != null) {
+            OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
             CmsLock newLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
             lock = lock.getRelatedLock();
-            CmsLock relatedLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
-            newLock.setRelatedLock(relatedLock);
-            m_locks.put(destination, newLock);
+            if ((lock != null) && !lock.isNullLock()) {
+                CmsLock relatedLock = new CmsLock(destination, lock.getUserId(), lock.getProject(), lock.getType());
+                newLock.setRelatedLock(relatedLock);
+            }
+            OpenCms.getMemoryMonitor().cacheLock(newLock);
         }
     }
 
@@ -345,7 +343,7 @@ public final class CmsLockManager {
      */
     public void readLocks(CmsDbContext dbc) throws CmsException {
 
-        m_locks.clear();
+        OpenCms.getMemoryMonitor().flushLocks();
         List locks = m_driverManager.getProjectDriver().readLocks(dbc);
         Iterator itLocks = locks.iterator();
         while (itLocks.hasNext()) {
@@ -384,7 +382,7 @@ public final class CmsLockManager {
      */
     public void removeLocks(CmsUUID userId) {
 
-        Iterator itLocks = new ArrayList(m_locks.values()).iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             boolean editLock = currentLock.getEditionLock().getUserId().equals(userId);
@@ -443,9 +441,9 @@ public final class CmsLockManager {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
-                Iterator itLocks = new ArrayList(m_locks.keySet()).iterator();
+                Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
                 while (itLocks.hasNext()) {
-                    String lockedPath = (String)itLocks.next();
+                    String lockedPath = ((CmsLock)itLocks.next()).getResourceName();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
                         unlockResource(lockedPath, false);
@@ -456,12 +454,13 @@ public final class CmsLockManager {
         }
 
         if (lock.getType().isSharedExclusive()) {
+            List locks = OpenCms.getMemoryMonitor().getAllCachedLockPaths();
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
             List siblings = internalReadSiblings(dbc, resource);
             for (int i = 0; i < siblings.size(); i++) {
                 CmsResource sibling = (CmsResource)siblings.get(i);
-                if (m_locks.containsKey(sibling.getRootPath())) {
+                if (locks.contains(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
                     unlockResource(sibling.getRootPath(), false);
                     break;
@@ -486,7 +485,7 @@ public final class CmsLockManager {
      */
     public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock, boolean removeWfLocks) {
 
-        Iterator itLocks = new ArrayList(m_locks.values()).iterator(); // prevent CME
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator(); // prevent CME
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (!currentLock.getSystemLock().isUnlocked()) {
@@ -517,7 +516,7 @@ public final class CmsLockManager {
      */
     public void removeTempLocks(CmsUUID userId) {
 
-        Iterator itLocks = new ArrayList(m_locks.values()).iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (currentLock.isTemporary() && currentLock.getUserId().equals(userId)) {
@@ -534,15 +533,14 @@ public final class CmsLockManager {
         StringBuffer buf = new StringBuffer();
 
         // bring the list of locked resources into a human readable order first
-        List lockedResources = new ArrayList(m_locks.keySet());
+        List lockedResources = OpenCms.getMemoryMonitor().getAllCachedLocks();
         Collections.sort(lockedResources);
 
         // iterate all locks
         Iterator itLocks = lockedResources.iterator();
         while (itLocks.hasNext()) {
-            String lockedPath = (String)itLocks.next();
-            CmsLock currentLock = (CmsLock)m_locks.get(lockedPath);
-            buf.append(currentLock).append("\n");
+            CmsLock lock = (CmsLock)itLocks.next();
+            buf.append(lock).append("\n");
         }
         return buf.toString();
     }
@@ -561,7 +559,7 @@ public final class CmsLockManager {
 
         if (m_isDirty) {
             // write the locks only if really needed
-            List locks = new ArrayList(m_locks.values());
+            List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
             m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
         }
@@ -573,9 +571,8 @@ public final class CmsLockManager {
     protected void finalize() throws Throwable {
 
         try {
-            if (m_locks != null) {
-                m_locks.clear();
-                m_locks = null;
+            if (OpenCms.getMemoryMonitor() != null) {
+                OpenCms.getMemoryMonitor().flushLocks();
             }
         } catch (Throwable t) {
             // ignore
@@ -642,7 +639,7 @@ public final class CmsLockManager {
      */
     private CmsLock getDirectLock(String resourcename) {
 
-        return (CmsLock)m_locks.get(resourcename);
+        return OpenCms.getMemoryMonitor().getCachedLock(resourcename);
     }
 
     /**
@@ -654,11 +651,12 @@ public final class CmsLockManager {
      */
     private CmsLock getParentFolderLock(String resourceName) {
 
-        Iterator itLocks = new ArrayList(m_locks.keySet()).iterator();
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            String lockedPath = (String)itLocks.next();
-            if (lockedPath.endsWith("/") && resourceName.startsWith(lockedPath) && !resourceName.equals(lockedPath)) {
-                CmsLock lock = (CmsLock)m_locks.get(lockedPath);
+            CmsLock lock = (CmsLock)itLocks.next();
+            if (lock.getResourceName().endsWith("/")
+                && resourceName.startsWith(lock.getResourceName())
+                && !resourceName.equals(lock.getResourceName())) {
                 // system locks does not get inherited
                 lock = lock.getEditionLock();
                 // check the lock
@@ -721,14 +719,14 @@ public final class CmsLockManager {
      */
     private void internalLockResource(CmsLock lock) throws CmsLockException {
 
-        CmsLock currentLock = (CmsLock)m_locks.get(lock.getResourceName());
+        CmsLock currentLock = OpenCms.getMemoryMonitor().getCachedLock(lock.getResourceName());
         if (currentLock != null) {
             if (currentLock.getSystemLock().equals(lock) || currentLock.getEditionLock().equals(lock)) {
                 return;
             }
             if (!currentLock.getSystemLock().isUnlocked() && lock.getSystemLock().isUnlocked()) {
                 lock.setRelatedLock(currentLock);
-                m_locks.put(lock.getResourceName(), lock);
+                OpenCms.getMemoryMonitor().cacheLock(lock);
             } else if (currentLock.getSystemLock().isUnlocked() && !lock.getSystemLock().isUnlocked()) {
                 currentLock.setRelatedLock(lock);
             } else {
@@ -738,7 +736,7 @@ public final class CmsLockManager {
                     lock));
             }
         } else {
-            m_locks.put(lock.getResourceName(), lock);
+            OpenCms.getMemoryMonitor().cacheLock(lock);
         }
     }
 
@@ -848,7 +846,7 @@ public final class CmsLockManager {
         m_isDirty = true;
 
         // get the current lock
-        CmsLock lock = (CmsLock)m_locks.get(resourceName);
+        CmsLock lock = OpenCms.getMemoryMonitor().getCachedLock(resourceName);
         if (lock == null) {
             return CmsLock.getNullLock();
         }
@@ -858,7 +856,7 @@ public final class CmsLockManager {
             if (!lock.getSystemLock().isUnlocked()) {
                 // if a system lock has to be removed
                 // user locks are removed too
-                m_locks.remove(resourceName);
+                OpenCms.getMemoryMonitor().uncacheLock(resourceName);
                 return lock;
             } else {
                 // if it is a edition lock, do nothing
@@ -867,7 +865,7 @@ public final class CmsLockManager {
         } else {
             if (lock.getSystemLock().isUnlocked()) {
                 // if it is just an edition lock just remove it
-                m_locks.remove(resourceName);
+                OpenCms.getMemoryMonitor().uncacheLock(resourceName);
                 return lock;
             } else {
                 // if it is a system lock check the edition lock
@@ -878,7 +876,7 @@ public final class CmsLockManager {
                     sysLock.setRelatedLock(null);
                     if (!sysLock.equals(lock)) {
                         // replace the lock entry if needed
-                        m_locks.put(resourceName, sysLock);
+                        OpenCms.getMemoryMonitor().cacheLock(sysLock);
                     }
                     return tmp;
                 } else {

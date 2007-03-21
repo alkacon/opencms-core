@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/20 14:38:49 $
- * Version: $Revision: 1.58.4.4 $
+ * Date   : $Date: 2007/03/21 09:45:19 $
+ * Version: $Revision: 1.58.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockManager;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsEvent;
@@ -62,6 +64,8 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.4 $ 
+ * @version $Revision: 1.58.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +119,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
+
+    /** A temporary cache for XML content definitions. */
+    private Map m_contentDefinitionsCache;
 
     /** Cache for groups. */
     private Map m_groupCache;
@@ -142,6 +149,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** The time the last warning log was written. */
     private long m_lastLogWarning;
+
+    /** Cache for the resource locks. */
+    private Map m_lockCache;
 
     /** The number of times the log entry was written. */
     private int m_logCount;
@@ -199,6 +209,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
+
+    /** A permanent cache to avoid multiple readings of often used files from the VFS. */
+    private Map m_xmlPermanentEntityCache;
+
+    /** A temporary cache to avoid multiple readings of often used files from the VFS. */
+    private Map m_xmlTemporaryEntityCache;
 
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
@@ -311,6 +327,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given content definition under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param contentDefinition the content definition to cache
+     */
+    public void cacheContentDefinition(String key, CmsXmlContentDefinition contentDefinition) {
+
+        m_contentDefinitionsCache.put(key, contentDefinition);
+    }
+
+    /**
      * Caches the given group under its id AND fully qualified name.<p>
      * 
      * @param group the group to cache
@@ -333,6 +360,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // this may be accessed before initialization
             m_localeCache.put(key, locale);
         }
+    }
+
+    /**
+     * Caches the given lock.<p>
+     *
+     * The lock is cached by it resource's root path.<p>
+     * 
+     * @param lock the lock to cache
+     */
+    public void cacheLock(CmsLock lock) {
+
+        m_lockCache.put(lock.getResourceName(), lock);
     }
 
     /**
@@ -468,6 +507,28 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given xml entity under the given system id.<p>
+     * 
+     * @param systemId the cache key
+     * @param content the content to cache
+     */
+    public void cacheXmlPermanentEntity(String systemId, byte[] content) {
+
+        m_xmlPermanentEntityCache.put(systemId, content);
+    }
+
+    /**
+     * Caches the given xml entity under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param content the content to cache
+     */
+    public void cacheXmlTemporaryEntity(String key, byte[] content) {
+
+        m_xmlTemporaryEntityCache.put(key, content);
+    }
+
+    /**
      * Returns if monitoring is enabled.<p>
      * 
      * @return true if monitoring is enabled
@@ -486,6 +547,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes the xml content definitions cache.<p>
+     */
+    public void flushContentDefinitions() {
+
+        m_contentDefinitionsCache.clear();
+    }
+
+    /**
      * Flushes the group cache.<p>
      */
     public void flushGroups() {
@@ -499,6 +568,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void flushLocales() {
 
         m_localeCache.clear();
+    }
+
+    /**
+     * Flushes the locks cache.<p>
+     */
+    public void flushLocks() {
+
+        m_lockCache.clear();
     }
 
     /**
@@ -598,6 +675,44 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes the xml permanent entities cache.<p>
+     */
+    public void flushXmlPermanentEntities() {
+
+        m_xmlPermanentEntityCache.clear();
+
+    }
+
+    /**
+     * Flushes the xml temporary entities cache.<p>
+     */
+    public void flushXmlTemporaryEntities() {
+
+        m_xmlTemporaryEntityCache.clear();
+
+    }
+
+    /**
+     * Returns all cached lock root paths.<p>
+     * 
+     * @return a list of {@link String} objects
+     */
+    public List getAllCachedLockPaths() {
+
+        return new ArrayList(m_lockCache.keySet());
+    }
+
+    /**
+     * Returns all cached locks.<p>
+     * 
+     * @return a list of {@link CmsLock} objects
+     */
+    public List getAllCachedLocks() {
+
+        return new ArrayList(m_lockCache.values());
+    }
+
+    /**
      * Returns the ACL cached with the given cache key or <code>null</code> if not found.<p>
      * 
      * @param key the cache key to look for
@@ -607,6 +722,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsAccessControlList getCachedACL(String key) {
 
         return (CmsAccessControlList)m_accessControlListCache.get(key);
+    }
+
+    /**
+     * Returns the xml content definition cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the xml content definition cached with the given cache key
+     */
+    public CmsXmlContentDefinition getCachedContentDefinition(String key) {
+
+        return (CmsXmlContentDefinition)m_contentDefinitionsCache.get(key);
     }
 
     /**
@@ -635,6 +762,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return null;
         }
         return (Locale)m_localeCache.get(key);
+    }
+
+    /**
+     * Returns the lock cached with the given root path or <code>null</code> if not found.<p>
+     * 
+     * @param rootPath the root path to look for
+     * 
+     * @return the lock cached with the given root path
+     */
+    public CmsLock getCachedLock(String rootPath) {
+
+        return (CmsLock)m_lockCache.get(rootPath);
     }
 
     /**
@@ -782,6 +921,30 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Returns the xml permanent entity content cached with the given systemId or <code>null</code> if not found.<p>
+     * 
+     * @param systemId the cache key to look for
+     * 
+     * @return the xml permanent entity content cached with the given cache key
+     */
+    public byte[] getCachedXmlPermanentEntity(String systemId) {
+
+        return (byte[])m_xmlPermanentEntityCache.get(systemId);
+    }
+
+    /**
+     * Returns the xml temporary entity content cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the xml temporary entity content cached with the given cache key
+     */
+    public byte[] getCachedXmlTemporaryEntity(String key) {
+
+        return (byte[])m_xmlTemporaryEntityCache.get(key);
+    }
+
+    /**
      * Returns the configuration.<p>
      *
      * @return the configuration
@@ -870,6 +1033,89 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         // create and register all system caches
 
+        LRUMap cacheTemporary = new LRUMap(128);
+        m_xmlTemporaryEntityCache = Collections.synchronizedMap(cacheTemporary);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
+
+        Map cachePermanent = new HashMap(32);
+        m_xmlPermanentEntityCache = Collections.synchronizedMap(cachePermanent);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
+
+        LRUMap cacheContentDefinitions = new LRUMap(64);
+        m_contentDefinitionsCache = Collections.synchronizedMap(cacheContentDefinitions);
+        register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
+
+        // lock cache
+        m_lockCache = new HashMap();
+        register(CmsLockManager.class.getName(), m_lockCache);
+
+        // locale cache
+        Map map = new HashMap();
+        m_localeCache = Collections.synchronizedMap(map);
+        register(CmsLocaleManager.class.getName(), map);
+
+        // permissions cache
+        LRUMap lruMap = new LRUMap(cacheSettings.getPermissionCacheSize());
+        m_permissionCache = Collections.synchronizedMap(lruMap);
+        register(CmsSecurityManager.class.getName(), lruMap);
+
+        // user cache
+        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
+        m_userCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".userCache", lruMap);
+
+        // group cache
+        lruMap = new LRUMap(cacheSettings.getGroupCacheSize());
+        m_groupCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".groupCache", lruMap);
+
+        // organizational unit cache
+        lruMap = new LRUMap(cacheSettings.getOrgUnitCacheSize());
+        m_orgUnitCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".orgUnitCache", lruMap);
+
+        // user groups list cache
+        lruMap = new LRUMap(cacheSettings.getUserGroupsCacheSize());
+        m_userGroupsCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".userGroupsCache", lruMap);
+
+        // project cache
+        lruMap = new LRUMap(cacheSettings.getProjectCacheSize());
+        m_projectCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
+
+        // project resources cache cache
+        int todo; // add new configuration entry for this
+        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
+        m_projectResourcesCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
+
+        // resource cache
+        lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
+        m_resourceCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".resourceCache", lruMap);
+
+        // resource list cache
+        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
+        m_resourceListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".resourceListCache", lruMap);
+
+        // property cache
+        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
+        m_propertyCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
+
+        // property list cache
+        int todo2; // add new configuration entry for this 
+        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
+        m_propertyListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
+
+        // acl cache
+        lruMap = new LRUMap(cacheSettings.getAclCacheSize());
+        m_accessControlListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
+
         // vfs object cache
         m_vfsObjectCache = new HashMap();
         register(CmsVfsMemoryObjectCache.class.getName(), m_vfsObjectCache);
@@ -878,67 +1124,34 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_memObjectCache = new HashMap();
         register(CmsMemoryObjectCache.class.getName(), m_memObjectCache);
 
-        // locale cache
-        LRUMap lruMap = new LRUMap(256);
-        m_localeCache = Collections.synchronizedMap(lruMap);
-        register(CmsLocaleManager.class.getName(), lruMap);
-
-        // permissions cache
-        lruMap = new LRUMap(cacheSettings.getPermissionCacheSize());
-        m_permissionCache = Collections.synchronizedMap(lruMap);
-        register(CmsSecurityManager.class.getName(), lruMap);
-
-        // initalize the caches
-        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
-        m_userCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".userCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getGroupCacheSize());
-        m_groupCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".groupCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getOrgUnitCacheSize());
-        m_orgUnitCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".orgUnitCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getUserGroupsCacheSize());
-        m_userGroupsCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".userGroupsCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getProjectCacheSize());
-        m_projectCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
-
-        int todo; // add new configuration entry for this
-        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
-        m_projectResourcesCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
-        m_resourceCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".resourceCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
-        m_resourceListCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".resourceListCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
-        m_propertyCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
-
-        int todo2; // add new configuration entry for this 
-        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
-        m_propertyListCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
-
-        lruMap = new LRUMap(cacheSettings.getAclCacheSize());
-        m_accessControlListCache = Collections.synchronizedMap(lruMap);
-        register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
-
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
+    }
+
+    /**
+     * Ckecks if there is a monitored object with the given key.<p>
+     * 
+     * @param key the key to check
+     * 
+     * @return <code>true</code> if there is a monitored object with the given key
+     */
+    public boolean isMonitoring(String key) {
+
+        return m_monitoredObjects.containsKey(key);
+    }
+
+    /**
+     * Checks if some kind of persistence is needed.<p>
+     * 
+     * This could be overwritten in a distributed environment.<p>
+     * 
+     * @return <code>true</code> if some kind of persistence is needed
+     */
+    public boolean isPersistanceNeeded() {
+
+        return true;
     }
 
     /**
@@ -1011,6 +1224,44 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes all cached objects.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void shutdown() throws Exception {
+
+        flushACLs();
+        flushGroups();
+        flushLocales();
+        flushMemObjects();
+        flushOrgUnits();
+        flushPermissions();
+        flushProjectResources();
+        flushProjects();
+        flushProperties();
+        flushPropertyLists();
+        flushResourceLists();
+        flushResources();
+        flushUserGroups();
+        flushUsers();
+        flushVfsObjects();
+        flushLocks();
+        flushContentDefinitions();
+        flushXmlPermanentEntities();
+        flushXmlTemporaryEntities();
+    }
+
+    /**
+     * Removes the given xml content definition from the cache.<p>
+     * 
+     * @param key the cache key to remove from cache
+     */
+    public void uncacheContentDefinition(String key) {
+
+        m_contentDefinitionsCache.remove(key);
+    }
+
+    /**
      * Removes the given group from the cache.<p>
      * 
      * The group is removed by name AND also by uuid.<p>
@@ -1021,6 +1272,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         m_groupCache.remove(group.getId().toString());
         m_groupCache.remove(group.getName());
+    }
+
+    /**
+     * Removes the cached lock for the given root path from the cache.<p>
+     * 
+     * @param rootPath the root path of the lock to remove from cache
+     */
+    public void uncacheLock(String rootPath) {
+
+        m_lockCache.remove(rootPath);
     }
 
     /**
@@ -1073,27 +1334,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Flushes all cached objects.<p>
+     * Removes the given xml temporary entity from the cache.<p>
      * 
-     * @throws Exception if something goes wrong 
+     * @param key the cache key to remove from cache
      */
-    public void shutdown() throws Exception {
+    public void uncacheXmlTemporaryEntity(String key) {
 
-        flushACLs();
-        flushGroups();
-        flushLocales();
-        flushMemObjects();
-        flushOrgUnits();
-        flushPermissions();
-        flushProjectResources();
-        flushProjects();
-        flushProperties();
-        flushPropertyLists();
-        flushResourceLists();
-        flushResources();
-        flushUserGroups();
-        flushUsers();
-        flushVfsObjects();
+        m_xmlTemporaryEntityCache.remove(key);
     }
 
     /**

@@ -56,7 +56,7 @@
 			<group-guests>Guests</group-guests>
 		</defaultusers>	
 		<defaultcontentencoding>UTF-8</defaultcontentencoding>
-		<memorymonitor>
+		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
 			<maxusagepercent>90</maxusagepercent>
 			<log-interval>600</log-interval>
 			<email-interval>43200</email-interval>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.36.4.13 $
+ * Date   : $Date: 2007/03/21 09:45:19 $
+ * Version: $Revision: 1.36.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.13 $
+ * @version $Revision: 1.36.4.14 $
  * 
  * @since 6.0.0
  */
@@ -882,11 +882,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add memorymonitor configuration rule        
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, CmsMemoryMonitorConfiguration.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "initialize", 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_MAXUSAGE_PERCENT, 0);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_LOG_INTERVAL, 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_INTERVAL, 2);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_WARNING_INTERVAL, 3);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "initialize", 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, 0, A_CLASS);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_MAXUSAGE_PERCENT, 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_LOG_INTERVAL, 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_INTERVAL, 3);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_WARNING_INTERVAL, 4);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_SENDER, "setEmailSender", 0);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_RECEIVER + "/" + N_RECEIVER,
@@ -1221,6 +1222,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // create <memorymonitor> node
         if (m_cmsMemoryMonitorConfiguration != null) {
             Element memorymonitorElement = systemElement.addElement(N_MEMORYMONITOR);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_cmsMemoryMonitorConfiguration.getClassName())) {
+                memorymonitorElement.addAttribute(A_CLASS, m_cmsMemoryMonitorConfiguration.getClassName());
+            }
             if (m_cmsMemoryMonitorConfiguration.getMaxUsagePercent() > 0) {
                 memorymonitorElement.addElement(N_MAXUSAGE_PERCENT).addText(
                     String.valueOf(m_cmsMemoryMonitorConfiguration.getMaxUsagePercent()));

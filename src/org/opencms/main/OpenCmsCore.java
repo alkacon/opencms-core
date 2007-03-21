@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/03/20 14:38:48 $
- * Version: $Revision: 1.218.4.29 $
+ * Date   : $Date: 2007/03/21 09:45:19 $
+ * Version: $Revision: 1.218.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.29 $ 
+ * @version $Revision: 1.218.4.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -925,9 +925,6 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
         }
 
-        // initialize the memory monitor
-        m_memoryMonitor = new CmsMemoryMonitor();
-
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             CmsSystemInfo.FOLDER_CONFIG));
@@ -943,6 +940,24 @@ public final class OpenCmsCore {
 
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
+
+        // initialize the memory monitor
+        CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
+        CmsCacheSettings cacheSettings = systemConfiguration.getCacheSettings();
+        // initialize the memory monitor
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(memoryMonitorConfiguration.getClassName())) {
+                m_memoryMonitor = (CmsMemoryMonitor)Class.forName(memoryMonitorConfiguration.getClassName()).newInstance();
+            } else {
+                m_memoryMonitor = new CmsMemoryMonitor();
+            }
+        } catch (Exception e) {
+            // we can not start without a valid memory monitor
+            throw new CmsInitException(Messages.get().container(
+                Messages.ERR_CRITICAL_INIT_MEMORY_MONITOR_1,
+                memoryMonitorConfiguration.getClassName()), e);
+        }
+        m_memoryMonitor.initialize(memoryMonitorConfiguration, cacheSettings);
 
         // get the event manager from the configuration and initialize it with the events already registered
         CmsEventManager configuredEventManager = systemConfiguration.getEventManager();
@@ -960,11 +975,6 @@ public final class OpenCmsCore {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_OPENCMS_ENCODING_1, defaultEncoding));
         }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
-
-        // initialize the memory monitor
-        CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
-        CmsCacheSettings cacheSettings = systemConfiguration.getCacheSettings();
-        m_memoryMonitor.initialize(memoryMonitorConfiguration, cacheSettings);
 
         // set version history information        
         getSystemInfo().setVersionHistorySettings(

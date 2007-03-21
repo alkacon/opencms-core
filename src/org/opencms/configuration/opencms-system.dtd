@@ -302,6 +302,7 @@ Each job can have an optional list of parameters.
 # MemoryMonitor configuration
 -->
 <!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval?, warning-interval, email-sender?, email-receiver?)>
+<!ATTLIST memorymonitor class CDATA "">
 
 <!ELEMENT maxusagepercent (#PCDATA)>
 <!ELEMENT log-interval (#PCDATA)>
