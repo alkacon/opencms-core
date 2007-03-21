@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.218.4.30 $
+ * Date   : $Date: 2007/03/21 15:11:43 $
+ * Version: $Revision: 1.218.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.30 $ 
+ * @version $Revision: 1.218.4.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -1787,9 +1787,9 @@ public final class OpenCmsCore {
         // remove the controller attribute from the request
         CmsFlexController.removeController(req);
 
-        boolean canWrite = !res.isCommitted() && !res.containsHeader("Location");
+        boolean canWrite = (!res.isCommitted() && !res.containsHeader("Location"));
         int status = -1;
-        boolean isNotGuest = false;
+        boolean isGuest = true;
 
         if (t instanceof ServletException) {
             ServletException s = (ServletException)t;
@@ -1809,7 +1809,7 @@ public final class OpenCmsCore {
         } else if (t instanceof CmsDbEntryNotFoundException) {
             // user or group does not exist
             status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-            isNotGuest = true;
+            isGuest = false;
         } else if (t instanceof CmsVfsResourceNotFoundException) {
             // file not found - display 404 error.
             status = HttpServletResponse.SC_NOT_FOUND;
@@ -1826,10 +1826,9 @@ public final class OpenCmsCore {
         res.setStatus(status);
 
         try {
-            if (cms != null && cms.getRequestContext().currentUser() != null) {
-                isNotGuest = isNotGuest && (!cms.getRequestContext().currentUser().isGuestUser());
-                isNotGuest = isNotGuest
-                    && (!cms.userInGroup(
+            if ((cms != null) && (cms.getRequestContext().currentUser() != null)) {
+                isGuest = isGuest
+                    && (cms.getRequestContext().currentUser().isGuestUser() || cms.userInGroup(
                         cms.getRequestContext().currentUser().getName(),
                         OpenCms.getDefaultUsers().getGroupGuests()));
             }
@@ -1840,7 +1839,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (isNotGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (!isGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
