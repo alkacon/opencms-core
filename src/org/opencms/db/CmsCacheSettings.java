@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2007/01/08 14:03:01 $
- * Version: $Revision: 1.4.8.1 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.4.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,12 @@
 
 package org.opencms.db;
 
-
 /**
  * The settings of the OpenCms driver manager.<p>
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.4.8.1 $
+ * @version $Revision: 1.4.8.2 $
  * 
  * @since 6.0.0
  */
@@ -53,7 +52,7 @@ public class CmsCacheSettings {
     private int m_groupCacheSize;
 
     /** The size of the driver manager's cache for organizational units. */
-    private int m_orgUnitCacheSize;
+    private int m_orgUnitCacheSize = -1; // this configuration entry is optional 
 
     /** The size of the security manager's cache for permission checks. */
     private int m_permissionCacheSize;
@@ -61,8 +60,14 @@ public class CmsCacheSettings {
     /** The size of the driver manager's cache for projects. */
     private int m_projectCacheSize;
 
+    /** The size of the driver manager's cache for project resources. */
+    private int m_projectResourcesCacheSize = -1; // this configuration entry is optional
+
     /** The size of the driver manager's cache for properties. */
     private int m_propertyCacheSize;
+
+    /** The size of the driver manager's cache for property lists. */
+    private int m_propertyListsCacheSize = -1; // this configuration entry is optional
 
     /** The size of the driver manager's cache for resources. */
     private int m_resourceCacheSize;
@@ -105,6 +110,42 @@ public class CmsCacheSettings {
     }
 
     /**
+     * Returns the size of the driver manager's cache for organizational units.<p>
+     *
+     * May be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the driver manager's cache for organizational units
+     */
+    public int getConfiguredOrgUnitCacheSize() {
+
+        return m_orgUnitCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for project resources.<p>
+     *
+     * May be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the driver manager's cache for project resources
+     */
+    public int getConfiguredProjectResourcesCacheSize() {
+
+        return m_projectResourcesCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for property lists.<p>
+     *
+     * May be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the driver manager's cache for property lists
+     */
+    public int getConfiguredPropertyListsCacheSize() {
+
+        return m_propertyListsCacheSize;
+    }
+
+    /**
      * Returns the size of the driver manager's cache for groups.<p>
      *
      * @return the size of the driver manager's cache for groups
@@ -121,6 +162,9 @@ public class CmsCacheSettings {
      */
     public int getOrgUnitCacheSize() {
 
+        if (m_orgUnitCacheSize < 0) {
+            return getGroupCacheSize();
+        }
         return m_orgUnitCacheSize;
     }
 
@@ -145,6 +189,19 @@ public class CmsCacheSettings {
     }
 
     /**
+     * Returns the size of the driver manager's cache for project resources.<p>
+     *
+     * @return the size of the driver manager's cache for project resources
+     */
+    public int getProjectResourcesCacheSize() {
+
+        if (m_propertyListsCacheSize < 0) {
+            return getProjectCacheSize();
+        }
+        return m_projectResourcesCacheSize;
+    }
+
+    /**
      * Returns the size of the driver manager's cache for properties.<p>
      *
      * @return the size of the driver manager's cache for properties
@@ -152,6 +209,19 @@ public class CmsCacheSettings {
     public int getPropertyCacheSize() {
 
         return m_propertyCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for property lists.<p>
+     *
+     * @return the size of the driver manager's cache for property lists
+     */
+    public int getPropertyListsCacheSize() {
+
+        if (m_propertyListsCacheSize < 0) {
+            return getPropertyCacheSize();
+        }
+        return m_propertyListsCacheSize;
     }
 
     /**
@@ -255,6 +325,16 @@ public class CmsCacheSettings {
     }
 
     /**
+     * Sets the size of the driver manager's cache for project resources.<p>
+     *
+     * @param size the size of the driver manager's cache for project resources
+     */
+    public void setProjectResourcesCacheSize(String size) {
+
+        m_projectResourcesCacheSize = getIntValue(size, -1);
+    }
+
+    /**
      * Sets the size of the driver manager's cache for properties.<p>
      *
      * @param size the size of the driver manager's cache for properties
@@ -262,6 +342,16 @@ public class CmsCacheSettings {
     public void setPropertyCacheSize(String size) {
 
         m_propertyCacheSize = getIntValue(size, 128);
+    }
+
+    /**
+     * Sets the size of the driver manager's cache for property lists.<p>
+     *
+     * @param size the size of the driver manager's cache for property lists
+     */
+    public void setPropertyListsCacheSize(String size) {
+
+        m_propertyListsCacheSize = getIntValue(size, -1);
     }
 
     /**

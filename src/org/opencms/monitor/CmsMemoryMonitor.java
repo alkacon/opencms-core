@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/21 10:14:07 $
- * Version: $Revision: 1.58.4.6 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.58.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.6 $ 
+ * @version $Revision: 1.58.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1033,21 +1033,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         // create and register all system caches
 
-        LRUMap cacheTemporary = new LRUMap(128);
-        m_xmlTemporaryEntityCache = Collections.synchronizedMap(cacheTemporary);
+        LRUMap xmlTemporaryCache = new LRUMap(128);
+        m_xmlTemporaryEntityCache = Collections.synchronizedMap(xmlTemporaryCache);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
 
-        Map cachePermanent = new HashMap(32);
-        m_xmlPermanentEntityCache = Collections.synchronizedMap(cachePermanent);
+        Map xmlPermanentCache = new HashMap(32);
+        m_xmlPermanentEntityCache = Collections.synchronizedMap(xmlPermanentCache);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
 
-        LRUMap cacheContentDefinitions = new LRUMap(64);
-        m_contentDefinitionsCache = Collections.synchronizedMap(cacheContentDefinitions);
+        LRUMap contentDefinitionsCache = new LRUMap(64);
+        m_contentDefinitionsCache = Collections.synchronizedMap(contentDefinitionsCache);
         register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
 
         // lock cache
-        m_lockCache = new HashMap();
-        register(CmsLockManager.class.getName(), m_lockCache);
+        Map lockCache = new HashMap();
+        m_lockCache = Collections.synchronizedMap(lockCache);
+        register(CmsLockManager.class.getName(), lockCache);
 
         // locale cache
         Map map = new HashMap();
@@ -1085,8 +1086,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
 
         // project resources cache cache
-        int todo; // add new configuration entry for this
-        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
+        lruMap = new LRUMap(cacheSettings.getProjectResourcesCacheSize());
         m_projectResourcesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
 
@@ -1106,8 +1106,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
 
         // property list cache
-        int todo2; // add new configuration entry for this 
-        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
+        lruMap = new LRUMap(cacheSettings.getPropertyListsCacheSize());
         m_propertyListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
 
@@ -1117,17 +1116,31 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
 
         // vfs object cache
-        m_vfsObjectCache = new HashMap();
-        register(CmsVfsMemoryObjectCache.class.getName(), m_vfsObjectCache);
+        Map vfsObjectCache = new HashMap();
+        m_vfsObjectCache = Collections.synchronizedMap(vfsObjectCache);
+        register(CmsVfsMemoryObjectCache.class.getName(), vfsObjectCache);
 
         // memory object cache
-        m_memObjectCache = new HashMap();
-        register(CmsMemoryObjectCache.class.getName(), m_memObjectCache);
+        Map memObjectCache = new HashMap();
+        m_memObjectCache = Collections.synchronizedMap(memObjectCache);
+        register(CmsMemoryObjectCache.class.getName(), memObjectCache);
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
+    }
+
+    /**
+     * Checks if there is a registered monitored object with the given key.<p>
+     * 
+     * @param key the key to look for
+     * 
+     * @return <code>true</code> if there is a registered monitored object with the given key
+     */
+    public boolean isMonitoring(String key) {
+
+        return (m_monitoredObjects.get(key) != null);
     }
 
     /**

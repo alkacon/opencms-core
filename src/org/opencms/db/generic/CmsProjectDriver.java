@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/02 08:46:50 $
- * Version: $Revision: 1.241.4.20 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.241.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.20 $
+ * @version $Revision: 1.241.4.21 $
  * 
  * @since 6.0.0 
  */
@@ -1418,23 +1418,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         List locks = new ArrayList(256);
-        int count = 0;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_READALL");
             ResultSet rs = stmt.executeQuery();
-            CmsLock lock;
-            count = 0;
-            String resourcePath;
-            String userId;
-            CmsUUID projectId;
-            int lockType;
-
             while (rs.next()) {
-                resourcePath = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_RESOURCE_PATH"));
-                userId = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_USER_ID"));
-                projectId = new CmsUUID(rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID")));
-                lockType = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_LOCK_TYPE"));
+                String resourcePath = rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_RESOURCE_PATH"));
+                CmsUUID userId = new CmsUUID(rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_USER_ID")));
+                CmsUUID projectId = new CmsUUID(rs.getString(m_sqlManager.readQuery("C_RESOURCE_LOCKS_PROJECT_ID")));
+                int lockType = rs.getInt(m_sqlManager.readQuery("C_RESOURCE_LOCKS_LOCK_TYPE"));
                 CmsProject project;
                 try {
                     project = readProject(dbc, projectId);
@@ -1443,13 +1435,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     project = null;
                 }
                 if (project != null) {
-                    lock = new CmsLock(resourcePath, new CmsUUID(userId), project, CmsLockType.valueOf(lockType));
+                    CmsLock lock = new CmsLock(resourcePath, userId, project, CmsLockType.valueOf(lockType));
                     locks.add(lock);
-                    count++;
                 }
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(count)));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(locks.size())));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1902,7 +1893,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // only persist locks that should be written to the DB
                 CmsLock sysLock = lock.getSystemLock();
                 if (sysLock.isPersistent()) {
-                    // persist edition lock
+                    // persist system lock
                     stmt.setString(1, sysLock.getResourceName());
                     stmt.setString(2, sysLock.getUserId().toString());
                     stmt.setString(3, sysLock.getProjectId().toString());

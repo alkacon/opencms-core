@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.36.4.14 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.36.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.14 $
+ * @version $Revision: 1.36.4.15 $
  * 
  * @since 6.0.0
  */
@@ -344,6 +344,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The size of the driver manager's cache for organizational units. */
     public static final String N_SIZE_ORGUNITS = "size-orgunits";
+
+    /** The size of the driver manager's cache for project resources. */
+    public static final String N_SIZE_PROJECTRESOURCES = "size-projectresources";
+
+    /** The size of the driver manager's cache for property lists. */
+    public static final String N_SIZE_PROPERTYLISTS = "size-propertylists";
 
     /** The size of the security manager's cache for permission checks. */
     public static final String N_SIZE_PERMISSIONS = "size-permissions";
@@ -930,12 +936,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ORGUNITS, "setOrgUnitCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERGROUPS, "setUserGroupsCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTRESOURCES,
+            "setProjectResourcesCacheSize",
+            0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCELISTS,
             "setResourcelistCacheSize",
             0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTIES, "setPropertyCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTYLISTS,
+            "setPropertyListsCacheSize",
+            0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");
@@ -1283,13 +1297,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         cacheElement.addElement(N_KEYGENERATOR).setText(m_cacheSettings.getCacheKeyGenerator());
         cacheElement.addElement(N_SIZE_USERS).setText(Integer.toString(m_cacheSettings.getUserCacheSize()));
         cacheElement.addElement(N_SIZE_GROUPS).setText(Integer.toString(m_cacheSettings.getGroupCacheSize()));
-        cacheElement.addElement(N_SIZE_ORGUNITS).setText(Integer.toString(m_cacheSettings.getOrgUnitCacheSize()));
+        if (m_cacheSettings.getConfiguredOrgUnitCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_ORGUNITS).setText(
+                Integer.toString(m_cacheSettings.getConfiguredOrgUnitCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_USERGROUPS).setText(Integer.toString(m_cacheSettings.getUserGroupsCacheSize()));
         cacheElement.addElement(N_SIZE_PROJECTS).setText(Integer.toString(m_cacheSettings.getProjectCacheSize()));
+        if (m_cacheSettings.getConfiguredProjectResourcesCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_PROJECTRESOURCES).setText(
+                Integer.toString(m_cacheSettings.getConfiguredProjectResourcesCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_RESOURCES).setText(Integer.toString(m_cacheSettings.getResourceCacheSize()));
         cacheElement.addElement(N_SIZE_RESOURCELISTS).setText(
             Integer.toString(m_cacheSettings.getResourcelistCacheSize()));
         cacheElement.addElement(N_SIZE_PROPERTIES).setText(Integer.toString(m_cacheSettings.getPropertyCacheSize()));
+        if (m_cacheSettings.getConfiguredPropertyListsCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_PROPERTYLISTS).setText(
+                Integer.toString(m_cacheSettings.getConfiguredPropertyListsCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,12 @@ import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 import org.xml.sax.EntityResolver;
@@ -58,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +73,15 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
+
+    /** A temporary cache for XML content definitions. */
+    private static Map m_cacheContentDefinitions;
+
+    /** A permanent cache to avoid multiple readings of often used files from the VFS. */
+    private static Map m_cachePermanent;
+
+    /** A temporary cache to avoid multiple readings of often used files from the VFS. */
+    private static Map m_cacheTemporary;
 
     /** The location of the XML page XML schema. */
     private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
@@ -96,6 +109,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public CmsXmlEntityResolver(CmsObject cms) {
 
+        initCaches();
         m_cms = cms;
     }
 
@@ -109,9 +123,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public static void cacheSystemId(String systemId, byte[] content) {
 
-        if (OpenCms.getMemoryMonitor() != null) {
-            OpenCms.getMemoryMonitor().cacheXmlPermanentEntity(systemId, content);
-        }
+        initCaches();
+        m_cachePermanent.put(systemId, content);
     }
 
     /**
@@ -140,6 +153,52 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
+     * Initializes the internal caches for permanent and temporary system IDs.<p>
+     */
+    private static void initCaches() {
+
+        if (m_cacheTemporary == null) {
+            LRUMap cacheTemporary = new LRUMap(128);
+            m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
+
+            HashMap cachePermanent = new HashMap(32);
+            m_cachePermanent = Collections.synchronizedMap(cachePermanent);
+
+            LRUMap cacheContentDefinitions = new LRUMap(64);
+            m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
+        }
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            if ((OpenCms.getMemoryMonitor() != null)
+                && !OpenCms.getMemoryMonitor().isMonitoring(CmsXmlEntityResolver.class.getName() + ".cacheTemporary")) {
+                // reinitialize the caches after the memory monitor is set up                
+                LRUMap cacheTemporary = new LRUMap(128);
+                cacheTemporary.putAll(m_cacheTemporary);
+                m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cacheTemporary",
+                    cacheTemporary);
+
+                HashMap cachePermanent = new HashMap(32);
+                cachePermanent.putAll(m_cachePermanent);
+                m_cachePermanent = Collections.synchronizedMap(cachePermanent);
+                // map must be of type "HashMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cachePermanent",
+                    cachePermanent);
+
+                LRUMap cacheContentDefinitions = new LRUMap(64);
+                cacheContentDefinitions.putAll(m_cacheContentDefinitions);
+                m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cacheContentDefinitions",
+                    cacheContentDefinitions);
+            }
+        }
+    }
+
+    /**
      * Caches an XML content defintion based on the given system id and the online / offline status
      * of this entity resolver instance.<p>
      * 
@@ -149,7 +208,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     public void cacheContentDefinition(String systemId, CmsXmlContentDefinition contentDefinition) {
 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
-        OpenCms.getMemoryMonitor().cacheContentDefinition(cacheKey, contentDefinition);
+        m_cacheContentDefinitions.put(cacheKey, contentDefinition);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYSTEM_ID_1, cacheKey));
         }
@@ -165,8 +224,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // flush cache   
-                OpenCms.getMemoryMonitor().flushContentDefinitions();
-                OpenCms.getMemoryMonitor().flushXmlTemporaryEntities();
+                m_cacheTemporary.clear();
+                m_cacheContentDefinitions.clear();
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }
@@ -198,7 +257,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     public CmsXmlContentDefinition getCachedContentDefinition(String systemId) {
 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
-        CmsXmlContentDefinition result = OpenCms.getMemoryMonitor().getCachedContentDefinition(cacheKey);
+        CmsXmlContentDefinition result = (CmsXmlContentDefinition)m_cacheContentDefinitions.get(cacheKey);
         if ((result != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_CACHE_LOOKUP_SUCCEEDED_1, cacheKey));
         }
@@ -210,38 +269,34 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public InputSource resolveEntity(String publicId, String systemId) {
 
-        // need to check for null during initialization
-        boolean monitorInitialized = (OpenCms.getMemoryMonitor() != null);
         // lookup the system id caches first
-        byte[] content = null;
-        if (monitorInitialized) {
-            content = OpenCms.getMemoryMonitor().getCachedXmlPermanentEntity(systemId);
-        }
+        byte[] content;
+        content = (byte[])m_cachePermanent.get(systemId);
         if (content != null) {
+
             // permanent cache contains system id
             return new InputSource(new ByteArrayInputStream(content));
         } else if (systemId.equals(CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID)) {
+
             // XML page XSD reference
             try {
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_XSD_LOCATION);
                 content = CmsFileUtil.readFully(stream);
                 // cache the XML page DTD
-                if (monitorInitialized) {
-                    OpenCms.getMemoryMonitor().cacheXmlPermanentEntity(systemId, content);
-                }
+                m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
             }
+
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
+
             // XML page DTD reference
             try {
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION);
                 // cache the XML page DTD
                 content = CmsFileUtil.readFully(stream);
-                if (monitorInitialized) {
-                    OpenCms.getMemoryMonitor().cacheXmlPermanentEntity(systemId, content);
-                }
+                m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
                 LOG.error(
@@ -249,13 +304,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     t);
             }
         } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
+
             // opencms:// VFS reference
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
             String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
             // look up temporary cache
-            if (monitorInitialized) {
-                content = OpenCms.getMemoryMonitor().getCachedXmlTemporaryEntity(cacheKey);
-            }
+            content = (byte[])m_cacheTemporary.get(cacheKey);
             if (content != null) {
                 return new InputSource(new ByteArrayInputStream(content));
             }
@@ -266,9 +320,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 CmsFile file = m_cms.readFile(cacheSystemId);
                 content = file.getContents();
                 // store content in cache
-                if (monitorInitialized) {
-                    OpenCms.getMemoryMonitor().cacheXmlTemporaryEntity(cacheKey, content);
-                }
+                m_cacheTemporary.put(cacheKey, content);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYS_ID_1, cacheKey));
                 }
@@ -280,6 +332,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             }
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
             CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {
+
             // default DTD location in the org.opencms.configuration package
             String location = null;
             try {
@@ -288,15 +341,14 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
                 content = CmsFileUtil.readFully(stream);
                 // cache the DTD
-                if (monitorInitialized) {
-                    OpenCms.getMemoryMonitor().cacheXmlPermanentEntity(systemId, content);
-                }
+                m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }
 
         }
+
         // use the default behaviour (i.e. resolve through external URL)
         return null;
     }
@@ -348,22 +400,24 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     private void uncacheSystemId(String systemId) {
 
-        String cacheKey = getCacheKey(systemId, false);
-        Object o = OpenCms.getMemoryMonitor().getCachedXmlTemporaryEntity(cacheKey);
-        OpenCms.getMemoryMonitor().uncacheXmlTemporaryEntity(cacheKey);
+        Object o;
+        o = m_cacheTemporary.remove(getCacheKey(systemId, false));
         if (null != o) {
-            // if an object was removed from the temporary cache, all XML content definitions must be cleared
+            // if an object was removed from the tomporary cache, all XML content definitions must be cleared
             // because this may be a nested subschema 
-            OpenCms.getMemoryMonitor().flushContentDefinitions();
+            m_cacheContentDefinitions.clear();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, cacheKey));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ER_UNCACHED_SYS_ID_1,
+                    getCacheKey(systemId, false)));
             }
         } else {
             // check if a cached content definition has to be removed based on the system id
-            o = OpenCms.getMemoryMonitor().getCachedContentDefinition(cacheKey);
-            OpenCms.getMemoryMonitor().uncacheContentDefinition(cacheKey);
+            o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
             if ((null != o) && LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_CONTENT_DEF_1, cacheKey));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_ER_UNCACHED_CONTENT_DEF_1,
+                    getCacheKey(systemId, false)));
             }
         }
     }

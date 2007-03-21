@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2007/02/23 13:13:09 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/21 13:14:00 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.0.0
  */
@@ -177,7 +177,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isPersistent() {
 
-        return (this == CmsLockType.EXCLUSIVE) || (this == CmsLockType.WORKFLOW);
+        return (this == CmsLockType.EXCLUSIVE) || isWorkflow() || isPublish();
     }
 
     /**

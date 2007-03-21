@@ -376,12 +376,14 @@ Each job can have an optional list of parameters.
 	keygenerator,	
 	size-users,
 	size-groups,
-	size-orgunits,
+	size-orgunits?,
 	size-usergroups,
 	size-projects,
+	size-projectresources?,
 	size-resources,
 	size-resourcelists,
 	size-properties,
+	size-propertylists?,
 	size-accesscontrollists,
 	size-permissions)>
 
@@ -402,6 +404,7 @@ Each job can have an optional list of parameters.
 
 <!--
 # The size of the driver manager's cache for organizational units.
+# If not given, the size-groups is used.
 -->
 <!ELEMENT size-orgunits (#PCDATA)>
 
@@ -414,6 +417,12 @@ Each job can have an optional list of parameters.
 # The size of the driver manager's cache for projects.
 -->
 <!ELEMENT size-projects (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for project resources.
+# If not given, the size-projects is used.
+-->
+<!ELEMENT size-projectresources (#PCDATA)>
 
 <!--
 # The size of the driver manager's cache for resources.
@@ -429,6 +438,12 @@ Each job can have an optional list of parameters.
 # The size of the driver manager's cache for properties.
 -->
 <!ELEMENT size-properties (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for property lists.
+# If not given, the size-properties is used.
+-->
+<!ELEMENT size-propertylists (#PCDATA)>
 
 <!--
 # The size of the driver manager's cache for ACLS.

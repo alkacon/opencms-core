@@ -82,9 +82,11 @@
 			<size-orgunits>64</size-orgunits>
 			<size-usergroups>256</size-usergroups>
 			<size-projects>32</size-projects>
+			<size-projectresources>64</size-projectresources>
 			<size-resources>8192</size-resources>
 			<size-resourcelists>256</size-resourcelists>
 			<size-properties>128</size-properties>
+			<size-propertylists>128</size-propertylists>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
 		</resultcache>			
