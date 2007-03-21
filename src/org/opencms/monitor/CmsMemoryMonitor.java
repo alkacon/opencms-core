@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.58.4.5 $
+ * Date   : $Date: 2007/03/21 10:14:07 $
+ * Version: $Revision: 1.58.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.5 $ 
+ * @version $Revision: 1.58.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1131,30 +1131,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Ckecks if there is a monitored object with the given key.<p>
-     * 
-     * @param key the key to check
-     * 
-     * @return <code>true</code> if there is a monitored object with the given key
-     */
-    public boolean isMonitoring(String key) {
-
-        return m_monitoredObjects.containsKey(key);
-    }
-
-    /**
-     * Checks if some kind of persistence is needed.<p>
-     * 
-     * This could be overwritten in a distributed environment.<p>
-     * 
-     * @return <code>true</code> if some kind of persistence is needed
-     */
-    public boolean isPersistanceNeeded() {
-
-        return true;
-    }
-
-    /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
@@ -1221,6 +1197,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (enabled()) {
             m_monitoredObjects.put(objectName, object);
         }
+    }
+
+    /**
+     * Checks if some kind of persistency is required.<p>
+     * 
+     * This could be overwritten in a distributed environment.<p>
+     * 
+     * @return <code>true</code> if some kind of persistency is required
+     */
+    public boolean requiresPersistency() {
+
+        return true;
     }
 
     /**
