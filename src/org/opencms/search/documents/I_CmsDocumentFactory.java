@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.24.8.2 $
+ * Date   : $Date: 2007/03/21 10:02:00 $
+ * Version: $Revision: 1.24.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.lucene.document.Document;
  * @author Thomas Weckert 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24.8.2 $ 
+ * @version $Revision: 1.24.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,7 +96,7 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * Returns the list of accepted keys for the resource types that can be indexed using this document factory.<p>
      * 
      * The result List contains String objects. 
-     * This String is later matched against {@link A_CmsVfsDocument#getDocumentKey(int, String)} to find
+     * This String is later matched against {@link A_CmsVfsDocument#getDocumentKey(String, String)} to find
      * the corrospondig {@link I_CmsDocumentFactory} for a resource to index.<p> 
      * 
      * The list of accepted resource types may contain a catch-all entry "*";
