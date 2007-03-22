@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/03/22 11:52:46 $
- * Version: $Revision: 1.35.4.12 $
+ * Date   : $Date: 2007/03/22 15:20:51 $
+ * Version: $Revision: 1.35.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.12 $ 
+ * @version $Revision: 1.35.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1015,7 +1015,7 @@ public class CmsHtmlList {
         Iterator itItemDetails = getMetadata().getItemDetailDefinitions().iterator();
         while (!showTitle && itItemDetails.hasNext()) {
             CmsListItemDetails itemDetail = (CmsListItemDetails)itItemDetails.next();
-            showTitle = showTitle || itemDetail.isVisible();
+            showTitle = showTitle || itemDetail.getAction().isVisible();
         }
         if (!showTitle) {
             // prevent empty table if there is nothing to display
