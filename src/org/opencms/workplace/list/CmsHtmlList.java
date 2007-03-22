@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.35.4.10 $
+ * Date   : $Date: 2007/03/22 09:13:53 $
+ * Version: $Revision: 1.35.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.10 $ 
+ * @version $Revision: 1.35.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1006,6 +1006,12 @@ public class CmsHtmlList {
      */
     private String htmlTitle() {
 
+        if (!isShowTitle()
+            && getMetadata().getIndependentActions().isEmpty()
+            && getMetadata().getItemDetailDefinitions().isEmpty()) {
+            // prevent empty table if there is nothing to display
+            return "";
+        }
         StringBuffer html = new StringBuffer(512);
         CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
         html.append("<table width='100%' cellspacing='0'>");
@@ -1056,6 +1062,10 @@ public class CmsHtmlList {
      */
     private String htmlToolBar() {
 
+        if (!getMetadata().isSearchable() && getMetadata().getMultiActions().isEmpty()) {
+            // prevent empty table if there is nothing to display
+            return "";
+        }
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0' style='margin-bottom: 5px'>\n");
         html.append("\t<tr>\n");
