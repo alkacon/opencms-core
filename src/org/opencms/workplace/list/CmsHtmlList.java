@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/03/22 09:13:53 $
- * Version: $Revision: 1.35.4.11 $
+ * Date   : $Date: 2007/03/22 11:52:46 $
+ * Version: $Revision: 1.35.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.11 $ 
+ * @version $Revision: 1.35.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1006,9 +1006,18 @@ public class CmsHtmlList {
      */
     private String htmlTitle() {
 
-        if (!isShowTitle()
-            && getMetadata().getIndependentActions().isEmpty()
-            && getMetadata().getItemDetailDefinitions().isEmpty()) {
+        boolean showTitle = isShowTitle();
+        Iterator itIndepActions = getMetadata().getIndependentActions().iterator();
+        while (!showTitle && itIndepActions.hasNext()) {
+            CmsListIndependentAction indepAction = (CmsListIndependentAction)itIndepActions.next();
+            showTitle = showTitle || indepAction.isVisible();
+        }
+        Iterator itItemDetails = getMetadata().getItemDetailDefinitions().iterator();
+        while (!showTitle && itItemDetails.hasNext()) {
+            CmsListItemDetails itemDetail = (CmsListItemDetails)itItemDetails.next();
+            showTitle = showTitle || itemDetail.isVisible();
+        }
+        if (!showTitle) {
             // prevent empty table if there is nothing to display
             return "";
         }
@@ -1062,7 +1071,13 @@ public class CmsHtmlList {
      */
     private String htmlToolBar() {
 
-        if (!getMetadata().isSearchable() && getMetadata().getMultiActions().isEmpty()) {
+        boolean showToolBar = getMetadata().isSearchable();
+        Iterator itMultiActions = getMetadata().getMultiActions().iterator();
+        while (!showToolBar && itMultiActions.hasNext()) {
+            CmsListMultiAction multiAction = (CmsListMultiAction)itMultiActions.next();
+            showToolBar = showToolBar || multiAction.isVisible();
+        }
+        if (!showToolBar) {
             // prevent empty table if there is nothing to display
             return "";
         }
