@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/03/01 15:01:15 $
- * Version: $Revision: 1.28.4.10 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.28.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsNewResource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.10 $ 
+ * @version $Revision: 1.28.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,6 +171,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /** Helper stores the mode this dialog is in, because it can be called from "new" wizard. */
     private String m_paramDialogMode;
 
+    private String m_paramIndexPageType;
     /** Request parameter members. */
     private String m_paramNewproperty;
     private String m_paramUseTempfileProject;
@@ -273,18 +275,19 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // set the current explorer resource to the new created folder
             getSettings().setExplorerResource(newFolder);
             String newUri = PATH_DIALOGS
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getParamIndexPageType()).getNewResourceUri();
             try {
                 // forward to new xmlpage dialog
                 CmsUriSplitter splitter = new CmsUriSplitter(newUri);
                 Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
                 params.put(PARAM_DIALOGMODE, MODE_WIZARD_CREATEINDEX);
+                params.put(PARAM_ACTION, CmsNewResource.DIALOG_NEWFORM);
                 sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             } catch (ServletException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             }
         } else if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -577,6 +580,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
+     * Returns the paramIndexPageType.<p>
+     *
+     * @return the paramIndexPageType
+     */
+    public String getParamIndexPageType() {
+
+        return m_paramIndexPageType;
+    }
+
+    /**
      * Returns the value of the new property parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -650,6 +663,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public void setParamDialogmode(String value) {
 
         m_paramDialogMode = value;
+    }
+
+    /**
+     * Sets the paramIndexPageType.<p>
+     *
+     * @param paramIndexPageType the paramIndexPageType to set
+     */
+    public void setParamIndexPageType(String paramIndexPageType) {
+
+        m_paramIndexPageType = paramIndexPageType;
     }
 
     /**

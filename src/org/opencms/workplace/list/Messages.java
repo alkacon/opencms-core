@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,21 +104,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_RES_HELP_0 = "GUI_EXPLORER_LIST_ACTION_RES_HELP_0";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_LIST_COLS_SELECT_0 = "GUI_EXPLORER_LIST_COLS_SELECT_0";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_EXPLORER_LIST_COLS_SELECT_HELP_0 = "GUI_EXPLORER_LIST_COLS_SELECT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0 = "GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0";
-
+    
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_COLS_EDIT_0 = "GUI_EXPLORER_LIST_COLS_EDIT_0";
-
+    
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_COLS_EDIT_HELP_0 = "GUI_EXPLORER_LIST_COLS_EDIT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_EMPTY_0 = "GUI_EXPLORER_LIST_COLS_EMPTY_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_COLS_ICON_0 = "GUI_EXPLORER_LIST_COLS_ICON_0";
@@ -131,6 +128,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LIST_COLS_PROJSTATE_0 = "GUI_EXPLORER_LIST_COLS_PROJSTATE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_SELECT_0 = "GUI_EXPLORER_LIST_COLS_SELECT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_SELECT_HELP_0 = "GUI_EXPLORER_LIST_COLS_SELECT_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_CSV_CONF_0 = "GUI_LIST_ACTION_CSV_CONF_0";

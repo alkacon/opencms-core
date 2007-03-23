@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.96.4.9 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.96.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.9 $ 
+ * @version $Revision: 1.96.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1715,6 +1715,33 @@ public class CmsDialog extends CmsToolDialog {
         }
 
         return hasPermissions;
+    }
+
+    /**
+     * Returns the full path of the current workplace folder.<p>
+     * 
+     * @return the full path of the current workplace folder
+     */
+    protected String computeCurrentFolder() {
+
+        String currentFolder = getSettings().getExplorerResource();
+        if (currentFolder == null) {
+            // set current folder to root folder
+            try {
+                currentFolder = getCms().getSitePath(getCms().readFolder("/", CmsResourceFilter.IGNORE_EXPIRATION));
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+                currentFolder = "/";
+            }
+        }
+        if (!currentFolder.endsWith("/")) {
+            // add folder separator to currentFolder
+            currentFolder += "/";
+        }
+        return currentFolder;
     }
 
     /**

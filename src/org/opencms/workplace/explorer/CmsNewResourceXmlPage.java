@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.23.4.2 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.23.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,27 +36,21 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -75,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23.4.2 $ 
+ * @version $Revision: 1.23.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +87,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);
     private String m_paramBodyFile;
-    private String m_paramDialogMode;
     private String m_paramSuffixCheck;
     private String m_paramTemplate;
 
@@ -268,33 +261,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
-     * Used to close the current JSP dialog.<p>
-     * 
-     * This method overwrites the close dialog method in the super class,
-     * because in case a new folder was created before, after this dialog the tree view has to be refreshed.<p>
-     *  
-     * It tries to include the URI stored in the workplace settings.
-     * This URI is determined by the frame name, which has to be set 
-     * in the framename parameter.<p>
-     * 
-     * @throws JspException if including an element fails
-     */
-    public void actionCloseDialog() throws JspException {
-
-        if (isCreateIndexMode()) {
-            // set the current explorer resource to the new created folder
-            String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
-            getSettings().setExplorerResource(updateFolder);
-            List folderList = new ArrayList(1);
-            if (updateFolder != null) {
-                folderList.add(updateFolder);
-            }
-            getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
-        }
-        super.actionCloseDialog();
-    }
-
-    /**
      * Creates the xml page using the specified resource name.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
@@ -345,34 +311,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         } catch (Throwable e) {
             // error creating folder, show error dialog
             includeErrorpage(this, e);
-        }
-    }
-
-    /**
-     * Forwards to the property dialog if the resourceeditprops parameter is true.<p>
-     * 
-     * If the parameter is not true, the dialog will be closed.<p>
-     * 
-     * @throws IOException if forwarding to the property dialog fails
-     * @throws ServletException if forwarding to the property dialog fails
-     * @throws JspException if an inclusion fails
-     */
-    public void actionEditProperties() throws IOException, JspException, ServletException {
-
-        boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
-        if (editProps) {
-            // edit properties checkbox checked, forward to property dialog
-            Map params = new HashMap();
-            params.put(PARAM_RESOURCE, getParamResource());
-            if (isCreateIndexMode()) {
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED);
-            } else {
-                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
-            }
-            sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
-        } else {
-            // edit properties not checked, close the dialog
-            actionCloseDialog();
         }
     }
 
@@ -467,20 +405,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
-     * Returns the value of the dialogmode parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The dialogmode parameter stores the different modes of the property dialog,
-     * e.g. for displaying other buttons in the new resource wizard.<p>
-     * 
-     * @return the value of the usetempfileproject parameter
-     */
-    public String getParamDialogmode() {
-
-        return m_paramDialogMode;
-    }
-
-    /**
      * Returns the request parameter flag inidicating if the suffix field is present or not.<p>
      * 
      * @return the request parameter flag inidicating if the suffix field is present or not
@@ -501,32 +425,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
-     * Returns true if the current mode is: create an index page in a newly created folder.<p>
-     * 
-     * @return true if we are in wizard mode to create an index page, otherwise false
-     */
-    public boolean isCreateIndexMode() {
-
-        return CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode());
-    }
-
-    /**
-     * Overrides the super implementation to avoid problems with double reqource input fields.<p>
-     * 
-     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
-     */
-    public String paramsAsHidden() {
-
-        String resourceName = getParamResource();
-        // remove resource parameter from hidden params to avoid problems with double input fields in form
-        setParamResource(null);
-        String params = super.paramsAsHidden();
-        // set resource parameter to stored value
-        setParamResource(resourceName);
-        return params;
-    }
-
-    /**
      * Sets the body file parameter value.<p>
      * 
      * @param bodyFile the body file parameter value
@@ -534,16 +432,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     public void setParamBodyFile(String bodyFile) {
 
         m_paramBodyFile = bodyFile;
-    }
-
-    /**
-     * Sets the value of the dialogmode parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamDialogmode(String value) {
-
-        m_paramDialogMode = value;
     }
 
     /**
@@ -586,32 +474,6 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLPAGE_0));
-        }
-    }
-
-    /**
-     * Sets the initial resource name of the new page.<p>
-     * 
-     * This is used for the "new" wizard after creating a new folder followed
-     * by the "create index file" procedure.<p> 
-     */
-    private void setInitialResourceName() {
-
-        if (isCreateIndexMode()) {
-            // creation of an index file in a new folder, use default file name
-            String defaultFile = "";
-            try {
-                defaultFile = (String)OpenCms.getDefaultFiles().get(0);
-            } catch (IndexOutOfBoundsException e) {
-                // list is empty, ignore    
-            }
-            if (CmsStringUtil.isEmpty(defaultFile)) {
-                // make sure that the default file name is not empty
-                defaultFile = "index.html";
-            }
-            setParamResource(defaultFile);
-        } else {
-            setParamResource("");
         }
     }
 

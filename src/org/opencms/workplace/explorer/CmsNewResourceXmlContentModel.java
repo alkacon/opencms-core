@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContentModel.java,v $
- * Date   : $Date: 2007/03/01 15:01:28 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -466,8 +466,17 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
         while (it.hasNext()) {
             CmsListColumnDefinition colDefinition = (CmsListColumnDefinition)it.next();
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
+
                 // remove default "preview file" action from file name column
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
+            } else if (colDefinition.getId().equals(LIST_COLUMN_TYPEICON)) {
+
+                // remove sorting on icon column
+                colDefinition.setSorteable(false);
+
+                // remove column name
+                colDefinition.setName(org.opencms.workplace.list.Messages.get().container(
+                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_COLS_EMPTY_0));
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/02/07 15:03:20 $
- * Version: $Revision: 1.26.4.6 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.26.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26.4.6 $ 
+ * @version $Revision: 1.26.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,9 +145,11 @@ public class CmsNewResource extends CmsDialog {
 
     private String m_paramAppendSuffixHtml;
     private String m_paramCurrentFolder;
+    private String m_paramDialogMode;
     private String m_paramNewResourceEditProps;
     private String m_paramNewResourceType;
     private String m_paramNewResourceUri;
+
     private String m_paramPage;
 
     /** a boolean flag that indicates if the create resource operation was successfull or not. */
@@ -173,6 +175,25 @@ public class CmsNewResource extends CmsDialog {
     public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Returns the value for the Title property from the given resource name.<p>
+     *
+     * @param name the name of the resource
+     * 
+     * @return the value for the Title property from the given resource name
+     */
+    public static String computeNewTitleProperty(String name) {
+
+        String title = name;
+        int lastDot = title.lastIndexOf('.');
+        // check the mime type for the file extension 
+        if ((lastDot > 0) && (lastDot < (title.length() - 1))) {
+            // remove suffix for Title and NavPos property
+            title = title.substring(0, lastDot);
+        }
+        return title;
     }
 
     /**
@@ -238,6 +259,90 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Creates a single property object and sets the value individual or shared depending on the OpenCms settings.<p>
+     * 
+     * @param name the name of the property
+     * @param value the value to set
+     * @return an initialized property object 
+     */
+    protected static CmsProperty createPropertyObject(String name, String value) {
+
+        CmsProperty prop = new CmsProperty();
+        prop.setAutoCreatePropertyDefinition(true);
+        prop.setName(name);
+        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+            prop.setValue(value, CmsProperty.TYPE_INDIVIDUAL);
+        } else {
+            prop.setValue(value, CmsProperty.TYPE_SHARED);
+        }
+        return prop;
+    }
+
+    /**
+     * Returns the properties to create automatically with the new VFS resource.<p>
+     * 
+     * If configured, the Title and Navigation properties are set on resource creation.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param resourceName the full resource name
+     * @param resTypeName the name of the resource type
+     * @param title the Title String to use for the property values
+     * @return the List of initialized property objects
+     */
+    protected static List createResourceProperties(CmsObject cms, String resourceName, String resTypeName, String title) {
+
+        // create property values
+        List properties = new ArrayList(3);
+        // get explorer type settings for the resource type
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (settings.isAutoSetTitle()) {
+            // add the Title property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_TITLE, title));
+        }
+        if (settings.isAutoSetNavigation()) {
+            // add the NavText property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
+            // calculate the new navigation position for the resource
+            List navList = CmsJspNavBuilder.getNavigationForFolder(cms, resourceName);
+            float navPos = 1;
+            if (navList.size() > 0) {
+                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
+                navPos = nav.getNavPosition() + 1;
+            }
+            // add the NavPos property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
+        }
+        return properties;
+    }
+
+    /**
+     * Used to close the current JSP dialog.<p>
+     * 
+     * This method overwrites the close dialog method in the super class,
+     * because in case a new folder was created before, after this dialog the tree view has to be refreshed.<p>
+     *  
+     * It tries to include the URI stored in the workplace settings.
+     * This URI is determined by the frame name, which has to be set 
+     * in the framename parameter.<p>
+     * 
+     * @throws JspException if including an element fails
+     */
+    public void actionCloseDialog() throws JspException {
+
+        if (isCreateIndexMode()) {
+            // set the current explorer resource to the new created folder
+            String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
+            getSettings().setExplorerResource(updateFolder);
+            List folderList = new ArrayList(1);
+            if (updateFolder != null) {
+                folderList.add(updateFolder);
+            }
+            getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+        }
+        super.actionCloseDialog();
+    }
+
+    /**
      * Creates the resource using the specified resource name and the newresourcetype parameter.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
@@ -279,7 +384,11 @@ public class CmsNewResource extends CmsDialog {
             // edit properties checkbox checked, forward to property dialog
             Map params = new HashMap();
             params.put(PARAM_RESOURCE, getParamResource());
-            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+            if (isCreateIndexMode()) {
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED);
+            } else {
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+            }
             sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
         } else {
             // edit properties not checked, close the dialog
@@ -322,7 +431,12 @@ public class CmsNewResource extends CmsDialog {
         Iterator i;
         if (m_limitedRestypes) {
             // available resource types limited, create list iterator of given limited types
-            List newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES);
+            List newResTypes;
+            if (m_availableResTypes.indexOf(DELIM_PROPERTYVALUES) > -1) {
+                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES);
+            } else {
+                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER);
+            }
             Iterator k = newResTypes.iterator();
             List settings = new ArrayList(newResTypes.size());
             while (k.hasNext()) {
@@ -341,7 +455,7 @@ public class CmsNewResource extends CmsDialog {
             // create list iterator from all configured resource types
             i = OpenCms.getWorkplaceManager().getExplorerTypeSettings().iterator();
         }
-        
+
         CmsResource resource = null;
         try {
             resource = getCms().readResource(getParamCurrentFolder());
@@ -402,23 +516,11 @@ public class CmsNewResource extends CmsDialog {
     /**
      * Returns the value for the Title property from the given resource name.<p>
      * 
-     * Additionally translates the new resource name according to the file translation rules.<p>
-     * 
      * @return the value for the Title property from the given resource name
      */
     public String computeNewTitleProperty() {
 
-        String title = getParamResource();
-        int lastDot = title.lastIndexOf('.');
-        // check the mime type for the file extension 
-        if ((lastDot > 0) && (lastDot < (title.length() - 1))) {
-            // remove suffix for Title and NavPos property
-            title = title.substring(0, lastDot);
-        }
-        // translate the resource name to a valid OpenCms VFS file name
-        String resName = CmsResource.getName(getParamResource().replace('\\', '/'));
-        setParamResource(getCms().getRequestContext().getFileTranslator().translateResource(resName));
-        return title;
+        return computeNewTitleProperty(getParamResource());
     }
 
     /**
@@ -491,6 +593,20 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Returns the value of the dialogmode parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The dialogmode parameter stores the different modes of the property dialog,
+     * e.g. for displaying other buttons in the new resource wizard.<p>
+     * 
+     * @return the value of the usetempfileproject parameter
+     */
+    public String getParamDialogmode() {
+
+        return m_paramDialogMode;
+    }
+
+    /**
      * Returns the new resource edit properties flag parameter.<p>
      * 
      * @return the new resource edit properties flag parameter
@@ -531,6 +647,16 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Returns true if the current mode is: create an index page in a newly created folder.<p>
+     * 
+     * @return true if we are in wizard mode to create an index page, otherwise false
+     */
+    public boolean isCreateIndexMode() {
+
+        return CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode());
+    }
+
+    /**
      * Returns true if the resource is created successfully; otherwise false.<p>
      * 
      * @return true if the resource is created successfully; otherwise false
@@ -538,6 +664,22 @@ public class CmsNewResource extends CmsDialog {
     public boolean isResourceCreated() {
 
         return m_resourceCreated;
+    }
+
+    /**
+     * Overrides the super implementation to avoid problems with double reqource input fields.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     */
+    public String paramsAsHidden() {
+
+        String resourceName = getParamResource();
+        // remove resource parameter from hidden params to avoid problems with double input fields in form
+        setParamResource(null);
+        String params = super.paramsAsHidden();
+        // set resource parameter to stored value
+        setParamResource(resourceName);
+        return params;
     }
 
     /**
@@ -558,6 +700,16 @@ public class CmsNewResource extends CmsDialog {
     public void setParamCurrentFolder(String paramCurrentFolder) {
 
         m_paramCurrentFolder = paramCurrentFolder;
+    }
+
+    /**
+     * Sets the value of the dialogmode parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamDialogmode(String value) {
+
+        m_paramDialogMode = value;
     }
 
     /**
@@ -630,33 +782,6 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
-     * Returns the full path of the current workplace folder.<p>
-     * 
-     * @return the full path of the current workplace folder
-     */
-    protected String computeCurrentFolder() {
-
-        String currentFolder = getSettings().getExplorerResource();
-        if (currentFolder == null) {
-            // set current folder to root folder
-            try {
-                currentFolder = getCms().getSitePath(getCms().readFolder("/", CmsResourceFilter.IGNORE_EXPIRATION));
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
-                }
-                currentFolder = "/";
-            }
-        }
-        if (!currentFolder.endsWith("/")) {
-            // add folder separator to currentFolder
-            currentFolder += "/";
-        }
-        return currentFolder;
-    }
-
-    /**
      * Appends the full path to the new resource name given in the resource parameter.<p>
      * 
      * @return the full path of the new resource
@@ -673,26 +798,6 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
-     * Creates a single property object and sets the value individual or shared depending on the OpenCms settings.<p>
-     * 
-     * @param name the name of the property
-     * @param value the value to set
-     * @return an initialized property object 
-     */
-    protected CmsProperty createPropertyObject(String name, String value) {
-
-        CmsProperty prop = new CmsProperty();
-        prop.setAutoCreatePropertyDefinition(true);
-        prop.setName(name);
-        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-            prop.setValue(value, CmsProperty.TYPE_INDIVIDUAL);
-        } else {
-            prop.setValue(value, CmsProperty.TYPE_SHARED);
-        }
-        return prop;
-    }
-
-    /**
      * Returns the properties to create automatically with the new VFS resource.<p>
      * 
      * If configured, the Title and Navigation properties are set on resource creation.<p>
@@ -704,28 +809,7 @@ public class CmsNewResource extends CmsDialog {
      */
     protected List createResourceProperties(String resourceName, String resTypeName, String title) {
 
-        // create property values
-        List properties = new ArrayList(3);
-        // get explorer type settings for the resource type
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
-        if (settings.isAutoSetTitle()) {
-            // add the Title property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_TITLE, title));
-        }
-        if (settings.isAutoSetNavigation()) {
-            // add the NavText property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
-            // calculate the new navigation position for the resource
-            List navList = CmsJspNavBuilder.getNavigationForFolder(getCms(), resourceName);
-            float navPos = 1;
-            if (navList.size() > 0) {
-                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
-                navPos = nav.getNavPosition() + 1;
-            }
-            // add the NavPos property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
-        }
-        return properties;
+        return createResourceProperties(getCms(), resourceName, resTypeName, title);
     }
 
     /**
@@ -771,12 +855,16 @@ public class CmsNewResource extends CmsDialog {
         } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
             setAction(ACTION_SUBMITFORM);
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
+            // set resource name if we are in new folder wizard mode
+            setInitialResourceName();
+
             setAction(ACTION_NEWFORM);
             String title = CmsWorkplaceMessages.getNewResourceTitle(this, getParamNewResourceType());
             setParamTitle(title);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
+
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_0));
@@ -797,6 +885,32 @@ public class CmsNewResource extends CmsDialog {
                     m_availableResTypes = newResTypesProperty;
                 }
             }
+        }
+    }
+
+    /**
+     * Sets the initial resource name of the new page.<p>
+     * 
+     * This is used for the "new" wizard after creating a new folder followed
+     * by the "create index file" procedure.<p> 
+     */
+    protected void setInitialResourceName() {
+
+        if (isCreateIndexMode()) {
+            // creation of an index file in a new folder, use default file name
+            String defaultFile = "";
+            try {
+                defaultFile = (String)OpenCms.getDefaultFiles().get(0);
+            } catch (IndexOutOfBoundsException e) {
+                // list is empty, ignore    
+            }
+            if (CmsStringUtil.isEmpty(defaultFile)) {
+                // make sure that the default file name is not empty
+                defaultFile = "index.html";
+            }
+            setParamResource(defaultFile);
+        } else {
+            setParamResource("");
         }
     }
 }

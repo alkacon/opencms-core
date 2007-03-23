@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2007/03/06 10:34:35 $
- * Version: $Revision: 1.14.2.10 $
+ * Date   : $Date: 2007/03/23 08:39:50 $
+ * Version: $Revision: 1.14.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.10 $ 
+ * @version $Revision: 1.14.2.11 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Name of the resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_0 = "ERR_CREATE_FOLDER_0";
@@ -240,7 +237,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_NAVTEXT_0 = "GUI_INPUT_NAVTEXT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_PAGE_0 = "GUI_INPUT_PAGE_0";
 
@@ -273,27 +270,48 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SITE_0 = "GUI_LABEL_SITE_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODELFILES_LABEL_DESCRIPTION_0 = "GUI_MODELFILES_LABEL_DESCRIPTION_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0";
-    
+    public static final String GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0 = "GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0 = "GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0 ="GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0";
+    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0 = "GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODELFILES_LABEL_DESCRIPTION_0 = "GUI_MODELFILES_LABEL_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFILE_EDITPROPERTIES_0 = "GUI_NEWFILE_EDITPROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFOLDER_CREATEINDEX_0 = "GUI_NEWFOLDER_CREATEINDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_LIST_COLS_ICON_0 = "GUI_NEWFOLDER_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_LIST_COLS_NAME_0 = "GUI_NEWFOLDER_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_LIST_COLS_SELECT_0 = "GUI_NEWFOLDER_LIST_COLS_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_LIST_NO_INDEX_0 = "GUI_NEWFOLDER_LIST_NO_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_LIST_SELECT_NAME_0 = "GUI_NEWFOLDER_LIST_SELECT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_OPTIONS_0 = "GUI_NEWFOLDER_OPTIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWFOLDER_SELECT_INDEX_TYPE_0 = "GUI_NEWFOLDER_SELECT_INDEX_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_0 = "GUI_NEWRESOURCE_0";
@@ -391,12 +409,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_TEMPLATE_0 = "GUI_SELECT_TEMPLATE_0";
 
-    /** End part of contant for creation NEWTITLE key. */
-    private static final String GUI_STATE_POSTFIX = "_0";
-
-    /**The  first part of contant for creation NEWTITLE key. */
-    private static final String GUI_STATE_PREFIX = "GUI_EXPLORER_STATE";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_EXPLORERTREE_0 = "GUI_TITLE_EXPLORERTREE_0";
 
@@ -481,9 +493,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String GUI_WORKFLOW_TASK_INFO_TOOLTIP_5 = "GUI_WORKFLOW_TASK_INFO_TOOLTIP_5";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
-
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_ACCESS_ENTRY_2 = "LOG_ADD_ACCESS_ENTRY_2";
 
@@ -543,6 +552,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_ORDER_CONTEXT_MENU_1 = "LOG_WRONG_ORDER_CONTEXT_MENU_1";
+
+    /** Name of the resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
+
+    /** End part of contant for creation NEWTITLE key. */
+    private static final String GUI_STATE_POSTFIX = "_0";
+
+    /**The  first part of contant for creation NEWTITLE key. */
+    private static final String GUI_STATE_PREFIX = "GUI_EXPLORER_STATE";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
