@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/03/05 16:04:41 $
- * Version: $Revision: 1.43.4.20 $
+ * Date   : $Date: 2007/03/23 16:52:33 $
+ * Version: $Revision: 1.43.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.20 $
+ * @version $Revision: 1.43.4.21 $
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_USER_1 = "ERR_BAD_USER_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CANNOT_READ_PUBLISHLIST_0 = "ERR_CANNOT_READ_PUBLISHLIST_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LOCK_OF_RESOURCE_2 = "ERR_CHANGE_LOCK_OF_RESOURCE_2";
 
@@ -354,6 +357,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_UNCHANGED_RESOURCE_1 = "ERR_PUBLISH_UNCHANGED_RESOURCE_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISHLIST_NEEDS_REVIVE_0 = "ERR_PUBLISHLIST_NEEDS_REVIVE_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PWD_NEW_MISSING_0 = "ERR_PWD_NEW_MISSING_0";
 

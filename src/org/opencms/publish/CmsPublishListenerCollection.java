@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/03/06 15:25:06 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/23 16:52:33 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -97,7 +97,7 @@ public final class CmsPublishListenerCollection extends Vector {
                 }
             }
         }
-        if (userName.equals(publishJob.getUserName())) {
+        if (userName != null && userName.equals(publishJob.getUserName())) {
             // prevent showing messages if the owner aborted the job by himself 
             return;
         }

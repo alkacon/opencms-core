@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/03/12 16:47:02 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/23 16:52:35 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.5
  */
@@ -296,7 +296,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
                 CmsListItem item = getList().newItem(new Long(currentJob.getEnqueueTime()).toString());
                 item.set(LIST_COLUMN_STATE, new Integer(STATE_PROCEED));
                 item.set(LIST_COLUMN_NUMBER, new Integer(number));
-                item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName(getLocale()));
+                item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName());
                 item.set(LIST_COLUMN_STARTTIME, new Date(currentJob.getEnqueueTime()));
                 item.set(LIST_COLUMN_USER, currentJob.getUserName());
                 item.set(LIST_COLUMN_RESCOUNT, new Integer(currentJob.getSize()));
@@ -316,7 +316,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_STATE, new Integer(state));
             item.set(LIST_COLUMN_NUMBER, new Integer(number));
-            item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName(getLocale()));
+            item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName());
             item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getEnqueueTime()));
             item.set(LIST_COLUMN_USER, publishJob.getUserName());
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));

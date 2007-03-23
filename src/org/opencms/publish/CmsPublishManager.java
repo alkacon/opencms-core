@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/06 15:11:10 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/23 16:52:33 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.5
  */
@@ -115,6 +115,22 @@ public class CmsPublishManager {
         m_publishEngine.addPublishListener(listener);
     }
 
+    /**
+     * Disables the publishing of resources.<p>
+     */
+    public void disablePublishing() {
+    
+        m_publishEngine.disableEngine();
+    }
+    
+    /**
+     * Enables the enqeueing of resources for publishing.<p>
+     */
+    public void enablePublishing() {
+    
+        m_publishEngine.enableEngine();
+    }
+    
     /**
      * Returns the current running publish job.<p>
      * 
@@ -265,6 +281,19 @@ public class CmsPublishManager {
     }
 
     /**
+     * Initializes the publish manager and the publish engine finally.<p>
+     * 
+     * @param cms an admin cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void initialize(CmsObject cms)
+    throws CmsException {
+    
+        m_publishEngine.initialize(cms);
+    }
+    
+    /**
      * Returns the working state, that is if no publish job
      * is waiting to be processed and there is no current running 
      * publish job.<p>
@@ -400,6 +429,22 @@ public class CmsPublishManager {
     }
 
     /**
+     * Starts publishing of enqueued publish jobs.<p>
+     */
+    public void startPublishing() {
+        
+        m_publishEngine.startEngine();
+    }
+    
+    /**
+     * Stops the publishing of enqueued publish jobs.<p>
+     */
+    public void stopPublishing() {
+        
+        m_publishEngine.stopEngine();
+    }
+    
+    /**
      * Waits until no publish jobs remain.<p>
      */
     public void waitWhileRunning() {
@@ -426,5 +471,15 @@ public class CmsPublishManager {
                 }
             }
         }
+    }
+    
+    /**
+     * Returns the currently used publish engine.<p>
+     * 
+     * @return the publish engine
+     */
+    protected CmsPublishEngine getEngine() {
+        
+        return m_publishEngine;
     }
 }

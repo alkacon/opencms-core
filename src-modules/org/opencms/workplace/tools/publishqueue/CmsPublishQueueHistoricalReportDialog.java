@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueHistoricalReportDialog.java,v $
- * Date   : $Date: 2006/11/29 14:54:02 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/23 16:52:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5
  */
@@ -95,7 +95,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
         m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-        setParamFilename(req.getParameter(PARAM_FILENAME));
+        setParamFilename(CmsEncoder.decodeParameter(req.getParameter(PARAM_FILENAME)));
     }
 
     /**
@@ -209,9 +209,9 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
             result.append("<iframe style=\"overflow: auto;\" src=\"");
             result.append(getJsp().link(
                 "/system/workplace/admin/publishqueue/publishreportshow.jsp?"
-                    + CmsEncoder.encode(PARAM_FILENAME)
+                    + CmsEncoder.encodeParameter(PARAM_FILENAME)
                     + "="
-                    + CmsEncoder.encode(m_filePath)));
+                    + CmsEncoder.encodeParameter(m_filePath)));
             result.append("\" width=\"100%\" height=\"500\" border=\"0\" frameborder=\"0\"></iframe>");
         } catch (Exception e) {
             //noop

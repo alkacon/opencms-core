@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/21 13:14:00 $
- * Version: $Revision: 1.241.4.21 $
+ * Date   : $Date: 2007/03/23 16:52:32 $
+ * Version: $Revision: 1.241.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,26 +32,8 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDbEntryNotFoundException;
-import org.opencms.db.CmsDbSqlException;
-import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsPublishList;
-import org.opencms.db.CmsPublishedResource;
-import org.opencms.db.CmsResourceState;
-import org.opencms.db.I_CmsDriver;
-import org.opencms.db.I_CmsProjectDriver;
-import org.opencms.file.CmsDataAccessException;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
-import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.db.*;
+import org.opencms.file.*;
 import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessageContainer;
@@ -62,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
@@ -72,6 +55,11 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -93,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.21 $
+ * @version $Revision: 1.241.4.22 $
  * 
  * @since 6.0.0 
  */
@@ -224,6 +212,45 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
     }
 
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#createPublishJob(org.opencms.db.CmsDbContext, org.opencms.publish.CmsPublishJobInfoBean)
+     */
+    public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) 
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_CREATE");
+            stmt.setString(1, publishJob.getPublishHistoryId().toString());
+            stmt.setString(2, publishJob.getProjectId().toString());
+            stmt.setString(3, publishJob.getProjectName());
+            stmt.setString(4, publishJob.getUserId().toString());
+            stmt.setString(5, publishJob.getUserName());
+            stmt.setString(6, publishJob.getLocale().toString());
+            stmt.setInt(7, publishJob.getFlags());
+            stmt.setString(8, publishJob.getReportFilePath());
+            stmt.setInt(9, publishJob.getSize());
+            stmt.setLong(10, publishJob.getEnqueueTime());
+            stmt.setLong(11, publishJob.getStartTime());
+            stmt.setLong(12, publishJob.getFinishTime());
+            m_sqlManager.setBytes(stmt, 13, internalSerializePublishList(publishJob.getPublishList()));
+
+            stmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_PUBLISHLIST_1, publishJob.getPublishHistoryId().toString()), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+    
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int)
      */
@@ -374,6 +401,53 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
     }
 
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deletePublishJob(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public void deletePublishJob (CmsDbContext dbc, CmsUUID publishHistoryId) 
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_DELETE");
+            stmt.setString(1, publishHistoryId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }            
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deletePublishList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public void deletePublishList(
+        CmsDbContext dbc,
+        CmsUUID publishHistoryId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_DELETE_PUBLISHLIST");
+            stmt.setString(1, publishHistoryId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }            
+    }
+    
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
      */
@@ -1717,6 +1791,104 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#readPublishJob(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) 
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        
+        CmsPublishJobInfoBean result = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOB");
+            stmt.setString(1, publishHistoryId.toString());
+            res = stmt.executeQuery();  
+            
+            if (res.next()) { 
+                result = createPublishJobInfoBean(res);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        } 
+        
+        return result;
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readPublishJobs(org.opencms.db.CmsDbContext, long, long)
+     */
+    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) 
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        
+        List result = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOBS_IN_TIMERANGE");
+            stmt.setLong(1, startTime);
+            stmt.setLong(2, endTime);
+            res = stmt.executeQuery();  
+            
+            result = new ArrayList();
+            while (res.next()) { 
+                result.add(createPublishJobInfoBean(res));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        } 
+        
+        return result;
+    }    
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readPublishList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        CmsPublishList publishList = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_PUBLISHLIST");
+            stmt.setString(1, publishHistoryId.toString());
+            res = stmt.executeQuery();
+            
+            if (res.next()) {
+                byte[] bytes = m_sqlManager.getBytes(res, "PUBLISH_LIST");
+                publishList = internalDeserializePublishList(bytes);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } catch (Exception e) {
+            throw new CmsDataAccessException(Messages.get().container(
+                Messages.ERR_PUBLISHLIST_DESERIALIZATION_FAILED_1, publishHistoryId), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }            
+        
+        return publishList;
+    }   
+        
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID)
      */
     public List readPublishedResources(CmsDbContext dbc, CmsUUID projectId, CmsUUID publishHistoryId)
@@ -1991,6 +2163,40 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishJob(org.opencms.db.CmsDbContext, org.opencms.publish.CmsPublishJobInfoBean)
+     */
+    public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_WRITE");
+            stmt.setString(1, publishJob.getProjectId().toString());
+            stmt.setString(2, publishJob.getProjectName());
+            stmt.setString(3, publishJob.getUserId().toString());
+            stmt.setString(4, publishJob.getUserName());
+            stmt.setString(5, publishJob.getLocale().toString());
+            stmt.setInt(6, publishJob.getFlags());
+            stmt.setString(7, publishJob.getReportFilePath());
+            stmt.setInt(8, publishJob.getSize());
+            stmt.setLong(9, publishJob.getEnqueueTime());
+            stmt.setLong(10, publishJob.getStartTime());
+            stmt.setLong(11, publishJob.getFinishTime());            
+            stmt.setString(12, publishJob.getPublishHistoryId().toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }            
+    }
+    
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
      */
     public void writeStaticExportPublishedResource(
@@ -2041,6 +2247,32 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
     }
 
+    /**
+     * Creates a <code>CmsPublishJobInfoBean</code> from a result set.<p>
+     * 
+     * @param res the result set 
+     * @return an initialized <code>CmsPublishJobInfoBean</code>
+     * @throws SQLException if something goes wrong
+     */
+    protected CmsPublishJobInfoBean createPublishJobInfoBean(ResultSet res)
+    throws SQLException {
+      
+        return new CmsPublishJobInfoBean(
+            new CmsUUID(res.getString("HISTORY_ID")),
+            new CmsUUID(res.getString("PROJECT_ID")),
+            res.getString("PROJECT_NAME"),
+            new CmsUUID(res.getString("USER_ID")),
+            res.getString("USER_NAME"),
+            res.getString("PUBLISH_LOCALE"),
+            res.getInt("PUBLISH_FLAGS"),
+            res.getString("REPORT_PATH"),
+            res.getInt("RESOURCE_COUNT"),
+            res.getLong("ENQUEUE_TIME"),
+            res.getLong("START_TIME"),
+            res.getLong("FINISH_TIME")
+        );
+    }
+    
     /**
      * @see java.lang.Object#finalize()
      */
@@ -2148,6 +2380,22 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * Builds a publish list from serialized data.<p>
+     * 
+     * @param bytes the byte array containing the serailized data for the publish list
+     * @return the initialized publish list
+     * 
+     * @throws IOException if deserialization fails
+     * @throws ClassNotFoundException if deserialization fails
+     */
+    protected CmsPublishList internalDeserializePublishList(byte[] bytes) throws IOException, ClassNotFoundException {
+        
+        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+        ObjectInputStream oin = new ObjectInputStream(bin);
+        return (CmsPublishList)oin.readObject();
+    }
+    
+    /**
      * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
      * 
      * @param dbc the current database context
@@ -2183,6 +2431,23 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
     }
 
+    /**
+     * Serialize publish list to write it as byte array to the database.<p>
+     * 
+     * @param publishList the publish list
+     * @return byte array containing the publish list data
+     * @throws IOException if something goes wrong
+     */
+    protected byte[] internalSerializePublishList(CmsPublishList publishList) throws IOException {
+
+        // serialize the publish list
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(publishList);
+        oout.close();
+        return bout.toByteArray();
+    }
+    
     /**
      * Publishes a changed file.<p>
      * 

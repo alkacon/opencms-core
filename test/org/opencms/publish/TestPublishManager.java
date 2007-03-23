@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2007/03/06 15:11:10 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/23 16:52:34 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockType;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
@@ -43,6 +44,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.Iterator;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -54,10 +56,10 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  */
-public class TestPublishManager extends OpenCmsTestCase {
-
+public class TestPublishManager extends OpenCmsTestCase { 
+    
     /**
      * Default JUnit constructor.<p>
      * 
@@ -84,7 +86,9 @@ public class TestPublishManager extends OpenCmsTestCase {
         suite.addTest(new TestPublishManager("testRunning"));
         suite.addTest(new TestPublishManager("testStop"));
         suite.addTest(new TestPublishManager("testListener"));
-
+        suite.addTest(new TestPublishManager("testInitialization1"));
+        suite.addTest(new TestPublishManager("testInitialization2"));
+        
         TestSetup wrapper = new TestSetup(suite) {
 
             protected void setUp() {
@@ -114,6 +118,10 @@ public class TestPublishManager extends OpenCmsTestCase {
         String source = "/folder2/subfolder21/image1.gif";
         String destination = "/folder1/image1_new"; // + i + ".gif";
 
+        assertFalse(OpenCms.getPublishManager().isRunning());
+        // stop the publish engine in order to perform the checks
+        OpenCms.getPublishManager().stopPublishing();
+        
         // copy and publish n new resources
         int max = 10;
         for (int i = 0; i < max; i++) {
@@ -148,6 +156,8 @@ public class TestPublishManager extends OpenCmsTestCase {
             // ok, ignore
         }
 
+        // start the background publishing again
+        OpenCms.getPublishManager().startPublishing();
         // wait until everything get published
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -171,8 +181,139 @@ public class TestPublishManager extends OpenCmsTestCase {
         assertState(cms, destination + max + ".gif", CmsResource.STATE_NEW);
         // and unlocked
         assertLock(cms, destination + max + ".gif", CmsLockType.UNLOCKED);
+        
+        // clean up
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
+    /**
+     * Tests the reinitialization of the publish manager/engine.<p> 
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testInitialization1() throws Throwable {
+     
+        CmsObject cms = getCmsObject();
+        echo("Testing initializing the publish manager/engine");
+        
+        // publish engine should not run currently
+        assertFalse(OpenCms.getPublishManager().isRunning());
+        // stop publishing
+        OpenCms.getPublishManager().stopPublishing();
+
+        String source = "/folder2/subfolder21/image1.gif";
+        String destination1 = "/testInitialization1_"; // + i + ".gif";
+
+        if (!cms.getLock(source).isNullLock()) {
+            cms.unlockResource(source);
+        }
+        
+        int max = 12; // be sure that it is the same as the system/publishhistory/history-size value + 2        
+        // copy n new resources
+        for (int i = 0; i < max; i++) {
+            cms.copyResource(source, destination1 + (i + 1) + ".gif", CmsResource.COPY_AS_NEW);
+            OpenCms.getPublishManager().publishResource(cms, destination1 + (i + 1) + ".gif");
+        }
+        
+        // store current publishQueue
+        List oldQueue = OpenCms.getPublishManager().getPublishQueue();
+        // store current publish history
+        List oldHistory = OpenCms.getPublishManager().getPublishHistory();
+                
+        // leads to reloading the queue and history data from the database
+        OpenCms.getPublishManager().initialize(cms);
+        
+        // get reinitialized queue and history
+        List newQueue = OpenCms.getPublishManager().getPublishQueue();
+        List newHistory = OpenCms.getPublishManager().getPublishHistory();
+        
+        // compare old and new queue
+        echo("Checking revived publish queue (" + oldQueue.size() + " items)");
+        if (newQueue.size() != oldQueue.size()) {
+            fail("Old and new queue have not the same size: Expected <" + oldQueue.size() + ">, was <" + newQueue.size() + ">");
+        }
+        Iterator n = newQueue.iterator();
+        Iterator o = oldQueue.iterator();
+        while (n.hasNext() && o.hasNext()) {
+            CmsPublishJobEnqueued newJob = (CmsPublishJobEnqueued)n.next();
+            CmsPublishJobEnqueued oldJob = (CmsPublishJobEnqueued)o.next();
+            assertEquals(newJob, oldJob, true, true);
+        }
+        
+        // compare old and new history  
+        echo("Checking revived publish history (" + oldHistory.size() + " items)");
+        if (newHistory.size() != oldHistory.size()) {
+            fail("Old and new history have not the same size: Expected <" + oldHistory.size() + ">, was <" + newHistory.size() + ">");
+        }
+        n = newHistory.iterator();
+        o = oldHistory.iterator();
+        while (n.hasNext() && o.hasNext()) {
+            CmsPublishJobFinished newJob = (CmsPublishJobFinished)n.next();
+            CmsPublishJobFinished oldJob = (CmsPublishJobFinished)o.next();
+            assertEquals(newJob, oldJob, false, true);
+        }
+        
+        // start the publish engine and wait until all jobs are published
+        OpenCms.getPublishManager().startPublishing();
+        OpenCms.getPublishManager().waitWhileRunning();
+    }        
+        
+    /**
+     * Tests the reinitialization of the publish manager/engine.<p> 
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testInitialization2() throws Throwable {
+     
+        CmsObject cms = getCmsObject();
+        echo("Testing initializing the publish manager/engine");        
+        
+        // publish engine should not run currently
+        assertFalse(OpenCms.getPublishManager().isRunning());
+        // stop publishing
+        OpenCms.getPublishManager().stopPublishing();
+        
+        String source = "/folder2/subfolder21/image1.gif";
+        String destination2 = "/testInitialization2_"; // + i + ".gif";
+ 
+        if (!cms.getLock(source).isNullLock()) {
+            cms.unlockResource(source);
+        }
+  
+        int max = 12; // be sure that it is the same as the system/publishhistory/history-size value + 2
+        // create a larger project
+        for (int i = 0; i < max; i++) {
+            cms.copyResource(source, destination2 + (i + 1) + ".gif", CmsResource.COPY_AS_NEW);
+        }
+        OpenCms.getPublishManager().publishProject(cms);  
+
+        // store current publishQueue
+        List oldQueue = OpenCms.getPublishManager().getPublishQueue();
+                
+        // leads to reloading the queue and history data from the database
+        OpenCms.getPublishManager().initialize(cms);
+        
+        // now start publishing again and reinitialize the publish manager and engine while it is running
+        OpenCms.getPublishManager().startPublishing();
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        // get reinitialized queue and history
+        List newQueue = OpenCms.getPublishManager().getPublishQueue();
+        List newHistory = OpenCms.getPublishManager().getPublishHistory();
+        
+        // the project should not be in the publish queue anymore
+        assertEquals(1, oldQueue.size());
+        assertEquals(0, newQueue.size());
+        
+        // but it should be stored as last entry in the history
+        CmsPublishJobEnqueued jobInQueue = (CmsPublishJobEnqueued)oldQueue.get(0);
+        CmsPublishJobFinished jobInHistory = (CmsPublishJobFinished)newHistory.get(newHistory.size()-1);
+        assertEquals(jobInQueue, jobInHistory, false, false);
+        
+        // and it should be aborted
+    } 
+    
     /**
      * Test the publish event listener.<p>
      * 
@@ -184,7 +325,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         echo("Testing the publish event listener");
 
         String source = "/folder2/subfolder21/image1.gif";
-        String destination = "/image1_new"; // + i + ".gif";
+        String destination = "/testListener_"; // + i + ".gif";
 
         // copy n new resources
         int max = 12; // be sure that it is the same as the system/publishhistory/history-size value + 2
@@ -205,24 +346,24 @@ public class TestPublishManager extends OpenCmsTestCase {
         // remember the time
         long preEnqueueTime = System.currentTimeMillis();
 
-        // publish n new resources
+        assertFalse(OpenCms.getPublishManager().isRunning());
+        // stop the publish engine in order to perform the checks
+        OpenCms.getPublishManager().stopPublishing();
+        
+        // publish(enqueue) n new resources
         for (int i = 0; i < max; i++) {
             OpenCms.getPublishManager().publishResource(cms, destination + (i + 1) + ".gif");
         }
+        assertFalse(OpenCms.getPublishManager().isRunning());
 
         // get the last enqueued publish job
-        List queue = OpenCms.getPublishManager().getPublishQueue();
-        /////////////////////////////////////////////////////////////////////////////
-        // README:
-        // The assertions in this block may fail if the resources get published first.
-        // This is because we can not say the publish engine to wait until we do the
-        // checks before publishing...
-        // but it should work 90% of the time
-        //        
+        List queue = OpenCms.getPublishManager().getPublishQueue();      
         CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)queue.get(queue.size() - 1);
         // abort it
         OpenCms.getPublishManager().abortPublishJob(cms, publishJob, true);
 
+        // start the background publishing again
+        OpenCms.getPublishManager().startPublishing();
         // wait until finished
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -230,23 +371,68 @@ public class TestPublishManager extends OpenCmsTestCase {
         assertEquals(0, firstListener.getAborted());
         // but it was enqueued
         assertTrue(preEnqueueTime <= firstListener.getEnqueued());
-        // ans started
+        // and started
         assertTrue(firstListener.getEnqueued() <= firstListener.getStarted());
         // and finished
         assertTrue(firstListener.getStarted() <= firstListener.getFinished());
-        // and removed
-        assertTrue(firstListener.getFinished() <= firstListener.getRemoved());
+        // and removed (depending on history size)
+        // assertTrue(firstListener.getFinished() <= firstListener.getRemoved());
 
         // the last job was not started
         assertEquals(0, lastListener.getStarted());
-        // nor finsihed
+        // nor finished
         assertEquals(0, lastListener.getFinished());
-        // nor removed
-        assertEquals(0, lastListener.getRemoved());
         // but it was enqueued
         assertTrue(preEnqueueTime <= lastListener.getEnqueued());
         // and aborted
         assertTrue(lastListener.getEnqueued() <= lastListener.getAborted());
+        // and removed
+        assertTrue(lastListener.getAborted() <= lastListener.getRemoved());
+        
+        // check the jobs in queue counters
+        int[] firstJobsInQueue = firstListener.getJobsInQueueCounter();
+        int[] lastJobsInQueue = lastListener.getJobsInQueueCounter();
+        // at enqueue time of first job: queue should contain only the job
+        assertTrue(firstJobsInQueue[0] == 1);
+        // at enqueue time of last job: queue should contain  all jobs
+        assertTrue(lastJobsInQueue[0] == max);
+        // at start time of first job: queue should contain all jobs but not the job itself and not the aborted job
+        assertTrue(firstJobsInQueue[1] == max-2);
+        // last job is never started
+        assertTrue(lastJobsInQueue[1] == 0);
+        // at finish time of first job: queue should still contain all jobs but not the job itself and not the aborted job
+        assertTrue(firstJobsInQueue[2] == max-2);
+        // last job is never finished
+        assertTrue(lastJobsInQueue[2] == 0);
+        // first job is not aborted
+        assertTrue(firstJobsInQueue[3] == 0);
+        // at abort time of last job: queue should contain all jobs including the aborted job
+        assertTrue(lastJobsInQueue[3] == max);
+        // first job is not removed since it is still in the job history
+        assertTrue(firstJobsInQueue[4] == 0);
+        // at remove time of the last job: queue should contain all jobs but not the aborted job
+        assertTrue(lastJobsInQueue[4] == max-1);
+        
+        // check the jobs in history counters
+        int[] firstJobsInHistory = firstListener.getJobsInHistoryCounter();
+        int[] lastJobsInHistory = lastListener.getJobsInHistoryCounter();
+        // at enqueue/start/finish time of the first job, the history is full (10 Elements)
+        assertTrue(firstJobsInHistory[0] == 10);
+        assertTrue(firstJobsInHistory[1] == 10);
+        assertTrue(firstJobsInHistory[2] == 10);
+        assertTrue(firstJobsInHistory[3] == 0);
+        assertTrue(firstJobsInHistory[4] == 9);
+        // when the first element is removed, the history queue has one free slot
+        // at start/abort/remove time of the last job, the history is unchanged
+        assertTrue(lastJobsInHistory[0] == 10);
+        assertTrue(lastJobsInHistory[1] == 0);
+        assertTrue(lastJobsInHistory[2] == 0);
+        assertTrue(lastJobsInHistory[3] == 10);
+        assertTrue(lastJobsInHistory[4] == 10);
+        
+        // clean up
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -272,16 +458,11 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.copyResource(source, destination4, CmsResource.COPY_AS_SIBLING);
 
         assertFalse(OpenCms.getPublishManager().isRunning());
+        // stop the publish engine in order to perform the checks
+        OpenCms.getPublishManager().stopPublishing();
+        // now publish (enqeue) the project
         OpenCms.getPublishManager().publishProject(cms);
-
-        /////////////////////////////////////////////////////////////////////////////
-        // README:
-        // The assertions in this block may fail if the resources get published first.
-        // This is because we can not say the publish engine to wait 1 sec to do the
-        // checks before publishing...
-        // but it should work 90% of the time
-        //        
-        assertTrue(OpenCms.getPublishManager().isRunning());
+        assertFalse(OpenCms.getPublishManager().isRunning());        
 
         assertLock(cms, destination1, CmsLockType.PUBLISH);
         try {
@@ -311,9 +492,10 @@ public class TestPublishManager extends OpenCmsTestCase {
         } catch (CmsLockException e) {
             // ok, ignore
         }
-        //
-        // Here ends the concurrent block, the assertions below should always work
-        /////////////////////////////////////////////////////////////////////////////
+        
+        // now start the background publishing process
+        OpenCms.getPublishManager().startPublishing();
+        // wait until the background publishing is finished
         OpenCms.getPublishManager().waitWhileRunning();
 
         // now check the locks again
@@ -343,15 +525,21 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.copyResource(source, destination1, CmsResource.COPY_AS_NEW);
         OpenCms.getPublishManager().publishResource(cms, destination1);
 
-        // stop the publish engine
-        long startTime = System.currentTimeMillis() + 1000;
-        long endTime = System.currentTimeMillis() + 2000;
-        OpenCms.getLoginManager().setLoginMessage(cms, new CmsLoginMessage(startTime, endTime, "test", true));
+        // create another cms user instance
+        CmsContextInfo contextInfo = new CmsContextInfo("test1");
+        contextInfo.setProjectName(cms.getRequestContext().currentProject().getName());
+        contextInfo.setSiteRoot(cms.getRequestContext().getSiteRoot());
+        CmsObject ucms = OpenCms.initCmsObject(cms, contextInfo);
+            
+        // stop the publish engine by disabling the login
+        OpenCms.getLoginManager().setLoginMessage(cms, new CmsLoginMessage("test", true));
 
         // copy and publish a new resource 
         cms.copyResource(source, destination2, CmsResource.COPY_AS_NEW);
         // should still work since i am the admin
         OpenCms.getPublishManager().publishResource(cms, destination2);
+        // wait until publish engine is finished
+        OpenCms.getPublishManager().waitWhileRunning();
 
         // create new resources
         cms.copyResource(source, destination3, CmsResource.COPY_AS_NEW);
@@ -364,31 +552,38 @@ public class TestPublishManager extends OpenCmsTestCase {
         cms.chacc(destination4, I_CmsPrincipal.PRINCIPAL_USER, "test1", new CmsPermissionSet(
             CmsPermissionSet.PERMISSION_FULL,
             0).getPermissionString());
-
-        // login as other user
-        cms.loginUser("test1", "test1");
-        // switch to the offline project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-
-        // wait until the publish engine is disabled
-        synchronized (this) {
-            wait(1000);
-        }
+        
+        // and unlock the resources in order to let the other user publish them
+        cms.unlockResource(destination3);
+        cms.unlockResource(destination4);
 
         // publish a new resource 
         try {
-            OpenCms.getPublishManager().publishResource(cms, destination3);
+            OpenCms.getPublishManager().publishResource(ucms, destination3);
             fail("a user without administration rights should not be able to publish when the publish engine is disabled");
         } catch (CmsPublishException e) {
             // ok, ignore
         }
 
-        // wait until the publish engine is enabled again
-        synchronized (this) {
-            wait(1000);
-        }
+        // the resource should not have a publish lock left (was an error)
+        assertTrue(ucms.getLock(destination3).isUnlocked());
+        
+        // re-enable the login (and implicitly the publish engine)
+        OpenCms.getLoginManager().removeLoginMessage(cms);
+        // publish engine should not run currently
+        assertFalse(OpenCms.getPublishManager().isRunning());
 
         // try again, it should work now
-        OpenCms.getPublishManager().publishResource(cms, destination4);
-    }
+        OpenCms.getPublishManager().publishResource(ucms, destination4);
+        // wait until resource is published
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        // third resource was not published, while fourth resource was
+        assertState(cms, destination3, CmsResource.STATE_NEW);
+        assertState(cms, destination4, CmsResource.STATE_UNCHANGED);
+        
+        // clean up
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }    
 }

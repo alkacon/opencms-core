@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishEventListener.java,v $
- * Date   : $Date: 2006/11/29 15:33:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/23 16:52:34 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.publish;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 
 /**
  * Test event listener implementation.<p>
@@ -49,6 +50,10 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
     private long m_removed;
     private CmsResource m_resource;
     private long m_started;
+    
+    /** Number of jobs in Queue/History on Enqueue, Start, Finish, Abort, Remove */
+    private int m_jobsInQueue[] = new int[5];
+    private int m_jobsInHistory[] = new int[5];
 
     /**
      * Default constructor.<p>
@@ -91,6 +96,27 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
     }
 
     /**
+     * Returns the jobs in history counters.<p>
+     * 
+     * @return the jobs in history counters
+     */
+    public int[] getJobsInHistoryCounter() {
+        
+        return m_jobsInHistory;
+    }
+    
+    /**
+     * Returns the jobs in queue counters.<p>
+     * 
+     * @return the jobs in queue counters
+     */
+    public int[] getJobsInQueueCounter() {
+        
+        return m_jobsInQueue;
+    }
+    
+    
+    /**
      * Returns the removed timestamp.<p>
      *
      * @return the removed timestamp
@@ -118,6 +144,8 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
         // track only events for the interesting publish job
         if (m_publishJob == publishJob.m_publishJob) {
             m_aborted = System.currentTimeMillis();
+            m_jobsInQueue[3] = OpenCms.getPublishManager().getPublishQueue().size();
+            m_jobsInHistory[3] = OpenCms.getPublishManager().getPublishHistory().size();
         }
     }
 
@@ -142,6 +170,9 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
         m_finished = 0;
         m_removed = 0;
         m_started = 0;
+        // count jobs in queue and history
+        m_jobsInQueue[0] = OpenCms.getPublishManager().getPublishQueue().size();
+        m_jobsInHistory[0] = OpenCms.getPublishManager().getPublishHistory().size();
     }
 
     /**
@@ -152,6 +183,9 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
         // track only events for the interesting publish job
         if (m_publishJob == publishJob.m_publishJob) {
             m_finished = System.currentTimeMillis();
+            // count jobs in queue and history
+            m_jobsInQueue[2] = OpenCms.getPublishManager().getPublishQueue().size();
+            m_jobsInHistory[2] = OpenCms.getPublishManager().getPublishHistory().size();
         }
     }
 
@@ -163,6 +197,9 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
         // track only events for the interesting publish job
         if (m_publishJob == publishJob.m_publishJob) {
             m_removed = System.currentTimeMillis();
+            // count jobs in queue and history
+            m_jobsInQueue[4] = OpenCms.getPublishManager().getPublishQueue().size();
+            m_jobsInHistory[4] = OpenCms.getPublishManager().getPublishHistory().size();
         }
     }
 
@@ -174,6 +211,9 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
         // track only events for the interesting publish job
         if (m_publishJob == publishJob.m_publishJob) {
             m_started = System.currentTimeMillis();
+            // count jobs in queue and history
+            m_jobsInQueue[1] = OpenCms.getPublishManager().getPublishQueue().size();
+            m_jobsInHistory[1] = OpenCms.getPublishManager().getPublishHistory().size();
         }
     }
 }

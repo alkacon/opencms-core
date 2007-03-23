@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobBase.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/23 16:52:33 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -58,6 +58,15 @@ public class CmsPublishJobBase {
     /** The delegate publish job. */
     protected CmsPublishJobInfoBean m_publishJob;
 
+    /**
+     * Internal constructor.<p> 
+     * 
+     * @param job the job used to initialize
+     */
+    protected CmsPublishJobBase(CmsPublishJobBase job) {
+        m_publishJob = job.m_publishJob;
+    }
+    
     /**
      * Default constructor.<p>
      * 
@@ -82,13 +91,11 @@ public class CmsPublishJobBase {
      * Returns the project name or {@link Messages#GUI_DIRECT_PUBLISH_PROJECT_NAME_0}
      * if it is a direct publish job.<p>
      * 
-     * @param locale the locale
-     * 
      * @return the project name
      */
-    public String getProjectName(Locale locale) {
+    public String getProjectName() {
 
-        return m_publishJob.getProjectName(locale);
+        return m_publishJob.getProjectName();
     }
 
     /**
@@ -118,7 +125,7 @@ public class CmsPublishJobBase {
      */
     public String getUserName() {
 
-        return m_publishJob.getUser().getName();
+        return m_publishJob.getUserName();
     }
     
     /**

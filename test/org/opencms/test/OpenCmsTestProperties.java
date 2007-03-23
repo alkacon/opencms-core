@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2007/03/20 15:08:57 $
- * Version: $Revision: 1.12.8.3 $
+ * Date   : $Date: 2007/03/23 16:52:35 $
+ * Version: $Revision: 1.12.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.8.3 $
+ * @version $Revision: 1.12.8.4 $
  * 
  * @since 6.0.0
  */
@@ -191,14 +191,22 @@ public final class OpenCmsTestProperties {
         }
 
         try {
+            // for java 1.4, getenv is deprecated and raises an error,
+            // so prefer properties set with "-D"
             // read environment and update configuration if required
-            if (System.getenv(PROP_TEST_DATA_PATH) != null) {
+            if (System.getProperty(PROP_TEST_DATA_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
+            } else if (System.getenv(PROP_TEST_DATA_PATH) != null) {
                 m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
             }
-            if (System.getenv(PROP_TEST_WEBAPP_PATH) != null) {
+            if (System.getProperty(PROP_TEST_WEBAPP_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
+            } else if (System.getenv(PROP_TEST_WEBAPP_PATH) != null) {
                 m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
             }
-            if (System.getenv(PROP_DB_PRODUCT) != null) {
+            if (System.getProperty(PROP_DB_PRODUCT) != null) {
+                m_configuration.setProperty(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
+            } else if (System.getenv(PROP_DB_PRODUCT) != null) {
                 m_configuration.setProperty(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
             }
         } catch (SecurityException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Messages.java,v $
- * Date   : $Date: 2007/01/11 11:07:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/23 16:52:33 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -151,6 +151,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_REPORT_DEFAULT_PATH_TRY_1 = "LOG_PUBLISH_REPORT_DEFAULT_PATH_TRY_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0 = "RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_REPORT_DELETE_FAILED_1 = "LOG_PUBLISH_REPORT_DELETE_FAILED_1";
 

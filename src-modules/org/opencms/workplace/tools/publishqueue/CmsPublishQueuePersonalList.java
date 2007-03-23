@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/23 16:52:35 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.5
  */
@@ -225,7 +225,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         while (iter.hasNext()) {
             CmsPublishJobFinished publishJob = (CmsPublishJobFinished)iter.next();
             CmsListItem item = getList().newItem(new Long(publishJob.getStartTime()).toString());
-            item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName(getLocale()));
+            item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName());
             item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getStartTime()));
             item.set(LIST_COLUMN_ENDTIME, new Date(publishJob.getFinishTime()));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));

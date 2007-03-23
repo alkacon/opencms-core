@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/21 13:14:00 $
- * Version: $Revision: 1.58.4.7 $
+ * Date   : $Date: 2007/03/23 16:52:34 $
+ * Version: $Revision: 1.58.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.monitor;
 import org.opencms.cache.CmsLruCache;
 import org.opencms.cache.CmsMemoryObjectCache;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsSecurityManager;
@@ -56,6 +57,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishEngine;
+import org.opencms.publish.CmsPublishHistory;
+import org.opencms.publish.CmsPublishJobInfoBean;
+import org.opencms.publish.CmsPublishQueue;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -80,6 +85,8 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.collections.Buffer;
+import org.apache.commons.collections.buffer.SynchronizedBuffer;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
@@ -93,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.7 $ 
+ * @version $Revision: 1.58.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,6 +196,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Cache for property lists. */
     private Map m_propertyListCache;
 
+    /** Buffer for publish history. */
+    private Buffer m_publishHistory;
+    
+    /** Buffer for publish jobs. */
+    private Buffer m_publishQueue;
+    
     /** Cache for resources. */
     private Map m_resourceCache;
 
@@ -452,6 +465,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given publish job.<p>
+     * 
+     * @param publishJob the publish job
+     */
+    public void cachePublishJob(CmsPublishJobInfoBean publishJob) {
+
+        m_publishQueue.add(publishJob);
+    }    
+
+    /**
+     * Caches the given publish job in the publish job history.<p>
+     * 
+     * @param publishJob the publish job
+     */
+    public void cachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
+        
+        m_publishHistory.add(publishJob);
+    }
+    
+    /**
      * Caches the given resource under the given cache key.<p>
      * 
      * @param key the cache key
@@ -635,6 +668,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes the publish history.<p>
+     */
+    public void flushPublishJobHistory() {
+        
+        m_publishHistory.clear();
+    }
+    
+    /**
+     * Flushes the publish queue.<p>
+     */
+    public void flushPublishJobs() {
+        
+        m_publishQueue.clear();
+    }
+
+    /**
      * Flushes the resource list cache.<p>
      */
     public void flushResourceLists() {
@@ -713,6 +762,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Returns all cached publish jobs in the queue as ordered list.<p>
+     * 
+     * @return all cached publish jobs
+     */
+    public List getAllCachedPublishJobs() {
+        
+        return new ArrayList(m_publishQueue);
+    }
+
+    /**
+     * Returns all cached publish jobs in the history as ordered list.<p>
+     * 
+     * @return all cached publish jobs
+     */
+    public List getAllCachedPublishJobsInHistory() {
+        
+        return new ArrayList(m_publishHistory);
+    }
+    
+    /**
      * Returns the ACL cached with the given cache key or <code>null</code> if not found.<p>
      * 
      * @param key the cache key to look for
@@ -723,7 +792,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         return (CmsAccessControlList)m_accessControlListCache.get(key);
     }
-
+    
     /**
      * Returns the xml content definition cached with the given cache key or <code>null</code> if not found.<p>
      * 
@@ -859,7 +928,45 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         return (List)m_propertyListCache.get(key);
     }
+    
+    /**
+     * Returns the publish job with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key  the cache key to look for
+     * 
+     * @return the publish job with the given cache key
+     */
+    public CmsPublishJobInfoBean getCachedPublishJob(String key) {
+        
+        for (Iterator i = m_publishQueue.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+            if (publishJob.getPublishHistoryId().toString().equals(key)) {
+                return publishJob;
+            }
+        }
+        
+        return null;
+    }
 
+    /**
+     * Returns the publish job from the history with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key  the cache key to look for
+     * 
+     * @return the publish job with the given cache key
+     */
+    public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
+        
+        for (Iterator i = m_publishHistory.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+            if (publishJob.getPublishHistoryId().toString().equals(key)) {
+                return publishJob;
+            }
+        }
+        
+        return null;
+    }
+    
     /**
      * Returns the resource cached with the given cache key or <code>null</code> if not found.<p>
      * 
@@ -955,6 +1062,20 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Returns the next publish job from the publish job queue.<p>
+     * 
+     * @return the next publish job
+     */
+    public CmsPublishJobInfoBean getFirstCachedPublishJob() {
+        
+        if (!m_publishQueue.isEmpty()) {
+            return (CmsPublishJobInfoBean)m_publishQueue.get();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * Returns the log count.<p>
      *
      * @return the log count
@@ -970,7 +1091,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param configuration the configuration to use
      * @param cacheSettings the cache settings to use
      */
-    public void initialize(CmsMemoryMonitorConfiguration configuration, CmsCacheSettings cacheSettings) {
+    public void initialize(CmsSystemConfiguration configuration, CmsCacheSettings cacheSettings) {
 
         m_memoryAverage = new CmsMemoryStatus();
         m_memoryCurrent = new CmsMemoryStatus();
@@ -982,7 +1103,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_lastLogStatus = 0;
         m_lastLogWarning = 0;
         m_lastClearCache = 0;
-        m_configuration = configuration;
+        m_configuration = configuration.getCmsMemoryMonitorConfiguration();
 
         m_intervalWarning = 720 * 60000;
         m_maxUsagePercent = 90;
@@ -1090,6 +1211,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_projectResourcesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
 
+        // publish history
+        int size = configuration.getPublishHistorySize();
+        Buffer buffer = CmsPublishHistory.getQueue((size > 0) ? size : CmsPublishEngine.DEFAULT_SIZE);
+        m_publishHistory = SynchronizedBuffer.decorate(buffer);
+        register(CmsPublishHistory.class.getName() + ".publishHistory", buffer);
+        
+        // publish queue
+        buffer = CmsPublishQueue.getQueue();
+        m_publishQueue = SynchronizedBuffer.decorate(buffer);
+        register(CmsPublishQueue.class.getName() + ".publishQueue", buffer); 
+        
         // resource cache
         lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
         m_resourceCache = Collections.synchronizedMap(lruMap);
@@ -1311,6 +1443,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_projectCache.remove(project.getName());
     }
 
+    /**
+     * Removes the given publish job from the cache.<p>
+     * 
+     * @param publishJob the publish job to remove
+     */
+    public void uncachePublishJob(CmsPublishJobInfoBean publishJob) {
+      
+        m_publishQueue.remove(publishJob);
+    }
+
+    /**
+     * Removes the given publish job from the history.<p>
+     * 
+     * @param publishJob the publish job to remove
+     */
+    public void uncachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
+      
+        m_publishHistory.remove(publishJob);
+    }
+    
     /**
      * Removes the given user from the cache.<p>
      * 

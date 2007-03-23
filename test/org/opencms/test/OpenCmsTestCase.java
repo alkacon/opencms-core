@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/03/20 15:08:57 $
- * Version: $Revision: 1.90.4.19 $
+ * Date   : $Date: 2007/03/23 16:52:34 $
+ * Version: $Revision: 1.90.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobBase;
+import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -94,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.19 $
+ * @version $Revision: 1.90.4.20 $
  * 
  * @since 6.0.0
  */
@@ -1511,7 +1513,48 @@ public class OpenCmsTestCase extends TestCase {
             }
         }
     }
-
+    
+    /**
+     * Tests if the given jobs are internally equal.<p>
+     * (May have different wrapper classes)
+     * 
+     * @param j1 first job to compare
+     * @param j2 second job to compare
+     * @param comparePublishLists if the publish lists should be compared, too
+     * @param compareTime if the timestamps should be compared, too
+     */
+    public void assertEquals(CmsPublishJobBase j1, CmsPublishJobBase j2, boolean comparePublishLists, boolean compareTime) {
+        
+        CmsPublishJobInfoBean job1 = new OpenCmsTestPublishJobBase(j1).getInfoBean();
+        CmsPublishJobInfoBean job2 = new OpenCmsTestPublishJobBase(j2).getInfoBean();
+        
+        if (!(job1.getPublishHistoryId().equals(job2.getPublishHistoryId()) 
+            && job1.getProjectName().equals(job2.getProjectName())
+            && job1.getUserName().equals(job2.getUserName())
+            && job1.getLocale().equals(job2.getLocale())
+            && (job1.getFlags() == job2.getFlags())
+            && job1.getReportFilePath().equals(job2.getReportFilePath())
+            && (job1.getSize() == job2.getSize()))) {
+            
+            fail("Publish jobs are not equal");
+        }
+        
+        if (compareTime) {
+            if (!((job1.getEnqueueTime() == job2.getEnqueueTime())
+            && (job1.getStartTime() == job2.getStartTime())
+            && (job1.getFinishTime() == job2.getFinishTime()))) {
+                
+                fail("Publish jobs do not have the same timestamps");
+            }
+        }
+        
+        if (comparePublishLists) {
+            if (!job1.getPublishList().toString().equals(job2.getPublishList().toString())) {
+                fail("Publish jobs do not have the same publish list");
+            }
+        }    
+    }
+    
     /**
      * Compares a given resource to its stored version containing the state before a CmsObject
      * method was called.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/03/21 15:11:43 $
- * Version: $Revision: 1.218.4.31 $
+ * Date   : $Date: 2007/03/23 16:52:35 $
+ * Version: $Revision: 1.218.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.31 $ 
+ * @version $Revision: 1.218.4.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -957,7 +957,7 @@ public final class OpenCmsCore {
                 Messages.ERR_CRITICAL_INIT_MEMORY_MONITOR_1,
                 memoryMonitorConfiguration.getClassName()), e);
         }
-        m_memoryMonitor.initialize(memoryMonitorConfiguration, cacheSettings);
+        m_memoryMonitor.initialize(systemConfiguration, cacheSettings);
 
         // get the event manager from the configuration and initialize it with the events already registered
         CmsEventManager configuredEventManager = systemConfiguration.getEventManager();
@@ -1086,19 +1086,16 @@ public final class OpenCmsCore {
         m_workflowManager = systemConfiguration.getWorkflowManager();
 
         // default publish engine parameters
-        int pubHistorySize = 100;
         String pubHistoryRepository = CmsPublishEngine.DEFAULT_REPORT_PATH;
         // try to get the publish engine params from the configuration
         if (systemConfiguration.getPublishHistoryRepository() != null) {
-            pubHistorySize = systemConfiguration.getPublishHistorySize();
             pubHistoryRepository = systemConfiguration.getPublishHistoryRepository();
         }
 
         // initialize the publish engine
         m_publishEngine = new CmsPublishEngine(
             systemConfiguration.getRuntimeInfoFactory(),
-            pubHistoryRepository,
-            pubHistorySize);
+            pubHistoryRepository);
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
@@ -1172,6 +1169,10 @@ public final class OpenCmsCore {
 
             // initialize the session manager
             m_sessionManager.initialize(sessionStorageProvider);
+            
+            // initialize the publish manager
+            m_publishManager.initialize(initCmsObject(adminCms));
+            
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
