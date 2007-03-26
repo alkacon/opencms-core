@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/03/15 10:04:34 $
- * Version: $Revision: 1.1.4.9 $
+ * Date   : $Date: 2007/03/26 09:32:50 $
+ * Version: $Revision: 1.1.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.9 $
+ * @version $Revision: 1.1.4.10 $
  * 
  * @since 6.2.4
  */
@@ -802,7 +802,7 @@ public class CmsObjectWrapper {
         String resourcename = resource.getRootPath();
         if (!m_cms.existsResource(resourcename)) {
 
-            // iterate through all wrappers and call "readResource" till one does not return null
+            // iterate through all wrappers and call "writeFile" till one does not return null
             List wrappers = getWrappers();
             Iterator iter = wrappers.iterator();
             while (iter.hasNext()) {

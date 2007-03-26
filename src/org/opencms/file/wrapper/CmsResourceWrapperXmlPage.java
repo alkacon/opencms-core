@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/03/15 10:04:34 $
- * Version: $Revision: 1.1.4.11 $
+ * Date   : $Date: 2007/03/26 09:32:50 $
+ * Version: $Revision: 1.1.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.4.11 $
+ * @version $Revision: 1.1.4.12 $
  * 
  * @since 6.5.6
  */
@@ -159,7 +159,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                     } catch (UnsupportedEncodingException e) {
                         // this will never happen since UTF-8 is always supported
                     }
-                    
+
                     ret.add(getResourceForElement(xmlPage, fullPath, length));
                 }
 
@@ -421,7 +421,11 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         CmsResource xmlPage = cms.readResource(resource.getStructureId());
         //CmsResource xmlPage = findXmlPage(cms, resource.getRootPath());
         if (xmlPage != null) {
-            return cms.getLock(xmlPage);
+
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(xmlPage.getTypeId());
+            if (resType instanceof CmsResourceTypeXmlPage) {
+                return cms.getLock(xmlPage);
+            }
         }
 
         return null;
@@ -747,33 +751,38 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         CmsResource xmlPage = cms.readResource(resource.getStructureId());
         //CmsResource xmlPage = findXmlPage(cms, resource.getRootPath());
         if (xmlPage != null) {
-            String path = getSubPath(cms, xmlPage, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(xmlPage.getTypeId());
+            if (resType instanceof CmsResourceTypeXmlPage) {
 
-            String[] tokens = path.split("/");
-            if (tokens.length == 2) {
+                String path = getSubPath(cms, xmlPage, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
 
-                CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
+                CmsFile file = CmsFile.upgrade(xmlPage, cms);
 
-                // cut off the html suffix
-                String name = tokens[1];
-                if (name.endsWith("." + EXTENSION_ELEMENT)) {
-                    name = name.substring(0, name.length() - 5);
+                String[] tokens = path.split("/");
+                if (tokens.length == 2) {
+
+                    CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
+
+                    // cut off the html suffix
+                    String name = tokens[1];
+                    if (name.endsWith("." + EXTENSION_ELEMENT)) {
+                        name = name.substring(0, name.length() - 5);
+                    }
+
+                    // set content
+                    String content = getStringValue(cms, file, resource.getContents());
+                    content = CmsStringUtil.extractHtmlBody(content).trim();
+                    xml.setStringValue(cms, name, new Locale(tokens[0]), content);
+
+                    // write file
+                    file.setContents(xml.marshal());
+                    cms.writeFile(file);
+
                 }
 
-                // set content
-                String content = getStringValue(cms, file, resource.getContents());
-                content = CmsStringUtil.extractHtmlBody(content).trim();
-                xml.setStringValue(cms, name, new Locale(tokens[0]), content);
-
-                // write file
-                file.setContents(xml.marshal());
-                cms.writeFile(file);
-
+                return file;
             }
-
-            return file;
         }
 
         return null;
