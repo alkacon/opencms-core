@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.23.8.2 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.23.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.23.8.2 $ 
+ * @version $Revision: 1.23.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,9 +205,8 @@ public final class CmsSite implements Cloneable {
                     cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
-
                     // TODO: Add an error message here                    
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }

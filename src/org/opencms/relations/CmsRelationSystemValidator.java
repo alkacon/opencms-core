@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/03/01 15:01:38 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -163,7 +163,7 @@ public class CmsRelationSystemValidator {
                 project = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
             } catch (CmsException e) {
                 // should never happen
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 

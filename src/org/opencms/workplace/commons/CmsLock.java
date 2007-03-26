@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/01/16 09:24:24 $
- * Version: $Revision: 1.16.4.12 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.16.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.12 $ 
+ * @version $Revision: 1.16.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -552,7 +552,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 } catch (CmsException e) {
                     // error reading a resource, should usually never happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(getLocale()), e);
                     }
                 }
             }
@@ -791,7 +791,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             } catch (CmsException e) {
                 // error reading a resource, should usually never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }

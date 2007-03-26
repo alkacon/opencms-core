@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexSourceRemoveList.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.0.0
  */
@@ -207,7 +207,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
                 idx.initialize();
             } catch (CmsSearchException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             refreshList();
@@ -236,7 +236,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
                     idx.initialize();
                 } catch (CmsSearchException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 refreshList();

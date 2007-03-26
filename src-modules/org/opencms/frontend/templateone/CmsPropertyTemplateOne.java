@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.30.4.2 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.30.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.30.4.2 $ 
+ * @version $Revision: 1.30.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,7 +390,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 
@@ -447,7 +447,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return URI_PROPERTY_DIALOG;
@@ -733,7 +733,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             // try to find a localized key for the description property value
@@ -899,7 +899,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         } catch (CmsException e) {
             // error reading resources
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;

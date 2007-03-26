@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -97,7 +97,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
             try {
                 resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
             } catch (Exception e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return resources;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/A_CmsMessageDialog.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.6.8.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.6.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6.8.1 $ 
+ * @version $Revision: 1.6.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,7 +131,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
                         users.add(userName);
                     }
                 } catch (Exception e) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }

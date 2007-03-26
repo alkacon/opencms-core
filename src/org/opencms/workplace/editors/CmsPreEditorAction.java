@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsPreEditorAction.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/26 09:12:04 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.4 
  */
@@ -138,7 +138,7 @@ public class CmsPreEditorAction extends CmsDialog {
         } catch (Exception e) {
             // error forwarding, log the exception as error
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -166,7 +166,7 @@ public class CmsPreEditorAction extends CmsDialog {
         } catch (Exception e) {
             // log error
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         // nothing to be done as pre action, open the editor

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.14.4.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.14.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.14.4.1 $ 
+ * @version $Revision: 1.14.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             OpenCmsCore.getInstance().shutDown();
         } catch (CmsInitException e) {
             if (e.isNewError()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
@@ -108,7 +108,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             OpenCmsCore.getInstance().getSessionManager().sessionCreated(event);
         } catch (CmsInitException e) {
             if (e.isNewError()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log
@@ -126,7 +126,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             OpenCmsCore.getInstance().getSessionManager().sessionDestroyed(event);
         } catch (CmsInitException e) {
             if (e.isNewError()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         } catch (Throwable t) {
             // make sure all other errors are displayed in the OpenCms log

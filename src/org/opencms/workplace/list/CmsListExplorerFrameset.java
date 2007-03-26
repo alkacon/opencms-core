@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/12/11 16:30:28 $
- * Version: $Revision: 1.4.4.7 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.4.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.7 $ 
+ * @version $Revision: 1.4.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,7 +174,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             items = getSettings().getCollector().getResults(getCms()).size();
         } catch (CmsException e) {
             // ignore
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         int size = (int)Math.ceil((double)items / getSettings().getUserSettings().getExplorerFileEntries());

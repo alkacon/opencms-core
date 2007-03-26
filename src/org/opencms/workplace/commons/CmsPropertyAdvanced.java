@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.28.4.11 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.28.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.11 $ 
+ * @version $Revision: 1.28.4.12 $ 
  * 
  * @since 6.0.0 
  */

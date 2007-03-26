@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.17.4.3 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.17.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.3 $ 
+ * @version $Revision: 1.17.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,7 +157,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource failed
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return html.toString();
     }

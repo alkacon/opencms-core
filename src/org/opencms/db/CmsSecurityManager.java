@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/20 14:38:48 $
- * Version: $Revision: 1.97.4.41 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.97.4.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2052,6 +2052,55 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns a new publish list that contains the unpublished resources related to the given resources, 
+     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
+     * resources exclude all resources in the given publish list.<p>
+     * 
+     * @param context the current request context
+     * @param publishList the publish list to exclude from result or 
+     *          get the related resources for if the resource is <code>null</code>
+     * @param resource the resource to get the related resources for or 
+     *          <code>null</code> to use all resources in the given publish list
+     * @param filter the relation filter to use to get the related resources
+     * 
+     * @return a new publish list that contains the related resources
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList, CmsResource)
+     */
+    public CmsPublishList getRelatedResourcesToPublish(
+        CmsRequestContext context,
+        CmsPublishList publishList,
+        CmsResource resource,
+        CmsRelationFilter filter) throws CmsException {
+
+        CmsPublishList ret = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            ret = m_driverManager.getRelatedResourcesToPublish(dbc, publishList, resource, filter);
+            checkPublishPermissions(dbc, ret);
+        } catch (Exception e) {
+            if (resource != null) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
+                    dbc.removeSiteRoot(resource.getRootPath())), e);
+            } else if (publishList.isDirectPublish()) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
+                    CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
+            } else {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1,
+                    context.currentProject().getName()), e);
+            }
+        } finally {
+            dbc.clear();
+        }
+        return ret;
+    }
+
+    /**
      * Returns all relations for the given resource mathing the given filter.<p> 
      * 
      * @param context the current user context
@@ -2303,7 +2352,7 @@ public final class CmsSecurityManager {
                 dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             // any exception: return false
             return false;
@@ -2353,7 +2402,7 @@ public final class CmsSecurityManager {
             orgUnits = m_driverManager.getOrganizationalUnitsForResource(dbc, resource);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             // any exception: return false
             return false;
@@ -2762,6 +2811,35 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Returns a new publish list that contains all resources of both given publish lists.<p>
+     * 
+     * @param context the current request context
+     * @param pubList1 the first publish list
+     * @param pubList2 the second publish list
+     * 
+     * @return a new publish list that contains all resources of both given publish lists
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.publish.CmsPublishManager#mergePublishLists(CmsObject, CmsPublishList, CmsPublishList)
+     */
+    public CmsPublishList mergePublishLists(CmsRequestContext context, CmsPublishList pubList1, CmsPublishList pubList2)
+    throws CmsException {
+
+        CmsPublishList ret = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            ret = m_driverManager.mergePublishLists(dbc, pubList1, pubList2);
+            checkPublishPermissions(dbc, ret);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_MERGING_PUBLISH_LISTS_0), e);
+        } finally {
+            dbc.clear();
+        }
+        return ret;
     }
 
     /**

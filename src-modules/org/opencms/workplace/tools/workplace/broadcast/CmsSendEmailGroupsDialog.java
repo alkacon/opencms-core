@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailGroupsDialog.java,v $
- * Date   : $Date: 2007/02/23 13:13:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -278,7 +278,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
                     }
                 }
             } catch (Exception e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         if (!excluded.isEmpty()) {
@@ -385,7 +385,7 @@ public class CmsSendEmailGroupsDialog extends CmsWidgetDialog {
                     }
                 }
             } catch (Exception e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         StringBuffer result = new StringBuffer(256);

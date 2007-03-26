@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/11/30 10:13:30 $
- * Version: $Revision: 1.30.2.2 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.30.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.30.2.2 $ 
+ * @version $Revision: 1.30.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -402,7 +402,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 }
             }
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
 

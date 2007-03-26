@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2006/12/05 16:31:07 $
- * Version: $Revision: 1.10.8.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.10.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10.8.1 $ 
+ * @version $Revision: 1.10.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
                         }
                     }
                 } catch (Exception e) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -271,7 +271,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
                         emails.add(emailAddress);
                     }
                 } catch (Exception e) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }

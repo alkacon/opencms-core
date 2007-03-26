@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsMacroWrapperFreeMarker.java,v $
- * Date   : $Date: 2006/05/12 10:02:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -122,7 +122,7 @@ public class CmsMacroWrapperFreeMarker implements I_CmsMacroWrapper {
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             error = true;
         } finally {

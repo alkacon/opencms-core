@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,7 +191,7 @@ public class CmsNotificationCandidates {
                 try {
                     contentNotification.send();
                 } catch (MessagingException e) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             return result.toString();
@@ -244,7 +244,7 @@ public class CmsNotificationCandidates {
                     }
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -300,7 +300,7 @@ public class CmsNotificationCandidates {
             try {
                 m_cms.writeUser(responsible);
             } catch (CmsException e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return contentNotifications;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/11/30 14:17:20 $
- * Version: $Revision: 1.100.4.8 $
+ * Date   : $Date: 2007/03/26 09:12:04 $
+ * Version: $Revision: 1.100.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.8 $ 
+ * @version $Revision: 1.100.4.9 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1214,7 +1214,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             return false;
         }
@@ -1226,7 +1226,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
                 continue;
             }

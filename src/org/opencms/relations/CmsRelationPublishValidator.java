@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationPublishValidator.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -81,10 +81,10 @@ public class CmsRelationPublishValidator {
         try {
             m_brokenRelations = m_cms.validateRelations(publishList.getFileList(), null);
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             throw new CmsRuntimeException(e.getMessageContainer(), e);
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }

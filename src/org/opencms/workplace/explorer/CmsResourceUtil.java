@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/03/06 10:34:35 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -517,7 +517,7 @@ public final class CmsResourceUtil {
                 m_lock = getCms().getLock(m_resource);
             } catch (Throwable e) {
                 m_lock = CmsLock.getNullLock();
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return m_lock;
@@ -577,7 +577,7 @@ public final class CmsResourceUtil {
             }
             return getCms().readProject(pId).getName();
         } catch (Throwable e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             return "";
         }
     }
@@ -1061,7 +1061,7 @@ public final class CmsResourceUtil {
         try {
             user = getCms().readUser(m_resource.getUserCreated()).getName();
         } catch (Throwable e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return user;
     }
@@ -1077,7 +1077,7 @@ public final class CmsResourceUtil {
         try {
             user = getCms().readUser(m_resource.getUserLastModified()).getName();
         } catch (Throwable e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return user;
     }
@@ -1096,7 +1096,7 @@ public final class CmsResourceUtil {
         try {
             return m_wfManager.getTask(getCms(), getCms().getSitePath(getResource()));
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return null;
     }
@@ -1151,7 +1151,7 @@ public final class CmsResourceUtil {
         try {
             taskState = m_wfManager.getTaskState(wfProject, getLocale());
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             taskState = e.getLocalizedMessage(getLocale());
         }
         return taskState;
@@ -1337,7 +1337,7 @@ public final class CmsResourceUtil {
             try {
                 m_projectResources = getCms().readProjectResources(getReferenceProject());
             } catch (Throwable e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
                 // use an empty list (all resources are "outside")
                 m_projectResources = new ArrayList();
             }

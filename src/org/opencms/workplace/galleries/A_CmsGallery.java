@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2007/01/19 16:53:53 $
- * Version: $Revision: 1.24.4.7 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.24.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.7 $ 
+ * @version $Revision: 1.24.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -533,7 +533,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 title = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
             } catch (CmsException e) {
                 // error reading title property 
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             result.append(title);
             result.append(" (");
@@ -564,7 +564,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 } catch (CmsException e) {
                     // error reading title property
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 options.add(title + " (" + path + ")");
@@ -682,7 +682,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         } catch (CmsException e) {
             // error checking permissions
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return button(null, null, "deletecontent_in.png", "", 0);
@@ -710,7 +710,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             }
         } catch (CmsException e) {
             // error checking permissions
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return button(null, null, "edit_in.png", "", 0);
     }
@@ -782,7 +782,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             // error reading resources with filter
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         // if the current site is NOT the root site - add all other galleries from the system path
@@ -795,7 +795,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             } catch (CmsException e) {
                 // error reading resources with filter
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
             if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
@@ -833,7 +833,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
                     // error reading reaources
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 } catch (NullPointerException e) {
                     // ignore this exception    
                 }
@@ -1370,7 +1370,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 value = property.getValue("[" + resName + "]");
             } catch (CmsException e) {
                 // error reading property object
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return value;
@@ -1560,7 +1560,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             getCms().unlockResource(resPath);
         } catch (CmsException e) {
             // writing the property failed, log error
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 }

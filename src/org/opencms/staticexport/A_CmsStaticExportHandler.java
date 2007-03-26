@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/11/29 17:03:33 $
- * Version: $Revision: 1.3.4.13 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.3.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.13 $ 
+ * @version $Revision: 1.3.4.14 $ 
  * 
  * @since 6.1.7 
  * 
@@ -296,7 +296,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 if (relations == null || relations.isEmpty()) {

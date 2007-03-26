@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +152,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         try {
                             targetProperties = getCms().readPropertyObjects(targetName, false);
                         } catch (Exception e) {
-                            LOG.error(e);
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                     getCms().createSibling(targetName, fullResourceName, targetProperties);

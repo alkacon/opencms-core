@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2007/01/31 12:04:38 $
- * Version: $Revision: 1.12.4.9 $
+ * Date   : $Date: 2007/03/26 09:12:04 $
+ * Version: $Revision: 1.12.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12.4.9 $ 
+ * @version $Revision: 1.12.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -829,7 +829,7 @@ public class CmsHtmlImport {
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
             } catch (Exception e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
                 m_report.println(e);
             }
         }
@@ -901,7 +901,7 @@ public class CmsHtmlImport {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -1009,7 +1009,7 @@ public class CmsHtmlImport {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             m_report.println(e);
         }
     }
@@ -1163,7 +1163,7 @@ public class CmsHtmlImport {
                     I_CmsReport.FORMAT_OK);
             } catch (CmsException e) {
                 m_report.println(e);
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -1272,7 +1272,7 @@ public class CmsHtmlImport {
                     I_CmsReport.FORMAT_OK);
             } catch (CmsException e) {
                 m_report.println(e);
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -1553,7 +1553,7 @@ public class CmsHtmlImport {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_HTMLIMPORT_PARSE_1,
                 file.getAbsolutePath());
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             throw new CmsImportExportException(message, e);
         }
         return parsedHtml;

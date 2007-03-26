@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.22.4.6 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.22.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.4.6 $ 
+ * @version $Revision: 1.22.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,7 +157,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     uri = new String(CmsFile.upgrade(res, getCms()).getContents());
                 } catch (CmsException e) {
                     // this should never happen
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             } else {
                 // in editor mode, create a valid link from resource path
@@ -305,7 +305,7 @@ public class CmsLinkGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource or property value failed
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return html.toString();
     }
@@ -625,7 +625,7 @@ public class CmsLinkGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // writing the property failed, log error
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -676,7 +676,7 @@ public class CmsLinkGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // error checking permissions
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return button(null, null, "edit_in.png", "", 0);
     }

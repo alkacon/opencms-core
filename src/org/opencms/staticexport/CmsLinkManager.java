@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.60.4.7 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.60.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.7 $ 
+ * @version $Revision: 1.60.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public class CmsLinkManager {
             // should never happen
             onlineLink = e.getLocalizedMessage();
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return onlineLink;
@@ -410,7 +410,7 @@ public class CmsLinkManager {
             // if something wrong
             permalink = e.getLocalizedMessage();
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return permalink;

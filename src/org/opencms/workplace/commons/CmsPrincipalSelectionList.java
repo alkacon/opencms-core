@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/03/15 16:30:39 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
@@ -74,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -409,7 +410,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             } else {
                 item.set(LIST_COLUMN_DESCRIPTION, principal.getDescription());
             }
-            item.set(LIST_COLUMN_ORGUNIT, principal.getOuFqn());
+            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
             ret.add(item);
         }
         return ret;

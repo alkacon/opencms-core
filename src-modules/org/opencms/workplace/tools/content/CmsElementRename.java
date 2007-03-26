@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15.2.3 $ 
+ * @version $Revision: 1.15.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -598,7 +598,7 @@ public class CmsElementRename extends CmsReport {
             templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         // check if the users selected template is valid. 
@@ -703,7 +703,7 @@ public class CmsElementRename extends CmsReport {
             xmlPages = getCms().readResources(getParamResource(), filter, isRecursive);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 

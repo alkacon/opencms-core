@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2007/03/26 09:12:03 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17.4.5 $ 
+ * @version $Revision: 1.17.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,7 +332,7 @@ public class CmsRfsFileViewer implements Cloneable {
                     try {
                         reader.close();
                     } catch (IOException e) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
 
                 }
