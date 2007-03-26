@@ -14,6 +14,7 @@
 	function reload() {
 		self.location.href="<%=wp.getJsp().link(wp.getJsp().getRequestContext().getUri()+"?"+wp.paramsAsRequest())%>";
 	}
+	document.onmousemove = new Function('return false;');
 //-->
 </script>	
 </head>
