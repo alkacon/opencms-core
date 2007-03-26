@@ -495,7 +495,7 @@ Each job can have an optional list of parameters.
 # Provides the configuration parameters for the publish history.
 # See the package org.opencms.publish for more details.
 -->
-<!ELEMENT publishhistory (history-size, history-repository)>
+<!ELEMENT publishhistory (history-size, history-repository, queue-persistance?, queue-shutdowntime?)>
 
 <!--
 # The size of the publish queue
@@ -507,6 +507,22 @@ Each job can have an optional list of parameters.
 # can be relative to the WEB-INF folder or an absolute path.
 -->
 <!ELEMENT history-repository (#PCDATA)>
+
+<!--
+# Indicates if the publish queue is re-initialized on restart of the system.
+# The value is optional, the default is "false" if no value is provided.
+#
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used. 
+-->
+<!ELEMENT queue-persistance (#PCDATA)>
+
+<!--
+# The amount of time in seconds the system waits for a publish job 
+# to be finished during shutdown.
+# The value is optional, the default is 1 second if no value is provided.
+-->
+<!ELEMENT queue-shutdowntime (#PCDATA)>
 
 <!--
 # Session storage provider:

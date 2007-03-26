@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/26 15:32:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -83,7 +83,7 @@ public class CmsPublishHistory {
      * 
      * @return the queue buffer
      */
-    static public Buffer getQueue(int size) {
+    public static Buffer getQueue(int size) {
         
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_PUBLISH_HISTORY_SIZE_SET_1, new Integer(size)));
@@ -127,38 +127,14 @@ public class CmsPublishHistory {
         // write job to db if neccessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-            m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
-        }
-    }
-
-    /**
-     * Removes the given job from the list.<p>
-     * 
-     * @param publishJob the publish job to remove
-     * @throws CmsException if something goes wrong
-     */
-    protected void remove(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
-
-        OpenCms.getMemoryMonitor().uncachePublishJobInHistory(publishJob);
-        // delete job from db if neccessary
-        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-            OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
-        }
-        // delete report
-        if (!new File(publishJob.getReportFilePath()).delete()) {
-            // warn if deletion failed
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
-                    publishJob.getReportFilePath()));
+            try {
+                m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
+            } finally {
+                dbc.clear();
             }
         }
-        
-        m_publishEngine.publishJobRemoved(publishJob);
     }
-    
+
     /**
      * Returns an unmodifiable list representation of this list.<p>
      * 
@@ -196,6 +172,40 @@ public class CmsPublishHistory {
             if (LOG.isErrorEnabled()) {
                 LOG.error(exc);
             }
+        } finally {
+            dbc.clear();   
+        }    
+    }
+    
+    /**
+     * Removes the given job from the list.<p>
+     * 
+     * @param publishJob the publish job to remove
+     * @throws CmsException if something goes wrong
+     */
+    protected void remove(CmsPublishJobInfoBean publishJob) 
+    throws CmsException {
+
+        OpenCms.getMemoryMonitor().uncachePublishJobInHistory(publishJob);
+        // delete job from db if neccessary
+        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
+            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            try {
+                OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
+            } finally {
+                dbc.clear();
+            }
         }
+        // delete report
+        if (!new File(publishJob.getReportFilePath()).delete()) {
+            // warn if deletion failed
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
+                    publishJob.getReportFilePath()));
+            }
+        }
+        
+        m_publishEngine.publishJobRemoved(publishJob);
     }
 }

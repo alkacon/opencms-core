@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/26 15:32:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -140,61 +140,14 @@ public class CmsPublishQueue {
         // add job to database if neccessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-            m_publishEngine.getDriverManager().createPublishJob(dbc, publishJob);
+            try {
+                m_publishEngine.getDriverManager().createPublishJob(dbc, publishJob);
+            } finally {
+                dbc.clear();
+            }
         }     
     }
     
-    /**
-     * Removes the given job from the list.<p>
-     * 
-     * @param publishJob the publish job to remove
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void remove(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
-
-        // signalize that job will be removed
-        m_publishEngine.publishJobRemoved(publishJob);
-        
-        // remove publish job from cache
-        OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
-        
-        // remove job from database if neccessary
-        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-            m_publishEngine.getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
-        }
-        // delete report
-        if (!new File(publishJob.getReportFilePath()).delete()) {
-            // warn if deletion failed
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
-                    publishJob.getReportFilePath()));
-            }
-        }
-    }
-    
-    /**
-     * Updates the given job in the list.<p>
-     * 
-     * @param publishJob the publish job to 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void update(CmsPublishJobInfoBean publishJob)
-    throws CmsException {
-        
-        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
-            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-            m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
-            // delete publish list of started job
-            m_publishEngine.getDriverManager().deletePublishList(dbc, publishJob.getPublishHistoryId());
-        }
-    }    
-        
-
     /**
      * Returns an unmodifiable list representation of this queue.<p>
      * 
@@ -211,42 +164,47 @@ public class CmsPublishQueue {
         }
         return Collections.unmodifiableList(result);
     }
-
+    
     /**
      * Initializes the internal FIFO queue with publish jobs from the database.<p>
      * 
      * @param adminCms an admin cms object
+     * @param revive <code>true</code> if the publish queue should be revived from the database
      */
-    protected void initialize(CmsObject adminCms) {
+    protected void initialize(CmsObject adminCms, boolean revive) {
 
         CmsDriverManager driverManager = m_publishEngine.getDriverManager();
         CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
         
         try {
             OpenCms.getMemoryMonitor().flushPublishJobs();
-            // read all pending publish jobs from the database
-            List publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
-            for (Iterator i = publishJobs.iterator(); i.hasNext();) {
-                CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
-                if (!job.isStarted()) {
-                    // add jobs not already started to queue again
-                    try {
-                        job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
-                        m_publishEngine.lockPublishList(job);
-                        OpenCms.getMemoryMonitor().cachePublishJob(job);
-                    } catch (CmsException exc) {
-                        // skip job
-                        LOG.error(exc);
-                    }
-                } else {
-                    try {
-                        // remove already started job
-                        // m_publishEngine.abortPublishJob(null, new CmsPublishJobEnqueued(job), false);
-                        // set finish info
-                        new CmsPublishJobEnqueued(job).m_publishJob.finish();
-                        m_publishEngine.getPublishHistory().add(job);
-                    } catch (CmsException exc) {
-                        LOG.error(exc);
+            if (revive) {
+                // read all pending publish jobs from the database
+                List publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
+                for (Iterator i = publishJobs.iterator(); i.hasNext();) {
+                    CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
+                    if (!job.isStarted()) {
+                        // add jobs not already started to queue again
+                        try {
+                            job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
+                            m_publishEngine.lockPublishList(job);
+                            OpenCms.getMemoryMonitor().cachePublishJob(job);
+                        } catch (CmsException exc) {
+                            // skip job
+                            LOG.error(exc);
+                        } finally {
+                            dbc.clear();
+                        }
+                    } else {
+                        try {
+                            // remove already started job
+                            // m_publishEngine.abortPublishJob(null, new CmsPublishJobEnqueued(job), false);
+                            // set finish info
+                            new CmsPublishJobEnqueued(job).m_publishJob.finish();
+                            m_publishEngine.getPublishHistory().add(job);
+                        } catch (CmsException exc) {
+                            LOG.error(exc);
+                        }
                     }
                 }
             }
@@ -254,9 +212,12 @@ public class CmsPublishQueue {
             if (LOG.isErrorEnabled()) {
                 LOG.error(exc);
             }
+        } finally {
+            dbc.clear();
         }
-    }
-    
+    }    
+        
+
     /**
      * Checks if the queue is empty.<p>
      * 
@@ -280,5 +241,63 @@ public class CmsPublishQueue {
             OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
         }
         return publishJob;
+    }
+    
+    /**
+     * Removes the given job from the list.<p>
+     * 
+     * @param publishJob the publish job to remove
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void remove(CmsPublishJobInfoBean publishJob) 
+    throws CmsException {
+
+        // signalize that job will be removed
+        m_publishEngine.publishJobRemoved(publishJob);
+        
+        // remove publish job from cache
+        OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
+        
+        // remove job from database if neccessary
+        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
+            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            try {
+                m_publishEngine.getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
+            } finally {
+                dbc.clear();
+            }
+        }
+        // delete report
+        if (!new File(publishJob.getReportFilePath()).delete()) {
+            // warn if deletion failed
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
+                    publishJob.getReportFilePath()));
+            }
+        }
+    }
+
+    /**
+     * Updates the given job in the list.<p>
+     * 
+     * @param publishJob the publish job to 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void update(CmsPublishJobInfoBean publishJob)
+    throws CmsException {
+        
+        if (OpenCms.getMemoryMonitor().requiresPersistency()) {
+            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+            try {
+                m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
+                // delete publish list of started job
+                m_publishEngine.getDriverManager().deletePublishList(dbc, publishJob.getPublishHistoryId());
+            } finally {
+                dbc.clear();
+            }
+        }
     }
 }

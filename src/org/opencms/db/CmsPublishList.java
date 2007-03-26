@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/03/26 09:45:55 $
- * Version: $Revision: 1.25.4.6 $
+ * Date   : $Date: 2007/03/26 15:32:36 $
+ * Version: $Revision: 1.25.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.6 $
+ * @version $Revision: 1.25.4.7 $
  * 
  * @since 6.0.0
  * 
@@ -76,16 +76,16 @@ public class CmsPublishList implements Externalizable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishList.class);
-
+    
     /** Indicates a nonexistant object in the serialized data. */
     private static final int NIL = -1;
-
+    
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -2578909250462750927L;
 
     /** Lenght of a serialized uuid. */
     private static final int UUID_LENGTH = CmsUUID.getNullUUID().toByteArray().length;
-
+    
     /** The list of deleted Cms folder resources to be published.<p> */
     private List m_deletedFolderList;
 
@@ -117,10 +117,10 @@ public class CmsPublishList implements Externalizable {
      * Empty constructor.<p> 
      */
     public CmsPublishList() {
-
+        
         // noop
     }
-
+    
     /**
      * Constructs a publish list for a given project.<p>
      * 
@@ -308,7 +308,7 @@ public class CmsPublishList implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException {
 
         // read the history id
-        m_publishHistoryId = internalReadUUID(in);
+        m_publishHistoryId = internalReadUUID(in);        
         // read the project id
         m_projectId = internalReadUUID(in);
         if (m_projectId.isNullUUID()) {
@@ -335,14 +335,14 @@ public class CmsPublishList implements Externalizable {
      * @param cms a cms object used to read the resource instances
      */
     public void revive(CmsObject cms) {
-
+    
         if (m_needsRevive) {
             if (m_directPublishResources != null) {
                 m_directPublishResources = internalReadResourceList(cms, m_directPublishResources);
             }
             if (m_fileList != null) {
                 m_fileList = internalReadResourceList(cms, m_fileList);
-            }
+            }   
             if (m_folderList != null) {
                 m_folderList = internalReadResourceList(cms, m_folderList);
             }
@@ -352,7 +352,7 @@ public class CmsPublishList implements Externalizable {
             m_needsRevive = false;
         }
     }
-
+      
     /**
      * Returns the number of all resources to be published.<p>
      * 
@@ -366,7 +366,7 @@ public class CmsPublishList implements Externalizable {
             return m_folderList.size() + m_fileList.size() + m_deletedFolderList.size();
         }
     }
-
+    
     /**
      * @see java.lang.Object#toString()
      */
@@ -386,12 +386,12 @@ public class CmsPublishList implements Externalizable {
         result.append("]\n");
         return result.toString();
     }
-
+    
     /**
      * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
-    public void writeExternal(ObjectOutput out) throws IOException {
-
+    public void writeExternal (ObjectOutput out) throws IOException {
+        
         // write the history id
         out.write(m_publishHistoryId.toByteArray());
         // write the project id
@@ -413,16 +413,16 @@ public class CmsPublishList implements Externalizable {
             out.writeInt(m_fileList.size());
             for (Iterator i = m_fileList.iterator(); i.hasNext();) {
                 out.write(((CmsResource)i.next()).getStructureId().toByteArray());
-            }
+            }            
         } else {
             out.writeInt(NIL);
-        }
+        }     
         // write the list of published folders by writing the uuid of each resource
         if (m_folderList != null) {
             out.writeInt(m_folderList.size());
             for (Iterator i = m_folderList.iterator(); i.hasNext();) {
                 out.write(((CmsResource)i.next()).getStructureId().toByteArray());
-            }
+            }    
         } else {
             out.writeInt(NIL);
         }
@@ -431,12 +431,12 @@ public class CmsPublishList implements Externalizable {
             out.writeInt(m_deletedFolderList.size());
             for (Iterator i = m_deletedFolderList.iterator(); i.hasNext();) {
                 out.write(((CmsResource)i.next()).getStructureId().toByteArray());
-            }
+            } 
         } else {
             out.writeInt(NIL);
         }
     }
-
+    
     /**
      * Adds a new/changed Cms folder resource to the publish list.<p>
      * 
@@ -453,17 +453,17 @@ public class CmsPublishList implements Externalizable {
         }
 
         if (resource.isFolder()) {
-            if (resource.getState().isDeleted()) {
+        if (resource.getState().isDeleted()) {
                 if (!m_deletedFolderList.contains(resource)) {
                     // only add files not already contained in the list
-                    m_deletedFolderList.add(resource);
+            m_deletedFolderList.add(resource);
                 }
-            } else {
+        } else {
                 if (!m_folderList.contains(resource)) {
                     // only add files not already contained in the list
-                    m_folderList.add(resource);
-                }
-            }
+            m_folderList.add(resource);
+        }
+    }
         } else {
             if (!m_fileList.contains(resource)) {
                 // only add files not already contained in the list
@@ -472,7 +472,7 @@ public class CmsPublishList implements Externalizable {
             }
         }
     }
-
+    
     /**
      * Appends all of the new/changed Cms folder resources in the specified list to the end 
      * of this publish list.<p>
@@ -483,6 +483,7 @@ public class CmsPublishList implements Externalizable {
     protected void addAll(List list) throws IllegalArgumentException {
 
         // it is essential that this method is only visible within the db package!
+
         Iterator i = list.iterator();
         while (i.hasNext()) {
             add((CmsResource)i.next());
@@ -562,14 +563,14 @@ public class CmsPublishList implements Externalizable {
 
         List resList = new ArrayList(uuidList.size());
         for (Iterator i = uuidList.iterator(); i.hasNext();) {
-            try {
+            try  {
                 CmsResource res = cms.readResource((CmsUUID)i.next());
                 resList.add(res);
             } catch (CmsException exc) {
                 LOG.error(exc);
             }
         }
-
+        
         return resList;
     }
 
@@ -581,7 +582,7 @@ public class CmsPublishList implements Externalizable {
      * @throws IOException
      */
     private CmsUUID internalReadUUID(ObjectInput in) throws IOException {
-
+        
         byte[] bytes = new byte[UUID_LENGTH];
         in.read(bytes, 0, UUID_LENGTH);
         return new CmsUUID(bytes);
@@ -596,19 +597,19 @@ public class CmsPublishList implements Externalizable {
      * @throws IOException if something goes wrong 
      */
     private List internalReadUUIDList(ObjectInput in) throws IOException {
-
+  
         List result = null;
         byte[] bytes = new byte[UUID_LENGTH];
-
+        
         int i = in.readInt();
         if (i >= 0) {
             result = new ArrayList();
             while (i-- > 0) {
                 in.read(bytes, 0, UUID_LENGTH);
                 result.add(new CmsUUID(bytes));
-            }
-        }
-
+            }    
+        } 
+        
         return result;
     }
 }

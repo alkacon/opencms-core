@@ -154,6 +154,8 @@
 		<publishhistory>
 			<history-size>100</history-size>
 			<history-repository>logs/publish</history-repository>
+			<queue-persistance>false</queue-persistance>
+		    <queue-shutdowntime>1</queue-shutdowntime>
 		</publishhistory>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/03/23 16:52:35 $
- * Version: $Revision: 1.218.4.32 $
+ * Date   : $Date: 2007/03/26 15:32:37 $
+ * Version: $Revision: 1.218.4.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
@@ -140,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.32 $ 
+ * @version $Revision: 1.218.4.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -943,7 +942,6 @@ public final class OpenCmsCore {
 
         // initialize the memory monitor
         CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
-        CmsCacheSettings cacheSettings = systemConfiguration.getCacheSettings();
         // initialize the memory monitor
         try {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(memoryMonitorConfiguration.getClassName())) {
@@ -957,7 +955,7 @@ public final class OpenCmsCore {
                 Messages.ERR_CRITICAL_INIT_MEMORY_MONITOR_1,
                 memoryMonitorConfiguration.getClassName()), e);
         }
-        m_memoryMonitor.initialize(systemConfiguration, cacheSettings);
+        m_memoryMonitor.initialize(systemConfiguration);
 
         // get the event manager from the configuration and initialize it with the events already registered
         CmsEventManager configuredEventManager = systemConfiguration.getEventManager();
@@ -1085,17 +1083,8 @@ public final class OpenCmsCore {
         // get the workflow manager, this is needed before the security manager is initialized because of the locks
         m_workflowManager = systemConfiguration.getWorkflowManager();
 
-        // default publish engine parameters
-        String pubHistoryRepository = CmsPublishEngine.DEFAULT_REPORT_PATH;
-        // try to get the publish engine params from the configuration
-        if (systemConfiguration.getPublishHistoryRepository() != null) {
-            pubHistoryRepository = systemConfiguration.getPublishHistoryRepository();
-        }
-
         // initialize the publish engine
-        m_publishEngine = new CmsPublishEngine(
-            systemConfiguration.getRuntimeInfoFactory(),
-            pubHistoryRepository);
+        m_publishEngine = new CmsPublishEngine(systemConfiguration.getRuntimeInfoFactory());
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
@@ -1103,8 +1092,8 @@ public final class OpenCmsCore {
             systemConfiguration.getRuntimeInfoFactory(),
             m_publishEngine);
 
-        // initialize the publish manager
-        m_publishManager = new CmsPublishManager(m_publishEngine, m_securityManager);
+        // get the publish manager
+        m_publishManager = systemConfiguration.getPublishManager();
 
         // initialize the role manager
         m_roleManager = new CmsRoleManager(m_securityManager);
@@ -1171,6 +1160,8 @@ public final class OpenCmsCore {
             m_sessionManager.initialize(sessionStorageProvider);
             
             // initialize the publish manager
+            m_publishManager.setPublishEngine(m_publishEngine);
+            m_publishManager.setSecurityManager(m_securityManager);
             m_publishManager.initialize(initCmsObject(adminCms));
             
         } catch (CmsException e) {

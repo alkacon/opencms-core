@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/23 16:52:34 $
- * Version: $Revision: 1.58.4.8 $
+ * Date   : $Date: 2007/03/26 15:32:37 $
+ * Version: $Revision: 1.58.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishHistory;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.publish.CmsPublishQueue;
@@ -100,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.8 $ 
+ * @version $Revision: 1.58.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1089,10 +1088,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Initializes the monitor with the provided configuration.<p>
      * 
      * @param configuration the configuration to use
-     * @param cacheSettings the cache settings to use
      */
-    public void initialize(CmsSystemConfiguration configuration, CmsCacheSettings cacheSettings) {
+    public void initialize(CmsSystemConfiguration configuration) {
 
+        CmsCacheSettings cacheSettings = configuration.getCacheSettings();
+        
         m_memoryAverage = new CmsMemoryStatus();
         m_memoryCurrent = new CmsMemoryStatus();
 
@@ -1212,8 +1212,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
 
         // publish history
-        int size = configuration.getPublishHistorySize();
-        Buffer buffer = CmsPublishHistory.getQueue((size > 0) ? size : CmsPublishEngine.DEFAULT_SIZE);
+        int size = configuration.getPublishManager().getPublishHistorySize();
+        Buffer buffer = CmsPublishHistory.getQueue(size);
         m_publishHistory = SynchronizedBuffer.decorate(buffer);
         register(CmsPublishHistory.class.getName() + ".publishHistory", buffer);
         

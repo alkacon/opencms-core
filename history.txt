@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/26 09:45:56 $
- * Version: $Revision: 1.717.2.152 $
+ * Date   : $Date: 2007/03/26 15:32:37 $
+ * Version: $Revision: 1.717.2.153 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@ OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
+! Reinitialization/Restart of pending jobs from the publish queue during startup is now configurable, 
+  the amount of time the system waits for a running publish jub during shutdown is now configurable, also
 ! Publish queue and publish history are now persisted and based on buffers managed by memory monitor
   (i.e. after a restart, pending jobs (but not the job running during shutdown) are published after startup)
 ! Select type of index page while creating new folders

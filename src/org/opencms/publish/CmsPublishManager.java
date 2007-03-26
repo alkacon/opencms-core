@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/26 09:45:55 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/03/26 15:32:36 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -47,6 +49,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,36 +59,78 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.5.5
  */
 public class CmsPublishManager {
 
+    /** The default history size. */
+    public static final int DEFAULT_HISTORY_SIZE = 100;
+
+    /** The default persistance setting for the publish queue. */
+    public static final boolean DEFAULT_QUEUE_PERSISTANCE = false;
+    
+    /** The default shutdown time for the running publish job. */
+    public static final int DEFAULT_QUEUE_SHUTDOWNTIME = 1;
+    
+    /** Default path to the store the publish reports relative to the "WEB-INF" directory of the application. */
+    public static final String DEFAULT_REPORT_PATH = CmsLog.FOLDER_LOGS + "publish" + File.separatorChar;
+
     /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
-
+    
     /** The underlying publish engine. */
-    private final CmsPublishEngine m_publishEngine;
-
+    private CmsPublishEngine m_publishEngine;
+    
     /** The publish relation filter to use. */
     private CmsRelationFilter m_publishRelationFilter;
 
     /** The security manager. */
     private CmsSecurityManager m_securityManager;
 
+    /** The maximum size of the publish history. */
+    private int m_publishHistorySize;
+    
+    /** The path for storing publish reports. */ 
+    private String m_publishHistoryRepository;
+    
+    /** Indicates if the publish queue is re-initialized on statup. */
+    private boolean m_publishQueuePersistance;
+    
+    /** The amount of time to wait for a publish job during shutdown. */
+    private int m_publishQueueShutdowntime;
+    
+    /** Indicates if the configuration can be modified. */
+    private boolean m_frozen;
+    
     /**
-     * Default constructor.<p>
-     * 
-     * @param engine the underlying publish engine
-     * @param securityManager the security manager
+     * Default constructor used in digester initialization.<p>
      */
-    public CmsPublishManager(CmsPublishEngine engine, CmsSecurityManager securityManager) {
-
-        m_publishEngine = engine;
-        m_securityManager = securityManager;
+    public CmsPublishManager() {
+        
+        m_publishEngine = null;
+        m_frozen = false;
     }
 
+    /**
+     * Constructor used to create a pre-initialized instance.<p>
+     * 
+     * @param repositoryPath the path to store publish reports
+     * @param historySize the size of the publish history
+     * @param queuePersistance indicates if th equeue is re-initialzed on startup
+     * @param queueShutdowntime the amount of time to wait for a publish job during shutdown
+     */
+    public CmsPublishManager(String repositoryPath, int historySize, boolean queuePersistance, int queueShutdowntime) {
+
+        m_publishEngine = null;
+        m_publishHistoryRepository = repositoryPath;
+        m_publishHistorySize = historySize;
+        m_publishQueuePersistance = queuePersistance;
+        m_publishQueueShutdowntime = queueShutdowntime;
+        m_frozen = false;
+    }
+    
     /**
      * Aborts the given publish job.<p>
      * 
@@ -107,7 +152,7 @@ public class CmsPublishManager {
                 Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
                 cms.getRequestContext().currentUser().getName()));
         }
-        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob, removeJob);
+        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob , removeJob);
     }
 
     /**
@@ -194,6 +239,26 @@ public class CmsPublishManager {
     }
 
     /**
+     * Returns the publish History Repository path.<p>
+     *
+     * @return the publish History Repository path
+     */
+    public String getPublishHistoryRepository() {
+
+        return m_publishHistoryRepository;
+    }
+
+    /**
+     * Returns the publish History Size.<p>
+     *
+     * @return the publish History Size
+     */
+    public int getPublishHistorySize() {
+
+        return m_publishHistorySize;
+    }
+
+    /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published.<p>
      * 
@@ -208,7 +273,7 @@ public class CmsPublishManager {
         return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
             cms.getRequestContext().currentProject()));
     }
-
+    
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a single resource.<p>
@@ -229,7 +294,6 @@ public class CmsPublishManager {
             directPublishResource,
             directPublishSiblings));
     }
-
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
@@ -286,6 +350,16 @@ public class CmsPublishManager {
     }
 
     /**
+     * Returns the amount of time in seconds the system will wait during shutdown for a running publish job.<p>
+     * 
+     * @return the shutdown time for a running publish job
+     */
+    public int getPublishQueueShutdowntime() {
+        
+        return m_publishQueueShutdowntime;
+    }
+
+    /**
      * Initializes the publish manager and the publish engine finally.<p>
      * 
      * @param cms an admin cms object
@@ -295,7 +369,21 @@ public class CmsPublishManager {
     public void initialize(CmsObject cms)
     throws CmsException {
     
-        m_publishEngine.initialize(cms);
+        m_publishEngine.initialize(cms, 
+            m_publishHistoryRepository,
+            m_publishQueuePersistance,
+            m_publishQueueShutdowntime);
+        m_frozen = true;
+    }
+
+    /**
+     * Returns if the publish queue is persisted an will be re-initialized on startup.<p>
+     * 
+     * @return <code>true</code> if the publish queue is persisted 
+     */
+    public boolean isPublishQueuePersistanceEnabled() {
+       
+        return m_publishQueuePersistance;
     }
     
     /**
@@ -321,7 +409,7 @@ public class CmsPublishManager {
             resource,
             getPublishRelationFilter());
     }
-
+    
     /**
      * Returns the working state, that is if no publish job
      * is waiting to be processed and there is no current running 
@@ -352,7 +440,6 @@ public class CmsPublishManager {
     }
 
     /**
-     /**
      * Publishes the current project, printing messages to a shell report.<p>
      *
      * @param cms the cms request context
@@ -475,6 +562,84 @@ public class CmsPublishManager {
     }
 
     /**
+     * Sets the publish engine during initialization.<p>
+     * 
+     * @param publishEngine the publish engine instance
+     */
+    public void setPublishEngine(CmsPublishEngine publishEngine) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
+        m_publishEngine = publishEngine;
+    }
+    
+    /**
+     * Sets the publish History Repository path.<p>
+     *
+     * @param publishHistoryRepository the publish History Repository path to set
+     */
+    public void setPublishHistoryRepository(String publishHistoryRepository) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }    
+        m_publishHistoryRepository = publishHistoryRepository;
+    }
+
+    /**
+     * Sets the publish History Size.<p>
+     *
+     * @param publishHistorySize the publish History Size to set
+     */
+    public void setPublishHistorySize(String publishHistorySize) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));    
+        }   
+        m_publishHistorySize = Integer.parseInt(publishHistorySize);
+    }
+
+    /**
+     * Sets if the publish queue is re-initialized on startup.<p>
+     * 
+     * @param publishQueuePersistance the persistance flag, parsed as <code>boolean</code>
+     */
+    public void setPublishQueuePersistance(String publishQueuePersistance) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }   
+        m_publishQueuePersistance = Boolean.valueOf(publishQueuePersistance).booleanValue();
+    }
+    
+    /**
+     * Sets the publish queue shutdown time.
+     * 
+     * @param publishQueueShutdowntime the shutdowntime to set, parsed as <code>int</code>
+     */
+    public void setPublishQueueShutdowntime(String publishQueueShutdowntime) {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }   
+        m_publishQueueShutdowntime = Integer.parseInt(publishQueueShutdowntime);
+    }    
+    
+    /**
+     * Sets the security manager during initialization.<p>
+     * 
+     * @param securityManager the security manager
+     */
+    public void setSecurityManager(CmsSecurityManager securityManager) {
+    
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        } 
+        m_securityManager = securityManager;
+    }
+    
+    /**
      * Starts publishing of enqueued publish jobs.<p>
      */
     public void startPublishing() {
@@ -518,7 +683,7 @@ public class CmsPublishManager {
             }
         }
     }
-
+    
     /**
      * Returns the publish relation filter to use.<p>
      * 

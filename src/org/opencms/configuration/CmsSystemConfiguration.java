@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/03/21 13:14:00 $
- * Version: $Revision: 1.36.4.15 $
+ * Date   : $Date: 2007/03/26 15:32:37 $
+ * Version: $Revision: 1.36.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
@@ -84,7 +85,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.15 $
+ * @version $Revision: 1.36.4.16 $
  * 
  * @since 6.0.0
  */
@@ -288,6 +289,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the "publishhistory" section. */
     public static final String N_PUBLISHHISTORY = "publishhistory";
 
+    /** The node name for the "publishhistory" section. */
+    public static final String N_QUEUEPERSISTANCE = "queue-persistance";
+    
+    /** The node name for the "publishhistory" section. */
+    public static final String N_QUEUESHUTDOWNTIME = "queue-shutdowntime";
+    
     /** The node name for the memory email receiver. */
     public static final String N_RECEIVER = "receiver";
 
@@ -468,13 +475,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
-
-    /** The configured publish history repository path. */
-    private String m_publishHistoryRepository;
-
-    /** The configured publish history repository size. */
-    private int m_publishHistorySize;
-
+    
+    /** The configured publish manager. */
+    private CmsPublishManager m_publishManager;
+    
     /** A list of instanciated request handler classes. */
     private List m_requestHandlers;
 
@@ -980,20 +984,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
 
-        // add rule for publish history size
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE,
-            "setPublishHistorySize",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE, 0);
-
-        // add rule for publish history repository
-        digester.addCallMethod(
-            "*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY,
-            "setPublishHistoryRepository",
-            1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY, 0);
-
+        // add publish manager configuration rule        
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY, CmsPublishManager.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE, "setPublishHistorySize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY, "setPublishHistoryRepository", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_QUEUEPERSISTANCE, "setPublishQueuePersistance", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_QUEUESHUTDOWNTIME, "setPublishQueueShutdowntime", 0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY, "setPublishManager");
+        
         // add rule for session storage provider
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, "setSessionStorageProvider", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, 0, A_CLASS);
@@ -1344,11 +1342,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler);
         }
 
-        // optional publish history nodes
-        if (m_publishHistoryRepository != null) {
+        // optional publish manager nodes
+        if (m_publishManager != null) {
             Element pubHistElement = systemElement.addElement(N_PUBLISHHISTORY);
-            pubHistElement.addElement(N_HISTORYSIZE).setText(String.valueOf(m_publishHistorySize));
-            pubHistElement.addElement(N_HISTORYREPOSITORY).setText(m_publishHistoryRepository);
+            pubHistElement.addElement(N_HISTORYSIZE).setText(String.valueOf(m_publishManager.getPublishHistorySize()));
+            pubHistElement.addElement(N_HISTORYREPOSITORY).setText(m_publishManager.getPublishHistoryRepository());
+            // optional nodes for publish queue
+            pubHistElement.addElement(N_QUEUEPERSISTANCE).setText(String.valueOf(m_publishManager.isPublishQueuePersistanceEnabled()));
+            pubHistElement.addElement(N_QUEUESHUTDOWNTIME).setText(String.valueOf(m_publishManager.getPublishQueueShutdowntime()));
         }
 
         // session storage provider
@@ -1543,27 +1544,27 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_passwordHandler;
     }
+    
 
+    
     /**
-     * Returns the publish History Repository path.<p>
-     *
-     * @return the publish History Repository path
+     * Returns the configured publish manager.<p>
+     * 
+     * @return the configured publish manager
      */
-    public String getPublishHistoryRepository() {
-
-        return m_publishHistoryRepository;
+    public CmsPublishManager getPublishManager() {
+        
+        if (m_publishManager == null) {
+            // no publish manager configured, create default
+            m_publishManager = new CmsPublishManager(
+                CmsPublishManager.DEFAULT_REPORT_PATH,
+                CmsPublishManager.DEFAULT_HISTORY_SIZE,
+                CmsPublishManager.DEFAULT_QUEUE_PERSISTANCE,
+                CmsPublishManager.DEFAULT_QUEUE_SHUTDOWNTIME);
+        }
+        return m_publishManager;
     }
-
-    /**
-     * Returns the publish History Size.<p>
-     *
-     * @return the publish History Size
-     */
-    public int getPublishHistorySize() {
-
-        return m_publishHistorySize;
-    }
-
+    
     /**
      * Returns the list of instanciated request handler classes.<p>
      * 
@@ -2004,25 +2005,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
-     * Sets the publish History Repository path.<p>
-     *
-     * @param publishHistoryRepository the publish History Repository path to set
+     * Sets the publish manager.<p>
+     * 
+     * @param publishManager the publish manager
      */
-    public void setPublishHistoryRepository(String publishHistoryRepository) {
-
-        m_publishHistoryRepository = publishHistoryRepository;
+    public void setPublishManager(CmsPublishManager publishManager) {
+        
+        m_publishManager = publishManager;
     }
-
-    /**
-     * Sets the publish History Size.<p>
-     *
-     * @param publishHistorySize the publish History Size to set
-     */
-    public void setPublishHistorySize(String publishHistorySize) {
-
-        m_publishHistorySize = Integer.parseInt(publishHistorySize);
-    }
-
+    
     /**
      * Sets the runtime info factory.<p>
      * 
