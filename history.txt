@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/23 16:52:35 $
- * Version: $Revision: 1.717.2.151 $
+ * Date   : $Date: 2007/03/26 09:45:56 $
+ * Version: $Revision: 1.717.2.152 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Publish queue and publish history are now persisted and based on buffers managed by memory monitor
   (i.e. after a restart, pending jobs (but not the job running during shutdown) are published after startup)
 ! Select type of index page while creating new folders
+! Publish dialog now offers the option to publish unpublished related (linked) resources
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation

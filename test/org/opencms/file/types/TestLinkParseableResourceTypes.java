@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/02/21 14:27:05 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/03/26 09:45:55 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -114,8 +114,6 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         suite.addTest(new TestLinkParseableResourceTypes("testReplaceNonLinkParseableResource"));
         suite.addTest(new TestLinkParseableResourceTypes("testChTypeLinkParseable"));
         suite.addTest(new TestLinkParseableResourceTypes("testChTypeNonLinkParseable"));
-        suite.addTest(new TestLinkParseableResourceTypes("testRestoreResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testUndoChanges"));
         suite.addTest(new TestLinkParseableResourceTypes("testWriteFile"));
         suite.addTest(new TestLinkParseableResourceTypes("testImportResourceLinkParseable"));
         suite.addTest(new TestLinkParseableResourceTypes("testImportResourceNonLinkParseable"));
@@ -788,30 +786,6 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         assertRelationOperation(cms, replaced, target, sources + 1, 1);
-    }
-
-    /**
-     * Test restoreResource method.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testRestoreResource() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing 'restoreResource' method");
-
-    }
-
-    /**
-     * Test undoChanges method.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testUndoChanges() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing 'undoChanges' method");
-
     }
 
     /**

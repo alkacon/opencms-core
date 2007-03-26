@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/03/26 09:45:55 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 6.5.5
  */
@@ -634,7 +634,7 @@ public final class CmsPublishEngine implements Runnable {
             CmsUser toUser = m_driverManager.readUser(dbc, toUserName);
             OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
         } catch (CmsDataAccessException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
         }

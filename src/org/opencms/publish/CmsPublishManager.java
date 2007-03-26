@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/03/26 09:45:55 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -54,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.5
  */
@@ -62,10 +64,13 @@ public class CmsPublishManager {
 
     /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
-    
+
     /** The underlying publish engine. */
     private final CmsPublishEngine m_publishEngine;
-    
+
+    /** The publish relation filter to use. */
+    private CmsRelationFilter m_publishRelationFilter;
+
     /** The security manager. */
     private CmsSecurityManager m_securityManager;
 
@@ -95,14 +100,14 @@ public class CmsPublishManager {
     public void abortPublishJob(CmsObject cms, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsSecurityException, CmsPublishException {
 
-        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)
+        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
             && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
             throw new CmsSecurityException(Messages.get().container(
                 Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
                 cms.getRequestContext().currentUser().getName()));
         }
-        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob , removeJob);
+        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob, removeJob);
     }
 
     /**
@@ -294,6 +299,30 @@ public class CmsPublishManager {
     }
     
     /**
+     * Returns a new publish list that contains the unpublished resources related to the given resources, 
+     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
+     * resources exclude all resources in the given publish list.<p>
+     * 
+     * @param cms the cms request context
+     * @param publishList the publish list to exclude from result or 
+     *          get the related resources for if the resource is <code>null</code>
+     * @param resource the resource to get the related resources for or 
+     *          <code>null</code> to use all resources in the given publish list
+     * 
+     * @return a new publish list that contains the related resources
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList, CmsResource resource) throws CmsException {
+
+        return m_securityManager.getRelatedResourcesToPublish(
+            cms.getRequestContext(),
+            publishList,
+            resource,
+            getPublishRelationFilter());
+    }
+
+    /**
      * Returns the working state, that is if no publish job
      * is waiting to be processed and there is no current running 
      * publish job.<p>
@@ -303,6 +332,23 @@ public class CmsPublishManager {
     public boolean isRunning() {
 
         return m_publishEngine.isRunning();
+    }
+
+    /**
+     * Returns a new publish list that contains all resources of both given publish lists.<p>
+     * 
+     * @param cms the cms request context
+     * @param pubList1 the first publish list
+     * @param pubList2 the second publish list
+     * 
+     * @return a new publish list that contains all resources of both given publish lists
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList mergePublishLists(CmsObject cms, CmsPublishList pubList1, CmsPublishList pubList2)
+    throws CmsException {
+
+        return m_securityManager.mergePublishLists(cms.getRequestContext(), pubList1, pubList2);
     }
 
     /**
@@ -471,6 +517,21 @@ public class CmsPublishManager {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the publish relation filter to use.<p>
+     * 
+     * @return the publish relation filter to use
+     */
+    private CmsRelationFilter getPublishRelationFilter() {
+
+        if (m_publishRelationFilter == null) {
+            m_publishRelationFilter = CmsRelationFilter.TARGETS;
+            m_publishRelationFilter = m_publishRelationFilter.filterType(CmsRelationType.EMBEDDED_IMAGE);
+            m_publishRelationFilter = m_publishRelationFilter.filterType(CmsRelationType.XML_STRONG);
+        }
+        return m_publishRelationFilter;
     }
     
     /**

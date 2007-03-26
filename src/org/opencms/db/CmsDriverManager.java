@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.570.2.73 $
+ * Date   : $Date: 2007/03/26 09:45:55 $
+ * Version: $Revision: 1.570.2.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1555,7 +1555,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // there is no problem for now
                     // but should never happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             } catch (CmsVfsResourceNotFoundException e) {
@@ -2825,7 +2825,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-            publishList.addFolders(filterResources(dbc, null, folderList));
+            publishList.addAll(filterResources(dbc, null, folderList));
 
             List fileList = m_vfsDriver.readResourceTree(
                 dbc,
@@ -2844,7 +2844,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FILES);
 
-            publishList.addFiles(filterResources(dbc, publishList, fileList));
+            publishList.addAll(filterResources(dbc, publishList, fileList));
         } else {
             // this is a direct publish
             Iterator it = publishList.getDirectPublishResources().iterator();
@@ -2867,7 +2867,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL);
-                            publishList.addFolder(directPublishResource);
+                            publishList.add(directPublishResource);
                         } catch (CmsException e) {
                             // skip if not enough permissions
                         }
@@ -2892,7 +2892,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-                        publishList.addFolders(filterResources(dbc, publishList, folderList));
+                        publishList.addAll(filterResources(dbc, publishList, folderList));
 
                         List fileList = m_vfsDriver.readResourceTree(
                             dbc,
@@ -2911,7 +2911,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FILES);
 
-                        publishList.addFiles(filterResources(dbc, publishList, fileList));
+                        publishList.addAll(filterResources(dbc, publishList, fileList));
                     }
                 } else if (directPublishResource.isFile() && !directPublishResource.getState().isUnchanged()) {
 
@@ -2927,7 +2927,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL);
-                            publishList.addFile(directPublishResource);
+                            publishList.add(directPublishResource);
                         } catch (CmsException e) {
                             // skip if not enough permissions
                         }
@@ -2949,7 +2949,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     siblingsClosure.addAll(readSiblings(dbc, currentFile, CmsResourceFilter.ALL_MODIFIED));
                 }
             }
-            publishList.addFiles(filterSiblings(dbc, publishList, siblingsClosure));
+            publishList.addAll(filterSiblings(dbc, publishList, siblingsClosure));
         }
         publishList.initialize();
     }
@@ -3081,7 +3081,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Set projects = new HashSet();
 
         // get the ous where the user has the project manager role
-        List ous = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true);
+        List ous = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(""), true);
 
         // get the groups of the user if needed
         Set userGroupIds = new HashSet();
@@ -3180,7 +3180,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // the result set
         Set projects = new HashSet();
 
-        if (m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER)) {
+        if (m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER.forOrgUnit(""))) {
             // user is allowed to access all existing projects for the ous he has the project_manager role
             Iterator itOus = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true).iterator();
             while (itOus.hasNext()) {
@@ -3568,6 +3568,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String ouFqn = role.getOuFqn();
         if (ouFqn == null) {
             ouFqn = "";
+            role = role.forOrgUnit("");
         }
         CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, ouFqn);
         List orgUnits = new ArrayList();
@@ -3671,6 +3672,85 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public ExtendedProperties getPropertyConfiguration() {
 
         return m_propertyConfiguration;
+    }
+
+    /**
+     * Returns a new publish list that contains the unpublished resources related to the given resources, 
+     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
+     * resources exclude all resources in the given publish list.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishList the publish list to exclude from result or 
+     *          get the related resources for if the resource is <code>null</code>
+     * @param resource the resource to get the related resources for or 
+     *          <code>null</code> to use all resources in the given publish list
+     * @param filter the relation filter to use to get the related resources
+     * 
+     * @return a new publish list that contains the related resources
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList, CmsResource)
+     */
+    public CmsPublishList getRelatedResourcesToPublish(
+        CmsDbContext dbc,
+        CmsPublishList publishList,
+        CmsResource resource,
+        CmsRelationFilter filter) throws CmsException {
+
+        Map relations = new HashMap();
+
+        // get all resources to publish
+        List publishResources = new ArrayList(publishList.getDeletedFolderList());
+        publishResources.addAll(publishList.getFileList());
+        publishResources.addAll(publishList.getFolderList());
+
+        Iterator itCheckList;
+        if (resource != null) {
+            // if resource is not null just get the related resources for this resource
+            itCheckList = Collections.singletonList(resource).iterator();
+        } else {
+            // if resource is null, get the related resources for all resources in the publish list
+            itCheckList = publishResources.iterator();
+        }
+        // iterate over them
+        while (itCheckList.hasNext()) {
+            CmsResource checkResource = (CmsResource)itCheckList.next();
+            // get and iterate over all related resources
+            Iterator itRelations = getRelationsForResource(dbc, checkResource, filter).iterator();
+            while (itRelations.hasNext()) {
+                CmsRelation relation = (CmsRelation)itRelations.next();
+                try {
+                    // get the target of the relation, see CmsRelation#getTarget(CmsObject, CmsResourceFilter)
+                    CmsResource target;
+                    try {
+                        // first look up by id
+                        target = readResource(dbc, relation.getTargetId(), CmsResourceFilter.ALL);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // then look up by name, but from the root site
+                        String storedSiteRoot = dbc.getRequestContext().getSiteRoot();
+                        try {
+                            dbc.getRequestContext().setSiteRoot("");
+                            target = readResource(dbc, relation.getTargetPath(), CmsResourceFilter.ALL);
+                        } finally {
+                            dbc.getRequestContext().setSiteRoot(storedSiteRoot);
+                        }
+                    }
+                    // just add resources that may come in question
+                    if (!publishResources.contains(target)
+                        && !relations.containsKey(target.getRootPath())
+                        && !target.getState().isUnchanged()) {
+                        relations.put(target.getRootPath(), target);
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore broken links
+                }
+            }
+        }
+
+        CmsPublishList ret = new CmsPublishList(new ArrayList(relations.values()), false, false);
+        fillPublishList(dbc, ret); // ensure consistency of locks/permissions
+        return ret;
     }
 
     /**
@@ -4365,6 +4445,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns a new publish list that contains all resources of both given publish lists.<p>
+     * 
+     * @param dbc the current database context
+     * @param pubList1 the first publish list
+     * @param pubList2 the second publish list
+     * 
+     * @return a new publish list that contains all resources of both given publish lists
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.publish.CmsPublishManager#mergePublishLists(CmsObject, CmsPublishList, CmsPublishList)
+     */
+    public CmsPublishList mergePublishLists(CmsDbContext dbc, CmsPublishList pubList1, CmsPublishList pubList2)
+    throws CmsException {
+
+        // get all resources from the first list
+        Set publishResources = new HashSet(pubList1.getDeletedFolderList());
+        publishResources.addAll(pubList1.getFileList());
+        publishResources.addAll(pubList1.getFolderList());
+
+        // get all resources from the second list
+        publishResources.addAll(pubList2.getDeletedFolderList());
+        publishResources.addAll(pubList2.getFileList());
+        publishResources.addAll(pubList2.getFolderList());
+
+        // create merged publish list
+        CmsPublishList ret = new CmsPublishList(readResource(dbc, "/", CmsResourceFilter.ALL), false);
+        ret.addAll(new ArrayList(publishResources));
+        ret.initialize(); // ensure consistency
+        return ret;
+    }
+
+    /**
      * Moves a resource.<p>
      * 
      * You must ensure that the destination path is an absolute, valid and
@@ -5049,7 +5162,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             } catch (CmsException e) {
                 // ignore all other exceptions and continue the lookup process
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             if (resource.isFolder()) {
                 String folderName = CmsResource.getFolderPath(resource.getRootPath());
@@ -5064,7 +5177,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         break;
                     } catch (CmsException e) {
                         // ignore all other exceptions and continue the lookup process
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -7767,7 +7880,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 result.add(res);
             } catch (Exception e) {
                 // noop
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -7827,7 +7940,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 result.add(res);
             } catch (Exception e) {
                 // noop
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -7924,29 +8037,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         OpenCms.getMemoryMonitor().cacheACL(cacheKey, acl);
         return acl;
-    }
-
-    /**
-     * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
-     * 
-     * The the 'all others' ace in first place, the 'overwrite all' ace in second.<p>
-     * 
-     * @param aces the list of ACEs to sort
-     * 
-     * @return <code>true</code> if the list contains the 'overwrite all' ace
-     */
-    private boolean sortAceList(List aces) {
-
-        // sort the list of entries 
-        Collections.sort(aces, CmsAccessControlEntry.COMPARATOR_ACE);
-        // after sorting just the first 2 positions come in question
-        for (int i = 0; i < Math.min(aces.size(), 2); i++) {
-            CmsAccessControlEntry acEntry = (CmsAccessControlEntry)aces.get(i);
-            if (acEntry.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -8252,6 +8342,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         OpenCms.getMemoryMonitor().cacheProjectResources(cacheKey, result);
         return result;
+    }
+
+    /**
+     * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
+     * 
+     * The the 'all others' ace in first place, the 'overwrite all' ace in second.<p>
+     * 
+     * @param aces the list of ACEs to sort
+     * 
+     * @return <code>true</code> if the list contains the 'overwrite all' ace
+     */
+    private boolean sortAceList(List aces) {
+
+        // sort the list of entries 
+        Collections.sort(aces, CmsAccessControlEntry.COMPARATOR_ACE);
+        // after sorting just the first 2 positions come in question
+        for (int i = 0; i < Math.min(aces.size(), 2); i++) {
+            CmsAccessControlEntry acEntry = (CmsAccessControlEntry)aces.get(i);
+            if (acEntry.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.15.4.21 $
+ * Date   : $Date: 2007/03/26 09:45:54 $
+ * Version: $Revision: 1.15.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.21 $ 
+ * @version $Revision: 1.15.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -1082,6 +1082,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_CONFIRMATION_1 = "GUI_PUBLISH_PROJECT_CONFIRMATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_0 = "GUI_PUBLISH_RELATED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0 = "GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0 = "GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0 = "GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0 = "GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_RELATED_RESOURCES_LABEL_0 = "GUI_PUBLISH_RELATED_RESOURCES_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_RELATIONS_NOT_ALLOWED_0 = "GUI_PUBLISH_RELATIONS_NOT_ALLOWED_0";

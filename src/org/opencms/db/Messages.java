@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.43.4.21 $
+ * Date   : $Date: 2007/03/26 09:45:55 $
+ * Version: $Revision: 1.43.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.21 $
+ * @version $Revision: 1.43.4.22 $
  * 
  * @since 6.0.0 
  */
@@ -250,6 +250,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_PUBLISH_LIST_PROJECT_1 = "ERR_GET_PUBLISH_LIST_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1 = "ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1 = "ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";
 
     /** Message constant for key in the resource bundle. */
@@ -296,6 +302,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_MESSAGE_FROZEN_0 = "ERR_LOGIN_MESSAGE_FROZEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MERGING_PUBLISH_LISTS_0 = "ERR_MERGING_PUBLISH_LISTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";

@@ -31,6 +31,41 @@ case CmsDialog.ACTION_LOCKS_CONFIRMED:
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>admin/javascript/list.js'></script>
 <script type="text/javascript">
 <!--
+function showRelatedResources(show){
+    var elem = document.getElementById("resourcesreport");
+	var elements = elem.getElementsByTagName('td');
+	for(var i = 0; i < elements.length; i++){
+		var node = elements.item(i);
+		for(var j = 0; j < node.attributes.length; j++) {
+			if(node.attributes.item(j).nodeName == 'class') {
+				if(node.attributes.item(j).nodeValue == 'listdetailhead' || node.attributes.item(j).nodeValue == 'listdetailitem') {
+				    // node found, now find the parent row
+				    for (var k = 0; k < 5; k++) {
+				      node = node.parentNode;				      
+				    }
+				    // change the class of the parent row
+				    if (!show) {
+						eval("node.className = node.className + ' hide'");						
+					} else {
+					    if (eval("node.className.substring(0,4)") == 'even') {
+							eval("node.className = 'evenrowbg'");
+						} else {
+							eval("node.className = 'oddrowbg'");
+						}
+					}
+				}
+			}
+		}
+	}
+	if (show) {
+	   document.getElementById("drs").className = 'hide';
+	   document.getElementById("drh").className = 'link';
+	} else {
+	   document.getElementById("drs").className = 'link';
+	   document.getElementById("drh").className = 'hide';
+	}
+}
+
 var cnfMsgTxt = '';
 
 function doReportUpdate(msg, state) {
@@ -53,6 +88,14 @@ function doReportUpdate(msg, state) {
         img = "error.png";
         txt = "<%= wp.key(Messages.GUI_PUBLISH_LIST_EMPTY_0) %>";
         state = "error";
+      } else {
+        showRelatedResources(true);
+        if (document.forms['main'].relatedRes) {
+           // left untouched
+        } else {
+           // hide
+           document.getElementById("relatedres").className = 'hide';
+        }
       }
    }
    if (txt != '') {

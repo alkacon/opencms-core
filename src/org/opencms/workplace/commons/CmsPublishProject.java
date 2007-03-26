@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/03/01 15:01:15 $
- * Version: $Revision: 1.27.4.14 $
+ * Date   : $Date: 2007/03/26 09:45:54 $
+ * Version: $Revision: 1.27.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.14 $ 
+ * @version $Revision: 1.27.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,9 @@ public class CmsPublishProject extends CmsMultiDialog {
     /** Request parameter name for the subresources parameter. */
     public static final String PARAM_SUBRESOURCES = "subresources";
 
+    /** Request parameter name for the relatedresources parameter. */
+    public static final String PARAM_RELATEDRESOURCES = "relatedresources";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishProject.class);
 
@@ -114,6 +117,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /** Parameter value for the publish subresources flag. */
     private String m_paramSubresources;
+
+    /** Parameter value for the publish related resources flag. */
+    private String m_paramRelatedresources;
 
     /**
      * Public constructor.<p>
@@ -346,6 +352,21 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             result.append(">\n");
         }
+        // always generate the code for the 'publish related resources' button
+        // this will be shown/hidden by javascript code
+        result.append("<div id='relatedres'>\n");
+        if (!showOptionSiblings && !showOptionSubresources) {
+            result.append("<p>\n");
+        }
+        result.append("<input type='checkbox' name='");
+        result.append(PARAM_RELATEDRESOURCES);
+        result.append("' value='true' checked='checked'>&nbsp;");
+        result.append(key(Messages.GUI_PUBLISH_RELATED_RESOURCES_0));
+        if (!showOptionSiblings && !showOptionSubresources) {
+            result.append("</p>\n");
+        }
+        result.append("</div>\n");
+
         if (showOptionSiblings || showOptionSubresources) {
             result.append("</p>\n");
         }
@@ -390,6 +411,10 @@ public class CmsPublishProject extends CmsMultiDialog {
             list.getList().setBoxed(false);
             result.append("<input type='hidden' name='result' value='");
             result.append(list.getList().getTotalSize()).append("'>\n");
+            if (list.getRelatedResources() > 0) {
+                result.append("<input type='hidden' name='relatedRes' value='");
+                result.append(list.getRelatedResources()).append("'>\n");
+            }
             result.append(CmsListExplorerColumn.getExplorerStyleDef());
             result.append("<div style='height:200px; overflow: auto;'>\n");
             result.append(list.getList().listHtml());
@@ -446,6 +471,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     public String getParamSubresources() {
 
         return m_paramSubresources;
+    }
+
+    /**
+     * Returns the value of the related resources parameter.<p>
+     * 
+     * @return the value of the related resources parameter
+     */
+    public String getParamRelatedresources() {
+
+        return m_paramRelatedresources;
     }
 
     /**
@@ -570,7 +605,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             } catch (CmsException e) {
                 // error reading a resource, should usually never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -625,6 +660,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     public void setParamSubresources(String paramSubresources) {
 
         m_paramSubresources = paramSubresources;
+    }
+
+    /**
+     * Sets the value of the related resources parameter.<p>
+     * 
+     * @param relatedResources the value of the related resources parameter
+     */
+    public void setParamRelatedresources(String relatedResources) {
+
+        m_paramRelatedresources = relatedResources;
     }
 
     /**
@@ -705,6 +750,13 @@ public class CmsPublishProject extends CmsMultiDialog {
             throw new CmsException(Messages.get().container(
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
+        }
+        if (Boolean.valueOf(getParamRelatedresources()).booleanValue()) {
+            CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                getCms(),
+                publishList,
+                null);
+            publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
         }
         OpenCms.getPublishManager().publishProject(
             getCms(),

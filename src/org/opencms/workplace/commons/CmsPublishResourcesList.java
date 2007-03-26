@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/26 09:45:54 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,25 @@ package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListIndependentJsAction;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.I_CmsListAction;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
@@ -52,17 +64,29 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
+
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS = "dr";
+
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS_HIDE = "drh";
+
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS_SHOW = "drs";
 
     /** list id constant. */
     public static final String LIST_ID = "pr";
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
+
+    /** The count of all related resources. */
+    private int m_relatedResources;
 
     /**
      * Public constructor.<p>
@@ -112,6 +136,16 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 private static final String COLLECTOR_NAME = "publishResources";
 
                 /**
+                 * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
+                 */
+                public List getCollectorNames() {
+
+                    List names = new ArrayList();
+                    names.add(COLLECTOR_NAME);
+                    return names;
+                }
+
+                /**
                  * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
                  */
                 public List getResources(CmsObject cms, Map params) {
@@ -130,19 +164,19 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
                     // no-op
                 }
-
-                /**
-                 * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
-                 */
-                public List getCollectorNames() {
-
-                    List names = new ArrayList();
-                    names.add(COLLECTOR_NAME);
-                    return names;
-                }
             };
         }
         return m_collector;
+    }
+
+    /**
+     * Returns the count of all related resources.<p>
+     *
+     * @return the count of all related resources
+     */
+    public int getRelatedResources() {
+
+        return m_relatedResources;
     }
 
     /**
@@ -150,7 +184,59 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
      */
     protected void fillDetails(String detailId) {
 
-        // no-op
+        // get content
+        List resourceNames = getList().getAllContent();
+        Iterator itResourceNames = resourceNames.iterator();
+        while (itResourceNames.hasNext()) {
+            CmsListItem item = (CmsListItem)itResourceNames.next();
+            StringBuffer html = new StringBuffer(128);
+            try {
+                if (detailId.equals(LIST_DETAIL_RELATIONS)) {
+                    CmsResource resource = getResourceUtil(item).getResource();
+                    // relations
+                    Iterator itRelations = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                        getCms(),
+                        getSettings().getPublishList(),
+                        resource).getFileList().iterator();
+
+                    // show all unpublished related resources
+                    while (itRelations.hasNext()) {
+                        CmsResource relatedRes = (CmsResource)itRelations.next();
+                        String relationName = relatedRes.getRootPath();
+                        if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
+                            // same site
+                            relationName = getCms().getSitePath(relatedRes);
+                        } else {
+                            // other site
+                            String site = CmsSiteManager.getSiteRoot(relationName);
+                            String siteName = site;
+                            if (site != null) {
+                                relationName = relationName.substring(site.length());
+                                siteName = CmsSiteManager.getSite(site).getTitle();
+                            } else {
+                                siteName = "/";
+                            }
+                            relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
+                                siteName,
+                                relationName});
+                        }
+                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                        m_relatedResources++;
+                        html.append(relationName);
+                        if (itRelations.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                } else {
+                    continue;
+                }
+            } catch (CmsException e) {
+                // should never happen, log exception
+                item.set(detailId, CmsException.getFormattedErrorstack(e));
+            }
+            item.set(detailId, html.toString());
+        }
     }
 
     /**
@@ -190,7 +276,120 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op
+        /**
+         * Class to render a javascript driven detail action button.<p>
+         */
+        abstract class DetailsJsAction extends A_CmsListIndependentJsAction {
+
+            /**
+             * Default constructor.<p>
+             * 
+             * @param id the action id
+             */
+            public DetailsJsAction(String id) {
+
+                super(id);
+            }
+
+            /**
+             * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+             */
+            public String buttonHtml(CmsWorkplace wp) {
+
+                StringBuffer html = new StringBuffer(1024);
+                html.append("\t<span id='");
+                html.append(getId());
+                html.append("' class=\"link");
+                html.append("\"");
+                html.append(" onClick=\"");
+                html.append(resolveOnClic(wp));
+                html.append("\"");
+                html.append(">");
+                html.append("<img src='");
+                html.append(CmsWorkplace.getSkinUri());
+                html.append(getIconPath());
+                html.append("'");
+                html.append(" alt='");
+                html.append(getName().key(wp.getLocale()));
+                html.append("'");
+                html.append(" title='");
+                html.append(getName().key(wp.getLocale()));
+                html.append("'");
+                html.append(">");
+                html.append("&nbsp;");
+                html.append("<a href='#'>");
+                html.append(getName().key(wp.getLocale()));
+                html.append("</a>");
+                html.append("</span>");
+                return html.toString();
+            }
+        }
+
+        I_CmsListAction hideAction = new DetailsJsAction(LIST_DETAIL_RELATIONS_HIDE) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
+             */
+            public String jsCode(CmsWorkplace wp) {
+
+                return "javascript:showRelatedResources(false);";
+            }
+        };
+        hideAction.setIconPath(A_CmsListDialog.ICON_DETAILS_HIDE);
+        hideAction.setName(Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0));
+        hideAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0));
+        metadata.addIndependentAction(hideAction);
+
+        I_CmsListAction showAction = new DetailsJsAction(LIST_DETAIL_RELATIONS_SHOW) {
+
+            /**
+             * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
+             */
+            public String jsCode(CmsWorkplace wp) {
+
+                return "javascript:showRelatedResources(true);";
+            }
+        };
+        showAction.setIconPath(A_CmsListDialog.ICON_DETAILS_SHOW);
+        showAction.setName(Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0));
+        showAction.setHelpText(Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0));
+        metadata.addIndependentAction(showAction);
+
+        // create list item detail
+        CmsListItemDetails relationsDetails = new CmsListItemDetails(LIST_DETAIL_RELATIONS) {
+
+            /**
+             * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
+             */
+            public I_CmsListAction getAction() {
+
+                return new CmsListIndependentAction("hide") {
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+                     */
+                    public String buttonHtml(CmsWorkplace wp) {
+
+                        return "";
+                    }
+                };
+            }
+        };
+        relationsDetails.setAtColumn(LIST_COLUMN_NAME);
+        relationsDetails.setVisible(true);
+        relationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_PUBLISH_RELATED_RESOURCES_LABEL_0)));
+        relationsDetails.setShowActionName(Messages.get().container(
+            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0));
+        relationsDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0));
+        relationsDetails.setHideActionName(Messages.get().container(
+            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0));
+        relationsDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0));
+
+        // add resources info item detail to meta data
+        metadata.addItemDetails(relationsDetails);
     }
 
     /**
