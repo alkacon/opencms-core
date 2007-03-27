@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecoratorConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/03/27 13:30:06 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -59,6 +59,9 @@ public class CmsDecoratorConfiguration {
 
     /** The xpath for the decoration configuration. */
     private static final String XPATH_DECORATION = "decoration";
+
+    /** The xpath for the exclude configuration. */
+    private static final String XPATH_EXCLUDE = "exclude";
 
     /** The xpath for the filename configuration. */
     private static final String XPATH_FILENAME = "filename";
@@ -96,6 +99,9 @@ public class CmsDecoratorConfiguration {
     /** Map of configured decorations. */
     private CmsDecorationBundle m_decorations;
 
+    /** The list of excluded tags. */
+    private List m_excludes;
+
     /** The locale for to build the configuration for. */
     private Locale m_locale;
 
@@ -115,6 +121,7 @@ public class CmsDecoratorConfiguration {
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
         m_usedDecorations = new ArrayList();
+        m_excludes = new ArrayList();
     }
 
     /**
@@ -132,6 +139,7 @@ public class CmsDecoratorConfiguration {
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
         m_usedDecorations = new ArrayList();
+        m_excludes = new ArrayList();
         init();
     }
 
@@ -151,6 +159,7 @@ public class CmsDecoratorConfiguration {
         m_cms = cms;
         m_locale = locale;
         m_usedDecorations = new ArrayList();
+        m_excludes = new ArrayList();
         init();
     }
 
@@ -181,6 +190,17 @@ public class CmsDecoratorConfiguration {
     public boolean hasUsed(String key) {
 
         return m_usedDecorations.contains(key);
+    }
+
+    /**
+     * Tests if a tag is contained in the exclude list of the decorator.<p>
+     * 
+     * @param tag the tag to test
+     * @return true if the tag is in the exclode list, false othwerwise.
+     */
+    public boolean isExcluded(String tag) {
+
+        return m_excludes.contains(tag.toLowerCase());
     }
 
     /**
@@ -294,6 +314,17 @@ public class CmsDecoratorConfiguration {
             CmsDecorationBundle decBundle = decDef.createDecorationBundle(m_cms, m_locale);
             // merge it to the already existing decorations
             m_decorations.putAll(decBundle.getAll());
+        }
+
+        // now read the exclude values
+        int excludeValuesCount = configuration.getIndexCount(XPATH_EXCLUDE, m_configurationLocale);
+        // get all the exclude definitions
+        for (int i = 1; i <= excludeValuesCount; i++) {
+            String excludeValue = configuration.getStringValue(
+                m_cms,
+                XPATH_EXCLUDE + "[" + i + "]",
+                m_configurationLocale);
+            m_excludes.add(excludeValue.toLowerCase());
         }
     }
 
