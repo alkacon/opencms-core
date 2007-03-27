@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/15 17:26:44 $
- * Version: $Revision: 1.808 $
+ * Date   : $Date: 2007/03/27 13:32:40 $
+ * Version: $Revision: 1.809 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ OpenCms 6.2.4 - xxxx, 2007
 - Different tempfile handling for new operation in direct edit mode of xml contents
 * Fixed issue with upload applet using wrong error page
 * Fixed issue with upload applet not working with apache redirects
+! Configurable exclude tags for decorator
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
