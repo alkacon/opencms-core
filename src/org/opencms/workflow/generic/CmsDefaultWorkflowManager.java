@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/generic/Attic/CmsDefaultWorkflowManager.java,v $
- * Date   : $Date: 2007/03/05 16:04:43 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2007/03/27 14:16:26 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.17 $ 
+ * @version $Revision: 1.1.2.18 $ 
  * 
  * @since 7.0.0
  */
@@ -854,7 +854,7 @@ public class CmsDefaultWorkflowManager implements I_CmsWorkflowManager {
         // check this
         m_cms.getRequestContext().setCurrentProject(m_cms.readProject("Offline"));
 
-        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(m_cms, resourcesToPublish, false, false);
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(m_cms, resourcesToPublish, false, false, false);
         OpenCms.getPublishManager().publishProject(
             m_cms,
             new CmsHtmlReport(m_cms.getRequestContext().getLocale(), m_cms.getRequestContext().getSiteRoot()),

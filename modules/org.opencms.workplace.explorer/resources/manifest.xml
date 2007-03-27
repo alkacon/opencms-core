@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.3.5</version>
+		<version>1.3.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -713,6 +713,25 @@
 			<datelastmodified>Wed, 02 Aug 2006 09:05:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/explorer/related_resource.png</source>
+			<destination>system/workplace/resources/explorer/related_resource.png</destination>
+			<type>image</type>
+			<uuidstructure>3344b18f-dc6c-11db-b4f2-ef8747293d77</uuidstructure>
+			<uuidresource>3344b190-dc6c-11db-b4f2-ef8747293d77</uuidresource>
+			<datelastmodified>Tue, 27 Mar 2007 14:05:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Mar 2007 14:05:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

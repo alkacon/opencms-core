@@ -539,6 +539,7 @@
           <publishbuttonappearance>always</publishbuttonappearance>
           <show-fileuploadbutton>true</show-fileuploadbutton>
           <allowbrokenrelations>false</allowbrokenrelations>
+          <publishrelatedresources>true</publishrelatedresources>
  		  <newfolder-editproperties>true</newfolder-editproperties>
  		  <newfolder-createindexpage>true</newfolder-createindexpage>
     	  <show-uploadtypedialog>true</show-uploadtypedialog>

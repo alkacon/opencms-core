@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/03/26 09:12:04 $
- * Version: $Revision: 1.146.4.33 $
+ * Date   : $Date: 2007/03/27 14:16:26 $
+ * Version: $Revision: 1.146.4.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.33 $
+ * @version $Revision: 1.146.4.34 $
  * 
  * @since 6.0.0 
  */
@@ -1390,7 +1390,12 @@ public final class CmsObject {
     public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
-        return OpenCms.getPublishManager().getPublishList(this, directPublishResources, directPublishSiblings, true);
+        return OpenCms.getPublishManager().getPublishList(
+            this,
+            directPublishResources,
+            directPublishSiblings,
+            true,
+            false);
     }
 
     /**
@@ -1406,7 +1411,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean) getPublishList(CmsObject, List, boolean, boolean)}</code> instead
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean, boolean) getPublishList(CmsObject, List, boolean, boolean)}</code> instead
      */
     public CmsPublishList getPublishList(
         List directPublishResources,
@@ -1417,7 +1422,8 @@ public final class CmsObject {
             this,
             directPublishResources,
             directPublishSiblings,
-            publishSubResources);
+            publishSubResources,
+            false);
     }
 
     /**

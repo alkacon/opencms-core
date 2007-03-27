@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2007/03/27 10:29:36 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.5
  */
@@ -64,7 +64,7 @@ public class CmsPublishHistory {
     protected static final Log LOG = CmsLog.getLog(CmsPublishHistory.class);
     
     /** The publish engine. */
-    protected CmsPublishEngine m_publishEngine;
+    protected final CmsPublishEngine m_publishEngine;
     
     /**
      * Default constructor.<p>

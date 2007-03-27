@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishEventListener.java,v $
- * Date   : $Date: 2007/03/23 16:52:34 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/27 14:16:26 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,10 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
     private long m_removed;
     private CmsResource m_resource;
     private long m_started;
-    
-    /** Number of jobs in Queue/History on Enqueue, Start, Finish, Abort, Remove */
-    private int m_jobsInQueue[] = new int[5];
-    private int m_jobsInHistory[] = new int[5];
+
+    /** Number of jobs in Queue/History on Enqueue, Start, Finish, Abort, Remove. */
+    private int[] m_jobsInQueue = new int[5];
+    private int[] m_jobsInHistory = new int[5];
 
     /**
      * Default constructor.<p>
@@ -101,21 +101,20 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
      * @return the jobs in history counters
      */
     public int[] getJobsInHistoryCounter() {
-        
+
         return m_jobsInHistory;
     }
-    
+
     /**
      * Returns the jobs in queue counters.<p>
      * 
      * @return the jobs in queue counters
      */
     public int[] getJobsInQueueCounter() {
-        
+
         return m_jobsInQueue;
     }
-    
-    
+
     /**
      * Returns the removed timestamp.<p>
      *

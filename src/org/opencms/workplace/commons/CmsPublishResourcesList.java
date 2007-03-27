@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/03/26 09:45:54 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,14 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
@@ -46,11 +49,14 @@ import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListIndependentJsAction;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListResourceProjStateAction;
 import org.opencms.workplace.list.I_CmsListAction;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -59,12 +65,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * List for resources that can be published.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.5 
  */
@@ -81,6 +89,15 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
     /** list id constant. */
     public static final String LIST_ID = "pr";
+
+    /** List column id constant. */
+    protected static final String LIST_COLUMN_IS_RELATED = "ecir";
+
+    /** The log object for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsPublishResourcesList.class);
+
+    /** This constant is just a hack to mark related resources in the list. */
+    private static final int FLAG_RELATED_RESOURCE = 8192;
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
@@ -154,6 +171,43 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     allResources.addAll(getSettings().getPublishList().getFileList());
                     allResources.addAll(getSettings().getPublishList().getDeletedFolderList());
                     allResources.addAll(getSettings().getPublishList().getFolderList());
+                    if (getSettings().getPublishList().isPublishRelatedResources()) {
+                        try {
+                            CmsPublishList pubList = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                                cms,
+                                getSettings().getPublishList(),
+                                null);
+                            List relatedResources = new ArrayList(pubList.getFileList());
+                            relatedResources.addAll(pubList.getDeletedFolderList());
+                            relatedResources.addAll(pubList.getFolderList());
+                            Iterator it = relatedResources.iterator();
+                            while (it.hasNext()) {
+                                CmsResource resource = (CmsResource)it.next();
+                                CmsResource modRes = new CmsResource(
+                                    resource.getStructureId(),
+                                    resource.getResourceId(),
+                                    resource.getRootPath(),
+                                    resource.getTypeId(),
+                                    resource.isFolder(),
+                                    resource.getFlags() | FLAG_RELATED_RESOURCE,
+                                    resource.getProjectLastModified(),
+                                    resource.getState(),
+                                    resource.getDateCreated(),
+                                    resource.getUserCreated(),
+                                    resource.getDateLastModified(),
+                                    resource.getUserLastModified(),
+                                    resource.getDateReleased(),
+                                    resource.getDateExpired(),
+                                    resource.getSiblingCount(),
+                                    resource.getLength());
+                                allResources.add(modRes);
+                            }
+                        } catch (CmsException e) {
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(e.getLocalizedMessage(getLocale()), e);
+                            }
+                        }
+                    }
                     return allResources;
                 }
 
@@ -162,7 +216,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                  */
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-                    // no-op
+                    item.set(LIST_COLUMN_IS_RELATED, new Boolean(
+                        (resUtil.getResource().getFlags() & FLAG_RELATED_RESOURCE) == FLAG_RELATED_RESOURCE));
                 }
             };
         }
@@ -267,8 +322,45 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
                 colDefinition.setWidth("60%");
+            } else if (colDefinition.getId().equals(LIST_COLUMN_PROJSTATEICON)) {
+                colDefinition.removeDirectAction(LIST_ACTION_PROJSTATEICON);
+                // add resource state icon action
+                CmsListDirectAction resourceProjStateAction = new CmsListResourceProjStateAction(
+                    LIST_ACTION_PROJSTATEICON) {
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
+                     */
+                    public String getIconPath() {
+
+                        if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
+                            return "explorer/related_resource.png";
+                        }
+                        return super.getIconPath();
+                    }
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getName()
+                     */
+                    public CmsMessageContainer getName() {
+
+                        if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
+                            return Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCE_0);
+                        }
+                        return super.getName();
+                    }
+                };
+                resourceProjStateAction.setEnabled(false);
+                colDefinition.addDirectAction(resourceProjStateAction);
             }
         }
+
+        CmsListColumnDefinition relatedCol = new CmsListExplorerColumn(LIST_COLUMN_IS_RELATED);
+        relatedCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        relatedCol.setVisible(false);
+        relatedCol.setPrintable(false);
+        metadata.addColumn(relatedCol);
     }
 
     /**

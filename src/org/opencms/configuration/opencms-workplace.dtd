@@ -417,6 +417,7 @@
 									publishbuttonappearance?,
 									show-fileuploadbutton?,
 									allowbrokenrelations?, 
+									publishrelatedresources?,
 									newfolder-editproperties?, 
 									newfolder-createindexpage?,
 									show-uploadtypedialog?)>
@@ -460,6 +461,16 @@
 # Default value is <code>true</code>
 -->
 <!ELEMENT allowbrokenrelations (#PCDATA)>
+
+<!--
+# If this is set to <code>force</code> only CmsRole#VFS_MANAGERs 
+# will be able to publish resources without publishing unpublished 
+# related resources.<p>
+# Other options are <code>true</code> and <code>false</code> to
+# set the default state of the checkbox in the publish dialog.<p>
+# Default value is <code>true</code>
+-->
+<!ELEMENT publishrelatedresources (#PCDATA)>
 
 <!ELEMENT newfolder-createindexpage (#PCDATA)>
 

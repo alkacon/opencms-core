@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2006/10/05 12:04:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/27 14:16:26 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,11 +58,11 @@ public final class CmsRelationFilter implements Cloneable {
     /** To filter all targets, does not matter the relation type. */
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
 
-    /** If set the filter extends the result to the given path and all its childs. */
-    private boolean m_includeChilds = false;
-
     /** To filter relations for a given date. */
     private long m_date;
+
+    /** If set the filter extends the result to the given path and all its childs. */
+    private boolean m_includeChilds = false;
 
     /** To filter relations for a given source path. */
     private String m_path;
@@ -106,18 +106,6 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
-     * Returns an extended filter that will extend the result to the given path and all its childs.<p>
-     * 
-     * @return an extended filter with the given relation date restriction
-     */
-    public CmsRelationFilter filterIncludeChilds() {
-
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
-        filter.m_includeChilds = true;
-        return filter;
-    }
-
-    /**
      * Returns an extended filter with the given relation date restriction.<p>
      * 
      * @param date the relation date to filter
@@ -128,6 +116,18 @@ public final class CmsRelationFilter implements Cloneable {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
         filter.m_date = date;
+        return filter;
+    }
+
+    /**
+     * Returns an extended filter that will extend the result to the given path and all its childs.<p>
+     * 
+     * @return an extended filter with the given relation date restriction
+     */
+    public CmsRelationFilter filterIncludeChilds() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        filter.m_includeChilds = true;
         return filter;
     }
 
@@ -160,6 +160,21 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
+     * Returns an extended filter with strong type restriction.<p>
+     * 
+     * @return an extended filter with strong type restriction
+     */
+    public CmsRelationFilter filterStrong() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        filter.m_types.add(CmsRelationType.EMBEDDED_IMAGE);
+        filter.m_types.add(CmsRelationType.EMBEDDED_OBJECT);
+        filter.m_types.add(CmsRelationType.XML_STRONG);
+        filter.m_types.add(CmsRelationType.JSP_STRONG);
+        return filter;
+    }
+
+    /**
      * Returns an extended filter with the given structure id restriction.<p>
      *
      * @param structureId the structure id to filter
@@ -184,6 +199,20 @@ public final class CmsRelationFilter implements Cloneable {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
         filter.m_types.add(type);
+        return filter;
+    }
+
+    /**
+     * Returns an extended filter with weak type restriction.<p>
+     * 
+     * @return an extended filter with weak type restriction
+     */
+    public CmsRelationFilter filterWeak() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        filter.m_types.add(CmsRelationType.HYPERLINK);
+        filter.m_types.add(CmsRelationType.JSP_WEAK);
+        filter.m_types.add(CmsRelationType.XML_WEAK);
         return filter;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -59,7 +58,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 6.5.5
  */
@@ -70,45 +69,42 @@ public class CmsPublishManager {
 
     /** The default persistance setting for the publish queue. */
     public static final boolean DEFAULT_QUEUE_PERSISTANCE = false;
-    
+
     /** The default shutdown time for the running publish job. */
     public static final int DEFAULT_QUEUE_SHUTDOWNTIME = 1;
-    
+
     /** Default path to the store the publish reports relative to the "WEB-INF" directory of the application. */
     public static final String DEFAULT_REPORT_PATH = CmsLog.FOLDER_LOGS + "publish" + File.separatorChar;
 
     /** Milliseconds in a second. */
     private static final int MS_ONE_SECOND = 1000;
-    
+
+    /** Indicates if the configuration can be modified. */
+    private boolean m_frozen;
+
     /** The underlying publish engine. */
     private CmsPublishEngine m_publishEngine;
-    
-    /** The publish relation filter to use. */
-    private CmsRelationFilter m_publishRelationFilter;
+
+    /** The path for storing publish reports. */
+    private String m_publishHistoryRepository;
+
+    /** The maximum size of the publish history. */
+    private int m_publishHistorySize;
+
+    /** Indicates if the publish queue is re-initialized on statup. */
+    private boolean m_publishQueuePersistance;
+
+    /** The amount of time to wait for a publish job during shutdown. */
+    private int m_publishQueueShutdowntime;
 
     /** The security manager. */
     private CmsSecurityManager m_securityManager;
 
-    /** The maximum size of the publish history. */
-    private int m_publishHistorySize;
-    
-    /** The path for storing publish reports. */ 
-    private String m_publishHistoryRepository;
-    
-    /** Indicates if the publish queue is re-initialized on statup. */
-    private boolean m_publishQueuePersistance;
-    
-    /** The amount of time to wait for a publish job during shutdown. */
-    private int m_publishQueueShutdowntime;
-    
-    /** Indicates if the configuration can be modified. */
-    private boolean m_frozen;
-    
     /**
      * Default constructor used in digester initialization.<p>
      */
     public CmsPublishManager() {
-        
+
         m_publishEngine = null;
         m_frozen = false;
     }
@@ -130,7 +126,7 @@ public class CmsPublishManager {
         m_publishQueueShutdowntime = queueShutdowntime;
         m_frozen = false;
     }
-    
+
     /**
      * Aborts the given publish job.<p>
      * 
@@ -152,7 +148,7 @@ public class CmsPublishManager {
                 Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
                 cms.getRequestContext().currentUser().getName()));
         }
-        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob , removeJob);
+        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob, removeJob);
     }
 
     /**
@@ -169,18 +165,18 @@ public class CmsPublishManager {
      * Disables the publishing of resources.<p>
      */
     public void disablePublishing() {
-    
+
         m_publishEngine.disableEngine();
     }
-    
+
     /**
      * Enables the enqeueing of resources for publishing.<p>
      */
     public void enablePublishing() {
-    
+
         m_publishEngine.enableEngine();
     }
-    
+
     /**
      * Returns the current running publish job.<p>
      * 
@@ -273,7 +269,7 @@ public class CmsPublishManager {
         return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
             cms.getRequestContext().currentProject()));
     }
-    
+
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a single resource.<p>
@@ -294,6 +290,7 @@ public class CmsPublishManager {
             directPublishResource,
             directPublishSiblings));
     }
+
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
@@ -310,7 +307,7 @@ public class CmsPublishManager {
     public CmsPublishList getPublishList(CmsObject cms, List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
-        return getPublishList(cms, directPublishResources, directPublishSiblings, true);
+        return getPublishList(cms, directPublishResources, directPublishSiblings, true, false);
     }
 
     /**
@@ -322,6 +319,7 @@ public class CmsPublishManager {
      * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
      *                      published resources should also get published.
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * @param publishRelatedResources indicates if unpublished related resources should be published
      * 
      * @return a publish list
      * 
@@ -331,12 +329,14 @@ public class CmsPublishManager {
         CmsObject cms,
         List directPublishResources,
         boolean directPublishSiblings,
-        boolean publishSubResources) throws CmsException {
+        boolean publishSubResources,
+        boolean publishRelatedResources) throws CmsException {
 
         return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
             directPublishResources,
             directPublishSiblings,
-            publishSubResources));
+            publishSubResources,
+            publishRelatedResources));
     }
 
     /**
@@ -355,37 +355,10 @@ public class CmsPublishManager {
      * @return the shutdown time for a running publish job
      */
     public int getPublishQueueShutdowntime() {
-        
+
         return m_publishQueueShutdowntime;
     }
 
-    /**
-     * Initializes the publish manager and the publish engine finally.<p>
-     * 
-     * @param cms an admin cms object
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void initialize(CmsObject cms)
-    throws CmsException {
-    
-        m_publishEngine.initialize(cms, 
-            m_publishHistoryRepository,
-            m_publishQueuePersistance,
-            m_publishQueueShutdowntime);
-        m_frozen = true;
-    }
-
-    /**
-     * Returns if the publish queue is persisted an will be re-initialized on startup.<p>
-     * 
-     * @return <code>true</code> if the publish queue is persisted 
-     */
-    public boolean isPublishQueuePersistanceEnabled() {
-       
-        return m_publishQueuePersistance;
-    }
-    
     /**
      * Returns a new publish list that contains the unpublished resources related to the given resources, 
      * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
@@ -401,15 +374,43 @@ public class CmsPublishManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList, CmsResource resource) throws CmsException {
+    public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList, CmsResource resource)
+    throws CmsException {
 
         return m_securityManager.getRelatedResourcesToPublish(
             cms.getRequestContext(),
             publishList,
             resource,
-            getPublishRelationFilter());
+            CmsRelationFilter.TARGETS.filterStrong());
     }
-    
+
+    /**
+     * Initializes the publish manager and the publish engine finally.<p>
+     * 
+     * @param cms an admin cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void initialize(CmsObject cms) throws CmsException {
+
+        m_publishEngine.initialize(
+            cms,
+            m_publishHistoryRepository,
+            m_publishQueuePersistance,
+            m_publishQueueShutdowntime);
+        m_frozen = true;
+    }
+
+    /**
+     * Returns if the publish queue is persisted an will be re-initialized on startup.<p>
+     * 
+     * @return <code>true</code> if the publish queue is persisted 
+     */
+    public boolean isPublishQueuePersistanceEnabled() {
+
+        return m_publishQueuePersistance;
+    }
+
     /**
      * Returns the working state, that is if no publish job
      * is waiting to be processed and there is no current running 
@@ -573,7 +574,7 @@ public class CmsPublishManager {
         }
         m_publishEngine = publishEngine;
     }
-    
+
     /**
      * Sets the publish History Repository path.<p>
      *
@@ -583,7 +584,7 @@ public class CmsPublishManager {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
-        }    
+        }
         m_publishHistoryRepository = publishHistoryRepository;
     }
 
@@ -595,8 +596,8 @@ public class CmsPublishManager {
     public void setPublishHistorySize(String publishHistorySize) {
 
         if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));    
-        }   
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
+        }
         m_publishHistorySize = Integer.parseInt(publishHistorySize);
     }
 
@@ -609,10 +610,10 @@ public class CmsPublishManager {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
-        }   
+        }
         m_publishQueuePersistance = Boolean.valueOf(publishQueuePersistance).booleanValue();
     }
-    
+
     /**
      * Sets the publish queue shutdown time.
      * 
@@ -622,39 +623,39 @@ public class CmsPublishManager {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
-        }   
+        }
         m_publishQueueShutdowntime = Integer.parseInt(publishQueueShutdowntime);
-    }    
-    
+    }
+
     /**
      * Sets the security manager during initialization.<p>
      * 
      * @param securityManager the security manager
      */
     public void setSecurityManager(CmsSecurityManager securityManager) {
-    
+
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
-        } 
+        }
         m_securityManager = securityManager;
     }
-    
+
     /**
      * Starts publishing of enqueued publish jobs.<p>
      */
     public void startPublishing() {
-        
+
         m_publishEngine.startEngine();
     }
-    
+
     /**
      * Stops the publishing of enqueued publish jobs.<p>
      */
     public void stopPublishing() {
-        
+
         m_publishEngine.stopEngine();
     }
-    
+
     /**
      * Waits until no publish jobs remain.<p>
      */
@@ -683,29 +684,14 @@ public class CmsPublishManager {
             }
         }
     }
-    
-    /**
-     * Returns the publish relation filter to use.<p>
-     * 
-     * @return the publish relation filter to use
-     */
-    private CmsRelationFilter getPublishRelationFilter() {
 
-        if (m_publishRelationFilter == null) {
-            m_publishRelationFilter = CmsRelationFilter.TARGETS;
-            m_publishRelationFilter = m_publishRelationFilter.filterType(CmsRelationType.EMBEDDED_IMAGE);
-            m_publishRelationFilter = m_publishRelationFilter.filterType(CmsRelationType.XML_STRONG);
-        }
-        return m_publishRelationFilter;
-    }
-    
     /**
      * Returns the currently used publish engine.<p>
      * 
      * @return the publish engine
      */
     protected CmsPublishEngine getEngine() {
-        
+
         return m_publishEngine;
     }
 }

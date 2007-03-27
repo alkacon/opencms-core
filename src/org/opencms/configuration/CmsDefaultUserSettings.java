@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2007/03/06 10:34:35 $
- * Version: $Revision: 1.17.4.8 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.17.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
+import org.opencms.util.A_CmsModeStringEnumeration;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,11 +51,68 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.8 $
+ * @version $Revision: 1.17.4.9 $
  * 
  * @since 6.0.0 
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
+
+    /**
+     * Enumeration class for defining the publish related resources mode.<p>
+     */
+    public static final class CmsPublishRelatedResourcesMode extends A_CmsModeStringEnumeration {
+
+        /** Constant for the publish related resources mode, checkbox disabled by default. */
+        protected static final CmsPublishRelatedResourcesMode MODE_FALSE = new CmsPublishRelatedResourcesMode(
+            CmsStringUtil.FALSE);
+
+        /** 
+         * Constant for the publish related resources mode, only {@link org.opencms.security.CmsRole#VFS_MANAGER}s 
+         * may publish resources without publishing the related resources.
+         */
+        protected static final CmsPublishRelatedResourcesMode MODE_FORCE = new CmsPublishRelatedResourcesMode("FORCE");
+
+        /** Constant for the publish related resources mode, checkbox enabled by default. */
+        protected static final CmsPublishRelatedResourcesMode MODE_TRUE = new CmsPublishRelatedResourcesMode(
+            CmsStringUtil.TRUE);
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -2665888243460791770L;
+
+        /**
+         * Default constructor.<p>
+         * 
+         * @param mode string representation
+         */
+        private CmsPublishRelatedResourcesMode(String mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the parsed mode object if the string representation matches, or <code>null</code> if not.<p>
+         * 
+         * @param publishRelatedResourcesMode the string representation to parse
+         * 
+         * @return the parsed mode object
+         */
+        public static CmsPublishRelatedResourcesMode valueOf(String publishRelatedResourcesMode) {
+
+            if (publishRelatedResourcesMode == null) {
+                return null;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_FALSE.getMode())) {
+                return MODE_FALSE;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_TRUE.getMode())) {
+                return MODE_TRUE;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_FORCE.getMode())) {
+                return MODE_FORCE;
+            }
+            return null;
+        }
+    }
 
     /** 
      * Array of the possible "button styles".
@@ -63,6 +122,18 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+
+    /** Constant for the publish related resources mode, checkbox disabled by default. */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
+
+    /** 
+     * Constant for the publish related resources mode, only {@link org.opencms.security.CmsRole#VFS_MANAGER}s 
+     * may publish resources without publishing the related resources. 
+     */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FORCE = CmsPublishRelatedResourcesMode.MODE_FORCE;
+
+    /** Constant for the publish related resources mode, checkbox enabled by default. */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_TRUE = CmsPublishRelatedResourcesMode.MODE_TRUE;
 
     /** Publish button appearance: show always. */
     public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
@@ -99,6 +170,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** The enable relation deletion flag. */
     private boolean m_allowBrokenRelations = true;
+
+    /** The publish related resources mode. */
+    private CmsPublishRelatedResourcesMode m_publishRelatedResourcesMode;
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -243,6 +317,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Returns the publish related resources mode.<p>
+     *
+     * @return the publish related resources mode
+     */
+    public CmsPublishRelatedResourcesMode getPublishRelatedResources() {
+
+        return m_publishRelatedResourcesMode;
+    }
+
+    /**
      * Returns if the explorer view is restricted to the defined site and folder.<p>
      * 
      * @return true if the explorer view is restricted, otherwise false
@@ -311,7 +395,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         return getExplorerSetting(CmsUserSettings.FILELIST_NAVTEXT);
     }
-    
+
     /**
      * Gets if the file permissions should be shown in explorer view.<p>
      * 
@@ -641,6 +725,21 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Sets the publish related resources mode.<p>
+     *
+     * @param publishRelatedResourcesMode the publish related resources mode to set
+     */
+    public void setPublishRelatedResourcesMode(String publishRelatedResourcesMode) {
+
+        m_publishRelatedResourcesMode = CmsPublishRelatedResourcesMode.valueOf(publishRelatedResourcesMode);
+        if ((m_publishRelatedResourcesMode != null) && CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_PUBLISH_RELATED_RESOURCES_MODE_1,
+                m_publishRelatedResourcesMode.toString()));
+        }
+    }
+
+    /**
      * Sets if the explorer view is restricted to the defined site and folder.<p>
      * 
      * @param restrict true if the explorer view is restricted, otherwise false
@@ -709,7 +808,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setShowExplorerFileNavText(Boolean.valueOf(show).booleanValue());
     }
-    
+
     /**
      * Sets if the file permissions should be shown in explorer view.<p>
      * 

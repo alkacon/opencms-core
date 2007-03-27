@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/03/20 14:38:48 $
- * Version: $Revision: 1.40.4.18 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.40.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.18 $
+ * @version $Revision: 1.40.4.19 $
  * 
  * @since 6.0.0
  */
@@ -128,6 +128,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the "allow broken relations" node. */
     public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
+
+    /** The name of the "publish related resources" node. */
+    public static final String N_PUBLISHRELATEDRESOURCES = "publishrelatedresources";
 
     /** The name of the autolock node. */
     public static final String N_AUTOLOCK = "autolock";
@@ -311,7 +314,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the navtext column node. */
     public static final String N_NAVTEXT = "show-navtext";
-    
+
     /** The name of the "create new folder with index page" node. */
     public static final String N_NEWFOLDERCREATEINDEXPAGE = "newfolder-createindexpage";
 
@@ -997,7 +1000,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 CmsWorkplaceUserInfoBlock block = (CmsWorkplaceUserInfoBlock)i.next();
                 Element infoBlockElement = userInfosElement.addElement(N_INFOBLOCK);
                 infoBlockElement.addAttribute(A_NAME, block.getTitle());
-    
+
                 Iterator itEntries = block.getEntries().iterator();
                 while (itEntries.hasNext()) {
                     CmsWorkplaceUserInfoEntry entry = (CmsWorkplaceUserInfoEntry)itEntries.next();
@@ -1018,7 +1021,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 }
             }
         }
-        
+
         // add the <default-preferences> user settings main node
         Element defaultPreferences = workplaceElement.addElement(N_DEFAULTPREFERENCES);
         // add the <workplace-preferences> node
@@ -1045,6 +1048,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <allowbrokenrelations> node
         workplaceGeneraloptions.addElement(N_ALLOWBROKENRELATIONS).setText(
             String.valueOf(m_workplaceManager.getDefaultUserSettings().isAllowBrokenRelations()));
+        // add the <publishrelatedresources> node
+        if (m_workplaceManager.getDefaultUserSettings().getPublishRelatedResources() != null) {
+            workplaceGeneraloptions.addElement(N_PUBLISHRELATEDRESOURCES).setText(
+                m_workplaceManager.getDefaultUserSettings().getPublishRelatedResources().toString());
+        }
         // add the configuration for new folders
         // <newfolder-editproperties>
         workplaceGeneraloptions.addElement(N_NEWFOLDEREDITPROPERTIES).setText(
@@ -1427,6 +1435,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_ALLOWBROKENRELATIONS, "setAllowBrokenRelations", 0);
+        // add publish related resources rule
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_PUBLISHRELATEDRESOURCES, "setPublishRelatedResourcesMode", 0);
 
         // add rules for the new folder dialog settings
         digester.addCallMethod("*/"
@@ -1588,7 +1607,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_EXPLORERDISPLAYOPTIONS
             + "/"
-            + N_NAVTEXT, "setShowExplorerFileNavText", 0);        
+            + N_NAVTEXT, "setShowExplorerFileNavText", 0);
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"

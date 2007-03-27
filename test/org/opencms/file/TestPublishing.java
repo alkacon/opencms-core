@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/03/26 09:45:56 $
- * Version: $Revision: 1.21.4.5 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.21.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.5 $
+ * @version $Revision: 1.21.4.6 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -90,9 +90,11 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishLockedFiles"));
         suite.addTest(new TestPublishing("testPublishDeletedFiles"));
         suite.addTest(new TestPublishing("testPublishProjectLastmodified"));
+        suite.addTest(new TestPublishing("testPublishProjectLastmodifiedFolder"));
         suite.addTest(new TestPublishing("testPublishTemporaryProject"));
         suite.addTest(new TestPublishing("testPublishMovedFiles"));
         suite.addTest(new TestPublishing("testPublishRelatedFiles"));
+        suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
         suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -894,9 +896,9 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
-        this.assertFilter(cms, res1, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        this.assertFilter(cms, res2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
-        this.assertDateLastModified(cms, res2, timestamp);
+        assertFilter(cms, res1, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, res2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
+        assertDateLastModified(cms, res2, timestamp);
 
         echo("Testing publishing in different projects");
 
@@ -921,10 +923,10 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // the resource inside the test project must not be published (not in test project)
+        // the resource inside the offline project must not be published (not in test project)
         assertState(cms, res3, CmsResource.STATE_NEW);
 
-        // the sibling outside the test project must not be published (not in test project)
+        // the sibling outside the offline project must not be published (not in test project)
         assertState(cms, res4, CmsResource.STATE_NEW);
 
         // publish the root folder of the test project within the test project
@@ -935,11 +937,47 @@ public class TestPublishing extends OpenCmsTestCase {
             new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // the resource inside the test project must not be published (still not in test project)
-        assertState(cms, res3, CmsResource.STATE_NEW);
+        // all resources inside the folder must be published, even if not in test project
+        assertState(cms, res3, CmsResource.STATE_UNCHANGED);
 
-        // the sibling outside the test project must not be published (still not in test project)
-        assertState(cms, res4, CmsResource.STATE_NEW);
+        // as well as all siblings, even if not in test project
+        assertState(cms, res4, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests publishing a folder containing resources modified within a distinct project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishProjectLastmodifiedFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a folder containing resources modified within a distinct project");
+
+        String path = "/folder1";
+        String res1 = path + "/index.html";
+
+        // change first resource in the offline project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(res1);
+        cms.setDateLastModified(res1, System.currentTimeMillis(), false);
+
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        storeResources(cms, res1);
+
+        // create a new project
+        CmsProject project = getTestProject(cms);
+        cms.getRequestContext().setCurrentProject(project);
+        cms.copyResourceToProject(path);
+
+        // check the publish list
+        // the resource modified in the Offline project should be there
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(path), false);
+        assertTrue(pubList.isPublishSubResources());
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        assertTrue(pubList.getFileList().contains(cms.readResource(res1)));
     }
 
     /**

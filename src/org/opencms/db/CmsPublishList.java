@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.25.4.7 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.25.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.7 $
+ * @version $Revision: 1.25.4.8 $
  * 
  * @since 6.0.0
  * 
@@ -107,6 +107,9 @@ public class CmsPublishList implements Externalizable {
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
 
+    /** Indicates if unpublished related resources should be published. */
+    private boolean m_publishRelatedResources;
+
     /** Indicates if siblings of the resources in the list should also be published. */
     private boolean m_publishSiblings;
 
@@ -128,7 +131,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(CmsProject project) {
 
-        this(project, null, false, true);
+        this(project, null, false, true, false);
     }
 
     /**
@@ -139,7 +142,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(CmsResource directPublishResource, boolean publishSiblings) {
 
-        this(null, Collections.singletonList(directPublishResource), publishSiblings, true);
+        this(null, Collections.singletonList(directPublishResource), publishSiblings, true, false);
     }
 
     /**
@@ -150,7 +153,7 @@ public class CmsPublishList implements Externalizable {
      */
     public CmsPublishList(List directPublishResources, boolean publishSiblings) {
 
-        this(null, directPublishResources, publishSiblings, true);
+        this(null, directPublishResources, publishSiblings, true, false);
     }
 
     /**
@@ -159,10 +162,15 @@ public class CmsPublishList implements Externalizable {
      * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * @param publishRelatedResources indicates if unpublished related resources should be published
      */
-    public CmsPublishList(List directPublishResources, boolean publishSiblings, boolean publishSubResources) {
+    public CmsPublishList(
+        List directPublishResources,
+        boolean publishSiblings,
+        boolean publishSubResources,
+        boolean publishRelatedResources) {
 
-        this(null, directPublishResources, publishSiblings, publishSubResources);
+        this(null, directPublishResources, publishSiblings, publishSubResources, publishRelatedResources);
     }
 
     /**
@@ -172,12 +180,14 @@ public class CmsPublishList implements Externalizable {
      * @param directPublishResources the list of direct publish resources
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * @param publishRelatedResources indicates if unpublished related resources should be published
      */
     private CmsPublishList(
         CmsProject project,
         List directPublishResources,
         boolean publishSiblings,
-        boolean publishSubResources) {
+        boolean publishSubResources,
+        boolean publishRelatedResources) {
 
         m_fileList = new ArrayList();
         m_folderList = new ArrayList();
@@ -186,6 +196,7 @@ public class CmsPublishList implements Externalizable {
         m_publishSiblings = publishSiblings;
         m_publishSubResources = publishSubResources;
         m_projectId = (project != null) ? project.getUuid() : null;
+        m_publishRelatedResources = publishRelatedResources;
         if (directPublishResources != null) {
             // reduce list of folders to minimum
             m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
@@ -280,6 +291,16 @@ public class CmsPublishList implements Externalizable {
     public boolean isDirectPublish() {
 
         return (m_projectId == null);
+    }
+
+    /**
+     * Checks if unpublished related resources should be published.<p>
+     * 
+     * @return <code>true</code> if unpublished related resources should be published
+     */
+    public boolean isPublishRelatedResources() {
+
+        return m_publishRelatedResources;
     }
 
     /**

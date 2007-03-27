@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngineState.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.publish;
 
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -38,33 +38,31 @@ import org.opencms.util.A_CmsModeStringEnumeration;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
 public final class CmsPublishEngineState extends A_CmsModeStringEnumeration {
 
     /** State indicating that engine is not acceptiong publish jobs. */
-    public static final CmsPublishEngineState ENGINE_DISABLED =
-        new CmsPublishEngineState("disabled");
-    
+    public static final CmsPublishEngineState ENGINE_DISABLED = new CmsPublishEngineState("disabled");
+
     /** State indicating that engine is acceptiong and processing publish jobs. */
-    public static final CmsPublishEngineState ENGINE_STARTED =
-        new CmsPublishEngineState("started");
+    public static final CmsPublishEngineState ENGINE_STARTED = new CmsPublishEngineState("started");
 
     /** State indicating that engine is accepting but not processing publish jobs. */
-    public static final CmsPublishEngineState ENGINE_STOPPED =
-        new CmsPublishEngineState("stopped");
-    
+    public static final CmsPublishEngineState ENGINE_STOPPED = new CmsPublishEngineState("stopped");
+
     /** The serial version id. */
     private static final long serialVersionUID = 4860148946570407490L;
-    
+
     /**
      * Private constructor.<p>
      * 
      * @param state the state description
      */
     private CmsPublishEngineState(String state) {
-        super(state);    
-    }    
+
+        super(state);
+    }
 }

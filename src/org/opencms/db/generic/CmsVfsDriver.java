@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:12 $
- * Version: $Revision: 1.258.4.14 $
+ * Date   : $Date: 2007/03/27 14:16:26 $
+ * Version: $Revision: 1.258.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.14 $
+ * @version $Revision: 1.258.4.15 $
  * 
  * @since 6.0.0 
  */
@@ -2983,7 +2983,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(projectId));
+            params.add(projectId.toString());
         }
     }
 

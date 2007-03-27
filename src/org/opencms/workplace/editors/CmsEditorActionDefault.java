@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.19.4.5 $
+ * Date   : $Date: 2007/03/27 14:16:25 $
+ * Version: $Revision: 1.19.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.5 $ 
+ * @version $Revision: 1.19.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,10 +88,14 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append("&closelink=");
         if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
             String linkTarget;
-            if (!"".equals(editor.getParamBacklink())) {
+            if (!"".equals(editor.getParamBacklink()) && !editor.getParamResource().equals(editor.getParamBacklink())) {
                 linkTarget = jsp.link(editor.getParamBacklink());
             } else {
-                linkTarget = jsp.link(editor.getParamResource());
+                linkTarget = jsp.link(CmsEditor.PATH_EDITORS
+                    + "editor.jsp?"
+                    + CmsDialog.PARAM_RESOURCE
+                    + "="
+                    + editor.getParamResource());
             }
             // append the parameters and the report "ok" button action to the link
             publishLink += params.toString() + CmsEncoder.escapeWBlanks(linkTarget, CmsEncoder.ENCODING_UTF_8);
@@ -133,7 +137,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
 
         try {
-            OpenCms.getPublishManager().getPublishList(jsp.getCmsObject(), jsp.getCmsObject().readResource(resourceName), false);
+            OpenCms.getPublishManager().getPublishList(
+                jsp.getCmsObject(),
+                jsp.getCmsObject().readResource(resourceName),
+                false);
             return true;
         } catch (Exception e) {
             return false;
