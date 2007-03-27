@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/23 16:52:32 $
- * Version: $Revision: 1.241.4.22 $
+ * Date   : $Date: 2007/03/27 10:19:21 $
+ * Version: $Revision: 1.241.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,27 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.*;
-import org.opencms.file.*;
+import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbIoException;
+import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsResourceState;
+import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsProjectDriver;
+import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessageContainer;
@@ -81,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.22 $
+ * @version $Revision: 1.241.4.23 $
  * 
  * @since 6.0.0 
  */
