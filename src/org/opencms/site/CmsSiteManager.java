@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/03/15 16:30:39 $
- * Version: $Revision: 1.51.4.7 $
+ * Date   : $Date: 2007/03/27 15:06:46 $
+ * Version: $Revision: 1.51.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.7 $ 
+ * @version $Revision: 1.51.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -480,26 +480,43 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Returns true if the given site matcher matches a site.<p>
+     * Returns <code>true</code> if the given site matcher matches any configured site,
+     * which includes the workplace site.<p>
      * 
      * @param matcher the site matcher to match the site with
-     * @return true if the matcher matches a site
+     * @return <code>true</code> if the matcher matches a site
      */
     public boolean isMatching(CmsSiteMatcher matcher) {
 
-        return m_sites.get(matcher) != null;
+        boolean result = m_sites.get(matcher) != null;
+        if (!result) {
+            // try to match the workplace site
+            result = (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
+        }
+        return result;
     }
 
     /**
-     * Returns if the given site matcher matches the current site.<p>
+     * Returns <code>true</code> if the given site matcher matches the current site.<p>
      * 
      * @param cms the cms object
      * @param matcher the site matcher to match the site with
-     * @return true if the matcher matches the current site
+     * @return <code>true</code> if the matcher matches the current site
      */
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
 
         return m_sites.get(matcher) == getCurrentSite(cms);
+    }
+
+    /**
+     * Returns <code>true</code> if the given site matcher matches the configured OpenCms workplace.<p> 
+     * 
+     * @param matcher the site matcher to match the site with
+     * @return <code>true</code> if the given site matcher matches the configured OpenCms workplace
+     */
+    public boolean isWorkplaceRequest(CmsSiteMatcher matcher) {
+
+        return (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
     }
 
     /**
@@ -514,8 +531,7 @@ public final class CmsSiteManager implements Cloneable {
             // this may be true inside a static export test case scenario
             return false;
         }
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-        return m_workplaceSiteMatcher.equals(matcher);
+        return isWorkplaceRequest(new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort()));
     }
 
     /**
@@ -540,7 +556,7 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Return the site that matches the given site matcher,
+     * Return the configurded site that matches the given site matcher,
      * or the default site if no sites matches.<p>
      * 
      * @param matcher the site matcher to match the site with

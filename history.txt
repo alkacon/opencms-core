@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/27 13:30:06 $
- * Version: $Revision: 1.717.2.155 $
+ * Date   : $Date: 2007/03/27 15:06:46 $
+ * Version: $Revision: 1.717.2.156 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 7.0.0 - July 4, 2007
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 
 ! Configurable exclude tags for decorator
+* Fixed issue not detecting the workplace server URL as internal while adjusting links
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Reinitialization/Restart of pending jobs from the publish queue during startup is now configurable, 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.60.4.8 $
+ * Date   : $Date: 2007/03/27 15:06:46 $
+ * Version: $Revision: 1.60.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.8 $ 
+ * @version $Revision: 1.60.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,10 +263,16 @@ public class CmsLinkManager {
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-
-                return cms.getRequestContext().addSiteRoot(
-                    OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
-                    path + suffix);
+                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher)) {
+                    // workplace URL, use current site root
+                    // this is required since the workplace site does not have a site root to set 
+                    return cms.getRequestContext().addSiteRoot(path + suffix);
+                } else {
+                    // add the site root of the matching site
+                    return cms.getRequestContext().addSiteRoot(
+                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                        path + suffix);
+                }
             } else {
                 return null;
             }
