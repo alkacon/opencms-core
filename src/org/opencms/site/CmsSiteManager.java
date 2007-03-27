@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2007/03/27 15:07:51 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,14 +447,20 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Returns true if the given site matcher matches a site.<p>
+     * Returns <code>true</code> if the given site matcher matches any configured site,
+     * which includes the workplace site.<p>
      * 
      * @param matcher the site matcher to match the site with
-     * @return true if the matcher matches a site
+     * @return <code>true</code> if the matcher matches a site
      */
     public boolean isMatching(CmsSiteMatcher matcher) {
 
-        return m_sites.get(matcher) != null;
+        boolean result = m_sites.get(matcher) != null;
+        if (!result) {
+            // try to match the workplace site
+            result = (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
+        }
+        return result;
     }
 
     /**
@@ -470,6 +476,17 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
+     * Returns <code>true</code> if the given site matcher matches the configured OpenCms workplace.<p> 
+     * 
+     * @param matcher the site matcher to match the site with
+     * @return <code>true</code> if the given site matcher matches the configured OpenCms workplace
+     */
+    public boolean isWorkplaceRequest(CmsSiteMatcher matcher) {
+
+        return (m_workplaceSiteMatcher != null) && m_workplaceSiteMatcher.equals(matcher);
+    }
+
+    /**
      * Returns <code>true</code> if the given request is against the configured OpenCms workplace.<p> 
      * 
      * @param req the request to match 
@@ -481,8 +498,7 @@ public final class CmsSiteManager implements Cloneable {
             // this may be true inside a static export test case scenario
             return false;
         }
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-        return m_workplaceSiteMatcher.equals(matcher);
+        return isWorkplaceRequest(new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort()));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/10/18 09:29:06 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2007/03/27 15:07:51 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,10 +259,16 @@ public class CmsLinkManager {
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-
-                return cms.getRequestContext().addSiteRoot(
-                    OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
-                    path + suffix);
+                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher)) {
+                    // workplace URL, use current site root
+                    // this is required since the workplace site does not have a site root to set 
+                    return cms.getRequestContext().addSiteRoot(path + suffix);
+                } else {
+                    // add the site root of the matching site
+                    return cms.getRequestContext().addSiteRoot(
+                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                        path + suffix);
+                }
             } else {
                 return null;
             }
@@ -560,7 +566,7 @@ public class CmsLinkManager {
             }
 
             // add cut off parameters and return the result
-            if (parameters != null) {
+            if ((parameters != null) && (resultLink != null)) {
                 resultLink = resultLink.concat(parameters);
             }
 
