@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2007/02/28 15:47:38 $
- * Version: $Revision: 1.20.4.4 $
+ * Date   : $Date: 2007/03/27 10:50:18 $
+ * Version: $Revision: 1.20.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,7 +52,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20.4.4 $ 
+ * @version $Revision: 1.20.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,9 +95,9 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
         m_excerpt = excerpt;
         m_fields = new HashMap();
 
-        Enumeration fields = doc.fields();
-        while (fields.hasMoreElements()) {
-            Field field = (Field)fields.nextElement();
+        Iterator i = doc.getFields().iterator();
+        while (i.hasNext()) {
+            Field field = (Field)i.next();
             if ((field != null) && field.isStored()) {
                 // content can be displayed only if it has been stored in the field
                 String name = field.name();

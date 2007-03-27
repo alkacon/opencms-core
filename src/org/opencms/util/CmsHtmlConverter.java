@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2006/10/06 09:54:27 $
- * Version: $Revision: 1.24.4.2 $
+ * Date   : $Date: 2007/03/27 10:50:18 $
+ * Version: $Revision: 1.24.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24.4.2 $ 
+ * @version $Revision: 1.24.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,8 +336,8 @@ public class CmsHtmlConverter {
                 oldSize = workHtml.length();
                 workHtml = regExp(workHtml);
             }
-            if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_PARSING_RUNS_2,
                     this.getClass().getName(),
                     new Integer(count)));

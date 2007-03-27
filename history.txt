@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/26 15:32:37 $
- * Version: $Revision: 1.717.2.153 $
+ * Date   : $Date: 2007/03/27 10:50:18 $
+ * Version: $Revision: 1.717.2.154 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
   (i.e. after a restart, pending jobs (but not the job running during shutdown) are published after startup)
 ! Select type of index page while creating new folders
 ! Publish dialog now offers the option to publish unpublished related (linked) resources
+- Updated integrated Lucene version to 2.1.0
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation

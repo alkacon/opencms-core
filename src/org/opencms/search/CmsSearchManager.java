@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/03/20 15:08:57 $
- * Version: $Revision: 1.55.4.12 $
+ * Date   : $Date: 2007/03/27 10:50:18 $
+ * Version: $Revision: 1.55.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.12 $ 
+ * @version $Revision: 1.55.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1109,7 +1109,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if ((m_forceUnlockMode != null) && m_forceUnlockMode.equals(CmsSearchForceUnlockMode.ALWAYS)) {
                     try {
                         // try to force unlock on the index
-                        IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
+                        IndexReader.unlock(FSDirectory.getDirectory(index.getPath()));
                     } catch (Exception e) {
                         // unable to force unlock of Lucene index, we can't continue this way
                         CmsMessageContainer msg = Messages.get().container(
@@ -1147,7 +1147,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         } else {
                             try {
                                 // try to force unlock on the index
-                                IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
+                                IndexReader.unlock(FSDirectory.getDirectory(index.getPath()));
                             } catch (Exception e) {
                                 // unable to force unlock of Lucene index, we can't continue this way
                                 CmsMessageContainer msg = Messages.get().container(
