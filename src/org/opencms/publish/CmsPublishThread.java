@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/27 10:29:36 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.5 
  */
@@ -160,7 +160,7 @@ final class CmsPublishThread extends A_CmsReportThread {
             try {
                 m_publishEngine.publishJobFinished(getPublishJob());
             } catch (CmsException exc) {
-                LOG.error(exc);
+                LOG.error(exc.getLocalizedMessage(), exc);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/27 10:29:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -191,7 +191,7 @@ public class CmsPublishQueue {
                             OpenCms.getMemoryMonitor().cachePublishJob(job);
                         } catch (CmsException exc) {
                             // skip job
-                            LOG.error(exc);
+                            LOG.error(exc.getLocalizedMessage(), exc);
                         } finally {
                             dbc.clear();
                         }
@@ -203,14 +203,14 @@ public class CmsPublishQueue {
                             new CmsPublishJobEnqueued(job).m_publishJob.finish();
                             m_publishEngine.getPublishHistory().add(job);
                         } catch (CmsException exc) {
-                            LOG.error(exc);
+                            LOG.error(exc.getLocalizedMessage(), exc);
                         }
                     }
                 }
             }
         } catch (CmsException exc) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(exc);
+                LOG.error(exc.getLocalizedMessage(), exc);
             }
         } finally {
             dbc.clear();
