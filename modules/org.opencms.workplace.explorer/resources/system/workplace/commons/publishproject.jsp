@@ -90,12 +90,6 @@ function doReportUpdate(msg, state) {
         state = "error";
       } else {
         showRelatedResources(true);
-        if (document.forms['main'].relatedRes) {
-           // left untouched
-        } else {
-           // hide
-           document.getElementById("relatedres").className = 'hide';
-        }
       }
    }
    if (txt != '') {
@@ -130,6 +124,17 @@ function reloadDialog(publishSiblings, publishSubresources, relatedResources) {
    makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', '<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources, 'doReportUpdate');
 }
 
+function submitActionWithOptions() {
+
+   if (!submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main')) {
+      return;
+   }
+   document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.checked = true;   
+   document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.checked = true;   
+   document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.checked = true;   
+   return true;
+}
+
 // -->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -137,7 +142,7 @@ function reloadDialog(publishSiblings, publishSubresources, relatedResources) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitActionWithOptions();">
 <% 
    List excludes = new ArrayList();
    excludes.add(CmsPublishProject.PARAM_PUBLISHSIBLINGS);

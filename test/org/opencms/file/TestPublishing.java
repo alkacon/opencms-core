@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.21.4.6 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.21.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.6 $
+ * @version $Revision: 1.21.4.7 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -528,7 +528,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertTrue(pubList.getFileList().contains(resource));
 
         // get the list of related resources, which should be still empty, since the related resource has unchanged state
-        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList, null);
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
         // check the publish list has not been touched
         assertTrue(pubList.getDeletedFolderList().isEmpty());
         assertTrue(pubList.getFolderList().isEmpty());
@@ -547,7 +547,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsResource relatedRes = cms.readResource(relResName, CmsResourceFilter.DEFAULT);
 
         // get the list of related resources again
-        relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList, null);
+        relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
         // check the publish list has not been touched
         assertTrue(pubList.getDeletedFolderList().isEmpty());
         assertTrue(pubList.getFolderList().isEmpty());
@@ -603,7 +603,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFalse(pubList.getFileList().isEmpty());
 
         // get the list of related resources, which should be still empty, since the related resource has unchanged state
-        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList, null);
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
         // check the publish list has not been touched
         assertTrue(pubList.getDeletedFolderList().isEmpty());
         assertFalse(pubList.getFolderList().isEmpty());

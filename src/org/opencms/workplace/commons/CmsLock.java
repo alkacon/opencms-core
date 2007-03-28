@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.16.4.13 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.16.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -78,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.13 $ 
+ * @version $Revision: 1.16.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,38 +94,52 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** The dialog type: lock a resource. */
     public static final String DIALOG_TYPE_LOCK = "lock";
+
     /** The dialog type: Steal a lock. */
     public static final String DIALOG_TYPE_LOCKCHANGE = "lockchange";
+
     /** The dialog type: locked subresources. */
     public static final String DIALOG_TYPE_LOCKS = "locks";
+
     /** The dialog type: unlock a resource. */
     public static final String DIALOG_TYPE_UNLOCK = "unlock";
 
+    /** Request parameter name for the 'include unpublished related resources' flag. */
+    public static final String PARAM_INCLUDERELATED = "includerelated";
+
     /** Request parameter name for the project id. */
     public static final String PARAM_PROJECT_ID = "projectid";
+
     /** Request parameter name for the publishsiblings parameter. */
     public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
 
     /** Request parameter name for the source dialog uri. */
     public static final String PARAM_SOURCE_DIALOG = "sourcedialog";
+
     /** Request parameter name for the subresources parameter. */
     public static final String PARAM_SUBRESOURCES = "subresources";
 
     /** Type of the operation which is performed: lock resource. */
     public static final int TYPE_LOCK = 1;
+
     /** Type of the operation which is performed: steal a lock. */
     public static final int TYPE_LOCKCHANGE = 2;
+
     /** Type of the operation which is performed: locked subresources. */
     public static final int TYPE_LOCKS = 4;
+
     /** Type of the operation which is performed: unlock resource. */
     public static final int TYPE_UNLOCK = 3;
 
     /** The lock dialog URI. */
     public static final String URI_LOCK_DIALOG = PATH_DIALOGS + "lock_standard.jsp";
+
     /** The steal lock dialog URI. */
     public static final String URI_LOCKCHANGE_DIALOG = PATH_DIALOGS + "lockchange_standard.jsp";
+
     /** The locks dialog URI. */
     public static final String URI_LOCKS_DIALOG = PATH_DIALOGS + "locks.jsp";
+
     /** The unlock dialog URI. */
     public static final String URI_UNLOCK_DIALOG = PATH_DIALOGS + "unlock_standard.jsp";
 
@@ -141,6 +157,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** the filter to get all non blocking locks. */
     private CmsLockFilter m_nonBlockingFilter;
+
+    /** The 'include unpublished related resources' parameter value. */
+    private String m_paramIncluderelated;
 
     /** The project id parameter value. */
     private String m_paramProjectid;
@@ -238,7 +257,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
-        if (!getSettings().getUserSettings().getDialogShowLock() && (CmsLock.getDialogAction(getCms()) != CmsLock.TYPE_LOCKS)) {
+        if (!getSettings().getUserSettings().getDialogShowLock()
+            && (CmsLock.getDialogAction(getCms()) != CmsLock.TYPE_LOCKS)) {
             // auto commit if lock dialog disabled
             html.append("\t\tif (blockinglocks == 0) {\n");
             html.append("\t\t\tsubmitAction('");
@@ -361,17 +381,18 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildLockRequest() {
 
-        return buildLockRequest(0);
+        return buildLockRequest(0, false);
     }
 
     /**
      * Returns the html code to build the lock request.<p>
      * 
      * @param hiddenTimeout the maximal number of millis the dialog will be hidden
+     * @param includeRelated indicates if the report should include related resources
      * 
      * @return html code
      */
-    public String buildLockRequest(int hiddenTimeout) {
+    public String buildLockRequest(int hiddenTimeout, boolean includeRelated) {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<script type='text/javascript'><!--\n");
@@ -385,6 +406,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append(CmsDialog.PARAM_RESOURCE);
         html.append("=");
         html.append(getParamResource());
+        html.append("&");
+        html.append(CmsLock.PARAM_INCLUDERELATED);
+        html.append("=");
+        html.append(includeRelated);
         html.append("', 'doReportUpdate');\n");
         html.append("function showLockDialog() {\n");
         html.append("\tdocument.getElementById('lock-body-id').className = '';\n");
@@ -452,6 +477,33 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             m_blockingFilter = m_blockingFilter.filterNotLockableByUser(getCms().getRequestContext().currentUser());
         }
         return m_blockingFilter;
+    }
+
+    /**
+     * Returns locked resources that do not belong to the current user.<p>
+     * 
+     * @return the locked Resources
+     */
+    public Set getBlockingLockedResources() {
+
+        Set blockingResources = new HashSet();
+        Iterator i = getResourceList().iterator();
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                blockingResources.addAll(getCms().getLockedResources(resName, getBlockingFilter()));
+            } catch (CmsException e) {
+                // error reading a resource, should usually never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            if (Boolean.valueOf(getParamIncluderelated()).booleanValue()) {
+                addLockedRelatedResources(resName, getBlockingFilter(), blockingResources);
+            }
+        }
+        m_blockingLocks = blockingResources.size();
+        return blockingResources;
     }
 
     /**
@@ -555,10 +607,15 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                         LOG.error(e.getLocalizedMessage(getLocale()), e);
                     }
                 }
+                if (Boolean.valueOf(getParamIncluderelated()).booleanValue()) {
+                    addLockedRelatedResources(resName, getNonBlockingFilter(), lockedResources);
+                }
             }
+            // get blocking resources needs the locked resources
             m_lockedResources = new ArrayList(lockedResources);
-            // collect strangers locked resources
-            m_lockedResources.addAll(getBlockingLockedResources());
+            lockedResources.addAll(getBlockingLockedResources());
+            // create the locked resources list again, with the blocking locked resources
+            m_lockedResources = new ArrayList(lockedResources);
             Collections.sort(m_lockedResources);
         }
         return m_lockedResources;
@@ -577,6 +634,16 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             m_nonBlockingFilter = m_nonBlockingFilter.filterSharedExclusive();
         }
         return m_nonBlockingFilter;
+    }
+
+    /**
+     * Returns the 'include unpublished related resources' parameter value.<p>
+     *
+     * @return the 'include unpublished related resources' parameter value
+     */
+    public String getParamIncluderelated() {
+
+        return m_paramIncluderelated;
     }
 
     /**
@@ -613,6 +680,16 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         m_nonBlockingFilter = nonBlockingFilter;
         // reset locked resources
         m_lockedResources = null;
+    }
+
+    /**
+     * Sets the 'include unpublished related resources' parameter value.<p>
+     *
+     * @param paramIncluderelated the 'include unpublished related resources' parameter value to set
+     */
+    public void setParamIncluderelated(String paramIncluderelated) {
+
+        m_paramIncluderelated = paramIncluderelated;
     }
 
     /**
@@ -776,26 +853,48 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns locked resources that do not belong to the current user.<p>
+     * Returns a set of locked unpublished related resources.<p>
      * 
-     * @return the locked Resources
+     * @param resName the resource to check the related resources for
+     * @param filter the relation filter to use
+     * @param lockedResources a set of site relative paths, of locked resources to exclude
      */
-    public Set getBlockingLockedResources() {
+    private void addLockedRelatedResources(String resName, CmsLockFilter filter, Set lockedResources) {
 
-        Set blockingResources = new HashSet();
-        Iterator i = getResourceList().iterator();
-        while (i.hasNext()) {
-            String resName = (String)i.next();
-            try {
-                blockingResources.addAll(getCms().getLockedResources(resName, getBlockingFilter()));
-            } catch (CmsException e) {
-                // error reading a resource, should usually never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
+        try {
+            // get and iterate over all related resources
+            Iterator itRelations = getCms().getRelationsForResource(
+                resName,
+                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChilds()).iterator();
+            while (itRelations.hasNext()) {
+                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                // we are interested just in unpublished resources
+                if (target.getState().isUnchanged()) {
+                    continue;
                 }
+                String targetName = getCms().getSitePath(target);
+                // if already selected
+                if (lockedResources.contains(targetName) || lockedResources.contains(targetName + "*")) {
+                    continue;
+                }
+                if (m_lockedResources != null) {
+                    if (m_lockedResources.contains(targetName) || m_lockedResources.contains(targetName + "*")) {
+                        continue;
+                    }
+                }
+                // if not matching the relation filter
+                if (!filter.match("/", getCms().getLock(targetName))) {
+                    continue;
+                }
+                // just add resources that may come in question
+                lockedResources.add(targetName + "*");
+            }
+        } catch (CmsException e) {
+            // error reading a resource, should usually never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(getLocale()), e);
             }
         }
-        m_blockingLocks = blockingResources.size();
-        return blockingResources;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2007/03/27 15:18:37 $
- * Version: $Revision: 1.19.4.7 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.19.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.4.7 $ 
+ * @version $Revision: 1.19.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,21 +86,21 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
         params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
         params.append("&closelink=");
-        String linkTarget;
-        if (!"".equals(editor.getParamBacklink()) && !editor.getParamResource().equals(editor.getParamBacklink())) {
-            linkTarget = editor.getParamBacklink();
-        } else {
-            linkTarget = CmsEditor.PATH_EDITORS
-                + "editor.jsp?"
-                + CmsDialog.PARAM_RESOURCE
-                + "="
-                + editor.getParamResource();
-            if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
-                linkTarget += "&" + CmsEditor.PARAM_DIRECTEDIT + "=" + editor.getParamDirectedit();
+        if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
+            String linkTarget;
+            if (!"".equals(editor.getParamBacklink())) {
+                linkTarget = jsp.link(editor.getParamBacklink());
+            } else {
+                linkTarget = jsp.link(editor.getParamResource());
             }
+            // append the parameters and the report "ok" button action to the link
+            publishLink += params.toString() + CmsEncoder.escapeWBlanks(linkTarget, CmsEncoder.ENCODING_UTF_8);
+        } else {
+            // append the parameters and the report "ok" button action to the link
+            publishLink += params.toString()
+                + CmsEncoder.escapeWBlanks(jsp.link(CmsFrameset.JSP_WORKPLACE_URI), CmsEncoder.ENCODING_UTF_8);
+
         }
-        // append the parameters for the "cancel" button action to the link
-        publishLink += params.toString() + CmsEncoder.escapeWBlanks(jsp.link(linkTarget), CmsEncoder.ENCODING_UTF_8);
         // redirect to the publish dialog with all necessary parameters
         jsp.getResponse().sendRedirect(publishLink);
     }
@@ -132,10 +133,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
 
         try {
-            OpenCms.getPublishManager().getPublishList(
-                jsp.getCmsObject(),
-                jsp.getCmsObject().readResource(resourceName),
-                false);
+            OpenCms.getPublishManager().getPublishList(jsp.getCmsObject(), jsp.getCmsObject().readResource(resourceName), false);
             return true;
         } catch (Exception e) {
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/03/27 14:16:26 $
- * Version: $Revision: 1.146.4.34 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.146.4.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.34 $
+ * @version $Revision: 1.146.4.35 $
  * 
  * @since 6.0.0 
  */
@@ -1394,8 +1394,7 @@ public final class CmsObject {
             this,
             directPublishResources,
             directPublishSiblings,
-            true,
-            false);
+            true);
     }
 
     /**
@@ -1411,7 +1410,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean, boolean) getPublishList(CmsObject, List, boolean, boolean)}</code> instead
+     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean) getPublishList(CmsObject, List, boolean)}</code> instead
      */
     public CmsPublishList getPublishList(
         List directPublishResources,
@@ -1422,8 +1421,7 @@ public final class CmsObject {
             this,
             directPublishResources,
             directPublishSiblings,
-            publishSubResources,
-            false);
+            publishSubResources);
     }
 
     /**

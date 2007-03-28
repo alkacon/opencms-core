@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,15 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListResourceProjStateAction;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.Iterator;
@@ -47,7 +51,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,9 +60,12 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "llr";
 
+    /** List column id constant. */
+    protected static final String LIST_COLUMN_IS_RELATED = "ecir";
+
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -70,10 +77,10 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_LOCKED_FILES_LIST_NAME_0));
         m_collector = new CmsLockedResourcesCollector(this, lockedResources);
-        
+
         // prevent paging
         getList().setMaxItemsPerPage(Integer.MAX_VALUE);
-        
+
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
@@ -138,7 +145,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
 
@@ -150,8 +157,46 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             colDefinition.setSorteable(false);
             if (colDefinition.getId().equals(LIST_COLUMN_NAME)) {
                 colDefinition.removeDefaultAction(LIST_DEFACTION_OPEN);
+                colDefinition.setWidth("60%");
+            } else if (colDefinition.getId().equals(LIST_COLUMN_PROJSTATEICON)) {
+                colDefinition.removeDirectAction(LIST_ACTION_PROJSTATEICON);
+                // add resource state icon action
+                CmsListDirectAction resourceProjStateAction = new CmsListResourceProjStateAction(
+                    LIST_ACTION_PROJSTATEICON) {
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
+                     */
+                    public String getIconPath() {
+
+                        if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
+                            return "explorer/related_resource.png";
+                        }
+                        return super.getIconPath();
+                    }
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getName()
+                     */
+                    public CmsMessageContainer getName() {
+
+                        if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
+                            return Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCE_0);
+                        }
+                        return super.getName();
+                    }
+                };
+                resourceProjStateAction.setEnabled(false);
+                colDefinition.addDirectAction(resourceProjStateAction);
             }
         }
+
+        CmsListColumnDefinition relatedCol = new CmsListExplorerColumn(LIST_COLUMN_IS_RELATED);
+        relatedCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        relatedCol.setVisible(false);
+        relatedCol.setPrintable(false);
+        metadata.addColumn(relatedCol);
     }
 
     /**

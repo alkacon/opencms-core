@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.5.5
  */
@@ -307,7 +307,7 @@ public class CmsPublishManager {
     public CmsPublishList getPublishList(CmsObject cms, List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
-        return getPublishList(cms, directPublishResources, directPublishSiblings, true, false);
+        return getPublishList(cms, directPublishResources, directPublishSiblings, true);
     }
 
     /**
@@ -319,7 +319,6 @@ public class CmsPublishManager {
      * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
      *                      published resources should also get published.
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
-     * @param publishRelatedResources indicates if unpublished related resources should be published
      * 
      * @return a publish list
      * 
@@ -329,14 +328,12 @@ public class CmsPublishManager {
         CmsObject cms,
         List directPublishResources,
         boolean directPublishSiblings,
-        boolean publishSubResources,
-        boolean publishRelatedResources) throws CmsException {
+        boolean publishSubResources) throws CmsException {
 
         return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
             directPublishResources,
             directPublishSiblings,
-            publishSubResources,
-            publishRelatedResources));
+            publishSubResources));
     }
 
     /**
@@ -360,27 +357,23 @@ public class CmsPublishManager {
     }
 
     /**
-     * Returns a new publish list that contains the unpublished resources related to the given resources, 
-     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
-     * resources exclude all resources in the given publish list.<p>
+     * Returns a new publish list that contains the unpublished resources related 
+     * to all resources in the given publish list, the related resources exclude 
+     * all resources in the given publish list and also locked (by other users) resources.<p>
      * 
      * @param cms the cms request context
-     * @param publishList the publish list to exclude from result or 
-     *          get the related resources for if the resource is <code>null</code>
-     * @param resource the resource to get the related resources for or 
-     *          <code>null</code> to use all resources in the given publish list
+     * @param publishList the publish list to exclude from result
      * 
      * @return a new publish list that contains the related resources
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList, CmsResource resource)
+    public CmsPublishList getRelatedResourcesToPublish(CmsObject cms, CmsPublishList publishList)
     throws CmsException {
 
         return m_securityManager.getRelatedResourcesToPublish(
             cms.getRequestContext(),
             publishList,
-            resource,
             CmsRelationFilter.TARGETS.filterStrong());
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsLog;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.4 
  */
@@ -94,8 +95,32 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
         Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
         while (itResourceNames.hasNext()) {
             String resName = (String)itResourceNames.next();
+            boolean relatedResource = resName.endsWith("*");
+            if (relatedResource) {
+                resName = resName.substring(0, resName.length() - 1);
+            }
             try {
-                resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
+                CmsResource resource = cms.readResource(resName, CmsResourceFilter.ALL);
+                if (relatedResource) {
+                    resource = new CmsResource(
+                        resource.getStructureId(),
+                        resource.getResourceId(),
+                        resource.getRootPath(),
+                        resource.getTypeId(),
+                        resource.isFolder(),
+                        resource.getFlags() | CmsPublishResourcesList.FLAG_RELATED_RESOURCE,
+                        resource.getProjectLastModified(),
+                        resource.getState(),
+                        resource.getDateCreated(),
+                        resource.getUserCreated(),
+                        resource.getDateLastModified(),
+                        resource.getUserLastModified(),
+                        resource.getDateReleased(),
+                        resource.getDateExpired(),
+                        resource.getSiblingCount(),
+                        resource.getLength());
+                }
+                resources.add(resource);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -108,6 +133,9 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
      */
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-        // no-op
+        item.set(
+            CmsLockedResourcesList.LIST_COLUMN_IS_RELATED,
+            new Boolean(
+                (resUtil.getResource().getFlags() & CmsPublishResourcesList.FLAG_RELATED_RESOURCE) == CmsPublishResourcesList.FLAG_RELATED_RESOURCE));
     }
 }

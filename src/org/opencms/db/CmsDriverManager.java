@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.570.2.75 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.570.2.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3670,27 +3670,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a new publish list that contains the unpublished resources related to the given resources, 
-     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
-     * resources exclude all resources in the given publish list.<p>
+     * Returns a new publish list that contains the unpublished resources related 
+     * to all resources in the given publish list, the related resources exclude 
+     * all resources in the given publish list and also locked (by other users) resources.<p>
      * 
      * @param dbc the current database context
-     * @param publishList the publish list to exclude from result or 
-     *          get the related resources for if the resource is <code>null</code>
-     * @param resource the resource to get the related resources for or 
-     *          <code>null</code> to use all resources in the given publish list
+     * @param publishList the publish list to exclude from result
      * @param filter the relation filter to use to get the related resources
      * 
      * @return a new publish list that contains the related resources
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList, CmsResource)
+     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList)
      */
     public CmsPublishList getRelatedResourcesToPublish(
         CmsDbContext dbc,
         CmsPublishList publishList,
-        CmsResource resource,
         CmsRelationFilter filter) throws CmsException {
 
         Map relations = new HashMap();
@@ -3700,14 +3696,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         publishResources.addAll(publishList.getFileList());
         publishResources.addAll(publishList.getFolderList());
 
-        Iterator itCheckList;
-        if (resource != null) {
-            // if resource is not null just get the related resources for this resource
-            itCheckList = Collections.singletonList(resource).iterator();
-        } else {
-            // if resource is null, get the related resources for all resources in the publish list
-            itCheckList = publishResources.iterator();
-        }
+        Iterator itCheckList = publishResources.iterator();
         // iterate over them
         while (itCheckList.hasNext()) {
             CmsResource checkResource = (CmsResource)itCheckList.next();
@@ -3743,7 +3732,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
 
-        CmsPublishList ret = new CmsPublishList(new ArrayList(relations.values()), false, false, false);
+        CmsPublishList ret = new CmsPublishList(new ArrayList(relations.values()), false, false);
         fillPublishList(dbc, ret); // ensure consistency of locks/permissions
         return ret;
     }
@@ -4875,15 +4864,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void publishProject(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
-
-        if (publishList.isPublishRelatedResources()) {
-            CmsPublishList relResources = getRelatedResourcesToPublish(
-                dbc,
-                publishList,
-                null,
-                CmsRelationFilter.TARGETS.filterStrong());
-            publishList = mergePublishLists(dbc, publishList, relResources);
-        }
 
         // check the parent folders
         checkParentFolders(dbc, publishList);

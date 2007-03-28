@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.96.4.10 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.96.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.10 $ 
+ * @version $Revision: 1.96.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -461,7 +461,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String buildLockDialog() throws CmsException {
 
-        return buildLockDialog(null, null, 2000);
+        return buildLockDialog(null, null, 2000, false);
     }
 
     /**
@@ -470,12 +470,13 @@ public class CmsDialog extends CmsToolDialog {
      * @param nonBlockingFilter the filter to get all non blocking locks
      * @param blockingFilter the filter to get all blocking locks
      * @param hiddenTimeout the maximal number of millis the dialog will be hidden
+     * @param includeRelated indicates if the report should include related resources
      * 
      * @return html code
      * 
      * @throws CmsException if something goes wrong
      */
-    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout)
+    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout, boolean includeRelated)
     throws CmsException {
 
         setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
@@ -511,7 +512,7 @@ public class CmsDialog extends CmsToolDialog {
         html.append(dialogEnd());
         html.append("</div>\n");
         html.append(bodyEnd());
-        html.append(lockwp.buildLockRequest(hiddenTimeout));
+        html.append(lockwp.buildLockRequest(hiddenTimeout, includeRelated));
         html.append(htmlEnd());
         return html.toString();
     }

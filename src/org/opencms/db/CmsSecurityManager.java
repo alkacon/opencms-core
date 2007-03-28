@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.97.4.42 $
+ * Date   : $Date: 2007/03/28 15:39:29 $
+ * Version: $Revision: 1.97.4.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2052,40 +2052,32 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a new publish list that contains the unpublished resources related to the given resources, 
-     * (or to all resources in the given publish list if the resource is <code>null</code>), the related 
-     * resources exclude all resources in the given publish list.<p>
+     * Returns a new publish list that contains the unpublished resources related 
+     * to all resources in the given publish list, the related resources exclude 
+     * all resources in the given publish list and also locked (by other users) resources.<p>
      * 
-     * @param context the current request context
-     * @param publishList the publish list to exclude from result or 
-     *          get the related resources for if the resource is <code>null</code>
-     * @param resource the resource to get the related resources for or 
-     *          <code>null</code> to use all resources in the given publish list
+     * @param context the current cms context
+     * @param publishList the publish list to exclude from result
      * @param filter the relation filter to use to get the related resources
      * 
      * @return a new publish list that contains the related resources
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList, CmsResource)
+     * @see org.opencms.publish.CmsPublishManager#getRelatedResourcesToPublish(CmsObject, CmsPublishList)
      */
     public CmsPublishList getRelatedResourcesToPublish(
         CmsRequestContext context,
         CmsPublishList publishList,
-        CmsResource resource,
         CmsRelationFilter filter) throws CmsException {
 
         CmsPublishList ret = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            ret = m_driverManager.getRelatedResourcesToPublish(dbc, publishList, resource, filter);
+            ret = m_driverManager.getRelatedResourcesToPublish(dbc, publishList, filter);
             checkPublishPermissions(dbc, ret);
         } catch (Exception e) {
-            if (resource != null) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
-                    dbc.removeSiteRoot(resource.getRootPath())), e);
-            } else if (publishList.isDirectPublish()) {
+            if (publishList.isDirectPublish()) {
                 dbc.report(null, Messages.get().container(
                     Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
                     CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);

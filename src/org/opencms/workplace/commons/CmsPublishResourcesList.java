@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,14 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -54,16 +57,18 @@ import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
-import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListResourceProjStateAction;
 import org.opencms.workplace.list.I_CmsListAction;
+import org.opencms.workplace.list.I_CmsListFormatter;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.zip.DataFormatException;
 
 import org.apache.commons.logging.Log;
 
@@ -72,11 +77,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
+
+    /** This constant is just a hack to mark related resources in the list. */
+    public static final int FLAG_RELATED_RESOURCE = 8192;
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS = "dr";
@@ -96,22 +104,20 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsPublishResourcesList.class);
 
-    /** This constant is just a hack to mark related resources in the list. */
-    private static final int FLAG_RELATED_RESOURCE = 8192;
+    /** Indicates if the related resources should be included. */
+    protected boolean m_publishRelated;
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;
-
-    /** The count of all related resources. */
-    private int m_relatedResources;
 
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      * @param relativeTo the 'relative to' path, this only affects the generation of the path for the resource
+     * @param publishRelated indicates if the related resources should be included
      */
-    public CmsPublishResourcesList(CmsJspActionElement jsp, String relativeTo) {
+    public CmsPublishResourcesList(CmsJspActionElement jsp, String relativeTo, boolean publishRelated) {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_PUBLISH_RESOURCES_LIST_NAME_0));
 
@@ -123,6 +129,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         resUtil.setAbbrevLength(50);
         resUtil.setRelativeTo(relativeTo);
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
+        
+        m_publishRelated = publishRelated;
     }
 
     /**
@@ -171,12 +179,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     allResources.addAll(getSettings().getPublishList().getFileList());
                     allResources.addAll(getSettings().getPublishList().getDeletedFolderList());
                     allResources.addAll(getSettings().getPublishList().getFolderList());
-                    if (getSettings().getPublishList().isPublishRelatedResources()) {
+                    if (m_publishRelated) {
                         try {
                             CmsPublishList pubList = OpenCms.getPublishManager().getRelatedResourcesToPublish(
                                 cms,
-                                getSettings().getPublishList(),
-                                null);
+                                getSettings().getPublishList());
                             List relatedResources = new ArrayList(pubList.getFileList());
                             relatedResources.addAll(pubList.getDeletedFolderList());
                             relatedResources.addAll(pubList.getFolderList());
@@ -225,64 +232,68 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * Returns the count of all related resources.<p>
-     *
-     * @return the count of all related resources
-     */
-    public int getRelatedResources() {
-
-        return m_relatedResources;
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
+
+        List publishResources = new ArrayList(getSettings().getPublishList().getDeletedFolderList());
+        publishResources.addAll(getSettings().getPublishList().getFileList());
+        publishResources.addAll(getSettings().getPublishList().getFolderList());
 
         // get content
         List resourceNames = getList().getAllContent();
         Iterator itResourceNames = resourceNames.iterator();
         while (itResourceNames.hasNext()) {
             CmsListItem item = (CmsListItem)itResourceNames.next();
-            StringBuffer html = new StringBuffer(128);
             try {
                 if (detailId.equals(LIST_DETAIL_RELATIONS)) {
+                    List relatedResources = new ArrayList();
                     CmsResource resource = getResourceUtil(item).getResource();
-                    // relations
-                    Iterator itRelations = OpenCms.getPublishManager().getRelatedResourcesToPublish(
-                        getCms(),
-                        getSettings().getPublishList(),
-                        resource).getFileList().iterator();
 
-                    // show all unpublished related resources
+                    // get and iterate over all related resources
+                    Iterator itRelations = getCms().getRelationsForResource(
+                        getCms().getSitePath(resource),
+                        CmsRelationFilter.TARGETS.filterStrong()).iterator();
                     while (itRelations.hasNext()) {
-                        CmsResource relatedRes = (CmsResource)itRelations.next();
-                        String relationName = relatedRes.getRootPath();
-                        if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
-                            // same site
-                            relationName = getCms().getSitePath(relatedRes);
-                        } else {
-                            // other site
-                            String site = CmsSiteManager.getSiteRoot(relationName);
-                            String siteName = site;
-                            if (site != null) {
-                                relationName = relationName.substring(site.length());
-                                siteName = CmsSiteManager.getSite(site).getTitle();
+                        CmsRelation relation = (CmsRelation)itRelations.next();
+                        CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                        // just add resources that may come in question
+                        if (!publishResources.contains(target) && !target.getState().isUnchanged()) {
+                            String relationName = target.getRootPath();
+                            if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
+                                // same site
+                                relationName = getCms().getSitePath(target);
                             } else {
-                                siteName = "/";
+                                // other site
+                                String site = CmsSiteManager.getSiteRoot(relationName);
+                                String siteName = site;
+                                if (site != null) {
+                                    relationName = relationName.substring(site.length());
+                                    siteName = CmsSiteManager.getSite(site).getTitle();
+                                } else {
+                                    siteName = "/";
+                                }
+                                relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
+                                    siteName,
+                                    relationName});
                             }
-                            relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                                siteName,
-                                relationName});
+                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                            if (!getCms().getLock(target).isLockableBy(getCms().getRequestContext().currentUser())) {
+                                // mark not lockable resources
+                                relationName = relationName + "*";
+                            } else if (m_publishRelated) {
+                                // mark related resources to be published
+                                relationName = relationName + "!";
+                            }
+                            if (!resourceNames.contains(relationName)) {
+                                relatedResources.add(relationName);
+                            }
                         }
-                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                        m_relatedResources++;
-                        html.append(relationName);
-                        if (itRelations.hasNext()) {
-                            html.append("<br>");
-                        }
-                        html.append("\n");
                     }
+                    if (relatedResources.isEmpty()) {
+                        relatedResources = null; // prevent empty row
+                    }
+                    item.set(detailId, relatedResources);
                 } else {
                     continue;
                 }
@@ -290,7 +301,6 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 // should never happen, log exception
                 item.set(detailId, CmsException.getFormattedErrorstack(e));
             }
-            item.set(detailId, html.toString());
         }
     }
 
@@ -469,8 +479,58 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         };
         relationsDetails.setAtColumn(LIST_COLUMN_NAME);
         relationsDetails.setVisible(true);
-        relationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PUBLISH_RELATED_RESOURCES_LABEL_0)));
+        relationsDetails.setFormatter(new I_CmsListFormatter() {
+
+            public String format(Object data, Locale locale) {
+
+                if (!(data instanceof List)) {
+                    return new DataFormatException().getLocalizedMessage();
+                }
+                StringBuffer html = new StringBuffer(512);
+                Iterator itResourceNames = ((List)data).iterator();
+                if (itResourceNames.hasNext()) {
+                    html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
+                }
+                while (itResourceNames.hasNext()) {
+                    String resName = (String)itResourceNames.next();
+                    html.append("\t<tr>\n");
+                    html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+                    html.append("\t\t\t");
+                    if (resName.endsWith("*")) {
+                        // resource is not lockable, and will not be published
+                        resName = resName.substring(0, resName.length() - 1);
+                        html.append("<font color='red' />");
+                        html.append(Messages.get().getBundle(locale).key(
+                            Messages.GUI_PUBLISH_DETAIL_RELATED_LOCKED_RESOURCE_0));
+                        html.append("</font/>");
+                    } else if (resName.endsWith("!")) {
+                        // resource will be published
+                        resName = resName.substring(0, resName.length() - 1);
+                        html.append(Messages.get().getBundle(locale).key(
+                            Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0));
+                    } else {
+                        // resource will not be published
+                        html.append("<font color='red' />");
+                        html.append(Messages.get().getBundle(locale).key(
+                            Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0));
+                        html.append("</font/>");
+                    }
+                    html.append("&nbsp;:&nbsp;\n");
+                    html.append("\t\t</td>\n");
+                    html.append("\t\t<td class='listdetailitem' style='white-space:normal;'>\n");
+                    html.append("\t\t\t");
+                    html.append(resName);
+                    html.append("\n");
+                    html.append("\t\t</td>\n");
+                    html.append("\t</tr>\n");
+                }
+                if (html.length() > 0) {
+                    html.append("</table>\n");
+                }
+                return html.toString();
+            }
+
+        });
         relationsDetails.setShowActionName(Messages.get().container(
             Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0));
         relationsDetails.setShowActionHelpText(Messages.get().container(

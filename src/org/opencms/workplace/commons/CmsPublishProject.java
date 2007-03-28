@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.27.4.16 $
+ * Date   : $Date: 2007/03/28 15:39:28 $
+ * Version: $Revision: 1.27.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.16 $ 
+ * @version $Revision: 1.27.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,9 +261,9 @@ public class CmsPublishProject extends CmsMultiDialog {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
             nonBlockingFilter = nonBlockingFilter.filterProject(new CmsUUID(getParamProjectid()));
         }
-        return buildLockDialog(nonBlockingFilter, getBlockingFilter(), 0);
+        return buildLockDialog(nonBlockingFilter, getBlockingFilter(), 0, true);
     }
-
+    
     /**
      * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
      */
@@ -294,9 +294,8 @@ public class CmsPublishProject extends CmsMultiDialog {
         boolean showOptionSiblings = (isMultiOperation() || isOperationOnFolder() || (isDirectPublish()
             && hasSiblings() && hasCorrectLockstate()));
         boolean showOptionSubresources = (isMultiOperation() || isOperationOnFolder());
-        if (showOptionSiblings || showOptionSubresources) {
-            result.append("<p>");
-        }
+
+        result.append("<p>");
         if (showOptionSiblings) {
             // show only for multi resource operation or if resource has siblings and correct lock state
             if (!isMultiOperation() && !isOperationOnFolder()) {
@@ -305,7 +304,9 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             result.append("<input type='checkbox' name='");
             result.append(PARAM_PUBLISHSIBLINGS);
-            result.append("' value='true' onclick=\"reloadDialog(this.checked, document.forms['main'].");
+            result.append("' value='");
+            result.append(Boolean.valueOf(getParamPublishsiblings()).toString());
+            result.append("' onclick=\"reloadDialog(this.checked, document.forms['main'].");
             result.append(PARAM_SUBRESOURCES);
             result.append(".checked, document.forms['main'].");
             result.append(PARAM_RELATEDRESOURCES);
@@ -331,7 +332,9 @@ public class CmsPublishProject extends CmsMultiDialog {
             // at least one folder is selected, show "publish subresources" checkbox
             result.append("<input type='checkbox' name='");
             result.append(PARAM_SUBRESOURCES);
-            result.append("' value='true' onclick=\"reloadDialog(document.forms['main'].");
+            result.append("' value='");
+            result.append(Boolean.valueOf(getParamSubresources()).toString());
+            result.append("' onclick=\"reloadDialog(document.forms['main'].");
             result.append(PARAM_PUBLISHSIBLINGS);
             result.append(".checked, this.checked, document.forms['main'].");
             result.append(PARAM_RELATEDRESOURCES);
@@ -357,16 +360,11 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             result.append(">\n");
         }
-        // always generate the code for the 'publish related resources' button
-        // this will be shown/hidden by javascript code
-        result.append("<span id='relatedres'>\n");
+        // code for the 'publish related resources' button
         boolean disabled = false;
         if ((OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishRelatedResources() == CmsDefaultUserSettings.PUBLISH_RELATED_RESOURCES_MODE_FORCE)
             && !OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
             disabled = true;
-        }
-        if (!showOptionSiblings && !showOptionSubresources) {
-            result.append("<p>\n");
         }
         result.append("<input type='checkbox' name='");
         result.append(PARAM_RELATEDRESOURCES);
@@ -384,14 +382,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         result.append(">&nbsp;");
         result.append(key(Messages.GUI_PUBLISH_RELATED_RESOURCES_0));
         result.append("<br>\n");
-        if (!showOptionSiblings && !showOptionSubresources) {
-            result.append("</p>\n");
-        }
-        result.append("</span>\n");
-
-        if (showOptionSiblings || showOptionSubresources) {
-            result.append("</p>\n");
-        }
+        result.append("</p>\n");
         return result.toString();
     }
 
@@ -427,16 +418,13 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         StringBuffer result = new StringBuffer(512);
         if (getPublishList() != null) {
-            CmsPublishResourcesList list = new CmsPublishResourcesList(getJsp(), getParentFolder());
+            CmsPublishResourcesList list = new CmsPublishResourcesList(getJsp(), getParentFolder(), Boolean.valueOf(
+                getParamRelatedresources()).booleanValue());
             list.refreshList();
 
             list.getList().setBoxed(false);
             result.append("<input type='hidden' name='result' value='");
             result.append(list.getList().getTotalSize()).append("'>\n");
-            if (list.getRelatedResources() > 0) {
-                result.append("<input type='hidden' name='relatedRes' value='");
-                result.append(list.getRelatedResources()).append("'>\n");
-            }
             result.append(CmsListExplorerColumn.getExplorerStyleDef());
             result.append("<div style='height:200px; overflow: auto;'>\n");
             result.append(list.getList().listHtml());
@@ -530,14 +518,12 @@ public class CmsPublishProject extends CmsMultiDialog {
             try {
                 boolean publishSubResources = Boolean.valueOf(getParamSubresources()).booleanValue();
                 boolean publishSiblings = Boolean.valueOf(getParamPublishsiblings()).booleanValue();
-                boolean publishRelatedResources = Boolean.valueOf(getParamRelatedresources()).booleanValue();
                 // create publish list for direct publish
                 publishList = OpenCms.getPublishManager().getPublishList(
                     getCms(),
                     publishResources,
                     publishSiblings,
-                    publishSubResources,
-                    publishRelatedResources);
+                    publishSubResources);
             } catch (CmsException e) {
                 addMultiOperationException(e);
             }
@@ -594,6 +580,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     public boolean isLockStateOk() {
 
         org.opencms.workplace.commons.CmsLock lockDialog = new org.opencms.workplace.commons.CmsLock(getJsp());
+        lockDialog.setParamIncluderelated(CmsStringUtil.TRUE);
         lockDialog.setBlockingFilter(getBlockingFilter());
         if (!isDirectPublish()) {
             lockDialog.setParamResource("/");
@@ -603,7 +590,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             return false;
         }
         if (!isDirectPublish()) {
-            // is prublish project operation no resource iteration possible
+            // is publish project operation no resource iteration possible
             return true;
         }
 
@@ -782,6 +769,12 @@ public class CmsPublishProject extends CmsMultiDialog {
             throw new CmsException(Messages.get().container(
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
+        }
+        if (Boolean.valueOf(getParamRelatedresources()).booleanValue()) {
+            CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                getCms(),
+                publishList);
+            publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
         }
         OpenCms.getPublishManager().publishProject(
             getCms(),
