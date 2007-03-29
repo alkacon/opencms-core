@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/10/17 13:33:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/03/29 15:47:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.apache.commons.httpclient.Cookie;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
@@ -70,7 +72,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +128,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Counter for creating the progress bar. */
     private int m_step;
-    
+
     /** Definition of the images during upload. */
     private Image m_source;
     private Image m_target;
@@ -134,7 +136,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Image position for the floater during upload. */
     private int m_floaterPos = 50;
-    
+
     /** Defintion of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
     private String m_actionOutputCount = "Counting resources ....";
@@ -504,7 +506,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
         repaint();
         ZipEntry entry = new ZipEntry(filename);
         zipStream.putNextEntry(entry);
-        zipStream.write(getFileBytes(file));
+        writeFileBytes(file, zipStream);
         zipStream.closeEntry();
     }
 
@@ -614,6 +616,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 files[i] = null;
             }
             zipStream.close();
+            
             // get the zipfile
             targetFile = new File(zipFileName);
         } catch (Exception e) {
@@ -666,15 +669,17 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Returns a byte array containing the content of server FS file.<p>
+     * Writes the bytes of the file to the zip output stream.<p>
      *
      * @param file the name of the file to read
-     * @return bytes[] the content of the file
+     * 
+     * @param out the zip outputstream
+     * 
      * @throws Exception if something goes wrong
      */
-    private byte[] getFileBytes(File file) throws Exception {
+    private void writeFileBytes(File file, OutputStream out) throws Exception {
 
-        byte[] buffer = null;
+        byte[] buffer = new byte[2048];
         FileInputStream fileStream = null;
         int charsRead;
         int size;
@@ -682,11 +687,12 @@ public class FileUploadApplet extends JApplet implements Runnable {
             fileStream = new FileInputStream(file);
             charsRead = 0;
             size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+            int readCount = 0;
+            while (charsRead < size && readCount != -1) {
+                readCount = fileStream.read(buffer);
+                charsRead += readCount;
+                out.write(buffer);
             }
-            return buffer;
         } catch (IOException e) {
             throw e;
         } finally {
@@ -751,12 +757,27 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 //return to the specified url and frame target
                 getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
             } else {
-                // create the error text
-                String error = m_errorLine1 + "\n" + post.getStatusLine();
-                //JOptionPane.showMessageDialog(this, error, "Error!", JOptionPane.ERROR_MESSAGE);
-                getAppletContext().showDocument(
-                    new URL(m_errorUrl + "?action=showerror&uploaderror=" + error),
-                    "explorer_files");
+                // redirect: 
+                if (status == HttpStatus.SC_MOVED_PERMANENTLY || status == HttpStatus.SC_MOVED_TEMPORARILY) {
+
+                    Header locationHeader = post.getResponseHeader("location");
+                    if (locationHeader != null) {
+                        String redirectLocation = locationHeader.getValue();
+                        post.setURI(new URI(redirectLocation, false));
+                        status = client.executeMethod(post);
+                        String error = m_errorLine1 + "\n" + post.getStatusLine();
+                        getAppletContext().showDocument(
+                            new URL(m_errorUrl + "?action=showerror&uploaderror=" + error),
+                            "explorer_files");
+                    }
+                } else {
+                    // create the error text
+                    String error = m_errorLine1 + "\n" + post.getStatusLine();
+                    //JOptionPane.showMessageDialog(this, error, "Error!", JOptionPane.ERROR_MESSAGE);
+                    getAppletContext().showDocument(
+                        new URL(m_errorUrl + "?action=showerror&uploaderror=" + error),
+                        "explorer_files");
+                }
             }
         } catch (RuntimeException e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2007/03/15 17:26:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/03/29 15:47:03 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -265,6 +265,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
                         new Long(maxFileSizeBytes / 1024)));
                 }
+                
+                // TODO: This will not work for large files (out of memory): Use a loop and stream based access.
                 byte[] content = fi.get();
                 fi.delete();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/03/27 15:07:51 $
- * Version: $Revision: 1.810 $
+ * Date   : $Date: 2007/03/29 15:47:03 $
+ * Version: $Revision: 1.811 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ OpenCms 6.2.4 - xxxx, 2007
 * Fixed issue with upload applet not working with apache redirects
 ! Configurable exclude tags for decorator
 * Fixed issue not detecting the workplace server URL as internal while adjusting links
+* Fixed issue with upload applet having a client side out of memory error when uploading large files
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
