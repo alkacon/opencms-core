@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/03/26 15:32:37 $
- * Version: $Revision: 1.58.4.9 $
+ * Date   : $Date: 2007/03/29 08:27:36 $
+ * Version: $Revision: 1.58.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.9 $ 
+ * @version $Revision: 1.58.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1154,14 +1154,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         // create and register all system caches
 
+        // temporary xml entities cache
         LRUMap xmlTemporaryCache = new LRUMap(128);
         m_xmlTemporaryEntityCache = Collections.synchronizedMap(xmlTemporaryCache);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
 
+        // permanent xml entities cache
         Map xmlPermanentCache = new HashMap(32);
         m_xmlPermanentEntityCache = Collections.synchronizedMap(xmlPermanentCache);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
 
+        // xml content definitions cache
         LRUMap contentDefinitionsCache = new LRUMap(64);
         m_contentDefinitionsCache = Collections.synchronizedMap(contentDefinitionsCache);
         register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
