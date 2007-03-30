@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/03/05 15:58:19 $
- * Version: $Revision: 1.19.4.6 $
+ * Date   : $Date: 2007/03/30 09:32:00 $
+ * Version: $Revision: 1.19.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -88,7 +89,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.6 $ 
+ * @version $Revision: 1.19.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,7 +232,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
         repaint();
         ZipEntry entry = new ZipEntry(name);
         zipStream.putNextEntry(entry);
-        zipStream.write(getFileBytes(file));
+        writeFileBytes(file, zipStream);
         zipStream.closeEntry();
     }
 
@@ -517,41 +518,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
             System.err.println("Error reading " + colorName + ":" + e);
         }
         return col;
-    }
-
-    /**
-     * Returns a byte array containing the content of server FS file.<p>
-     *
-     * @param file the name of the file to read
-     * @return bytes[] the content of the file
-     * @throws Exception if something goes wrong
-     */
-    private byte[] getFileBytes(File file) throws Exception {
-
-        byte[] buffer = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-            return buffer;
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
     }
 
     /**
@@ -1164,6 +1130,44 @@ public class FileUploadApplet extends JApplet implements Runnable {
             post.releaseConnection();
             // finally delete the zipFile on the harddisc
             uploadFile.delete();
+        }
+    }
+
+    /**
+     * Writes the bytes of the file to the zip output stream.<p>
+     *
+     * @param file the name of the file to read
+     * 
+     * @param out the zip outputstream
+     * 
+     * @throws Exception if something goes wrong
+     */
+    private void writeFileBytes(File file, OutputStream out) throws Exception {
+
+        byte[] buffer = new byte[2048];
+        FileInputStream fileStream = null;
+        int charsRead;
+        int size;
+        try {
+            fileStream = new FileInputStream(file);
+            charsRead = 0;
+            size = new Long(file.length()).intValue();
+            int readCount = 0;
+            while (charsRead < size && readCount != -1) {
+                readCount = fileStream.read(buffer);
+                charsRead += readCount;
+                out.write(buffer);
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            try {
+                if (fileStream != null) {
+                    fileStream.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 }
