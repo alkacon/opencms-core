@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -54,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.5
  */
@@ -129,6 +128,10 @@ public class CmsPublishHistory {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {
                 m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
+                // additionally, write the publish report
+                m_publishEngine.getDriverManager().writePublishReport(dbc, publishJob);
+                // delete publish list of started job
+                m_publishEngine.getDriverManager().deletePublishList(dbc, publishJob.getPublishHistoryId());
             } finally {
                 dbc.clear();
             }
@@ -194,15 +197,6 @@ public class CmsPublishHistory {
                 OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
             } finally {
                 dbc.clear();
-            }
-        }
-        // delete report
-        if (!new File(publishJob.getReportFilePath()).delete()) {
-            // warn if deletion failed
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
-                    publishJob.getReportFilePath()));
             }
         }
         

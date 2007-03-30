@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 6.5.5
  */
@@ -97,9 +96,6 @@ public final class CmsPublishEngine implements Runnable {
     
     /** The amount of time the system will wait for a running publish job during shutdown. */
     private int m_publishQueueShutdowntime;
-    
-    /** The path where to store the publish reports. */
-    private String m_reportsRepositoryPath;
 
     /** Is set during shutdown. */
     private boolean m_shuttingDown;
@@ -166,7 +162,7 @@ public final class CmsPublishEngine implements Runnable {
         // get the state before enqueuing the job
         boolean isRunning = isRunning();
         // create the publish job
-        CmsPublishJobInfoBean publishJob = new CmsPublishJobInfoBean(cms, publishList, report, m_reportsRepositoryPath);
+        CmsPublishJobInfoBean publishJob = new CmsPublishJobInfoBean(cms, publishList, report);
         // enqueue it and 
         m_publishQueue.add(publishJob);   
         // notify all listeners
@@ -321,6 +317,15 @@ public final class CmsPublishEngine implements Runnable {
                 Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
                 I_CmsReport.FORMAT_ERROR);
             report.println();
+
+            try {
+                // write report to db
+                m_driverManager.writePublishReport(m_dbContextFactory.getDbContext(), publishJob);
+            } catch (CmsException exc) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(exc.getLocalizedMessage(), exc);
+                }
+            }
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(org.opencms.staticexport.Messages.get().getBundle().key(
@@ -447,16 +452,34 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
+     * Returns the content of the publish report assigned to the given publish job.<p>
+     * 
+     * @param publishJob the published job
+     * @return the content of the assigned publish report
+     * 
+     * @throws CmsException if somethign goes wrong
+     */
+    protected byte[] getReportContents(CmsPublishJobFinished publishJob) 
+    throws CmsException {
+    
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            return m_driverManager.readPublishReportContents(dbc, publishJob.getPublishHistoryId());
+        } finally {
+            dbc.clear();
+        }
+    }
+    
+    /**
      * Initializes the publish engine.<p>
      * 
      * @param adminCms the admin cms
-     * @param publishHistoryRepository the path for publish reports
      * @param publishQueuePersistance flag if the queue is persisted
      * @param publishQueueShutdowntime amount of time to wait for a publish job during shutdown
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void initialize(CmsObject adminCms, String publishHistoryRepository, boolean publishQueuePersistance, int publishQueueShutdowntime) 
+    protected void initialize(CmsObject adminCms, boolean publishQueuePersistance, int publishQueueShutdowntime) 
     throws CmsException {
                
         // check the driver manager
@@ -465,7 +488,6 @@ public final class CmsPublishEngine implements Runnable {
         }
 
         m_publishQueueShutdowntime = publishQueueShutdowntime;
-        setReportsRepositoryPath(publishHistoryRepository);
         
         // read the publish history from the repository
         m_publishHistory.initialize();
@@ -526,6 +548,9 @@ public final class CmsPublishEngine implements Runnable {
     protected void publishJobFinished(CmsPublishJobInfoBean publishJob)
     throws CmsException {
 
+        // in order to avoid unremovable pub lish locks, unlock all assigned resources again
+        unlockPublishList(publishJob);
+        
         if (m_currentPublishThread.isAborted()) {
             // try to start a new publish job
             new Thread(this).start();
@@ -712,38 +737,5 @@ public final class CmsPublishEngine implements Runnable {
         } catch (CmsAuthentificationException e) {
             return false;
         }
-    }
-
-    /**
-     * Checks if the given path is valid. Eventually the directory structure 
-     * is build and if fails a default path is used.<p>
-     * 
-     * @param reportsPath the path to check
-     * 
-     * @throws CmsInitException if the configured path to store the publish reports is not accessible 
-     */
-    private void setReportsRepositoryPath(String reportsPath) throws CmsInitException {
-
-        String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(reportsPath);
-        if (path.endsWith(File.separator)) {
-            // ensure export path does NOT end with a File.separator
-            path = path.substring(0, path.length() - 1);
-        }
-        File folder = new File(path);
-        // check existence before and after creation attempt
-        if (!folder.exists() && !folder.mkdirs() && !folder.exists()) {
-            if (!reportsPath.equals(CmsPublishManager.DEFAULT_REPORT_PATH)) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().container(Messages.LOG_PUBLISH_REPORT_DEFAULT_PATH_TRY_1, path));
-                }
-                setReportsRepositoryPath(CmsPublishManager.DEFAULT_REPORT_PATH);
-                return;
-            }
-            throw new CmsInitException(Messages.get().container(Messages.ERR_PUBLISH_REPORT_PATH_FAILED_0));
-        }
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_PUBLISH_REPORT_PATH_SET_1, path));
-        }
-        m_reportsRepositoryPath = path;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/03/27 10:29:36 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -55,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.5
  */
@@ -197,9 +196,9 @@ public class CmsPublishQueue {
                         }
                     } else {
                         try {
-                            // remove already started job
-                            // m_publishEngine.abortPublishJob(null, new CmsPublishJobEnqueued(job), false);
-                            // set finish info
+                            // remove locks, set finish info and move job to history
+                            job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
+                            m_publishEngine.unlockPublishList(job);
                             new CmsPublishJobEnqueued(job).m_publishJob.finish();
                             m_publishEngine.getPublishHistory().add(job);
                         } catch (CmsException exc) {
@@ -268,15 +267,6 @@ public class CmsPublishQueue {
                 dbc.clear();
             }
         }
-        // delete report
-        if (!new File(publishJob.getReportFilePath()).delete()) {
-            // warn if deletion failed
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_PUBLISH_REPORT_DELETE_FAILED_1,
-                    publishJob.getReportFilePath()));
-            }
-        }
     }
 
     /**
@@ -293,8 +283,6 @@ public class CmsPublishQueue {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {
                 m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
-                // delete publish list of started job
-                m_publishEngine.getDriverManager().deletePublishList(dbc, publishJob.getPublishHistoryId());
             } finally {
                 dbc.clear();
             }

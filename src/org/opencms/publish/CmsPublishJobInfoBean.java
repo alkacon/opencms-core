@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2007/03/26 15:32:36 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,25 +37,20 @@ import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
 
 /**
  * Publish job information bean.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -63,9 +58,6 @@ public final class CmsPublishJobInfoBean {
 
     /** The flag used to indicate a direct publish job. */
     public static final int C_PUBLISH_FLAG = 1;
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPublishJobInfoBean.class);
 
     /** The cms context to use for publishing, will be set to <code>null</code> after publishing. */
     private CmsObject m_cms;
@@ -99,12 +91,6 @@ public final class CmsPublishJobInfoBean {
 
     /** Report to log the publish job to, will be set to <code>null</code> after publishing. */
     private I_CmsReport m_report;
-
-    /** Path in the RFS to temporary store the report for the publish job. */
-    private String m_reportFilePath;
-
-    /** Path to the report repositiory in the RFS. */
-    private String m_repositoryPath;
     
     /** Number of resources to publish. */
     private int m_size;
@@ -129,8 +115,7 @@ public final class CmsPublishJobInfoBean {
      * @param userId the id of the user 
      * @param userName the name of the user
      * @param localeName the string representation of a locale
-     * @param flags flags of the publish job
-     * @param reportFilePath path to the report file 
+     * @param flags flags of the publish job 
      * @param resourceCount number of published resources
      * @param enqueueTime time when the job was enqueued
      * @param startTime time when the job was started
@@ -144,7 +129,6 @@ public final class CmsPublishJobInfoBean {
         String userName,
         String localeName,
         int flags, 
-        String reportFilePath, 
         int resourceCount, 
         long enqueueTime, 
         long startTime, 
@@ -163,9 +147,6 @@ public final class CmsPublishJobInfoBean {
         m_startTime = startTime;
         m_finishTime = finishTime;
         
-        m_reportFilePath = reportFilePath;
-        m_repositoryPath = null;
-        
         m_locale = CmsLocaleManager.getLocale(localeName);
     }
 
@@ -175,11 +156,10 @@ public final class CmsPublishJobInfoBean {
      * @param cms the cms context to use for publishing
      * @param publishList the list of resources to publish
      * @param report the report to write to
-     * @param repositoryPath the folder path for the temporary report outputs
      * 
      * @throws CmsException if something goes wrong
      */
-    protected CmsPublishJobInfoBean(CmsObject cms, CmsPublishList publishList, I_CmsReport report, String repositoryPath)
+    protected CmsPublishJobInfoBean(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
@@ -196,9 +176,6 @@ public final class CmsPublishJobInfoBean {
         m_directPublish = m_publishList.isDirectPublish();
 
         m_report = report;
-        // use lazy initialization in order to have a sound enqueue timestamp
-        m_reportFilePath = null;
-        m_repositoryPath = repositoryPath;
     }
     
     /**
@@ -298,21 +275,11 @@ public final class CmsPublishJobInfoBean {
 
         if (m_publishReport == null && m_finishTime == 0 && m_startTime > 0) {
             m_publishReport = getReport();
-            try {
-                if (m_publishReport == null) {
-                    m_publishReport = new CmsPublishReport(
-                        getCmsObject().getRequestContext().getLocale(),
-                        getReportFilePath());
-                } else {
-                    m_publishReport = CmsPublishReport.decorate(m_publishReport, getReportFilePath());
-                }
-            } catch (IOException e) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.ERR_PUBLISH_ENGINE_CREATE_REPORT_FILE_1,
-                    getReportFilePath()));
-                if (m_publishReport == null) {
-                    m_publishReport = new CmsShellReport(getCmsObject().getRequestContext().getLocale());
-                }
+            if (m_publishReport == null) {
+                m_publishReport = new CmsPublishReport(
+                    getCmsObject().getRequestContext().getLocale());
+            } else {
+                m_publishReport = CmsPublishReport.decorate(m_publishReport);
             }
         }
         return m_publishReport;
@@ -326,28 +293,6 @@ public final class CmsPublishJobInfoBean {
     public I_CmsReport getReport() {
 
         return m_report;
-    }
-
-    /**
-     * Returns the path in the RFS to temporary store the report for the publish job.<p>
-     *
-     * @return the path in the RFS to temporary store the report for the publish job
-     */
-    public String getReportFilePath() {
-
-        // initialize the report path
-        if (m_reportFilePath == null) {
-            StringBuffer path = new StringBuffer(m_repositoryPath);
-            path.append(File.separator);
-            path.append(CmsPublishJobBase.REPORT_FILENAME_PREFIX);
-            path.append(m_cms.getRequestContext().currentProject().getName());
-            path.append(CmsPublishJobBase.REPORT_FILENAME_SEPARATOR);
-            path.append(m_cms.getRequestContext().currentUser().getName());
-            path.append(CmsPublishJobBase.REPORT_FILENAME_SEPARATOR);
-            path.append(m_enqueueTime + CmsPublishJobBase.REPORT_FILENAME_POSTFIX);
-            m_reportFilePath = path.toString();
-        }
-        return m_reportFilePath;
     }
 
     /**
@@ -401,6 +346,18 @@ public final class CmsPublishJobInfoBean {
     }
 
     /**
+     * Removes the assigned publish report.<p>
+     * 
+     * @return the removed report
+     */
+    public I_CmsReport removePublishReport() {
+        
+        I_CmsReport report = m_publishReport;
+        m_publishReport = null;
+        return report;
+    }
+    
+    /**
      * Revives this publish job.<p>
      * 
      * @param adminCms an admin cms object
@@ -447,7 +404,6 @@ public final class CmsPublishJobInfoBean {
         if (m_publishReport instanceof CmsPublishReport) {
             ((CmsPublishReport)m_publishReport).finish();
         }
-        m_publishReport = null;
         m_threadUUID = null;
         m_finishTime = System.currentTimeMillis();
     }

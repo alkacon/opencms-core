@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobFinished.java,v $
- * Date   : $Date: 2006/12/20 14:01:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.publish;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.5
  */
@@ -70,16 +70,6 @@ public class CmsPublishJobFinished extends CmsPublishJobBase {
     public long getFinishTime() {
 
         return m_publishJob.getFinishTime();
-    }
-
-    /**
-     * Returns the path in the RFS to temporary store the report for the publish job.<p>
-     *
-     * @return the path in the RFS to temporary store the report for the publish job
-     */
-    public String getReportFilePath() {
-
-        return m_publishJob.getReportFilePath();
     }
 
     /**

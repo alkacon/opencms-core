@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/03/23 16:52:35 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/30 07:41:20 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.5
  */
@@ -96,7 +96,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     private static final String LIST_COLUMN_ENDTIME = "ce";
 
     /** list column id constant. */
-    private static final String LIST_COLUMN_FILE = "cf";
+    private static final String LIST_COLUMN_ID = "ci";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_PROJECT = "cp";
@@ -178,11 +178,11 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
      */
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
-        String fileName = getSelectedItem().get(LIST_COLUMN_FILE).toString();
+        String publishJobId = getSelectedItem().get(LIST_COLUMN_ID).toString();
 
         Map params = new HashMap();
-        // set file name parameter
-        params.put(CmsPublishQueueHistoricalReportDialog.PARAM_FILENAME, fileName);
+        // set id parameter
+        params.put(CmsPublishQueueHistoricalReportDialog.PARAM_ID, publishJobId);
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
@@ -229,7 +229,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getStartTime()));
             item.set(LIST_COLUMN_ENDTIME, new Date(publishJob.getFinishTime()));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
-            item.set(LIST_COLUMN_FILE, publishJob.getReportFilePath());
+            item.set(LIST_COLUMN_ID, publishJob.getPublishHistoryId());
             item.set(LIST_COLUMN_USER, publishJob.getUserName());
             ret.add(item);
         }
@@ -321,12 +321,12 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         countCol.addDefaultAction(countAction);
         metadata.addColumn(countCol);
 
-        // create hidden column file name
-        CmsListColumnDefinition fileCol = new CmsListColumnDefinition(LIST_COLUMN_FILE);
-        fileCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_FILE_0));
-        fileCol.setSorteable(false);
-        fileCol.setVisible(false);
-        metadata.addColumn(fileCol);
+        // create hidden column for job id
+        CmsListColumnDefinition idCol = new CmsListColumnDefinition(LIST_COLUMN_ID);
+        idCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_ID_0));
+        idCol.setSorteable(false);
+        idCol.setVisible(false);
+        metadata.addColumn(idCol);
     }
 
     /**

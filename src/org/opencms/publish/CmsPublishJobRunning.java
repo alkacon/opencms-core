@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobRunning.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -91,16 +91,6 @@ public class CmsPublishJobRunning extends CmsPublishJobBase {
         return m_publishJob.getPublishReport();
     }
     
-    /**
-     * Returns the path in the RFS to temporary store the report for the publish job.<p>
-     *
-     * @return the path in the RFS to temporary store the report for the publish job
-     */
-    public String getReportFilePath() {
-
-        return m_publishJob.getReportFilePath();
-    }
-
     /**
      * Returns the time the publish job did actually start.<p>
      *

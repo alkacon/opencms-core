@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/27 10:19:21 $
- * Version: $Revision: 1.241.4.23 $
+ * Date   : $Date: 2007/03/30 07:38:29 $
+ * Version: $Revision: 1.241.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.23 $
+ * @version $Revision: 1.241.4.24 $
  * 
  * @since 6.0.0 
  */
@@ -250,12 +250,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(5, publishJob.getUserName());
             stmt.setString(6, publishJob.getLocale().toString());
             stmt.setInt(7, publishJob.getFlags());
-            stmt.setString(8, publishJob.getReportFilePath());
-            stmt.setInt(9, publishJob.getSize());
-            stmt.setLong(10, publishJob.getEnqueueTime());
-            stmt.setLong(11, publishJob.getStartTime());
-            stmt.setLong(12, publishJob.getFinishTime());
-            m_sqlManager.setBytes(stmt, 13, internalSerializePublishList(publishJob.getPublishList()));
+            stmt.setInt(8, publishJob.getSize());
+            stmt.setLong(9, publishJob.getEnqueueTime());
+            stmt.setLong(10, publishJob.getStartTime());
+            stmt.setLong(11, publishJob.getFinishTime());
+            
+            byte[] publishList = internalSerializePublishList(publishJob.getPublishList());
+            if (publishList.length < 2000) {
+                stmt.setBytes(12, publishList);
+            } else {
+                stmt.setBinaryStream(12, new ByteArrayInputStream(publishList), publishList.length);
+            }
 
             stmt.executeUpdate();
             
@@ -1828,6 +1833,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             
             if (res.next()) { 
                 result = createPublishJobInfoBean(res);
+            } else {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_READ_PUBLISH_JOB_1,
+                    publishHistoryId.toString()));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1892,6 +1901,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (res.next()) {
                 byte[] bytes = m_sqlManager.getBytes(res, "PUBLISH_LIST");
                 publishList = internalDeserializePublishList(bytes);
+            } else {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_READ_PUBLISH_JOB_1,
+                    publishHistoryId.toString()));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1906,7 +1919,46 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         
         return publishList;
     }   
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readPublishReportContents(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) 
+    throws CmsDataAccessException {
         
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        byte[] bytes = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_REPORT");
+            stmt.setString(1, publishHistoryId.toString());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                //query to read Array of bytes for the atribute FILE_CONTENT
+                bytes = m_sqlManager.getBytes(res, "PUBLISH_REPORT");
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            } else {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_READ_PUBLISH_JOB_1,
+                    publishHistoryId.toString()));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return bytes;
+    }
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID)
      */
@@ -2199,12 +2251,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(4, publishJob.getUserName());
             stmt.setString(5, publishJob.getLocale().toString());
             stmt.setInt(6, publishJob.getFlags());
-            stmt.setString(7, publishJob.getReportFilePath());
-            stmt.setInt(8, publishJob.getSize());
-            stmt.setLong(9, publishJob.getEnqueueTime());
-            stmt.setLong(10, publishJob.getStartTime());
-            stmt.setLong(11, publishJob.getFinishTime());            
-            stmt.setString(12, publishJob.getPublishHistoryId().toString());
+            stmt.setInt(7, publishJob.getSize());
+            stmt.setLong(8, publishJob.getEnqueueTime());
+            stmt.setLong(9, publishJob.getStartTime());
+            stmt.setLong(10, publishJob.getFinishTime());            
+            stmt.setString(11, publishJob.getPublishHistoryId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2214,6 +2265,36 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }            
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishReport(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
+     */
+    public void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) 
+    throws CmsDataAccessException {
+        
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_WRITE_REPORT");
+            
+            if (content.length < 2000) {
+                stmt.setBytes(1, content);
+            } else {
+                stmt.setBinaryStream(1, new ByteArrayInputStream(content), content.length);
+            }
+
+            stmt.setString(2, publishId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }    
     
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
@@ -2284,7 +2365,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res.getString("USER_NAME"),
             res.getString("PUBLISH_LOCALE"),
             res.getInt("PUBLISH_FLAGS"),
-            res.getString("REPORT_PATH"),
             res.getInt("RESOURCE_COUNT"),
             res.getLong("ENQUEUE_TIME"),
             res.getLong("START_TIME"),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/03/23 16:52:35 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/03/30 07:41:20 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.5
  */
@@ -293,7 +293,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         if (OpenCms.getPublishManager().isRunning()) {
             CmsPublishJobRunning currentJob = OpenCms.getPublishManager().getCurrentPublishJob();
             if (currentJob != null) {
-                CmsListItem item = getList().newItem(new Long(currentJob.getEnqueueTime()).toString());
+                CmsListItem item = getList().newItem(currentJob.getPublishList().getPublishHistoryId().toString());
                 item.set(LIST_COLUMN_STATE, new Integer(STATE_PROCEED));
                 item.set(LIST_COLUMN_NUMBER, new Integer(number));
                 item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName());

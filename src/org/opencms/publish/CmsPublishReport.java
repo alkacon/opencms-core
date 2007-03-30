@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishReport.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/03/30 07:37:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.I_CmsReport;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 
@@ -48,45 +46,55 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.5 
  */
-class CmsPublishReport extends CmsPrintStreamReport {
+public class CmsPublishReport extends CmsPrintStreamReport {
 
     /** The busy flag to prevent duplicated output. */
     private boolean m_busy;
 
     /** The original report. */
     private I_CmsReport m_report;
+    
+    /** The output stream. */
+    protected ByteArrayOutputStream m_outputStream;
+    
+    /**
+     * Constructs a new publish report using the provided locale for the output language.<p>
+     *  
+     * @param outputStream the underlying byte array output stream
+     * @param locale the locale to use for the output language
+     * 
+     */
+    private CmsPublishReport(ByteArrayOutputStream outputStream, Locale locale) {
+
+        super (new PrintStream(outputStream), locale, true);
+        init(locale, null); 
+        
+        m_outputStream = outputStream;
+    }
 
     /**
      * Constructs a new publish report using the provided locale for the output language.<p>
      *  
      * @param locale the locale to use for the output language
-     * @param path the file to write this report to
      * 
-     * @throws IOException if something goes wrong
      */
-    protected CmsPublishReport(Locale locale, String path)
-    throws IOException {
-
-        super(new PrintStream(new FileOutputStream(new File(path))), locale, true);
-        init(locale, null);
+    protected CmsPublishReport(Locale locale) {
+        
+        this(new ByteArrayOutputStream(), locale);
     }
-
+    
     /**
      * Constructs a new publish report decorating the provided report.<p>
      *  
      * @param report the report to decorate
-     * @param path the file to write this report to
-     * 
-     * @throws IOException if something goes wrong
      */
-    private CmsPublishReport(I_CmsReport report, String path)
-    throws IOException {
+    private CmsPublishReport(I_CmsReport report) {
 
-        this(report.getLocale(), path);
+        this(new ByteArrayOutputStream(), report.getLocale());
         m_report = report;
     }
 
@@ -95,15 +103,12 @@ class CmsPublishReport extends CmsPrintStreamReport {
      * to the given temporary file.<p> 
      * 
      * @param report the report to decorate
-     * @param path the file to write this report to
      * 
      * @return the publish report
-     * 
-     * @throws IOException if something ggoes wrong
      */
-    protected static CmsPrintStreamReport decorate(final I_CmsReport report, String path) throws IOException {
+    protected static CmsPrintStreamReport decorate(final I_CmsReport report) {
 
-        return new CmsPublishReport(report, path);
+        return new CmsPublishReport(report);
     }
 
     /**
@@ -133,6 +138,16 @@ class CmsPublishReport extends CmsPrintStreamReport {
     }
 
     /**
+     * Returns the contents of the publish report as byte array.<p>
+     * 
+     * @return the contents of the publish report
+     */
+    public byte[] getContents() {
+     
+        return m_outputStream.toByteArray();
+    }
+    
+    /**
      * @see org.opencms.report.CmsPrintStreamReport#getReportUpdate()
      */
     public synchronized String getReportUpdate() {
@@ -142,7 +157,7 @@ class CmsPublishReport extends CmsPrintStreamReport {
         }
         return super.getReportUpdate();
     }
-
+    
     /**
      * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
      */

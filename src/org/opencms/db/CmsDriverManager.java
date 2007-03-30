@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/28 15:39:28 $
- * Version: $Revision: 1.570.2.76 $
+ * Date   : $Date: 2007/03/30 07:38:16 $
+ * Version: $Revision: 1.570.2.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,6 +76,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishJobInfoBean;
+import org.opencms.publish.CmsPublishReport;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -1294,10 +1295,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
-
+        
         m_projectDriver.createPublishJob(dbc, publishJob);
     }
-
+    
     /**
      * Creates a new resource with the provided content and properties.<p>
      * 
@@ -2355,9 +2356,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-
+        
         m_projectDriver.deletePublishJob(dbc, publishHistoryId);
-    }
+    }    
 
     /**
      * Deletes the publish list assigned to a publish job.<p>
@@ -2367,10 +2368,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-
+        
         m_projectDriver.deletePublishList(dbc, publishHistoryId);
     }
-
+    
     /**
      * Deletes all relations for the given resource matching the given filter.<p>
      * 
@@ -4917,24 +4918,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } catch (CmsException exc) {
             enqueueException = exc;
         }
-
+        
         // if an exception was raised, remove the publish locks
         // and throw the exception again
-        if (enqueueException != null) {
+        if (enqueueException != null) {       
             itResources = allResources.iterator();
             while (itResources.hasNext()) {
                 CmsResource resource = (CmsResource)itResources.next();
                 CmsLock lock = getLock(dbc, resource);
-                if (lock.getSystemLock().isPublish()
+                if (lock.getSystemLock().isPublish() 
                     && lock.getSystemLock().isOwnedBy(cms.getRequestContext().currentUser())) {
                     unlockResource(dbc, resource, true, true);
-                }
+                }   
             }
-
+            
             throw enqueueException;
-        }
+        }    
     }
-
+    
     /**
      * Reads an access control entry from the cms.<p>
      * 
@@ -5771,10 +5772,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-
+        
         return m_projectDriver.readPublishJob(dbc, publishHistoryId);
     }
-
+    
     /**
      * Reads all available publish jobs.<p>
      * 
@@ -5786,10 +5787,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsException {
-
+        
         return m_projectDriver.readPublishJobs(dbc, startTime, endTime);
     }
-
+    
     /**
      * Reads the publish list assigned to a publish job.<p>
      * 
@@ -5799,10 +5800,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-
+        
         return m_projectDriver.readPublishList(dbc, publishHistoryId);
     }
-
+ 
+    /**
+     * Reads the publish report assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job  
+     * @return the content of the assigned publish report
+     * @throws CmsException if something goes wrong
+     */
+    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
+        
+        return m_projectDriver.readPublishReportContents(dbc, publishHistoryId);
+    }
+    
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
@@ -7450,10 +7464,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
-
+    
         m_projectDriver.writePublishJob(dbc, publishJob);
     }
-
+    
+    /**
+     * Writes the publish report for a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishJob the publish job 
+     * @throws CmsException if something goes wrong
+     */
+    public void writePublishReport(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
+    
+        CmsPublishReport report = (CmsPublishReport)publishJob.removePublishReport();
+       
+        if (report != null) {
+            m_projectDriver.writePublishReport(dbc, 
+                publishJob.getPublishHistoryId(), 
+                report.getContents());
+        }
+    }
+    
     /**
      * Writes a resource to the OpenCms VFS.<p>
      * 

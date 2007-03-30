@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/03/26 15:32:37 $
- * Version: $Revision: 1.36.4.16 $
+ * Date   : $Date: 2007/03/30 07:36:44 $
+ * Version: $Revision: 1.36.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.16 $
+ * @version $Revision: 1.36.4.17 $
  * 
  * @since 6.0.0
  */
@@ -196,9 +196,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the group-users node. */
     public static final String N_GROUP_USERS = "group-users";
 
-    /** The node name for the publish "history-repository" value. */
-    public static final String N_HISTORYREPOSITORY = "history-repository";
-
     /** The node name for the publish "history-size" value. */
     public static final String N_HISTORYSIZE = "history-size";
 
@@ -287,7 +284,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public static final String N_PROJECT = "project";
 
     /** The node name for the "publishhistory" section. */
-    public static final String N_PUBLISHHISTORY = "publishhistory";
+    public static final String N_PUBLISHMANAGER = "publishmanager";
 
     /** The node name for the "publishhistory" section. */
     public static final String N_QUEUEPERSISTANCE = "queue-persistance";
@@ -985,12 +982,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
 
         // add publish manager configuration rule        
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY, CmsPublishManager.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYSIZE, "setPublishHistorySize", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_HISTORYREPOSITORY, "setPublishHistoryRepository", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_QUEUEPERSISTANCE, "setPublishQueuePersistance", 0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY + "/" + N_QUEUESHUTDOWNTIME, "setPublishQueueShutdowntime", 0);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_PUBLISHHISTORY, "setPublishManager");
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, CmsPublishManager.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_HISTORYSIZE, "setPublishHistorySize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_QUEUEPERSISTANCE, "setPublishQueuePersistance", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_QUEUESHUTDOWNTIME, "setPublishQueueShutdowntime", 0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, "setPublishManager");
         
         // add rule for session storage provider
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, "setSessionStorageProvider", 1);
@@ -1344,9 +1340,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // optional publish manager nodes
         if (m_publishManager != null) {
-            Element pubHistElement = systemElement.addElement(N_PUBLISHHISTORY);
+            Element pubHistElement = systemElement.addElement(N_PUBLISHMANAGER);
             pubHistElement.addElement(N_HISTORYSIZE).setText(String.valueOf(m_publishManager.getPublishHistorySize()));
-            pubHistElement.addElement(N_HISTORYREPOSITORY).setText(m_publishManager.getPublishHistoryRepository());
             // optional nodes for publish queue
             pubHistElement.addElement(N_QUEUEPERSISTANCE).setText(String.valueOf(m_publishManager.isPublishQueuePersistanceEnabled()));
             pubHistElement.addElement(N_QUEUESHUTDOWNTIME).setText(String.valueOf(m_publishManager.getPublishQueueShutdowntime()));
@@ -1557,7 +1552,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (m_publishManager == null) {
             // no publish manager configured, create default
             m_publishManager = new CmsPublishManager(
-                CmsPublishManager.DEFAULT_REPORT_PATH,
                 CmsPublishManager.DEFAULT_HISTORY_SIZE,
                 CmsPublishManager.DEFAULT_QUEUE_PERSISTANCE,
                 CmsPublishManager.DEFAULT_QUEUE_SHUTDOWNTIME);

@@ -93,12 +93,11 @@
             <notification-project>Offline</notification-project>
         </content-notification>		
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
-		<publishhistory>
+		<publishmanager>
 			<history-size>100</history-size>
-			<history-repository>logs/publish</history-repository>
-			<queue-persistance>false</queue-persistance>
+			<queue-persistance>true</queue-persistance>
 		    <queue-shutdowntime>1</queue-shutdowntime>
-		</publishhistory>
+		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
 </opencms>

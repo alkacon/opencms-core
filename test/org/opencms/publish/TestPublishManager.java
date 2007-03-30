@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2007/03/26 09:45:56 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/03/30 07:41:59 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  */
 public class TestPublishManager extends OpenCmsTestCase { 
     
@@ -82,13 +82,14 @@ public class TestPublishManager extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPublishManager.class.getName());
 
+        suite.addTest(new TestPublishManager("testPublishReport"));
         suite.addTest(new TestPublishManager("testAbortJob"));
         suite.addTest(new TestPublishManager("testRunning"));
         suite.addTest(new TestPublishManager("testStop"));
         suite.addTest(new TestPublishManager("testListener"));
         suite.addTest(new TestPublishManager("testInitialization1"));
         suite.addTest(new TestPublishManager("testInitialization2"));
-        
+     
         TestSetup wrapper = new TestSetup(suite) {
 
             protected void setUp() {
@@ -291,8 +292,8 @@ public class TestPublishManager extends OpenCmsTestCase {
         // store current publishQueue
         List oldQueue = OpenCms.getPublishManager().getPublishQueue();
                 
-        // leads to reloading the queue and history data from the database
-        OpenCms.getPublishManager().initialize(cms);
+        // add an event listener used to restart the engine when ther job was started
+        OpenCms.getPublishManager().addPublishListener(new TestPublishEventListener2(cms));
         
         // now start publishing again and reinitialize the publish manager and engine while it is running
         OpenCms.getPublishManager().startPublishing();
@@ -312,7 +313,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         assertEquals(jobInQueue, jobInHistory, false, false);
         
         // and it should be aborted
-    } 
+    }
     
     /**
      * Test the publish event listener.<p>
@@ -435,6 +436,32 @@ public class TestPublishManager extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
     }
 
+    /**
+     * Tests the publish report stored in the database.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishReport() throws Throwable {
+    
+        CmsObject cms = getCmsObject();
+        echo("Testing the publish report");
+        
+        String source = "/folder2/subfolder21/image1.gif";
+        String destination = "/testReport_1.gif";
+        
+        cms.copyResource(source, destination, CmsResource.COPY_AS_NEW);
+        
+        OpenCms.getPublishManager().publishResource(cms, destination);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        List history = OpenCms.getPublishManager().getPublishHistory();
+        CmsPublishJobFinished publishJob = (CmsPublishJobFinished)history.get(history.size()-1);
+        String reportContents = new String(OpenCms.getPublishManager().getReportContents(publishJob));
+        
+        // check if the report states that the destination was published successfully
+        assertTrue(reportContents.matches("(?s)" + "(.*)" + destination + "(.*)" + "o.k." + "(.*)"));
+    }
+    
     /**
      * Test publishing process.<p>
      * 

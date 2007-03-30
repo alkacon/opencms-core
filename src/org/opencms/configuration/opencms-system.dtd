@@ -32,7 +32,7 @@
 	content-notification?,
 	workflow?,
 	authorizationhandler?,
-	publishhistory?,
+	publishmanager?,
 	session-storageprovider?)>
 
 <!--
@@ -491,22 +491,16 @@ Each job can have an optional list of parameters.
 <!ATTLIST authorizationhandler class CDATA #REQUIRED>
 
 <!--
-# Publish history queue:
-# Provides the configuration parameters for the publish history.
+# Publish manager:
+# Provides the configuration parameters for the publish history and queue.
 # See the package org.opencms.publish for more details.
 -->
-<!ELEMENT publishhistory (history-size, history-repository, queue-persistance?, queue-shutdowntime?)>
+<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?)>
 
 <!--
 # The size of the publish queue
 -->
 <!ELEMENT history-size (#PCDATA)>
-
-<!--
-# The size of the publish repository, 
-# can be relative to the WEB-INF folder or an absolute path.
--->
-<!ELEMENT history-repository (#PCDATA)>
 
 <!--
 # Indicates if the publish queue is re-initialized on restart of the system.

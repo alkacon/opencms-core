@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/23 16:52:34 $
- * Version: $Revision: 1.76.4.6 $
+ * Date   : $Date: 2007/03/30 07:38:16 $
+ * Version: $Revision: 1.76.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.6 $
+ * @version $Revision: 1.76.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -551,6 +551,16 @@ public interface I_CmsProjectDriver {
     CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
+     * Reads the publish report assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job  
+     * @return the content of the assigned publish report
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+    
+    /**
      * Reads the resources that were published during a publish process for a given publish history ID.<p>
      * 
      * @param dbc the current database context
@@ -660,6 +670,19 @@ public interface I_CmsProjectDriver {
     void writePublishJob(
         CmsDbContext dbc,
         CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
+    
+    /**
+     * Writes a publish report for a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishId the ID of the current publishing process
+     * @param content the report output
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writePublishReport(
+        CmsDbContext dbc,
+        CmsUUID publishId,
+        byte[] content) throws CmsDataAccessException;
     
     /**
      * Inserts an entry in the published resource table.<p>

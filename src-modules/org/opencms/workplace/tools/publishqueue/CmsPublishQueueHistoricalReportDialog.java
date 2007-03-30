@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueHistoricalReportDialog.java,v $
- * Date   : $Date: 2007/03/23 16:52:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/03/30 07:41:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,19 @@
 
 package org.opencms.workplace.tools.publishqueue;
 
-import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.publish.CmsPublishJobBase;
-import org.opencms.util.CmsRfsException;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWidgetDialog;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5
  */
@@ -65,14 +63,11 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     /** The pages array for possible multi-page dialogs. This is a dummy. */
     public static String[] PAGES = {"page1"};
 
-    /** Request parameter name for the file name. */
-    public static final String PARAM_FILENAME = "filename";
-
+    /** Request parameter name for the publish job id. */
+    public static final String PARAM_ID = "id";
+    
     /** The path to the underlying file. */
-    protected String m_filePath = null;
-
-    /** The file encoding. */
-    private Charset m_fileEncoding;
+    protected String m_jobId = null;
 
     /**
      * Public constructor with JSP action element.<p> 
@@ -94,8 +89,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     public CmsPublishQueueHistoricalReportDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-        m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-        setParamFilename(CmsEncoder.decodeParameter(req.getParameter(PARAM_FILENAME)));
+        setParamId(CmsEncoder.decodeParameter(req.getParameter(PARAM_ID)));
     }
 
     /**
@@ -113,7 +107,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
      */
     public String getParamFilename() {
 
-        return m_filePath;
+        return m_jobId;
     }
 
     /**
@@ -121,27 +115,35 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
      *
      * @return file content from the underlying file or an empty String
      * 
-     * @throws CmsRfsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public String readFileContent() throws CmsRfsException {
+    public String readFileContent() throws CmsException {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(m_filePath), m_fileEncoding));
-
+            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager()
+                .getJobByPublishHistoryId(new CmsUUID(m_jobId));
+            byte[] contents = OpenCms.getPublishManager().getReportContents(publishJob);
             StringBuffer result = new StringBuffer();
-
-            String read = reader.readLine();
-            while (read != null) {
-                result.append(read).append("\n");
-                read = reader.readLine();
+            
+            if (contents != null) {         
+                reader = new BufferedReader(new InputStreamReader(
+                    new ByteArrayInputStream(contents)));
+                String read = reader.readLine();
+                while (read != null) {
+                    result.append(read).append("\n");
+                    read = reader.readLine();
+                }
             }
             return result.toString();
         } catch (IOException ioex) {
-            CmsRfsException ex = new CmsRfsException(Messages.get().container(
+            throw new CmsException(Messages.get().container(
                 Messages.ERR_FILE_ARG_ACCESS_1,
-                m_filePath), ioex);
-            throw ex;
+                m_jobId), ioex);
+        } catch (CmsException ex) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_FILE_ARG_ACCESS_1,
+                m_jobId), ex);            
         } finally {
             if (reader != null) {
                 try {
@@ -155,13 +157,13 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Set the file name value.<p> 
+     * Set the job id value.<p> 
      * 
-     * @param value the file name value
+     * @param value the job id value
      */
-    public void setParamFilename(String value) {
+    public void setParamId(String value) {
 
-        m_filePath = value;
+        m_jobId = value;
     }
 
     /**
@@ -183,23 +185,18 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         String fileContentHeader;
-        if (m_filePath == null) {
+        if (m_jobId == null) {
             fileContentHeader = key(Messages.GUI_PERSONALQUEUE_LIST_NAME_0);
         } else {
             Object[] params = new Object[3];
-            String fileName = CmsResource.getName(m_filePath.replace('\\', '/'));
-            // remove prefix and postfix
-            fileName = fileName.substring(CmsPublishJobBase.REPORT_FILENAME_PREFIX.length());
-            fileName = fileName.substring(0, fileName.length() - CmsPublishJobBase.REPORT_FILENAME_POSTFIX.length());
+            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager()
+                .getJobByPublishHistoryId(new CmsUUID(m_jobId));
             // project name
-            int sep = fileName.indexOf(CmsPublishJobBase.REPORT_FILENAME_SEPARATOR);
-            params[0] = fileName.substring(0, sep);
+            params[0] = publishJob.getProjectName();
             // user name
-            int sep2 = fileName.indexOf(CmsPublishJobBase.REPORT_FILENAME_SEPARATOR, sep + 1);
-            params[1] = fileName.substring(sep + 1, sep2);
+            params[1] = publishJob.getUserName();
             // start date
-            long startTime = Long.parseLong(fileName.substring(sep2 + 1));
-            params[2] = Messages.get().getBundle(getLocale()).getDateTime(startTime);
+            params[2] = Messages.get().getBundle(getLocale()).getDateTime(publishJob.getStartTime());
             // compose the title
             fileContentHeader = key(Messages.GUI_PUBLISH_REPORT_VIEW_TITLE_3, params);
         }
@@ -209,9 +206,9 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
             result.append("<iframe style=\"overflow: auto;\" src=\"");
             result.append(getJsp().link(
                 "/system/workplace/admin/publishqueue/publishreportshow.jsp?"
-                    + CmsEncoder.encodeParameter(PARAM_FILENAME)
+                    + CmsEncoder.encodeParameter(PARAM_ID)
                     + "="
-                    + CmsEncoder.encodeParameter(m_filePath)));
+                    + CmsEncoder.encodeParameter(m_jobId)));
             result.append("\" width=\"100%\" height=\"500\" border=\"0\" frameborder=\"0\"></iframe>");
         } catch (Exception e) {
             //noop
@@ -244,7 +241,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
      */
     protected void validateParamaters() throws Exception {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_filePath)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_jobId)) {
             throw new Exception();
         }
     }
