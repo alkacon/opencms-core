@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:24 $
- * Version: $Revision: 1.12.4.17 $
+ * Date   : $Date: 2007/03/30 14:25:48 $
+ * Version: $Revision: 1.12.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.buffer.BoundedFifoBuffer;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.17 $ 
+ * @version $Revision: 1.12.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public class CmsSessionManager {
         CmsSessionInfo sessionInfo = getSessionInfo(getSessionUUID(sessionId));
         if (sessionInfo == null) {
             // return empty message buffer if the session is gone or not available
-            return BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(CmsSessionInfo.QUEUE_SIZE));
+            return BufferUtils.synchronizedBuffer(new CircularFifoBuffer(CmsSessionInfo.QUEUE_SIZE));
         }
         return sessionInfo.getBroadcastQueue();
     }
