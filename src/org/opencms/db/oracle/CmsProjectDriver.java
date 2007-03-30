@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/30 07:37:08 $
- * Version: $Revision: 1.38.8.2 $
+ * Date   : $Date: 2007/03/30 14:25:34 $
+ * Version: $Revision: 1.38.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.38.8.2 $
+ * @version $Revision: 1.38.8.3 $
  * 
  * @since 6.0.0 
  */
@@ -123,6 +123,16 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             content);
     }
     
+    /**
+     * Writes data for a publish job.<p>
+     * 
+     * @param dbc the database context
+     * @param publishJobHistoryId the publish job id
+     * @param queryKey the query to use
+     * @param fieldName the fiueld to use
+     * @param data the data to write
+     * @throws CmsDataAccessException if something goes wrong
+     */
     private void internalWritePublishJobData(CmsDbContext dbc, CmsUUID publishJobHistoryId, String queryKey, String fieldName, byte[] data) 
     throws CmsDataAccessException {
         
