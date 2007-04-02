@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/03/30 07:37:53 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/04/02 12:31:36 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.5
  */
@@ -173,24 +173,36 @@ public class CmsPublishQueue {
     protected void initialize(CmsObject adminCms, boolean revive) {
 
         CmsDriverManager driverManager = m_publishEngine.getDriverManager();
-        CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
-        
+        List publishJobs;
+        CmsDbContext dbc;
+                
         try {
             OpenCms.getMemoryMonitor().flushPublishJobs();
             if (revive) {
                 // read all pending publish jobs from the database
-                List publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
+                dbc = m_publishEngine.getDbContextFactory().getDbContext();
+                try {
+                    publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
+                } finally {
+                    dbc.clear();
+                }                
                 for (Iterator i = publishJobs.iterator(); i.hasNext();) {
                     CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
                     if (!job.isStarted()) {
                         // add jobs not already started to queue again
+                        dbc = m_publishEngine.getDbContextFactory().getDbContext();
                         try {
                             job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
                             m_publishEngine.lockPublishList(job);
                             OpenCms.getMemoryMonitor().cachePublishJob(job);
                         } catch (CmsException exc) {
                             // skip job
-                            LOG.error(exc.getLocalizedMessage(), exc);
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(Messages.get().getBundle().key(
+                                    Messages.ERR_PUBLISH_JOB_INVALID_1, job.getPublishHistoryId()), 
+                                    exc);
+                            }
+                            m_publishEngine.getDriverManager().deletePublishJob(dbc, job.getPublishHistoryId());
                         } finally {
                             dbc.clear();
                         }
@@ -211,8 +223,6 @@ public class CmsPublishQueue {
             if (LOG.isErrorEnabled()) {
                 LOG.error(exc.getLocalizedMessage(), exc);
             }
-        } finally {
-            dbc.clear();
         }
     }    
         
