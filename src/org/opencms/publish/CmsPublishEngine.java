@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/03/30 07:37:53 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/04/02 12:31:22 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  * 
  * @since 6.5.5
  */
@@ -278,6 +278,7 @@ public final class CmsPublishEngine implements Runnable {
 
     /**
      * Shuts down all this static export manager.<p>
+     * NOTE: this method may or may NOT be called (i.e. killall in the stop script), if a system is stopped !
      * 
      * This is required since there may still be a thread running when the system is being shut down.<p>
      */
@@ -488,15 +489,13 @@ public final class CmsPublishEngine implements Runnable {
         }
 
         m_publishQueueShutdowntime = publishQueueShutdowntime;
-        
+
+        // initially the engine is stopped, must be restartet after full system initialization
+        m_engineState = CmsPublishEngineState.ENGINE_STOPPED;      
         // read the publish history from the repository
         m_publishHistory.initialize();
         // read the queue from the repository
         m_publishQueue.initialize(adminCms, publishQueuePersistance);
-        // start publishing jobs in the queue
-        if (!m_publishQueue.isEmpty()) {
-            run();
-        }
     }
 
     /**
