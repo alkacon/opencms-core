@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/04/02 12:31:03 $
- * Version: $Revision: 1.218.4.35 $
+ * Date   : $Date: 2007/04/03 14:22:29 $
+ * Version: $Revision: 1.218.4.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.35 $ 
+ * @version $Revision: 1.218.4.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,6 +207,12 @@ public final class OpenCmsCore {
 
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
+
+    /** 
+     * The request error page attribute name to use if {@link HttpServletRequest#getPathInfo()}
+     * is not working properly, like in BEA WLS 9.x. 
+     */
+    private String m_requestErrorPageAttribute;
 
     /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
     private Map m_requestHandlers;
@@ -508,6 +514,41 @@ public final class OpenCmsCore {
     protected I_CmsPasswordHandler getPasswordHandler() {
 
         return m_passwordHandler;
+    }
+
+    /**
+     * Returns the path for the request.<p>
+     * 
+     * First checks the {@link HttpServletRequest#getPathInfo()}, then
+     * the configured request error page attribute (if set), and then 
+     * if still undefined the <code>/</code> is returned as path info.<p> 
+     * 
+     * This is only needed when the {@link HttpServletRequest#getPathInfo()}
+     * is not really working as expected like in BEA WLS 9.x, where you have 
+     * to use the 'weblogic.servlet.errorPage' attribute.<p>
+     * 
+     * @param req the hhtp request context
+     * 
+     * @return the path for the request
+     */
+    protected String getPathInfo(HttpServletRequest req) {
+
+        String path = req.getPathInfo();
+        if ((path == null) && (m_requestErrorPageAttribute != null)) {
+            // this is needed since the HttpServletRequest#getPathInfo() 
+            path = (String)req.getAttribute(m_requestErrorPageAttribute);
+            if (path != null) {
+                int pos = path.indexOf("/", 1);
+                if (pos > 0) {
+                    // cut off the servlet name
+                    path = path.substring(pos);
+                }
+            }
+        }
+        if (path == null) {
+            path = "/";
+        }
+        return path;
     }
 
     /**
@@ -1420,6 +1461,11 @@ public final class OpenCmsCore {
         synchronized (LOCK) {
             // add the servlets request handler
             addRequestHandler(servlet);
+            // Sets the request error page attribute name to use if {@link HttpServletRequest#getPathInfo()}
+            // is not working properly, like in BEA WLS 9.x.
+            // please note that this init parameter is global and not servlet dependent!
+            m_requestErrorPageAttribute = servlet.getInitParameter(OpenCmsServlet.SERVLET_PARAM_REQUEST_ERROR_PAGE_ATTRIBUTE);
+
             // output the final 'startup is finished' message
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -1924,7 +1970,7 @@ public final class OpenCmsCore {
 
         if (request != null) {
             // get path info from request
-            requestedResource = request.getPathInfo();
+            requestedResource = getPathInfo(request);
 
             // check for special header for remote address
             remoteAddr = request.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
