@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -533,7 +534,7 @@ public final class CmsResourceUtil {
         String lockedBy = "";
         if (!getLock().isNullLock()) {
             try {
-                lockedBy = getCms().readUser(getLock().getUserId()).getName();
+                lockedBy = getCurrentOuRelativeName(getCms().readUser(getLock().getUserId()).getName());
             } catch (Throwable e) {
                 lockedBy = e.getMessage();
             }
@@ -575,11 +576,35 @@ public final class CmsResourceUtil {
                 // the resource is unlocked and unchanged
                 return "";
             }
-            return getCms().readProject(pId).getName();
+            return getCurrentOuRelativeName(getCms().readProject(pId).getName());
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             return "";
         }
+    }
+
+    /**
+     * Returns the lock state of the current resource.<p>
+     * 
+     * @return the lock state of the current resource
+     */
+    public int getLockState() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getLockedByName())) {
+            // unlocked
+            return 0;
+        }
+        if (!getLockedByName().equals(m_request.currentUser().getName())
+            || !getLockedInProjectId().equals(m_request.currentProject().getUuid())) {
+            // locked by other user and/or project
+            return 1;
+        }
+        if (getLock().getType().isShared()) {
+            // shared lock
+            return 2;
+        }
+        // exclusive lock
+        return 3;
     }
 
     /**
@@ -588,7 +613,7 @@ public final class CmsResourceUtil {
      * @return the navtext for that resource
      */
     public String getNavText() {
-        
+
         String navText = "";
         try {
             navText = getCms().readPropertyObject(
@@ -615,31 +640,7 @@ public final class CmsResourceUtil {
         if (navText == null) {
             navText = "";
         }
-        return navText;  
-    }
-    
-    /**
-     * Returns the lock state of the current resource.<p>
-     * 
-     * @return the lock state of the current resource
-     */
-    public int getLockState() {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getLockedByName())) {
-            // unlocked
-            return 0;
-        }
-        if (!getLockedByName().equals(m_request.currentUser().getName())
-            || !getLockedInProjectId().equals(m_request.currentProject().getUuid())) {
-            // locked by other user and/or project
-            return 1;
-        }
-        if (getLock().getType().isShared()) {
-            // shared lock
-            return 2;
-        }
-        // exclusive lock
-        return 3;
+        return navText;
     }
 
     /**
@@ -1059,7 +1060,7 @@ public final class CmsResourceUtil {
 
         String user = m_resource.getUserCreated().toString();
         try {
-            user = getCms().readUser(m_resource.getUserCreated()).getName();
+            user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserCreated()).getName());
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -1075,7 +1076,7 @@ public final class CmsResourceUtil {
 
         String user = m_resource.getUserLastModified().toString();
         try {
-            user = getCms().readUser(m_resource.getUserLastModified()).getName();
+            user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserLastModified()).getName());
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -1090,7 +1091,7 @@ public final class CmsResourceUtil {
     public CmsProject getWorkflowProject() {
 
         CmsLock lock = getLock().getSystemLock();
-        if (m_wfManager == null || !lock.isWorkflow()) {
+        if ((m_wfManager == null) || !lock.isWorkflow()) {
             return null;
         }
         try {
@@ -1293,6 +1294,25 @@ public final class CmsResourceUtil {
     public void setSiteMode(CmsResourceUtilSiteMode siteMode) {
 
         m_siteMode = siteMode;
+    }
+
+    /**
+     * Returns the simple name if the ou is the same as the current user's ou.<p>
+     * 
+     * @param name the fully qualified name to check
+     * 
+     * @return the simple name if the ou is the same as the current user's ou
+     */
+    private String getCurrentOuRelativeName(String name) {
+
+        if (m_request == null) {
+            return CmsOrganizationalUnit.SEPARATOR + name;
+        }
+        String ou = CmsOrganizationalUnit.getParentFqn(name);
+        if (ou.equals(m_request.currentUser().getOuFqn())) {
+            return CmsOrganizationalUnit.getSimpleName(name);
+        }
+        return CmsOrganizationalUnit.SEPARATOR + name;
     }
 
     /**

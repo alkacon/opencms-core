@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/03/28 15:39:28 $
- * Version: $Revision: 1.15.4.24 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.15.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.24 $ 
+ * @version $Revision: 1.15.4.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -610,6 +610,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_CONFIRMATION_0 = "GUI_LOCK_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DETAIL_HIDE_OWN_LOCKS_HELP_0 = "GUI_LOCK_DETAIL_HIDE_OWN_LOCKS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DETAIL_HIDE_OWN_LOCKS_NAME_0 = "GUI_LOCK_DETAIL_HIDE_OWN_LOCKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DETAIL_SHOW_OWN_LOCKS_HELP_0 = "GUI_LOCK_DETAIL_SHOW_OWN_LOCKS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DETAIL_SHOW_OWN_LOCKS_NAME_0 = "GUI_LOCK_DETAIL_SHOW_OWN_LOCKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0 = "GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1067,6 +1079,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0 = "GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0 = "GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0 = "GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0";

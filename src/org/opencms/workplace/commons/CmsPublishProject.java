@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/03/28 15:39:28 $
- * Version: $Revision: 1.27.4.17 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.27.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.17 $ 
+ * @version $Revision: 1.27.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,7 +263,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         }
         return buildLockDialog(nonBlockingFilter, getBlockingFilter(), 0, true);
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
      */
@@ -304,13 +304,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             result.append("<input type='checkbox' name='");
             result.append(PARAM_PUBLISHSIBLINGS);
-            result.append("' value='");
-            result.append(Boolean.valueOf(getParamPublishsiblings()).toString());
-            result.append("' onclick=\"reloadDialog(this.checked, document.forms['main'].");
-            result.append(PARAM_SUBRESOURCES);
-            result.append(".checked, document.forms['main'].");
-            result.append(PARAM_RELATEDRESOURCES);
-            result.append(".checked);\"");
+            result.append("' value='true' onclick=\"reloadReport();\"");
             if (Boolean.valueOf(getParamPublishsiblings()).booleanValue()) {
                 result.append(" checked='checked'");
             }
@@ -332,13 +326,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             // at least one folder is selected, show "publish subresources" checkbox
             result.append("<input type='checkbox' name='");
             result.append(PARAM_SUBRESOURCES);
-            result.append("' value='");
-            result.append(Boolean.valueOf(getParamSubresources()).toString());
-            result.append("' onclick=\"reloadDialog(document.forms['main'].");
-            result.append(PARAM_PUBLISHSIBLINGS);
-            result.append(".checked, this.checked, document.forms['main'].");
-            result.append(PARAM_RELATEDRESOURCES);
-            result.append(".checked);\"");
+            result.append("' value='true' onclick=\"reloadReport();\"");
             if (Boolean.valueOf(getParamSubresources()).booleanValue()) {
                 result.append(" checked='checked'");
             }
@@ -368,11 +356,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         }
         result.append("<input type='checkbox' name='");
         result.append(PARAM_RELATEDRESOURCES);
-        result.append("' value='true' onclick=\"reloadDialog(document.forms['main'].");
-        result.append(PARAM_PUBLISHSIBLINGS);
-        result.append(".checked, document.forms['main'].");
-        result.append(PARAM_SUBRESOURCES);
-        result.append(".checked, this.checked);\"");
+        result.append("' value='true' onclick=\"reloadReport();\"");
         if (Boolean.valueOf(getParamRelatedresources()).booleanValue()) {
             result.append(" checked='checked'");
         }
@@ -699,14 +683,12 @@ public class CmsPublishProject extends CmsMultiDialog {
             setParamDirectpublish(CmsStringUtil.TRUE);
         }
         // set default options
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPublishsiblings())) {
-            // set to the default value defined in the opencms-workplace.xml
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamAction()) || DIALOG_INITIAL.equals(getParamAction())) {
+            // siblings option. set to the default value defined in the opencms-workplace.xml
             setParamPublishsiblings(String.valueOf(getSettings().getUserSettings().getDialogPublishSiblings()));
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamSubresources())) {
+            // subresources option. default value is true
             setParamSubresources(Boolean.TRUE.toString());
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamRelatedresources())) {
+            // related resources option.
             String defValue = CmsStringUtil.TRUE;
             if (OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishRelatedResources() == CmsDefaultUserSettings.PUBLISH_RELATED_RESOURCES_MODE_FALSE) {
                 defValue = CmsStringUtil.FALSE;

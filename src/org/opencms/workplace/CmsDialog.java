@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2007/03/28 15:39:29 $
- * Version: $Revision: 1.96.4.11 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.96.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.96.4.11 $ 
+ * @version $Revision: 1.96.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,13 +389,7 @@ public class CmsDialog extends CmsToolDialog {
         html.append(dialogBlockStart(title));
         html.append(dialogWhiteBoxStart());
         html.append("<div id='ajaxreport' >");
-        html.append("<table border='0' style='vertical-align:middle; height: 150px;'>\n");
-        html.append("<tr><td width='40' align='center' valign='middle'><img src='");
-        html.append(CmsWorkplace.getSkinUri());
-        html.append("commons/wait.gif' id='ajaxreport-img' width='32' height='32' alt=''></td>\n");
-        html.append("<td valign='middle'><span id='ajaxreport-txt' style='color: #000099; font-weight: bold;'>\n");
-        html.append(key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
-        html.append("</span><br></td></tr></table>\n");
+        html.append(buildAjaxWaitMessage());
         html.append("</div>\n");
         html.append(dialogWhiteBoxEnd());
         html.append(dialogBlockEnd());
@@ -476,8 +470,11 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    public String buildLockDialog(CmsLockFilter nonBlockingFilter, CmsLockFilter blockingFilter, int hiddenTimeout, boolean includeRelated)
-    throws CmsException {
+    public String buildLockDialog(
+        CmsLockFilter nonBlockingFilter,
+        CmsLockFilter blockingFilter,
+        int hiddenTimeout,
+        boolean includeRelated) throws CmsException {
 
         setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
         CmsLock lockwp = new CmsLock(getJsp());
@@ -1659,6 +1656,24 @@ public class CmsDialog extends CmsToolDialog {
         }
 
         return "";
+    }
+
+    /**
+     * Returns ajax wait message.<p>
+     * 
+     * @return html code
+     */
+    protected String buildAjaxWaitMessage() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' style='vertical-align:middle; height: 150px;'>\n");
+        html.append("<tr><td width='40' align='center' valign='middle'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("commons/wait.gif' id='ajaxreport-img' width='32' height='32' alt=''></td>\n");
+        html.append("<td valign='middle'><span id='ajaxreport-txt' style='color: #000099; font-weight: bold;'>\n");
+        html.append(key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
+        html.append("</span><br></td></tr></table>\n");
+        return html.toString();
     }
 
     /**

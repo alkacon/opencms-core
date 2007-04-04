@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/03/28 15:39:28 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -129,7 +129,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         resUtil.setAbbrevLength(50);
         resUtil.setRelativeTo(relativeTo);
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
-        
+
         m_publishRelated = publishRelated;
     }
 
@@ -287,6 +287,43 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                             }
                             if (!resourceNames.contains(relationName)) {
                                 relatedResources.add(relationName);
+                            }
+                        }
+                    }
+                    if ((resource.getFlags() & FLAG_RELATED_RESOURCE) > 0) {
+                        // mark the reverse references
+                        itRelations = getCms().getRelationsForResource(
+                            getCms().getSitePath(resource),
+                            CmsRelationFilter.SOURCES.filterStrong()).iterator();
+                        while (itRelations.hasNext()) {
+                            CmsRelation relation = (CmsRelation)itRelations.next();
+                            CmsResource source = relation.getSource(getCms(), CmsResourceFilter.ALL);
+                            // just add resources that may come in question
+                            if (publishResources.contains(source)) {
+                                String relationName = source.getRootPath();
+                                if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
+                                    // same site
+                                    relationName = getCms().getSitePath(source);
+                                } else {
+                                    // other site
+                                    String site = CmsSiteManager.getSiteRoot(relationName);
+                                    String siteName = site;
+                                    if (site != null) {
+                                        relationName = relationName.substring(site.length());
+                                        siteName = CmsSiteManager.getSite(site).getTitle();
+                                    } else {
+                                        siteName = "/";
+                                    }
+                                    relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
+                                        siteName,
+                                        relationName});
+                                }
+                                relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                                // mark as reverse reference
+                                relationName = relationName + "$";
+                                if (!resourceNames.contains(relationName)) {
+                                    relatedResources.add(relationName);
+                                }
                             }
                         }
                     }
@@ -506,8 +543,12 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     } else if (resName.endsWith("!")) {
                         // resource will be published
                         resName = resName.substring(0, resName.length() - 1);
+                        html.append(Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0));
+                    } else if (resName.endsWith("$")) {
+                        // reverse reference
+                        resName = resName.substring(0, resName.length() - 1);
                         html.append(Messages.get().getBundle(locale).key(
-                            Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0));
+                            Messages.GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0));
                     } else {
                         // resource will not be published
                         html.append("<font color='red' />");

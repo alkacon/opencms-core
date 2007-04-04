@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/03/28 15:39:28 $
- * Version: $Revision: 1.16.4.14 $
+ * Date   : $Date: 2007/04/04 13:07:22 $
+ * Version: $Revision: 1.16.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,11 @@ import org.opencms.workplace.list.CmsListExplorerColumn;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -80,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.14 $ 
+ * @version $Revision: 1.16.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +114,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** Request parameter name for the publishsiblings parameter. */
     public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
+
+    /** Request parameter name for the 'show own locked resources' flag. */
+    public static final String PARAM_SHOWOWNLOCKS = "showownlocks";
 
     /** Request parameter name for the source dialog uri. */
     public static final String PARAM_SOURCE_DIALOG = "sourcedialog";
@@ -163,6 +168,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** The project id parameter value. */
     private String m_paramProjectid;
+
+    /** The 'show own locked resources' parameter value. */
+    private String m_paramShowownlocks;
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -320,7 +328,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append(key(Messages.GUI_OPERATION_NO_LOCKS_0));
         html.append("';\n");
         html.append("}\n");
-        html.append("var ajaxReportContent = '';");
+        html.append("var ajaxReportContent = '';\n");
+        html.append("var ajaxWaitMessage = '");
+        html.append(CmsStringUtil.escapeJavaScript(buildAjaxWaitMessage()));
+        html.append("';\n");
         html.append("function showAjaxReportContent() {\n");
         html.append("\tif (ajaxReportContent != '') {\n");
         html.append("\t\tdocument.getElementById('ajaxreport').innerHTML = ajaxReportContent;\n");
@@ -431,10 +442,32 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public String buildReport() throws JspException, ServletException, IOException {
 
+        List lockedResources;
+        if (Boolean.valueOf(getParamShowownlocks()).booleanValue()) {
+            lockedResources = getLockedResources();
+        } else {
+            lockedResources = new ArrayList(getBlockingLockedResources());
+            Collections.sort(lockedResources);
+        }
+        Map lockParams = new HashMap();
+        if (getParamResource() != null) {
+            lockParams.put(PARAM_RESOURCE, getParamResource());
+        }
+        if (getParamResourcelist() != null) {
+            lockParams.put(PARAM_RESOURCELIST, getParamResourcelist());
+        }
+        if (getParamShowownlocks() != null) {
+            lockParams.put(PARAM_SHOWOWNLOCKS, getParamShowownlocks());
+        }
+        if (getParamIncluderelated() != null) {
+            lockParams.put(PARAM_INCLUDERELATED, getParamIncluderelated());
+        }
+
         CmsLockedResourcesList list = new CmsLockedResourcesList(
             getJsp(),
-            getLockedResources(),
-            CmsResource.getParentFolder((String)getResourceList().get(0)));
+            lockedResources,
+            CmsResource.getParentFolder((String)getResourceList().get(0)),
+            lockParams);
         list.actionDialog();
         list.getList().setBoxed(false);
 
@@ -657,6 +690,16 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * Returns the 'show own locked resources' parameter value.<p>
+     *
+     * @return the 'show own locked resources' parameter value
+     */
+    public String getParamShowownlocks() {
+
+        return m_paramShowownlocks;
+    }
+
+    /**
      * Sets the filter to get all blocking locks.<p>
      *
      * @param blockingFilter the filter to set
@@ -700,6 +743,16 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     public void setParamProjectid(String projectid) {
 
         m_paramProjectid = projectid;
+    }
+
+    /**
+     * Sets the 'show own locked resources' parameter value.<p>
+     *
+     * @param paramShowownlocks the 'show own locked resources' parameter value to set
+     */
+    public void setParamShowownlocks(String paramShowownlocks) {
+
+        m_paramShowownlocks = paramShowownlocks;
     }
 
     /**
