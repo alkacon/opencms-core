@@ -99,12 +99,11 @@
 			<workflowengine class="org.opencms.workflow.WorkflowTestEngine"/>
 		</workflow>        			
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
-		<publishhistory>
+		<publishmanager>
 			<history-size>10</history-size>
-			<history-repository>logs/publish</history-repository>
 			<queue-persistance>true</queue-persistance>
 		    <queue-shutdowntime>0</queue-shutdowntime>			
-		</publishhistory>
+		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
 </opencms>
