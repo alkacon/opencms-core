@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/04/04 13:10:49 $
- * Version: $Revision: 1.717.2.160 $
+ * Date   : $Date: 2007/04/04 13:12:51 $
+ * Version: $Revision: 1.717.2.161 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,10 +23,6 @@ OpenCms 7.0.0 - July 4, 2007
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
-! Configurable exclude tags for decorator
-* Fixed issue not detecting the workplace server URL as internal while adjusting links
-- Added some servlet options to ensure BEA WLS 9.x compatibility
-- Lock dialog is now able to hide and show the own locks
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Historical publish reports are now stored in the publish job record, not in the file system
@@ -38,6 +34,10 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Publish dialog now offers the option to publish unpublished related (linked) resources
 - Updated integrated Lucene version to 2.1.0
 * Fixed issue with upload applet having a client side out of memory error when uploading large files
+! Configurable exclude tags for decorator
+* Fixed issue not detecting the workplace server URL as internal while adjusting links
+- Added some servlet options to ensure BEA WLS 9.x compatibility
+- Lock dialog is now able to hide and show the own locks
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation
