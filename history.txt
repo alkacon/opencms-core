@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/04/03 14:22:38 $
- * Version: $Revision: 1.717.2.159 $
+ * Date   : $Date: 2007/04/04 13:10:49 $
+ * Version: $Revision: 1.717.2.160 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,7 @@ OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Configurable exclude tags for decorator
 * Fixed issue not detecting the workplace server URL as internal while adjusting links
 - Added some servlet options to ensure BEA WLS 9.x compatibility
+- Lock dialog is now able to hide and show the own locks
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Historical publish reports are now stored in the publish job record, not in the file system
@@ -52,7 +53,7 @@ OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 - Improved handling of project flags and type 
 * Fixed issue with upload applet showing a zip-error when unchecking all potential overwrites and 0 files remain
 - Improved publish permission check
-* Fixed issue #1323: 304 Not Modified Status not working because seconds where compared to milliseconds
+* Fixed issue #1323: 304 Not Modified Status not working because seconds were compared to milliseconds
 ! Added new functionality to import and export user data via CSV files
 - New special access control entries for 'All other principals' & 'Overwrite all inherited'
 - Different tempfile handling for "new" operation in direct edit mode of xml contents
