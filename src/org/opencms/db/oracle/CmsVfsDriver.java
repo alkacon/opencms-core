@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:32 $
- * Version: $Revision: 1.36.8.1 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.36.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.1 $
+ * @version $Revision: 1.36.8.2 $
  * 
  * @since 6.0.0 
  */
@@ -77,9 +77,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
-            stmt.setString(1, new CmsUUID().toString());
-            stmt.setString(2, resourceId.toString());
-
+            stmt.setString(1, resourceId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
@@ -88,7 +86,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-
         // now update the file content
         writeContent(dbc, project, resourceId, content);
     }
@@ -104,7 +101,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[])
      */
-    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    public long writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
@@ -153,6 +150,21 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 conn.setAutoCommit(true);
             }
 
+            // update the content modification date
+            long time = System.currentTimeMillis();
+            try {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCE_UPDATE_CONTENT_DATE");
+                stmt.setLong(1, time);
+                stmt.setString(2, resourceId.toString());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new CmsDbSqlException(Messages.get().container(
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
+            } finally {
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+            }
+            return time;
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId), e);
         } catch (SQLException e) {
@@ -160,7 +172,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-
             if (res != null) {
                 try {
                     res.close();

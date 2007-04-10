@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.114.4.11 $
+ * Date   : $Date: 2007/04/10 12:26:36 $
+ * Version: $Revision: 1.114.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.11 $
+ * @version $Revision: 1.114.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -116,15 +116,16 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the project in which the propertydefinition is created
-     * @param name the name of the propertydefinitions to overwrite
+     * @param name the name of the property definition 
+     * @param type the type of the property definition
      * 
      * @return the new propertydefinition
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, CmsUUID projectId, String name)
+    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, CmsUUID projectId, String name, CmsPropertyDefinition.CmsPropertyType type)
     throws CmsDataAccessException;
-
+    
     /**
      * Creates a new {@link CmsRelation} object in the database.<p>
      * 
@@ -267,7 +268,7 @@ public interface I_CmsVfsDriver {
      * @param onlineProject the online project
      * @param onlineResource the online resource
      * @param offlineResource the offline resource
-     * @param writeFileContent true, if also the content record of the specified offline resource should be written to the online table; false otherwise
+     * @param writeFileContent <code>true</code>, if also the content record of the specified offline resource should be written to the online table
      * 
      * @throws CmsDataAccessException if somethong goes wrong
      */
@@ -678,9 +679,11 @@ public interface I_CmsVfsDriver {
      * @param resourceId the id of the resource used to identify the content to update
      * @param content the new content of the file
      * 
+     * @return returns the modification time
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    long writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException;
 
     /**

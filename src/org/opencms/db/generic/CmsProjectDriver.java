@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/30 07:38:29 $
- * Version: $Revision: 1.241.4.24 $
+ * Date   : $Date: 2007/04/10 12:26:33 $
+ * Version: $Revision: 1.241.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.24 $
+ * @version $Revision: 1.241.4.25 $
  * 
  * @since 6.0.0 
  */
@@ -234,8 +234,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createPublishJob(org.opencms.db.CmsDbContext, org.opencms.publish.CmsPublishJobInfoBean)
      */
-    public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) 
-    throws CmsDataAccessException {
+    public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -254,7 +253,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setLong(9, publishJob.getEnqueueTime());
             stmt.setLong(10, publishJob.getStartTime());
             stmt.setLong(11, publishJob.getFinishTime());
-            
+
             byte[] publishList = internalSerializePublishList(publishJob.getPublishList());
             if (publishList.length < 2000) {
                 stmt.setBytes(12, publishList);
@@ -263,18 +262,20 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             stmt.executeUpdate();
-            
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_PUBLISHLIST_1, publishJob.getPublishHistoryId().toString()), e);
+            throw new CmsDbIoException(Messages.get().container(
+                Messages.ERR_SERIALIZING_PUBLISHLIST_1,
+                publishJob.getPublishHistoryId().toString()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int)
      */
@@ -428,8 +429,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deletePublishJob(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public void deletePublishJob (CmsDbContext dbc, CmsUUID publishHistoryId) 
-    throws CmsDataAccessException {
+    public void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -445,15 +445,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }            
+        }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deletePublishList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public void deletePublishList(
-        CmsDbContext dbc,
-        CmsUUID publishHistoryId) throws CmsDataAccessException {
+    public void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -469,9 +467,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }            
+        }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
      */
@@ -974,6 +972,25 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             String.valueOf(n)));
                     }
                 }
+            } else {
+                // state == unchanged !!?? something went really wrong
+                report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_ERROR);
+
+                if (LOG.isErrorEnabled()) {
+                    // the whole resource is printed out here
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_PUBLISHING_FILE_3,
+                        String.valueOf(m),
+                        String.valueOf(n),
+                        offlineResource), new Exception()); // with stack trace
+                }
             }
         } finally {
             // notify the app. that the published file and it's properties have been modified offline
@@ -984,62 +1001,68 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(CmsDbContext, CmsProject, CmsProject, CmsResource, Set, boolean)
      */
     public CmsFile publishFileContent(
         CmsDbContext dbc,
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedResourceIds) throws CmsDataAccessException {
+        Set publishedResourceIds,
+        boolean needToUpdateContent) throws CmsDataAccessException {
 
         CmsFile newFile = null;
-        CmsFile offlineFile = null;
-
         try {
-            // binary content gets only published once while a project is published
-            if (!publishedResourceIds.contains(offlineResource.getResourceId())) {
-                // read the file content offline
-                CmsFile offlineContent = m_driverManager.getVfsDriver().readFile(
-                    dbc,
-                    offlineProject.getUuid(),
-                    offlineResource.getResourceId());
+            // read the file content offline
+            CmsFile offlineContent = m_driverManager.getVfsDriver().readFile(
+                dbc,
+                offlineProject.getUuid(),
+                offlineResource.getResourceId());
+            CmsFile offlineFile = new CmsFile(offlineResource);
+            offlineFile.setContents(offlineContent.getContents());
 
-                offlineFile = new CmsFile(offlineResource);
-                offlineFile.setContents(offlineContent.getContents());
+            // create the file online              
+            newFile = (CmsFile)offlineFile.clone();
+            newFile.setState(CmsResource.STATE_UNCHANGED);
 
-                // create the file online              
-                newFile = (CmsFile)offlineFile.clone();
-                newFile.setState(CmsResource.STATE_UNCHANGED);
-
-                m_driverManager.getVfsDriver().createResource(dbc, onlineProject, newFile, newFile.getContents());
-
-                // update the online/offline structure and resource records of the file
-                m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, newFile, offlineFile, false);
-
-                publishedResourceIds.add(offlineFile.getResourceId());
+            boolean createSibling = true;
+            // check if we are facing with a create new sibling operation
+            if (!offlineFile.getState().isNew()) {
+                createSibling = false;
             } else {
-                // create the sibling online
-                m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
-
-                CmsFile offlineContent = m_driverManager.getVfsDriver().readFile(
+                // check if the resource entry already exists
+                if (!m_driverManager.getVfsDriver().validateResourceIdExists(
                     dbc,
                     onlineProject.getUuid(),
-                    offlineResource.getResourceId());
+                    offlineFile.getResourceId())) {
+                    // we are creating a normal resource and not a sibling
+                    createSibling = false;
+                }
+            }
 
+            if (createSibling) {
+                // create the sibling online
+                m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
                 newFile = new CmsFile(offlineResource);
                 newFile.setContents(offlineContent.getContents());
+            } else {
+                // update the online/offline structure and resource records of the file
+                m_driverManager.getVfsDriver().publishResource(
+                    dbc,
+                    onlineProject,
+                    newFile,
+                    offlineFile,
+                    needToUpdateContent);
             }
+            publishedResourceIds.add(offlineResource.getResourceId());
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_PUBLISHING_FILE_CONTENT_1,
                     offlineResource.toString()), e);
             }
-
             throw e;
         }
-
         return newFile;
     }
 
@@ -1817,21 +1840,21 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishJob(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) 
+    public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId)
     throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        
+
         CmsPublishJobInfoBean result = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOB");
             stmt.setString(1, publishHistoryId.toString());
-            res = stmt.executeQuery();  
-            
-            if (res.next()) { 
+            res = stmt.executeQuery();
+
+            if (res.next()) {
                 result = createPublishJobInfoBean(res);
             } else {
                 throw new CmsDataAccessException(Messages.get().container(
@@ -1844,31 +1867,30 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        } 
-        
+        }
+
         return result;
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishJobs(org.opencms.db.CmsDbContext, long, long)
      */
-    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) 
-    throws CmsDataAccessException {
+    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        
+
         List result = null;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOBS_IN_TIMERANGE");
             stmt.setLong(1, startTime);
             stmt.setLong(2, endTime);
-            res = stmt.executeQuery();  
-            
+            res = stmt.executeQuery();
+
             result = new ArrayList();
-            while (res.next()) { 
+            while (res.next()) {
                 result.add(createPublishJobInfoBean(res));
             }
         } catch (SQLException e) {
@@ -1877,10 +1899,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        } 
-        
+        }
+
         return result;
-    }    
+    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishList(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
@@ -1891,13 +1913,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsPublishList publishList = null;
-        
+
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_PUBLISHLIST");
             stmt.setString(1, publishHistoryId.toString());
             res = stmt.executeQuery();
-            
+
             if (res.next()) {
                 byte[] bytes = m_sqlManager.getBytes(res, "PUBLISH_LIST");
                 publishList = internalDeserializePublishList(bytes);
@@ -1912,20 +1934,20 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception e) {
             throw new CmsDataAccessException(Messages.get().container(
-                Messages.ERR_PUBLISHLIST_DESERIALIZATION_FAILED_1, publishHistoryId), e);
+                Messages.ERR_PUBLISHLIST_DESERIALIZATION_FAILED_1,
+                publishHistoryId), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }            
-        
+        }
+
         return publishList;
-    }   
+    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishReportContents(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
-    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) 
-    throws CmsDataAccessException {
-        
+    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
@@ -2158,7 +2180,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_WRITE_LOCKS_1, new Integer(count)));
             }
-
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -2236,8 +2257,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishJob(org.opencms.db.CmsDbContext, org.opencms.publish.CmsPublishJobInfoBean)
      */
-    public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob)
-    throws CmsDataAccessException {
+    public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2254,7 +2274,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(7, publishJob.getSize());
             stmt.setLong(8, publishJob.getEnqueueTime());
             stmt.setLong(9, publishJob.getStartTime());
-            stmt.setLong(10, publishJob.getFinishTime());            
+            stmt.setLong(10, publishJob.getFinishTime());
             stmt.setString(11, publishJob.getPublishHistoryId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -2263,22 +2283,21 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }            
+        }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishReport(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
-    public void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) 
-    throws CmsDataAccessException {
-        
+    public void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_WRITE_REPORT");
-            
+
             if (content.length < 2000) {
                 stmt.setBytes(1, content);
             } else {
@@ -2294,8 +2313,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-    }    
-    
+    }
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
      */
@@ -2354,9 +2373,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @return an initialized <code>CmsPublishJobInfoBean</code>
      * @throws SQLException if something goes wrong
      */
-    protected CmsPublishJobInfoBean createPublishJobInfoBean(ResultSet res)
-    throws SQLException {
-      
+    protected CmsPublishJobInfoBean createPublishJobInfoBean(ResultSet res) throws SQLException {
+
         return new CmsPublishJobInfoBean(
             new CmsUUID(res.getString("HISTORY_ID")),
             new CmsUUID(res.getString("PROJECT_ID")),
@@ -2368,10 +2386,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res.getInt("RESOURCE_COUNT"),
             res.getLong("ENQUEUE_TIME"),
             res.getLong("START_TIME"),
-            res.getLong("FINISH_TIME")
-        );
+            res.getLong("FINISH_TIME"));
     }
-    
+
     /**
      * @see java.lang.Object#finalize()
      */
@@ -2488,12 +2505,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @throws ClassNotFoundException if deserialization fails
      */
     protected CmsPublishList internalDeserializePublishList(byte[] bytes) throws IOException, ClassNotFoundException {
-        
+
         ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
         ObjectInputStream oin = new ObjectInputStream(bin);
         return (CmsPublishList)oin.readObject();
     }
-    
+
     /**
      * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
      * 
@@ -2546,7 +2563,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         oout.close();
         return bout.toByteArray();
     }
-    
+
     /**
      * Publishes a changed file.<p>
      * 
@@ -2626,9 +2643,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         offlineProperties);
                 }
             }
-
-            // remove the file online
-            m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineResource);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(
@@ -2639,15 +2653,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw e;
         }
 
-        CmsFile newFile;
+        CmsResource newFile;
         try {
+            boolean needToUpdateContent = (onlineResource.getDateContent() < offlineResource.getDateContent());
             // publish the file content
             newFile = m_driverManager.getProjectDriver().publishFileContent(
                 dbc,
                 dbc.currentProject(),
                 onlineProject,
                 offlineResource,
-                publishedContentIds);
+                publishedContentIds,
+                needToUpdateContent);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2930,7 +2946,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 dbc.currentProject(),
                 onlineProject,
                 offlineResource,
-                publishedContentIds);
+                publishedContentIds,
+                true);
         } catch (CmsVfsResourceAlreadyExistsException e) {
             try {
                 // remove the existing file and ensure that it's content is written 
@@ -2942,7 +2959,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     dbc.currentProject(),
                     onlineProject,
                     offlineResource,
-                    publishedContentIds);
+                    publishedContentIds,
+                    true);
             } catch (CmsDataAccessException e1) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(

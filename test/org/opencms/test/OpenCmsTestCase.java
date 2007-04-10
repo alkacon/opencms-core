@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/03/30 07:42:29 $
- * Version: $Revision: 1.90.4.21 $
+ * Date   : $Date: 2007/04/10 12:26:33 $
+ * Version: $Revision: 1.90.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.21 $
+ * @version $Revision: 1.90.4.22 $
  * 
  * @since 6.0.0
  */
@@ -1339,6 +1339,66 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Tests if the the current date content of a resource is later than the given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateContent the content date
+     */
+    public void assertDateContentAfter(CmsObject cms, String resourceName, long dateContent) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getDateContent() < dateContent) {
+                fail("[DateContent "
+                    + dateContent
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(dateContent)
+                    + " > "
+                    + res.getDateContent()
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(res.getDateContent())
+                    + "]");
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
+     * Tests if the the current date content of a resource is equals to the given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateContent the content date
+     */
+    public void assertDateContent(CmsObject cms, String resourceName, long dateContent) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getDateContent() != dateContent) {
+                fail("[DateContent "
+                    + dateContent
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(dateContent)
+                    + " != "
+                    + res.getDateContent()
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(res.getDateContent())
+                    + "]");
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
      * Compares the current date created of a resource with a given date.<p>
      * 
      * @param cms the CmsObject
@@ -1486,35 +1546,6 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Tests if the given xml document objects are equals (or both null).<p>
-     * 
-     * @param d1 first document to compare
-     * @param d2 second document to compare
-     */
-    public void assertEquals(Document d1, Document d2) {
-
-        if ((d1 == null) && (d2 == null)) {
-            return;
-        }
-
-        if (((d1 == null) && (d2 != null)) || ((d1 != null) && (d2 == null))) {
-            fail("Documents not equal (not both null)");
-        }
-
-        if ((d1 != null) && (d2 != null)) {
-            InternalNodeComparator comparator = new InternalNodeComparator();
-            if (comparator.compare((Node)d1, (Node)d2) != 0) {
-                fail("Comparison of documents failed: "
-                    + "name = "
-                    + d1.getName()
-                    + ", "
-                    + "path = "
-                    + comparator.m_node1.getUniquePath());
-            }
-        }
-    }
-    
-    /**
      * Tests if the given jobs are internally equal.<p>
      * (May have different wrapper classes)
      * 
@@ -1552,6 +1583,35 @@ public class OpenCmsTestCase extends TestCase {
                 fail("Publish jobs do not have the same publish list");
             }
         }    
+    }
+    
+    /**
+     * Tests if the given xml document objects are equals (or both null).<p>
+     * 
+     * @param d1 first document to compare
+     * @param d2 second document to compare
+     */
+    public void assertEquals(Document d1, Document d2) {
+
+        if ((d1 == null) && (d2 == null)) {
+            return;
+        }
+
+        if (((d1 == null) && (d2 != null)) || ((d1 != null) && (d2 == null))) {
+            fail("Documents not equal (not both null)");
+        }
+
+        if ((d1 != null) && (d2 != null)) {
+            InternalNodeComparator comparator = new InternalNodeComparator();
+            if (comparator.compare((Node)d1, (Node)d2) != 0) {
+                fail("Comparison of documents failed: "
+                    + "name = "
+                    + d1.getName()
+                    + ", "
+                    + "path = "
+                    + comparator.m_node1.getUniquePath());
+            }
+        }
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2007/03/05 16:04:43 $
- * Version: $Revision: 1.25.4.6 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.25.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.4.6 $
+ * @version $Revision: 1.25.4.7 $
  * 
  * @since 6.0.0 
  */
@@ -56,9 +56,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -5201022482708455620L;
-
-    /** The id of the content database record. */
-    private CmsUUID m_contentId;
 
     /** The content of this file. */
     private byte[] m_fileContent;
@@ -74,7 +71,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         this(
             resource.getStructureId(),
             resource.getResourceId(),
-            CmsUUID.getNullUUID(),
             resource.getRootPath(),
             resource.getTypeId(),
             resource.getFlags(),
@@ -88,15 +84,14 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getDateExpired(),
             resource.getSiblingCount(),
             0,
+            resource.getDateContent(),
             new byte[0]);
 
         if (resource instanceof CmsFile) {
             // the resource already was a file, keep contents that might have been read already
             m_fileContent = ((CmsFile)resource).getContents();
-            m_contentId = ((CmsFile)resource).getContentId();
             if (m_fileContent == null) {
                 m_fileContent = new byte[0];
-                m_contentId = CmsUUID.getNullUUID();
             }
         }
     }
@@ -105,7 +100,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * Constructor, creates a new CmsFile object.<p>
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param contentId the id of this resources content record
      * @param path the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -119,12 +113,12 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param dateExpired the expiration date of this resource
      * @param linkCount the count of all siblings of this resource 
      * @param length the size of the file content of this resource
+     * @param dateContent the date of the last modification of the content of this resource 
      * @param content the binary content data of this file
      */
     public CmsFile(
         CmsUUID structureId,
         CmsUUID resourceId,
-        CmsUUID contentId,
         String path,
         int type,
         int flags,
@@ -138,6 +132,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         long dateExpired,
         int linkCount,
         int length,
+        long dateContent,
         byte[] content) {
 
         // create the CmsResource.
@@ -157,10 +152,9 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             dateReleased,
             dateExpired,
             linkCount,
-            length);
+            length,
+            dateContent);
 
-        // set content, id and length
-        m_contentId = contentId;
         m_fileContent = content;
     }
 
@@ -220,7 +214,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsFile clone = new CmsFile(
             getStructureId(),
             getResourceId(),
-            getContentId(),
             getRootPath(),
             getTypeId(),
             getFlags(),
@@ -234,6 +227,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getDateExpired(),
             getSiblingCount(),
             getLength(),
+            getDateContent(),
             newContent);
 
         if (isTouched()) {
@@ -241,16 +235,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         }
 
         return clone;
-    }
-
-    /**
-     * Returns the id of the content database entry.<p>
-     *
-     * @return the id of the content database entry
-     */
-    public CmsUUID getContentId() {
-
-        return m_contentId;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/03/28 15:39:29 $
- * Version: $Revision: 1.21.4.7 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.21.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.7 $
+ * @version $Revision: 1.21.4.8 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -95,7 +95,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishMovedFiles"));
         suite.addTest(new TestPublishing("testPublishRelatedFiles"));
         suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
-        suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
+        suite.addTest(new TestPublishing("testPublishContentDate"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -232,6 +232,155 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, resource3, CmsResource.STATE_UNCHANGED);
         assertState(cms, resource4, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Tests the behaviour during publishing depending on the content date.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishContentDate() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the behaviour during publishing depending on the content date");
+
+        String resName = "/newtext.txt";
+
+        // test creating content
+        long time = System.currentTimeMillis();
+        CmsResource offlineResource = cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), null, null);
+        assertTrue(offlineResource.getDateContent() <= System.currentTimeMillis());
+        assertDateContentAfter(cms, resName, time);
+
+        // test publishing new content
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject onlineProject = cms.readProject("Online");
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContent(cms, resName, offlineResource.getDateContent());
+
+        // test modifying the content
+        CmsProject offlineProject = cms.readProject("Offline");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        cms.lockResource(resName);
+        CmsFile offlineFile = CmsFile.upgrade(offlineResource, cms);
+        time = System.currentTimeMillis();
+        offlineFile.setContents("".getBytes());
+        offlineFile = cms.writeFile(offlineFile);
+        assertTrue(offlineFile.getDateContent() <= System.currentTimeMillis());
+        assertDateContentAfter(cms, resName, time);
+
+        // check the online project before publishing
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertTrue(offlineFile.getDateContent() >= cms.readResource(resName).getDateContent());
+
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        // now publish and check again
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContentAfter(cms, resName, offlineResource.getDateContent());
+
+        // test modifying just a property/attribute
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        cms.lockResource(resName);
+        time = cms.readResource(resName).getDateContent();
+        cms.writePropertyObject(resName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "abc", "def"));
+        cms.setDateExpired(resName, System.currentTimeMillis() + 100000, false);
+        assertDateContent(cms, resName, time);
+
+        // check the online project before publishing
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContentAfter(cms, resName, offlineFile.getDateContent());
+
+        // now publish and check again
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        time = cms.readResource(resName).getDateContent();
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContentAfter(cms, resName, offlineFile.getDateContent());
+        assertDateContent(cms, resName, time);
+
+        // test creating a sibling
+        String sibName = "/newtext_sib.txt";
+
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        time = cms.readResource(resName).getDateContent();
+        CmsResource siblingOffline = cms.createSibling(resName, sibName, null);
+        assertDateContent(cms, sibName, time);
+        assertDateContent(cms, resName, time);
+
+        // now publish and check
+        OpenCms.getPublishManager().publishResource(cms, sibName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContent(cms, sibName, time);
+        assertDateContent(cms, resName, time);
+
+        // test modifying the content of a sibling
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        cms.lockResource(resName);
+        offlineFile = cms.readFile(resName);
+        time = System.currentTimeMillis();
+        offlineFile.setContents("test".getBytes());
+        offlineFile = cms.writeFile(offlineFile);
+
+        assertTrue(offlineFile.getDateContent() <= System.currentTimeMillis());
+        assertDateContentAfter(cms, resName, time);
+        assertDateContent(cms, sibName, offlineFile.getDateContent());
+
+        // check the online project before publishing
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertTrue(offlineFile.getDateContent() >= cms.readResource(resName).getDateContent());
+        siblingOffline = cms.readResource(sibName);
+        assertTrue(siblingOffline.getDateContent() >= cms.readResource(sibName).getDateContent());
+
+        // now publish and check again
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContentAfter(cms, resName, offlineResource.getDateContent());
+        assertDateContentAfter(cms, sibName, offlineResource.getDateContent());
+        assertDateContent(cms, sibName, cms.readResource(resName).getDateContent());
+
+        // test moving
+        String movedName = "/newtext_mov.txt";
+
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        cms.lockResource(resName);
+        time = System.currentTimeMillis();
+        // this will write the content for updating links
+        cms.moveResource(resName, movedName);
+
+        assertDateContentAfter(cms, movedName, time);
+        assertDateContentAfter(cms, sibName, time);
+        time = offlineFile.getDateContent();
+        offlineFile = cms.readFile(movedName);
+        assertDateContent(cms, sibName, offlineFile.getDateContent());
+
+        // check the online project before publishing
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContent(cms, resName, time);
+        assertDateContent(cms, sibName, time);
+
+        // now publish and check again
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        OpenCms.getPublishManager().publishResource(cms, movedName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateContent(cms, movedName, offlineFile.getDateContent());
+        assertDateContent(cms, sibName, offlineFile.getDateContent());
     }
 
     /**
@@ -500,132 +649,6 @@ public class TestPublishing extends OpenCmsTestCase {
         }
         assertState(cms, target1, CmsResource.STATE_UNCHANGED);
 
-    }
-
-    /**
-     * Test publishing of related files.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishRelatedFiles() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing publishing of related files");
-
-        String resName = "index.html";
-
-        // touch the file to publish        
-        cms.lockResource(resName);
-        cms.setDateLastModified(resName, System.currentTimeMillis(), false);
-        CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
-
-        // get the publish list
-        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, resource, false);
-        // just check the publish list
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertTrue(pubList.getFolderList().isEmpty());
-        assertEquals(1, pubList.getFileList().size());
-        assertTrue(pubList.getFileList().contains(resource));
-
-        // get the list of related resources, which should be still empty, since the related resource has unchanged state
-        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
-        // check the publish list has not been touched
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertTrue(pubList.getFolderList().isEmpty());
-        assertEquals(1, pubList.getFileList().size());
-        assertTrue(pubList.getFileList().contains(resource));
-        // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
-
-        String relResName = "folder1/image2.gif";
-
-        // touch the related resource
-        cms.lockResource(relResName);
-        cms.setDateLastModified(relResName, System.currentTimeMillis(), false);
-        CmsResource relatedRes = cms.readResource(relResName, CmsResourceFilter.DEFAULT);
-
-        // get the list of related resources again
-        relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
-        // check the publish list has not been touched
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertTrue(pubList.getFolderList().isEmpty());
-        assertEquals(1, pubList.getFileList().size());
-        assertTrue(pubList.getFileList().contains(resource));
-        // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertEquals(1, relatedList.getFileList().size());
-        assertTrue(relatedList.getFileList().contains(relatedRes));
-
-        CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
-        // check the publish list has not been touched
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertTrue(pubList.getFolderList().isEmpty());
-        assertEquals(1, pubList.getFileList().size());
-        assertTrue(pubList.getFileList().contains(resource));
-        // check the related publish list has not been touched
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertEquals(1, relatedList.getFileList().size());
-        assertTrue(relatedList.getFileList().contains(relatedRes));
-        // check the merged publish list
-        assertTrue(mergedList.getDeletedFolderList().isEmpty());
-        assertTrue(mergedList.getFolderList().isEmpty());
-        assertEquals(2, mergedList.getFileList().size());
-        assertTrue(mergedList.getFileList().contains(relatedRes));
-        assertTrue(mergedList.getFileList().contains(resource));
-    }
-
-    /**
-     * Test publishing of related files taken a whole folder structure.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishRelatedFilesInFolder() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing publishing of related files taken a whole folder structure");
-
-        String resName = "/folder1/";
-
-        // touch the file to publish        
-        cms.lockResource(resName);
-        cms.setDateLastModified(resName, System.currentTimeMillis(), true);
-        CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
-
-        // get the publish list
-        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, resource, false);
-        // just check the publish list
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertFalse(pubList.getFolderList().isEmpty());
-        assertFalse(pubList.getFileList().isEmpty());
-
-        // get the list of related resources, which should be still empty, since the related resource has unchanged state
-        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
-        // check the publish list has not been touched
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertFalse(pubList.getFolderList().isEmpty());
-        assertFalse(pubList.getFileList().isEmpty());
-        // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
-
-        CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
-        // check the publish list has not been touched
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertFalse(pubList.getFolderList().isEmpty());
-        assertFalse(pubList.getFileList().isEmpty());
-        // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
-        // check the merged publish list
-        assertEquals(pubList.getDeletedFolderList(), mergedList.getDeletedFolderList());
-        assertEquals(pubList.getFolderList(), mergedList.getFolderList());
-        assertEquals(pubList.getFileList(), mergedList.getFileList());
     }
 
     /**
@@ -981,6 +1004,132 @@ public class TestPublishing extends OpenCmsTestCase {
     }
 
     /**
+     * Test publishing of related files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishRelatedFiles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing of related files");
+
+        String resName = "index.html";
+
+        // touch the file to publish        
+        cms.lockResource(resName);
+        cms.setDateLastModified(resName, System.currentTimeMillis(), false);
+        CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
+
+        // get the publish list
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, resource, false);
+        // just check the publish list
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        assertTrue(pubList.getFileList().contains(resource));
+
+        // get the list of related resources, which should be still empty, since the related resource has unchanged state
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        assertTrue(pubList.getFileList().contains(resource));
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertTrue(relatedList.getFolderList().isEmpty());
+        assertTrue(relatedList.getFileList().isEmpty());
+
+        String relResName = "folder1/image2.gif";
+
+        // touch the related resource
+        cms.lockResource(relResName);
+        cms.setDateLastModified(relResName, System.currentTimeMillis(), false);
+        CmsResource relatedRes = cms.readResource(relResName, CmsResourceFilter.DEFAULT);
+
+        // get the list of related resources again
+        relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        assertTrue(pubList.getFileList().contains(resource));
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertTrue(relatedList.getFolderList().isEmpty());
+        assertEquals(1, relatedList.getFileList().size());
+        assertTrue(relatedList.getFileList().contains(relatedRes));
+
+        CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        assertTrue(pubList.getFileList().contains(resource));
+        // check the related publish list has not been touched
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertTrue(relatedList.getFolderList().isEmpty());
+        assertEquals(1, relatedList.getFileList().size());
+        assertTrue(relatedList.getFileList().contains(relatedRes));
+        // check the merged publish list
+        assertTrue(mergedList.getDeletedFolderList().isEmpty());
+        assertTrue(mergedList.getFolderList().isEmpty());
+        assertEquals(2, mergedList.getFileList().size());
+        assertTrue(mergedList.getFileList().contains(relatedRes));
+        assertTrue(mergedList.getFileList().contains(resource));
+    }
+
+    /**
+     * Test publishing of related files taken a whole folder structure.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishRelatedFilesInFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing of related files taken a whole folder structure");
+
+        String resName = "/folder1/";
+
+        // touch the file to publish        
+        cms.lockResource(resName);
+        cms.setDateLastModified(resName, System.currentTimeMillis(), true);
+        CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
+
+        // get the publish list
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, resource, false);
+        // just check the publish list
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertFalse(pubList.getFolderList().isEmpty());
+        assertFalse(pubList.getFileList().isEmpty());
+
+        // get the list of related resources, which should be still empty, since the related resource has unchanged state
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertFalse(pubList.getFolderList().isEmpty());
+        assertFalse(pubList.getFileList().isEmpty());
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertTrue(relatedList.getFolderList().isEmpty());
+        assertTrue(relatedList.getFileList().isEmpty());
+
+        CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertFalse(pubList.getFolderList().isEmpty());
+        assertFalse(pubList.getFileList().isEmpty());
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertTrue(relatedList.getFolderList().isEmpty());
+        assertTrue(relatedList.getFileList().isEmpty());
+        // check the merged publish list
+        assertEquals(pubList.getDeletedFolderList(), mergedList.getDeletedFolderList());
+        assertEquals(pubList.getFolderList(), mergedList.getFolderList());
+        assertEquals(pubList.getFileList(), mergedList.getFileList());
+    }
+
+    /**
      * Tests the publishing of resource property.<p>
      * 
      * take 2 siblings (s1 and s2):
@@ -1222,12 +1371,12 @@ public class TestPublishing extends OpenCmsTestCase {
      * Returns a project for testing purposes.<p>
      * 
      * @param cms the cms object
+     * 
      * @return a project for testing purposes
      */
-    CmsProject getTestProject(CmsObject cms) {
+    private CmsProject getTestProject(CmsObject cms) {
 
         CmsProject project = null;
-
         try {
             project = cms.readProject("Test");
         } catch (Exception e) {
@@ -1237,7 +1386,6 @@ public class TestPublishing extends OpenCmsTestCase {
                 // noop
             }
         }
-
         return project;
     }
 }

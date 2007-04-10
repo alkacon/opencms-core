@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.52.8.4 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.52.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.52.8.4 $
+ * @version $Revision: 1.52.8.5 $
  * 
  * @since 6.0.0
  */
@@ -67,12 +67,14 @@ public interface I_CmsBackupDriver {
      * Creates a new property defintion in the database.<p>
      * 
      * @param dbc the current database context
-     * @param name the name of the propertydefinitions to overwrite
+     * @param name the name of the property definition
+     * @param type the type of the property definition
      * 
-     * @return the new propertydefinition
+     * @return the new property definition object
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsDataAccessException;
+    CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name, CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException;
 
     /**
      * Creates a valid CmsBackupResource instance from a JDBC ResultSet.<p>

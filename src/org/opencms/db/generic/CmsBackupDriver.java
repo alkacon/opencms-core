@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.141.4.9 $
+ * Date   : $Date: 2007/04/10 12:26:33 $
+ * Version: $Revision: 1.141.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.141.4.9 $
+ * @version $Revision: 1.141.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -93,10 +93,12 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.file.CmsPropertyDefinition.CmsPropertyType)
      */
-    public CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name)
-    throws CmsDataAccessException {
+    public CmsPropertyDefinition createBackupPropertyDefinition(
+        CmsDbContext dbc,
+        String name,
+        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -106,6 +108,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
             stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
+            stmt.setInt(3, type.getMode());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -147,21 +150,18 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         String userCreatedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED_NAME"));
 
-        CmsUUID contentId;
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-            contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_CONTENT_ID")));
         } else {
             content = new byte[0];
-            contentId = CmsUUID.getNullUUID();
         }
+        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
         return new CmsBackupResource(
             backupId,
             tagId,
             versionId,
             structureId,
             resourceId,
-            contentId,
             resourcePath,
             resourceType,
             resourceFlags,
@@ -176,6 +176,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             dateReleased,
             dateExpired,
             resourceSize,
+            dateContent, 
             content);
     }
 
@@ -823,7 +824,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             if (res.next()) {
                 propDef = new CmsPropertyDefinition(
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))),
-                    res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
+                    res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")),
+                    CmsPropertyDefinition.CmsPropertyType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_TYPE"))));
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
@@ -1126,13 +1128,14 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setString(7, resource.getUserLastModified().toString());
                     stmt.setInt(8, resource.getState().getState());
                     stmt.setInt(9, resource.getLength());
-                    stmt.setString(10, dbc.currentProject().getUuid().toString());
-                    stmt.setInt(11, resource.getSiblingCount());
-                    stmt.setInt(12, tagId);
-                    stmt.setInt(13, versionId);
-                    stmt.setString(14, backupPkId.toString());
-                    stmt.setString(15, createdName);
-                    stmt.setString(16, lastModifiedName);
+                    stmt.setLong(10, resource.getDateContent());
+                    stmt.setString(11, dbc.currentProject().getUuid().toString());
+                    stmt.setInt(12, resource.getSiblingCount());
+                    stmt.setInt(13, tagId);
+                    stmt.setInt(14, versionId);
+                    stmt.setString(15, backupPkId.toString());
+                    stmt.setString(16, createdName);
+                    stmt.setString(17, lastModifiedName);
                     stmt.executeUpdate();
 
                     m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1277,31 +1280,27 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        CmsUUID contentId;
         byte[] fileContent;
         if (resource instanceof CmsFile) {
-            contentId = ((CmsFile)resource).getContentId();
             fileContent = ((CmsFile)resource).getContents();
         } else {
-            contentId = CmsUUID.getNullUUID();
             fileContent = new byte[0];
         }
 
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENTS_WRITE_BACKUP");
-            stmt.setString(1, contentId.toString());
-            stmt.setString(2, resource.getResourceId().toString());
 
+            stmt.setString(1, resource.getResourceId().toString());
             if (fileContent.length < 2000) {
-                stmt.setBytes(3, fileContent);
+                stmt.setBytes(2, fileContent);
             } else {
-                stmt.setBinaryStream(3, new ByteArrayInputStream(fileContent), fileContent.length);
+                stmt.setBinaryStream(2, new ByteArrayInputStream(fileContent), fileContent.length);
             }
 
-            stmt.setInt(4, tagId);
-            stmt.setInt(5, versionId);
-            stmt.setString(6, backupId.toString());
+            stmt.setInt(3, tagId);
+            stmt.setInt(4, versionId);
+            stmt.setString(5, backupId.toString());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

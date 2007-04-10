@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2007/03/01 15:01:26 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.4.3 $
+ * @version $Revision: 1.25.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -135,6 +135,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             dateReleased,
             dateExpired,
             linkCount,
+            -1,
             -1);
     }
 

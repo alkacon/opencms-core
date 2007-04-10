@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/30 07:38:16 $
- * Version: $Revision: 1.76.4.7 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.76.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.7 $
+ * @version $Revision: 1.76.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -106,8 +106,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName)
-    throws CmsDataAccessException;
+    void createProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName) throws CmsDataAccessException;
 
     /**
      * Inserts an entry for a publish job .<p>
@@ -117,10 +116,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createPublishJob(
-        CmsDbContext dbc,
-        CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
-    
+    void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
+
     /**
      * Deletes all entries in the published resource table.<p>
      * 
@@ -199,10 +196,8 @@ public interface I_CmsProjectDriver {
      * @param publishHistoryId the history id identifying the publish job
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishJob(
-        CmsDbContext dbc,
-        CmsUUID publishHistoryId) throws CmsDataAccessException;
-    
+    void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+
     /**
      * Deletes the publish list assigned to a publish job.<p>
      * 
@@ -210,10 +205,8 @@ public interface I_CmsProjectDriver {
      * @param publishHistoryId the history id identifying the publish job
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishList(
-        CmsDbContext dbc,
-        CmsUUID publishHistoryId) throws CmsDataAccessException;
-    
+    void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+
     /**
      * Deletes an entry in the published resource table.<p>
      * 
@@ -345,8 +338,10 @@ public interface I_CmsProjectDriver {
      * @param onlineProject the online project to write data
      * @param offlineFileHeader the offline header of the file of which the content gets published
      * @param publishedResourceIds a Set with the UUIDs of the already published content records
+     * @param needToUpdateContent <code>true</code> if the content record has to be updated
      * 
      * @return the published file (online)
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsFile publishFileContent(
@@ -354,7 +349,8 @@ public interface I_CmsProjectDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineFileHeader,
-        Set publishedResourceIds) throws CmsDataAccessException;
+        Set publishedResourceIds,
+        boolean needToUpdateContent) throws CmsDataAccessException;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -455,8 +451,7 @@ public interface I_CmsProjectDriver {
      * @return String the project's resource path
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourcename)
-    throws CmsDataAccessException;
+    String readProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourcename) throws CmsDataAccessException;
 
     /**
      * Reads the project resources for a specified project.<p>
@@ -526,7 +521,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
-    
+
     /**
      * Reads all publish jobs finished in the given time range.<p>
      * If <code>(0L, 0L)</code> is passed as time range, all pending jobs are returned.
@@ -539,7 +534,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsDataAccessException;
-    
+
     /**
      * Reads the publish list assigned to a publish job.<p>
      * 
@@ -559,7 +554,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
-    
+
     /**
      * Reads the resources that were published during a publish process for a given publish history ID.<p>
      * 
@@ -667,10 +662,8 @@ public interface I_CmsProjectDriver {
      * @param publishJob the publish job to write
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writePublishJob(
-        CmsDbContext dbc,
-        CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
-    
+    void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
+
     /**
      * Writes a publish report for a publish job.<p>
      * 
@@ -679,11 +672,8 @@ public interface I_CmsProjectDriver {
      * @param content the report output
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writePublishReport(
-        CmsDbContext dbc,
-        CmsUUID publishId,
-        byte[] content) throws CmsDataAccessException;
-    
+    void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) throws CmsDataAccessException;
+
     /**
      * Inserts an entry in the published resource table.<p>
      * 

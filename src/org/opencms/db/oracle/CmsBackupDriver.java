@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2007/03/01 15:01:32 $
- * Version: $Revision: 1.56.8.3 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.56.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.56.8.3 $
+ * @version $Revision: 1.56.8.4 $
  * 
  * @since 6.0.0 
  */
@@ -187,13 +187,10 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         Connection conn = null;
         ResultSet res = null;
 
-        CmsUUID contentId;
         byte[] fileContent;
         if (resource instanceof CmsFile) {
-            contentId = ((CmsFile)resource).getContentId();
             fileContent = ((CmsFile)resource).getContents();
         } else {
-            contentId = CmsUUID.getNullUUID();
             fileContent = new byte[0];
         }
 
@@ -203,11 +200,10 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
-            stmt.setString(1, contentId.toString());
-            stmt.setString(2, resource.getResourceId().toString());
-            stmt.setInt(3, tagId);
-            stmt.setInt(4, versionId);
-            stmt.setString(5, backupId.toString());
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setInt(2, tagId);
+            stmt.setInt(3, versionId);
+            stmt.setString(4, backupId.toString());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -229,14 +225,14 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
             // select the backup record for update            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
-            stmt.setString(1, contentId.toString());
+            stmt.setString(1,  resource.getResourceId().toString());
             stmt.setString(2, backupId.toString());
-
+            
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_BACKUP_CONTENT_ID_2,
-                    contentId,
+                    Messages.ERR_NO_BACKUP_RESOURCE_ID_2,
+                    resource.getResourceId(),
                     backupId));
             }
 

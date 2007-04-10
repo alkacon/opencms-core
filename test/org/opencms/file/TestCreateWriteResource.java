@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.19.8.5 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.19.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.8.5 $
+ * @version $Revision: 1.19.8.6 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -405,7 +405,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            -1);
+            -1,
+            0);
 
         cms.importResource(resourcename, resource, null, null);
 
@@ -464,7 +465,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            -1);
+            -1,
+            0);
 
         cms.importResource(resourcename, resource, null, null);
 
@@ -522,7 +524,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            content.length);
+            content.length,
+            0);
 
         cms.importResource(resourcename, resource, content, null);
 
@@ -586,7 +589,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            content.length);
+            content.length,
+            0);
 
         cms.importResource(resourcename, resource, content, null);
 
@@ -671,7 +675,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            content.length);
+            content.length,
+            0);
 
         properties.add(prop2);
         // using null as content must create sibling of existing content
@@ -724,7 +729,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            content.length);
+            content.length,
+            timestamp);
 
         properties.add(prop3);
         // using new content must replace existing content
@@ -808,7 +814,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         } catch (CmsLockException e) {
             // ok
         }
-        
+
         // try to lock the target, this is not possible because of missing permissions
         try {
             cms.lockResource(target);

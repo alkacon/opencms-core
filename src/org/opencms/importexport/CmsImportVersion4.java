@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2007/03/01 15:01:31 $
- * Version: $Revision: 1.87.4.7 $
+ * Date   : $Date: 2007/04/10 12:26:33 $
+ * Version: $Revision: 1.87.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.87.4.7 $ 
+ * @version $Revision: 1.87.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -292,7 +292,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                 datereleased,
                 dateexpired,
                 1,
-                size);
+                size,
+                0);
 
             // import this resource in the VFS
             result = m_cms.importResource(destination, resource, content, properties);

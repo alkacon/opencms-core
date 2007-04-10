@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/03/12 16:37:55 $
- * Version: $Revision: 1.24.4.4 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.24.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.4 $ 
+ * @version $Revision: 1.24.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -398,6 +398,9 @@ public class CmsLogin extends CmsJspLoginBean {
                 m_username = userNameCookie.getValue();
             }
         }
+        if ("null".equals(m_username)) {
+            m_username = null;
+        }
         // get the user name cookie
         Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
@@ -405,6 +408,9 @@ public class CmsLogin extends CmsJspLoginBean {
             if (m_oufqn == null) {
                 m_oufqn = ouFqnCookie.getValue();
             }
+        }
+        if ("null".equals(m_oufqn)) {
+            m_oufqn = null;
         }
     }
 

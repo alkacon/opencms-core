@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/03/30 07:38:16 $
- * Version: $Revision: 1.570.2.77 $
+ * Date   : $Date: 2007/04/10 12:26:34 $
+ * Version: $Revision: 1.570.2.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -245,6 +245,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Key to indicate update of resource state. */
     public static final int UPDATE_RESOURCE_STATE = 1;
+
+    /** Key to indicate update of resource state including the content date. */
+    public static final int UPDATE_RESOURCE_STATE_CONTENT = 7;
 
     /** Key to indicate update of structure record. */
     public static final int UPDATE_STRUCTURE = 5;
@@ -1007,7 +1010,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             source.getDateReleased(),
             source.getDateExpired(),
             1,
-            source.getLength());
+            source.getLength(),
+            source.getDateContent());
 
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(dateLastModified);
@@ -1255,24 +1259,32 @@ public final class CmsDriverManager implements I_CmsEventListener {
         name = name.trim();
         // validate the property name
         CmsPropertyDefinition.checkPropertyName(name);
-
+        int todo; // make the type a parameter
         try {
             try {
                 propertyDefinition = m_vfsDriver.readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
             } catch (CmsException e) {
-                propertyDefinition = m_vfsDriver.createPropertyDefinition(dbc, dbc.currentProject().getUuid(), name);
+                propertyDefinition = m_vfsDriver.createPropertyDefinition(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    name,
+                    CmsPropertyDefinition.TYPE_NORMAL);
             }
 
             try {
                 m_vfsDriver.readPropertyDefinition(dbc, name, CmsProject.ONLINE_PROJECT_ID);
             } catch (CmsException e) {
-                m_vfsDriver.createPropertyDefinition(dbc, CmsProject.ONLINE_PROJECT_ID, name);
+                m_vfsDriver.createPropertyDefinition(
+                    dbc,
+                    CmsProject.ONLINE_PROJECT_ID,
+                    name,
+                    CmsPropertyDefinition.TYPE_NORMAL);
             }
 
             try {
                 m_backupDriver.readBackupPropertyDefinition(dbc, name);
             } catch (CmsException e) {
-                m_backupDriver.createBackupPropertyDefinition(dbc, name);
+                m_backupDriver.createBackupPropertyDefinition(dbc, name, CmsPropertyDefinition.TYPE_NORMAL);
             }
         } finally {
 
@@ -1295,10 +1307,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
-        
+
         m_projectDriver.createPublishJob(dbc, publishJob);
     }
-    
+
     /**
      * Creates a new resource with the provided content and properties.<p>
      * 
@@ -1579,7 +1591,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resource.getDateReleased(),
                 resource.getDateExpired(),
                 1,
-                contentLength);
+                contentLength,
+                resource.getDateContent());
 
             // ensure date is updated only if required
             if (resource.isTouched()) {
@@ -1619,8 +1632,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_vfsDriver.writeResource(dbc, dbc.currentProject(), newResource, updateStates);
 
                 if ((content != null) && resource.isFile()) {
-                    // also update file content if required
-                    m_vfsDriver.writeContent(dbc, dbc.currentProject(), newResource.getResourceId(), content);
+                    // also update file content if required                    
+                    long contentModificationDate = m_vfsDriver.writeContent(
+                        dbc,
+                        dbc.currentProject(),
+                        newResource.getResourceId(),
+                        content);
+                    newResource = new CmsResource(
+                        newResource.getStructureId(),
+                        newResource.getResourceId(),
+                        newResource.getRootPath(),
+                        newResource.getTypeId(),
+                        newResource.isFolder(),
+                        newResource.getFlags(),
+                        newResource.getProjectLastModified(),
+                        newResource.getState(),
+                        newResource.getDateCreated(),
+                        newResource.getUserCreated(),
+                        newResource.getDateLastModified(),
+                        newResource.getUserLastModified(),
+                        newResource.getDateReleased(),
+                        newResource.getDateExpired(),
+                        newResource.getSiblingCount(),
+                        newResource.getLength(),
+                        contentModificationDate);
                 }
             }
 
@@ -1719,7 +1754,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            size);
+            size,
+            0); // content time will be corrected later
 
         return createResource(dbc, targetName, newResource, content, properties, false);
     }
@@ -1778,7 +1814,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             source.getDateReleased(),
             source.getDateExpired(),
             source.getSiblingCount() + 1,
-            source.getLength());
+            source.getLength(),
+            source.getDateContent());
 
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(newResource.getDateLastModified());
@@ -2356,9 +2393,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-        
+
         m_projectDriver.deletePublishJob(dbc, publishHistoryId);
-    }    
+    }
 
     /**
      * Deletes the publish list assigned to a publish job.<p>
@@ -2368,10 +2405,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-        
+
         m_projectDriver.deletePublishList(dbc, publishHistoryId);
     }
-    
+
     /**
      * Deletes all relations for the given resource matching the given filter.<p>
      * 
@@ -4918,24 +4955,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } catch (CmsException exc) {
             enqueueException = exc;
         }
-        
+
         // if an exception was raised, remove the publish locks
         // and throw the exception again
-        if (enqueueException != null) {       
+        if (enqueueException != null) {
             itResources = allResources.iterator();
             while (itResources.hasNext()) {
                 CmsResource resource = (CmsResource)itResources.next();
                 CmsLock lock = getLock(dbc, resource);
-                if (lock.getSystemLock().isPublish() 
+                if (lock.getSystemLock().isPublish()
                     && lock.getSystemLock().isOwnedBy(cms.getRequestContext().currentUser())) {
                     unlockResource(dbc, resource, true, true);
-                }   
+                }
             }
-            
+
             throw enqueueException;
-        }    
+        }
     }
-    
+
     /**
      * Reads an access control entry from the cms.<p>
      * 
@@ -5763,61 +5800,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads a single publish job identified by its publish history id.<p>
-     * 
-     * @param dbc the current database context
-     * @param publishHistoryId unique id to identify the publish job in the publish history
-     * @return an object of type <code>{@link CmsPublishJobInfoBean}</code> 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-        
-        return m_projectDriver.readPublishJob(dbc, publishHistoryId);
-    }
-    
-    /**
-     * Reads all available publish jobs.<p>
-     * 
-     * @param dbc the current database context
-     * @param startTime the start of the time range for finish time
-     * @param endTime the end of the time range for finish time
-     * @return a list of objects of type <code>{@link CmsPublishJobInfoBean}</code>
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsException {
-        
-        return m_projectDriver.readPublishJobs(dbc, startTime, endTime);
-    }
-    
-    /**
-     * Reads the publish list assigned to a publish job.<p>
-     * 
-     * @param dbc the current database context
-     * @param publishHistoryId the history id identifying the publish job
-     * @return the assigned publish list
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-        
-        return m_projectDriver.readPublishList(dbc, publishHistoryId);
-    }
- 
-    /**
-     * Reads the publish report assigned to a publish job.<p>
-     * 
-     * @param dbc the current database context
-     * @param publishHistoryId the history id identifying the publish job  
-     * @return the content of the assigned publish report
-     * @throws CmsException if something goes wrong
-     */
-    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
-        
-        return m_projectDriver.readPublishReportContents(dbc, publishHistoryId);
-    }
-    
-    /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
      * @param dbc the current database context
@@ -5830,6 +5812,61 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
         return m_projectDriver.readPublishedResources(dbc, dbc.currentProject().getUuid(), publishHistoryId);
+    }
+
+    /**
+     * Reads a single publish job identified by its publish history id.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId unique id to identify the publish job in the publish history
+     * @return an object of type <code>{@link CmsPublishJobInfoBean}</code> 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
+
+        return m_projectDriver.readPublishJob(dbc, publishHistoryId);
+    }
+
+    /**
+     * Reads all available publish jobs.<p>
+     * 
+     * @param dbc the current database context
+     * @param startTime the start of the time range for finish time
+     * @param endTime the end of the time range for finish time
+     * @return a list of objects of type <code>{@link CmsPublishJobInfoBean}</code>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsException {
+
+        return m_projectDriver.readPublishJobs(dbc, startTime, endTime);
+    }
+
+    /**
+     * Reads the publish list assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job
+     * @return the assigned publish list
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
+
+        return m_projectDriver.readPublishList(dbc, publishHistoryId);
+    }
+
+    /**
+     * Reads the publish report assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job  
+     * @return the content of the assigned publish report
+     * @throws CmsException if something goes wrong
+     */
+    public byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
+
+        return m_projectDriver.readPublishReportContents(dbc, publishHistoryId);
     }
 
     /**
@@ -6474,7 +6511,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsFile newFile = new CmsFile(
                 resource.getStructureId(),
                 resource.getResourceId(),
-                backupFile.getContentId(),
                 resource.getRootPath(),
                 backupFile.getTypeId(),
                 flags,
@@ -6488,6 +6524,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 backupFile.getDateExpired(),
                 backupFile.getSiblingCount(),
                 backupFile.getLength(),
+                backupFile.getDateContent(),
                 backupFile.getContents());
 
             writeFile(dbc, newFile);
@@ -7248,7 +7285,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
 
-        m_vfsDriver.writeContent(dbc, dbc.currentProject(), resource.getResourceId(), resource.getContents());
+        long contentModificationDate = m_vfsDriver.writeContent(
+            dbc,
+            dbc.currentProject(),
+            resource.getResourceId(),
+            resource.getContents());
+        resource = new CmsFile(
+            resource.getStructureId(),
+            resource.getResourceId(),
+            resource.getRootPath(),
+            resource.getTypeId(),
+            resource.getFlags(),
+            resource.getProjectLastModified(),
+            resource.getState(),
+            resource.getDateCreated(),
+            resource.getUserCreated(),
+            resource.getDateLastModified(),
+            resource.getUserLastModified(),
+            resource.getDateReleased(),
+            resource.getDateExpired(),
+            resource.getSiblingCount(),
+            resource.getLength(),
+            contentModificationDate,
+            resource.getContents());
 
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
@@ -7464,10 +7523,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
-    
+
         m_projectDriver.writePublishJob(dbc, publishJob);
     }
-    
+
     /**
      * Writes the publish report for a publish job.<p>
      * 
@@ -7476,16 +7535,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void writePublishReport(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsException {
-    
+
         CmsPublishReport report = (CmsPublishReport)publishJob.removePublishReport();
-       
+
         if (report != null) {
-            m_projectDriver.writePublishReport(dbc, 
-                publishJob.getPublishHistoryId(), 
-                report.getContents());
+            m_projectDriver.writePublishReport(dbc, publishJob.getPublishHistoryId(), report.getContents());
         }
     }
-    
+
     /**
      * Writes a resource to the OpenCms VFS.<p>
      * 
@@ -8541,7 +8598,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsFile restoredFile = new CmsFile(
                 onlineResource.getStructureId(),
                 onlineResource.getResourceId(),
-                onlineFile.getContentId(),
                 path,
                 onlineResource.getTypeId(),
                 onlineResource.getFlags(),
@@ -8555,6 +8611,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 onlineResource.getDateExpired(),
                 0,
                 onlineResource.getLength(),
+                onlineResource.getDateContent(),
                 onlineFile.getContents());
 
             // write the file in the offline project

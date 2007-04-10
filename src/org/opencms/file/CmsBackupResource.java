@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2007/03/01 15:01:26 $
- * Version: $Revision: 1.18.8.3 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.18.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.8.3 $
+ * @version $Revision: 1.18.8.4 $
  * 
  * @since 6.0.0 
  */
@@ -85,7 +85,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @param versionId the version id of this backup resource   
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param contentId the id of this resources content record
      * @param path the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -100,6 +99,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
      * @param size the size of the file content of this resource
+     * @param dateContent the date of the last modification of the content of this resource 
      * @param content the binary content data of this file
      */
     public CmsBackupResource(
@@ -108,7 +108,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         int versionId,
         CmsUUID structureId,
         CmsUUID resourceId,
-        CmsUUID contentId,
         String path,
         int type,
         int flags,
@@ -123,13 +122,13 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         long dateReleased,
         long dateExpired,
         int size,
+        long dateContent,
         byte[] content) {
 
         // create the backup CmsResource.
         super(
             structureId,
             resourceId,
-            contentId,
             path,
             type,
             flags,
@@ -143,6 +142,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             dateExpired,
             0,
             size,
+            dateContent,
             content);
 
         m_backupId = backupId;
@@ -176,7 +176,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             getVersionId(),
             getStructureId(),
             getResourceId(),
-            getContentId(),
             getRootPath(),
             getTypeId(),
             getFlags(),
@@ -191,6 +190,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             getDateReleased(),
             getDateExpired(),
             getLength(),
+            getDateContent(),
             newContent);
     }
 

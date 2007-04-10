@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2007/03/20 14:38:48 $
- * Version: $Revision: 1.113.4.9 $
+ * Date   : $Date: 2007/04/10 12:26:33 $
+ * Version: $Revision: 1.113.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.113.4.9 $ 
+ * @version $Revision: 1.113.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -717,7 +717,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 1,
-                size);
+                size, 
+                0);
 
             if (RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion

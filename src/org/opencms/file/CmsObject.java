@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/03/28 15:39:29 $
- * Version: $Revision: 1.146.4.35 $
+ * Date   : $Date: 2007/04/10 12:26:37 $
+ * Version: $Revision: 1.146.4.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.35 $
+ * @version $Revision: 1.146.4.36 $
  * 
  * @since 6.0.0 
  */
@@ -3642,10 +3642,12 @@ public final class CmsObject {
      *
      * @throws CmsException if resourcetype is set to folder, or
      *                      if the user has not the rights to write the file header.
+     *                      
+     * @deprecated use {@link #writeResource(CmsResource)} instead
      */
     public void writeFileHeader(CmsFile file) throws CmsException {
 
-        m_securityManager.writeResource(m_context, file);
+        writeResource(file);
     }
 
     /**
@@ -3786,6 +3788,19 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).writePropertyObjects(this, m_securityManager, resource, properties);
+    }
+
+    /**
+     * Writes a resource.<p>
+     *
+     * @param resource the file to write
+     *
+     * @throws CmsException if resourcetype is set to folder, or
+     *                      if the user has not the rights to write the file header.
+     */
+    public void writeResource(CmsResource resource) throws CmsException {
+
+        m_securityManager.writeResource(m_context, resource);
     }
 
     /**
