@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2007/03/15 17:23:28 $
- * Version: $Revision: 1.22.4.11 $
+ * Date   : $Date: 2007/04/11 08:48:07 $
+ * Version: $Revision: 1.22.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.11 $ 
+ * @version $Revision: 1.22.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,8 +438,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         // get the current session id
         HttpSession session = getJsp().getRequest().getSession(false);
-        // we assume we always have a session here, otherwise an unhandeld NPE will occur
-        String sessionId = OpenCms.getSessionManager().getSessionInfo(session).getSessionId().toString();
+        // we assume we always have a session here, otherwise an unhandled NPE will occur
+        String sessionId = session.getId();
 
         // define the required colors.
         // currently this is hard coded here       
