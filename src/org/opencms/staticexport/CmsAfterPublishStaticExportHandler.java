@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2007/01/15 08:58:26 $
- * Version: $Revision: 1.19.4.17 $
+ * Date   : $Date: 2007/04/11 12:37:33 $
+ * Version: $Revision: 1.19.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.4.17 $ 
+ * @version $Revision: 1.19.4.18 $ 
  * 
  * @since 6.0.0 
  * 
@@ -456,7 +456,11 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             String rfsName = (String)i.next();
             String vfsName = manager.getVfsNameInternal(cms, rfsName);
             if (vfsName == null) {
-                String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
+                String rfsBaseName = rfsName;
+                int pos = rfsName.lastIndexOf('_');
+                if (pos >= 0) {
+                    rfsBaseName = rfsName.substring(0, pos);
+                }
                 vfsName = manager.getVfsNameInternal(cms, rfsBaseName);
             }
             if (vfsName != null) {
