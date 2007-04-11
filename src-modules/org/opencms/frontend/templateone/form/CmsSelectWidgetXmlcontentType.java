@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/04/11 09:18:06 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.3 $
+     * @version $Revision: 1.2.4.4 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.3 $
+     * @version $Revision: 1.2.4.4 $
      * 
      * @since 6.1.6
      * 
@@ -459,6 +459,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
     throws CmsIllegalArgumentException {
 
+        Locale dialogContentLocale = ((I_CmsXmlContentValue)param).getLocale();
+        Locale resourceLocale;
         if (m_macroCmsObject == null) {
             try {
                 m_macroCmsObject = OpenCms.initCmsObject(cms);
@@ -522,44 +524,55 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 while (itResources.hasNext()) {
 
                     resource = (CmsResource)itResources.next();
-                    // macro resolvation within hasFilterProperty will resolve values to the current
-                    // request
-                    if (hasFilterProperty(resource, cms)) {
+                    // don't make resources selectable that have a different locale than the current editor language. 
+                    // we read the locale node of the xmlcontent instance matching the resources
+                    // locale property (or top level locale).
+                    resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(
+                        resource,
+                        CmsPropertyDefinition.PROPERTY_LOCALE,
+                        true).getValue());
 
-                        // implant the uri to the special cms object for resolving macros from the
-                        // collected xml contents:
-                        m_macroCmsObject.getRequestContext().setUri(resource.getRootPath());
-                        // implant the resource for macro "${opencms.filename}"
-                        m_macroResolver.setResourceName(resource.getName());
-                        // implant the messages
-                        m_macroResolver.setMessages(widgetDialog.getMessages());
-                        // filter out unwanted resources - if no filter properties are defined,
-                        // every
-                        // resource collected here is ok:
-                        displayName = m_macroResolver.resolveMacros(getDisplayOptionMacro());
-                        // deal with a bug of the macro resolver: it will return "" if it gets
-                        // "${unknown.thing}":
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayName)) {
-                            // it was a "${xpath.field}" expression only and swallowed by macro
-                            // resolver:
-                            displayName = resolveXpathMacros(cms, resource, getDisplayOptionMacro());
-                        } else {
-                            // there was more than one xpath macro: allow further replacements
-                            // within partly resolved macro:
+                    // Only show select options for resources that are in the same locale as the current 
+                    // editor locale (e.g. when switching to german, offer the german siblings)
+                    if (dialogContentLocale.equals(resourceLocale)) {
+                        // macro resolvation within hasFilterProperty will resolve values to the
+                        // current request
+                        if (hasFilterProperty(resource, cms)) {
+
+                            // implant the uri to the special cms object for resolving macros from
+                            // the collected xml contents:
+                            m_macroCmsObject.getRequestContext().setUri(resource.getRootPath());
+                            // implant the resource for macro "${opencms.filename}"
+                            m_macroResolver.setResourceName(resource.getName());
+                            // implant the messages
+                            m_macroResolver.setMessages(widgetDialog.getMessages());
+                            // filter out unwanted resources - if no filter properties are defined,
+                            // every resource collected here is ok:
+                            displayName = m_macroResolver.resolveMacros(getDisplayOptionMacro());
+                            // deal with a bug of the macro resolver: it will return "" if it gets
+                            // "${unknown.thing}":
+                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayName)) {
+                                // it was a "${xpath.field}" expression only and swallowed by macro
+                                // resolver:
+                                displayName = resolveXpathMacros(cms, resource, getDisplayOptionMacro());
+                            } else {
+                                // there was more than one xpath macro: allow further replacements
+                                // within partly resolved macro:
+                                displayName = resolveXpathMacros(cms, resource, displayName);
+                            }
+                            // final check:
+                            if (CmsStringUtil.isEmpty(displayName)) {
+                                displayName = resource.getName();
+                            }
+
                             displayName = resolveXpathMacros(cms, resource, displayName);
-                        }
-                        // final check:
-                        if (CmsStringUtil.isEmpty(displayName)) {
-                            displayName = resource.getName();
-                        }
 
-                        displayName = resolveXpathMacros(cms, resource, displayName);
+                            if (!CmsStringUtil.isEmpty(displayName)) {
 
-                        if (!CmsStringUtil.isEmpty(displayName)) {
-
-                            // now everything required is there:
-                            option = new CmsResourceSelectWidgetOption(resource, false, displayName);
-                            sortOptions.add(option);
+                                // now everything required is there:
+                                option = new CmsResourceSelectWidgetOption(resource, false, displayName);
+                                sortOptions.add(option);
+                            }
                         }
                     }
                 }
@@ -574,7 +587,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
             }
 
-            if ((selectOptions == null) || (selectOptions == Collections.EMPTY_LIST)) {
+            if (selectOptions == Collections.EMPTY_LIST) {
                 selectOptions = new ArrayList();
             }
 
@@ -590,6 +603,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 addSelectOption((CmsSelectWidgetOption)it.next());
             }
         }
+
         return selectOptions;
     }
 
