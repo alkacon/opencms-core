@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,23 +38,17 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.A_CmsListResourceTypeDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListItemSelectionAction;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.list.CmsListPrintIAction;
-import org.opencms.workplace.list.I_CmsListDirectAction;
 import org.opencms.workplace.list.I_CmsListItemComparator;
 
 import java.io.IOException;
@@ -87,11 +81,11 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.7.1 
  */
-public class CmsNewResourceFolder extends A_CmsListDialog {
+public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /** Default list of available resource types for the index page. */
     public static final String DEFAULT_AVAILABLE = "none|xmlpage";
@@ -101,21 +95,6 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
 
     /** The id to use for the entry in the list, for which no index page should be created. */
     public static final String ID_NO_INDEX_PAGE = "__none";
-
-    /** List independent action id constant. */
-    public static final String LIST_ACTION_SEL = "rs";
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_ICON = "nrfci";
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_NAME = "nrfcn";
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_SELECT = "nrfcs";
-
-    /** List id constant. */
-    public static final String LIST_ID = "nrf";
 
     /** The name of the entry to take if no index page should be generated. */
     public static final String NAME_NO_INDEX_PAGE = "none";
@@ -196,29 +175,11 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
 
         super(
             jsp,
-            LIST_ID,
-            Messages.get().container(Messages.GUI_NEWRESOURCE_FOLDER_0),
-            LIST_COLUMN_NAME,
+            A_CmsListResourceTypeDialog.LIST_ID,
+            Messages.get().container(Messages.GUI_NEWFOLDER_SELECT_INDEX_TYPE_0),
+            A_CmsListResourceTypeDialog.LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
-
-        // set the style to show common workplace dialog layout
-        setParamStyle("");
-
-        // prevent paging, usually there are only few model files
-        getList().setMaxItemsPerPage(Integer.MAX_VALUE);
-
-        // hide print button
-        getList().getMetadata().getIndependentAction(CmsListPrintIAction.LIST_ACTION_ID).setVisible(false);
-
-        // suppress the box around the list
-        getList().setBoxed(false);
-
-        // hide title of the list
-        getList().setShowTitle(false);
-
-        // add param to appear in hidden params
-        setParamSortCol(getList().getSortedColumn());
     }
 
     /**
@@ -283,16 +244,6 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
             }
         }
 
-        // set selected type
-        I_CmsListDirectAction action = getList().getMetadata().getColumnDefinition(LIST_COLUMN_SELECT).getDirectAction(
-            LIST_ACTION_SEL);
-        if (action != null) {
-            String selected = getSelectedType();
-            if (selected != null) {
-                ((CmsListItemSelectionAction)action).setSelectedItemId(selected);
-            }
-        }
-
         super.actionDialog();
     }
 
@@ -309,7 +260,7 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
 
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
 
-        String indexPageType = getSelectedType();
+        String indexPageType = getParamSelectedType();
         boolean createIndex = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(indexPageType))
             && (!indexPageType.equals(ID_NO_INDEX_PAGE));
         if (editProps) {
@@ -356,42 +307,6 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
     }
 
     /**
-     * Builds a default button row with a continue and cancel button.<p>
-     * 
-     * Override this to have special buttons for your dialog.<p>
-     * 
-     * @return the button row 
-     */
-    public String dialogButtons() {
-
-        return dialogButtons(
-            new int[] {BUTTON_CONTINUE, BUTTON_CANCEL},
-            new String[] {
-                " onclick=\"submitAction('"
-                    + DIALOG_CONTINUE
-                    + "', form, '"
-                    + getListId()
-                    + "-form');\" id=\"nextButton\"",
-                " onclick=\"submitAction('" + DIALOG_CANCEL + "', form, '" + getListId() + "-form');\""});
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
-     */
-    public void executeListMultiActions() throws CmsRuntimeException {
-
-        // noop
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
-     */
-    public void executeListSingleActions() throws CmsRuntimeException {
-
-        // noop
-    }
-
-    /**
      * Returns the current folder set by the http request.<p>
      *  
      * If the request parameter value is null/empty then returns the default computed folder.<p>
@@ -415,6 +330,64 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
     public String getParamNewResourceEditProps() {
 
         return m_paramNewResourceEditProps;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#getParamSelectedType()
+     */
+    public String getParamSelectedType() {
+
+        String item = super.getParamSelectedType();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(item)) {
+
+            boolean existNoIndex = false;
+            List availableResTypes = getAvailableResTypes();
+
+            // search for the default in the configuration
+            Iterator iter = availableResTypes.iterator();
+            while (iter.hasNext()) {
+
+                String entry = (String)iter.next();
+
+                // check if the no index page is available
+                if (entry.equals(NAME_NO_INDEX_PAGE)) {
+                    existNoIndex = true;
+                }
+
+                // check if the entry is the default
+                if (entry.startsWith(DEFAULT_MARKER)) {
+
+                    // strip leading asterisk
+                    return entry.substring(1, entry.length());
+                }
+            }
+
+            // if the no index page entry exists, use this as default
+            if (existNoIndex) {
+                return ID_NO_INDEX_PAGE;
+            }
+
+            // now use the first entry as the default
+            if (availableResTypes.size() > 0) {
+                return (String)availableResTypes.get(0);
+            }
+
+            return null;
+        }
+
+        return item;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     */
+    public String paramsAsHidden() {
+
+        List exclude = new ArrayList();
+        exclude.add(CmsNewResource.PARAM_NEWRESOURCEEDITPROPS);
+        exclude.add(PARAM_RESOURCE);
+
+        return paramsAsHidden(exclude);
     }
 
     /**
@@ -506,17 +479,14 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
+        result.append(super.customHtmlEnd());
 
-        result.append(dialogSpacer());
-        result.append(dialogButtons());
-        
         // execute the javascript for de-/activating the continue button
         result.append("<script type='text/javascript'>\n");
         result.append("\ttoggleButtonLabel();\n");
         result.append("\tcheckValue();\n");
         result.append("</script>");
-        
-        result.append(super.customHtmlEnd());
+
         return result.toString();
     }
 
@@ -526,13 +496,7 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
-        result.append("<script type='text/javascript' src='");
-        result.append(CmsWorkplace.getSkinUri());
-        result.append("admin/javascript/general.js'></script>\n");
-        result.append("<script type='text/javascript' src='");
-        result.append(CmsWorkplace.getSkinUri());
-        result.append("editors/xmlcontent/help.js'></script>\n");
-
+        result.append(super.customHtmlStart());
         result.append("<script type='text/javascript'>\n");
 
         result.append("function toggleButtonLabel() {\n");
@@ -565,49 +529,6 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
-     */
-    protected String defaultActionHtmlContent() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append("<form name='");
-        result.append(getList().getId());
-        result.append("-form' action='");
-        result.append(getDialogRealUri());
-        result.append("' method='post' class='nomargin'");
-        if (getList().getMetadata().isSearchable()) {
-            result.append(" onsubmit=\"listSearchAction('");
-            result.append(getList().getId());
-            result.append("', '");
-            result.append(getList().getMetadata().getSearchAction().getId());
-            result.append("', '");
-            result.append(getList().getMetadata().getSearchAction().getConfirmationMessage().key(getLocale()));
-            result.append("');\"");
-        }
-        result.append(">\n");
-
-        List exclude = new ArrayList();
-        exclude.add(CmsNewResource.PARAM_NEWRESOURCEEDITPROPS);
-        exclude.add(PARAM_RESOURCE);
-        result.append(paramsAsHidden(exclude));
-        result.append("\n");
-
-        result.append("<!-- start before list -->\n");
-        result.append(customHtmlBeforeList());
-        result.append("<!-- end before list -->\n");
-
-        result.append(dialogBlockStart(key(Messages.GUI_NEWFOLDER_SELECT_INDEX_TYPE_0)));
-        result.append(dialogWhiteBoxStart());
-        getList().setWp(this);
-        result.append(getList().listHtml());
-        result.append(dialogWhiteBoxEnd());
-        result.append(dialogBlockEnd());
-
-        result.append("\n</form>\n");
-        return result.toString();
-    }
-
-    /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
@@ -632,14 +553,6 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
             default:
                 super.dialogButtonsHtml(result, button, attribute);
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
-     */
-    protected void fillDetails(String detailId) {
-
-        // noop
     }
 
     /**
@@ -719,7 +632,7 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
                 ret.add(item);
                 continue;
             }
-            
+
             // get settings for resource type
             CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType);
             if (set != null) {
@@ -753,105 +666,26 @@ public class CmsNewResourceFolder extends A_CmsListDialog {
             setParamNewResourceEditProps(editPropsChecked.toString());
         }
 
-        setParamTitle(key(Messages.GUI_NEWRESOURCE_FOLDER_0));
+        // set title
+        String title = null;
+        CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeFolder.getStaticTypeName());
+        if ((set != null) && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(set.getTitleKey()))) {
+            title = getMessages().key(set.getTitleKey(), true);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = key(Messages.GUI_NEWRESOURCE_FOLDER_0);
+        }
+        setParamTitle(title);
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        // add column for radio button
-        CmsListColumnDefinition radioSelCol = new CmsListColumnDefinition(LIST_COLUMN_SELECT);
-        radioSelCol.setName(Messages.get().container(Messages.GUI_NEWFOLDER_LIST_COLS_SELECT_0));
-        radioSelCol.setWidth("20");
-        radioSelCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        radioSelCol.setSorteable(false);
+        super.setColumns(metadata);
 
-        // add item selection action to column
-        CmsListItemSelectionAction selAction = new CmsListItemSelectionAction(LIST_ACTION_SEL, null);
-        selAction.setName(Messages.get().container(Messages.GUI_NEWFOLDER_LIST_SELECT_NAME_0));
-        selAction.setEnabled(true);
-        selAction.setSelectedItemId(getSelectedType());
-        radioSelCol.addDirectAction(selAction);
-        metadata.addColumn(radioSelCol);
-
-        // add column icon
-        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
-        iconCol.setName(Messages.get().container(Messages.GUI_NEWFOLDER_LIST_COLS_ICON_0));
-        iconCol.setWidth("20");
-        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        iconCol.setSorteable(false);
-        metadata.addColumn(iconCol);
-
-        // add column name
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_NEWFOLDER_LIST_COLS_NAME_0));
-        nameCol.setListItemComparator(LIST_ITEM_COMPARATOR);
-        metadata.addColumn(nameCol);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setIndependentActions(CmsListMetadata metadata) {
-
-        // noop
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // noop
-    }
-
-    /**
-     * Returns the selected index page type.<p>
-     * 
-     * @return the selected index page type
-     */
-    private String getSelectedType() {
-
-        String item = getJsp().getRequest().getParameter(LIST_ID + LIST_ACTION_SEL);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(item)) {
-
-            boolean existNoIndex = false;
-            List availableResTypes = getAvailableResTypes();
-
-            // search for the default in the configuration
-            Iterator iter = availableResTypes.iterator();
-            while (iter.hasNext()) {
-
-                String entry = (String)iter.next();
-
-                // check if the no index page is available
-                if (entry.equals(NAME_NO_INDEX_PAGE)) {
-                    existNoIndex = true;
-                }
-
-                // check if the entry is the default
-                if (entry.startsWith(DEFAULT_MARKER)) {
-
-                    // strip leading asterisk
-                    return entry.substring(1, entry.length());
-                }
-            }
-
-            // if the no index page entry exists, use this as default
-            if (existNoIndex) {
-                return ID_NO_INDEX_PAGE;
-            }
-
-            // now use the first entry as the default
-            if (availableResTypes.size() > 0) {
-                return (String)availableResTypes.get(0);
-            }
-
-            return null;
-        }
-
-        return item;
+        CmsListColumnDefinition def = metadata.getColumnDefinition(LIST_COLUMN_NAME);
+        def.setListItemComparator(LIST_ITEM_COMPARATOR);
     }
 }

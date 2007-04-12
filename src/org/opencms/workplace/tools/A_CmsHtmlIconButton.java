@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2007/02/05 16:50:37 $
- * Version: $Revision: 1.21.4.6 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.21.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.4.6 $ 
+ * @version $Revision: 1.21.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -267,9 +267,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             if (enabled) {
                 html.append("</a>");
             }
-            if (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT && name.length() > 1) {
-                html.append("&nbsp;");
-            }
+
+            // doesn't work in new dialog for the radio button cols
+            // couldn't find a place where this is needed
+            // if (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT && name.length() > 1) {
+            //  html.append("&nbsp;");
+            // }
         }
         html.append("</span>");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rightHtml)) {

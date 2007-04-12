@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.23.4.3 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.23.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23.4.3 $ 
+ * @version $Revision: 1.23.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -472,8 +473,17 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // set resource name if we are in new folder wizard mode
             setInitialResourceName();
             setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
-            setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLPAGE_0));
+            
+            // build title for new resource dialog  
+            String title = null;
+            CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName());
+            if ((set != null) && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(set.getTitleKey()))) {
+                title = getMessages().key(set.getTitleKey(), true);
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = key(Messages.GUI_NEWRESOURCE_XMLPAGE_0);
+            }
+            setParamTitle(title);
         }
     }
 

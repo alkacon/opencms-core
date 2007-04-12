@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.14.2.11 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.14.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.11 $ 
+ * @version $Revision: 1.14.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -293,19 +293,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEWFOLDER_CREATEINDEX_0 = "GUI_NEWFOLDER_CREATEINDEX_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEWFOLDER_LIST_COLS_ICON_0 = "GUI_NEWFOLDER_LIST_COLS_ICON_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEWFOLDER_LIST_COLS_NAME_0 = "GUI_NEWFOLDER_LIST_COLS_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEWFOLDER_LIST_COLS_SELECT_0 = "GUI_NEWFOLDER_LIST_COLS_SELECT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFOLDER_LIST_NO_INDEX_0 = "GUI_NEWFOLDER_LIST_NO_INDEX_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEWFOLDER_LIST_SELECT_NAME_0 = "GUI_NEWFOLDER_LIST_SELECT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFOLDER_OPTIONS_0 = "GUI_NEWFOLDER_OPTIONS_0";
@@ -344,10 +332,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0 = "GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_HELP_0 = "GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_NAME_0 = "GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_HELP_0 = "GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_NAME_0 = "GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_FILE_0 = "GUI_NEWRESOURCE_FILE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_FOLDER_0 = "GUI_NEWRESOURCE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_LIST_COLS_ICON_0 = "GUI_NEWRESOURCE_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_LIST_COLS_NAME_0 = "GUI_NEWRESOURCE_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_LIST_COLS_SELECT_0 = "GUI_NEWRESOURCE_LIST_COLS_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_LIST_COLS_URI_0 = "GUI_NEWRESOURCE_LIST_COLS_URI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_LIST_SELECT_NAME_0 = "GUI_NEWRESOURCE_LIST_SELECT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_PASTE_CSV_0 = "GUI_NEWRESOURCE_PASTE_CSV_0";
@@ -530,10 +545,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SET_ICON_1 = "LOG_SET_ICON_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SET_INFO_1 = "LOG_SET_INFO_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_KEY_1 = "LOG_SET_KEY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_NAME_1 = "LOG_SET_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1 = "LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_NEW_RESOURCE_ORDER_1 = "LOG_SET_NEW_RESOURCE_ORDER_1";
@@ -546,6 +567,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_REFERENCE_1 = "LOG_SET_REFERENCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SET_TITLE_KEY_1 = "LOG_SET_TITLE_KEY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_MENU_SEP_ORDER_0 = "LOG_WRONG_MENU_SEP_ORDER_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.40.4.19 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.40.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.19 $
+ * @version $Revision: 1.40.4.20 $
  * 
  * @since 6.0.0
  */
@@ -81,11 +81,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The "autosettitle" attribute. */
     public static final String A_AUTOSETTITLE = "autosettitle";
 
+    /** The "info" attribute. */
+    public static final String A_INFO = "info";
+
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
 
     /** The "page" attribute. */
     public static final String A_PAGE = "page";
+
+    /** The "params" attribute. */
+    public static final String A_PARAMS = "params";
 
     /** The "permissions" attribute. */
     public static final String A_PERMISSIONS = "permissions";
@@ -98,9 +104,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The "rule" attribute. */
     public static final String A_RULE = "rule";
-
-    /** The "params" attribute. */
-    public static final String A_PARAMS = "params";
 
     /** The "rules" attribute. */
     public static final String A_RULES = "rules";
@@ -476,6 +479,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETNAVIGATION);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setAutoSetTitle", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_AUTOSETTITLE);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setInfo", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_INFO);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setDescriptionImage", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ICON);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setTitleKey", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_KEY);
 
         digester.addObjectCreate("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, "setAccess");
@@ -609,6 +618,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
+                newResElement.addAttribute(A_INFO, settings.getInfo());
+                newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
+                newResElement.addAttribute(A_KEY, settings.getTitleKey());
                 // create subnode <accesscontrol>            
                 CmsExplorerTypeAccess access = settings.getAccess();
                 if (access != defaultAccess) {

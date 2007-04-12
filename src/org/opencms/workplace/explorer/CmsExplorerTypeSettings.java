@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2007/02/20 08:30:08 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2007/04/12 12:28:05 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.5 $ 
+ * @version $Revision: 1.17.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,11 +78,13 @@ public class CmsExplorerTypeSettings implements Comparable {
     private CmsExplorerContextMenu m_contextMenu;
     private List m_contextMenuEntries;
     private int m_contextMenuOrderCounter;
+    private String m_descriptionImage;
     private boolean m_hasEditOptions;
     private String m_icon;
+    private String m_info;
     private String m_key;
-
     private String m_name;
+
     /** Optional class name for a new resource handler. */
     private String m_newResourceHandlerClassName;
     private Integer m_newResourceOrder;
@@ -91,8 +93,9 @@ public class CmsExplorerTypeSettings implements Comparable {
     private List m_properties;
     private boolean m_propertiesEnabled;
     private String m_reference;
-
     private boolean m_showNavigation;
+
+    private String m_titleKey;
 
     /**
      * Default constructor.<p>
@@ -271,6 +274,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
+     * Returns the descriptionImage.<p>
+     *
+     * @return the descriptionImage
+     */
+    public String getDescriptionImage() {
+
+        return m_descriptionImage;
+    }
+
+    /**
      * Returns the icon path and file name of the explorer type setting.<p>
      * 
      * @return the icon path and file name of the explorer type setting
@@ -278,6 +291,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     public String getIcon() {
 
         return m_icon;
+    }
+
+    /**
+     * Returns the info.<p>
+     *
+     * @return the info
+     */
+    public String getInfo() {
+
+        return m_info;
     }
 
     /**
@@ -385,6 +408,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     public String getReference() {
 
         return m_reference;
+    }
+
+    /**
+     * Returns the titleKey.<p>
+     *
+     * @return the titleKey
+     */
+    public String getTitleKey() {
+
+        return m_titleKey;
     }
 
     /**
@@ -526,6 +559,21 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_contextMenuEntries = entries;
     }
 
+    /**
+     * Sets the descriptionImage.<p>
+     *
+     * @param descriptionImage the descriptionImage to set
+     */
+    public void setDescriptionImage(String descriptionImage) {
+
+        m_descriptionImage = descriptionImage;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1,
+                descriptionImage));
+        }
+    }
+
     /** 
      * Sets the flag if this explorer type entry has explicit edit options set.<p>
      * 
@@ -546,6 +594,19 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_icon = icon;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_ICON_1, icon));
+        }
+    }
+
+    /**
+     * Sets the info.<p>
+     *
+     * @param info the info to set
+     */
+    public void setInfo(String info) {
+
+        m_info = info;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_INFO_1, info));
         }
     }
 
@@ -685,6 +746,19 @@ public class CmsExplorerTypeSettings implements Comparable {
     public void setShowNavigation(boolean navigation) {
 
         m_showNavigation = navigation;
+    }
+
+    /**
+     * Sets the titleKey.<p>
+     *
+     * @param titleKey the titleKey to set
+     */
+    public void setTitleKey(String titleKey) {
+
+        m_titleKey = titleKey;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_TITLE_KEY_1, titleKey));
+        }
     }
 
     /**
