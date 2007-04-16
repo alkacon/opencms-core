@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/04/11 09:18:06 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/04/16 09:14:21 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.4 $
+ * @version $Revision: 1.2.4.5 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.4 $
+     * @version $Revision: 1.2.4.5 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.4 $
+     * @version $Revision: 1.2.4.5 $
      * 
      * @since 6.1.6
      * 
@@ -587,7 +587,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
             }
 
-            if (selectOptions == Collections.EMPTY_LIST) {
+            if (selectOptions == Collections.EMPTY_LIST || selectOptions == null) {
                 selectOptions = new ArrayList();
             }
 
