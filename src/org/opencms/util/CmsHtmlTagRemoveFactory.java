@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/04/17 17:23:15 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.util;
 
 import org.opencms.main.CmsLog;
 
-import java.util.Hashtable;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -66,7 +65,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.1.8
  */
@@ -84,7 +83,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.3 $
+     * @version $Revision: 1.2.4.4 $
      * 
      * @since 6.1.8
      */
@@ -177,15 +176,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * @deprecated
-         * @see org.htmlparser.Tag#getAttributes()
-         */
-        public Hashtable getAttributes() {
-
-            return m_decorated.getAttributes();
-        }
-
-        /**
          * @see org.htmlparser.Tag#getAttributesEx()
          */
         public Vector getAttributesEx() {
@@ -242,11 +232,35 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
+         * @see org.htmlparser.Node#getFirstChild()
+         */
+        public Node getFirstChild() {
+
+            return m_decorated.getFirstChild();
+        }
+
+        /**
          * @see org.htmlparser.Tag#getIds()
          */
         public String[] getIds() {
 
             return m_decorated.getIds();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getLastChild()
+         */
+        public Node getLastChild() {
+
+            return m_decorated.getLastChild();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getNextSibling()
+         */
+        public Node getNextSibling() {
+
+            return m_decorated.getNextSibling();
         }
 
         /**
@@ -263,6 +277,14 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         public Node getParent() {
 
             return m_decorated.getParent();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getPreviousSibling()
+         */
+        public Node getPreviousSibling() {
+
+            return m_decorated.getPreviousSibling();
         }
 
         /**
@@ -362,17 +384,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * 
-         * @deprecated
-         * 
-         * @see org.htmlparser.Tag#setAttributes(java.util.Hashtable)
-         */
-        public void setAttributes(Hashtable arg0) {
-
-            m_decorated.setAttributes(arg0);
-        }
-
-        /**
          * @see org.htmlparser.Tag#setAttributesEx(java.util.Vector)
          */
         public void setAttributesEx(Vector arg0) {
@@ -469,6 +480,15 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
+         * @see org.htmlparser.Node#toHtml(boolean)
+         */
+        public String toHtml(boolean value) {
+
+            // TODO: Auto-generated method stub
+            return m_decorated.toHtml(value);
+        }
+
+        /**
          * @see org.htmlparser.Node#toPlainTextString()
          */
         public String toPlainTextString() {
@@ -483,7 +503,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
             return m_decorated.toString();
         }
-
     }
 
     /** The log object for this class. */
