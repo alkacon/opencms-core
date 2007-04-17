@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/04/17 17:23:15 $
- * Version: $Revision: 1.717.2.166 $
+ * Date   : $Date: 2007/04/17 18:06:23 $
+ * Version: $Revision: 1.717.2.167 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 - Updated xml-apis.jar to version 2.9.0
 - Updated htmlparser.jar to version 1.6
 - Updated mysql-connector-java.jar to version 3.1.14
+- Updated quartz.jar to version 1.5.2
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation
