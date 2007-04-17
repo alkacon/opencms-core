@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsExtractionResultCache.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -149,22 +149,10 @@ public class CmsExtractionResultCache {
             buf.append(locale.toString());
         }
 
-        int todo;
-        // TODO: since we need only the content for text extraction,
-        // TODO: this method should use a "date of last modification of content only", however this date is currently not available
-        // TODO: instead we use date last modified + length of content, but this is not optimal because if e.g. a property changes,
-        // TODO: date last modified also changes and the text is extracted again
-
-        // calculate a hash code that contains the resource DateLastModified, DateCreated and Length    
-        StringBuffer ext = new StringBuffer(48);
-        ext.append(resource.getDateLastModified());
-        if (resource.getLength() > 0) {
-            ext.append(';');
-            ext.append(resource.getLength());
-        }
-        // append hash code to the result buffer 
+        // append the date of last content modification to the result buffer 
+        // please note that we need only worry about last change in content, since properties are ignored here
         buf.append('_');
-        buf.append(ext.toString().hashCode());
+        buf.append(resource.getDateContent());
 
         // finally append the extension 
         buf.append(".ext");

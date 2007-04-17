@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2006/08/25 13:16:56 $
- * Version: $Revision: 1.30.4.2 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.30.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30.4.2 $
+ * @version $Revision: 1.30.4.3 $
  * 
  * @since 6.0.0
  */
@@ -333,7 +333,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public void loadXmlConfiguration() throws SAXException, IOException {
 
-        URL baseUrl = m_baseFolder.toURL();
+        URL baseUrl = m_baseFolder.toURI().toURL();
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_URL_1, baseUrl));
         }

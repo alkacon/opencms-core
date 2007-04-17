@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2006/12/14 11:08:50 $
- * Version: $Revision: 1.15.4.4 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.15.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15.4.4 $ 
+ * @version $Revision: 1.15.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -297,6 +297,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREADS_FINISHED_0 = "LOG_THREADS_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_READ_PROPERTY_1 = "LOG_UNABLE_TO_READ_PROPERTY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNABLE_TO_READ_RESOURCE_2 = "LOG_UNABLE_TO_READ_RESOURCE_2";

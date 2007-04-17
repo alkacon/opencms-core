@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/03/02 08:46:50 $
- * Version: $Revision: 1.43.4.12 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.43.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.12 $
+ * @version $Revision: 1.43.4.13 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -112,6 +112,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlContentWithVfs.class.getName());
 
+        suite.addTest(new TestCmsXmlContentWithVfs("testAutoXsd"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testContentHandler"));
         suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreation"));
@@ -153,6 +154,22 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         return wrapper;
     }
 
+    /**
+     * Tests creation of the automatic XML schema XSD.
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testAutoXsd() throws Exception {
+
+        org.opencms.xml.CmsXmlEntityResolver resolver = new org.opencms.xml.CmsXmlEntityResolver(null);
+        org.xml.sax.InputSource source = resolver.resolveEntity(
+            null,
+            org.opencms.xml.CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS);
+        byte[] bytes = org.opencms.util.CmsFileUtil.readFully(source.getByteStream());
+        String string = org.opencms.i18n.CmsEncoder.createString(bytes, "UTF-8");
+        System.out.println(string);
+    }
+    
     /**
      * Test accessing elements in nested schemas.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2007/04/10 12:26:37 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.4.3 $
+ * @version $Revision: 1.15.4.4 $
  * 
  * @since 6.0.0 
  */
@@ -177,6 +177,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property to sort search results in categories. */
     public static final String PROPERTY_SEARCH_CATEGORY = "category";
+
+    /** Property to exclude individual resources from search index generation. */
+    public static final String PROPERTY_SEARCH_EXCLUDE = "search.exclude";
 
     /** Property to boost certain search results. */
     public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";

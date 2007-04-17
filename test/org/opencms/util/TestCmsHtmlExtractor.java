@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlExtractor.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.htmlparser.nodes.TextNode;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  * 
  * @since 6.2.0
  */
@@ -145,5 +145,26 @@ public class TestCmsHtmlExtractor extends TestCase {
         
         result = extractFromHtml2(HTML_PAGE_1);
         System.out.println(result + "\n\n");
+    }
+    
+    /**
+     * Tests the HTML extractor with an empty input String.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testHtmlExtractorWithEmptyInput() throws Exception {
+
+        String input, result;
+        input = "";
+        result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);        
+        assertEquals("Empty input should generate empty output", input, result);
+        
+        input = null;
+        result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);      
+        assertEquals("null input should generate null output", input, result);
+        
+        input = "   \t\r\n  ";
+        result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);      
+        assertEquals("Whitespace only input should generate empty String output", "", result);
     }
 }

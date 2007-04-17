@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.717.2.163 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.717.2.164 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,9 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 - Added a type for property definitions at database and API level for future support of manageable link properties 
 - Added a content date to the CmsResource for improving the performance during publishing
 - Updated dialog for creating new resources
+* Added "search.exclude" property that allows exclusion of files (or folders) from the search index generation
+* Optimized search index text extraction by using new "date of last content change" method in CmsResource
+- Fixed issues in CmsHtmlExtractor that an empty input generates a null output
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation

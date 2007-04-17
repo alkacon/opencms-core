@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2007/02/28 15:47:38 $
- * Version: $Revision: 1.25.4.5 $
+ * Date   : $Date: 2007/04/17 14:20:42 $
+ * Version: $Revision: 1.25.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,10 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -48,7 +50,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.25.4.5 $ 
+ * @version $Revision: 1.25.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +108,23 @@ public class CmsIndexingThreadManager {
         CmsSearchIndex index,
         I_CmsReport report) {
 
-        I_CmsDocumentFactory documentType = index.getDocumentFactory(res);
+        // check if this resource should be excluded from the index, if so skip it
+        boolean excludeFromIndex = false;
+        try {
+            // do property lookup with folder search
+            excludeFromIndex = Boolean.valueOf(
+                cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue()).booleanValue();
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, res.getRootPath()));
+            }
+        }
+
+        I_CmsDocumentFactory documentType = null;
+        if (!excludeFromIndex) {
+            // don't get document type if excluded from index, this will lead to exclusion of resource
+            documentType = index.getDocumentFactory(res);
+        }
         if (documentType == null) {
             // this resource is not contained in the given search index
             m_startedCounter++;
