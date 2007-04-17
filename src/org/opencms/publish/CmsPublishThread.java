@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2007/03/27 10:29:36 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/04/17 09:51:59 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.5 
  */
@@ -121,6 +121,10 @@ final class CmsPublishThread extends A_CmsReportThread {
     public void run() {
 
         try {
+            // start the job
+            m_publishJob.start(getUUID());
+            // set the report
+            m_report = m_publishJob.getPublishReport();            
             // signalize that the thread has been started
             m_publishEngine.publishJobStarted(m_publishJob);
             m_started = true;
@@ -128,10 +132,6 @@ final class CmsPublishThread extends A_CmsReportThread {
                 return;
             }
 
-            // set the report
-            m_report = m_publishJob.getPublishReport();
-
-            // start
             m_report.println(
                 Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);

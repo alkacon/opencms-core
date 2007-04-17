@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/04/02 12:31:22 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/04/17 09:51:50 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.14 $
+ * @version $Revision: 1.1.2.15 $
  * 
  * @since 6.5.5
  */
@@ -614,8 +614,6 @@ public final class CmsPublishEngine implements Runnable {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
         
-        // start the job
-        publishJob.start(m_currentPublishThread.getUUID());
         // update the job
         m_publishQueue.update(publishJob);
         
