@@ -31,8 +31,8 @@
     <property name="opencms.inputlib.servlet"     		location="${opencms.input.libs}/servlet.jar" />
     <property name="opencms.inputlib.activation"  		location="${opencms.input.libs}/activation.jar" />
     <property name="opencms.inputlib.mail"        		location="${opencms.input.libs}/mail.jar" />
-    <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl-2.6.2.jar" />
-    <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis-2.6.2.jar" />
+    <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl-2.9.0.jar" />
+    <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis-2.9.0.jar" />
     <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2.0.8.jar" />
     <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/jtidy-r8-05102004.jar" />
     <property name="opencms.inputlib.uuid"        		location="${opencms.input.libs}/jug-1.1.2.jar" />   
@@ -50,9 +50,9 @@
     <property name="opencms.inputlib.httpclient"   		location="${opencms.input.libs}/commons-httpclient-3.0.1.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.14.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.6.1.jar" />
-    <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.5.jar" />
+    <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.5.2.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1.jar" />
-    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.5-20050925.jar" />
+    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.6-20060610.jar" />
     <property name="opencms.inputlib.lucene.core"		location="${opencms.input.libs}/lucene-core-2.1.0.jar" />
     <property name="opencms.inputlib.lucene.analyzers"  location="${opencms.input.libs}/lucene-analyzers-2.1.0.jar" />
     <property name="opencms.inputlib.lucene.highlighter" location="${opencms.input.libs}/lucene-highlighter-2.1.0.jar" />
