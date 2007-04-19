@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/03/15 16:30:41 $
- * Version: $Revision: 1.36.4.20 $
+ * Date   : $Date: 2007/04/19 15:12:08 $
+ * Version: $Revision: 1.36.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.20 $
+ * @version $Revision: 1.36.4.21 $
  * 
  * @since 6.0.0
  */
@@ -198,7 +198,7 @@ public class CmsUserSettings {
 
     /** Flag for displaying the navtext column. */
     public static final int FILELIST_NAVTEXT = 64;
-    
+
     /** Flag for displaying the access column. */
     public static final int FILELIST_PERMISSIONS = 128;
 
@@ -268,7 +268,7 @@ public class CmsUserSettings {
 
     private int m_editorButtonStyle;
 
-    private HashMap m_editorSettings;
+    private TreeMap m_editorSettings;
 
     private int m_explorerButtonStyle;
 
@@ -339,7 +339,7 @@ public class CmsUserSettings {
         m_explorerButtonStyle = CmsUserSettings.BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = CmsUserSettings.ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = CmsUserSettings.FILELIST_NAME;
-        m_editorSettings = new HashMap();
+        m_editorSettings = new TreeMap();
         m_showFileUploadButton = true;
         m_uploadApplet = true;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
@@ -922,7 +922,7 @@ public class CmsUserSettings {
             m_directeditButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle();
         }
         // editor settings
-        m_editorSettings = new HashMap();
+        m_editorSettings = new TreeMap();
         Iterator itKeys = m_user.getAdditionalInfo().keySet().iterator();
         while (itKeys.hasNext()) {
             String key = (String)itKeys.next();
@@ -932,7 +932,7 @@ public class CmsUserSettings {
             }
         }
         if (m_editorSettings.isEmpty()) {
-            m_editorSettings = new HashMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
+            m_editorSettings = new TreeMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
         }
         // start site
         m_startSite = (String)m_user.getAdditionalInfo(PREFERENCES
@@ -1420,7 +1420,7 @@ public class CmsUserSettings {
      */
     public void setEditorSettings(Map settings) {
 
-        m_editorSettings = new HashMap(settings);
+        m_editorSettings = new TreeMap(settings);
     }
 
     /**
@@ -1590,10 +1590,10 @@ public class CmsUserSettings {
      * @param show true if the file navtext should be shown, otherwise false
      */
     public void setShowExplorerFileNavText(boolean show) {
-        
+
         setExplorerSetting(show, CmsUserSettings.FILELIST_NAVTEXT);
     }
-    
+
     /**
      * Sets if the file permissions should be shown in explorer view.<p>
      * 
@@ -1892,7 +1892,7 @@ public class CmsUserSettings {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_NAVTEXT) > 0);
     }
-    
+
     /**
      * Determines if the file permissions should be shown in explorer view.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.40.4.20 $
+ * Date   : $Date: 2007/04/19 15:12:08 $
+ * Version: $Revision: 1.40.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.20 $
+ * @version $Revision: 1.40.4.21 $
  * 
  * @since 6.0.0
  */
@@ -131,9 +131,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the "allow broken relations" node. */
     public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
-
-    /** The name of the "publish related resources" node. */
-    public static final String N_PUBLISHRELATEDRESOURCES = "publishrelatedresources";
 
     /** The name of the autolock node. */
     public static final String N_AUTOLOCK = "autolock";
@@ -338,6 +335,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
+
+    /** The name of the "publish related resources" node. */
+    public static final String N_PUBLISHRELATEDRESOURCES = "publishrelatedresources";
 
     /** The node name of the report type node. */
     public static final String N_REPORTTYPE = "reporttype";
@@ -1202,10 +1202,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <editors-preferrededitors> node
         Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);
         // add the <editor> nodes
-        Iterator editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().keySet().iterator();
+        Iterator editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().entrySet().iterator();
         while (editors.hasNext()) {
-            String type = (String)editors.next();
-            String value = m_workplaceManager.getDefaultUserSettings().getPreferredEditor(type);
+            Map.Entry e = (Map.Entry)editors.next();
+            String type = (String)e.getKey();
+            String value = (String)e.getValue();
             Element editor = editorPreferrededitors.addElement(N_EDITOR);
             editor.addAttribute(A_TYPE, type);
             editor.addAttribute(A_VALUE, value);

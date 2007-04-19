@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/03/27 10:50:18 $
- * Version: $Revision: 1.55.4.13 $
+ * Date   : $Date: 2007/04/19 15:12:08 $
+ * Version: $Revision: 1.55.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
@@ -86,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.13 $ 
+ * @version $Revision: 1.55.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +211,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_documentTypeConfigs = new ArrayList();
         m_analyzers = new HashMap();
         m_indexes = new ArrayList();
-        m_indexSources = new HashMap();
+        m_indexSources = new TreeMap();
         m_extractionCacheMaxAge = DEFAULT_EXTRACTION_CACHE_MAX_AGE;
         m_maxExcerptLength = DEFAULT_EXCERPT_LENGTH;
 
