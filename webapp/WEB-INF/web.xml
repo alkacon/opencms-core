@@ -55,7 +55,8 @@
             The main servlet that handles all requests to the OpenCms VFS.  
         </description>
         <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>       
-        <!-- Uncomment this if using BEA WLS 9.x --
+        <!-- Uncomment this if using BEA WLS 9.x -->
+        <!--
         <init-param>
         	<param-name>OnErrorExitWithoutException</param-name>
         	<param-value>true</param-value>
@@ -65,7 +66,8 @@
         		But if using BEA WLS 9.x, you should set it to 'true'.
         	</description>
         </init-param>
-        -- Uncomment this if using BEA WLS 9.x -->
+        -->
+        <!-- Uncomment this if using BEA WLS 9.x -->
         <load-on-startup>1</load-on-startup>
     </servlet>
     
@@ -75,7 +77,8 @@
             The error handling servlet, also servers as trigger for static export requests.  
         </description>
         <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
-        <!-- Uncomment this if using BEA WLS 9.x --
+        <!-- Uncomment this if using BEA WLS 9.x -->
+        <!--
         <init-param>
         	<param-name>OnErrorExitWithoutException</param-name>
         	<param-value>true</param-value>
@@ -94,7 +97,8 @@
      			the 'weblogic.servlet.errorPage' attribute.
         	</description>
         </init-param>
-        -- Uncomment this if using BEA WLS 9.x -->
+        -->
+        <!-- Uncomment this if using BEA WLS 9.x -->
         <load-on-startup>0</load-on-startup>
     </servlet>    
 
