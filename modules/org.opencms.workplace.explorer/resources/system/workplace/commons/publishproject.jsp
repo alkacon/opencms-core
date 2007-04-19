@@ -116,25 +116,13 @@ function doReportUpdate(msg, state) {
    }
 }
 
-function reloadDialog(publishSiblings, publishSubresources, relatedResources) {
+function reloadReport() {
 
-   document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.value=publishSiblings;   
-   document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.value=publishSubresources;   
-   document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.value=relatedResources;   
-   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', '<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources, 'doReportUpdate');
+   var publishSiblings = document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.checked;
+   var publishSubresources = document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.checked;
+   var relatedResources = document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.checked;   
+   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources, 'doReportUpdate');
 }
-
-function submitActionWithOptions() {
-
-   if (!submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main')) {
-      return;
-   }
-   document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.checked = true;   
-   document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.checked = true;   
-   document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.checked = true;   
-   return true;
-}
-
 // -->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -142,7 +130,7 @@ function submitActionWithOptions() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitActionWithOptions();">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <% 
    List excludes = new ArrayList();
    excludes.add(CmsPublishProject.PARAM_PUBLISHSIBLINGS);
@@ -168,7 +156,7 @@ function submitActionWithOptions() {
 <script type="text/javascript">
 <!--
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>','<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=<%=wp.getParamRelatedresources()%>', 'doReportUpdate');
+makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>','action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=<%=wp.getParamRelatedresources()%>', 'doReportUpdate');
 // -->
 </script>
 <%= wp.htmlEnd() %>
