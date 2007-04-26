@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2007/01/31 16:19:35 $
- * Version: $Revision: 1.9.8.3 $
+ * Date   : $Date: 2007/04/26 14:11:37 $
+ * Version: $Revision: 1.9.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9.8.3 $ 
+ * @version $Revision: 1.9.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,16 @@ public class CmsListItem {
     public CmsListMetadata getMetadata() {
 
         return m_metadata;
+    }
+
+    /**
+     * Returns the value map of the list item.<p>
+     * 
+     * @return the value map of the list item
+     */
+    public Map getValues() {
+
+        return m_values;
     }
 
     /**

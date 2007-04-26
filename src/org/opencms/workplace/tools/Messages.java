@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2006/08/31 09:01:48 $
- * Version: $Revision: 1.11.4.3 $
+ * Date   : $Date: 2007/04/26 14:11:38 $
+ * Version: $Revision: 1.11.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11.4.3 $ 
+ * @version $Revision: 1.11.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,6 +86,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LINK_RELATION_SOURCE_0 = "GUI_LINK_RELATION_SOURCE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LINK_RELATION_TARGET_0 = "GUI_LINK_RELATION_TARGET_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_GROUP_0 = "GUI_TOOLS_DEFAULT_GROUP_0";

@@ -69,6 +69,9 @@
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -116,6 +119,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -153,6 +159,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -189,6 +198,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -233,6 +245,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -268,6 +283,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -300,6 +318,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -341,6 +362,9 @@
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -374,6 +398,9 @@
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -423,6 +450,9 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>

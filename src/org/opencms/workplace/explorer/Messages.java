@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.14.2.12 $
+ * Date   : $Date: 2007/04/26 14:11:37 $
+ * Version: $Revision: 1.14.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.12 $ 
+ * @version $Revision: 1.14.2.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_HISTORY_0 = "GUI_EXPLORER_CONTEXT_HISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0 = "GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0 = "GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_LOCK_0 = "GUI_EXPLORER_CONTEXT_LOCK_0";

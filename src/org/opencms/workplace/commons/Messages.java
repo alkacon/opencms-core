@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/04/04 13:07:22 $
- * Version: $Revision: 1.15.4.25 $
+ * Date   : $Date: 2007/04/26 14:11:37 $
+ * Version: $Revision: 1.15.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.25 $ 
+ * @version $Revision: 1.15.4.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -589,6 +589,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_WORKFLOW_STATUS_0 = "GUI_LABEL_WORKFLOW_STATUS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_RELATION_LIST_NAME_0 = "GUI_LINK_RELATION_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_RELATION_SOURCE_0 = "GUI_LINK_RELATION_SOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_RELATION_TARGET_0 = "GUI_LINK_RELATION_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0 = "GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1081,10 +1090,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0 = "GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0 = "GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0";
+    public static final String GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0 = "GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0 = "GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0";
+    public static final String GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0 = "GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_LIST_EMPTY_0 = "GUI_PUBLISH_LIST_EMPTY_0";
@@ -1157,6 +1166,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_UNLOCK_CONFIRMATION_0 = "GUI_PUBLISH_UNLOCK_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_LIST_BROKEN_HELP_0 = "GUI_RELATION_LIST_BROKEN_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_LIST_BROKEN_ICON_0 = "GUI_RELATION_LIST_BROKEN_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_LIST_TYPE_NAME_0 = "GUI_RELATION_LIST_TYPE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RENAMEIMAGES_DEFAULT_PREFIX_0 = "GUI_RENAMEIMAGES_DEFAULT_PREFIX_0";

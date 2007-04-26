@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2007/03/01 15:01:38 $
- * Version: $Revision: 1.4.4.8 $
+ * Date   : $Date: 2007/04/26 14:11:37 $
+ * Version: $Revision: 1.4.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.8 $ 
+ * @version $Revision: 1.4.4.9 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
-
-    /** List column id constant. */
-    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** List action id constant. */
     public static final String LIST_ACTION_EDIT = "eae";
@@ -105,6 +102,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** List column id constant. */
     public static final String LIST_COLUMN_PROJSTATEICON = "ecpi";
+
+    /** List column id constant. */
+    public static final String LIST_COLUMN_ROOT_PATH = "crp";
 
     /** List column id constant. */
     public static final String LIST_COLUMN_SITE = "ecsi";
@@ -328,6 +328,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         getListState().setPage(getSettings().getExplorerPage());
         super.fillList();
+    }
+
+    /**
+     * Returns the colVisibilities map.<p>
+     *
+     * @return the colVisibilities map
+     */
+    protected Map getColVisibilities() {
+
+        return m_colVisibilities;
     }
 
     /**
@@ -647,6 +657,16 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         Integer key = new Integer(colFlag);
         Boolean value = Boolean.valueOf((prefs & colFlag) > 0);
         m_colVisibilities.put(key, value);
+    }
+
+    /**
+     * Sets the colVisibilities map.<p>
+     *
+     * @param colVisibilities the colVisibilities map to set
+     */
+    protected void setColVisibilities(Map colVisibilities) {
+
+        m_colVisibilities = colVisibilities;
     }
 
     /**
