@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/04/26 15:26:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -1324,21 +1324,21 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_OU_0")));
         return new CmsHistoryProject(
-            res.getInt("PUBLISH_TAG"),
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID"))),
-            ou + res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
-            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
-            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
-            res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
-            CmsProject.CmsProjectType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))),
-            res.getLong("PROJECT_PUBLISHDATE"),
-            new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-            res.getString("PROJECT_PUBLISHED_BY_NAME"),
-            res.getString("USER_NAME"),
-            res.getString("GROUP_NAME"),
-            res.getString("MANAGERGROUP_NAME"),
+            res.getInt(m_sqlManager.readQuery("C_PROJECTS_PUBLISH_TAG_0")),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID_0"))),
+            ou + res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME_0")),
+            res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION_0")),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID_0"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID_0"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID_0"))),
+            res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED_0")),
+            CmsProject.CmsProjectType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE_0"))),
+            res.getLong(m_sqlManager.readQuery("C_PROJECT_PUBLISHDATE_0")),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECT_PUBLISHED_BY_0"))),
+            res.getString(m_sqlManager.readQuery("C_PROJECT_PUBLISHED_BY_NAME_0")),
+            res.getString(m_sqlManager.readQuery("C_PROJECT_USER_NAME_0")),
+            res.getString(m_sqlManager.readQuery("C_PROJECT_GROUP_NAME_0")),
+            res.getString(m_sqlManager.readQuery("C_PROJECT_MANAGERGROUP_NAME_0")),
             resources);
     }
 
