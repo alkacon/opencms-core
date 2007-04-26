@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/04/10 12:26:37 $
- * Version: $Revision: 1.45.4.12 $
+ * Date   : $Date: 2007/04/26 14:31:00 $
+ * Version: $Revision: 1.45.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.12 $
+ * @version $Revision: 1.45.4.13 $
  * 
  * @since 6.0.0 
  */
@@ -476,6 +476,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The id of the user who modified this resource last. */
     private CmsUUID m_userLastModified;
 
+    /** The version number of this resource. */
+    private int m_version;
+
     /**
      * Constructor, creates a new CmsRecource object.<p>
      * 
@@ -496,6 +499,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param linkCount the count of all siblings of this resource 
      * @param size the size of the file content of this resource 
      * @param dateContent the date of the last modification of the content of this resource 
+     * @param version the version number of this resource   
      */
     public CmsResource(
         CmsUUID structureId,
@@ -514,7 +518,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         long dateExpired,
         int linkCount,
         int size,
-        long dateContent) {
+        long dateContent,
+        int version) {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -527,12 +532,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateCreated = dateCreated;
         m_userCreated = userCreated;
         m_dateLastModified = dateLastModified;
-        m_dateContent = dateContent;
         m_userLastModified = userLastModified;
-        m_length = size;
-        m_siblingCount = linkCount;
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
+        m_siblingCount = linkCount;
+        m_length = size;
+        m_dateContent = dateContent;
+        m_version = version;
         m_isTouched = false;
     }
 
@@ -736,7 +742,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_dateExpired,
             m_siblingCount,
             m_length,
-            m_dateContent);
+            m_dateContent,
+            m_version);
 
         if (isTouched()) {
             clone.setDateLastModified(m_dateLastModified);
@@ -968,6 +975,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public CmsUUID getUserLastModified() {
 
         return m_userLastModified;
+    }
+
+    /**
+     * Returns the version number of this resource.<p>
+     *
+     * @return the version number of this resource
+     */
+    public int getVersion() {
+
+        return m_version;
     }
 
     /**
@@ -1205,11 +1222,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(new java.util.Date(m_dateExpired));
         result.append(", size: ");
         result.append(m_length);
-        result.append(" sibling count: ");
+        result.append(", sibling count: ");
         result.append(m_siblingCount);
+        result.append(", version: ");
+        result.append(m_version);
         result.append("]");
 
         return result.toString();
     }
-
 }

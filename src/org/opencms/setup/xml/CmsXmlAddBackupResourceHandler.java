@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddBackupResourceHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/04/26 14:31:20 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.CmsBackupResourceHandler;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -83,7 +83,7 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
                 CmsSetupXmlHelper.setValue(
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsBackupResourceHandler.class.getName());
+                    CmsHistoryResourceHandler.class.getName());
             }
             return true;
         }
@@ -113,7 +113,7 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
             xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
             xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINITHANDLER);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='").append(CmsBackupResourceHandler.class.getName());
+            xp.append("='").append(CmsHistoryResourceHandler.class.getName());
             xp.append("']");
             m_xpaths = Collections.singletonList(xp.toString());
         }

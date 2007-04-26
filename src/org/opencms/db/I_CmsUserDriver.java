@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/03/13 09:55:14 $
- * Version: $Revision: 1.58.8.7 $
+ * Date   : $Date: 2007/04/26 14:31:05 $
+ * Version: $Revision: 1.58.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.7 $
+ * @version $Revision: 1.58.8.8 $
  * 
  * @since 6.0.0 
  */
@@ -376,7 +376,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.<p>
+     * {online|offline|history} pool Urls have to be specified.<p>
      * 
      * @param classname the classname of the SQL manager
      * 

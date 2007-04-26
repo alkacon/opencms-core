@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/04/10 12:26:33 $
- * Version: $Revision: 1.90.4.22 $
+ * Date   : $Date: 2007/04/26 14:31:18 $
+ * Version: $Revision: 1.90.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.22 $
+ * @version $Revision: 1.90.4.23 $
  * 
  * @since 6.0.0
  */
@@ -1339,6 +1339,36 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Tests if the current content date of a resource is equals to the given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateContent the content date
+     */
+    public void assertDateContent(CmsObject cms, String resourceName, long dateContent) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getDateContent() != dateContent) {
+                fail("[DateContent "
+                    + dateContent
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(dateContent)
+                    + " != "
+                    + res.getDateContent()
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(res.getDateContent())
+                    + "]");
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
      * Tests if the the current date content of a resource is later than the given date.<p>
      * 
      * @param cms the CmsObject
@@ -1357,36 +1387,6 @@ public class OpenCmsTestCase extends TestCase {
                     + " i.e. "
                     + CmsDateUtil.getHeaderDate(dateContent)
                     + " > "
-                    + res.getDateContent()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateContent())
-                    + "]");
-            }
-
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
-        }
-    }
-
-    /**
-     * Tests if the the current date content of a resource is equals to the given date.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param dateContent the content date
-     */
-    public void assertDateContent(CmsObject cms, String resourceName, long dateContent) {
-
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-
-            if (res.getDateContent() != dateContent) {
-                fail("[DateContent "
-                    + dateContent
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateContent)
-                    + " != "
                     + res.getDateContent()
                     + " i.e. "
                     + CmsDateUtil.getHeaderDate(res.getDateContent())
@@ -1554,37 +1554,38 @@ public class OpenCmsTestCase extends TestCase {
      * @param comparePublishLists if the publish lists should be compared, too
      * @param compareTime if the timestamps should be compared, too
      */
-    public void assertEquals(CmsPublishJobBase j1, CmsPublishJobBase j2, boolean comparePublishLists, boolean compareTime) {
-        
+    public void assertEquals(
+        CmsPublishJobBase j1,
+        CmsPublishJobBase j2,
+        boolean comparePublishLists,
+        boolean compareTime) {
+
         CmsPublishJobInfoBean job1 = new OpenCmsTestPublishJobBase(j1).getInfoBean();
         CmsPublishJobInfoBean job2 = new OpenCmsTestPublishJobBase(j2).getInfoBean();
-        
-        if (!(job1.getPublishHistoryId().equals(job2.getPublishHistoryId()) 
+
+        if (!(job1.getPublishHistoryId().equals(job2.getPublishHistoryId())
             && job1.getProjectName().equals(job2.getProjectName())
             && job1.getUserName().equals(job2.getUserName())
             && job1.getLocale().equals(job2.getLocale())
-            && (job1.getFlags() == job2.getFlags())
-            && (job1.getSize() == job2.getSize()))) {
-            
+            && (job1.getFlags() == job2.getFlags()) && (job1.getSize() == job2.getSize()))) {
+
             fail("Publish jobs are not equal");
         }
-        
+
         if (compareTime) {
-            if (!((job1.getEnqueueTime() == job2.getEnqueueTime())
-            && (job1.getStartTime() == job2.getStartTime())
-            && (job1.getFinishTime() == job2.getFinishTime()))) {
-                
+            if (!((job1.getEnqueueTime() == job2.getEnqueueTime()) && (job1.getStartTime() == job2.getStartTime()) && (job1.getFinishTime() == job2.getFinishTime()))) {
+
                 fail("Publish jobs do not have the same timestamps");
             }
         }
-        
+
         if (comparePublishLists) {
             if (!job1.getPublishList().toString().equals(job2.getPublishList().toString())) {
                 fail("Publish jobs do not have the same publish list");
             }
-        }    
+        }
     }
-    
+
     /**
      * Tests if the given xml document objects are equals (or both null).<p>
      * 
@@ -1613,7 +1614,7 @@ public class OpenCmsTestCase extends TestCase {
             }
         }
     }
-    
+
     /**
      * Compares a given resource to its stored version containing the state before a CmsObject
      * method was called.<p>
@@ -2704,6 +2705,27 @@ public class OpenCmsTestCase extends TestCase {
                 fail(createUserFailMessage(cms, "UserLastModified", user.getId(), res.getUserLastModified()));
             }
 
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
+     * Tests if the current version of a resource is equals to the given version number.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param version the version number to check
+     */
+    public void assertVersion(CmsObject cms, String resourceName, int version) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getVersion() != version) {
+                fail("[Version " + version + " != " + res.getVersion() + "]");
+            }
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }

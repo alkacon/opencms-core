@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.31.4.4 $
+ * Date   : $Date: 2007/04/26 14:31:13 $
+ * Version: $Revision: 1.31.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.jsp;
 
-import org.opencms.file.CmsBackupResource;
-import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -68,7 +68,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.4 $ 
+ * @version $Revision: 1.31.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -892,11 +892,11 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                 }
             }
 
-            // check if a backup resource is displayed
+            // check if an historical resource is displayed
             if (m_collectorResult != null) {
-                CmsBackupResource backRes = CmsBackupResourceHandler.getBackupResouce(pageContext.getRequest());
+                I_CmsHistoryResource backRes = CmsHistoryResourceHandler.getHistoryResource(pageContext.getRequest());
                 if (backRes != null) {
-                    // a backup resource was requested, make sure this is displayed if contained in the result list
+                    // an historical resource was requested, make sure this is displayed if contained in the result list
                     List modifiedResult = new ArrayList(m_collectorResult.size());
                     Iterator i = m_collectorResult.iterator();
                     while (i.hasNext()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/12/21 15:32:12 $
- * Version: $Revision: 1.16.4.14 $
+ * Date   : $Date: 2007/04/26 14:31:15 $
+ * Version: $Revision: 1.16.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.14 $ 
+ * @version $Revision: 1.16.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -243,16 +243,27 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     */
+    public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resourename, int version)
+    throws CmsException {
+
+        // it is not possible to restore a folder from the historical archive
+        throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_0));
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
      */
     public void restoreResourceBackup(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resourename,
-        int tag) throws CmsException {
+        int version) throws CmsException {
 
-        // it is not possible to restore a folder from the backup
-        throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_0));
+        restoreResource(cms, securityManager, resourename, version);
     }
 
     /**

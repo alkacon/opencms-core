@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.23.8.1 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.23.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.jsp;
 
-import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
  * 
- * @version $Revision: 1.23.8.1 $ 
+ * @version $Revision: 1.23.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,8 +117,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
         }
 
         ServletRequest req = context.getRequest();
-        if (CmsBackupResourceHandler.isBackupRequest(req)) {
-            // don't display direct edit buttons on a backup resource
+        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
+            // don't display direct edit buttons on an historical resource
             return;
         }
 

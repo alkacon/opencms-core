@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.10.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.tools.projects;
 
-import org.opencms.file.CmsBackupProject;
+import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,7 +168,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
             CmsListItem item = (CmsListItem)itProjects.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RESOURCES)) {
-                    CmsBackupProject project = getCms().readBackupProject(new Integer(item.getId()).intValue());
+                    CmsHistoryProject project = getCms().readHistoryProject(new Integer(item.getId()).intValue());
                     StringBuffer html = new StringBuffer(512);
                     Iterator resources = project.getProjectResources().iterator();
                     while (resources.hasNext()) {
@@ -190,11 +190,11 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List projects = getCms().getAllBackupProjects();
+        List projects = getCms().getAllHistoricalProjects();
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
-            CmsBackupProject project = (CmsBackupProject)itProjects.next();
-            CmsListItem item = getList().newItem(new Integer(project.getVersionId()).toString());
+            CmsHistoryProject project = (CmsHistoryProject)itProjects.next();
+            CmsListItem item = getList().newItem(new Integer(project.getPublishTag()).toString());
             item.set(LIST_COLUMN_NAME, project.getName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
             try {

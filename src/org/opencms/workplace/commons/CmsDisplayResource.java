@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.21.4.3 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.21.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -74,20 +75,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.4.3 $ 
+ * @version $Revision: 1.21.4.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDisplayResource extends CmsDialog {
 
     /** Request parameter name for versionid. */
-    public static final String PARAM_VERSIONID = "versionid";
+    public static final String PARAM_VERSION = "version";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDisplayResource.class);
 
-    /** The version id parameter. */
-    private String m_paramVersionid;
+    /** The version number parameter. */
+    private String m_paramVersion;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -112,23 +113,25 @@ public class CmsDisplayResource extends CmsDialog {
     }
 
     /**
-     * Returns the content of a backup resource.<p>
+     * Returns the content of an historical resource.<p>
      * 
      * @param cms a CmsObject
-     * @param resource the name of the backup resource
-     * @param versionId the version id of the backup resource
-     * @return the content of a backup resource
+     * @param resource the name of the historical resource
+     * @param version the version number of the historical resource
+     * 
+     * @return the content of an historical resource
      */
-    protected static byte[] getBackupResourceContent(CmsObject cms, String resource, String versionId) {
+    protected static byte[] getHistoricalResourceContent(CmsObject cms, String resource, String version) {
 
-        if (CmsStringUtil.isNotEmpty(resource) && CmsStringUtil.isNotEmpty(versionId)) {
-
-            // try to load the backup resource
-            CmsBackupResource res = null;
+        if (CmsStringUtil.isNotEmpty(resource) && CmsStringUtil.isNotEmpty(version)) {
+            // try to load the historical resource
+            I_CmsHistoryResource res = null;
             String storedSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("/");
-                res = cms.readBackupFile(resource, Integer.parseInt(versionId));
+                res = cms.readResource(
+                    cms.readResource(resource, CmsResourceFilter.ALL).getStructureId(),
+                    Integer.parseInt(version));
             } catch (CmsException e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
@@ -138,28 +141,37 @@ public class CmsDisplayResource extends CmsDialog {
             } finally {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
-            byte[] backupResourceContent = res.getContents();
-            backupResourceContent = CmsEncoder.changeEncoding(
-                backupResourceContent,
-                OpenCms.getSystemInfo().getDefaultEncoding(),
-                cms.getRequestContext().getEncoding());
-            return backupResourceContent;
+            if (res.getResource().isFile()) {
+                byte[] historyResourceContent = ((CmsFile)res).getContents();
+                if ((historyResourceContent == null) || (historyResourceContent.length == 0)) {
+                    try {
+                        CmsFile file = cms.readFile(res.getResource());
+                        historyResourceContent = file.getContents();
+                    } catch (CmsException e) {
+                        // ignore
+                    }
+                }
+                historyResourceContent = CmsEncoder.changeEncoding(
+                    historyResourceContent,
+                    OpenCms.getSystemInfo().getDefaultEncoding(),
+                    cms.getRequestContext().getEncoding());
+                return historyResourceContent;
+            }
         }
-
         return "".getBytes();
     }
 
     /**
-     * Redirects to the specified file or shows backup resource.<p>
+     * Redirects to the specified file or shows an historical resource.<p>
      * 
      * @throws Exception if redirection fails
      */
     public void actionShow() throws Exception {
 
-        // try to load the backup resource
+        // try to load the historical resource
         String resourceStr = getParamResource();
-        if (CmsStringUtil.isNotEmpty(getParamVersionid())) {
-            byte[] result = getBackupResourceContent(getCms(), resourceStr, getParamVersionid());
+        if (CmsStringUtil.isNotEmpty(getParamVersion())) {
+            byte[] result = getHistoricalResourceContent(getCms(), resourceStr, getParamVersion());
             if (result != null) {
                 // get the top level response to change the content type
                 String contentType = OpenCms.getResourceManager().getMimeType(
@@ -277,23 +289,23 @@ public class CmsDisplayResource extends CmsDialog {
     }
 
     /**
-     * Returns the paramVersionid.<p>
+     * Returns the version number parameter value.<p>
      *
-     * @return the paramVersionid
+     * @return the version number parameter value
      */
-    public String getParamVersionid() {
+    public String getParamVersion() {
 
-        return m_paramVersionid;
+        return m_paramVersion;
     }
 
     /**
-     * Sets the paramVersionid.<p>
+     * Sets the version number parameter value.<p>
      *
-     * @param paramVersionid the paramVersionid to set
+     * @param paramVersion the version number parameter value to set
      */
-    public void setParamVersionid(String paramVersionid) {
+    public void setParamVersionid(String paramVersion) {
 
-        m_paramVersionid = paramVersionid;
+        m_paramVersion = paramVersion;
     }
 
     /**

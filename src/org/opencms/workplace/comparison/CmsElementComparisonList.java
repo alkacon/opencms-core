@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/11/03 16:31:16 $
- * Version: $Revision: 1.5.4.5 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.5.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5.4.5 $ 
+ * @version $Revision: 1.5.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,12 +136,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /** Parameter value for the structure id of the second file. */
     private String m_paramId2;
 
-    /** Parameter value for the tag id of the first file. */
-    private String m_paramTagId1;
-
-    /** Parameter value for the tag id of the second file. */
-    private String m_paramTagId2;
-
     /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
 
@@ -199,8 +193,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_IACTION_COMPARE_ALL)) {
             // called if all elements are to be compared
             Map params = new HashMap();
-            params.put(CmsHistoryList.PARAM_TAGID_1, getParamTagId1());
-            params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
             params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
             params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
             params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
@@ -232,8 +224,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     public void executeListSingleActions() throws IOException, ServletException {
 
         Map params = new HashMap();
-        params.put(CmsHistoryList.PARAM_TAGID_1, getParamTagId1());
-        params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
         params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
@@ -264,26 +254,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     public String getParamId2() {
 
         return m_paramId2;
-    }
-
-    /**
-     * Returns the paramTagId1.<p>
-     *
-     * @return the paramTagId1
-     */
-    public String getParamTagId1() {
-
-        return m_paramTagId1;
-    }
-
-    /**
-     * Returns the paramTagId2.<p>
-     *
-     * @return the paramTagId2
-     */
-    public String getParamTagId2() {
-
-        return m_paramTagId2;
     }
 
     /**
@@ -327,26 +297,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the paramTagId1.<p>
-     *
-     * @param paramTagId1 the paramTagId1 to set
-     */
-    public void setParamTagId1(String paramTagId1) {
-
-        m_paramTagId1 = paramTagId1;
-    }
-
-    /**
-     * Sets the paramTagId2.<p>
-     *
-     * @param paramTagId2 the paramTagId2 to set
-     */
-    public void setParamTagId2(String paramTagId2) {
-
-        m_paramTagId2 = paramTagId2;
-    }
-
-    /**
      * Sets the paramNewversionid.<p>
      *
      * @param paramNewversionid the paramNewversionid to set
@@ -383,13 +333,11 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         CmsFile resource1 = CmsResourceComparisonDialog.readFile(
             getCms(),
             new CmsUUID(getParamId1()),
-            getParamVersion1(),
-            Integer.parseInt(getParamTagId1()));
+            getParamVersion1());
         CmsFile resource2 = CmsResourceComparisonDialog.readFile(
             getCms(),
             new CmsUUID(getParamId2()),
-            getParamVersion2(),
-            Integer.parseInt(getParamTagId2()));
+            getParamVersion2());
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
             CmsElementComparison comparison = (CmsElementComparison)diffs.next();

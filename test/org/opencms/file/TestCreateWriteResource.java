@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.19.8.6 $
+ * Date   : $Date: 2007/04/26 14:31:09 $
+ * Version: $Revision: 1.19.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.8.6 $
+ * @version $Revision: 1.19.8.7 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -406,6 +406,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             -1,
+            0,
             0);
 
         cms.importResource(resourcename, resource, null, null);
@@ -466,6 +467,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             -1,
+            0,
             0);
 
         cms.importResource(resourcename, resource, null, null);
@@ -525,6 +527,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length,
+            0,
             0);
 
         cms.importResource(resourcename, resource, content, null);
@@ -590,6 +593,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length,
+            0,
             0);
 
         cms.importResource(resourcename, resource, content, null);
@@ -676,6 +680,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length,
+            0,
             0);
 
         properties.add(prop2);
@@ -730,7 +735,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             content.length,
-            timestamp);
+            timestamp,
+            0);
 
         properties.add(prop3);
         // using new content must replace existing content

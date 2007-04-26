@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/04/10 12:26:33 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.5 
  */
@@ -207,7 +207,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                     resource.getDateExpired(),
                                     resource.getSiblingCount(),
                                     resource.getLength(),
-                                    resource.getDateContent());
+                                    resource.getDateContent(),
+                                    resource.getVersion());
                                 allResources.add(modRes);
                             }
                         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/04/26 14:11:38 $
- * Version: $Revision: 1.717.2.170 $
+ * Date   : $Date: 2007/04/26 14:31:17 $
+ * Version: $Revision: 1.717.2.171 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,8 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 - Updated quartz.jar to version 1.5.2
 # Fixed some issues with undefined orders of Maps in opencms-search.xml and opencms-workplace.xml
 ! Added context menue entries to get a list/explorer view of relations pointing to or from the resource
+- Backup driver renamed to History
+- Whole history driver redesigned, online content shared with history
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestVersioning.java,v $
- * Date   : $Date: 2007/01/19 16:53:51 $
- * Version: $Revision: 1.6.4.2 $
+ * Date   : $Date: 2007/04/26 14:31:08 $
+ * Version: $Revision: 1.6.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6.4.2 $
+ * @version $Revision: 1.6.4.3 $
  */
 public class TestVersioning extends OpenCmsTestCase {
   
@@ -104,9 +104,9 @@ public class TestVersioning extends OpenCmsTestCase {
         // make 5 versions
         for (int i = 0; i < 5; i++) {
             if (i<3) {
-                assertEquals(i+1, cms.readAllBackupFileHeaders(source).size());
+                assertEquals(i+1, cms.readAllAvailableVersions(source).size());
             } else {
-                assertEquals(3, cms.readAllBackupFileHeaders(source).size());
+                assertEquals(3, cms.readAllAvailableVersions(source).size());
             }
             cms.lockResource(source);
             cms.setDateLastModified(source, System.currentTimeMillis(), false);

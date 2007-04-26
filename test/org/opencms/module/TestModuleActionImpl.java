@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/04/26 14:31:16 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -116,9 +116,9 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
      */
-    public void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report) {
+    public void publishProject(CmsObject cms, CmsPublishList publishList, int publishTag, I_CmsReport report) {
 
-        super.publishProject(cms, publishList, backupTagId, report);
+        super.publishProject(cms, publishList, publishTag, report);
         m_publishProject = true;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/02/15 11:12:53 $
- * Version: $Revision: 1.4.8.12 $
+ * Date   : $Date: 2007/04/26 14:31:16 $
+ * Version: $Revision: 1.4.8.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -317,7 +318,7 @@ public class TestRoles extends OpenCmsTestCase {
         // wp user is child of administrator, so it will not be set automatically
         assertEquals(1, roles.size());
         assertTrue(roles.contains(CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn())));
-        
+
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
         childs = CmsRole.ADMINISTRATOR.forOrgUnit("").getChilds(true);
         childs.add(CmsRole.ADMINISTRATOR.forOrgUnit(""));
@@ -364,6 +365,14 @@ public class TestRoles extends OpenCmsTestCase {
         cms.deleteGroup(group.getName());
         assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
 
+        // the workplace user role has been automatically added
+        assertEquals(
+            Collections.singletonList(CmsRole.WORKPLACE_USER.forOrgUnit("")),
+            OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true));
+        // so we have to remove it
+        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
+
+        // check the roles for the user
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
 
         // try to add a role by adding a user to the group

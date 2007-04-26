@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.29.4.7 $
+ * Date   : $Date: 2007/04/26 14:31:15 $
+ * Version: $Revision: 1.29.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.7 $ 
+ * @version $Revision: 1.29.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -555,19 +555,38 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         List properties) throws CmsException;
 
     /**
-     * Restores a file in the current project with a version from the backup archive.<p>
+     * Restores a resource in the current project with a version from the historical archive.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to restore from the archive
-     * @param tag the tag (version) id to resource form the archive
+     * @param version the version number of the resource to restore
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#restoreResourceBackup(String, int)
+     * @see CmsObject#restoreResourceVersion(org.opencms.util.CmsUUID, int)
      * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
-    void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int tag)
+    void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
+    throws CmsException;
+
+    /**
+     * Restores a file in the current project with a version from the historical archive.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to restore from the archive
+     * @param publishTag the publish tag of the resource to restore
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#restoreResourceVersion(org.opencms.util.CmsUUID, int)
+     * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
+     *             but notice that <code>publishTag != version</code>
+     */
+    void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int publishTag)
     throws CmsException;
 
     /**

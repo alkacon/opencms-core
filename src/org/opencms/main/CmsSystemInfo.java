@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2006/12/01 14:23:49 $
- * Version: $Revision: 1.48.4.7 $
+ * Date   : $Date: 2007/04/26 14:31:19 $
+ * Version: $Revision: 1.48.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.48.4.7 $ 
+ * @version $Revision: 1.48.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,6 +487,7 @@ public class CmsSystemInfo {
      */
     public boolean keepVersionHistory() {
 
+        int todo;
         // TODO: make configurable
         return true;
     }

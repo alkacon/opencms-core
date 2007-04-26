@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/12/01 14:23:49 $
- * Version: $Revision: 1.47.4.6 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.47.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.6 $ 
+ * @version $Revision: 1.47.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1437,7 +1437,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         String vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
         String userDriver = getDbProperty(m_databaseKey + ".user.driver");
         String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
-        String backupDriver = getDbProperty(m_databaseKey + ".backup.driver");
+        String historyDriver = getDbProperty(m_databaseKey + ".history.driver");
         String sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
 
         setExtProperty("db.name", m_databaseKey);
@@ -1447,8 +1447,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setExtProperty("db.user.sqlmanager", sqlManager);
         setExtProperty("db.project.driver", projectDriver);
         setExtProperty("db.project.sqlmanager", sqlManager);
-        setExtProperty("db.backup.driver", backupDriver);
-        setExtProperty("db.backup.sqlmanager", sqlManager);
+        setExtProperty("db.history.driver", historyDriver);
+        setExtProperty("db.history.sqlmanager", sqlManager);
     }
 
     /**

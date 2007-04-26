@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/03/01 15:01:38 $
- * Version: $Revision: 1.16.4.6 $
+ * Date   : $Date: 2007/04/26 14:31:16 $
+ * Version: $Revision: 1.16.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -328,7 +328,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
 
-        echo("Testing the import of linked XmlPages in a different site, so that the link paths get broken.");
+        echo("Testing the import of linked Xml Content in a different site, so that the link paths get broken.");
         String filename1 = "/xmlcontent.html";
         String filename2 = "/xmlcontent2.html";
         String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(

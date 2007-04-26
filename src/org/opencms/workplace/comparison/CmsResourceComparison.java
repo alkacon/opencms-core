@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/04/26 14:31:07 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.workplace.comparison;
 
-import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -174,8 +174,8 @@ public class CmsResourceComparison {
             dateCreated1,
             dateCreated2));
         try {
-            String userLastModified1 = CmsHistoryList.readUserNameOfBackupFile(cms, file1);
-            String userLastModified2 = CmsHistoryList.readUserNameOfBackupFile(cms, file2);
+            String userLastModified1 = CmsHistoryList.readUserNameOfHistoryFile(cms, file1);
+            String userLastModified2 = CmsHistoryList.readUserNameOfHistoryFile(cms, file2);
             comparedAttributes.add(new CmsAttributeComparison(
                 Messages.GUI_LABEL_USER_LAST_MODIFIED_0,
                 userLastModified1,
@@ -202,14 +202,14 @@ public class CmsResourceComparison {
     public static List compareProperties(CmsObject cms, CmsFile file1, CmsFile file2) throws CmsException {
 
         List properties1;
-        if (file1 instanceof CmsBackupResource) {
-            properties1 = cms.readBackupPropertyObjects((CmsBackupResource)file1);
+        if (file1 instanceof I_CmsHistoryResource) {
+            properties1 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)file1);
         } else {
             properties1 = cms.readPropertyObjects(file1, false);
         }
         List properties2;
-        if (file2 instanceof CmsBackupResource) {
-            properties2 = cms.readBackupPropertyObjects((CmsBackupResource)file2);
+        if (file2 instanceof I_CmsHistoryResource) {
+            properties2 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)file2);
         } else {
             properties2 = cms.readPropertyObjects(file2, false);
         }

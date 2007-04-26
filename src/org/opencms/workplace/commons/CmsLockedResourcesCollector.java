@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2007/04/10 12:26:33 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.4 
  */
@@ -119,7 +119,8 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
                         resource.getDateExpired(),
                         resource.getSiblingCount(),
                         resource.getLength(),
-                        resource.getDateContent());
+                        resource.getDateContent(),
+                        resource.getVersion());
                 }
                 resources.add(resource);
             } catch (Exception e) {

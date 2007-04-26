@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/12/11 13:35:27 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/04/26 14:31:17 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,7 +186,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         List projects;
         try {
             projects = getCms().getAllManageableProjects();
-            //projects.addAll(getCms().getAllBackupProjects());
+            //projects.addAll(getCms().getAllHistoricalProjects());
             projects.add(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
             Iterator itProjects = projects.iterator();
             String project = m_index.getProject();

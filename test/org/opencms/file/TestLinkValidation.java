@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/04/26 14:31:08 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -60,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -233,18 +234,19 @@ public class TestLinkValidation extends OpenCmsTestCase {
      * Restores the first version of a resource.<p>
      * 
      * @param cms the cms context
-     * @param resName the resource name
+     * @param resource the resource 
      * @param report the report
      * 
      * @throws Exception if something goes wrong
      */
-    private void restore(CmsObject cms, String resName, CmsShellReport report) throws Exception {
+    private void restore(CmsObject cms, CmsResource resource, CmsShellReport report) throws Exception {
 
-        // restore the first backup
-        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
-        List backups = cms.readAllBackupFileHeaders(resName);
-        CmsBackupResource backup = (CmsBackupResource)backups.get(backups.size() - 1);
-        cms.restoreResourceBackup(resName, backup.getTagId());
+        String resName = cms.getRequestContext().getSitePath(resource);
+        // restore the first historical resource
+        cms.importResource(resName, resource, "import".getBytes(), null);
+        List historicalVersions = cms.readAllAvailableVersions(resName);
+        I_CmsHistoryResource history = (I_CmsHistoryResource)historicalVersions.get(historicalVersions.size() - 1);
+        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
         cms.unlockResource(resName);
         OpenCms.getPublishManager().publishResource(cms, resName, true, report);
         OpenCms.getPublishManager().waitWhileRunning();
@@ -522,7 +524,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         if (mode == MODE_XMLCONTENT_BOTH) {
             assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, CmsRelationType.XML_WEAK)));
         }
-        
+
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename4));
         assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
         assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, relType1)));
@@ -569,6 +571,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         // Publishing after deleting file5 and changing the link 
         // from file6 on file5 to file7 must generate no errors
+        CmsResource file5 = cms.readResource(filename5); // keeping the id for restoration
         delete(cms, filename5, report);
         switch (mode) {
             case 1:
@@ -605,10 +608,11 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 break;
 
         }
-        restore(cms, filename5, report);
+        restore(cms, file5, report);
 
         // Publishing after deleting file2 and changing the link from file4 on file2 to file7 
         // and removing the link from file1 on file2 must generate no errors 
+        CmsResource file2 = cms.readResource(filename2); // keeping id for restoration
         delete(cms, filename2, report);
         switch (mode) {
             case 1:
@@ -653,7 +657,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 break;
 
         }
-        restore(cms, filename2, report);
+        restore(cms, file2, report);
 
         // Publishing just file7 after creating a new file8 and creating a link 
         // from file7 to file8 must generate one error
@@ -739,8 +743,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         itRes = resources.iterator();
         while (itRes.hasNext()) {
             CmsResource resource = (CmsResource)itRes.next();
-            String resName = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            restore(cms, resName, report);
+            restore(cms, resource, report);
         }
         touchResources(cms, resources);
         return validation;

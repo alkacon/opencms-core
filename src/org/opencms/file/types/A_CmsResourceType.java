@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.42.4.17 $
+ * Date   : $Date: 2007/04/26 14:31:15 $
+ * Version: $Revision: 1.42.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.17 $ 
+ * @version $Revision: 1.42.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -609,14 +609,28 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int tag)
+    public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
     throws CmsException {
 
-        securityManager.restoreResource(cms.getRequestContext(), resource, tag);
+        securityManager.restoreResource(cms.getRequestContext(), resource, version);
         // type may have changed from non link parseable to link parseable
         updateRelations(cms, securityManager, resource, resource.getRootPath());
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
+     */
+    public void restoreResourceBackup(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        int version) throws CmsException {
+
+        restoreResource(cms, securityManager, resource, version);
     }
 
     /**

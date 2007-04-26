@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2006/09/18 13:01:37 $
- * Version: $Revision: 1.17.4.4 $
+ * Date   : $Date: 2007/04/26 14:31:16 $
+ * Version: $Revision: 1.17.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.4 $ 
+ * @version $Revision: 1.17.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsAdminHistoryClear extends CmsReport {
             case ACTION_SAVE_EDIT:
             default:
                 try {
-                    Map params = getBackupParams();
+                    Map params = getHistoryParams();
                     CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
@@ -314,12 +314,15 @@ public class CmsAdminHistoryClear extends CmsReport {
     }
 
     /**
-     * Returns the necessary parameters to perform the backup deletion.<p>
+     * Returns the necessary parameters to perform the historical archive deletion.<p>
      * 
-     * @return a map with necessary parameters for the deleteBackups method
+     * @return a map with necessary parameters for the 
+     *         {@link org.opencms.file.CmsObject#deleteHistoricalVersions(boolean, int, org.opencms.report.I_CmsReport)} 
+     *         method
+     * 
      * @throws CmsIllegalArgumentException if something goes wrong
      */
-    private Map getBackupParams() throws CmsIllegalArgumentException {
+    private Map getHistoryParams() throws CmsIllegalArgumentException {
 
         HttpServletRequest request = getJsp().getRequest();
         Map parameterMap = new HashMap();

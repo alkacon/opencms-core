@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2007/04/10 12:26:37 $
- * Version: $Revision: 1.25.4.7 $
+ * Date   : $Date: 2007/04/26 14:30:58 $
+ * Version: $Revision: 1.25.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.4.7 $
+ * @version $Revision: 1.25.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -61,8 +61,9 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     private byte[] m_fileContent;
 
     /**
-     * Constructor, creates a new CmsFile Object from the given CmsResource with 
-     * an empty byte array as file content.<p>
+     * Constructor, creates a new file Object from the given resource with 
+     * an empty byte array as file content, if the resource does not
+     * implement a file.<p>
      * 
      * @param resource the base resource object to create a file from
      */
@@ -83,21 +84,16 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getDateReleased(),
             resource.getDateExpired(),
             resource.getSiblingCount(),
-            0,
+            resource.getLength(),
             resource.getDateContent(),
-            new byte[0]);
-
-        if (resource instanceof CmsFile) {
-            // the resource already was a file, keep contents that might have been read already
-            m_fileContent = ((CmsFile)resource).getContents();
-            if (m_fileContent == null) {
-                m_fileContent = new byte[0];
-            }
-        }
+            resource.getVersion(),
+            // if the resource already is a file, keep contents that might have been already read
+            resource instanceof CmsFile ? ((CmsFile)resource).getContents() : null);
     }
 
     /**
-     * Constructor, creates a new CmsFile object.<p>
+     * Constructor, creates a new file object.<p>
+     * 
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resouce
@@ -114,6 +110,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param linkCount the count of all siblings of this resource 
      * @param length the size of the file content of this resource
      * @param dateContent the date of the last modification of the content of this resource 
+     * @param version the version number of this resource   
      * @param content the binary content data of this file
      */
     public CmsFile(
@@ -133,9 +130,9 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         int linkCount,
         int length,
         long dateContent,
+        int version,
         byte[] content) {
 
-        // create the CmsResource.
         super(
             structureId,
             resourceId,
@@ -153,22 +150,28 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             dateExpired,
             linkCount,
             length,
-            dateContent);
+            dateContent,
+            version);
 
         m_fileContent = content;
+        if (m_fileContent == null) {
+            m_fileContent = new byte[0];
+        }
     }
 
     /**
      * Utility method to upgrade a CmsResource to a CmsFile.<p>
      * 
      * Sometimes a CmsResource might already be a (casted) CmsFile that
-     * also has the contents read. This methods tries to optimize 
+     * also has the contents read. This method tries to optimize 
      * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
      * first. If this fails, the CmsFile is read from the VFS.<p> 
      * 
      * @param resource the resource to upgrade
      * @param cms permission context for accessing the VFS
+     * 
      * @return the upgraded (or read) file
+     * 
      * @throws CmsException if something goes wrong
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
@@ -181,24 +184,10 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                 // file has the contents already available
                 return file;
             }
-        } else if (resource instanceof CmsBackupResource) {
-            // resource is a backup resource (extends file)
-            CmsFile file = (CmsFile)resource;
-            if ((file.getContents() != null) && (file.getContents().length > 0)) {
-                // backup resource has the contents already available
-                return file;
-            } else {
-                // no content available in backup resource
-                CmsBackupResource backupResource = (CmsBackupResource)resource;
-                backupResource = cms.readBackupFile(backupResource.getRootPath(), backupResource.getVersionId());
-                return backupResource;
-            }
         }
 
-        // resource is no file, or contents are not available
-        String filename = cms.getSitePath(resource);
         // read and return the file
-        return cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
+        return cms.readFile(resource);
     }
 
     /**
@@ -228,6 +217,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getSiblingCount(),
             getLength(),
             getDateContent(),
+            getVersion(),
             newContent);
 
         if (isTouched()) {

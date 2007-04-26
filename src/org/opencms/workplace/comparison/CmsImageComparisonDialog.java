@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2006/10/09 12:30:42 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -40,7 +40,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3.4.1 $ 
+ * @version $Revision: 1.3.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,13 +90,13 @@ public class CmsImageComparisonDialog extends CmsDialog {
             // offline version
             link1 = getParamResource();
         } else {
-            link1 = CmsHistoryList.getBackupLink(getCms(), new CmsUUID(m_paramId1), m_paramTagId1);
+            link1 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId1), m_paramTagId1);
         }
         if ("-1".equals(m_paramTagId2)) {
             // offline version
             link2 = getParamResource();
         } else {
-            link2 = CmsHistoryList.getBackupLink(getCms(), new CmsUUID(m_paramId2), m_paramTagId2);
+            link2 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId2), m_paramTagId2);
         }
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.25.2.13 $
+ * Date   : $Date: 2007/04/26 14:31:11 $
+ * Version: $Revision: 1.25.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.13 $
+ * @version $Revision: 1.25.2.14 $
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BACKUP_FILE_NOT_FOUND_1 = "ERR_BACKUP_FILE_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
@@ -56,7 +53,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CREATE_SIBLING_FILE_NOT_FOUND_1 = "ERR_CREATE_SIBLING_FILE_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_BACKUP_VERSIONS_1 = "ERR_DELETE_BACKUP_VERSIONS_1";
+    public static final String ERR_DELETE_HISTORY_VERSIONS_1 = "ERR_DELETE_HISTORY_VERSIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
@@ -86,6 +83,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1 = "ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_HISTORY_FILE_NOT_FOUND_1 = "ERR_HISTORY_FILE_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZING_USER_DRIVER_0 = "ERR_INITIALIZING_USER_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -104,13 +104,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NO_ACE_FOUND_2 = "ERR_NO_ACE_FOUND_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1 = "ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_BACKUP_RESOURCE_ID_2 = "ERR_NO_BACKUP_RESOURCE_ID_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_GROUP_WITH_ID_1 = "ERR_NO_GROUP_WITH_ID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1 = "ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROJECT_WITH_ID_1 = "ERR_NO_PROJECT_WITH_ID_1";
@@ -197,6 +194,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCE_VERSIONS_1 = "ERR_READ_RESOURCE_VERSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCE_WITH_ID_1 = "ERR_READ_RESOURCE_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -236,7 +236,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_USER_WITH_NAME_ALREADY_EXISTS_1 = "ERR_USER_WITH_NAME_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WRITING_BACKUP_OF_PROJECT_1 = "ERR_WRITING_BACKUP_OF_PROJECT_1";
+    public static final String ERR_WRITING_HISTORY_OF_PROJECT_1 = "ERR_WRITING_HISTORY_OF_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
@@ -386,6 +386,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_REMOVING_ACL_1 = "LOG_REMOVING_ACL_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVING_RELATIONS_1 = "LOG_REMOVING_RELATIONS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVING_RESOURCE_1 = "LOG_REMOVING_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -396,6 +399,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1 = "LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_FOLDER_WRONG_STATE_CN_1 = "LOG_WARN_FOLDER_WRONG_STATE_CN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_FOLDER_WRONG_STATE_NC_1 = "LOG_WARN_FOLDER_WRONG_STATE_NC_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITING_PUBLISHING_HISTORY_1 = "LOG_WRITING_PUBLISHING_HISTORY_1";

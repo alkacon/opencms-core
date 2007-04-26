@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/04/10 12:26:37 $
- * Version: $Revision: 1.146.4.36 $
+ * Date   : $Date: 2007/04/26 14:30:59 $
+ * Version: $Revision: 1.146.4.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.history.CmsHistoryProject;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -93,7 +95,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.36 $
+ * @version $Revision: 1.146.4.37 $
  * 
  * @since 6.0.0 
  */
@@ -169,10 +171,25 @@ public final class CmsObject {
      * @param publishDate the date of publishing
      *
      * @throws CmsException if operation was not succesful
+     * 
+     * @deprecated Use {@link #writeHistoryProject(int,long)} instead
      */
     public void backupProject(int versionId, long publishDate) throws CmsException {
 
-        m_securityManager.backupProject(m_context, versionId, publishDate);
+        writeHistoryProject(versionId, publishDate);
+    }
+
+    /**
+     * Creates a historical entry of the current project.<p>
+     * 
+     * @param publishTag the correlative publish tag
+     * @param publishDate the date of publishing
+
+     * @throws CmsException if operation was not succesful
+     */
+    public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
+
+        m_securityManager.writeHistoryProject(m_context, publishTag, publishDate);
     }
 
     /**
@@ -365,7 +382,7 @@ public final class CmsObject {
      * for a resource. Most notably, the "internal only" setting which signals 
      * that a resource can not be directly requested with it's URL.<p>
      *
-     * @param resourcename the name of the resource to change the flags for (full path)
+     * @param resourcename the name of the resource to change the flags for (full current site relative path)
      * @param flags the new flags for this resource
      *
      * @throws CmsException if something goes wrong
@@ -385,7 +402,7 @@ public final class CmsObject {
      * makes sense e.g. if you want to make a plain text file a JSP resource,
      * or a binary file an image, etc.<p> 
      *
-     * @param resourcename the name of the resource to change the type for (full path)
+     * @param resourcename the name of the resource to change the type for (full current site relative path)
      * @param type the new resource type for this resource
      *
      * @throws CmsException if something goes wrong
@@ -405,8 +422,8 @@ public final class CmsObject {
      * Siblings will be treated according to the
      * <code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code> mode.<p>
      * 
-     * @param source the name of the resource to copy (full path)
-     * @param destination the name of the copy destination (full path)
+     * @param source the name of the resource to copy (full current site relative path)
+     * @param destination the name of the copy destination (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
@@ -433,8 +450,8 @@ public final class CmsObject {
      * <li><code>{@link CmsResource#COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
-     * @param source the name of the resource to copy (full path)
-     * @param destination the name of the copy destination (full path)
+     * @param source the name of the resource to copy (full current site relative path)
+     * @param destination the name of the copy destination (full current site relative path)
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
@@ -455,7 +472,7 @@ public final class CmsObject {
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
-     * @param resourcename the name of the resource to copy to the current project (full path)
+     * @param resourcename the name of the resource to copy to the current project (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -596,7 +613,7 @@ public final class CmsObject {
      * Creates a new resource of the given resource type with 
      * empty content and no properties.<p>
      * 
-     * @param resourcename the name of the resource to create (full path)
+     * @param resourcename the name of the resource to create (full current site relative path)
      * @param type the type of the resource to create
      * 
      * @return the created resource
@@ -615,7 +632,7 @@ public final class CmsObject {
      * Creates a new resource of the given resource type
      * with the provided content and properties.<p>
      * 
-     * @param resourcename the name of the resource to create (full path)
+     * @param resourcename the name of the resource to create (full current site relative path)
      * @param type the type of the resource to create
      * @param content the contents for the new resource
      * @param properties the properties for the new resource
@@ -696,6 +713,23 @@ public final class CmsObject {
     }
 
     /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     * 
+     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
+     * 
+     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
+     * @param versionsToKeep the maximal number of versions per resource to keep 
+     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public void deleteHistoricalVersions(boolean cleanUp, int versionsToKeep, I_CmsReport report) throws CmsException {
+
+        m_securityManager.deleteHistoricalVersions(m_context, cleanUp, versionsToKeep, report);
+    }
+
+    /**
      * Deletes the versions from the backup tables that are older then the given timestamp  
      * and/or number of remaining versions.<p>
      * 
@@ -710,10 +744,19 @@ public final class CmsObject {
      * @param report the report for output logging
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #deleteHistoricalVersions(boolean, int, I_CmsReport)} instead,
+     *             notice that there is no longer possible to delete historical versions by date
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
 
-        m_securityManager.deleteBackups(m_context, timestamp, versions, report);
+        if (timestamp != 0) {
+            if (versions == 0) {
+                // use default value
+                versions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+            }
+        }
+        deleteHistoricalVersions(false, versions, report);
     }
 
     /**
@@ -816,7 +859,7 @@ public final class CmsObject {
      * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
-     * @param resourcename the name of the resource to delete (full path)
+     * @param resourcename the name of the resource to delete (full current site relative path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
      *
      * @throws CmsException if something goes wrong
@@ -905,7 +948,7 @@ public final class CmsObject {
      * the given resource exists, but the current user has not the required 
      * permissions, then this method will return <code>false</code>.<p>
      *
-     * @param resourcename the name of the resource to check (full path)
+     * @param resourcename the name of the resource to check (full current site relative path)
      *
      * @return <code>true</code> if the resource is available
      *
@@ -934,7 +977,7 @@ public final class CmsObject {
      * the given resource exists, but the current user has not the required 
      * permissions, then this method will return <code>false</code>.<p>
      *
-     * @param resourcename the name of the resource to check (full path)
+     * @param resourcename the name of the resource to check (full current site relative path)
      * @param filter the resource filter to use while checking
      *
      * @return <code>true</code> if the resource is available
@@ -1025,14 +1068,29 @@ public final class CmsObject {
     /**
      * Returns a list with all projects from history.<p>
      *
-     * @return list of <code>{@link CmsBackupProject}</code> objects 
+     * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      *
      * @throws CmsException  if operation was not succesful
+     * 
+     * @deprecated Use {@link #getAllHistoricalProjects()} instead
      */
     public List getAllBackupProjects() throws CmsException {
 
-        return m_securityManager.getAllBackupProjects(m_context);
+        return getAllHistoricalProjects();
+    }
+
+    /**
+     * Returns a list with all projects from history.<p>
+     *
+     * @return list of <code>{@link CmsHistoryProject}</code> objects 
+     *           with all projects from history
+     *
+     * @throws CmsException  if operation was not succesful
+     */
+    public List getAllHistoricalProjects() throws CmsException {
+
+        return m_securityManager.getAllHistoricalProjects(m_context);
     }
 
     /**
@@ -1046,16 +1104,6 @@ public final class CmsObject {
     public List getAllManageableProjects() throws CmsException {
 
         return m_securityManager.getAllManageableProjects(m_context);
-    }
-
-    /**
-     * Returns the next version id for the published backup resources.<p>
-     *
-     * @return int the new version id
-     */
-    public int getBackupTagId() {
-
-        return m_securityManager.getBackupTagId(m_context);
     }
 
     /**
@@ -1110,9 +1158,9 @@ public final class CmsObject {
      * The result is filtered according to the rules of 
      * the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for. 
+     * @param resourcename the full current site relative path of the resource to return the child resources for
      * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s
+     * @return a list of all child files as <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -1130,10 +1178,10 @@ public final class CmsObject {
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for. 
-     * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s
+     * @param resourcename the full path of the resource to return the child resources for
      * @param filter the resource filter to use
+     * 
+     * @return a list of all child file as <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1242,7 +1290,7 @@ public final class CmsObject {
     /**
      * Returns the lock state for a specified resource name.<p>
      * 
-     * @param resourcename the name if the resource to get the lock state for (full path)
+     * @param resourcename the name if the resource to get the lock state for (full current site relative path)
      * 
      * @return the lock state for the specified resource
      * 
@@ -1278,7 +1326,7 @@ public final class CmsObject {
      * if a resource in the "lost and found" folder with the same name already exists. 
      * In such case, a counter is added to the resource name.<p>
      * 
-     * @param resourcename the name of the resource to get the "lost and found" name for (full path)
+     * @param resourcename the name of the resource to get the "lost and found" name for (full current site relative path)
      *
      * @return the tentative name of the resource inside the "lost and found" folder
      * 
@@ -1390,11 +1438,7 @@ public final class CmsObject {
     public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
-        return OpenCms.getPublishManager().getPublishList(
-            this,
-            directPublishResources,
-            directPublishSiblings,
-            true);
+        return OpenCms.getPublishManager().getPublishList(this, directPublishResources, directPublishSiblings, true);
     }
 
     /**
@@ -1496,7 +1540,7 @@ public final class CmsObject {
      * 
      * This method is mainly used by the workplace explorer.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for
+     * @param resourcename the full current site relative path of the resource to return the child resources for
      * @param filter the resource filter to use
      * 
      * @return a list of all child <code>{@link CmsResource}</code>s
@@ -1568,9 +1612,9 @@ public final class CmsObject {
      * The result is filtered according to the rules of 
      * the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for. 
+     * @param resourcename the full current site relative path of the resource to return the child resources for. 
      * 
-     * @return a list of all child file <code>{@link CmsResource}</code>s
+     * @return a list of all child file as <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -1588,7 +1632,7 @@ public final class CmsObject {
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
      * 
-     * @param resourcename the full path of the resource to return the child resources for. 
+     * @param resourcename the full current site relative path of the resource to return the child resources for. 
      * 
      * @return a list of all child folder <code>{@link CmsResource}</code>s
      * @param filter the resource filter to use
@@ -1736,7 +1780,7 @@ public final class CmsObject {
      * If a resource with the same name but a different id exists, 
      * the imported resource is (usually) moved to the "lost and found" folder.<p> 
      *
-     * @param resourcename the name for the resource after import (full path)
+     * @param resourcename the name for the resource after import (full current site relative path)
      * @param resource the resource object to be imported
      * @param content the content of the resource
      * @param properties the properties of the resource
@@ -1873,7 +1917,7 @@ public final class CmsObject {
      * If the resource starts with any one of this prefixes, it is considered to 
      * be "inside" the project.<p>
      * 
-     * @param resourcename the specified resource name (full path)
+     * @param resourcename the specified resource name (full current site relative path)
      * 
      * @return <code>true</code>, if the specified resource is inside the current project
      */
@@ -1898,7 +1942,7 @@ public final class CmsObject {
      *
      * This will be an exclusive, persistant lock that is removed only if the user unlocks it.<p>
      *
-     * @param resourcename the name of the resource to lock (full path)
+     * @param resourcename the name of the resource to lock (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1913,7 +1957,7 @@ public final class CmsObject {
      * This will be an exclusive, temporary lock valid only for the current users session.
      * Usually this should not be used directly, this method is intended for the OpenCms workplace only.<p>
      *
-     * @param resourcename the name of the resource to lock (full path)
+     * @param resourcename the name of the resource to lock (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -2015,8 +2059,8 @@ public final class CmsObject {
      * OpenCms VFS. This way you can see the deleted files/folders in the offline
      * project, and you will be unable to undelete them.<p>
      * 
-     * @param source the name of the resource to move (full path)
-     * @param destination the destination resource name (full path)
+     * @param source the name of the resource to move (full current site relative path)
+     * @param destination the destination resource name (full current site relative path)
      *
      * @throws CmsException if something goes wrong
      * 
@@ -2038,7 +2082,7 @@ public final class CmsObject {
      * already exists in the VFS. In this case, the imported resource is 
      * moved to the "lost and found" folder.<p>
      * 
-     * @param resourcename the name of the resource to move to "lost and found" (full path)
+     * @param resourcename the name of the resource to move to "lost and found" (full current site relative path)
      *
      * @return the name of the resource inside the "lost and found" folder
      * 
@@ -2189,14 +2233,32 @@ public final class CmsObject {
      *
      * @param filename the name of the file to be read
      *
-     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
+     * @return a list of file headers, as <code>{@link I_CmsHistoryResource}</code> objects, read from the Cms
      *
      * @throws CmsException  if operation was not successful
+     * 
+     * @deprecated Use {@link #readAllAvailableVersions(String)} instead
      */
     public List readAllBackupFileHeaders(String filename) throws CmsException {
 
-        CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
-        return m_securityManager.readAllBackupFileHeaders(m_context, resource);
+        return readAllAvailableVersions(filename);
+    }
+
+    /**
+     * Reads all historical versions of a resource.<br>
+     * 
+     * The reading excludes the file content, if the resource is a file.<p>
+     *
+     * @param resourceName the name of the resource to be read
+     *
+     * @return a list of historical resources, as <code>{@link I_CmsHistoryResource}</code> objects
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List readAllAvailableVersions(String resourceName) throws CmsException {
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        return m_securityManager.readAllAvailableVersions(m_context, resource);
     }
 
     /**
@@ -2216,7 +2278,7 @@ public final class CmsObject {
      * 
      * If no folder matching the filter criteria is found, null is returned.<p>
      * 
-     * @param resourcename the name of the resource to start (full path)
+     * @param resourcename the name of the resource to start (full current site relative path)
      * @param filter the resource filter to match while reading the ancestors
      * 
      * @return the first ancestor folder matching the filter criteria or null if no folder was found
@@ -2234,7 +2296,7 @@ public final class CmsObject {
      * 
      * If no folder with the requested resource type is found, null is returned.<p>
      * 
-     * @param resourcename the name of the resource to start (full path)
+     * @param resourcename the name of the resource to start (full current site relative path)
      * @param type the resource type of the folder to match
      * 
      * @return the first ancestor folder matching the filter criteria or null if no folder was found
@@ -2252,36 +2314,43 @@ public final class CmsObject {
      * The reading includes the file content.<p>
      *
      * @param structureId the structure id of the file to be read
-     * @param tagId the tag id of the resource
+     * @param publishTag the tag id of the resource
      *
      * @return the file read
      *
      * @throws CmsException if the user has not the rights to read the file, or 
      *                      if the file couldn't be read.
+     *                      
+     * @deprecated use {@link #readResourceByPublishTag(CmsUUID, int)} or {@link #readResource(CmsUUID, int)} instead, 
+     *             but notice that the <code>publishTag != version</code>
+     *             and there is no possibility to access to a historical entry with just the filename.
      */
-    public CmsBackupResource readBackupFile(CmsUUID structureId, int tagId) throws CmsException {
+    public I_CmsHistoryResource readBackupFile(CmsUUID structureId, int publishTag) throws CmsException {
 
-        CmsResource resource = readResource(structureId, CmsResourceFilter.ALL);
-        return m_securityManager.readBackupFile(m_context, tagId, resource);
+        return readResourceByPublishTag(structureId, publishTag);
     }
 
     /**
-     * Returns a file from the history.<br>
+     * Returns a resource from the historical archive.<br>
      * 
-     * The reading includes the file content.<p>
+     * The reading includes the file content, if the resource is a file.<p>
      *
-     * @param filename the complete path of the file to be read
-     * @param tagId the tag id of the resource
+     * @param filename the path of the file to be read
+     * @param publishTag the publish tag
      *
      * @return the file read
      *
      * @throws CmsException if the user has not the rights to read the file, or 
      *                      if the file couldn't be read.
+     *                      
+     * @deprecated use {@link #readResource(CmsUUID, int)} instead, 
+     *             but notice that the <code>publishTag != version</code>
+     *             and there is no possibility to access to an historical entry with just the filename.
      */
-    public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
+    public I_CmsHistoryResource readBackupFile(String filename, int publishTag) throws CmsException {
 
         CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
-        return m_securityManager.readBackupFile(m_context, tagId, resource);
+        return readResourceByPublishTag(resource.getStructureId(), publishTag);
     }
 
     /**
@@ -2292,23 +2361,56 @@ public final class CmsObject {
      * @return the requested backup project
      * 
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated Use {@link #readHistoryProject(int)} instead
      */
-    public CmsBackupProject readBackupProject(int tagId) throws CmsException {
+    public CmsHistoryProject readBackupProject(int tagId) throws CmsException {
 
-        return (m_securityManager.readBackupProject(m_context, tagId));
+        return readHistoryProject(tagId);
+    }
+
+    /**
+     * Returns a historical project entry.<p>
+     *
+     * @param publishTag publish tag of the project
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public CmsHistoryProject readHistoryProject(int publishTag) throws CmsException {
+
+        return (m_securityManager.readHistoryProject(m_context, publishTag));
     }
 
     /**
      * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
      * 
      * @param resource the backup resource to read the properties from
+     * 
      * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated Use {@link #readHistoryPropertyObjects(I_CmsHistoryResource)} instead
      */
-    public List readBackupPropertyObjects(CmsBackupResource resource) throws CmsException {
+    public List readBackupPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
 
-        return m_securityManager.readBackupPropertyObjects(m_context, resource);
+        return readHistoryPropertyObjects(resource);
+    }
+
+    /**
+     * Reads the list of all <code>{@link CmsProperty}</code> objects that belong to the given historical resource version.<p>
+     * 
+     * @param resource the historical resource version to read the properties for
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readHistoryPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
+
+        return m_securityManager.readHistoryPropertyObjects(m_context, resource);
     }
 
     /**
@@ -2346,13 +2448,36 @@ public final class CmsObject {
     }
 
     /**
+     * Reads all deleted (historical) resources below the given path, 
+     * including the full tree below the path, if required.<p>
+     * 
+     * The result list may include resources with the same name of new 
+     * resources (with different id's).<p>
+     * 
+     * @param resourcename the parent path to read the resources from
+     * @param readTree <code>true</code> to read all subresources
+     * 
+     * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #readResource(CmsUUID, int)
+     * @see #readResources(String, CmsResourceFilter, boolean)
+     */
+    public List readDeletedResources(String resourcename, boolean readTree) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readDeletedResources(m_context, resource, readTree);
+    }
+
+    /**
      * Reads a file resource (including it's binary content) from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
      *  
      * In case you do not need the file content, 
      * use <code>{@link #readResource(String)}</code> instead.<p>
      *
-     * @param resourcename the name of the resource to read (full path)
+     * @param resourcename the name of the resource to read (full current site relative path)
      *
      * @return the file resource that was read
      *
@@ -2379,7 +2504,7 @@ public final class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      *
-     * @param resourcename the name of the resource to read (full path)
+     * @param resourcename the name of the resource to read (full current site relative path)
      * @param filter the resource filter to use while reading
      *
      * @return the file resource that was read
@@ -2391,6 +2516,28 @@ public final class CmsObject {
     public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, filter);
+        return readFile(resource);
+    }
+
+    /**
+     * Reads a file resource (including it's binary content) from the VFS,
+     * for the given resource (this may also be an historical version of the resoource).<p>
+     * 
+     * In case you do not need the file content, 
+     * use <code>{@link #readResource(String, CmsResourceFilter)}</code> or
+     * <code>{@link #readFile(String, CmsResourceFilter)}</code> instead.<p>
+     * 
+     * @param resource the resource to read
+     *
+     * @return the file resource that was read
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     * 
+     * @see #readResource(String, CmsResourceFilter)
+     * @see #readFile(String, CmsResourceFilter)
+     */
+    public CmsFile readFile(CmsResource resource) throws CmsException {
+
         return m_securityManager.readFile(m_context, resource);
     }
 
@@ -2398,7 +2545,7 @@ public final class CmsObject {
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * @param resourcename the name of the resource to read (full path)
+     * @param resourcename the name of the resource to read (full current site relative path)
      *
      * @return the file resource that was read
      *
@@ -2415,7 +2562,7 @@ public final class CmsObject {
      * Reads a folder resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
-     * @param resourcename the name of the folder resource to read (full path)
+     * @param resourcename the name of the folder resource to read (full current site relative path)
      *
      * @return the folder resource that was read
      *
@@ -2439,7 +2586,7 @@ public final class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      * 
-     * @param resourcename the name of the folder resource to read (full path)
+     * @param resourcename the name of the folder resource to read (full current site relative path)
      * @param filter the resource filter to use while reading
      *
      * @return the folder resource that was read
@@ -2885,7 +3032,7 @@ public final class CmsObject {
      * required. To "upgrade" a resource to a file, 
      * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
-     * @param structureID the ID of the structure to read
+     * @param structureID the structure ID of the resource to read
      *
      * @return the resource that was read
      *
@@ -2918,7 +3065,7 @@ public final class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      * 
-     * @param structureID the ID of the structure to read
+     * @param structureID the structure ID of the resource to read
      * @param filter the resource filter to use while reading
      *
      * @return the resource that was read
@@ -2935,6 +3082,42 @@ public final class CmsObject {
     }
 
     /**
+     * Reads the historical resource with the given version for the resource given 
+     * the given structure id.<p>
+     *
+     * A resource may be of type <code>{@link CmsFile}</code> or 
+     * <code>{@link CmsFolder}</code>. In case of a file, the resource will not 
+     * contain the binary file content. Since reading the binary content is a 
+     * cost-expensive database operation, it's recommended to work with resources 
+     * if possible, and only read the file content when absolutly required. To 
+     * "upgrade" a resource to a file, use 
+     * <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     *
+     * Please note that historical versions are just generated during publishing, 
+     * so the first version with version number 1 is generated during publishing 
+     * of a new resource (exception is a new sibling, that may also contain some 
+     * relevant versions of already published siblings) and the last version 
+     * available is the version of the current online resource.<p>
+     * 
+     * @param structureID the structure ID of the resource to read
+     * @param version the version number you want to retrieve
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * @throws CmsVfsResourceNotFoundException if the version does not exists
+     * 
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see #restoreResourceVersion(CmsUUID, int)
+     */
+    public I_CmsHistoryResource readResource(CmsUUID structureID, int version)
+    throws CmsException, CmsVfsResourceNotFoundException {
+
+        CmsResource resource = readResource(structureID, CmsResourceFilter.ALL);
+        return m_securityManager.readResource(m_context, resource, version);
+    }
+
+    /**
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      *
@@ -2946,7 +3129,7 @@ public final class CmsObject {
      * required. To "upgrade" a resource to a file, 
      * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
-     * @param resourcename the name of the resource to read (full path)
+     * @param resourcename the name of the resource to read (full current site relative path)
      *
      * @return the resource that was read
      *
@@ -2979,7 +3162,7 @@ public final class CmsObject {
      * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
      * will ignore the date release / date expired information of the resource.<p>
      * 
-     * @param resourcename the name of the resource to read (full path)
+     * @param resourcename the name of the resource to read (full current site relative path)
      * @param filter the resource filter to use while reading
      *
      * @return the resource that was read
@@ -2993,6 +3176,29 @@ public final class CmsObject {
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         return m_securityManager.readResource(m_context, addSiteRoot(resourcename), filter);
+    }
+
+    /**
+     * Reads an historical resource in the current project with the given publish tag 
+     * from the historical archive.<p>
+     * 
+     * @param structureId the structure id of the resource to restore from the archive
+     * @param publishTag the publish tag of the resource
+     * 
+     * @return the file in the current project with the given publish tag from the historical 
+     *         archive, or {@link CmsVfsResourceNotFoundException} if not found 
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #readResource(CmsUUID, int)
+     * 
+     * @deprecated use {@link #readResource(CmsUUID, int)} instead
+     *             but notice that the <code>publishTag != version</code>
+     */
+    public I_CmsHistoryResource readResourceByPublishTag(CmsUUID structureId, int publishTag) throws CmsException {
+
+        CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_securityManager.readResourceForPublishTag(m_context, resource, publishTag);
     }
 
     /**
@@ -3256,7 +3462,7 @@ public final class CmsObject {
      * The resource is not really removed like in a regular copy operation, 
      * it is in fact only "disabled" in the current users project.<p>   
      * 
-     * @param resourcename the name of the resource to remove to the current project (full path)
+     * @param resourcename the name of the resource to remove to the current project (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3283,7 +3489,7 @@ public final class CmsObject {
      * Renames a resource to the given destination name,
      * this is identical to a <code>move</code> operation.<p>
      *
-     * @param source the name of the resource to rename (full path)
+     * @param source the name of the resource to rename (full current site relative path)
      * @param destination the new resource name (full path)
      * 
      * @throws CmsException if something goes wrong
@@ -3298,7 +3504,7 @@ public final class CmsObject {
     /**
      * Replaces the content, type and properties of a resource.<p>
      * 
-     * @param resourcename the name of the resource to replace (full path)
+     * @param resourcename the name of the resource to replace (full current site relative path)
      * @param type the new type of the resource
      * @param content the new content of the resource
      * @param properties the new properties of the resource
@@ -3318,17 +3524,38 @@ public final class CmsObject {
     }
 
     /**
-     * Restores a file in the current project with a version from the backup archive.<p>
+     * Restores a resource in the current project with a version from the historical archive.<p>
      * 
-     * @param resourcename the name of the resource to restore from the archive (full path)
-     * @param tagId the desired tag ID of the resource
+     * @param structureId the structure id of the resource to restore from the archive
+     * @param version the desired version of the resource to be restored
      *
      * @throws CmsException if something goes wrong
+     * 
+     * @see #readResource(CmsUUID, int)
      */
-    public void restoreResourceBackup(String resourcename, int tagId) throws CmsException {
+    public void restoreResourceVersion(CmsUUID structureId, int version) throws CmsException {
+
+        CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).restoreResource(this, m_securityManager, resource, version);
+    }
+
+    /**
+     * Restores a file in the current project with a version from the backup archive.<p>
+     * 
+     * @param resourcename the name of the resource to restore from the archive (full current site relative path)
+     * @param publishTag the desired tag ID of the resource
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #restoreResourceVersion(CmsUUID, int)} instead,
+     *             but notice that the <code>publishTag != version</code>
+     *             and there is no possibility to access to an historical entry with just the filename.
+     */
+    public void restoreResourceBackup(String resourcename, int publishTag) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).restoreResourceBackup(this, m_securityManager, resource, tagId);
+        I_CmsHistoryResource history = readResourceByPublishTag(resource.getStructureId(), publishTag);
+        restoreResourceVersion(resource.getStructureId(), history.getVersion());
     }
 
     /**
@@ -3357,7 +3584,7 @@ public final class CmsObject {
     /**
      * Changes the "expire" date of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change (full path)
+     * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateExpired the new expire date of the changed resource
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
@@ -3372,7 +3599,7 @@ public final class CmsObject {
     /**
      * Changes the "last modified" timestamp of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change (full path)
+     * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
@@ -3392,7 +3619,7 @@ public final class CmsObject {
     /**
      * Changes the "release" date of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change (full path)
+     * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateReleased the new release date of the changed resource
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
@@ -3417,7 +3644,7 @@ public final class CmsObject {
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
      * 
-     * @throws CmsException  if operation was not successfull
+     * @throws CmsException  if operation was not successful
      */
     public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
 
@@ -3458,7 +3685,7 @@ public final class CmsObject {
      * of a resource, the "release" date of a resource, 
      * and also the "expire" date of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change (full path)
+     * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource, 
      *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
@@ -3554,7 +3781,7 @@ public final class CmsObject {
     /**
      * Unlocks a resource.<p>
      * 
-     * @param resourcename the name of the resource to unlock (full path)
+     * @param resourcename the name of the resource to unlock (full current site relative path)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3937,7 +4164,7 @@ public final class CmsObject {
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
      * </ul><p>
      * 
-     * @param resourcename the name of the resource to lock (full path)
+     * @param resourcename the name of the resource to lock (full current site relative path)
      * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong

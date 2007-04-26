@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/03/28 15:39:29 $
- * Version: $Revision: 1.97.4.43 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.97.4.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.file.CmsBackupProject;
-import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -54,6 +52,8 @@ import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.history.CmsHistoryProject;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -222,33 +222,6 @@ public final class CmsSecurityManager {
                 readRoles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2, username, groupname), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
-     * Creates a backup of the current project.<p>
-     * 
-     * @param context the current request context
-     * @param tagId the version of the backup
-     * @param publishDate the date of publishing
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public void backupProject(CmsRequestContext context, int tagId, long publishDate) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            m_driverManager.backupProject(dbc, tagId, publishDate);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_BACKUP_PROJECT_4,
-                new Object[] {
-                    new Integer(tagId),
-                    dbc.currentProject().getName(),
-                    dbc.currentProject().getUuid(),
-                    new Long(publishDate)}), e);
         } finally {
             dbc.clear();
         }
@@ -1093,40 +1066,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given timestamp  
-     * and/or number of remaining versions.<p>
-     * 
-     * The number of verions always wins, i.e. if the given timestamp would delete more versions 
-     * than given in the versions parameter, the timestamp will be ignored. <p>
-     * 
-     * Deletion will delete file header, content and properties. <p>
-     * 
-     * @param context the current request context
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted
-     * @param versions the number of versions per file which should kept in the system
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if operation was not succesful
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#WORKPLACE_MANAGER}
-     */
-    public void deleteBackups(CmsRequestContext context, long timestamp, int versions, I_CmsReport report)
-    throws CmsException, CmsRoleViolationException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
-            m_driverManager.deleteBackups(dbc, timestamp, versions, report);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_DELETE_BACKUPS_2,
-                new Date(timestamp),
-                new Integer(versions)), e);
-        } finally {
-            dbc.clear();
-        }
-    }
-
-    /**
      * Deletes a group, where all permissions, users and childs of the group
      * are transfered to a replacement group.<p>
      * 
@@ -1192,6 +1131,40 @@ public final class CmsSecurityManager {
             m_driverManager.deleteGroup(dbc, group, null);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     * 
+     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
+     * 
+     * @param context the current request context
+     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
+     * @param versionsToKeep the maximal number of versions per resource to keep 
+     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if operation was not succesful
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#WORKPLACE_MANAGER}
+     */
+    public void deleteHistoricalVersions(
+        CmsRequestContext context,
+        boolean cleanUp,
+        int versionsToKeep,
+        I_CmsReport report) throws CmsException, CmsRoleViolationException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
+            m_driverManager.deleteHistoricalVersions(dbc, cleanUp, versionsToKeep, report);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_DELETE_HISTORY_2,
+                new Boolean(cleanUp),
+                new Integer(versionsToKeep)), e);
         } finally {
             dbc.clear();
         }
@@ -1634,17 +1607,17 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * 
-     * @return list of <code>{@link CmsBackupProject}</code> objects 
+     * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getAllBackupProjects(CmsRequestContext context) throws CmsException {
+    public List getAllHistoricalProjects(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getAllBackupProjects(dbc);
+            result = m_driverManager.getAllHistoricalProjects(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1,
@@ -1675,25 +1648,6 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_GET_ALL_MANAGEABLE_PROJECTS_1,
                 dbc.currentUser().getName()), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns the next version id for the published backup resources.<p>
-     *
-     * @param context the current request context
-     * 
-     * @return the new version id
-     */
-    public int getBackupTagId(CmsRequestContext context) {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        int result = 0;
-        try {
-            result = m_driverManager.getBackupTagId(dbc);
         } finally {
             dbc.clear();
         }
@@ -2027,8 +1981,8 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the uuid id for the given id, remove this method
-     * as soon as possible.<p>
+     * Returns the uuid id for the given id, 
+     * remove this method as soon as possible.<p>
      * 
      * @param context the current cms context
      * @param id the old project id
@@ -2953,29 +2907,26 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all file headers of a file.<br>
+     * Reads all historical versions of a resource.<br>
      * 
-     * This method returns a list with the history of all file headers, i.e.
-     * the file headers of a file, independent of the project they were attached to.<br>
-     *
-     * The reading excludes the file content.<p>
+     * The reading excludes the file content, if the resource is a file.<p>
      *
      * @param context the current request context
      * @param resource the resource to be read
      * 
-     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
+     * @return a list of historical versions, as <code>{@link I_CmsHistoryResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllBackupFileHeaders(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public List readAllAvailableVersions(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         List result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.readAllBackupFileHeaders(dbc, resource);
+            result = m_driverManager.readAllAvailableVersions(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_ALL_BKP_FILE_HEADERS_1,
+                Messages.ERR_READ_ALL_HISTORY_FILE_HEADERS_1,
                 context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
@@ -3039,90 +2990,6 @@ public final class CmsSecurityManager {
                 return null;
             }
         } while (true);
-    }
-
-    /**
-     * Returns a file from the history.<br>
-     * 
-     * The reading includes the file content.<p>
-     *
-     * @param context the current request context
-     * @param tagId the id of the tag of the file
-     * @param resource the resource to be read
-     * 
-     * @return the file read
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, CmsResource resource)
-    throws CmsException {
-
-        CmsBackupResource result = null;
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            result = m_driverManager.readBackupFile(dbc, tagId, resource);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_BKP_FILE_2,
-                context.getSitePath(resource),
-                new Integer(tagId)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns a backup project.<p>
-     *
-     * @param context the current request context
-     * @param tagId the tagId of the project
-     * 
-     * @return the requested backup project
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsBackupProject readBackupProject(CmsRequestContext context, int tagId) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        CmsBackupProject result = null;
-        try {
-            result = m_driverManager.readBackupProject(dbc, tagId);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_BKP_PROJECT_2,
-                new Integer(tagId),
-                dbc.currentProject().getName()), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
-     * 
-     * @param context the current request context
-     * @param resource the backup resource to read the properties from
-     * 
-     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readBackupPropertyObjects(CmsRequestContext context, CmsBackupResource resource) throws CmsException {
-
-        List result = null;
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            result = m_driverManager.readBackupPropertyObjects(dbc, resource);
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
-                context.getSitePath(resource)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
     }
 
     /**
@@ -3209,6 +3076,39 @@ public final class CmsSecurityManager {
             throw se;
         } catch (CmsException e) {
             // ignore all other exceptions
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads all deleted (historical) resources below the given path, 
+     * including the full tree below the path, if required.<p>
+     * 
+     * @param context the current request context
+     * @param resource the parent resource to read the resources from
+     * @param readTree <code>true</code> to read all subresources
+     * 
+     * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, int)
+     * @see CmsObject#readResources(String, CmsResourceFilter, boolean)
+     * @see CmsObject#readDeletedResources(String, boolean)
+     */
+    public List readDeletedResources(CmsRequestContext context, CmsResource resource, boolean readTree)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List result = null;
+        try {
+            result = m_driverManager.readDeletedResources(dbc, resource, readTree);
+        } catch (CmsException e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READING_DELETED_RESOURCES_1,
+                dbc.removeSiteRoot(resource.getRootPath())), e);
         } finally {
             dbc.clear();
         }
@@ -3344,6 +3244,60 @@ public final class CmsSecurityManager {
             result = m_driverManager.readGroup(dbc, CmsOrganizationalUnit.removeLeadingSeparator(groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_GROUP_FOR_NAME_1, groupname), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns a historical project entry.<p>
+     *
+     * @param context the current request context
+     * @param publishTag the publish tag of the project
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsHistoryProject readHistoryProject(CmsRequestContext context, int publishTag) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsHistoryProject result = null;
+        try {
+            result = m_driverManager.readHistoryProject(dbc, publishTag);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_HISTORY_PROJECT_2,
+                new Integer(publishTag),
+                dbc.currentProject().getName()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads the list of all <code>{@link CmsProperty}</code> objects that belong to the given historical resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the historcial resource entry to read the properties for
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readHistoryPropertyObjects(CmsRequestContext context, I_CmsHistoryResource resource)
+    throws CmsException {
+
+        List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readHistoryPropertyObjects(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
+                context.getSitePath(resource.getResource())), e);
         } finally {
             dbc.clear();
         }
@@ -3704,6 +3658,39 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Reads the historical resource entry for the given resource with the given version number.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource to be read the version for
+     * @param version the version number to retrieve
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#restoreResourceVersion(CmsUUID, int)
+     * @see CmsObject#readResource(CmsUUID, int)
+     */
+    public I_CmsHistoryResource readResource(CmsRequestContext context, CmsResource resource, int version)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        I_CmsHistoryResource result = null;
+        try {
+            result = m_driverManager.readResource(dbc, resource, version);
+        } catch (CmsException e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READING_RESOURCE_VERSION_2,
+                dbc.removeSiteRoot(resource.getRootPath()),
+                new Integer(version)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Reads a resource from the VFS,
      * using the specified resource filter.<p>
      *
@@ -3790,6 +3777,45 @@ public final class CmsSecurityManager {
                 null,
                 Messages.get().container(Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(resourcePath)),
                 e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads an historical resource in the current project with the given publish tag from the historical archive.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to read from the archive
+     * @param publishTag the publish tag of the resource
+     * 
+     * @return the resource in the current project with the given publish tag from the historical archive, or
+     *         {@link CmsVfsResourceNotFoundException} if not found 
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, int)
+     * @see CmsObject#readResourceByPublishTag(CmsUUID, int)
+     * 
+     * @deprecated use {@link #readResource(CmsRequestContext, CmsResource, int)} instead
+     *             but notice that the <code>publishTag != version</code>
+     */
+    public I_CmsHistoryResource readResourceForPublishTag(
+        CmsRequestContext context,
+        CmsResource resource,
+        int publishTag) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        I_CmsHistoryResource result = null;
+        try {
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
+            result = m_driverManager.readResourceForPublishTag(dbc, resource, publishTag);
+        } catch (CmsException e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_HISTORY_FILE_2,
+                context.getSitePath(resource),
+                new Integer(publishTag)), e);
         } finally {
             dbc.clear();
         }
@@ -4296,31 +4322,31 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Restores a file in the current project with a version from the backup archive.<p>
+     * Restores a resource in the current project with the given version from the historical archive.<p>
      * 
      * @param context the current request context
      * @param resource the resource to restore from the archive
-     * @param tag the tag (version) id to resource form the archive
+     * @param version the version number to restore
      * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#restoreResourceBackup(String, int)
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#restoreResourceVersion(CmsUUID, int)
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void restoreResource(CmsRequestContext context, CmsResource resource, int tag)
+    public void restoreResource(CmsRequestContext context, CmsResource resource, int version)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            m_driverManager.restoreResource(dbc, resource, tag);
+            m_driverManager.restoreResource(dbc, resource, version);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_RESTORE_RESOURCE_2,
                 context.getSitePath(resource),
-                new Integer(tag)), e);
+                new Integer(version)), e);
         } finally {
             dbc.clear();
         }
@@ -4810,6 +4836,33 @@ public final class CmsSecurityManager {
             m_driverManager.writeGroup(dbc, group);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_GROUP_1, group.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Creates a historical entry of the current project.<p>
+     * 
+     * @param context the current request context
+     * @param publishTag the correlative publish tag
+     * @param publishDate the date of publishing
+     *
+     * @throws CmsException if operation was not succesful
+     */
+    public void writeHistoryProject(CmsRequestContext context, int publishTag, long publishDate) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.writeHistoryProject(dbc, publishTag, publishDate);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_HISTORY_PROJECT_4,
+                new Object[] {
+                    new Integer(publishTag),
+                    dbc.currentProject().getName(),
+                    dbc.currentProject().getUuid(),
+                    new Long(publishDate)}), e);
         } finally {
             dbc.clear();
         }

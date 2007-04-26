@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.110.2.24 $
+ * Date   : $Date: 2007/04/26 14:31:09 $
+ * Version: $Revision: 1.110.2.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.24 $
+ * @version $Revision: 1.110.2.25 $
  * 
  * @since 6.0.0 
  */
@@ -2273,9 +2273,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             dbc.currentUser().getId(),
             0,
             dbc.currentUser().getId(),
-            1,
             CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT);
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            0);
 
         m_driverManager.getVfsDriver().createResource(dbc, dbc.currentProject(), resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);

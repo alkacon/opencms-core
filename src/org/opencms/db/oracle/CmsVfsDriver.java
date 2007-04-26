@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/04/10 12:26:37 $
- * Version: $Revision: 1.36.8.2 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.36.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
-import org.opencms.file.CmsProject;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -56,24 +55,24 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.2 $
+ * @version $Revision: 1.36.8.3 $
  * 
  * @since 6.0.0 
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[], int)
+     * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
      */
-    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId)
+    public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
+            conn = m_sqlManager.getConnection(dbc, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_CONTENTS_ADD");
 
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
@@ -87,7 +86,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
         // now update the file content
-        writeContent(dbc, project, resourceId, content);
+        writeContent(dbc, projectId, resourceId, content);
     }
 
     /**
@@ -99,9 +98,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[])
+     * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
      */
-    public long writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    public long writeContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
@@ -112,8 +111,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         boolean wasInTransaction = false;
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
+            conn = m_sqlManager.getConnection(dbc, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_CONTENTS_UPDATECONTENT");
 
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
@@ -153,7 +152,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             // update the content modification date
             long time = System.currentTimeMillis();
             try {
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCE_UPDATE_CONTENT_DATE");
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
                 stmt.setLong(1, time);
                 stmt.setString(2, resourceId.toString());
                 stmt.executeUpdate();

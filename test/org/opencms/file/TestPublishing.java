@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.21.4.8 $
+ * Date   : $Date: 2007/04/26 14:31:08 $
+ * Version: $Revision: 1.21.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.8 $
+ * @version $Revision: 1.21.4.9 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -253,12 +253,13 @@ public class TestPublishing extends OpenCmsTestCase {
         assertDateContentAfter(cms, resName, time);
 
         // test publishing new content
+        time = System.currentTimeMillis();
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProject onlineProject = cms.readProject("Online");
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContent(cms, resName, offlineResource.getDateContent());
+        assertDateContentAfter(cms, resName, offlineResource.getDateContent());
 
         // test modifying the content
         CmsProject offlineProject = cms.readProject("Offline");
@@ -352,6 +353,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertDateContentAfter(cms, resName, offlineResource.getDateContent());
         assertDateContentAfter(cms, sibName, offlineResource.getDateContent());
         assertDateContent(cms, sibName, cms.readResource(resName).getDateContent());
+        long onlineTime = cms.readResource(resName).getDateContent();
 
         // test moving
         String movedName = "/newtext_mov.txt";
@@ -370,8 +372,8 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // check the online project before publishing
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContent(cms, resName, time);
-        assertDateContent(cms, sibName, time);
+        assertDateContent(cms, resName, onlineTime);
+        assertDateContent(cms, sibName, onlineTime);
 
         // now publish and check again
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -379,8 +381,8 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContent(cms, movedName, offlineFile.getDateContent());
-        assertDateContent(cms, sibName, offlineFile.getDateContent());
+        assertDateContentAfter(cms, movedName, offlineFile.getDateContent());
+        assertDateContentAfter(cms, sibName, offlineFile.getDateContent());
     }
 
     /**

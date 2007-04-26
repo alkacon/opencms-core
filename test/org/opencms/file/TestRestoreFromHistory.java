@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.14.8.5 $
+ * Date   : $Date: 2007/04/26 14:31:09 $
+ * Version: $Revision: 1.14.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -47,7 +48,8 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.14.8.5 $
+ * 
+ * @version $Revision: 1.14.8.6 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
 
@@ -121,25 +123,24 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         int version;
         for (version = 1; version < 20; version++) {
-
             cms.lockResource(resourcename);
 
-            // check that there is the appropriate number of backup files
-            List allFiles = cms.readAllBackupFileHeaders(resourcename);
+            // check that there is the appropriate number of historical files
+            List allFiles = cms.readAllAvailableVersions(resourcename);
             if (version <= C_MAX_VERSIONS) {
                 if (allFiles.size() != version) {
-                    fail("Number of backup files found = " + allFiles.size() + " != " + version + " expected");
+                    fail("Number of historical files found = " + allFiles.size() + " != " + version + " expected");
                 }
             } else {
                 if (allFiles.size() != C_MAX_VERSIONS) {
-                    fail("Number of backup files found = " + allFiles.size() + " != " + C_MAX_VERSIONS + " expected");
+                    fail("Number of historical files found = " + allFiles.size() + " != " + C_MAX_VERSIONS + " expected");
                 }
             }
 
             // now check the previous version if available
             if (version > 1) {
-                CmsBackupResource backup = (CmsBackupResource)allFiles.get(1);
-                cms.restoreResourceBackup(resourcename, backup.getTagId());
+                I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
+                cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
 
                 // check the content - must be version-1
                 assertContent(cms, resourcename, Integer.toString(version - 1).getBytes());
@@ -179,10 +180,10 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // check the content
         assertContent(cms, resourcename, contentStr.getBytes());
 
-        // check that there are no backups available
-        List allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there are no historical versions available
+        List allFiles = cms.readAllAvailableVersions(resourcename);
         if (!allFiles.isEmpty()) {
-            fail("Unexpected backup files for new created resource found.");
+            fail("Unexpected historical files for new created resource found.");
         }
 
         // publish the project
@@ -190,12 +191,13 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check that there is exactly one backup file available
-        allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there is exactly one historical file available
+        allFiles = cms.readAllAvailableVersions(resourcename);
         if (allFiles.size() != 1) {
-            fail("Unexpected number of backup files for published resource found (one expected)");
+            fail("Unexpected number of historical files for published resource found (one expected)");
         }
 
+        CmsResource resource = cms.readResource(resourcename);
         // now delete and publish the resource
         cms.lockResource(resourcename);
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -203,20 +205,23 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // create a new empty resource
-        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), null, null);
+        // create a new empty resource, this is no longer supported
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), null);
+        allFiles = cms.readAllAvailableVersions(resourcename);
+        assertEquals("Unexpected number of historical files for published resource found (zero expected)", 0, allFiles.size());
 
-        // check that there is one backup file available, again
-        allFiles = cms.readAllBackupFileHeaders(resourcename);
-        if (allFiles.size() != 1) {
-            fail("Unexpected number of backup files for published resource found (one expected)");
-        }
+        cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // check that there is one historical file available, again
+        cms.importResource(resourcename, resource, "test".getBytes(), null);
+        allFiles = cms.readAllAvailableVersions(resourcename);
+        assertEquals("Unexpected number of historical files for published resource found (two expected)", 2, allFiles.size());
 
         // read the tag id
-        CmsBackupResource backup = (CmsBackupResource)allFiles.get(0);
+        I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(0);
 
         // and restore it from history
-        cms.restoreResourceBackup(resourcename, backup.getTagId());
+        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
 
         // check the content
         assertContent(cms, resourcename, contentStr.getBytes());
@@ -243,10 +248,10 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // check the content
         assertContent(cms, resourcename, contentStr.getBytes());
 
-        // check that there are no backups available
-        List allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there are no historical versions available
+        List allFiles = cms.readAllAvailableVersions(resourcename);
         if (!allFiles.isEmpty()) {
-            fail("Unexpected backup files for new created resource found.");
+            fail("Unexpected historical files for new created resource found.");
         }
 
         // publish the project
@@ -254,10 +259,10 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check that there is exactly one backup file available
-        allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there is exactly one historical file available
+        allFiles = cms.readAllAvailableVersions(resourcename);
         if (allFiles.size() != 1) {
-            fail("Unexpected number of backup files for published resource found (one expected)");
+            fail("Unexpected number of historical files for published resource found (one expected)");
         }
 
         // now move and publish the resource
@@ -267,18 +272,18 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check that there is one backup file available, again
-        allFiles = cms.readAllBackupFileHeaders(newresname);
+        // check that there is one historical file available, again
+        allFiles = cms.readAllAvailableVersions(newresname);
         if (allFiles.size() != 2) {
-            fail("Unexpected number of backup files for published resource found (two expected)");
+            fail("Unexpected number of historical files for published resource found (two expected)");
         }
 
         // read the tag id
-        CmsBackupResource backup = (CmsBackupResource)allFiles.get(0);
+        I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(0);
 
         // and restore it from history
         cms.lockResource(newresname);
-        cms.restoreResourceBackup(newresname, backup.getTagId());
+        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
 
         // check the content
         assertContent(cms, newresname, contentStr.getBytes());
@@ -323,10 +328,10 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         assertContent(cms, resourcename, contentStr1.getBytes());
         assertPropertyNew(cms, resourcename, props1);
 
-        // check that there are no backups available
-        List allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there are no historical versions available
+        List allFiles = cms.readAllAvailableVersions(resourcename);
         if (!allFiles.isEmpty()) {
-            fail("Unexpected backup files for new created resource found.");
+            fail("Unexpected historical files for new created resource found.");
         }
 
         // publish the project
@@ -334,10 +339,10 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check that there is exactly one backup file available
-        allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there is exactly one historical file available
+        allFiles = cms.readAllAvailableVersions(resourcename);
         if (allFiles.size() != 1) {
-            fail("Unexpected number of backup files for published resource found (one expected)");
+            fail("Unexpected number of historical files for published resource found (one expected)");
         }
 
         // store current resource contents
@@ -364,21 +369,21 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check that there are exactly two backup files available
-        allFiles = cms.readAllBackupFileHeaders(resourcename);
+        // check that there are exactly two historical files available
+        allFiles = cms.readAllAvailableVersions(resourcename);
         if (allFiles.size() != 2) {
-            fail("Unexpected number of backup files for published resource found (two expected)");
+            fail("Unexpected number of historical files for published resource found (two expected)");
         }
 
         // read the tag id
-        CmsBackupResource backup = (CmsBackupResource)allFiles.get(1);
+        I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
 
         // store current resource contents
         this.storeResources(cms, resourcename);
 
         // now restore the first version
         cms.lockResource(resourcename);
-        cms.restoreResourceBackup(resourcename, backup.getTagId());
+        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
 
         // check the content - must be version 1
         assertContent(cms, resourcename, contentStr1.getBytes());

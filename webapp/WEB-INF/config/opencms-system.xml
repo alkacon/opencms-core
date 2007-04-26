@@ -23,7 +23,7 @@
 		<scheduler />	
 	   	<versionhistory enabled="true" count="10"/>		   	
 		<resourceinit>
-			<resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
 			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
         </resourceinit>

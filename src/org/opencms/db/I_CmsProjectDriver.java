@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.76.4.8 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.76.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.8 $
+ * @version $Revision: 1.76.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -163,18 +163,18 @@ public interface I_CmsProjectDriver {
     void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Deletes all publish history entries with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * Deletes all publish history entries with publish tags >=0 and < the specified max. publish tag.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
-     * @param maxBackupTagId entries with backup tag IDs >=0 and < this max. backup tag ID get deleted
+     * @param maxPublishTag entries with publish tags >=0 and < this max. publish tag get deleted
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistory(CmsDbContext dbc, CmsUUID projectId, int maxBackupTagId) throws CmsDataAccessException;
+    void deletePublishHistory(CmsDbContext dbc, CmsUUID projectId, int maxPublishTag) throws CmsDataAccessException;
 
     /**
-     * Deletes a publish history entry with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * Deletes a publish history entry with publish tags >=0 and < the specified max. publish tag.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
@@ -252,7 +252,7 @@ public interface I_CmsProjectDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.<p>
+     * {online|offline|history} pool Urls have to be specified.<p>
      * 
      * @param classname the classname of the SQL manager
      * 
@@ -269,11 +269,11 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param offlineFolder the offline folder to publish
-     * @param backupEnabled flag if backup is enabled
+     * @param historyEnabled flag if history is enabled
      * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
+     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -284,10 +284,10 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder offlineFolder,
-        boolean backupEnabled,
+        boolean historyEnabled,
         long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
+        int publishTag,
         int maxVersions) throws CmsDataAccessException;
 
     /**
@@ -300,11 +300,11 @@ public interface I_CmsProjectDriver {
      * @param onlineProject the online project
      * @param offlineResource the offline file to publish
      * @param publishedContentIds contains the UUIDs of already published content records
-     * @param backupEnabled flag if backup is enabled
+     * @param historyEnabled flag if history is enabled
      * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
+     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -316,10 +316,10 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedContentIds,
-        boolean backupEnabled,
+        boolean historyEnabled,
         long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
+        int publishTag,
         int maxVersions) throws CmsDataAccessException;
 
     /**
@@ -361,11 +361,11 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param currentFolder the offline folder to publish
-     * @param backupEnabled flag if backup is enabled
+     * @param historyEnabled flag if history is enabled
      * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
+     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -376,10 +376,10 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder currentFolder,
-        boolean backupEnabled,
+        boolean historyEnabled,
         long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
+        int publishTag,
         int maxVersions) throws CmsDataAccessException;
 
     /**
@@ -389,9 +389,9 @@ public interface I_CmsProjectDriver {
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
      * @param publishList a Cms publish list
-     * @param backupEnabled true if published resources should be written to the Cms backup
-     * @param backupTagId the backup tag ID
-     * @param maxVersions maximum number of backup versions
+     * @param historyEnabled true if published resources should be written to the historical archive
+     * @param publishTag the publish tag
+     * @param maxVersions maximum number of historical versions
      * 
      * @throws CmsException if something goes wrong
      */
@@ -400,8 +400,8 @@ public interface I_CmsProjectDriver {
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        boolean backupEnabled,
-        int backupTagId,
+        boolean historyEnabled,
+        int publishTag,
         int maxVersions) throws CmsException;
 
     /**

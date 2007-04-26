@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/04/26 14:31:16 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
      * Creates the history clear Thread.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param params the necessary parameters to delete the backup versions
+     * @param params the necessary parameters to delete the historical versions
      */
     public CmsAdminHistoryClearThread(CmsObject cms, Map params) {
 
@@ -93,11 +93,11 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
 
         // get the necessary parameters from the map
         int versions = Integer.parseInt((String)m_params.get("versions"));
-        long timeStamp = Long.parseLong((String)m_params.get("timeStamp"));
+        boolean cleanUp = Boolean.valueOf((String)m_params.get("cleanUp")).booleanValue();
 
-        // delete the backup files
+        // delete the historical files
         try {
-            getCms().deleteBackups(timeStamp, versions, getReport());
+            getCms().deleteHistoricalVersions(cleanUp, versions, getReport());
         } catch (CmsException e) {
             getReport().println(e);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/04/10 12:26:36 $
- * Version: $Revision: 1.114.4.12 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.114.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.12 $
+ * @version $Revision: 1.114.4.13 $
  * 
  * @since 6.0.0 
  */
@@ -63,17 +63,16 @@ public interface I_CmsVfsDriver {
     int DRIVER_TYPE_ID = 3;
 
     /**
-     * Creates a resource content with the specified id.<p>
+     * Creates a content entry for the resource identified by the specified resource id.<p>
      * 
      * @param dbc the current database context
-     * @param project the current project
-     * @param resourceId the resource id to create the content for
+     * @param projectId the id of the current project
+     * @param resourceId the resource id of the resource to create the content for
      * @param content the content to write
-     * @param versionId for the content of a backup file you need to insert the versionId of the backup
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId)
+    void createContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException;
 
     /**
@@ -239,7 +238,7 @@ public interface I_CmsVfsDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.<p>
+     * {online|offline|history} pool Urls have to be specified.<p>
      * 
      * @param classname the classname of the SQL manager
      * 
@@ -268,7 +267,6 @@ public interface I_CmsVfsDriver {
      * @param onlineProject the online project
      * @param onlineResource the online resource
      * @param offlineResource the offline resource
-     * @param writeFileContent <code>true</code>, if also the content record of the specified offline resource should be written to the online table
      * 
      * @throws CmsDataAccessException if somethong goes wrong
      */
@@ -276,8 +274,7 @@ public interface I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource onlineResource,
-        CmsResource offlineResource,
-        boolean writeFileContent) throws CmsDataAccessException;
+        CmsResource offlineResource) throws CmsDataAccessException;
 
     /**
      * Reads all child-files and/or child-folders of a specified parent resource.<p>
@@ -301,20 +298,15 @@ public interface I_CmsVfsDriver {
     /**
      * Reads the content of a file specified by it's resource ID.<p>
      * 
-     * The <code>projectId</code> and <code>includeDeleted</code> are not used anymore.
-     * They are still parameters of the method to maintain compatibility to older versions.<p>
-     * 
-     * The returned file possesses only the content of the file as a byte array, 
-     * which can be obtained by {@link CmsFile#getContents()}, and the content ID.<p>
-     * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
      * @param resourceId the id of the resource
      * 
-     * @return the file that was read
+     * @return the file content
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsFile readFile(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
+    byte[] readContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
     throws CmsDataAccessException;
 
     /**
@@ -672,10 +664,10 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Writes the resource content with the specified content id.<p>
+     * Writes the resource content with the specified resource id.<p>
      * 
      * @param dbc the current database context
-     * @param project the current project
+     * @param projectId the id of the current project
      * @param resourceId the id of the resource used to identify the content to update
      * @param content the new content of the file
      * 
@@ -683,7 +675,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    long writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    long writeContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException;
 
     /**
@@ -732,7 +724,7 @@ public interface I_CmsVfsDriver {
      * after creating, importing or restoring complete files
      * where all file header attribs are changed. Both the structure and resource 
      * records get written. Thus, using this method affects all siblings of
-     * a resource! Use {@link #writeResourceState(CmsDbContext, CmsProject, CmsResource, int)}
+     * a resource! Use {@link #writeResourceState(CmsDbContext, CmsProject, CmsResource, int, boolean)}
      * instead if you just want to update the file state, e.g. of a single sibling.<p>
      * 
      * The file state is set to "changed", unless the current state is "new"
@@ -756,7 +748,7 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#UPDATE_RESOURCE_STATE
      * @see org.opencms.db.CmsDriverManager#UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#NOTHING_CHANGED
-     * @see #writeResourceState(CmsDbContext, CmsProject, CmsResource, int)
+     * @see #writeResourceState(CmsDbContext, CmsProject, CmsResource, int, boolean)
      */
     void writeResource(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
     throws CmsDataAccessException;
@@ -780,6 +772,7 @@ public interface I_CmsVfsDriver {
      * @param project the current project
      * @param resource the resource to be updated
      * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
+     * @param isPublishing if this method is called during publishing to version numbers are updated
      * 
      * @throws CmsDataAccessException if somethong goes wrong
      * 
@@ -787,6 +780,6 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#UPDATE_ALL
      */
-    void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
+    void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed, boolean isPublishing)
     throws CmsDataAccessException;
 }

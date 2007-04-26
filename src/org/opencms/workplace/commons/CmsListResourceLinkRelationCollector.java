@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationCollector.java,v $
- * Date   : $Date: 2007/04/26 14:11:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/04/26 14:31:14 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.1 
  */
@@ -186,6 +186,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
                     getWp().getJsp().getRequestContext().currentUser().getId(),
                     0,
                     getWp().getJsp().getRequestContext().currentUser().getId(),
+                    0,
                     0,
                     0,
                     0,

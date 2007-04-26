@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2007/03/01 15:01:17 $
- * Version: $Revision: 1.31.4.5 $
+ * Date   : $Date: 2007/04/26 14:31:05 $
+ * Version: $Revision: 1.31.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.4.5 $
+ * @version $Revision: 1.31.4.6 $
  * 
  * @since 6.0.0
  * 
@@ -99,14 +99,14 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1054065812825770479L;
 
-    /** The backup tag ID of the published resource. */
-    private int m_backupTagId;
-
     /** Indicates if the published resource is a folder or a file. */
     private boolean m_isFolder;
 
     /** falg to signal if the resource was moved. */
     private boolean m_isMoved;
+
+    /** The publish tag of the published resource. */
+    private int m_publishTag;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
@@ -129,7 +129,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * Creates an object for published VFS resources.<p>
      * 
-     * Do not write objects created with this constructor to db, since the backup tag id is not set.<p>
+     * Do not write objects created with this constructor to db, since the publish tag is not set.<p>
      * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
      */
@@ -142,11 +142,11 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * Creates an object for published VFS resources.<p>
      * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
-     * @param backupTagId the backup tag id
+     * @param publishTag the publish Tag
      */
-    public CmsPublishedResource(CmsResource resource, int backupTagId) {
+    public CmsPublishedResource(CmsResource resource, int publishTag) {
 
-        this(resource, backupTagId, resource.getState());
+        this(resource, publishTag, resource.getState());
     }
 
     /**
@@ -154,14 +154,14 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
      * @param state the resource state
-     * @param backupTagId the backup tag id
+     * @param publishTag the publish tag
      */
-    public CmsPublishedResource(CmsResource resource, int backupTagId, CmsResourceState state) {
+    public CmsPublishedResource(CmsResource resource, int publishTag, CmsResourceState state) {
 
         this(
             resource.getStructureId(),
             resource.getResourceId(),
-            backupTagId,
+            publishTag,
             resource.getRootPath(),
             resource.getTypeId(),
             resource.isFolder(),
@@ -174,7 +174,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * 
      * @param structureId the structure ID of the published resource
      * @param resourceId the resource ID of the published resource
-     * @param backupTagId the resource's tag ID in the backup tables
+     * @param publishTag the publish tag
      * @param rootPath the root path of the published resource
      * @param resourceType the type of the published resource
      * @param isFolder indicates if the published resource is a folder or a file
@@ -184,7 +184,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     public CmsPublishedResource(
         CmsUUID structureId,
         CmsUUID resourceId,
-        int backupTagId,
+        int publishTag,
         String rootPath,
         int resourceType,
         boolean isFolder,
@@ -193,7 +193,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
-        m_backupTagId = backupTagId;
+        m_publishTag = publishTag;
         m_rootPath = rootPath;
         m_resourceType = resourceType;
         m_isFolder = isFolder;
@@ -240,13 +240,15 @@ public class CmsPublishedResource implements Serializable, Comparable {
     }
 
     /**
-     * Returns the backup tag ID of the published resource.<p>
+     * Returns the publish tag of the published resource.<p>
      * 
-     * @return the backup tag ID of the published resource
+     * @return the publish tag of the published resource
+     * 
+     * @deprecated Use {@link #getPublishTag()} instead
      */
     public int getBackupTagId() {
 
-        return m_backupTagId;
+        return getPublishTag();
     }
 
     /**
@@ -266,6 +268,16 @@ public class CmsPublishedResource implements Serializable, Comparable {
             // should never happen
             return getState();
         }
+    }
+
+    /**
+     * Returns the publish tag of the published resource.<p>
+     * 
+     * @return the publish tag of the published resource
+     */
+    public int getPublishTag() {
+
+        return m_publishTag;
     }
 
     /**
@@ -397,8 +409,8 @@ public class CmsPublishedResource implements Serializable, Comparable {
         result.append(m_structureId);
         result.append(", resource ID: ");
         result.append(m_resourceId);
-        result.append(", backup tag ID: ");
-        result.append(m_backupTagId);
+        result.append(", publish tag: ");
+        result.append(m_publishTag);
         result.append(", siblings: ");
         result.append(m_siblingCount);
         result.append(", state: ");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2006/10/09 12:30:42 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2007/04/26 14:31:06 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.comparison;
 
-import org.opencms.file.CmsBackupResourceHandler;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3.4.2 $ 
+ * @version $Revision: 1.3.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,8 +119,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
         // forward to the edit module screen  
         Map params = new HashMap();
-        params.put(CmsHistoryList.PARAM_TAGID_1, getParamTagId1());
-        params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
         params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
@@ -171,11 +169,11 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      * Returns the html code to display a file version.<p>
      * 
      * @param path the path of the file to be displayed
-     * @param tagId the tag id of the file to be displayed
      * @param version the version of the file to be displayed
+     * 
      * @return the html code to display a file version
      */
-    protected String getViewVersionButtonHtml(String path, String tagId, String version) {
+    protected String getViewVersionButtonHtml(String path, String version) {
 
         String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(getLocale());
         String iconPath = null;
@@ -190,17 +188,17 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         result.append("<span class='link' onClick=\"");
         result.append("window.open('");
         StringBuffer link = new StringBuffer(1024);
-        if ("-1".equals(tagId)) {
+        if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
             // offline version
             link.append(getParamResource());
         } else {
-            // backup version
-            link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
+            // historical version
+            link.append(CmsHistoryResourceHandler.HISTORY_HANDLER);
             link.append(path);
             link.append('?');
-            link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
+            link.append(CmsHistoryResourceHandler.PARAM_VERSION);
             link.append('=');
-            link.append(tagId);
+            link.append(version);
         }
         result.append(getJsp().link(link.toString()));
         result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
@@ -234,7 +232,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
                 try {
                     return getViewVersionButtonHtml(
                         getCms().readResource(new CmsUUID(getParamId1())).getRootPath(),
-                        getParamTagId1(),
                         getParamVersion1());
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);
@@ -253,7 +250,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
                 try {
                     return getViewVersionButtonHtml(
                         getCms().readResource(new CmsUUID(getParamId2())).getRootPath(),
-                        getParamTagId2(),
                         getParamVersion2());
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);

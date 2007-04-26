@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/03/13 09:55:16 $
- * Version: $Revision: 1.83.4.13 $
+ * Date   : $Date: 2007/04/26 14:31:18 $
+ * Version: $Revision: 1.83.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.83.4.13 $ 
+ * @version $Revision: 1.83.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,17 +290,33 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given weeks.<p>
+     * Deletes the versions from the backup tables that are older then the given number of versions.<p>
      * 
-     * @param weeks a numer of weeks, all older backups are deleted
+     * @param versionsToKeep number of versions to keep
+     * 
      * @throws Exception if something goes wrong
-     * @see CmsObject#deleteBackups(long, int, org.opencms.report.I_CmsReport)
+     * 
+     * @see CmsObject#deleteHistoricalVersions(boolean, int, org.opencms.report.I_CmsReport)
+     * 
+     * @deprecated Use {@link #deleteHistoricalVersions(int)} instead
      */
-    public void deleteBackups(int weeks) throws Exception {
+    public void deleteBackups(int versionsToKeep) throws Exception {
 
-        long oneWeek = 604800000;
-        long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
-        m_cms.deleteBackups(maxDate, 100, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+        deleteHistoricalVersions(versionsToKeep);
+    }
+
+    /**
+     * Deletes the versions from the history tables that are older then the given number of versions.<p>
+     * 
+     * @param versionsToKeep number of versions to keep
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see CmsObject#deleteHistoricalVersions(boolean, int, org.opencms.report.I_CmsReport)
+     */
+    public void deleteHistoricalVersions(int versionsToKeep) throws Exception {
+
+        m_cms.deleteHistoricalVersions(false, versionsToKeep, new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**

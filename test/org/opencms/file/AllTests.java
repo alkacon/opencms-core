@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2007/02/21 14:27:09 $
- * Version: $Revision: 1.42.4.6 $
+ * Date   : $Date: 2007/04/26 14:31:09 $
+ * Version: $Revision: 1.42.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.42.4.6 $
+ * @version $Revision: 1.42.4.7 $
  * 
  * @since 6.0
  */
@@ -64,17 +64,16 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestBackup.suite());
         suite.addTest(TestChacc.suite());
         suite.addTest(TestChangeProperties.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestChtype.suite());
         suite.addTest(TestConcurrentOperations.suite());
-        suite.addTest(TestResourceFilter.suite());
         suite.addTest(TestCreateWriteResource.suite());
         suite.addTest(TestDefaultResourceCollectors.suite());
         suite.addTest(TestDeletion.suite());
         suite.addTest(TestExists.suite());
+        suite.addTest(TestHistory.suite());
         suite.addTest(TestLinkValidation.suite());
         suite.addTest(TestLock.suite());
         suite.addTest(TestMoveRename.suite());
@@ -90,6 +89,7 @@ public final class AllTests {
         suite.addTest(TestReadResourceTree.suite());
         suite.addTest(TestReleaseExpire.suite());
         suite.addTest(TestReplace.suite());
+        suite.addTest(TestResourceFilter.suite());
         suite.addTest(TestResourceOperations.suite());
         suite.addTest(TestRestoreFromHistory.suite());
         suite.addTest(TestSiblings.suite());

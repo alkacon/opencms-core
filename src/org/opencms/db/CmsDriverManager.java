@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.570.2.78 $
+ * Date   : $Date: 2007/04/26 14:31:02 $
+ * Version: $Revision: 1.570.2.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.file.CmsBackupProject;
-import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -54,6 +52,9 @@ import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.CmsHistoryProject;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
@@ -168,7 +169,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Value to indicate a change in the availability timeframe. */
     public static final int CHANGED_TIMEFRAME = 2;
 
-    /** "driver.backup" string in the configuration-file. */
+    /** 
+     * "driver.backup" string in the configuration-file. 
+     * @deprecated use {@link #CONFIGURATION_HISTORY} instead 
+     */
     public static final String CONFIGURATION_BACKUP = "driver.backup";
 
     /** "cache" string in the configuration-file. */
@@ -176,6 +180,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** "db" string in the configuration-file. */
     public static final String CONFIGURATION_DB = "db";
+
+    /** "driver.history" string in the configuration-file. */
+    public static final String CONFIGURATION_HISTORY = "driver.history";
 
     /** "driver.project" string in the configuration-file. */
     public static final String CONFIGURATION_PROJECT = "driver.project";
@@ -267,14 +274,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
-    /** The backup driver. */
-    private I_CmsBackupDriver m_backupDriver;
-
     /** Temporary concurrent lock list for the "create resource" method. */
     private List m_concurrentCreateResourceLocks;
 
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
+
+    /** The history driver. */
+    private I_CmsHistoryDriver m_historyDriver;
 
     /** The HTML link validator. */
     private CmsRelationSystemValidator m_htmlLinkValidator;
@@ -351,7 +358,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsVfsDriver vfsDriver = null;
         I_CmsUserDriver userDriver = null;
         I_CmsProjectDriver projectDriver = null;
-        I_CmsBackupDriver backupDriver = null;
+        I_CmsHistoryDriver historyDriver = null;
 
         CmsDriverManager driverManager = null;
         try {
@@ -432,17 +439,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
-        // read the backup driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_BACKUP));
-        driverName = config.getString((String)drivers.get(0) + ".backup.driver");
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
+        // read the history driver class properties and initialize a new instance 
+        if (config.get(CmsDriverManager.CONFIGURATION_HISTORY) != null) {
+            drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_HISTORY));
+            driverName = config.getString((String)drivers.get(0) + ".history.driver");
+            drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+            historyDriver = (I_CmsHistoryDriver)driverManager.newDriverInstance(
+                configurationManager,
+                driverName,
+                drivers);
+        } else {
+            drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_BACKUP));
+            driverName = config.getString((String)drivers.get(0) + ".backup.driver");
+            drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+            historyDriver = (I_CmsHistoryDriver)driverManager.newDriverInstance(
+                configurationManager,
+                driverName,
+                drivers);
+        }
 
         // store the access objects
         driverManager.m_vfsDriver = vfsDriver;
         driverManager.m_userDriver = userDriver;
         driverManager.m_projectDriver = projectDriver;
-        driverManager.m_backupDriver = backupDriver;
+        driverManager.m_historyDriver = historyDriver;
 
         // store the configuration
         driverManager.m_propertyConfiguration = config;
@@ -569,20 +589,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
         // flush the cache
         OpenCms.getMemoryMonitor().flushUserGroups();
-    }
-
-    /**
-     * Creates a backup of the current project.<p>
-     * 
-     * @param dbc the current database context
-     * @param tagId the version of the backup
-     * @param publishDate the date of publishing
-     *
-     * @throws CmsDataAccessException if operation was not succesful
-     */
-    public void backupProject(CmsDbContext dbc, int tagId, long publishDate) throws CmsDataAccessException {
-
-        m_backupDriver.writeBackupProject(dbc, tagId, publishDate);
     }
 
     /**
@@ -948,16 +954,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // prepare the content if required
         byte[] content = null;
         if (source.isFile()) {
-            CmsFile file;
             if (source instanceof CmsFile) {
                 // resource already is a file
-                file = (CmsFile)source;
-                content = file.getContents();
+                content = ((CmsFile)source).getContents();
             }
             if ((content == null) || (content.length < 1)) {
                 // no known content yet - read from database
-                file = m_vfsDriver.readFile(dbc, dbc.currentProject().getUuid(), source.getResourceId());
-                content = file.getContents();
+                content = m_vfsDriver.readContent(dbc, dbc.currentProject().getUuid(), source.getResourceId());
             }
         }
 
@@ -1011,7 +1014,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             source.getDateExpired(),
             1,
             source.getLength(),
-            source.getDateContent());
+            source.getDateContent(),
+            source.getVersion()); // version number does not matter since it will be computed later
 
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(dateLastModified);
@@ -1282,9 +1286,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             try {
-                m_backupDriver.readBackupPropertyDefinition(dbc, name);
+                m_historyDriver.readPropertyDefinition(dbc, name);
             } catch (CmsException e) {
-                m_backupDriver.createBackupPropertyDefinition(dbc, name, CmsPropertyDefinition.TYPE_NORMAL);
+                m_historyDriver.createPropertyDefinition(dbc, name, CmsPropertyDefinition.TYPE_NORMAL);
             }
         } finally {
 
@@ -1592,7 +1596,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resource.getDateExpired(),
                 1,
                 contentLength,
-                resource.getDateContent());
+                resource.getDateContent(),
+                resource.getVersion()); // version number does not matter since it will be computed later
 
             // ensure date is updated only if required
             if (resource.isTouched()) {
@@ -1635,7 +1640,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // also update file content if required                    
                     long contentModificationDate = m_vfsDriver.writeContent(
                         dbc,
-                        dbc.currentProject(),
+                        dbc.currentProject().getUuid(),
                         newResource.getResourceId(),
                         content);
                     newResource = new CmsResource(
@@ -1655,7 +1660,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         newResource.getDateExpired(),
                         newResource.getSiblingCount(),
                         newResource.getLength(),
-                        contentModificationDate);
+                        contentModificationDate,
+                        newResource.getVersion());
                 }
             }
 
@@ -1755,6 +1761,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
             size,
+            0, // version number does not matter since it will be computed later
             0); // content time will be corrected later
 
         return createResource(dbc, targetName, newResource, content, properties, false);
@@ -1815,7 +1822,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             source.getDateExpired(),
             source.getSiblingCount() + 1,
             source.getLength(),
-            source.getDateContent());
+            source.getDateContent(),
+            source.getVersion()); // version number does not matter since it will be computed later
 
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
         newResource.setDateLastModified(newResource.getDateLastModified());
@@ -1999,70 +2007,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Deletes all backup versions of a single resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param res the resource to delete all backups from
-     * 
-     * @throws CmsDataAccessException if operation was not succesful
-     */
-    public void deleteBackup(CmsDbContext dbc, CmsResource res) throws CmsDataAccessException {
-
-        // we need a valid CmsBackupResource, so get all backup file headers of the
-        // requested resource
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, res.getRootPath(), res.getResourceId());
-        // check if we have some results
-        if (backupFileHeaders.size() > 0) {
-            // get the first backup resource
-            CmsBackupResource backupResource = (CmsBackupResource)backupFileHeaders.get(0);
-            // create a timestamp slightly in the future
-            long timestamp = System.currentTimeMillis() + 100000;
-            // get the maximum tag id and add ne to include the current publish process as well
-            int maxTag = m_backupDriver.readBackupProjectTag(dbc, timestamp) + 1;
-            int resVersions = m_backupDriver.readBackupMaxVersion(dbc, res.getResourceId());
-            // delete the backups
-            m_backupDriver.deleteBackup(dbc, backupResource, maxTag, resVersions);
-        }
-    }
-
-    /**
-     * Deletes the versions from the backup tables that are older then the given timestamp or number of remaining versions.<p>
-     * 
-     * Deletion will delete file header, content, publish history and properties.<p>
-     * 
-     * @param dbc the current database context
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted
-     * <code>This parameter must be 0 if the backup should be deleted by number of version</code> <p>
-     * @param versions the number of versions per file which should kept in the system
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public void deleteBackups(CmsDbContext dbc, long timestamp, int versions, I_CmsReport report) throws CmsException {
-
-        if (timestamp > 0) {
-            report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
-            m_backupDriver.deleteBackup(dbc, null, m_backupDriver.readBackupProjectTag(dbc, timestamp), -1);
-
-            report.println(
-                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                I_CmsReport.FORMAT_OK);
-
-        } else {
-            report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
-            m_backupDriver.deleteBackup(dbc, null, 0, versions);
-
-            report.println(
-                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                I_CmsReport.FORMAT_OK);
-        }
-    }
-
-    /**
      * Deletes a group, where all permissions, users and childs of the group
      * are transfered to a replacement group.<p>
      * 
@@ -2134,6 +2078,35 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getMemoryMonitor().uncacheGroup(group);
         OpenCms.getMemoryMonitor().flushUserGroups();
         OpenCms.getMemoryMonitor().flushACLs();
+    }
+
+    /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     * 
+     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
+     * 
+     * @param dbc the current database context
+     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
+     * @param versionsToKeep the maximal number of versions per resource to keep 
+     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public void deleteHistoricalVersions(CmsDbContext dbc, boolean cleanUp, int versionsToKeep, I_CmsReport report)
+    throws CmsException {
+
+        report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
+        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+        if (cleanUp) {
+            m_historyDriver.deleteOrphanEntries(dbc);
+        }
+        m_historyDriver.deleteEntries(dbc, versionsToKeep);
+
+        report.println(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+            I_CmsReport.FORMAT_OK);
     }
 
     /**
@@ -2374,7 +2347,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // first read and then delete the metadefinition.            
             propertyDefinition = readPropertyDefinition(dbc, name);
             m_vfsDriver.deletePropertyDefinition(dbc, propertyDefinition);
-            m_backupDriver.deleteBackupPropertyDefinition(dbc, propertyDefinition);
+            m_historyDriver.deletePropertyDefinition(dbc, propertyDefinition);
         } finally {
 
             // fire an event that a property of a resource has been deleted
@@ -2613,7 +2586,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
-                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE);
+                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE, false);
 
                     // update the project ID
                     m_vfsDriver.writeLastModifiedProjectId(
@@ -2767,13 +2740,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 m_vfsDriver = null;
             }
-            if (m_backupDriver != null) {
+            if (m_historyDriver != null) {
                 try {
-                    m_backupDriver.destroy();
+                    m_historyDriver.destroy();
                 } catch (Throwable t) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_HISTORY_DRIVER_0), t);
                 }
-                m_backupDriver = null;
+                m_historyDriver = null;
             }
 
             if (m_connectionPools != null) {
@@ -3188,14 +3161,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the current database context
      * 
-     * @return list of <code>{@link CmsBackupProject}</code> objects 
+     * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getAllBackupProjects(CmsDbContext dbc) throws CmsException {
+    public List getAllHistoricalProjects(CmsDbContext dbc) throws CmsException {
 
-        return m_backupDriver.readBackupProjects(dbc);
+        return m_historyDriver.readProjects(dbc);
     }
 
     /**
@@ -3250,28 +3223,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         ArrayList manageableProjects = new ArrayList(projects);
         Collections.sort(manageableProjects);
         return manageableProjects;
-    }
-
-    /**
-     * Returns the backup driver.<p>
-     * 
-     * @return the backup driver
-     */
-    public I_CmsBackupDriver getBackupDriver() {
-
-        return m_backupDriver;
-    }
-
-    /**
-     * Returns the next version id for the published backup resources.<p>
-     *
-     * @param dbc the current database context
-     * 
-     * @return the new version id
-     */
-    public int getBackupTagId(CmsDbContext dbc) {
-
-        return m_backupDriver.readNextBackupTagId(dbc);
     }
 
     /**
@@ -3471,6 +3422,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return groups;
     }
 
+    /**
+     * Returns the history driver.<p>
+     * 
+     * @return the history driver
+     */
+    public I_CmsHistoryDriver getHistoryDriver() {
+
+        return m_historyDriver;
+    }
+
     /** 
      * Returns the number of idle connections managed by a pool.<p> 
      * 
@@ -3532,6 +3493,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         Collections.sort(lockedResources);
         return lockedResources;
+    }
+
+    /**
+     * Returns the next publish tag for the published historical resources.<p>
+     *
+     * @param dbc the current database context
+     * 
+     * @return the next available publish tag
+     */
+    public int getNextPublishTag(CmsDbContext dbc) {
+
+        return m_historyDriver.readNextPublishTag(dbc);
     }
 
     /**
@@ -4558,7 +4531,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc,
                     dbc.currentProject(),
                     source,
-                    CmsDriverManager.UPDATE_STRUCTURE_STATE);
+                    CmsDriverManager.UPDATE_STRUCTURE_STATE,
+                    false);
             }
 
             // flush all relevant caches
@@ -4841,22 +4815,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // clear the cache
             clearcache(false);
 
-            boolean backupEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
-            int backupTagId = 0;
-
-            if (backupEnabled) {
-                backupTagId = getBackupTagId(dbc);
-            } else {
-                backupTagId = 0;
-            }
             int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+            int publishTag = getNextPublishTag(dbc);
+
             getProjectDriver().publishProject(
                 dbc,
                 report,
                 onlineProject,
                 publishList,
                 OpenCms.getSystemInfo().isVersionHistoryEnabled(),
-                backupTagId,
+                publishTag,
                 maxVersions);
 
             // iterate the initialized module action instances
@@ -4864,12 +4832,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (i.hasNext()) {
                 CmsModule module = OpenCms.getModuleManager().getModule(i.next().toString());
                 if ((module != null) && (module.getActionInstance() != null)) {
-                    module.getActionInstance().publishProject(cms, publishList, backupTagId, report);
+                    module.getActionInstance().publishProject(cms, publishList, publishTag, report);
                 }
             }
 
             boolean temporaryProject = (cms.getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY);
-            // the project was stored in the backuptables for history
+            // the project was stored in the history tables for history
             // it will be deleted if the project_flag is PROJECT_TYPE_TEMPORARY
             if ((temporaryProject) && (!publishList.isDirectPublish())) {
                 try {
@@ -4991,34 +4959,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Reads all file headers of a file.<br>
+     * Reads all versions of the given resource.<br>
      * 
-     * This method returns a list with the history of all file headers, i.e.
-     * the file headers of a file, independent of the project they were attached to.<br>
+     * This method returns a list with the history of the given resource, i.e.
+     * the historical resource entries, independent of the project they were attached to.<br>
      *
      * The reading excludes the file content.<p>
      *
      * @param dbc the current database context
-     * @param resource the resource to read the backup resources for
+     * @param resource the resource to read the history for
      * 
-     * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
+     * @return a list of file headers, as <code>{@link I_CmsHistoryResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllBackupFileHeaders(CmsDbContext dbc, CmsResource resource) throws CmsException {
+    public List readAllAvailableVersions(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        // read the backup resources
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(
-            dbc,
-            resource.getRootPath(),
-            resource.getResourceId());
-
-        if ((backupFileHeaders != null) && (backupFileHeaders.size() > 1)) {
-            // change the order of the list
-            Collections.reverse(backupFileHeaders);
-        }
-
-        return backupFileHeaders;
+        // read the historical resources
+        return m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId());
     }
 
     /**
@@ -5035,58 +4993,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List returnValue = m_vfsDriver.readPropertyDefinitions(dbc, dbc.currentProject().getUuid());
         Collections.sort(returnValue);
         return returnValue;
-    }
-
-    /**
-     * Returns a file from the history.<br>
-     * 
-     * The reading includes the file content.<p>
-     *
-     * @param dbc the current database context
-     * @param tagId the desired tag ID of the file
-     * @param resource the resource to read the historic version of
-     * @return the file read
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, CmsResource resource) throws CmsException {
-
-        try {
-            // this is the most common case
-            return m_backupDriver.readBackupFile(dbc, tagId, resource.getStructureId());
-        } catch (CmsException e) {
-            // this is in case a file has been deleted and another has been created with the same name
-            return m_backupDriver.readBackupFile(dbc, tagId, resource.getRootPath());
-        }
-    }
-
-    /**
-     * Returns a backup project.<p>
-     *
-     * @param dbc the current database context
-     * @param tagId the tagId of the project
-     * 
-     * @return the requested backup project
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsBackupProject readBackupProject(CmsDbContext dbc, int tagId) throws CmsException {
-
-        return m_backupDriver.readBackupProject(dbc, tagId);
-    }
-
-    /**
-     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the backup resource to read the properties from
-     * 
-     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readBackupPropertyObjects(CmsDbContext dbc, CmsBackupResource resource) throws CmsException {
-
-        return m_backupDriver.readBackupProperties(dbc, resource);
     }
 
     /**
@@ -5212,6 +5118,54 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads all deleted (historical) resources below the given path, 
+     * including the full tree below the path, if required.<p>
+     * 
+     * @param dbc the current db context
+     * @param resource the parent resource to read the resources from
+     * @param readTree <code>true</code> to read all subresources
+     * 
+     * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, int)
+     * @see CmsObject#readResources(String, CmsResourceFilter, boolean)
+     * @see CmsObject#readDeletedResources(String, boolean)
+     */
+    public List readDeletedResources(CmsDbContext dbc, CmsResource resource, boolean readTree) throws CmsException {
+
+        List result = new ArrayList();
+        List deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId());
+        result.addAll(deletedResources);
+        if (readTree) {
+            Iterator itDeleted = deletedResources.iterator();
+            while (itDeleted.hasNext()) {
+                I_CmsHistoryResource delResource = (I_CmsHistoryResource)itDeleted.next();
+                if (delResource.getResource().isFolder()) {
+                    result.addAll(readDeletedResources(dbc, delResource.getResource(), readTree));
+                }
+            }
+            try {
+                readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
+                // resource exists, so recurse
+                Iterator itResources = readResources(dbc, resource, CmsResourceFilter.ALL, readTree).iterator();
+                while (itResources.hasNext()) {
+                    CmsResource subResource = (CmsResource)itResources.next();
+                    if (subResource.isFolder()) {
+                        result.addAll(readDeletedResources(dbc, subResource, readTree));
+                    }
+                }
+            } catch (Exception e) {
+                // resource does not exists
+            }
+        }
+        // adjust the paths
+        int todo;
+        return result;
+    }
+
+    /**
      * Reads a file resource (including it's binary content) from the VFS,
      * using the specified resource filter.<p>
      * 
@@ -5238,10 +5192,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         CmsUUID projectId = dbc.currentProject().getUuid();
-        CmsFile content = m_vfsDriver.readFile(dbc, projectId, resource.getResourceId());
-        CmsFile file = new CmsFile(resource);
-        file.setContents(content.getContents());
-
+        CmsFile file;
+        if (resource instanceof I_CmsHistoryResource) {
+            file = new CmsHistoryFile((I_CmsHistoryResource)resource);
+            file.setContents(m_historyDriver.readContent(dbc, resource.getStructureId(), resource.getVersion()));
+        } else {
+            file = new CmsFile(resource);
+            file.setContents(m_vfsDriver.readContent(dbc, projectId, resource.getResourceId()));
+        }
         return file;
     }
 
@@ -5333,6 +5291,36 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().cacheGroup(group);
         }
         return group;
+    }
+
+    /**
+     * Returns a historical project entry.<p>
+     *
+     * @param dbc the current database context
+     * @param publishTag the publish tag of the project
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsHistoryProject readHistoryProject(CmsDbContext dbc, int publishTag) throws CmsException {
+
+        return m_historyDriver.readProject(dbc, publishTag);
+    }
+
+    /**
+     * Reads the list of all <code>{@link CmsProperty}</code> objects that belongs to the given historical resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param historyResource the historical resource to read the properties for
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readHistoryPropertyObjects(CmsDbContext dbc, I_CmsHistoryResource historyResource) throws CmsException {
+
+        return m_historyDriver.readProperties(dbc, historyResource);
     }
 
     /**
@@ -5870,6 +5858,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads an historical resource entry for the given resource and with the given version number.<p>
+     *
+     * @param dbc the current db context
+     * @param resource the resource to be read
+     * @param version the version number to retrieve
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#restoreResourceVersion(CmsUUID, int)
+     * @see CmsObject#readResource(CmsUUID, int)
+     */
+    public I_CmsHistoryResource readResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
+
+        return m_historyDriver.readResource(dbc, resource.getStructureId(), version);
+    }
+
+    /**
      * Reads a resource from the VFS, using the specified resource filter.<p>
      * 
      * @param dbc the current database context
@@ -5931,6 +5939,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // return the resource
         return resource;
+    }
+
+    /**
+     * Reads a resource in the current project with the given publish tag from the historical archive.<p>
+     * 
+     * @param dbc the current db context
+     * @param resource the resource to restore from the archive
+     * @param publishTag the publish tag of the resource
+     * 
+     * @return the file in the current project with the given publish tag from the historical archive, or
+     *         {@link CmsVfsResourceNotFoundException} if not found 
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(CmsUUID, int)
+     * @see CmsObject#readResourceByPublishTag(CmsUUID, int)
+     * 
+     * @deprecated use {@link #readResource(CmsDbContext, CmsResource, int)} instead
+     *             but notice that the <code>publishTag != version</code>
+     */
+    public I_CmsHistoryResource readResourceForPublishTag(CmsDbContext dbc, CmsResource resource, int publishTag)
+    throws CmsException {
+
+        return m_historyDriver.readFile(dbc, resource.getStructureId(), publishTag);
     }
 
     /**
@@ -6428,7 +6460,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         setDateLastModified(dbc, resource, System.currentTimeMillis());
 
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
         // clear the cache
         clearResourceCache();
@@ -6480,61 +6512,85 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Restores a file in the current project with a version from the backup archive.<p>
+     * Restores a resource in the current project with a version from the historical archive.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource to restore from the archive
-     * @param tag the tag (version) id to resource form the archive
+     * @param version the version number to restore from the archive
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#restoreResourceBackup(String, int)
-     * @see I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see CmsObject#restoreResourceVersion(CmsUUID, int)
+     * @see I_CmsResourceType#restoreResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void restoreResource(CmsDbContext dbc, CmsResource resource, int tag) throws CmsException {
+    public void restoreResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
 
+        I_CmsHistoryResource historyResource = readResource(dbc, resource, version);
         CmsResourceState state = CmsResource.STATE_CHANGED;
-
-        CmsBackupResource backupFile = readBackupFile(dbc, tag, resource);
         if (resource.getState().isNew()) {
             state = CmsResource.STATE_NEW;
         }
-
-        if (backupFile != null) {
-            // get the backed up flags 
-            int flags = backupFile.getFlags();
+        int newVersion = resource.getVersion();
+        if (resource.getState().isUnchanged()) {
+            newVersion++;
+        }
+        CmsResource newResource = null;
+        // is the resource a file?
+        if (historyResource instanceof CmsFile) {
+            // get the historical up flags 
+            int flags = historyResource.getResource().getFlags();
             if (resource.isLabeled()) {
                 // set the flag for labeled links on the restored file
                 flags |= CmsResource.FLAG_LABELED;
             }
-
             CmsFile newFile = new CmsFile(
                 resource.getStructureId(),
                 resource.getResourceId(),
                 resource.getRootPath(),
-                backupFile.getTypeId(),
+                historyResource.getResource().getTypeId(),
                 flags,
                 dbc.currentProject().getUuid(),
                 state,
                 resource.getDateCreated(),
-                backupFile.getUserCreated(),
+                historyResource.getResource().getUserCreated(),
                 resource.getDateLastModified(),
                 dbc.currentUser().getId(),
-                backupFile.getDateReleased(),
-                backupFile.getDateExpired(),
-                backupFile.getSiblingCount(),
-                backupFile.getLength(),
-                backupFile.getDateContent(),
-                backupFile.getContents());
+                historyResource.getResource().getDateReleased(),
+                historyResource.getResource().getDateExpired(),
+                resource.getSiblingCount(),
+                historyResource.getResource().getLength(),
+                historyResource.getResource().getDateContent(),
+                newVersion,
+                readFile(dbc, (CmsHistoryFile)historyResource).getContents());
 
-            writeFile(dbc, newFile);
+            newResource = writeFile(dbc, newFile);
+        } else {
+            // it is a folder!
+            newResource = new CmsFolder(
+                resource.getStructureId(),
+                resource.getResourceId(),
+                resource.getRootPath(),
+                historyResource.getResource().getTypeId(),
+                historyResource.getResource().getFlags(),
+                dbc.currentProject().getUuid(),
+                state,
+                resource.getDateCreated(),
+                historyResource.getResource().getUserCreated(),
+                resource.getDateLastModified(),
+                dbc.currentUser().getId(),
+                historyResource.getResource().getDateReleased(),
+                historyResource.getResource().getDateExpired(),
+                newVersion);
 
-            // now read the backup properties
-            List backupProperties = m_backupDriver.readBackupProperties(dbc, backupFile);
+            writeResource(dbc, newResource);
+        }
+        if (newResource != null) {
+            // now read the historical properties
+            List historyProperties = m_historyDriver.readProperties(dbc, historyResource);
             // remove all properties
-            deleteAllProperties(dbc, newFile.getRootPath());
+            deleteAllProperties(dbc, newResource.getRootPath());
             // write them to the restored resource
-            writePropertyObjects(dbc, newFile, backupProperties, false);
+            writePropertyObjects(dbc, newResource, historyProperties, false);
 
             clearResourceCache();
         }
@@ -6563,10 +6619,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
 
         // modify the last modified project reference
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
 
         // clear the cache
         clearResourceCache();
@@ -6602,7 +6658,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.setState(CmsResource.STATE_CHANGED);
         }
         resource.setUserLastModified(dbc.currentUser().getId());
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
 
         // clear the cache
         clearResourceCache();
@@ -6634,10 +6690,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
 
         // modify the last modified project reference
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
 
         // clear the cache
         clearResourceCache();
@@ -6935,15 +6991,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         } else {
                             // try to create the exportpoint folder
                             exportPointDriver.createFolder(currentExportPoint, currentExportPoint);
-                            // export the file content online          
-                            CmsFile onlineContent = getVfsDriver().readFile(
+                            byte[] onlineContent = getVfsDriver().readContent(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 currentResource.getResourceId());
+                            // export the file content online
                             exportPointDriver.writeFile(
                                 currentResource.getRootPath(),
                                 currentExportPoint,
-                                onlineContent.getContents());
+                                onlineContent);
                         }
                     }
                 } catch (CmsException e) {
@@ -7216,14 +7272,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
                             // read the file content online
-                            CmsFile onlineContent = getVfsDriver().readFile(
+                            byte[] onlineContent = getVfsDriver().readContent(
                                 dbc,
                                 CmsProject.ONLINE_PROJECT_ID,
                                 currentPublishedResource.getResourceId());
                             exportPointDriver.writeFile(
                                 currentPublishedResource.getRootPath(),
                                 currentExportPoint,
-                                onlineContent.getContents());
+                                onlineContent);
                         }
                     }
 
@@ -7287,7 +7343,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         long contentModificationDate = m_vfsDriver.writeContent(
             dbc,
-            dbc.currentProject(),
+            dbc.currentProject().getUuid(),
             resource.getResourceId(),
             resource.getContents());
         resource = new CmsFile(
@@ -7307,6 +7363,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.getSiblingCount(),
             resource.getLength(),
             contentModificationDate,
+            resource.getVersion(),
             resource.getContents());
 
         if (resource.getState().isUnchanged()) {
@@ -7342,6 +7399,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getMemoryMonitor().uncacheGroup(group);
         m_userDriver.writeGroup(dbc, group);
         OpenCms.getMemoryMonitor().cacheGroup(group);
+    }
+
+    /**
+     * Creates an historical entry of the current project.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishTag the version
+     * @param publishDate the date of publishing
+     *
+     * @throws CmsDataAccessException if operation was not succesful
+     */
+    public void writeHistoryProject(CmsDbContext dbc, int publishTag, long publishDate) throws CmsDataAccessException {
+
+        m_historyDriver.writeProject(dbc, publishTag, publishDate);
     }
 
     /**
@@ -8539,7 +8610,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // change folder or file?
         if (onlineResource.isFolder()) {
-
             CmsFolder restoredFolder = new CmsFolder(
                 onlineResource.getStructureId(),
                 onlineResource.getResourceId(),
@@ -8552,9 +8622,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 onlineResource.getUserCreated(),
                 onlineResource.getDateLastModified(),
                 onlineResource.getUserLastModified(),
-                1,
                 onlineResource.getDateReleased(),
-                onlineResource.getDateExpired());
+                onlineResource.getDateExpired(),
+                onlineResource.getVersion()); // version number does not matter since it will be computed later
 
             // write the folder in the offline project
             // this sets a flag so that the folder date is not set to the current time
@@ -8593,7 +8663,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
         } else {
-            CmsFile onlineFile = m_vfsDriver.readFile(dbc, CmsProject.ONLINE_PROJECT_ID, onlineResource.getResourceId());
+            byte[] onlineContent = m_vfsDriver.readContent(
+                dbc,
+                CmsProject.ONLINE_PROJECT_ID,
+                onlineResource.getResourceId());
 
             CmsFile restoredFile = new CmsFile(
                 onlineResource.getStructureId(),
@@ -8612,7 +8685,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 0,
                 onlineResource.getLength(),
                 onlineResource.getDateContent(),
-                onlineFile.getContents());
+                onlineResource.getVersion(), // version number does not matter since it will be computed later
+                onlineContent);
 
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
@@ -8672,7 +8746,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // restore the state to unchanged 
             res.setState(newState);
-            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL);
+            m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
         }
 
         // update the cache
