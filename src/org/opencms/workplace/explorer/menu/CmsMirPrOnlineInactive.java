@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrOnlineInactive.java,v $
- * Date   : $Date: 2007/02/20 08:30:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/04/26 15:21:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
-public class CmsMirPrOnlineInactive implements I_CmsMenuItemRule {
+public class CmsMirPrOnlineInactive extends A_CmsMenuItemRule {
 
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])

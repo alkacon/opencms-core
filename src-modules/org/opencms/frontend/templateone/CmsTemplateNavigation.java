@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.31.4.1 $
+ * Date   : $Date: 2007/04/26 15:21:54 $
+ * Version: $Revision: 1.31.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.31.4.1 $ 
+ * @version $Revision: 1.31.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -655,6 +655,12 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     result.append(link(resName));
                     result.append("\" title=\"");
                     result.append(nav.getNavText());
+                    // check the value of the NavInfo property
+                    if (CmsStringUtil.isNotEmpty(nav.getInfo())) {
+                        // found a value, add target attribute
+                        result.append("\" target=\"");
+                        result.append(nav.getInfo());
+                    }
                     result.append("\">");
                     result.append(nav.getNavText());
                     result.append("</a>");

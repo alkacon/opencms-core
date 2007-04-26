@@ -1,0 +1,115 @@
+body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; }
+p, td { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; }
+
+/* file list */
+td.t, td.t125, td.t100, td.t75 { white-space: nowrap; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; }
+td.t125 { width: 125px; }
+td.t100 { width: 100px; }
+td.t75 { width: 75px; }
+a { text-decoration: none; cursor: pointer; }
+td.fc { color: #b40000; }
+a.fc { color: #b40000; }
+a.fci { text-decoration: underline; color: #000088; }
+td.fn { color: #0000aa; }
+a.fn { color: #0000aa; }
+a.fni { text-decoration: underline; color: #000088; }
+td.fd { color: #000000; text-decoration: line-through; }
+a.fd { color: #000000; text-decoration: line-through; }
+a.fdi { text-decoration: line-through underline; color: #000088; }
+td.fp { color: #888888; }
+a.fp { color: #888888; }
+a.fpi { text-decoration: underline; color: #000088; }
+td.nf { color:#000000; }
+a.nf { color:#000000; }
+a.nfi { text-decoration: underline; color: #000088; }
+.selected { background: ActiveCaption; color: CaptionText; }
+.unselected { background: Window; color:WindowText; }
+
+/* context menu */
+div.cmwrapper { position: absolute; width: 500px; height: 350px; visibility: hidden; display: none; }
+div.cmo { width: 152px; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); }
+
+#menu {
+	box-sizing: border-box; -moz-box-sizing: border-box;
+	padding: 0;
+	width:152px;
+	background-color: ThreeDFace;
+	border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow;
+}
+
+#menu a {
+	box-sizing: border-box; -moz-box-sizing: border-box;
+	display:block;
+	white-space: nowrap;
+	padding: 2px 0 2px 10px;
+}
+
+#menu a {
+	text-decoration:none;
+}
+
+#menu a, #menu a:visited {
+	color: MenuText;
+}
+
+#menu a:hover {
+	color: CaptionText; background-color: ActiveCaption;
+}
+
+#menu a:active {
+	color: CaptionText; background-color: ActiveCaption;
+}
+
+#menu li {
+	list-style-type:none;
+}
+
+#menu ul li {
+	position:relative;
+}
+
+#menu li ul {
+	position:absolute;
+	top:-2px;
+	left:152px;
+}
+
+/* Fix IE. Hide from IE Mac \*/
+* html #menu ul li{float:left;height:1%;}
+* html #menu ul li a{height:1%;}
+/* End */
+
+div#menu ul, div#menu ul ul, div#menu ul ul ul {
+	margin:0;
+	padding:0;
+	list-style-image:none;
+	width:150px;
+}
+
+div#menu ul ul, div#menu ul ul ul {
+	background-color: ThreeDFace;
+	border: 2px outset ThreeDHighlight;
+	display: none;
+}
+
+/* expand items */
+#menu a.x, #menu a.x:visited {
+	background-image: url(../explorer/arrow_right.png);	background-repeat: no-repeat; background-position: 140px 2px;
+}
+
+/* inactive items */
+#menu a.ina,  #menu a.ina:visited, #menu a.ina:active {
+	cursor: default; color: GrayText; background-color: ThreeDFace;
+}
+#menu a.ina:hover {
+	color: InactiveCaptionText; background-color: InactiveCaption;
+}
+
+/* separators */
+li.cmsep {
+	 padding: 0; margin: 2px; border-bottom: 1px solid ThreeDHighlight;
+}
+
+span.cmsep {
+	display: block; height: 1px; font-size: 0px; border-bottom: 1px solid ThreeDShadow;
+}

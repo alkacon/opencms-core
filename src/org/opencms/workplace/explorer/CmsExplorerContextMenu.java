@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2007/02/20 08:30:09 $
- * Version: $Revision: 1.13.4.3 $
+ * Date   : $Date: 2007/04/26 15:21:54 $
+ * Version: $Revision: 1.13.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,8 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -43,13 +41,11 @@ import org.apache.commons.logging.Log;
 /**
  * Provides methods to build a context menu for an explorer resource type.<p>
  * 
- * This object stores all entries which are displayed in a context menu in a sorted list.
- * The sort order is specified in an attribute of the context menu subnodes
- * in the OpenCms configuration.<p> 
+ * This object stores all entries which are displayed in a context menu in a sorted list.<p> 
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13.4.3 $ 
+ * @version $Revision: 1.13.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,7 +56,6 @@ public class CmsExplorerContextMenu {
 
     /** All context menu entries. */
     private List m_allEntries;
-    private int m_contextMenuOrderCounter;
 
     /** Indicated if this is a multi context menu. */
     private boolean m_multiMenu;
@@ -71,7 +66,34 @@ public class CmsExplorerContextMenu {
     public CmsExplorerContextMenu() {
 
         m_allEntries = new ArrayList();
-        m_contextMenuOrderCounter = CmsExplorerTypeSettings.ORDER_VALUE_DEFAULT_START;
+    }
+
+    /**
+     * Adds a menu entry to the list of context menu items.<p>
+     * 
+     * @param item the entry item to add to the list
+     */
+    public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
+
+        item.setType(CmsExplorerContextMenuItem.TYPE_ENTRY);
+        m_allEntries.add(item);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, item.getKey(), item.getUri()));
+        }
+    }
+
+    /**
+     * Adds a menu separator to the list of context menu items.<p>
+     * 
+     * @param item the separator item to add to the list
+     */
+    public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
+
+        item.setType(CmsExplorerContextMenuItem.TYPE_SEPARATOR);
+        m_allEntries.add(item);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_SEPARATOR_1, item.getType()));
+        }
     }
 
     /**
@@ -84,70 +106,6 @@ public class CmsExplorerContextMenu {
     public void addEntries(List entries) {
 
         m_allEntries.addAll(entries);
-        sortEntries();
-    }
-
-    /**
-     * Adds a single CmsContextMenuItem object to the context menu list.<p>
-     * 
-     * The list is sorted by their order after that operation.<p>
-     * 
-     * @param entry a single context menu item
-     */
-    public void addEntry(CmsExplorerContextMenuItem entry) {
-
-        m_allEntries.add(entry);
-        sortEntries();
-    }
-
-    /**
-     * Adds a single context menu entry to the list of context menu items.<p>
-     * 
-     * @param key the key of the current entry 
-     * @param uri the dialog URI to call with the current entry
-     * @param rules the display rules
-     * @param rule the name of the menu rule set
-     * @param target the frame target of the menu entry
-     * @param order the sort order of the current entry
-     */
-    public void addMenuEntry(String key, String uri, String rules, String rule, String target, String order) {
-
-        Integer orderValue = getContextMenuEntryOrder(order, "entry");
-        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.TYPE_ENTRY,
-            key,
-            uri,
-            rules,
-            rule,
-            target,
-            orderValue);
-
-        addEntry(item);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
-        }
-    }
-
-    /**
-     * Adds a menu separator to the list of context menu items.<p>
-     * 
-     * @param order the sort order of the separator
-     */
-    public void addMenuSeparator(String order) {
-
-        Integer orderValue = getContextMenuEntryOrder(order, "separator");
-        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.TYPE_SEPARATOR,
-            null,
-            null,
-            null,
-            null,
-            null,
-            orderValue);
-        addEntry(item);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
-        }
     }
 
     /**
@@ -198,14 +156,11 @@ public class CmsExplorerContextMenu {
     /**
      * Sets all entries of the context menu.<p>
      * 
-     * The list is sorted by their order after that operation.<p>
-     * 
      * @param entries all entries of the context menu
      */
     public void setAllEntries(List entries) {
 
         m_allEntries = entries;
-        sortEntries();
     }
 
     /**
@@ -218,36 +173,4 @@ public class CmsExplorerContextMenu {
         m_multiMenu = multiMenu;
     }
 
-    /**
-     * Sorts the list of entries according to the value of the "order" attribute in the configuration.<p>
-     */
-    public void sortEntries() {
-
-        Collections.sort(m_allEntries);
-    }
-
-    /**
-     * Returns the order value for the given order String, if no value is given, an automatic order value is returned.<p>
-     * @param order the sort order of the current entry
-     * @param type the type of the entry, either <code>entry</code> or <code>separator</code>
-     * @return the order value for the given order String
-     */
-    protected Integer getContextMenuEntryOrder(String order, String type) {
-
-        Integer orderValue = new Integer(m_contextMenuOrderCounter);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(order)
-            && !CmsExplorerTypeSettings.ORDER_VALUE_SEPARATOR_DEFAULT.equals(order)) {
-            try {
-                orderValue = Integer.valueOf(order);
-            } catch (Exception e) {
-                if (type.equals("entry")) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, order));
-                } else {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0));
-                }
-            }
-        }
-        m_contextMenuOrderCounter++;
-        return orderValue;
-    }
 }

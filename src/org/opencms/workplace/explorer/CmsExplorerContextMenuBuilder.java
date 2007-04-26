@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/02/20 08:30:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/04/26 15:21:54 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,20 +59,11 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
 public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
-
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_END = "</span>";
-
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_START = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
-
-    /** Html fragment constant. */
-    private static final String HTML_SPAN_START_INACTIVE = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
 
     /** The resource list parameter value. */
     private String m_paramResourcelist;
@@ -105,8 +96,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
      * @return html code
      */
     public String contextMenu() {
-
-        StringBuffer menu = new StringBuffer(2048);
 
         // get the resource path list
         List resourceList = CmsStringUtil.splitAsList(getParamResourcelist(), "|");
@@ -161,13 +150,74 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         // store the mode results in a Map to optimize performance
         Map storedModes = new HashMap();
 
-        menu.append("<div class=\"cm2\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
+        StringBuffer menu = new StringBuffer(4096);
+
+        menu.append("<div id=\"menu\">");
+        buildHtmlContextMenu(
+            contextMenu.getAllEntries(),
+            null,
+            menu,
+            resUtil,
+            menuRuleTranslator,
+            isSingleSelection,
+            storedModes);
+        menu.append("</div>");
+        return menu.toString();
+    }
+
+    /**
+     * Returns the resourcelist parameter value.<p>
+     *
+     * @return the resourcelist parameter value
+     */
+    public String getParamResourcelist() {
+
+        return m_paramResourcelist;
+    }
+
+    /**
+     * Sets the resourcelist parameter value.<p>
+     *
+     * @param paramResourcelist the resourcelist parameter value to set
+     */
+    public void setParamResourcelist(String paramResourcelist) {
+
+        m_paramResourcelist = paramResourcelist;
+    }
+
+    /**
+     * Returns the HTML for the list of given context menu entry items.<p>
+     * 
+     * @param contextMenuEntries the context menu entry items to loop
+     * @param parent the parent context menu entry item or null if none is defined
+     * @param menu the Buffer to add the HTML to
+     * @param resUtil the initialized resource utility to create the context menu for
+     * @param menuRuleTranslator the menu rule translator
+     * @param isSingleSelection flag indicating if more than one resource is selected
+     * @param storedModes caches the mode for the item rules
+     */
+    protected void buildHtmlContextMenu(
+        List contextMenuEntries,
+        CmsExplorerContextMenuItem parent,
+        StringBuffer menu,
+        CmsResourceUtil[] resUtil,
+        CmsMenuRuleTranslator menuRuleTranslator,
+        boolean isSingleSelection,
+        Map storedModes) {
 
         boolean lastWasSeparator = false;
         boolean firstEntryWritten = false;
 
         // for each defined menu item
-        Iterator it = contextMenu.getAllEntries().iterator();
+        Iterator it = contextMenuEntries.iterator();
+        menu.append("\n<ul");
+        if (parent != null) {
+            menu.append(" id=\"");
+            menu.append(parent.getKey().hashCode());
+            menu.append("\"");
+        }
+        menu.append(">");
+
         while (it.hasNext()) {
             CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)it.next();
 
@@ -175,7 +225,52 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             String itemLink = " ";
             String itemTarget = "";
 
-            if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+            StringBuffer parentIdsBuffer = new StringBuffer(64);
+            CmsExplorerContextMenuItem pItem = item;
+            boolean isFirst = true;
+            while (pItem.isSubItem()) {
+                if (isFirst) {
+                    parentIdsBuffer.append("'");
+                    isFirst = false;
+                } else {
+                    parentIdsBuffer.append(",");
+                }
+                parentIdsBuffer.append(pItem.getParent().getKey().hashCode());
+                pItem = pItem.getParent();
+            }
+            if (!isFirst) {
+                parentIdsBuffer.append("'");
+            }
+            String parentIds = parentIdsBuffer.toString();
+
+            if (item.isParentItem()) {
+                int todo = 1;
+                // TODO: this is a parent item entry, check if it is displayed to open a new sublist
+                if (true) {
+                    menu.append("\n<li><a href=\"#\" class=\"x\" onmouseover=\"top.oSubC('");
+                    menu.append(item.getKey().hashCode());
+                    menu.append("'");
+                    if (CmsStringUtil.isNotEmpty(parentIds)) {
+                        menu.append(",");
+                        menu.append(parentIds);
+                    }
+                    menu.append(");\">");
+                    menu.append(key(item.getKey()));
+                    menu.append("</a>");
+                    // recurse into sub menu items
+                    buildHtmlContextMenu(
+                        item.getSubItems(),
+                        item,
+                        menu,
+                        resUtil,
+                        menuRuleTranslator,
+                        isSingleSelection,
+                        storedModes);
+                    menu.append("</li>");
+                    lastWasSeparator = false;
+                    firstEntryWritten = true;
+                }
+            } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                 itemName = key(item.getKey());
                 if (item.getUri().startsWith("/")) {
                     itemLink = getJsp().link(item.getUri());
@@ -187,7 +282,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                     itemTarget = "";
                 }
 
-                CmsMenuItemVisibilityMode mode = null;
                 CmsMenuRule customMenuRule = null;
                 String itemRuleName = item.getRule();
 
@@ -215,7 +309,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                 }
 
                 // first try to get the mode from the previously stored modes
-                mode = (CmsMenuItemVisibilityMode)storedModes.get(itemRuleName);
+                CmsMenuItemVisibilityMode mode = (CmsMenuItemVisibilityMode)storedModes.get(itemRuleName);
 
                 // no mode found in stored modes
                 if (mode == null) {
@@ -264,20 +358,23 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                             link.append(itemLink);
                             link.append("');\"");
                         }
-                        menu.append("<tr><td><a class=\"cme\" ");
+                        menu.append("\n<li><a ");
                         menu.append(link);
+
+                        menu.append(" onmouseover=\"top.cSubC(");
+                        menu.append(parentIds);
+                        menu.append(");\"");
+
                         menu.append(">");
-                        menu.append(HTML_SPAN_START);
                         menu.append(itemName);
-                        menu.append(HTML_SPAN_END);
-                        menu.append("</a></td></tr>");
+                        menu.append("</a></li>");
                         lastWasSeparator = false;
                         firstEntryWritten = true;
                     } else if (mode.isInActive()) {
                         // item is inactive
-                        menu.append("<tr><td>");
-                        menu.append(HTML_SPAN_START_INACTIVE).append(itemName).append(HTML_SPAN_END);
-                        menu.append("</td></tr>");
+                        menu.append("\n<li>");
+                        menu.append("<a class=\"ina\" href=\"#\">").append(itemName).append("</a>");
+                        menu.append("</li>");
                         lastWasSeparator = false;
                         firstEntryWritten = true;
                     }
@@ -285,33 +382,12 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             } else {
                 // separator line
                 if ((firstEntryWritten) && (!lastWasSeparator) && (it.hasNext())) {
-                    menu.append("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
+                    menu.append("<li class=\"cmsep\"><span class=\"cmsep\"></span></li>");
                     lastWasSeparator = true;
                 }
             }
-        } // end for ...
-        menu.append("</table></div>");
-        return menu.toString();
-    }
-
-    /**
-     * Returns the resourcelist parameter value.<p>
-     *
-     * @return the resourcelist parameter value
-     */
-    public String getParamResourcelist() {
-
-        return m_paramResourcelist;
-    }
-
-    /**
-     * Sets the resourcelist parameter value.<p>
-     *
-     * @param paramResourcelist the resourcelist parameter value to set
-     */
-    public void setParamResourcelist(String paramResourcelist) {
-
-        m_paramResourcelist = paramResourcelist;
+        } // end while
+        menu.append("\n</ul>");
     }
 
     /**

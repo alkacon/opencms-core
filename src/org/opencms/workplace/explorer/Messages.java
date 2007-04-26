@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2007/04/26 14:11:37 $
- * Version: $Revision: 1.14.2.13 $
+ * Date   : $Date: 2007/04/26 15:21:53 $
+ * Version: $Revision: 1.14.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.13 $ 
+ * @version $Revision: 1.14.2.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_ACCESS_0 = "GUI_EXPLORER_CONTEXT_ACCESS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ADVANCED_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_AVAILABILITY_0 = "GUI_EXPLORER_CONTEXT_AVAILABILITY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -171,6 +174,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_PUBLISH_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_RELATIONS_0 = "GUI_EXPLORER_CONTEXT_RELATIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0 = "GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/04/19 15:12:08 $
- * Version: $Revision: 1.40.4.21 $
+ * Date   : $Date: 2007/04/26 15:21:53 $
+ * Version: $Revision: 1.40.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.21 $
+ * @version $Revision: 1.40.4.22 $
  * 
  * @since 6.0.0
  */
@@ -92,6 +92,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The "params" attribute. */
     public static final String A_PARAMS = "params";
+
+    /** The "parent" attribute. */
+    public static final String A_PARENT = "parent";
 
     /** The "permissions" attribute. */
     public static final String A_PERMISSIONS = "permissions";
@@ -537,43 +540,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_DEFAULTPROPERTY, 0, A_NAME);
 
-        digester.addCallMethod(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            "addContextMenuEntry",
-            6);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            0,
-            A_KEY);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            1,
-            A_URI);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            2,
-            A_RULES);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            3,
-            A_RULE);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            4,
-            A_TARGET);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            5,
-            A_ORDER);
-
-        digester.addCallMethod(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR,
-            "addContextMenuSeparator",
-            1);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR,
-            0,
-            A_ORDER);
+        addContextMenuItemRules(digester, "*");
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setEditOptions");
@@ -654,37 +621,84 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     m = settings.getContextMenuEntries().iterator();
                     while (m.hasNext()) {
                         CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
-                        Element itemElement;
-                        if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
-                            // create an <entry> node
-                            itemElement = contextMenuElement.addElement(N_ENTRY);
-                            itemElement.addAttribute(A_KEY, item.getKey());
-                            itemElement.addAttribute(A_URI, item.getUri());
-                            if (item.getTarget() != null) {
-                                itemElement.addAttribute(A_TARGET, item.getTarget());
-                            }
-                            String rule = item.getRule();
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
-                                itemElement.addAttribute(A_RULE, rule);
-                            } else {
-                                String legacyRules = item.getRules();
-                                if (CmsStringUtil.isNotEmpty(legacyRules)
-                                    && menuRuleTranslator.hasMenuRule(legacyRules)) {
-                                    itemElement.addAttribute(A_RULE, menuRuleTranslator.getMenuRuleName(legacyRules));
-                                } else {
-                                    itemElement.addAttribute(A_RULES, legacyRules);
-                                }
-                            }
-                        } else {
-                            // create a <separator> node
-                            itemElement = contextMenuElement.addElement(N_SEPARATOR);
-                        }
-                        if (item.getOrder().intValue() < CmsExplorerTypeSettings.ORDER_VALUE_DEFAULT_START) {
-                            itemElement.addAttribute(A_ORDER, "" + item.getOrder());
-                        }
+                        generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Adds the context menu item rules to the given digester.<p>
+     *  
+     * @param digester the digester to add the rules to
+     * @param xPathPrefix the path prefix (should be the path to the contextmenu or the multicontextmenu node)
+     */
+    protected static void addContextMenuItemRules(Digester digester, String xPathPrefix) {
+
+        // add the rules for an entry item
+        String xPath = xPathPrefix + "/" + N_ENTRY;
+        digester.addObjectCreate(xPath, CmsExplorerContextMenuItem.class);
+        digester.addCallMethod(xPath, "setKey", 1);
+        digester.addCallParam(xPath, 0, A_KEY);
+        digester.addCallMethod(xPath, "setUri", 1);
+        digester.addCallParam(xPath, 0, A_URI);
+        digester.addCallMethod(xPath, "setRules", 1);
+        digester.addCallParam(xPath, 0, A_RULES);
+        digester.addCallMethod(xPath, "setRule", 1);
+        digester.addCallParam(xPath, 0, A_RULE);
+        digester.addCallMethod(xPath, "setTarget", 1);
+        digester.addCallParam(xPath, 0, A_TARGET);
+        digester.addSetNext(xPath, "addContextMenuEntry");
+
+        // add the rules for a separator item
+        xPath = xPathPrefix + "/" + N_SEPARATOR;
+        digester.addObjectCreate(xPath, CmsExplorerContextMenuItem.class);
+        digester.addSetNext(xPath, "addContextMenuSeparator");
+    }
+
+    /**
+     * Creates the xml output for context menu item nodes and eventual subnodes.<p>
+     * 
+     * @param parentElement the parent element to add the item node to
+     * @param menuRuleTranslator the menu rule translator to use for legacy rules
+     * @param item the context menu item to create the node for
+     */
+    protected static void generateContextMenuItemXml(
+        Element parentElement,
+        CmsMenuRuleTranslator menuRuleTranslator,
+        CmsExplorerContextMenuItem item) {
+
+        Element itemElement;
+        if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+            // create an <entry> node
+            itemElement = parentElement.addElement(N_ENTRY);
+            itemElement.addAttribute(A_KEY, item.getKey());
+            itemElement.addAttribute(A_URI, item.getUri());
+            if (item.getTarget() != null) {
+                itemElement.addAttribute(A_TARGET, item.getTarget());
+            }
+            String rule = item.getRule();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
+                itemElement.addAttribute(A_RULE, rule);
+            } else {
+                String legacyRules = item.getRules();
+                if (CmsStringUtil.isNotEmpty(legacyRules) && menuRuleTranslator.hasMenuRule(legacyRules)) {
+                    itemElement.addAttribute(A_RULE, menuRuleTranslator.getMenuRuleName(legacyRules));
+                } else {
+                    itemElement.addAttribute(A_RULES, legacyRules);
+                }
+            }
+            if (item.isParentItem()) {
+                Iterator i = item.getSubItems().iterator();
+                while (i.hasNext()) {
+                    CmsExplorerContextMenuItem subItem = (CmsExplorerContextMenuItem)i.next();
+                    generateContextMenuItemXml(itemElement, menuRuleTranslator, subItem);
+                }
+            }
+        } else {
+            // create a <separator> node
+            itemElement = parentElement.addElement(N_SEPARATOR);
         }
     }
 
@@ -955,33 +969,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             CmsMenuRuleTranslator menuRuleTranslator = new CmsMenuRuleTranslator();
             while (i.hasNext()) {
                 CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
-                Element itemElement;
-                if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
-                    // create an <entry> node
-                    itemElement = contextMenuElement.addElement(N_ENTRY);
-                    itemElement.addAttribute(A_KEY, item.getKey());
-                    itemElement.addAttribute(A_URI, item.getUri());
-                    if (item.getTarget() != null) {
-                        itemElement.addAttribute(A_TARGET, item.getTarget());
-                    }
-                    String rule = item.getRule();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
-                        itemElement.addAttribute(A_RULE, rule);
-                    } else {
-                        String legacyRules = item.getRules();
-                        if (CmsStringUtil.isNotEmpty(legacyRules) && menuRuleTranslator.hasMenuRule(legacyRules)) {
-                            itemElement.addAttribute(A_RULE, menuRuleTranslator.getMenuRuleName(legacyRules));
-                        } else {
-                            itemElement.addAttribute(A_RULES, legacyRules);
-                        }
-                    }
-                } else {
-                    // create a <separator> node
-                    itemElement = contextMenuElement.addElement(N_SEPARATOR);
-                }
-                if (item.getOrder().intValue() < CmsExplorerTypeSettings.ORDER_VALUE_DEFAULT_START) {
-                    itemElement.addAttribute(A_ORDER, "" + item.getOrder());
-                }
+                generateContextMenuItemXml(contextMenuElement, menuRuleTranslator, item);
             }
         }
 
@@ -1387,496 +1375,143 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         int todo = 0;
 
         // add workplace preferences generaloptions rules 
-        digester.addCallMethod("*/"
+        String xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_REPORTTYPE, "setWorkplaceReportType", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_UPLOADAPPLET, "setUploadApplet", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
+            + N_WORKPLACEGENERALOPTIONS;
+        digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
+
         // add allow broken relations rule
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_ALLOWBROKENRELATIONS, "setAllowBrokenRelations", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_ALLOWBROKENRELATIONS, "setAllowBrokenRelations", 0);
+
         // add publish related resources rule
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_PUBLISHRELATEDRESOURCES, "setPublishRelatedResourcesMode", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHRELATEDRESOURCES, "setPublishRelatedResourcesMode", 0);
 
         // add rules for the new folder dialog settings
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWFOLDEREDITPROPERTIES, "setNewFolderEditProperties", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_NEWFOLDEREDITPROPERTIES, "setNewFolderEditProperties", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SHOWUPLOADTYPEDIALOG, "setShowUploadTypeDialog", 0);
 
-        digester.addCallMethod("*/"
+        // add workplace preferences startupsettings rules
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
+            + N_WORKPLACESTARTUPSETTINGS;
+        digester.addCallMethod(xPathPrefix + "/" + N_LOCALE, "setLocale", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_PROJECT, "setStartProject", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_WORKPLACEVIEW, "setStartView", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_FOLDER, "setStartFolder", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SITE, "setStartSite", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_RESTRICTEXPLORERVIEW, "setRestrictExplorerView", 0);
 
-        digester.addCallMethod("*/"
+        // add workplace search rules
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
-            + N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + N_SHOWUPLOADTYPEDIALOG, "setShowUploadTypeDialog", 0);
+            + N_WORKPLACESEARCH;
+        digester.addCallMethod(xPathPrefix + "/" + N_SEARCHINDEXNAME, "setWorkplaceSearchIndexName", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SEARCHVIEWSTYLE, "setWorkplaceSearchViewStyle", 0);
 
-        // add workplace preferences startupsettings rules 
-        digester.addCallMethod("*/"
+        // add explorer preferences generaloptions rules
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
-            + N_WORKPLACEPREFERENCES
+            + N_EXPLORERPREFERENCES
             + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_LOCALE, "setLocale", 0);
+            + N_EXPLORERGENERALOPTIONS;
+        digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setExplorerButtonStyle", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_ENTRIES, "setExplorerFileEntries", 0);
 
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_PROJECT, "setStartProject", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_WORKPLACEVIEW, "setStartView", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_FOLDER, "setStartFolder", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_SITE, "setStartSite", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESTARTUPSETTINGS
-            + "/"
-            + N_RESTRICTEXPLORERVIEW, "setRestrictExplorerView", 0);
-        // add workplace search rules 
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESEARCH
-            + "/"
-            + N_SEARCHINDEXNAME, "setWorkplaceSearchIndexName", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_WORKPLACEPREFERENCES
-            + "/"
-            + N_WORKPLACESEARCH
-            + "/"
-            + N_SEARCHVIEWSTYLE, "setWorkplaceSearchViewStyle", 0);
-
-        // add explorer preferences generaloptions rules 
-        digester.addCallMethod("*/"
+        // add explorer display options rules
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
-            + N_EXPLORERGENERALOPTIONS
-            + "/"
-            + N_BUTTONSTYLE, "setExplorerButtonStyle", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERGENERALOPTIONS
-            + "/"
-            + N_ENTRIES, "setExplorerFileEntries", 0);
-
-        // add explorer display options rules 
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_TITLE, "setShowExplorerFileTitle", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_NAVTEXT, "setShowExplorerFileNavText", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_TYPE, "setShowExplorerFileType", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_DATELASTMODIFIED, "setShowExplorerFileDateLastModified", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_DATECREATED, "setShowExplorerFileDateCreated", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_LOCKEDBY, "setShowExplorerFileLockedBy", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_PERMISSIONS, "setShowExplorerFilePermissions", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_SIZE, "setShowExplorerFileSize", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_STATE, "setShowExplorerFileState", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_USERLASTMODIFIED, "setShowExplorerFileUserLastModified", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_USERCREATED, "setShowExplorerFileUserCreated", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_DATERELEASED, "setShowExplorerFileDateReleased", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EXPLORERPREFERENCES
-            + "/"
-            + N_EXPLORERDISPLAYOPTIONS
-            + "/"
-            + N_DATEEXPIRED, "setShowExplorerFileDateExpired", 0);
+            + N_EXPLORERDISPLAYOPTIONS;
+        digester.addCallMethod(xPathPrefix + "/" + N_TITLE, "setShowExplorerFileTitle", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_NAVTEXT, "setShowExplorerFileNavText", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_TYPE, "setShowExplorerFileType", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DATELASTMODIFIED, "setShowExplorerFileDateLastModified", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DATECREATED, "setShowExplorerFileDateCreated", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_LOCKEDBY, "setShowExplorerFileLockedBy", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_PERMISSIONS, "setShowExplorerFilePermissions", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SIZE, "setShowExplorerFileSize", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_STATE, "setShowExplorerFileState", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_USERLASTMODIFIED, "setShowExplorerFileUserLastModified", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_USERCREATED, "setShowExplorerFileUserCreated", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DATERELEASED, "setShowExplorerFileDateReleased", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DATEEXPIRED, "setShowExplorerFileDateExpired", 0);
 
         // add dialog preferences rules
-        digester.addCallMethod("*/"
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_FILECOPY, "setDialogCopyFileMode", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_FOLDERCOPY, "setDialogCopyFolderMode", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_FILEDELETION, "setDialogDeleteFileMode", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_DIRECTPUBLISH, "setDialogPublishSiblings", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_SHOWLOCK, "setShowLockDialog", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_SHOWEXPORTSETTINGS, "setShowExportSettingsDialog", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_PERMISSIONSINHERITONFOLDER, "setDialogPermissionsInheritOnFolder", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_EXPANDPERMISSIONSINHERITED, "setDialogExpandInheritedPermissions", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_DIALOGSPREFERENCES
-            + "/"
-            + N_DIALOGSDEFAULTSETTINGS
-            + "/"
-            + N_EXPANDPERMISSIONSUSER, "setDialogExpandUserPermissions", 0);
+            + N_DIALOGSDEFAULTSETTINGS;
+        digester.addCallMethod(xPathPrefix + "/" + N_FILECOPY, "setDialogCopyFileMode", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_FOLDERCOPY, "setDialogCopyFolderMode", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_FILEDELETION, "setDialogDeleteFileMode", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DIRECTPUBLISH, "setDialogPublishSiblings", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SHOWLOCK, "setShowLockDialog", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_SHOWEXPORTSETTINGS, "setShowExportSettingsDialog", 0);
+        digester.addCallMethod(
+            xPathPrefix + "/" + N_PERMISSIONSINHERITONFOLDER,
+            "setDialogPermissionsInheritOnFolder",
+            0);
+        digester.addCallMethod(
+            xPathPrefix + "/" + N_EXPANDPERMISSIONSINHERITED,
+            "setDialogExpandInheritedPermissions",
+            0);
+        digester.addCallMethod(xPathPrefix + "/" + N_EXPANDPERMISSIONSUSER, "setDialogExpandUserPermissions", 0);
 
         // add editor generaloptions rules
-        digester.addCallMethod("*/"
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
-            + N_EDITORGENERALOPTIONS
-            + "/"
-            + N_BUTTONSTYLE, "setEditorButtonStyle", 0);
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EDITORPREFERENCES
-            + "/"
-            + N_EDITORGENERALOPTIONS
-            + "/"
-            + N_DIRECTEDITSTYLE, "setDirectEditButtonStyle", 0);
+            + N_EDITORGENERALOPTIONS;
+        digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setEditorButtonStyle", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_DIRECTEDITSTYLE, "setDirectEditButtonStyle", 0);
 
         // add editor preferrededitor rules
-        digester.addCallMethod("*/"
+        xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
             + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
-            + N_EDITORPREFERREDEDITORS
-            + "/"
-            + N_EDITOR, "setPreferredEditor", 2);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EDITORPREFERENCES
-            + "/"
-            + N_EDITORPREFERREDEDITORS
-            + "/"
-            + N_EDITOR, 0, A_TYPE);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_DEFAULTPREFERENCES
-            + "/"
-            + N_EDITORPREFERENCES
-            + "/"
-            + N_EDITORPREFERREDEDITORS
-            + "/"
-            + N_EDITOR, 1, A_VALUE);
+            + N_EDITORPREFERREDEDITORS;
+        digester.addCallMethod(xPathPrefix + "/" + N_EDITOR, "setPreferredEditor", 2);
+        digester.addCallParam(xPathPrefix + "/" + N_EDITOR, 0, A_TYPE);
+        digester.addCallParam(xPathPrefix + "/" + N_EDITOR, 1, A_VALUE);
     }
 
     /**
@@ -1887,54 +1522,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     protected void addMultiContextMenuRules(Digester digester) {
 
         // add multi context menu
-        digester.addObjectCreate(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
-            CmsExplorerContextMenu.class);
-        digester.addSetNext(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
-            "setMultiContextMenu");
-
-        digester.addCallMethod(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            "addMenuEntry",
-            6);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            0,
-            A_KEY);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            1,
-            A_URI);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            2,
-            A_RULES);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            3,
-            A_RULE);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            4,
-            A_TARGET);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            5,
-            A_ORDER);
-
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU
-            + "/"
-            + N_SEPARATOR, "addMenuSeparator", 1);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
-            0,
-            A_ORDER);
+        String xPath = "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU;
+        digester.addObjectCreate(xPath, CmsExplorerContextMenu.class);
+        digester.addSetNext(xPath, "setMultiContextMenu");
     }
 
     /**

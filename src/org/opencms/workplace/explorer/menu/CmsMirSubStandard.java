@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrOtherActive.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirSubStandard.java,v $
  * Date   : $Date: 2007/04/26 15:21:53 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,22 +35,30 @@ import org.opencms.file.CmsObject;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
- * Defines a menu item rule that sets the visibility to active if the resource is not part of the current project.<p>
+ * Defines a menu item rule for the sub menu generation that checks the visibility of the sub items to show.<p>
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.5.6
  */
-public class CmsMirPrOtherActive extends A_CmsMenuItemRule {
+public class CmsMirSubStandard extends A_CmsMenuItemRule {
 
+    /** The name of the standard rule set used for sub context menu entries. */
+    public static final String RULE_NAME = "substandard";
+    
     /**
-     * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
+     * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, org.opencms.workplace.explorer.CmsResourceUtil[], org.opencms.workplace.explorer.menu.I_CmsMenuItemRule[])
      */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
+    public CmsMenuItemVisibilityMode getVisibility(
+        CmsObject cms,
+        CmsResourceUtil[] resourceUtil,
+        I_CmsMenuItemRule[] rule) {
 
-        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        // TODO: implement visibility for sub menu items
+        int todo = 1;
+        return getVisibility(cms, resourceUtil);
     }
 
     /**
@@ -58,7 +66,7 @@ public class CmsMirPrOtherActive extends A_CmsMenuItemRule {
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        return !resourceUtil[0].isInsideProject() && !resourceUtil[0].getProjectState().isLockedForPublishing();
+        return true;
     }
 
 }

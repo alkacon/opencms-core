@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/03/06 10:48:36 $
- * Version: $Revision: 1.13.4.24 $
+ * Date   : $Date: 2007/04/26 15:21:54 $
+ * Version: $Revision: 1.13.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ function windowStore(body, head, tree, files) {
 	this.fileswin = files;
 }
 
-//            1     2     3      4        5     6         7     8      9            10                11                   12           13              14            15           16           17        18                   19         20                      21             22           23          
+//            1     2     3      4        5     6         7     8      9            10                11                   12           13              14            15           16           17        18                   19         20                      21             22           23
 function file(name, path, title, navtext, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, workflowState, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
@@ -347,14 +347,17 @@ function showContextMenu(msg, state) {
     if (state == 'ok') {
         var menu = msg;
 		if (menu.length > 0) {
-			var el = win.files.getElementById("contextmenu");
-			el.innerHTML = menu;
+			var elouter = win.files.getElementById("contextmenuouter");
+			var elinner = win.files.getElementById("contextmenu");
+			elinner.innerHTML = menu;
 			var x = 12;
-			el.style.left = x + "px";
+			elouter.style.left = x + "px";
 			// calculate menu y position before setting visibility to avoid display errors
 			var y = getMenuPosY(win.files, active_mouse_id);
-			el.style.top =  y + "px";
-			el.style.visibility = "visible";
+			elouter.style.top =  y + "px";
+			elouter.style.visibility = "visible";
+			elouter.style.display = "block";
+			elinner.style.visibility = "visible";
 		} // end if (access)
     	last_id = active_mouse_id;
 	    contextOpen = true;
@@ -364,16 +367,16 @@ function showContextMenu(msg, state) {
 	}
 }
 
-
-
 // closes a context menu
 function closeContext() {
 
 	var cm = win.files.getElementById("contextmenu");
 	cm.style.visibility = "hidden";
+	var elouter = win.files.getElementById("contextmenuouter");
+	elouter.style.visibility = "hidden";
+	elouter.style.display = "none";
 	contextOpen = false;
 }
-
 
 // submits a selected multi action
 function submitMultiAction(dialog) {
@@ -584,60 +587,18 @@ function linkOut(obj) {
 function printList(wo) {
 
 	var temp =
-	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"
 	+ "<html><head>"
 	+ "<meta HTTP-EQUIV=\"content-type\" CONTENT=\"text/html; charset="
 	+ top.frames.head.encoding
 	+ "\">\n"
-	+ "<script language=\"JavaScript\">\n"
+	+ "<script type=\"text/javascript\" language=\"JavaScript\">\n"
 	+ "document.oncontextmenu = new Function('return false;');\n"
 	+ "document.onmousedown = new Function('return false;');\n"
 	+ "document.onmouseup = top.handleOnClick;\n"
 	+ "</script>"
-	+ "<style type='text/css'>\n"
-	+ "body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
-	+ "p, td { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; } "
-	+ "td.t { white-space: nowrap; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t125 { white-space: nowrap; width: 125px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t100 { white-space: nowrap; width: 100px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t75 { white-space: nowrap; width: 75px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "a { text-decoration: none; cursor: pointer; } "
-
-	+ "td.fc { color: #b40000; } "
-	+ "a.fc { color: #b40000; } "
-	+ "a.fci { text-decoration: underline; color: #000088; } "
-
-	+ "td.fn { color: #0000aa; } "
-	+ "a.fn { color: #0000aa; } "
-	+ "a.fni { text-decoration: underline; color: #000088; } "
-
-	+ "td.fd { color: #000000; text-decoration: line-through; } "
-	+ "a.fd { color: #000000; text-decoration: line-through; } "
-	+ "a.fdi { text-decoration: line-through underline; color: #000088; } "
-
-	+ "td.fp { color: #888888; } "
-	+ "a.fp { color: #888888; } "
-	+ "a.fpi { text-decoration: underline; color: #000088; } "
-
-	+ "td.nf { color:#000000; } "
-	+ "a.nf { color:#000000; } "
-	+ "a.nfi { text-decoration: underline; color: #000088; } "
-
-	+ "div.cm { position: absolute; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); } "
-	+ "div.cm2 { border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow; } "
-	+ "table.cm { width: 150px; } "
-	+ "span.cmsep { display: block; width: 100%; height: 1px; font-size: 0px; background-color: ThreeDShadow; padding: 0px; border-bottom: 1px solid ThreeDHighlight;} "
-	+ "td.cmsep { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; } "
-	+ "a.cme { color: MenuText; text-decoration: none;} "
-	+ "span.cmenorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; } "
-	+ "span.cmehigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; color: CaptionText; background-color: ActiveCaption; } "
-	+ "span.inanorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: GrayText; } "
-	+ "span.inahigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: InactiveCaptionText; background-color: InactiveCaption; } "
-
-	+ ".selected { background: ActiveCaption; color: CaptionText; } "
-	+ ".unselected { background: Window; color:WindowText; } "
-
-	+ "</style></head>";
+	+ "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>"
+	+ "</head>";
 
 	var returnplace = wo.location.href;
 	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {
@@ -659,7 +620,7 @@ function printList(wo) {
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
 	returnplace = returnplace.replace(/\//g, "%2F");
-	
+
 	wo.open();
 	wo.writeln(temp);
 
@@ -751,7 +712,7 @@ function printList(wo) {
 
 		if (vi.liste[i].lockedBy != "") {
 			var lockIcon = '';
-			var lockedBystring;	
+			var lockedBystring;
 	        if (vi.liste[i].lockState == 1) {
 				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
@@ -765,7 +726,7 @@ function printList(wo) {
 			if (lockIcon != '') {
 	        	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 	        }
-		}        
+		}
 		wo.write("</td>");
 
 		wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
@@ -779,11 +740,11 @@ function printList(wo) {
 		} else if (vi.liste[i].projectState == 4) {
 			// not lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_otherworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;	
+			projectAltText = vi.liste[i].sysLockInfo;
 		} else if (vi.liste[i].projectState == 3) {
 			// lockable workflow
 			projectIcon = vi.skinPath + 'explorer/project_myworkflow.png';
-			projectAltText = vi.liste[i].sysLockInfo;	
+			projectAltText = vi.liste[i].sysLockInfo;
 		} else if (vi.liste[i].projectState == 2) {
 			// locked in other project
 			projectIcon = vi.skinPath + 'explorer/project_other.png';
@@ -799,7 +760,7 @@ function printList(wo) {
 
 		wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
 		wo.write("</td>\n");
-		
+
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (mode == "listview") {
@@ -870,10 +831,64 @@ function printList(wo) {
 	wo.writeln("</form>");
 
 	// create div for context menus
-	wo.writeln("<div id=\"contextmenu\" class=\"cm\"></div>");
+	wo.writeln("<div id=\"contextmenuouter\" class=\"cmwrapper\"><div id=\"contextmenu\" class=\"cmo\"></div></div>");
 
 	wo.write("<br></body></html>");
 	wo.close();
+}
+
+var openSubMenus = new Array();
+
+function oSubC(openID, keepIDs) {
+	// check the sub menus to keep open
+	var keepArray = new Array();
+	if (keepIDs != null) {
+		var keepArray = keepIDs.split(",");
+	}
+
+	var tempOpenMenus = new Array();
+	for (var i=openSubMenus.length - 1; i>=0; i--) {
+		var currOpenID = openSubMenus[i];
+		var keepOpen = currOpenID == openID;
+		for (var k=0; k<keepArray.length; k++) {
+			if (keepArray[k] == currOpenID) {
+				keepOpen = true;
+			}
+		}
+		if (!keepOpen) {
+			win.files.getElementById(currOpenID).style.display = "none";
+		} else if (currOpenID != openID) {
+			tempOpenMenus[tempOpenMenus.length] = currOpenID;
+		}
+
+	}
+
+	win.files.getElementById(openID).style.display = "block";
+	tempOpenMenus[tempOpenMenus.length] = openID;
+	openSubMenus = tempOpenMenus;
+}
+
+function cSubC(keepIDs) {
+	var keepArray = new Array();
+	if (keepIDs != null) {
+		var keepArray = keepIDs.split(",");
+	}
+	var tempOpenMenus = new Array();
+	for (var i=openSubMenus.length - 1; i>=0; i--) {
+		var currOpenID = openSubMenus[i];
+		var keepOpen = false;
+		for (var k=0; k<keepArray.length; k++) {
+			if (keepArray[k] == currOpenID) {
+				keepOpen = true;
+			}
+		}
+		if (!keepOpen) {
+			win.files.getElementById(currOpenID).style.display = "none";
+		} else {
+			tempOpenMenus[tempOpenMenus.length] = currOpenID;
+		}
+	}
+	openSubMenus = tempOpenMenus;
 }
 
 

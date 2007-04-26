@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/I_CmsMenuItemRule.java,v $
- * Date   : $Date: 2007/02/20 08:30:07 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/04/26 15:21:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -60,6 +60,16 @@ public interface I_CmsMenuItemRule {
      * @return the visibility of the menu item
      */
     CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil);
+
+    /**
+     * Returns the visibility for the menu item, depending on the resource utilities and menu item rules.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourceUtil the initialized resource utilities for which the menu item visibility is checked
+     * @param rule the rules which are checked for visibility
+     * @return the visibility for the menu item
+     */
+    CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil, I_CmsMenuItemRule[] rule);
 
     /**
      * Returns if the rule for the menu item should be applied or not.<p>

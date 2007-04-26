@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2007/02/20 08:30:09 $
- * Version: $Revision: 1.9.8.2 $
+ * Date   : $Date: 2007/04/26 15:21:54 $
+ * Version: $Revision: 1.9.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.workplace.explorer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provides information about a single context menu item for a resource type in the OpenCms explorer view.<p>
  * 
@@ -38,88 +41,53 @@ package org.opencms.workplace.explorer;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9.8.2 $ 
+ * @version $Revision: 1.9.8.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsExplorerContextMenuItem implements Comparable {
+public class CmsExplorerContextMenuItem {
 
     /** The name for an entry type. */
     public static final String TYPE_ENTRY = "entry";
 
     /** The name for a separator type. */
-    public static final String TYPE_SEPARATOR = "separator";
+    public static final String TYPE_SEPARATOR = "sep";
 
     private String m_key;
-    private Integer m_order;
+    private CmsExplorerContextMenuItem m_parent;
     private String m_rule;
     private String m_rules;
+    private List m_subItems;
     private String m_target;
     private String m_type;
     private String m_uri;
 
     /**
-     * Constructor that creates a single context menu entry with all necessary information.<p>
-     * @param type the item type (entry oder separator)
-     * @param key the key for localization
-     * @param uri the URI of the dialog
-     * @param rules the set of display rules
-     * @param rule the name of the menu rule set
-     * @param target the frame target of the entry (e.g. "_top")
-     * @param order the order of the item
+     * Empty constructor that creates a single context menu entry.<p>
      */
-    public CmsExplorerContextMenuItem(
-        String type,
-        String key,
-        String uri,
-        String rules,
-        String rule,
-        String target,
-        Integer order) {
+    public CmsExplorerContextMenuItem() {
 
-        m_type = type;
-        m_key = key;
-        m_uri = uri;
-        m_rules = rules;
-        m_rule = rule;
-        m_order = order;
-        m_target = target;
+        // noop
     }
 
     /**
-     * @see java.lang.Object#clone()
+     * Adds a menu sub entry to this context menu item.<p>
+     * 
+     * @param item the entry item to add to this context menu item
      */
-    public Object clone() {
+    public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
 
-        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_rule, m_target, m_order);
+        addSubItem(item, TYPE_ENTRY);
     }
 
     /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * Adds a menu separator to this context menu item.<p>
+     * 
+     * @param item the separator item to add to this context menu item
      */
-    public int compareTo(Object obj) {
+    public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
 
-        if (obj == this) {
-            return 0;
-        }
-        if (obj instanceof CmsExplorerContextMenuItem) {
-            return m_order.compareTo(((CmsExplorerContextMenuItem)obj).m_order);
-        }
-        return 0;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsExplorerContextMenuItem) {
-            return ((CmsExplorerContextMenuItem)obj).m_uri.equals(m_uri);
-        }
-        return false;
+        addSubItem(item, TYPE_SEPARATOR);
     }
 
     /**
@@ -133,13 +101,13 @@ public class CmsExplorerContextMenuItem implements Comparable {
     }
 
     /**
-     * Returns the sort order of this item.<p>
+     * Returns the parent context menu entry item of a sub menu item.<p>
      * 
-     * @return the sort order of this item
+     * @return the parent context menu entry item
      */
-    public Integer getOrder() {
+    public CmsExplorerContextMenuItem getParent() {
 
-        return m_order;
+        return m_parent;
     }
 
     /**
@@ -160,6 +128,16 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public String getRules() {
 
         return m_rules;
+    }
+
+    /**
+     * Returns the sub item entries of this context menu item.<p>
+     * 
+     * @return the sub item entries of this context menu item
+     */
+    public List getSubItems() {
+
+        return m_subItems;
     }
 
     /**
@@ -193,11 +171,23 @@ public class CmsExplorerContextMenuItem implements Comparable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * Returns if the item is a main item with configured sub items.<p>
+     * 
+     * @return true if the item is a main entry item with configured sub items, otherwise false
      */
-    public int hashCode() {
+    public boolean isParentItem() {
 
-        return getUri().hashCode();
+        return m_subItems != null;
+    }
+
+    /**
+     * Returns if the item is a sub item.<p>
+     * 
+     * @return true if the item is a sub entry item, otherwise false
+     */
+    public boolean isSubItem() {
+
+        return m_parent != null;
     }
 
     /**
@@ -208,16 +198,6 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public void setKey(String key) {
 
         m_key = key;
-    }
-
-    /**
-     * Returns the sort order of this item.<p>
-     * 
-     * @param order the sort order of this item
-     */
-    public void setOrder(Integer order) {
-
-        m_order = order;
     }
 
     /**
@@ -268,5 +248,31 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public void setUri(String uri) {
 
         m_uri = uri;
+    }
+
+    /**
+     * Adds a sub item entry to this context menu item.<p>
+     * 
+     * @param item the item to add to this context menu item
+     * @param type the item type to add
+     */
+    protected void addSubItem(CmsExplorerContextMenuItem item, String type) {
+
+        if (m_subItems == null) {
+            m_subItems = new ArrayList();
+        }
+        item.setType(type);
+        m_subItems.add(item);
+        item.setParent(this);
+    }
+
+    /**
+     * Sets the parent context menu item for sub menu items.<p>
+     * 
+     * @param parent the parent context menu item
+     */
+    protected void setParent(CmsExplorerContextMenuItem parent) {
+
+        m_parent = parent;
     }
 }

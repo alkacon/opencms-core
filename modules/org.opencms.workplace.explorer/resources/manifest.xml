@@ -93,6 +93,7 @@
 			<resource uri="/system/workplace/resources/commons/ajax.js"/>
 			<resource uri="/system/workplace/resources/commons/all_others.png"/>
 			<resource uri="/system/workplace/resources/commons/empty.html"/>
+			<resource uri="/system/workplace/resources/commons/explorer.css"/>
 			<resource uri="/system/workplace/resources/commons/explorer.js"/>
 			<resource uri="/system/workplace/resources/commons/group.png"/>
 			<resource uri="/system/workplace/resources/commons/minus.png"/>
@@ -596,6 +597,20 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/explorer/arrow_right.png</source>
+			<destination>system/workplace/resources/explorer/arrow_right.png</destination>
+			<type>image</type>
+			<uuidstructure>9359e2df-f3f5-11db-bdb1-05b4b31f78c4</uuidstructure>
+			<uuidresource>9359e2e0-f3f5-11db-bdb1-05b4b31f78c4</uuidresource>
+			<datelastmodified>Thu, 26 Apr 2007 12:56:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Apr 2007 12:56:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2955,6 +2970,25 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Empty html page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/explorer.css</source>
+			<destination>system/workplace/resources/commons/explorer.css</destination>
+			<type>plain</type>
+			<uuidstructure>bd518417-f3f3-11db-9e15-05b4b31f78c4</uuidstructure>
+			<uuidresource>bd518418-f3f3-11db-9e15-05b4b31f78c4</uuidresource>
+			<datelastmodified>Thu, 26 Apr 2007 12:43:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Apr 2007 12:43:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer files - CSS]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
