@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.55.4.9 $
+ * Date   : $Date: 2007/05/02 16:39:51 $
+ * Version: $Revision: 1.55.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.9 $
+ * @version $Revision: 1.55.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -117,8 +117,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(2, key);
             stmt.setString(3, value.getClass().getName());
             stmt.executeUpdate();
-            stmt.close();
-            stmt = null;
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
@@ -178,10 +176,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 m_sqlManager.closeAll(dbc, null, commit, null);
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            commit = null;
-            stmt = null;
-            res = null;
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
