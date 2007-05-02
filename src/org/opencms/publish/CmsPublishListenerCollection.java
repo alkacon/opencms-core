@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.publish;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsAfterPublishStaticExportHandler;
+import org.opencms.util.CmsUUID;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.5
  */
@@ -73,10 +74,10 @@ public final class CmsPublishListenerCollection extends Vector {
     /**
      * Fires an abort event to all listeners.<p>
      * 
-     * @param userName the name of the user that aborted the job
+     * @param userId the id of the user that aborted the job
      * @param publishJob the publish job that is going to be aborted.
      */
-    protected void fireAbort(String userName, CmsPublishJobEnqueued publishJob) {
+    protected void fireAbort(CmsUUID userId, CmsPublishJobEnqueued publishJob) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_JOB_ABORT_0));
@@ -84,7 +85,7 @@ public final class CmsPublishListenerCollection extends Vector {
         for (Iterator it = iterator(); it.hasNext();) {
             I_CmsPublishEventListener listener = (I_CmsPublishEventListener)it.next();
             try {
-                listener.onAbort(userName, publishJob);
+                listener.onAbort(userId, publishJob);
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
@@ -97,7 +98,7 @@ public final class CmsPublishListenerCollection extends Vector {
                 }
             }
         }
-        if (userName != null && userName.equals(publishJob.getUserName())) {
+        if (userId != null && userId.equals(publishJob.getUserId())) {
             // prevent showing messages if the owner aborted the job by himself 
             return;
         }
@@ -105,8 +106,8 @@ public final class CmsPublishListenerCollection extends Vector {
         String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
             Messages.GUI_PUBLISH_JOB_ABORTED_2,
             new Long(publishJob.getEnqueueTime()),
-            userName);
-        m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
+            userId);
+        m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
     }
 
     /**
@@ -178,7 +179,7 @@ public final class CmsPublishListenerCollection extends Vector {
                 Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_3,
                 params);
         }
-        m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
+        m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
     }
 
     /**
@@ -242,7 +243,7 @@ public final class CmsPublishListenerCollection extends Vector {
             String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_STARTED_1,
                 new Long(publishJob.getEnqueueTime()));
-            m_publishEngine.sendMessage(publishJob.getUserName(), msgText);
+            m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
         }
     }
 }

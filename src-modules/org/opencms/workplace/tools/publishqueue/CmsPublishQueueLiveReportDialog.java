@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueLiveReportDialog.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.5 
  */
@@ -132,7 +132,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
                 throw new Exception();
             }
             if (!OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN)
-                && !publishJob.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
+                && !publishJob.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                 throw new Exception();
             }
         } catch (Exception e) {

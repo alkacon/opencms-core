@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueHistoricalReportDialog.java,v $
- * Date   : $Date: 2007/03/30 07:41:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.5
  */
@@ -194,7 +194,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
             // project name
             params[0] = publishJob.getProjectName();
             // user name
-            params[1] = publishJob.getUserName();
+            params[1] = publishJob.getUserName(getCms());
             // start date
             params[2] = Messages.get().getBundle(getLocale()).getDateTime(publishJob.getStartTime());
             // compose the title

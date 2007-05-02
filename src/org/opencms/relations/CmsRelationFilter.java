@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2007/03/27 14:16:26 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,19 +43,19 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsRelationFilter implements Cloneable {
 
-    /** To filter all sources and targets, does not matter the relation type. */
-    public static final CmsRelationFilter BOTH = new CmsRelationFilter(true, true);
+    /** To filter all sources and targets. */
+    public static final CmsRelationFilter ALL = new CmsRelationFilter(true, true);
 
-    /** To filter all sources, does not matter the relation type. */
+    /** To filter all sources. */
     public static final CmsRelationFilter SOURCES = new CmsRelationFilter(true, false);
 
-    /** To filter all targets, does not matter the relation type. */
+    /** To filter all targets. */
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
 
     /** To filter relations for a given date. */

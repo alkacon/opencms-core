@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/04/26 14:31:14 $
- * Version: $Revision: 1.5.4.13 $
+ * Date   : $Date: 2007/05/02 16:55:28 $
+ * Version: $Revision: 1.5.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.13 $ 
+ * @version $Revision: 1.5.4.14 $ 
  * 
  * @since 6.0.2 
  */
@@ -261,7 +261,7 @@ public class CmsHistoryList extends A_CmsListDialog {
      * 
      * @return the link to an historical file
      */
-    public static String getHistoryLink(CmsObject cms, CmsUUID structureId, String version) {
+    public static String getHistoryLink(CmsObject cms, CmsUUID structureId, int version) {
 
         String resourcePath;
         try {
@@ -277,31 +277,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         link.append('=');
         link.append(version);
         return link.toString();
-    }
-
-    /** 
-     * Returns the user last modified of an historical resource.<p>
-     * 
-     * @param cms the cms object
-     * @param file the file to use
-     * 
-     * @return the user last modified of an historical resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public static String readUserNameOfHistoryFile(CmsObject cms, CmsResource file) throws CmsException {
-
-        String userName;
-        try {
-            userName = cms.readUser(file.getUserLastModified()).getName();
-        } catch (CmsException e) {
-            if (file instanceof I_CmsHistoryResource) {
-                userName = ((I_CmsHistoryResource)file).getLastModifiedByName();
-            } else {
-                throw e;
-            }
-        }
-        return userName;
     }
 
     /**
@@ -407,7 +382,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 // group           
                 item.set(LIST_COLUMN_FILE_TYPE, filetype);
                 // user           
-                item.set(LIST_COLUMN_USER, readUserNameOfHistoryFile(getCms(), file.getResource()));
+                item.set(LIST_COLUMN_USER, getCms().readUser(file.getResource().getUserLastModified()).getName());
                 // path           
                 item.set(LIST_COLUMN_RESOURCE_PATH, file.getResource().getRootPath());
                 // size 
@@ -520,18 +495,18 @@ public class CmsHistoryList extends A_CmsListDialog {
 
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
-                String versionId = getItem().getId();
-                String resourcePath = jsp.link(jsp.getRequestContext().removeSiteRoot(
-                    getItem().get(LIST_COLUMN_RESOURCE_PATH).toString()));
+                CmsVersionWrapper version = (CmsVersionWrapper)getItem().get(LIST_COLUMN_VERSION);
+                String resourcePath = jsp.getRequestContext().removeSiteRoot(
+                    getItem().get(LIST_COLUMN_RESOURCE_PATH).toString());
 
                 // is the resource already a sibling already deleted?
                 boolean allowPreview = getCms().existsResource(resourcePath);
-                if ("-1".equals(versionId) || !allowPreview) {
+                if (version.getVersion().equals(OFFLINE_PROJECT) || !allowPreview) {
                     // offline version
-                    jsCode.append(resourcePath);
+                    jsCode.append(jsp.link(resourcePath));
                 } else {
                     jsCode.append(jsp.link(getHistoryLink(getCms(), new CmsUUID(
-                        getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()), versionId)));
+                        getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()), ((Integer)version.getVersion()).intValue())));
                 }
                 jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
                 return super.defButtonHtml(

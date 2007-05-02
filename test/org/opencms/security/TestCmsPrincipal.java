@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.2.4.5 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.2.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,10 @@
 package org.opencms.security;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -70,6 +73,8 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         suite.setName(TestCmsPrincipal.class.getName());
 
         suite.addTest(new TestCmsPrincipal("testBasicReadOperation"));
+        suite.addTest(new TestCmsPrincipal("testUserHistory"));
+        suite.addTest(new TestCmsPrincipal("testGroupHistory"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -153,5 +158,59 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         if (caught != null) {
             assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
         }
+    }
+
+    /**
+     * Test group history.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGroupHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing group history");
+
+        CmsGroup group = cms.createGroup("groupDelete", "my description", 0, null);
+        long before = System.currentTimeMillis();
+        cms.deleteGroup(group.getId(), null);
+        long after = System.currentTimeMillis();
+
+        CmsHistoryPrincipal histUser = cms.readHistoryPrincipal(group.getId());
+        assertEquals(group.getId(), histUser.getId());
+        assertEquals(group.getName(), histUser.getName());
+        assertEquals(group.getSimpleName(), histUser.getSimpleName());
+        assertEquals(group.getOuFqn(), histUser.getOuFqn());
+        assertEquals(group.getDescription(), histUser.getDescription());
+        assertEquals("", histUser.getEmail());
+        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertTrue(before <= histUser.getDateDeleted());
+        assertTrue(histUser.getDateDeleted() <= after);
+    }
+
+    /**
+     * Test user history.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUserHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing user history");
+
+        CmsUser user = cms.createUser("userDelete", "userDelete", "my description", null);
+        long before = System.currentTimeMillis();
+        cms.deleteUser(user.getId());
+        long after = System.currentTimeMillis();
+
+        CmsHistoryPrincipal histUser = cms.readHistoryPrincipal(user.getId());
+        assertEquals(user.getId(), histUser.getId());
+        assertEquals(user.getName(), histUser.getName());
+        assertEquals(user.getSimpleName(), histUser.getSimpleName());
+        assertEquals(user.getOuFqn(), histUser.getOuFqn());
+        assertEquals(user.getDescription(), histUser.getDescription());
+        assertEquals(user.getEmail(), histUser.getEmail());
+        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertTrue(before <= histUser.getDateDeleted());
+        assertTrue(histUser.getDateDeleted() <= after);
     }
 }

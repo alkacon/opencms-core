@@ -875,6 +875,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/list/warning.png</source>
+			<destination>system/workplace/resources/list/warning.png</destination>
+			<type>image</type>
+			<uuidstructure>53029dd7-ee56-11db-8473-0bbe9ebfd414</uuidstructure>
+			<uuidresource>53029dd8-ee56-11db-8473-0bbe9ebfd414</uuidresource>
+			<datelastmodified>Thu, 19 Apr 2007 09:14:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Apr 2007 09:14:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[warning]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/views</destination>
 			<type>folder</type>
 			<uuidstructure>8405a06e-11b7-11db-91cd-fdbae480bac9</uuidstructure>

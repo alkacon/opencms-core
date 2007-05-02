@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2007/04/26 14:31:07 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.commons.Messages;
 
 import java.text.DateFormat;
@@ -174,8 +173,8 @@ public class CmsResourceComparison {
             dateCreated1,
             dateCreated2));
         try {
-            String userLastModified1 = CmsHistoryList.readUserNameOfHistoryFile(cms, file1);
-            String userLastModified2 = CmsHistoryList.readUserNameOfHistoryFile(cms, file2);
+            String userLastModified1 = cms.readUser(file1.getUserLastModified()).getName();
+            String userLastModified2 = cms.readUser(file2.getUserLastModified()).getName();
             comparedAttributes.add(new CmsAttributeComparison(
                 Messages.GUI_LABEL_USER_LAST_MODIFIED_0,
                 userLastModified1,

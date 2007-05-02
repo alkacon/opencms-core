@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/04/26 14:31:08 $
- * Version: $Revision: 1.21.4.9 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.21.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.9 $
+ * @version $Revision: 1.21.4.10 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -963,10 +963,10 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // all resources inside the folder must be published, even if not in test project
-        assertState(cms, res3, CmsResource.STATE_UNCHANGED);
+        assertState(cms, res3, CmsResource.STATE_NEW);
 
         // as well as all siblings, even if not in test project
-        assertState(cms, res4, CmsResource.STATE_UNCHANGED);
+        assertState(cms, res4, CmsResource.STATE_NEW);
     }
 
     /**
@@ -996,13 +996,12 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.copyResourceToProject(path);
 
         // check the publish list
-        // the resource modified in the Offline project should be there
+        // the resource modified in the Offline project should not be there
         CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(path), false);
         assertTrue(pubList.isPublishSubResources());
         assertTrue(pubList.getDeletedFolderList().isEmpty());
         assertTrue(pubList.getFolderList().isEmpty());
-        assertEquals(1, pubList.getFileList().size());
-        assertTrue(pubList.getFileList().contains(cms.readResource(res1)));
+        assertTrue(pubList.getFileList().isEmpty());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/04/17 09:51:50 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.I_CmsDbContextFactory;
-import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  * 
  * @since 6.5.5
  */
@@ -84,7 +83,7 @@ public final class CmsPublishEngine implements Runnable {
 
     /** The engine state. */
     private CmsPublishEngineState m_engineState;
-    
+
     /** The publish listeners. */
     private final CmsPublishListenerCollection m_listeners;
 
@@ -93,12 +92,15 @@ public final class CmsPublishEngine implements Runnable {
 
     /** The queue with still waiting publish job. */
     private final CmsPublishQueue m_publishQueue;
-    
+
     /** The amount of time the system will wait for a running publish job during shutdown. */
     private int m_publishQueueShutdowntime;
 
     /** Is set during shutdown. */
     private boolean m_shuttingDown;
+
+    /** The id of the admin user. */
+    private CmsUUID m_adminUserId;
 
     /**
      * Default constructor.<p>
@@ -164,7 +166,7 @@ public final class CmsPublishEngine implements Runnable {
         // create the publish job
         CmsPublishJobInfoBean publishJob = new CmsPublishJobInfoBean(cms, publishList, report);
         // enqueue it and 
-        m_publishQueue.add(publishJob);   
+        m_publishQueue.add(publishJob);
         // notify all listeners
         m_listeners.fireEnqueued(new CmsPublishJobBase(publishJob));
         // start publish job immediatly if possible
@@ -274,6 +276,14 @@ public final class CmsPublishEngine implements Runnable {
     public synchronized void setDriverManager(CmsDriverManager driverManager) {
 
         m_driverManager = driverManager;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            m_adminUserId = m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserAdmin()).getId();
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -297,7 +307,7 @@ public final class CmsPublishEngine implements Runnable {
         // wait the specified amount of time,
         // then write an abort message to the report
         if (m_currentPublishThread != null) {
-            
+
             // if a shutdowntime is defined, wait  if a publish process is running
             if (m_publishQueueShutdowntime > 0) {
                 synchronized (this) {
@@ -305,17 +315,17 @@ public final class CmsPublishEngine implements Runnable {
                         wait(m_publishQueueShutdowntime * 1000);
                     } catch (InterruptedException exc) {
                         // noop
-                    }    
+                    }
                 }
             }
-            
+
             CmsPublishJobInfoBean publishJob = m_currentPublishThread.getPublishJob();
-            m_listeners.fireAbort(OpenCms.getDefaultUsers().getUserAdmin(), new CmsPublishJobEnqueued(publishJob));
+            m_listeners.fireAbort(m_adminUserId, new CmsPublishJobEnqueued(publishJob));
             I_CmsReport report = m_currentPublishThread.getReport();
             report.println();
             report.println();
-            report.println(Messages.get().container(
-                Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
+            report.println(
+                Messages.get().container(Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
                 I_CmsReport.FORMAT_ERROR);
             report.println();
 
@@ -338,30 +348,30 @@ public final class CmsPublishEngine implements Runnable {
     /**
      * Aborts the given publish job.<p>
      * 
-     * @param userName the name of user that wants to abort the given publish job 
+     * @param userId the id of user that wants to abort the given publish job 
      * @param publishJob the publish job to abort
      * @param removeJob indicates if the job will be removed or added to history
      * 
      * @throws CmsException if there is some problem during unlocking the resources
      * @throws CmsPublishException if the publish job can not be aborted 
      */
-    protected void abortPublishJob(String userName, CmsPublishJobEnqueued publishJob, boolean removeJob)
+    protected void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsPublishException {
-        
+
         // abort event should be raised before the job is removed implicitly
-        m_listeners.fireAbort(userName, publishJob);
-        
-        if ((m_currentPublishThread == null) 
-            || !publishJob.m_publishJob.equals(m_currentPublishThread.getPublishJob())) {
+        m_listeners.fireAbort(userId, publishJob);
+
+        if ((m_currentPublishThread == null) || !publishJob.m_publishJob.equals(m_currentPublishThread.getPublishJob())) {
             // engine is currently publishing another job or is not publishing
             if (!m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
                 // job not found
-                throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
+                throw new CmsPublishException(Messages.get().container(
+                    Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
             }
         } else {
             // engine is currently publishing the job to abort
             m_currentPublishThread.abort();
-        }    
+        }
         // collect all resources
         if (publishJob.getPublishList() != null) {
             unlockPublishList(publishJob.m_publishJob);
@@ -390,18 +400,18 @@ public final class CmsPublishEngine implements Runnable {
      * Disables the publish engine, i.e. publish jobs are not accepted.<p>
      */
     protected void disableEngine() {
-    
-        m_engineState = CmsPublishEngineState.ENGINE_DISABLED;        
+
+        m_engineState = CmsPublishEngineState.ENGINE_DISABLED;
     }
-    
+
     /**
      * Enables the publish engine, i.e. publish jobs are accepted.<p> 
      */
     protected void enableEngine() {
-        
+
         m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
     }
-    
+
     /**
      * Returns the current running publish job.<p>
      * 
@@ -410,8 +420,8 @@ public final class CmsPublishEngine implements Runnable {
     protected CmsPublishThread getCurrentPublishJob() {
 
         return m_currentPublishThread;
-    } 
-    
+    }
+
     /**
      * Returns the db context factory object.<p>
      * 
@@ -421,7 +431,7 @@ public final class CmsPublishEngine implements Runnable {
 
         return m_dbContextFactory;
     }
-    
+
     /**
      * Returns the driver manager instance.<p>
      * 
@@ -460,9 +470,8 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if somethign goes wrong
      */
-    protected byte[] getReportContents(CmsPublishJobFinished publishJob) 
-    throws CmsException {
-    
+    protected byte[] getReportContents(CmsPublishJobFinished publishJob) throws CmsException {
+
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
             return m_driverManager.readPublishReportContents(dbc, publishJob.getPublishHistoryId());
@@ -470,7 +479,7 @@ public final class CmsPublishEngine implements Runnable {
             dbc.clear();
         }
     }
-    
+
     /**
      * Initializes the publish engine.<p>
      * 
@@ -480,9 +489,9 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void initialize(CmsObject adminCms, boolean publishQueuePersistance, int publishQueueShutdowntime) 
+    protected void initialize(CmsObject adminCms, boolean publishQueuePersistance, int publishQueueShutdowntime)
     throws CmsException {
-               
+
         // check the driver manager
         if (m_driverManager == null || m_dbContextFactory == null) {
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
@@ -491,7 +500,7 @@ public final class CmsPublishEngine implements Runnable {
         m_publishQueueShutdowntime = publishQueueShutdowntime;
 
         // initially the engine is stopped, must be restartet after full system initialization
-        m_engineState = CmsPublishEngineState.ENGINE_STOPPED;      
+        m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
         // read the publish history from the repository
         m_publishHistory.initialize();
         // read the queue from the repository
@@ -507,8 +516,7 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected boolean isRunning() {
 
-        return ((m_engineState == CmsPublishEngineState.ENGINE_STARTED && !m_publishQueue.isEmpty()) 
-            || (m_currentPublishThread != null));
+        return ((m_engineState == CmsPublishEngineState.ENGINE_STARTED && !m_publishQueue.isEmpty()) || (m_currentPublishThread != null));
     }
 
     /**
@@ -517,9 +525,8 @@ public final class CmsPublishEngine implements Runnable {
      * @param publishJob the publish job
      * @throws CmsException if somethiong goes wrong
      */
-    protected void lockPublishList(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
-        
+    protected void lockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
+
         CmsPublishList publishList = publishJob.getPublishList();
         List allResources = new ArrayList(publishList.getFolderList());
         allResources.addAll(publishList.getDeletedFolderList());
@@ -534,7 +541,7 @@ public final class CmsPublishEngine implements Runnable {
             }
         } finally {
             dbc.clear();
-        } 
+        }
     }
 
     /**
@@ -544,12 +551,11 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void publishJobFinished(CmsPublishJobInfoBean publishJob)
-    throws CmsException {
+    protected void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         // in order to avoid unremovable pub lish locks, unlock all assigned resources again
         unlockPublishList(publishJob);
-        
+
         if (m_currentPublishThread.isAborted()) {
             // try to start a new publish job
             new Thread(this).start();
@@ -596,10 +602,8 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected void publishJobRemoved(CmsPublishJobInfoBean publishJob) {
 
-         
         // a publish job has been removed
         m_listeners.fireRemove(new CmsPublishJobFinished(publishJob));
-
     }
 
     /**
@@ -609,14 +613,13 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void publishJobStarted(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
+    protected void publishJobStarted(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
-        
+
         // update the job
         m_publishQueue.update(publishJob);
-        
+
         // trigger the old event mechanism
         try {
             // TODO: this is no longer required if we use publish listener classes!!
@@ -652,16 +655,16 @@ public final class CmsPublishEngine implements Runnable {
     /**
      * Sends a message to the given user.<p>
      * 
-     * @param toUserName the user to send the message to
+     * @param toUserId the id of the user to send the message to
      * @param message the message to send
      */
-    protected void sendMessage(String toUserName, String message) {
+    protected void sendMessage(CmsUUID toUserId, String message) {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
-            CmsUser toUser = m_driverManager.readUser(dbc, toUserName);
+            CmsUser toUser = m_driverManager.readUser(dbc, toUserId);
             OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
-        } catch (CmsDataAccessException e) {
+        } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         } finally {
             dbc.clear();
@@ -669,11 +672,31 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
+     * Returns the user identified by the given id.<p>
+     * 
+     * @param userId the id of the user to retrieve
+     * 
+     * @return the user identified by the given id
+     */
+    protected CmsUser getUser(CmsUUID userId) {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            return m_driverManager.readUser(dbc, userId);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        } finally {
+            dbc.clear();
+        }
+        return null;
+    }
+
+    /**
      * Starts the publish engine, i.e. publish josb are accepted and processed.<p>
      */
     protected void startEngine() {
-    
-        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) { 
+
+        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
             m_engineState = CmsPublishEngineState.ENGINE_STARTED;
             // start publish job if jobs waiting
             if (m_currentPublishThread == null && !m_publishQueue.isEmpty()) {
@@ -681,24 +704,23 @@ public final class CmsPublishEngine implements Runnable {
             }
         }
     }
-    
+
     /**
      * Stops the publish engine, i.e. publish jobs are still accepted but not published.<p> 
      */
     protected void stopEngine() {
-       
+
         m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
     }
-    
+
     /**
      * Removes all publish locks of resources in a publish list of a publish job.<p>
      * 
      * @param publishJob the publish job
      * @throws CmsException if something goes wrong
      */
-    protected void unlockPublishList(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
-    
+    protected void unlockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
+
         CmsPublishList publishList = publishJob.getPublishList();
         List allResources = new ArrayList(publishList.getFolderList());
         allResources.addAll(publishList.getDeletedFolderList());
@@ -713,7 +735,7 @@ public final class CmsPublishEngine implements Runnable {
             }
         } finally {
             dbc.clear();
-        }        
+        }
     }
 
     /**
@@ -724,7 +746,7 @@ public final class CmsPublishEngine implements Runnable {
     private boolean isEnabled() {
 
         try {
-            if (m_engineState == CmsPublishEngineState.ENGINE_STOPPED 
+            if (m_engineState == CmsPublishEngineState.ENGINE_STOPPED
                 || m_engineState == CmsPublishEngineState.ENGINE_STARTED) {
                 OpenCms.getLoginManager().checkLoginAllowed();
                 return true;

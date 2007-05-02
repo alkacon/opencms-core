@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/I_CmsPublishEventListener.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.publish;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * This interface listens to events for a specific publish job.<p>
  * 
@@ -48,7 +50,7 @@ package org.opencms.publish;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
@@ -58,10 +60,10 @@ public interface I_CmsPublishEventListener {
      * Called when the job is going to be aborted, this may happen during the shutdown
      * And can only happen if the job is waiting.<p>
      * 
-     * @param userName the name of the user that aborted the job
+     * @param userId the id of the user that aborted the job
      * @param publishJob the publish job that is going to be aborted
      */
-    void onAbort(String userName, CmsPublishJobEnqueued publishJob);
+    void onAbort(CmsUUID userId, CmsPublishJobEnqueued publishJob);
 
     /**
      * Called once the job is going to be enqueued.<p>

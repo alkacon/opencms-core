@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/03/30 07:37:53 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  * 
  * @since 6.5.5
  */
@@ -132,13 +132,13 @@ public class CmsPublishManager {
     throws CmsException, CmsSecurityException, CmsPublishException {
 
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
-            && !cms.getRequestContext().currentUser().getName().equals(publishJob.getUserName())) {
+            && !cms.getRequestContext().currentUser().getId().equals(publishJob.getUserId())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
             throw new CmsSecurityException(Messages.get().container(
                 Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
                 cms.getRequestContext().currentUser().getName()));
         }
-        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getName(), publishJob , removeJob);
+        m_publishEngine.abortPublishJob(cms.getRequestContext().currentUser().getId(), publishJob , removeJob);
     }
 
     /**
@@ -217,7 +217,7 @@ public class CmsPublishManager {
         Iterator it = getPublishHistory().iterator();
         while (it.hasNext()) {
             CmsPublishJobFinished publishJob = (CmsPublishJobFinished)it.next();
-            if (publishJob.getUserName().equals(user.getName())) {
+            if (publishJob.getUserId().equals(user.getId())) {
                 result.add(publishJob);
             }
         }

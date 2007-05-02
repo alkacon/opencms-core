@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/02 16:39:51 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,7 @@ package org.opencms.db.oracle;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
-import org.opencms.util.CmsUUID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,7 +50,7 @@ import java.util.List;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */

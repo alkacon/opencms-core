@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2007/04/26 14:30:58 $
- * Version: $Revision: 1.13.8.4 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.13.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,18 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.13.8.4 $
+ * @version $Revision: 1.13.8.5 $
  * 
  * @since 6.0.0 
  * 
  * @deprecated use {@link org.opencms.file.history.CmsHistoryProject}
  */
 public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject {
+
+    private String m_nameOwner;
+    private String m_namePublisher;
+    private String m_nameGroupUsers;
+    private String m_nameGroupManagers;
 
     /**
      * Creates a new CmsBackupProject.<p>
@@ -98,10 +103,44 @@ public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject
             type,
             datePublished,
             userPublished,
-            namePublisher,
-            nameOwner,
-            nameGroupUsers,
-            nameGroupManagers,
             projectResources);
+
+        m_namePublisher = namePublisher;
+        m_nameOwner = nameOwner;
+        m_nameGroupUsers = nameGroupUsers;
+        m_nameGroupManagers = nameGroupManagers;
+
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryProject#getOwnerName()
+     */
+    public String getOwnerName() {
+
+        return m_nameOwner;
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryProject#getPublishedByName()
+     */
+    public String getPublishedByName() {
+
+        return m_namePublisher;
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryProject#getGroupName()
+     */
+    public String getGroupName() {
+
+        return m_nameGroupUsers;
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryProject#getManagerGroupName()
+     */
+    public String getManagerGroupName() {
+
+        return m_nameGroupManagers;
     }
 }

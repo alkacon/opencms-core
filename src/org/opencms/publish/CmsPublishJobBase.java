@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobBase.java,v $
- * Date   : $Date: 2007/03/23 16:52:33 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.publish;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
@@ -40,7 +42,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.5.5
  */
@@ -48,13 +50,13 @@ public class CmsPublishJobBase {
 
     /** The postfix for the publish report file name. */
     public static final String REPORT_FILENAME_POSTFIX = ".html";
-    
+
     /** The prefix for the publish report file name. */
     public static final String REPORT_FILENAME_PREFIX = "publishReport_";
-    
+
     /** The separator for the publish report file name. */
     public static final String REPORT_FILENAME_SEPARATOR = "_";
-    
+
     /** The delegate publish job. */
     protected CmsPublishJobInfoBean m_publishJob;
 
@@ -64,9 +66,10 @@ public class CmsPublishJobBase {
      * @param job the job used to initialize
      */
     protected CmsPublishJobBase(CmsPublishJobBase job) {
+
         m_publishJob = job.m_publishJob;
     }
-    
+
     /**
      * Default constructor.<p>
      * 
@@ -104,7 +107,7 @@ public class CmsPublishJobBase {
      * @return the publish history id
      */
     public CmsUUID getPublishHistoryId() {
-        
+
         return m_publishJob.getPublishHistoryId();
     }
 
@@ -119,15 +122,33 @@ public class CmsPublishJobBase {
     }
 
     /**
+     * Returns the id of the user who initialized this publish job.<p>
+     * 
+     * @return the id of the user who initialized this publish job
+     */
+    public CmsUUID getUserId() {
+
+        return m_publishJob.getUserId();
+    }
+    
+    /**
      * Returns the name of the user who initialized this publish job.<p>
+     * 
+     * @param cms the cms object
      * 
      * @return the name of the user who initialized this publish job
      */
-    public String getUserName() {
-
-        return m_publishJob.getUserName();
+    public String getUserName(CmsObject cms) {
+        
+        String userName = getUserId().toString();
+        try {
+            userName = cms.readUser(getUserId()).getName();
+        } catch (CmsException e) {
+            // ignore
+        }
+        return userName;
     }
-    
+
     /**
      * Returns the direct publish state.<p>
      * 

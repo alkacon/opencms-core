@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.4.4.4 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.4.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.4 $ 
+ * @version $Revision: 1.4.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,7 +226,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         } else {
-            return (CmsFile)cms.readResource(id, Integer.parseInt(version));
+            return CmsFile.upgrade((CmsHistoryFile)cms.readResource(id, Integer.parseInt(version)), cms);
         }
     }
 

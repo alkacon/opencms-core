@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:11 $
- * Version: $Revision: 1.241.4.26 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.241.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.26 $
+ * @version $Revision: 1.241.4.27 $
  * 
  * @since 6.0.0 
  */
@@ -246,19 +246,18 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(2, publishJob.getProjectId().toString());
             stmt.setString(3, publishJob.getProjectName());
             stmt.setString(4, publishJob.getUserId().toString());
-            stmt.setString(5, publishJob.getUserName());
-            stmt.setString(6, publishJob.getLocale().toString());
-            stmt.setInt(7, publishJob.getFlags());
-            stmt.setInt(8, publishJob.getSize());
-            stmt.setLong(9, publishJob.getEnqueueTime());
-            stmt.setLong(10, publishJob.getStartTime());
-            stmt.setLong(11, publishJob.getFinishTime());
+            stmt.setString(5, publishJob.getLocale().toString());
+            stmt.setInt(6, publishJob.getFlags());
+            stmt.setInt(7, publishJob.getSize());
+            stmt.setLong(8, publishJob.getEnqueueTime());
+            stmt.setLong(9, publishJob.getStartTime());
+            stmt.setLong(10, publishJob.getFinishTime());
 
             byte[] publishList = internalSerializePublishList(publishJob.getPublishList());
             if (publishList.length < 2000) {
-                stmt.setBytes(12, publishList);
+                stmt.setBytes(11, publishList);
             } else {
-                stmt.setBinaryStream(12, new ByteArrayInputStream(publishList), publishList.length);
+                stmt.setBinaryStream(11, new ByteArrayInputStream(publishList), publishList.length);
             }
 
             stmt.executeUpdate();
@@ -2293,14 +2292,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(1, publishJob.getProjectId().toString());
             stmt.setString(2, publishJob.getProjectName());
             stmt.setString(3, publishJob.getUserId().toString());
-            stmt.setString(4, publishJob.getUserName());
-            stmt.setString(5, publishJob.getLocale().toString());
-            stmt.setInt(6, publishJob.getFlags());
-            stmt.setInt(7, publishJob.getSize());
-            stmt.setLong(8, publishJob.getEnqueueTime());
-            stmt.setLong(9, publishJob.getStartTime());
-            stmt.setLong(10, publishJob.getFinishTime());
-            stmt.setString(11, publishJob.getPublishHistoryId().toString());
+            stmt.setString(4, publishJob.getLocale().toString());
+            stmt.setInt(5, publishJob.getFlags());
+            stmt.setInt(6, publishJob.getSize());
+            stmt.setLong(7, publishJob.getEnqueueTime());
+            stmt.setLong(8, publishJob.getStartTime());
+            stmt.setLong(9, publishJob.getFinishTime());
+            stmt.setString(10, publishJob.getPublishHistoryId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2405,7 +2403,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             new CmsUUID(res.getString("PROJECT_ID")),
             res.getString("PROJECT_NAME"),
             new CmsUUID(res.getString("USER_ID")),
-            res.getString("USER_NAME"),
             res.getString("PUBLISH_LOCALE"),
             res.getInt("PUBLISH_FLAGS"),
             res.getInt("RESOURCE_COUNT"),

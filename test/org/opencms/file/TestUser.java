@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUser.java,v $
- * Date   : $Date: 2007/02/22 09:42:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class TestUser extends OpenCmsTestCase {
 
@@ -165,15 +165,16 @@ public class TestUser extends OpenCmsTestCase {
         map.put("one", new Integer(1));
         map.put("two", new Long(2));
         map.put("true", Boolean.TRUE);
-
+        
         CmsUser user = cms.createUser("test", "test", "test", null);
-        user.setAdditionalInfo("testbinaryfield", map);
+        user.setAdditionalInfo("map", map);
         user.setAdditionalInfo("int", new Integer(2));
         user.setAdditionalInfo("boolean", Boolean.TRUE);
         user.setAdditionalInfo("double", new Double(45.23));
+        
         cms.writeUser(user);
         user = cms.readUser("test");
-        map = (Map)user.getAdditionalInfo("testbinaryfield");
+        map = (Map)user.getAdditionalInfo("map");
         assertEquals(new Integer(1), map.get("one"));
         assertEquals(new Long(2), map.get("two"));
         assertEquals(Boolean.TRUE, map.get("true"));

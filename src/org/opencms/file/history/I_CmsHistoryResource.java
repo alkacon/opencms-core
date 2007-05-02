@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/I_CmsHistoryResource.java,v $
- * Date   : $Date: 2007/04/26 14:31:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -70,6 +70,10 @@ public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparabl
      * Returns the user name of the creator of this historical resource.<p>
      *
      * @return the user name of the creator of this historical resource
+     * 
+     * @deprecated use {@link #getResource()}.{@link CmsResource#getUserCreated()} instead
+     *             now the {@link org.opencms.file.CmsObject#readUser(CmsUUID)} 
+     *             also returns historical users
      */
     String getCreatedByName();
 
@@ -77,8 +81,19 @@ public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparabl
      * Returns the name of the user who last changed this historical resource.<p>
      *
      * @return the name of the user who last changed this historical resource
+     * 
+     * @deprecated use {@link #getResource()}.{@link CmsResource#getUserLastModified()} instead
+     *             now the {@link org.opencms.file.CmsObject#readUser(CmsUUID)} 
+     *             also returns historical users
      */
     String getLastModifiedByName();
+
+    /**
+     * Returns the structure id of the parent resource.<p>
+     *
+     * @return the structure id of the parent resource
+     */
+    CmsUUID getParentId();
 
     /**
      * Returns the publish tag of this historical resource.<p>

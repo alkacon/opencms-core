@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryFile.java,v $
- * Date   : $Date: 2007/04/26 14:31:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,9 @@ package org.opencms.file.history;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -43,7 +45,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -52,14 +54,40 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 4073076414399668662L;
 
+    /** The structure id of the parent of this historical resource. */
+    private CmsUUID m_parentId;
+
     /** The publish tag of this historical resource. */
     private int m_publishTag;
 
-    /** The name of the user that created this resource, useful if user deleted. */
-    private String m_userCreatedName;
+    /**
+     * Constructor from a history resource.<p>
+     * 
+     * @param resource the base history resource
+     */
+    public CmsHistoryFile(I_CmsHistoryResource resource) {
 
-    /** The name of the user that last modified this resource, useful if user deleted. */
-    private String m_userLastModifiedName;
+        this(
+            resource.getPublishTag(),
+            resource.getResource().getStructureId(),
+            resource.getResource().getResourceId(),
+            resource.getResource().getRootPath(),
+            resource.getResource().getTypeId(),
+            resource.getResource().getFlags(),
+            resource.getResource().getProjectLastModified(),
+            resource.getResource().getState(),
+            resource.getResource().getDateCreated(),
+            resource.getResource().getUserCreated(),
+            resource.getResource().getDateLastModified(),
+            resource.getResource().getUserLastModified(),
+            resource.getResource().getDateReleased(),
+            resource.getResource().getDateExpired(),
+            resource.getResource().getLength(),
+            resource.getResource().getDateContent(),
+            resource.getVersion(),
+            resource.getParentId(),
+            resource.getResource().isFile() ? ((CmsFile)resource.getResource()).getContents() : null);
+    }
 
     /**
      * Default Constructor.<p>
@@ -74,15 +102,14 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
      * @param state the state of this resource
      * @param dateCreated the creation date of this resource
      * @param userCreated the id of the user who created this resource
-     * @param userCreatedName the name of the user who created this resource 
      * @param dateLastModified the date of the last modification of this resource
      * @param userLastModified the id of the user who did the last modification of this resource
-     * @param userLastModifiedName the name of the user who did the last modification of this resource
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
      * @param size the size of the file content of this resource
      * @param dateContent the date of the last modification of the content of this resource 
      * @param version the version number of this resource
+     * @param parentId structure id of the parent of this historical resource
      * @param content the content of this version
      */
     public CmsHistoryFile(
@@ -96,15 +123,14 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
         CmsResourceState state,
         long dateCreated,
         CmsUUID userCreated,
-        String userCreatedName,
         long dateLastModified,
         CmsUUID userLastModified,
-        String userLastModifiedName,
         long dateReleased,
         long dateExpired,
         int size,
         long dateContent,
         int version,
+        CmsUUID parentId,
         byte[] content) {
 
         super(
@@ -128,38 +154,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
             content);
 
         m_publishTag = publishTag;
-        m_userCreatedName = userCreatedName;
-        m_userLastModifiedName = userLastModifiedName;
-    }
-
-    /**
-     * Constructor from a history resource.<p>
-     * 
-     * @param resource the base history resource
-     */
-    public CmsHistoryFile(I_CmsHistoryResource resource) {
-
-        this(
-            resource.getPublishTag(),
-            resource.getResource().getStructureId(),
-            resource.getResource().getResourceId(),
-            resource.getResource().getRootPath(),
-            resource.getResource().getTypeId(),
-            resource.getResource().getFlags(),
-            resource.getResource().getProjectLastModified(),
-            resource.getResource().getState(),
-            resource.getResource().getDateCreated(),
-            resource.getResource().getUserCreated(),
-            resource.getCreatedByName(),
-            resource.getResource().getDateLastModified(),
-            resource.getResource().getUserLastModified(),
-            resource.getLastModifiedByName(),
-            resource.getResource().getDateReleased(),
-            resource.getResource().getDateExpired(),
-            resource.getResource().getLength(),
-            resource.getResource().getDateContent(),
-            resource.getVersion(),
-            resource.getResource().isFile() ? ((CmsFile)resource.getResource()).getContents() : null);
+        m_parentId = parentId;
     }
 
     /**
@@ -180,15 +175,14 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
             getState(),
             getDateCreated(),
             getUserCreated(),
-            getCreatedByName(),
             getDateLastModified(),
             getUserLastModified(),
-            getLastModifiedByName(),
             getDateReleased(),
             getDateExpired(),
             getLength(),
             getDateContent(),
             getVersion(),
+            getParentId(),
             getContents());
     }
 
@@ -204,18 +198,30 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
 
     /**
      * @see org.opencms.file.history.I_CmsHistoryResource#getCreatedByName()
+     * 
+     * @deprecated use {@link #getUserCreatedName(CmsObject)} instead
      */
     public String getCreatedByName() {
 
-        return m_userCreatedName;
+        return getUserCreated().toString();
     }
 
     /**
      * @see org.opencms.file.history.I_CmsHistoryResource#getLastModifiedByName()
+     * 
+     * @deprecated use {@link #getUserLastModifiedName(CmsObject)} instead
      */
     public String getLastModifiedByName() {
 
-        return m_userLastModifiedName;
+        return getUserLastModified().toString();
+    }
+
+    /**
+     * @see org.opencms.file.history.I_CmsHistoryResource#getParentId()
+     */
+    public CmsUUID getParentId() {
+
+        return m_parentId;
     }
 
     /**
@@ -242,5 +248,45 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
     public CmsResource getResource() {
 
         return this;
+    }
+
+    /**
+     * Returns the name of the user that created this resource.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the name of the user that created this resource
+     */
+    public String getUserCreatedName(CmsObject cms) {
+
+        try {
+            return cms.readUser(getUserCreated()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getUserCreated()).getName();
+            } catch (CmsException e1) {
+                return getUserCreated().toString();
+            }
+        }
+    }
+
+    /**
+     * Returns the name of the user that last modified this resource.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the name of the user that last modified this resource
+     */
+    public String getUserLastModifiedName(CmsObject cms) {
+
+        try {
+            return cms.readUser(getUserLastModified()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getUserLastModified()).getName();
+            } catch (CmsException e1) {
+                return getUserLastModified().toString();
+            }
+        }
     }
 }

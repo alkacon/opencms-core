@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/03/30 07:41:20 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.5
  */
@@ -230,7 +230,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             item.set(LIST_COLUMN_ENDTIME, new Date(publishJob.getFinishTime()));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
             item.set(LIST_COLUMN_ID, publishJob.getPublishHistoryId());
-            item.set(LIST_COLUMN_USER, publishJob.getUserName());
+            item.set(LIST_COLUMN_USER, publishJob.getUserName(getCms()));
             ret.add(item);
         }
         // set the user column visibility

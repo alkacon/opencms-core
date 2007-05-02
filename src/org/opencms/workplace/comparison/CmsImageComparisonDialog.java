@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -40,7 +40,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3.4.2 $ 
+ * @version $Revision: 1.3.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,12 +51,6 @@ public class CmsImageComparisonDialog extends CmsDialog {
 
     /** Parameter value for the structure id of the second file. */
     private String m_paramId2;
-
-    /** Parameter value for the tag id of the first file. */
-    private String m_paramTagId1;
-
-    /** Parameter value for the tag id of the second file. */
-    private String m_paramTagId2;
 
     /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
@@ -86,17 +80,17 @@ public class CmsImageComparisonDialog extends CmsDialog {
         }
         String link1 = "";
         String link2 = "";
-        if ("-1".equals(m_paramTagId1)) {
+        if ("-1".equals(m_paramVersion1)) {
             // offline version
             link1 = getParamResource();
         } else {
-            link1 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId1), m_paramTagId1);
+            link1 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId1), Integer.parseInt(m_paramVersion1));
         }
-        if ("-1".equals(m_paramTagId2)) {
+        if ("-1".equals(m_paramVersion2)) {
             // offline version
             link2 = getParamResource();
         } else {
-            link2 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId2), m_paramTagId2);
+            link2 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId2), Integer.parseInt(m_paramVersion2));
         }
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
@@ -148,26 +142,6 @@ public class CmsImageComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Returns the paramTagId1.<p>
-     *
-     * @return the paramTagId1
-     */
-    public String getParamTagId1() {
-
-        return m_paramTagId1;
-    }
-
-    /**
-     * Returns the paramTagId2.<p>
-     *
-     * @return the paramTagId2
-     */
-    public String getParamTagId2() {
-
-        return m_paramTagId2;
-    }
-
-    /**
      * Returns the paramVersion1.<p>
      *
      * @return the paramVersion1
@@ -205,26 +179,6 @@ public class CmsImageComparisonDialog extends CmsDialog {
     public void setParamId2(String paramId2) {
 
         m_paramId2 = paramId2;
-    }
-
-    /**
-     * Sets the paramTagId1.<p>
-     *
-     * @param paramTagId1 the paramTagId1 to set
-     */
-    public void setParamTagId1(String paramTagId1) {
-
-        m_paramTagId1 = paramTagId1;
-    }
-
-    /**
-     * Sets the paramTagId2.<p>
-     *
-     * @param paramTagId2 the paramTagId2 to set
-     */
-    public void setParamTagId2(String paramTagId2) {
-
-        m_paramTagId2 = paramTagId2;
     }
 
     /**

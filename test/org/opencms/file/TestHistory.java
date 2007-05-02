@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/04/26 14:31:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -82,6 +82,7 @@ public class TestHistory extends OpenCmsTestCase {
         suite.addTest(new TestHistory("testFileHistory"));
         suite.addTest(new TestHistory("testFileHistoryFileWithSibling"));
         suite.addTest(new TestHistory("testFileVersions"));
+        suite.addTest(new TestHistory("testVersioningLimit"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -169,6 +170,71 @@ public class TestHistory extends OpenCmsTestCase {
             // assert that the content and version fit together
             String restoredContent = getContentString(cms, file.getContents());
             assertEquals(contentStr, restoredContent);
+        }
+    }
+
+    /**
+     * creates a file, modifies and publishes it n-times, create a sibling, 
+     * publishes both and compares the histories.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFileHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String filename = "/testFileHistory1.txt";
+        String siblingname = "/testFileHistory2.txt";
+        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        int counter = 2;
+
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            // switch to the default site in the offline project
+            cms.getRequestContext().setSiteRoot("/sites/default/");
+            cms.getRequestContext().setCurrentProject(offlineProject);
+
+            // create a plain text file
+            String contentStr = "content version " + 0;
+            cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+            OpenCms.getPublishManager().publishResource(cms, filename);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            for (int i = 1; i <= counter; i++) {
+                // modify the plain text file
+                contentStr = "content version " + i;
+                CmsFile file = cms.readFile(filename);
+                file.setContents(contentStr.getBytes());
+                cms.lockResource(filename);
+                cms.writeFile(file);
+                cms.unlockResource(filename);
+                OpenCms.getPublishManager().publishResource(cms, filename);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
+
+            // create a sibling
+            cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
+            cms.unlockResource(siblingname);
+            OpenCms.getPublishManager().publishResource(cms, siblingname);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            for (int i = 1; i <= counter; i++) {
+                // modify the sibling text file
+                contentStr = "sibling content version " + (counter + i);
+                CmsFile file = cms.readFile(siblingname);
+                file.setContents(contentStr.getBytes());
+                cms.lockResource(siblingname);
+                cms.writeFile(file);
+                cms.unlockResource(siblingname);
+                OpenCms.getPublishManager().publishResource(cms, siblingname);
+                OpenCms.getPublishManager().waitWhileRunning();
+            }
+
+            List historyResourcesForFile = cms.readAllAvailableVersions(filename);
+            List historyResourcesForSibling = cms.readAllAvailableVersions(siblingname);
+            assertEquals(counter + 1, historyResourcesForFile.size());
+            assertEquals(2 * (counter + 1), historyResourcesForSibling.size());
+        } finally {
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -287,71 +353,6 @@ public class TestHistory extends OpenCmsTestCase {
 
         allFiles = cms.readAllAvailableVersions(siblingname2);
         assertTrue(allFiles.isEmpty());
-    }
-
-    /**
-     * creates a file, modifies and publishes it n-times, create a sibling, 
-     * publishes both and compares the histories.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testFileHistory() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        String filename = "/testFileHistory1.txt";
-        String siblingname = "/testFileHistory2.txt";
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
-        int counter = 2;
-
-        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            // switch to the default site in the offline project
-            cms.getRequestContext().setSiteRoot("/sites/default/");
-            cms.getRequestContext().setCurrentProject(offlineProject);
-
-            // create a plain text file
-            String contentStr = "content version " + 0;
-            cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
-            OpenCms.getPublishManager().publishResource(cms, filename);
-            OpenCms.getPublishManager().waitWhileRunning();
-
-            for (int i = 1; i <= counter; i++) {
-                // modify the plain text file
-                contentStr = "content version " + i;
-                CmsFile file = cms.readFile(filename);
-                file.setContents(contentStr.getBytes());
-                cms.lockResource(filename);
-                cms.writeFile(file);
-                cms.unlockResource(filename);
-                OpenCms.getPublishManager().publishResource(cms, filename);
-                OpenCms.getPublishManager().waitWhileRunning();
-            }
-
-            // create a sibling
-            cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
-            cms.unlockResource(siblingname);
-            OpenCms.getPublishManager().publishResource(cms, siblingname);
-            OpenCms.getPublishManager().waitWhileRunning();
-
-            for (int i = 1; i <= counter; i++) {
-                // modify the sibling text file
-                contentStr = "sibling content version " + (counter + i);
-                CmsFile file = cms.readFile(siblingname);
-                file.setContents(contentStr.getBytes());
-                cms.lockResource(siblingname);
-                cms.writeFile(file);
-                cms.unlockResource(siblingname);
-                OpenCms.getPublishManager().publishResource(cms, siblingname);
-                OpenCms.getPublishManager().waitWhileRunning();
-            }
-
-            List historyResourcesForFile = cms.readAllAvailableVersions(filename);
-            List historyResourcesForSibling = cms.readAllAvailableVersions(siblingname);
-            assertEquals(counter + 1, historyResourcesForFile.size());
-            assertEquals(2 * (counter + 1), historyResourcesForSibling.size());
-        } finally {
-            cms.getRequestContext().setSiteRoot(storedSiteRoot);
-        }
     }
 
     /**
@@ -550,6 +551,40 @@ public class TestHistory extends OpenCmsTestCase {
          assert sib version == 6 (res = 4, sib = 2)
 
          */
+    }
+
+    /**
+     * Test that the versions are properly updated 
+     * after reaching the limit of stored versions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testVersioningLimit() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing versioning limit");
+
+        String source = "/index.html";
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // set the versioning settings
+        OpenCms.getSystemInfo().setVersionHistorySettings(true, 3);
+
+        // make 5 versions
+        for (int i = 0; i < 5; i++) {
+            if (i < 3) {
+                assertEquals(i + 1, cms.readAllAvailableVersions(source).size());
+            } else {
+                assertEquals(3, cms.readAllAvailableVersions(source).size());
+            }
+            cms.lockResource(source);
+            cms.setDateLastModified(source, System.currentTimeMillis(), false);
+            cms.setDateExpired(source, System.currentTimeMillis(), false);
+            cms.setDateReleased(source, System.currentTimeMillis(), false);
+            cms.unlockResource(source);
+            OpenCms.getPublishManager().publishResource(cms, source);
+            OpenCms.getPublishManager().waitWhileRunning();
+        }
     }
 
     /**

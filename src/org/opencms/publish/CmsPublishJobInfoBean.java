@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2007/03/30 07:37:53 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.5
  */
@@ -103,9 +103,6 @@ public final class CmsPublishJobInfoBean {
     /** User to use for publishing. */
     private CmsUUID m_userId;
 
-    /** Name of the user used for publishing. */
-    private String m_userName;
-    
     /**
      * Constructor used to initialize a job info bean from the database.<p>
      * 
@@ -113,7 +110,6 @@ public final class CmsPublishJobInfoBean {
      * @param projectId the id of the project
      * @param projectName the name of the project
      * @param userId the id of the user 
-     * @param userName the name of the user
      * @param localeName the string representation of a locale
      * @param flags flags of the publish job 
      * @param resourceCount number of published resources
@@ -126,7 +122,6 @@ public final class CmsPublishJobInfoBean {
         CmsUUID projectId,
         String projectName,
         CmsUUID userId, 
-        String userName,
         String localeName,
         int flags, 
         int resourceCount, 
@@ -139,7 +134,6 @@ public final class CmsPublishJobInfoBean {
         
         m_projectName = projectName;
         m_userId = userId;
-        m_userName = userName;
         m_size = resourceCount;
         m_directPublish = (flags & C_PUBLISH_FLAG) == C_PUBLISH_FLAG;
         
@@ -166,7 +160,6 @@ public final class CmsPublishJobInfoBean {
         m_projectId = m_cms.getRequestContext().currentProject().getUuid();
         m_projectName = m_cms.getRequestContext().currentProject().getName();
         m_userId = m_cms.getRequestContext().currentUser().getId();
-        m_userName = m_cms.getRequestContext().currentUser().getName();
         m_locale = m_cms.getRequestContext().getLocale();
 
         m_publishList = publishList;
@@ -333,16 +326,6 @@ public final class CmsPublishJobInfoBean {
     public CmsUUID getUserId() {
 
         return m_userId;
-    }
-
-    /**
-     * Returns the originally stroed user name.<p>
-     * 
-     * @return the originally stroed user name
-     */
-    public String getUserName() {
-        
-        return m_userName;
     }
 
     /**

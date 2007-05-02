@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishEventListener2.java,v $
- * Date   : $Date: 2007/03/30 07:41:59 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.publish;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 /**
  * Test event listener implementation, restarting the engine while a publish job is running.<p>
@@ -57,10 +58,11 @@ public class TestPublishEventListener2 implements I_CmsPublishEventListener {
         
         m_cms = cms;
     }
+    
     /**
-     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(java.lang.String, org.opencms.publish.CmsPublishJobEnqueued)
+     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(CmsUUID, org.opencms.publish.CmsPublishJobEnqueued)
      */
-    public void onAbort(String userName, CmsPublishJobEnqueued publishJob) {
+    public void onAbort(CmsUUID userId, CmsPublishJobEnqueued publishJob) {
 
         // noop
     }

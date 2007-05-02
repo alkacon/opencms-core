@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryProject.java,v $
- * Date   : $Date: 2007/04/26 14:31:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.file.history;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -40,8 +42,9 @@ import java.util.List;
  * Describes an OpenCms historical project entry.<p>
  *
  * @author Alexander Kandzior 
+ * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -49,18 +52,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
 
     /** The publishing date of this project. */
     private long m_datePublished;
-
-    /** The name of the manager group. */
-    private String m_nameGroupManagers;
-
-    /** The name of the user group. */
-    private String m_nameGroupUsers;
-
-    /** The name, firstname and lastname of the project owner. */
-    private String m_nameOwner;
-
-    /** The name, firstname and lastname of the user who has published the project. */
-    private String m_namePublisher;
 
     /** The resources belonging to the project. */
     private List m_projectResources;
@@ -85,10 +76,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
      * @param type the type of this project
      * @param datePublished the date this backup project was published
      * @param userPublished the id of the user who published
-     * @param namePublisher the name of the user who published
-     * @param nameOwner the name of the project owner
-     * @param nameGroupUsers the name of the project user group
-     * @param nameGroupManagers the name of the project manager group
      * @param projectResources a list of resources that are the project "view"
      */
     public CmsHistoryProject(
@@ -103,10 +90,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
         CmsProjectType type,
         long datePublished,
         CmsUUID userPublished,
-        String namePublisher,
-        String nameOwner,
-        String nameGroupUsers,
-        String nameGroupManagers,
         List projectResources) {
 
         super(projectId, name, description, ownerId, groupId, managerGroupId, 0, dateCreated, type);
@@ -114,10 +97,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
         m_publishTag = publishTag;
         m_datePublished = datePublished;
         m_userPublished = userPublished;
-        m_namePublisher = namePublisher;
-        m_nameOwner = nameOwner;
-        m_nameGroupUsers = nameGroupUsers;
-        m_nameGroupManagers = nameGroupManagers;
         m_projectResources = projectResources;
     }
 
@@ -138,10 +117,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
             getType(),
             m_datePublished,
             m_userPublished,
-            m_namePublisher,
-            m_nameOwner,
-            m_nameGroupUsers,
-            m_nameGroupManagers,
             m_projectResources);
     }
 
@@ -161,32 +136,98 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
 
     /**
      * Returns the projects user group name.<p>
-     *
+     * 
      * @return the projects user group name
+     * 
+     * @deprecated use {@link #getGroupUsersName(CmsObject)} instead
      */
     public String getGroupName() {
 
-        return m_nameGroupUsers;
+        return getGroupId().toString();
     }
 
     /**
-     * Gets the project manager grou pname.<p>
+     * Returns the projects user group name.<p>
+     * 
+     * @param cms the current cms context 
      *
+     * @return the projects user group name
+     */
+    public String getGroupUsersName(CmsObject cms) {
+
+        try {
+            return cms.readGroup(getGroupId()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getGroupId()).getName();
+            } catch (CmsException e1) {
+                return getGroupId().toString();
+            }
+        }
+    }
+
+    /**
+     * Returns the project manager group name.<p>
+     * 
      * @return the projects manager group name
+     * 
+     * @deprecated use {@link #getGroupManagersName(CmsObject)} instead
      */
     public String getManagerGroupName() {
 
-        return m_nameGroupManagers;
+        return getManagerGroupId().toString();
+    }
+
+    /**
+     * Returns the project manager group name.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the projects manager group name
+     */
+    public String getGroupManagersName(CmsObject cms) {
+
+        try {
+            return cms.readGroup(getManagerGroupId()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getManagerGroupId()).getName();
+            } catch (CmsException e1) {
+                return getManagerGroupId().toString();
+            }
+        }
     }
 
     /**
      * Gets the ownername.
      *
      * @return the ownername
+     * 
+     * @deprecated use {@link #getOwnerName(CmsObject)} instead
      */
     public String getOwnerName() {
 
-        return m_nameOwner;
+        return getOwnerId().toString();
+    }
+
+    /**
+     * Returns the owner name.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the owner name
+     */
+    public String getOwnerName(CmsObject cms) {
+
+        try {
+            return cms.readUser(getOwnerId()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getOwnerId()).getName();
+            } catch (CmsException e1) {
+                return getOwnerId().toString();
+            }
+        }
     }
 
     /**
@@ -200,9 +241,9 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     }
 
     /**
-     * Gets the published-by value.
+     * Returns the id of the user that published this project.<p>
      *
-     * @return the published-by value
+     * @return the id of the user that published this project
      */
     public CmsUUID getPublishedBy() {
 
@@ -213,14 +254,36 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
      * Gets the publishers name.
      *
      * @return the publishers name
+     * 
+     * @deprecated use {@link #getPublishedByName(CmsObject)} instead
      */
     public String getPublishedByName() {
 
-        return m_namePublisher;
+        return getPublishedBy().toString();
     }
 
     /**
-     * Returns the publishing date of this project.
+     * Returns the publishers name.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the publishers name
+     */
+    public String getPublishedByName(CmsObject cms) {
+
+        try {
+            return cms.readUser(getPublishedBy()).getName();
+        } catch (CmsException e) {
+            try {
+                return cms.readHistoryPrincipal(getPublishedBy()).getName();
+            } catch (CmsException e1) {
+                return getPublishedBy().toString();
+            }
+        }
+    }
+
+    /**
+     * Returns the publishing date of this project.<p>
      *
      * @return the publishing date of this project
      */
@@ -230,7 +293,7 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     }
 
     /**
-     * Returns the publish tag.
+     * Returns the publish tag.<p>
      *
      * @return the publish tag
      */

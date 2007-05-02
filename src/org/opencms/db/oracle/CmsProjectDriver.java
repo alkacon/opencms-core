@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/03/30 14:25:34 $
- * Version: $Revision: 1.38.8.3 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.38.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.38.8.3 $
+ * @version $Revision: 1.38.8.4 $
  * 
  * @since 6.0.0 
  */
@@ -78,16 +78,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt.setString(2, publishJob.getProjectId().toString());
             stmt.setString(3, publishJob.getProjectName());
             stmt.setString(4, publishJob.getUserId().toString());
-            stmt.setString(5, publishJob.getUserName());
-            stmt.setString(6, publishJob.getLocale().toString());
-            stmt.setInt(7, publishJob.getFlags());
-            stmt.setInt(8, publishJob.getSize());
-            stmt.setLong(9, publishJob.getEnqueueTime());
-            stmt.setLong(10, publishJob.getStartTime());
-            stmt.setLong(11, publishJob.getFinishTime());
+            stmt.setString(5, publishJob.getLocale().toString());
+            stmt.setInt(6, publishJob.getFlags());
+            stmt.setInt(7, publishJob.getSize());
+            stmt.setLong(8, publishJob.getEnqueueTime());
+            stmt.setLong(9, publishJob.getStartTime());
+            stmt.setLong(10, publishJob.getFinishTime());
             
             stmt.executeUpdate();
-            
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,

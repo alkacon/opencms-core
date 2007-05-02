@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/04/19 15:12:08 $
- * Version: $Revision: 1.36.4.21 $
+ * Date   : $Date: 2007/05/02 16:55:27 $
+ * Version: $Revision: 1.36.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.21 $
+ * @version $Revision: 1.36.4.22 $
  * 
  * @since 6.0.0
  */
@@ -1245,9 +1245,11 @@ public class CmsUserSettings {
             Iterator itEntries = m_editorSettings.entrySet().iterator();
             while (itEntries.hasNext()) {
                 Map.Entry entry = (Map.Entry)itEntries.next();
-                m_user.setAdditionalInfo(PREFERENCES
-                    + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
-                    + entry.getKey(), entry.getValue().toString());
+                if (entry.getValue() != null) {
+                    m_user.setAdditionalInfo(PREFERENCES
+                        + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
+                        + entry.getKey(), entry.getValue().toString());
+                }
             }
         } else if (cms != null) {
             Iterator itKeys = m_user.getAdditionalInfo().keySet().iterator();

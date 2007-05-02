@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/04/26 14:30:59 $
- * Version: $Revision: 1.146.4.37 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.146.4.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.I_CmsResourceType;
@@ -95,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.37 $
+ * @version $Revision: 1.146.4.38 $
  * 
  * @since 6.0.0 
  */
@@ -177,19 +178,6 @@ public final class CmsObject {
     public void backupProject(int versionId, long publishDate) throws CmsException {
 
         writeHistoryProject(versionId, publishDate);
-    }
-
-    /**
-     * Creates a historical entry of the current project.<p>
-     * 
-     * @param publishTag the correlative publish tag
-     * @param publishDate the date of publishing
-
-     * @throws CmsException if operation was not succesful
-     */
-    public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
-
-        m_securityManager.writeHistoryProject(m_context, publishTag, publishDate);
     }
 
     /**
@@ -713,23 +701,6 @@ public final class CmsObject {
     }
 
     /**
-     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
-     * 
-     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
-     * 
-     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
-     * @param versionsToKeep the maximal number of versions per resource to keep 
-     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public void deleteHistoricalVersions(boolean cleanUp, int versionsToKeep, I_CmsReport report) throws CmsException {
-
-        m_securityManager.deleteHistoricalVersions(m_context, cleanUp, versionsToKeep, report);
-    }
-
-    /**
      * Deletes the versions from the backup tables that are older then the given timestamp  
      * and/or number of remaining versions.<p>
      * 
@@ -785,6 +756,23 @@ public final class CmsObject {
     public void deleteGroup(String group) throws CmsException {
 
         m_securityManager.deleteGroup(m_context, group);
+    }
+
+    /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     * 
+     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
+     * 
+     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
+     * @param versionsToKeep the maximal number of versions per resource to keep 
+     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public void deleteHistoricalVersions(boolean cleanUp, int versionsToKeep, I_CmsReport report) throws CmsException {
+
+        m_securityManager.deleteHistoricalVersions(m_context, cleanUp, versionsToKeep, report);
     }
 
     /**
@@ -1487,7 +1475,7 @@ public final class CmsObject {
      */
     public List getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
 
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getRelationsForResource(m_context, resource, filter);
     }
 
@@ -2224,6 +2212,23 @@ public final class CmsObject {
     }
 
     /**
+     * Reads all historical versions of a resource.<br>
+     * 
+     * The reading excludes the file content, if the resource is a file.<p>
+     *
+     * @param resourceName the name of the resource to be read
+     *
+     * @return a list of historical resources, as <code>{@link I_CmsHistoryResource}</code> objects
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List readAllAvailableVersions(String resourceName) throws CmsException {
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        return m_securityManager.readAllAvailableVersions(m_context, resource);
+    }
+
+    /**
      * Reads all file headers of a file.<br>
      * 
      * This method returns a list with the history of all file headers, i.e.
@@ -2242,23 +2247,6 @@ public final class CmsObject {
     public List readAllBackupFileHeaders(String filename) throws CmsException {
 
         return readAllAvailableVersions(filename);
-    }
-
-    /**
-     * Reads all historical versions of a resource.<br>
-     * 
-     * The reading excludes the file content, if the resource is a file.<p>
-     *
-     * @param resourceName the name of the resource to be read
-     *
-     * @return a list of historical resources, as <code>{@link I_CmsHistoryResource}</code> objects
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public List readAllAvailableVersions(String resourceName) throws CmsException {
-
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        return m_securityManager.readAllAvailableVersions(m_context, resource);
     }
 
     /**
@@ -2370,20 +2358,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a historical project entry.<p>
-     *
-     * @param publishTag publish tag of the project
-     * 
-     * @return the requested historical project entry
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public CmsHistoryProject readHistoryProject(int publishTag) throws CmsException {
-
-        return (m_securityManager.readHistoryProject(m_context, publishTag));
-    }
-
-    /**
      * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
      * 
      * @param resource the backup resource to read the properties from
@@ -2397,20 +2371,6 @@ public final class CmsObject {
     public List readBackupPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
 
         return readHistoryPropertyObjects(resource);
-    }
-
-    /**
-     * Reads the list of all <code>{@link CmsProperty}</code> objects that belong to the given historical resource version.<p>
-     * 
-     * @param resource the historical resource version to read the properties for
-     * 
-     * @return the list of <code>{@link CmsProperty}</code> objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readHistoryPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
-
-        return m_securityManager.readHistoryPropertyObjects(m_context, resource);
     }
 
     /**
@@ -2451,8 +2411,11 @@ public final class CmsObject {
      * Reads all deleted (historical) resources below the given path, 
      * including the full tree below the path, if required.<p>
      * 
-     * The result list may include resources with the same name of new 
+     * The result list may include resources with the same name of  
      * resources (with different id's).<p>
+     * 
+     * Us in conjuction with the {@link #restoreDeletedResource(CmsUUID)} 
+     * method.<p>
      * 
      * @param resourcename the parent path to read the resources from
      * @param readTree <code>true</code> to read all subresources
@@ -2468,6 +2431,28 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readDeletedResources(m_context, resource, readTree);
+    }
+
+    /**
+     * Reads a file resource (including it's binary content) from the VFS,
+     * for the given resource (this may also be an historical version of the resoource).<p>
+     * 
+     * In case you do not need the file content, 
+     * use <code>{@link #readResource(String, CmsResourceFilter)}</code> or
+     * <code>{@link #readFile(String, CmsResourceFilter)}</code> instead.<p>
+     * 
+     * @param resource the resource to read
+     *
+     * @return the file resource that was read
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     * 
+     * @see #readResource(String, CmsResourceFilter)
+     * @see #readFile(String, CmsResourceFilter)
+     */
+    public CmsFile readFile(CmsResource resource) throws CmsException {
+
+        return m_securityManager.readFile(m_context, resource);
     }
 
     /**
@@ -2517,28 +2502,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, filter);
         return readFile(resource);
-    }
-
-    /**
-     * Reads a file resource (including it's binary content) from the VFS,
-     * for the given resource (this may also be an historical version of the resoource).<p>
-     * 
-     * In case you do not need the file content, 
-     * use <code>{@link #readResource(String, CmsResourceFilter)}</code> or
-     * <code>{@link #readFile(String, CmsResourceFilter)}</code> instead.<p>
-     * 
-     * @param resource the resource to read
-     *
-     * @return the file resource that was read
-     *
-     * @throws CmsException if the file resource could not be read for any reason
-     * 
-     * @see #readResource(String, CmsResourceFilter)
-     * @see #readFile(String, CmsResourceFilter)
-     */
-    public CmsFile readFile(CmsResource resource) throws CmsException {
-
-        return m_securityManager.readFile(m_context, resource);
     }
 
     /**
@@ -2620,6 +2583,8 @@ public final class CmsObject {
      * @return the group that has the provided id
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #readHistoryPrincipal(CmsUUID) for retrieving deleted groups
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
 
@@ -2638,6 +2603,51 @@ public final class CmsObject {
     public CmsGroup readGroup(String groupName) throws CmsException {
 
         return m_securityManager.readGroup(m_context, groupName);
+    }
+
+    /**
+     * Reads a principal (an user or group) from the historical archive based on its ID.<p>
+     * 
+     * @param principalId the id of the principal to read
+     * 
+     * @return the historical principal entry with the given id
+     * 
+     * @throws CmsException if something goes wrong, ie. {@link org.opencms.db.CmsDbEntryNotFoundException}
+     * 
+     * @see #readUser(CmsUUID)
+     * @see #readGroup(CmsUUID)
+     */
+    public CmsHistoryPrincipal readHistoryPrincipal(CmsUUID principalId) throws CmsException {
+
+        return m_securityManager.readHistoricalPrincipal(m_context, principalId);
+    }
+
+    /**
+     * Returns a historical project entry.<p>
+     *
+     * @param publishTag publish tag of the project
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public CmsHistoryProject readHistoryProject(int publishTag) throws CmsException {
+
+        return (m_securityManager.readHistoryProject(m_context, publishTag));
+    }
+
+    /**
+     * Reads the list of all <code>{@link CmsProperty}</code> objects that belong to the given historical resource version.<p>
+     * 
+     * @param resource the historical resource version to read the properties for
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readHistoryPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
+
+        return m_securityManager.readHistoryPropertyObjects(m_context, resource);
     }
 
     /**
@@ -3382,6 +3392,8 @@ public final class CmsObject {
      * @return the user with the given id
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #readHistoryPrincipal(CmsUUID) for retrieving data of deleted users
      */
     public CmsUser readUser(CmsUUID userId) throws CmsException {
 
@@ -3524,19 +3536,17 @@ public final class CmsObject {
     }
 
     /**
-     * Restores a resource in the current project with a version from the historical archive.<p>
+     * Restores a deleted resource identified by its structure id from the historical archive.<p>
      * 
-     * @param structureId the structure id of the resource to restore from the archive
-     * @param version the desired version of the resource to be restored
-     *
+     * These ids can be obtained from the {@link #readDeletedResources(String, boolean)} method.<p>
+     * 
+     * @param structureId the structure id of the resource to restore
+     * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see #readResource(CmsUUID, int)
      */
-    public void restoreResourceVersion(CmsUUID structureId, int version) throws CmsException {
+    public void restoreDeletedResource(CmsUUID structureId) throws CmsException {
 
-        CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).restoreResource(this, m_securityManager, resource, version);
+        m_securityManager.restoreDeletedResource(m_context, structureId);
     }
 
     /**
@@ -3556,6 +3566,22 @@ public final class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         I_CmsHistoryResource history = readResourceByPublishTag(resource.getStructureId(), publishTag);
         restoreResourceVersion(resource.getStructureId(), history.getVersion());
+    }
+
+    /**
+     * Restores a resource in the current project with a version from the historical archive.<p>
+     * 
+     * @param structureId the structure id of the resource to restore from the archive
+     * @param version the desired version of the resource to be restored
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #readResource(CmsUUID, int)
+     */
+    public void restoreResourceVersion(CmsUUID structureId, int version) throws CmsException {
+
+        CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).restoreResource(this, m_securityManager, resource, version);
     }
 
     /**
@@ -3891,6 +3917,19 @@ public final class CmsObject {
     public void writeGroup(CmsGroup group) throws CmsException {
 
         m_securityManager.writeGroup(m_context, group);
+    }
+
+    /**
+     * Creates a historical entry of the current project.<p>
+     * 
+     * @param publishTag the correlative publish tag
+     * @param publishDate the date of publishing
+
+     * @throws CmsException if operation was not succesful
+     */
+    public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
+
+        m_securityManager.writeHistoryProject(m_context, publishTag, publishDate);
     }
 
     /**

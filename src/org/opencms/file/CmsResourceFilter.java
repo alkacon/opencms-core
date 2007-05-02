@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.23.4.4 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.23.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.db.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.23.4.4 $
+ * @version $Revision: 1.23.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -720,12 +720,12 @@ public final class CmsResourceFilter {
         // check for required resource state
         switch (m_filterState) {
             case EXCLUDED:
-                if (resource.getState() == m_state) {
+                if (resource.getState().equals(m_state)) {
                     return false;
                 }
                 break;
             case REQUIRED:
-                if (resource.getState() != m_state) {
+                if (!resource.getState().equals(m_state)) {
                     return false;
                 }
                 break;

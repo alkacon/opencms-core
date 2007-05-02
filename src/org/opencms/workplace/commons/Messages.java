@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/04/26 14:11:37 $
- * Version: $Revision: 1.15.4.26 $
+ * Date   : $Date: 2007/05/02 16:55:28 $
+ * Version: $Revision: 1.15.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.26 $ 
+ * @version $Revision: 1.15.4.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,6 +146,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1 = "ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESTORE_SELECTED_RESOURCES_1 = "ERR_RESTORE_SELECTED_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOUCH_MULTI_0 = "ERR_TOUCH_MULTI_0";
@@ -356,6 +359,48 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_WARNING_SIBLINGS_0 = "GUI_DELETE_WARNING_SIBLINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_ACTION_ICON_0 = "GUI_DELETED_RESOURCES_LIST_ACTION_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_ACTION_WARNING_0 = "GUI_DELETED_RESOURCES_LIST_ACTION_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_CONFLICT_0 = "GUI_DELETED_RESOURCES_LIST_COLS_CONFLICT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_DEL_DATE_0 = "GUI_DELETED_RESOURCES_LIST_COLS_DEL_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_ICON_0 = "GUI_DELETED_RESOURCES_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_NAME_0 = "GUI_DELETED_RESOURCES_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_TYPEID_0 = "GUI_DELETED_RESOURCES_LIST_COLS_TYPEID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_COLS_VERSION_0 = "GUI_DELETED_RESOURCES_LIST_COLS_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_HELP_0 = "GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_NAME_0 = "GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_NAME_0 = "GUI_DELETED_RESOURCES_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_LIST_TITLE_0 = "GUI_DELETED_RESOURCES_LIST_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_READ_TREE_0 = "GUI_DELETED_RESOURCES_READ_TREE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETED_RESOURCES_TITLE_1 = "GUI_DELETED_RESOURCES_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DESCRIPTION_ALLOTHERS_0 = "GUI_DESCRIPTION_ALLOTHERS_0";

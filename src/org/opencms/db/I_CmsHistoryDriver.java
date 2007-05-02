@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryProject;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -79,18 +79,6 @@ public interface I_CmsHistoryDriver {
         CmsDbContext dbc,
         String name,
         CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException;
-
-    /**
-     * Creates a valid {@link I_CmsHistoryResource} instance from a JDBC ResultSet.<p>
-     * 
-     * @param res the JDBC result set
-     * @param hasContent true if the file content is part of the result set
-     * 
-     * @return the new historical resource instance
-     * 
-     * @throws SQLException if a requested attribute was not found in the result set
-     */
-    I_CmsHistoryResource createResource(ResultSet res, boolean hasContent) throws SQLException;
 
     /**
      * Deletes all historical versions of a resource 
@@ -191,16 +179,17 @@ public interface I_CmsHistoryDriver {
     byte[] readContent(CmsDbContext dbc, CmsUUID structureId, int version) throws CmsDataAccessException;
 
     /**
-     * Reads all deleted (historical) resources below the given path.<p>
+     * Reads all deleted (historical) resources below the given path, that the given user deleted by itself.<p>
      * 
      * @param dbc the current db context
      * @param structureId the structure id of the parent resource to read the deleted resources from
+     * @param userId the id of the user that deleted the resources, or <code>null</code> to retrieve them all
      * 
      * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readDeletedResources(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
+    List readDeletedResources(CmsDbContext dbc, CmsUUID structureId, CmsUUID userId) throws CmsDataAccessException;
 
     /**
      * Reads a historical file version including the file content.<p>
@@ -250,6 +239,18 @@ public interface I_CmsHistoryDriver {
      * @return the next available history publish tag
      */
     int readNextPublishTag(CmsDbContext dbc);
+
+    /**
+     * Reads an historical principal entry.<p>
+     * 
+     * @param dbc the current database context
+     * @param principalId the id of the principal to retrieve
+     * 
+     * @return the historical principal entry
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    CmsHistoryPrincipal readPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsDataAccessException;
 
     /**
      * Reads an historical project version.<p>
@@ -337,6 +338,16 @@ public interface I_CmsHistoryDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     I_CmsHistoryResource readResource(CmsDbContext dbc, CmsUUID structureId, int version) throws CmsDataAccessException;
+
+    /**
+     * Writes an historical entry for the given principal.<p>
+     * 
+     * @param dbc the current database context
+     * @param principal the principal to write
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writePrincipal(CmsDbContext dbc, I_CmsPrincipal principal) throws CmsDataAccessException;
 
     /**
      * Creates an historical entry for the current project.<p>

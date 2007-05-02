@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/03/30 07:41:20 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.5
  */
@@ -207,7 +207,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             Iterator itJobs = OpenCms.getPublishManager().getPublishQueue().iterator();
             while (itJobs.hasNext()) {
                 CmsPublishJobEnqueued publishJob = (CmsPublishJobEnqueued)itJobs.next();
-                if (userName.equals(publishJob.getUserName()) && (enqueueTime == publishJob.getEnqueueTime())) {
+                if (userName.equals(publishJob.getUserName(getCms())) && (enqueueTime == publishJob.getEnqueueTime())) {
                     try {
                         OpenCms.getPublishManager().abortPublishJob(getCms(), publishJob, true);
                     } catch (CmsException e) {
@@ -298,7 +298,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_NUMBER, new Integer(number));
                 item.set(LIST_COLUMN_PROJECT, currentJob.getProjectName());
                 item.set(LIST_COLUMN_STARTTIME, new Date(currentJob.getEnqueueTime()));
-                item.set(LIST_COLUMN_USER, currentJob.getUserName());
+                item.set(LIST_COLUMN_USER, currentJob.getUserName(getCms()));
                 item.set(LIST_COLUMN_RESCOUNT, new Integer(currentJob.getSize()));
                 ret.add(item);
                 number++;
@@ -311,14 +311,14 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(publishJob.getPublishList().getPublishHistoryId().toString());
             // check the state
             int state = STATE_OWN;
-            if (!publishJob.getUserName().equals(getCms().getRequestContext().currentUser().getName())) {
+            if (!publishJob.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                 state = STATE_OTHER;
             }
             item.set(LIST_COLUMN_STATE, new Integer(state));
             item.set(LIST_COLUMN_NUMBER, new Integer(number));
             item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName());
             item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getEnqueueTime()));
-            item.set(LIST_COLUMN_USER, publishJob.getUserName());
+            item.set(LIST_COLUMN_USER, publishJob.getUserName(getCms()));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
             ret.add(item);
             number++;

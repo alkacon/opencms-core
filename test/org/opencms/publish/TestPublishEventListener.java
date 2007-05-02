@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishEventListener.java,v $
- * Date   : $Date: 2007/03/27 14:16:26 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.publish;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 /**
  * Test event listener implementation.<p>
@@ -136,9 +137,9 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
     }
 
     /**
-     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(java.lang.String, org.opencms.publish.CmsPublishJobEnqueued)
+     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(CmsUUID, org.opencms.publish.CmsPublishJobEnqueued)
      */
-    public void onAbort(String userName, CmsPublishJobEnqueued publishJob) {
+    public void onAbort(CmsUUID userId, CmsPublishJobEnqueued publishJob) {
 
         // track only events for the interesting publish job
         if (m_publishJob == publishJob.m_publishJob) {

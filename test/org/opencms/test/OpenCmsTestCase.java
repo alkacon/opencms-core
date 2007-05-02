@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/04/26 14:31:18 $
- * Version: $Revision: 1.90.4.23 $
+ * Date   : $Date: 2007/05/02 16:55:28 $
+ * Version: $Revision: 1.90.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.23 $
+ * @version $Revision: 1.90.4.24 $
  * 
  * @since 6.0.0
  */
@@ -1565,7 +1565,7 @@ public class OpenCmsTestCase extends TestCase {
 
         if (!(job1.getPublishHistoryId().equals(job2.getPublishHistoryId())
             && job1.getProjectName().equals(job2.getProjectName())
-            && job1.getUserName().equals(job2.getUserName())
+            && job1.getUserId().equals(job2.getUserId())
             && job1.getLocale().equals(job2.getLocale())
             && (job1.getFlags() == job2.getFlags()) && (job1.getSize() == job2.getSize()))) {
 

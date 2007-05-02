@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/04/26 14:31:11 $
- * Version: $Revision: 1.25.2.14 $
+ * Date   : $Date: 2007/05/02 16:55:30 $
+ * Version: $Revision: 1.25.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.14 $
+ * @version $Revision: 1.25.2.15 $
  * 
  * @since 6.0.0 
  */
@@ -84,6 +84,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HISTORY_FILE_NOT_FOUND_1 = "ERR_HISTORY_FILE_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_HISTORY_PRINCIPAL_NOT_FOUND_1 = "ERR_HISTORY_PRINCIPAL_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZING_USER_DRIVER_0 = "ERR_INITIALIZING_USER_DRIVER_0";
@@ -186,10 +189,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PARENT_ID_1 = "ERR_READ_PARENT_ID_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PUBLISH_JOB_1 = "ERR_READ_PUBLISH_JOB_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
 

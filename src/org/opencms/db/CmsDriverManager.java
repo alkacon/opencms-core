@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/04/26 14:31:02 $
- * Version: $Revision: 1.570.2.79 $
+ * Date   : $Date: 2007/05/02 16:55:26 $
+ * Version: $Revision: 1.570.2.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -69,6 +70,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
@@ -2073,6 +2075,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // remove the group
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
         m_userDriver.deleteGroup(dbc, group.getName());
+        // backup the group
+        m_historyDriver.writePrincipal(dbc, group);
 
         // clear the relevant caches
         OpenCms.getMemoryMonitor().uncacheGroup(group);
@@ -2544,9 +2548,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 // no write access to sibling - must keep ACE (see below)
                 allSiblingsRemoved = false;
-
             } else {
-
                 // write access to sibling granted                 
                 boolean existsOnline = m_vfsDriver.validateStructureIdExists(
                     dbc,
@@ -2577,7 +2579,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // otherwise it would "stick" in the lock manager, preventing other users from creating 
                     // a file with the same name (issue with tempfiles in editor)
                     m_lockManager.removeDeletedResource(dbc, currentResource.getRootPath());
-
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // structure record is removed during next publish
@@ -2596,6 +2597,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResource);
                 }
             }
+            deleteRelationsForResource(dbc, currentResource, CmsRelationFilter.TARGETS);
         }
 
         if ((resource.getSiblingCount() <= 1) || allSiblingsRemoved) {
@@ -2705,6 +2707,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // online
         transferPrincipalResources(dbc, onlineProject, user.getId(), replacementUser.getId(), withACEs);
         m_userDriver.removeAccessControlEntriesForPrincipal(dbc, project, onlineProject, user.getId());
+        m_historyDriver.writePrincipal(dbc, user);
         m_userDriver.deleteUser(dbc, username);
         // delete user from cache
         clearUserCache(user);
@@ -2896,6 +2899,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
@@ -2914,6 +2918,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FILES);
 
@@ -5124,6 +5129,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current db context
      * @param resource the parent resource to read the resources from
      * @param readTree <code>true</code> to read all subresources
+     * @param isVfsManager <code>true</code> if the current user has the vfs manager role
      * 
      * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
      * 
@@ -5133,27 +5139,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#readResources(String, CmsResourceFilter, boolean)
      * @see CmsObject#readDeletedResources(String, boolean)
      */
-    public List readDeletedResources(CmsDbContext dbc, CmsResource resource, boolean readTree) throws CmsException {
+    public List readDeletedResources(CmsDbContext dbc, CmsResource resource, boolean readTree, boolean isVfsManager)
+    throws CmsException {
 
-        List result = new ArrayList();
-        List deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId());
+        Set result = new HashSet();
+        List deletedResources = m_historyDriver.readDeletedResources(
+            dbc,
+            resource.getStructureId(),
+            isVfsManager ? null : dbc.currentUser().getId());
         result.addAll(deletedResources);
         if (readTree) {
             Iterator itDeleted = deletedResources.iterator();
             while (itDeleted.hasNext()) {
                 I_CmsHistoryResource delResource = (I_CmsHistoryResource)itDeleted.next();
                 if (delResource.getResource().isFolder()) {
-                    result.addAll(readDeletedResources(dbc, delResource.getResource(), readTree));
+                    result.addAll(readDeletedResources(dbc, delResource.getResource(), readTree, isVfsManager));
                 }
             }
             try {
                 readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
                 // resource exists, so recurse
-                Iterator itResources = readResources(dbc, resource, CmsResourceFilter.ALL, readTree).iterator();
+                Iterator itResources = readResources(dbc, resource, CmsResourceFilter.ALL.addRequireFolder(), readTree).iterator();
                 while (itResources.hasNext()) {
                     CmsResource subResource = (CmsResource)itResources.next();
                     if (subResource.isFolder()) {
-                        result.addAll(readDeletedResources(dbc, subResource, readTree));
+                        result.addAll(readDeletedResources(dbc, subResource, readTree, isVfsManager));
                     }
                 }
             } catch (Exception e) {
@@ -5162,7 +5172,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // adjust the paths
         int todo;
-        return result;
+        return new ArrayList(result);
     }
 
     /**
@@ -5291,6 +5301,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().cacheGroup(group);
         }
         return group;
+    }
+
+    /**
+     * Reads a principal (an user or group) from the historical archive based on its ID.<p>
+     * 
+     * @param dbc the current database context
+     * @param principalId the id of the principal to read
+     * 
+     * @return the historical principal entry with the given id
+     * 
+     * @throws CmsException if something goes wrong, ie. {@link CmsDbEntryNotFoundException}
+     * 
+     * @see CmsObject#readUser(CmsUUID)
+     * @see CmsObject#readGroup(CmsUUID)
+     * @see CmsObject#readHistoryPrincipal(CmsUUID)
+     */
+    public CmsHistoryPrincipal readHistoricalPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsException {
+
+        return m_historyDriver.readPrincipal(dbc, principalId);
     }
 
     /**
@@ -6204,8 +6233,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException {
 
-        CmsUser user = null;
-        user = OpenCms.getMemoryMonitor().getCachedUser(id.toString());
+        CmsUser user = OpenCms.getMemoryMonitor().getCachedUser(id.toString());
         if (user == null) {
             user = m_userDriver.readUser(dbc, id);
             OpenCms.getMemoryMonitor().cacheUser(user);
@@ -6509,6 +6537,104 @@ public final class CmsDriverManager implements I_CmsEventListener {
         } else if (CmsStringUtil.isEmpty(newPassword)) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_PWD_NEW_MISSING_0));
         }
+    }
+
+    /**
+     * Restores a deleted resource identified by its structure id from the historical archive.<p>
+     * 
+     * @param dbc the current database context
+     * @param structureId the structure id of the resource to restore
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#restoreDeletedResource(CmsUUID)
+     */
+    public void restoreDeletedResource(CmsDbContext dbc, CmsUUID structureId) throws CmsException {
+
+        // get the last version, which should be the deleted one
+        int version = m_historyDriver.readLastVersion(dbc, structureId);
+        // get that version
+        I_CmsHistoryResource histRes = m_historyDriver.readResource(dbc, structureId, version);
+
+        // check the state
+        if (!histRes.getResource().getState().isDeleted()) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_RESTORE_BAD_STATE_3,
+                dbc.removeSiteRoot(histRes.getResource().getRootPath()),
+                structureId,
+                org.opencms.workplace.Messages.get().getBundle(dbc.getRequestContext().getLocale()).key(
+                    org.opencms.workplace.Messages.getStateKey(histRes.getResource().getState()))));
+        }
+
+        // check the parent path
+        CmsResource parent = m_vfsDriver.readResource(dbc, dbc.currentProject().getUuid(), histRes.getParentId(), false);
+        // check write permissions
+        m_securityManager.checkPermissions(
+            dbc,
+            parent,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+
+        // check the name
+        String resName = histRes.getResource().getRootPath();
+        boolean nameOk = false;
+        while (!nameOk) {
+            try {
+                readResource(dbc, resName, CmsResourceFilter.ALL);
+                int todo; // choice a better new name 
+                resName += ".1";
+            } catch (Exception e) {
+                // ok, we expect that the resource does not exists
+                nameOk = true;
+            }
+        }
+
+        // check structure id
+        CmsUUID id = structureId;
+        if (m_vfsDriver.validateStructureIdExists(dbc, dbc.currentProject().getUuid(), structureId)) {
+            // if already exists create a new one
+            id = new CmsUUID();
+        }
+
+        byte[] contents = null;
+        boolean isFolder = true;
+
+        // is the resource a file?
+        if (histRes instanceof CmsFile) {
+            contents = ((CmsFile)histRes).getContents();
+            if (contents == null || contents.length == 0) {
+                contents = m_historyDriver.readContent(dbc, structureId, version);
+            }
+            isFolder = false;
+        }
+
+        // now read the historical properties
+        List properties = m_historyDriver.readProperties(dbc, histRes);
+
+        // create the object to create
+        CmsResource newResource = new CmsResource(
+            id,
+            histRes.getResource().getResourceId(),
+            resName,
+            histRes.getResource().getTypeId(),
+            isFolder,
+            histRes.getResource().getFlags(),
+            dbc.currentProject().getUuid(),
+            CmsResource.STATE_NEW,
+            histRes.getResource().getDateCreated(),
+            histRes.getResource().getUserCreated(),
+            histRes.getResource().getDateLastModified(),
+            dbc.currentUser().getId(),
+            histRes.getResource().getDateReleased(),
+            histRes.getResource().getDateExpired(),
+            histRes.getResource().getSiblingCount(),
+            histRes.getResource().getLength(),
+            histRes.getResource().getDateContent(),
+            histRes.getResource().getVersion() + 1);
+
+        // restore the resource!
+        newResource = createResource(dbc, resName, newResource, contents, properties, false);
     }
 
     /**
@@ -7688,8 +7814,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
-        // update the cache
-        OpenCms.getMemoryMonitor().cacheUser(user);
     }
 
     /** 

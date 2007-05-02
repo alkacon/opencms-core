@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2007/04/26 14:31:01 $
- * Version: $Revision: 1.18.8.5 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.18.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18.8.5 $
+ * @version $Revision: 1.18.8.6 $
  * 
  * @since 6.0.0 
  * 
@@ -61,6 +61,9 @@ public class CmsBackupResource extends CmsHistoryFile {
     private static final long serialVersionUID = -6659773406054276891L;
 
     private CmsUUID m_backupId;
+
+    private String m_userCreatedName;
+    private String m_userLastModifiedName;
 
     /**
      * Constructor, creates a new CmsBackupResource object.<p>
@@ -85,6 +88,7 @@ public class CmsBackupResource extends CmsHistoryFile {
      * @param dateExpired the expiration date of this resource
      * @param size the size of the file content of this resource
      * @param dateContent the date of the last modification of the content of this resource 
+     * @param parentId structure id of the parent of this historical resource
      * @param content the binary content data of this file
      */
     public CmsBackupResource(
@@ -108,6 +112,7 @@ public class CmsBackupResource extends CmsHistoryFile {
         long dateExpired,
         int size,
         long dateContent,
+        CmsUUID parentId,
         byte[] content) {
 
         super(
@@ -121,18 +126,19 @@ public class CmsBackupResource extends CmsHistoryFile {
             state,
             dateCreated,
             userCreated,
-            userCreatedName,
             dateLastModified,
             userLastModified,
-            userLastModifiedName,
             dateReleased,
             dateExpired,
             size,
             dateContent,
             version,
+            parentId,
             content);
 
         m_backupId = backupId;
+        m_userCreatedName = userCreatedName;
+        m_userLastModifiedName = userLastModifiedName;
     }
 
     /**
@@ -141,5 +147,21 @@ public class CmsBackupResource extends CmsHistoryFile {
     public CmsUUID getBackupId() {
 
         return m_backupId;
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryFile#getCreatedByName()
+     */
+    public String getCreatedByName() {
+
+        return m_userCreatedName;
+    }
+
+    /**
+     * @see org.opencms.file.history.CmsHistoryFile#getLastModifiedByName()
+     */
+    public String getLastModifiedByName() {
+
+        return m_userLastModifiedName;
     }
 }

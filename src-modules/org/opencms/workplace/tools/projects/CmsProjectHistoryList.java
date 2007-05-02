@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.10.4.1 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.10.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10.4.1 $ 
+ * @version $Revision: 1.10.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,17 +198,17 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, project.getName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
             try {
-                item.set(LIST_COLUMN_OWNER, project.getOwnerName());
+                item.set(LIST_COLUMN_OWNER, project.getOwnerName(getCms()));
             } catch (Exception e) {
                 // ignore
             }
             try {
-                item.set(LIST_COLUMN_MANAGER, project.getManagerGroupName());
+                item.set(LIST_COLUMN_MANAGER, project.getGroupManagersName(getCms()));
             } catch (Exception e) {
                 // ignore
             }
             try {
-                item.set(LIST_COLUMN_USER, project.getGroupName());
+                item.set(LIST_COLUMN_USER, project.getGroupUsersName(getCms()));
             } catch (Exception e) {
                 // ignore
             }
@@ -218,7 +218,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
                 // ignore
             }
             try {
-                item.set(LIST_COLUMN_PUBLISHED_BY, project.getPublishedByName());
+                item.set(LIST_COLUMN_PUBLISHED_BY, project.getPublishedByName(getCms()));
             } catch (Exception e) {
                 // ignore
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.97.4.44 $
+ * Date   : $Date: 2007/05/02 16:55:26 $
+ * Version: $Revision: 1.97.4.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -3104,7 +3105,8 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.readDeletedResources(dbc, resource, readTree);
+            boolean isVfsManager = hasRoleForResource(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource);
+            result = m_driverManager.readDeletedResources(dbc, resource, readTree, isVfsManager);
         } catch (CmsException e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READING_DELETED_RESOURCES_1,
@@ -3244,6 +3246,34 @@ public final class CmsSecurityManager {
             result = m_driverManager.readGroup(dbc, CmsOrganizationalUnit.removeLeadingSeparator(groupname));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_GROUP_FOR_NAME_1, groupname), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Reads a principal (an user or group) from the historical archive based on its ID.<p>
+     * 
+     * @param context the current request context
+     * @param principalId the id of the principal to read
+     * 
+     * @return the historical principal entry with the given id
+     * 
+     * @throws CmsException if something goes wrong, ie. {@link CmsDbEntryNotFoundException}
+     * 
+     * @see CmsObject#readUser(CmsUUID)
+     * @see CmsObject#readGroup(CmsUUID)
+     * @see CmsObject#readHistoryPrincipal(CmsUUID)
+     */
+    public CmsHistoryPrincipal readHistoricalPrincipal(CmsRequestContext context, CmsUUID principalId) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsHistoryPrincipal result = null;
+        try {
+            result = m_driverManager.readHistoricalPrincipal(dbc, principalId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_HISTORY_PRINCIPAL_1, principalId), e);
         } finally {
             dbc.clear();
         }
@@ -4319,6 +4349,32 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Restores a deleted resource identified by its structure id from the historical archive.<p>
+     * 
+     * @param context the current request context
+     * @param structureId the structure id of the resource to restore
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#restoreDeletedResource(CmsUUID)
+     */
+    public void restoreDeletedResource(CmsRequestContext context, CmsUUID structureId) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            // write permissions on parent folder are checked later
+            m_driverManager.restoreDeletedResource(dbc, structureId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_RESTORE_DELETED_RESOURCE_1,
+                structureId), e);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**

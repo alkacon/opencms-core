@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/02 16:39:51 $
- * Version: $Revision: 1.36.8.4 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.36.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.4 $
+ * @version $Revision: 1.36.8.5 $
  * 
  * @since 6.0.0 
  */
@@ -86,7 +86,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 // create new offline content
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_OFFLINE_CONTENTS_WRITE");
             }
+            // first insert new file without file_content, then update the file_content
+            // these two steps are necessary because of using BLOBs in the Oracle DB
             stmt.setString(1, resourceId.toString());
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -95,7 +98,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-        
+
         // now update the file content
         writeContent(dbc, projectId, resourceId, content);
     }
@@ -146,7 +149,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
             output.write(content, 0, content.length);
             output.close();
-            
+
             if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
@@ -156,28 +159,12 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
             commit = null;
+            stmt = null;
             res = null;
 
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
-
-            // update the content modification date
-            long time = System.currentTimeMillis();
-            try {
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
-                stmt.setLong(1, time);
-                stmt.setString(2, resourceId.toString());
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
-            } finally {
-                m_sqlManager.closeAll(dbc, conn, stmt, null);
-            }
-            stmt = null;
-            return time;
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId), e);
         } catch (SQLException e) {
@@ -226,5 +213,23 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 }
             }
         }
+
+        // update the content modification date
+        long time = System.currentTimeMillis();
+        try {
+            conn = m_sqlManager.getConnection(dbc, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
+            stmt.setLong(1, time);
+            stmt.setString(2, resourceId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+
+        return time;
     }
 }

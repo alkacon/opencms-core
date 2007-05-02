@@ -24,7 +24,7 @@
     <editorpreconditions>
     	<editorprecondition name="xmlcontent" class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
     </editorpreconditions>
-   	<directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
+    <directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
     <exportpoints>
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>
@@ -47,7 +47,7 @@
             <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+			<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
             <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
             <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks"/>
@@ -58,20 +58,28 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            </entry>
+            <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -98,30 +106,37 @@
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PAGEEDIT_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp?editormode=edit" target="_top" rule="standard"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp?editormode=edit" target="_top" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -145,23 +160,29 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -184,23 +205,29 @@
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -208,7 +235,7 @@
         <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
-          <accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+          <accessentry principal="ROLE.RoleDevelopers" permissions="+r+v+w+c"/>
           <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
         </accesscontrol>
         <editoptions>
@@ -231,23 +258,29 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -269,23 +302,29 @@
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -311,16 +350,23 @@
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
+            <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -351,20 +397,28 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            </entry>
+            <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -387,20 +441,28 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            </entry>
+            <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -434,32 +496,39 @@
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
             <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
             <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
-            <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
-            <entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
           </contextmenu>
         </editoptions>
       </explorertype>
       <defaultaccesscontrol>
         <accesscontrol>
-          <accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
+          <accessentry principal="DEFAULT" permissions="+r+v"/>
           <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+          <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
         </accesscontrol>
       </defaultaccesscontrol>
       <multicontextmenu>
@@ -556,6 +625,9 @@
     	</menurule>
     	<menurule name="multistandard">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiStandard" />
+    	</menurule>
+    	<menurule name="substandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSubStandard" />
     	</menurule>
    	  </menurules>
     </explorertypes>

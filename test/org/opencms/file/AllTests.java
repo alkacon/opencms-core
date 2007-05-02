@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2007/04/26 14:31:09 $
- * Version: $Revision: 1.42.4.7 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.42.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.42.4.7 $
+ * @version $Revision: 1.42.4.8 $
  * 
  * @since 6.0
  */
@@ -97,7 +97,6 @@ public final class AllTests {
         suite.addTest(TestUndelete.suite());
         suite.addTest(TestUndoChanges.suite());
         suite.addTest(TestUser.suite());
-        suite.addTest(TestVersioning.suite());
         //$JUnit-END$
         return suite;
     }

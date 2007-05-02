@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2007/02/09 10:30:44 $
- * Version: $Revision: 1.22.4.8 $
+ * Date   : $Date: 2007/05/02 16:55:31 $
+ * Version: $Revision: 1.22.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.8 $ 
+ * @version $Revision: 1.22.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -567,7 +567,7 @@ public class CmsListMetadata {
         }
         if (!isPrintable && hasCheckMultiActions()) {
             width++;
-            html.append("\t<td class='select' align='center'>\n");
+            html.append("\t<td class='select' style='text-align: center'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listMultiAction' value='");
             html.append(item.getId());
             html.append("'>\n");

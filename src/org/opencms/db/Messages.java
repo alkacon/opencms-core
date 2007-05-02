@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/04/26 14:31:02 $
- * Version: $Revision: 1.43.4.23 $
+ * Date   : $Date: 2007/05/02 16:55:26 $
+ * Version: $Revision: 1.43.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.23 $
+ * @version $Revision: 1.43.4.24 $
  * 
  * @since 6.0.0 
  */
@@ -403,6 +403,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_HISTORY_FILE_2 = "ERR_READ_HISTORY_FILE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_HISTORY_PRINCIPAL_1 = "ERR_READ_HISTORY_PRINCIPAL_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_HISTORY_PROJECT_2 = "ERR_READ_HISTORY_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
@@ -527,6 +530,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3 = "ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESTORE_BAD_STATE_3 = "ERR_RESTORE_BAD_STATE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESTORE_DELETED_RESOURCE_1 = "ERR_RESTORE_DELETED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";

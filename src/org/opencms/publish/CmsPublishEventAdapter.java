@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEventAdapter.java,v $
- * Date   : $Date: 2006/11/29 15:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,23 @@
 
 package org.opencms.publish;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Default implementation for the {@link I_CmsPublishEventListener}.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.5
  */
 public class CmsPublishEventAdapter implements I_CmsPublishEventListener {
 
     /**
-     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(String, org.opencms.publish.CmsPublishJobEnqueued)
+     * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(CmsUUID, org.opencms.publish.CmsPublishJobEnqueued)
      */
-    public void onAbort(String userName, CmsPublishJobEnqueued publishJob) {
+    public void onAbort(CmsUUID userId, CmsPublishJobEnqueued publishJob) {
 
         // do nothing
     }

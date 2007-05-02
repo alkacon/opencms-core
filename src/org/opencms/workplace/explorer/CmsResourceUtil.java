@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/04/04 13:07:22 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/05/02 16:55:29 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1062,7 +1062,11 @@ public final class CmsResourceUtil {
         try {
             user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserCreated()).getName());
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            try {
+                user = getCurrentOuRelativeName(getCms().readHistoryPrincipal(m_resource.getUserCreated()).getName());
+            } catch (Throwable e1) {
+                LOG.error(e1.getLocalizedMessage(), e1);
+            }
         }
         return user;
     }
@@ -1078,7 +1082,11 @@ public final class CmsResourceUtil {
         try {
             user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserLastModified()).getName());
         } catch (Throwable e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            try {
+                user = getCurrentOuRelativeName(getCms().readHistoryPrincipal(m_resource.getUserLastModified()).getName());
+            } catch (Throwable e1) {
+                LOG.error(e1.getLocalizedMessage(), e1);
+            }
         }
         return user;
     }
