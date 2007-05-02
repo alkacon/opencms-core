@@ -9,12 +9,6 @@
       <resource uri="/system/login/"/>
     </localizedfolders>
     <dialoghandlers>
-      <!-- Dialog handlers are configurable for the workplace dialogs: delete, lock/unlock and file properties.
-      	   If OpenCms does not start because a customized dialog handler class is not found, use the following default dialog handler classes:
-      	   Delete dialog: org.opencms.workplace.commons.CmsDelete
-      	   Lock dialog: org.opencms.workplace.commons.CmsLock
-      	   Property dialog: org.opencms.workplace.commons.CmsPropertyAdvanced
-      //-->
       <dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
       <dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
       <dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced"/>
@@ -37,6 +31,8 @@
     <labeledfolders/>
     <rfsfileviewsettings>
       <enabled>true</enabled>
+      <fileEncoding>windows-1252</fileEncoding>
+      <isLogfile>true</isLogfile>
       <windowSize>200</windowSize>
     </rfsfileviewsettings>
     <explorertypes>
@@ -527,8 +523,8 @@
       <defaultaccesscontrol>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
-          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
           <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
         </accesscontrol>
       </defaultaccesscontrol>
       <multicontextmenu>
