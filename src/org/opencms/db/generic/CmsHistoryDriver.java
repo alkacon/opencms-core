@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/02 17:25:41 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.1
  */
@@ -155,7 +155,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_HISTORY_PARENTID")));
-        
+
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
         }
@@ -1459,13 +1459,13 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
             stmt.setString(1, principal.getId().toString());
             stmt.setString(2, principal.getSimpleName());
-            stmt.setString(3, principal.getDescription());
-            stmt.setString(4, principal.getOuFqn());
+            stmt.setString(3, principal.getDescription() == null ? "-" : principal.getDescription());
+            stmt.setString(4, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
             if (principal instanceof CmsUser) {
                 stmt.setString(5, ((CmsUser)principal).getEmail());
                 stmt.setString(6, I_CmsPrincipal.PRINCIPAL_USER);
             } else {
-                stmt.setString(5, "");
+                stmt.setString(5, "-");
                 stmt.setString(6, I_CmsPrincipal.PRINCIPAL_GROUP);
             }
             stmt.setString(7, dbc.currentUser().getId().toString());
