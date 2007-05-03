@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/03 16:00:20 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,6 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.CmsRelationFilter;
@@ -49,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.0 
  */
@@ -64,14 +62,14 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResourceCopyMode)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResourceCopyMode siblingMode) throws CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
 
         super.copyResource(cms, securityManager, source, destination, siblingMode);
         createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
@@ -108,9 +106,9 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
         super.deleteResource(cms, securityManager, resource, siblingMode);

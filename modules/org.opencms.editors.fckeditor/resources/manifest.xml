@@ -10,13 +10,13 @@
 	</info>
 	<module>
 		<name>org.opencms.editors.fckeditor</name>
-		<nicename><![CDATA[OpenCms 6 FCKeditor WYSIWYG editor plugin]]></nicename>
+		<nicename><![CDATA[OpenCms 7 FCKeditor WYSIWYG editor plugin]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module adds the popular Open Source HTML editor "FCKeditor" to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for Mozilla based browsers. The version of FCKeditor is 2.3.2</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.7</version>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

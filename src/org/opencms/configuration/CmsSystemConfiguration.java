@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/03/30 07:36:44 $
- * Version: $Revision: 1.36.4.17 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.36.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,6 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workflow.I_CmsWorkflowEngine;
-import org.opencms.workflow.I_CmsWorkflowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.17 $
+ * @version $Revision: 1.36.4.18 $
  * 
  * @since 6.0.0
  */
@@ -409,15 +407,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the warning-interval node. */
     public static final String N_WARNING_INTERVAL = "warning-interval";
 
-    /** The node name for the workflow node. */
-    public static final String N_WORKFLOW = "workflow";
-
-    /** The node name for the workflow engine node. */
-    public static final String N_WORKFLOW_ENGINE = "workflowengine";
-
-    /** The node name for the workflow manager node. */
-    public static final String N_WORKFLOW_MANAGER = "workflowmanager";
-
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
@@ -508,12 +497,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
-
-    /** The configured workflow engine. */
-    private String m_workflowEngine;
-
-    /** The configured workflow manager. */
-    private String m_workflowManager;
 
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -969,14 +952,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, 0);
 
-        // add rule for workflow manager
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, "setWorkflowManager", 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_MANAGER, 0, A_CLASS);
-
-        // add workflow engine rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, "setWorkflowEngine", 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_WORKFLOW + "/" + N_WORKFLOW_ENGINE, 0, A_CLASS);
-
         // add authorization handler creation rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
@@ -1320,15 +1295,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             }
             if (m_notificationProject != null) {
                 notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject);
-            }
-        }
-
-        // optional workflow nodes
-        if (m_workflowManager != null) {
-            Element workflowElement = systemElement.addElement(N_WORKFLOW);
-            workflowElement.addElement(N_WORKFLOW_MANAGER).addAttribute(A_CLASS, m_workflowManager);
-            if (m_workflowEngine != null) {
-                workflowElement.addElement(N_WORKFLOW_ENGINE).addAttribute(A_CLASS, m_workflowEngine);
             }
         }
 
@@ -1693,47 +1659,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public int getVersionHistoryMaxCount() {
 
         return m_versionHistoryMaxCount;
-    }
-
-    /**
-     * Returns the configured workflow manager.<p>
-     *
-     * @return the configured workflow manager
-     */
-    public I_CmsWorkflowManager getWorkflowManager() {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_workflowManager)) {
-            return null;
-        }
-        try {
-            I_CmsWorkflowManager wfManager = (I_CmsWorkflowManager)Class.forName(m_workflowManager).newInstance();
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_WORKFLOW_MANAGER_SUCCESS_1,
-                    m_workflowManager));
-            }
-            if (m_workflowEngine != null) {
-                try {
-                    I_CmsWorkflowEngine wfEngine = (I_CmsWorkflowEngine)Class.forName(m_workflowEngine).newInstance();
-                    if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().getBundle().key(
-                            Messages.INIT_WORKFLOW_ENGINE_SUCCESS_1,
-                            m_workflowEngine));
-                    }
-                    wfManager.setEngine(wfEngine);
-                } catch (Throwable t) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_INIT_WORKFLOW_ENGINE_FAILURE_1,
-                        m_workflowEngine), t);
-                }
-            }
-            return wfManager;
-        } catch (Throwable t) {
-            LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_INIT_WORKFLOW_MANAGER_FAILURE_1, m_workflowManager),
-                t);
-            return null;
-        }
     }
 
     /**
@@ -2107,25 +2032,5 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 Boolean.valueOf(m_versionHistoryEnabled),
                 new Integer(m_versionHistoryMaxCount)));
         }
-    }
-
-    /**
-     * Sets the workflow engine implementation.<p>
-     * 
-     * @param engine the engines class name
-     */
-    public void setWorkflowEngine(String engine) {
-
-        m_workflowEngine = engine;
-    }
-
-    /**
-     * Generates the workflow manager.<p>
-     * 
-     * @param clazz the workflow manager class to use
-     */
-    public void setWorkflowManager(String clazz) {
-
-        m_workflowManager = clazz;
     }
 }

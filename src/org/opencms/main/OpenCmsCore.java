@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/04/03 14:22:29 $
- * Version: $Revision: 1.218.4.36 $
+ * Date   : $Date: 2007/05/03 13:48:47 $
+ * Version: $Revision: 1.218.4.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,6 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
@@ -139,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.36 $ 
+ * @version $Revision: 1.218.4.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,9 +257,6 @@ public final class OpenCmsCore {
 
     /** The runtime validation handler. */
     private I_CmsValidationHandler m_validationHandler;
-
-    /** The workflow manager. */
-    private I_CmsWorkflowManager m_workflowManager;
 
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -732,19 +728,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the workflow manager.<p>  
-     * 
-     * @return the workflow manager
-     */
-    protected I_CmsWorkflowManager getWorkflowManager() {
-
-        if (m_workflowManager == null) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NO_WORKFLOW_CLASS_0));
-        }
-        return m_workflowManager;
-    }
-
-    /**
      * Returns the initialized workplace manager, 
      * which contains information about the global workplace settings.<p> 
      * 
@@ -1121,9 +1104,6 @@ public final class OpenCmsCore {
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
 
-        // get the workflow manager, this is needed before the security manager is initialized because of the locks
-        m_workflowManager = systemConfiguration.getWorkflowManager();
-
         // initialize the publish engine
         m_publishEngine = new CmsPublishEngine(systemConfiguration.getRuntimeInfoFactory());
 
@@ -1196,11 +1176,6 @@ public final class OpenCmsCore {
 
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
-
-            // initialize the workflow manager
-            if (m_workflowManager != null) {
-                m_workflowManager.initialize(initCmsObject(adminCms), m_securityManager);
-            }
 
             // initialize the session manager
             m_sessionManager.initialize(sessionStorageProvider);

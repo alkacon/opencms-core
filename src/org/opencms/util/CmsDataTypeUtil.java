@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDataTypeUtil.java,v $
- * Date   : $Date: 2007/02/21 14:27:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -169,7 +169,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(boolean data) {
 
-        return new Boolean(data).toString();
+        return String.valueOf(data);
     }
 
     /**
@@ -372,7 +372,7 @@ public final class CmsDataTypeUtil {
      */
     public static Boolean parseBoolean(String data) {
 
-        return new Boolean(data);
+        return Boolean.valueOf(data);
     }
 
     /**

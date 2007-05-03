@@ -10,13 +10,13 @@
 	</info>
 	<module>
 		<name>org.opencms.editors</name>
-		<nicename><![CDATA[OpenCms 6 Common editors]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Common editors]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.5</version>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.2.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -247,29 +247,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/dialogs/anchor.jsp</source>
-			<destination>system/workplace/editors/dialogs/anchor.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>8984556b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>5f2bf3fa-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Page anchor insertion dialog]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/editors/dialogs/elements.jsp</source>
 			<destination>system/workplace/editors/dialogs/elements.jsp</destination>
 			<type>jsp</type>
@@ -288,29 +265,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Element activation dialog]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/dialogs/link.jsp</source>
-			<destination>system/workplace/editors/dialogs/link.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>89891063-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>e26c0a72-f054-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Page link insertion dialog]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

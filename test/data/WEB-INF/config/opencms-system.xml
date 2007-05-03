@@ -94,10 +94,6 @@
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
         </content-notification>	
-		<workflow>
-			<workflowmanager class="org.opencms.workflow.WorkflowTestManager"/>
-			<workflowengine class="org.opencms.workflow.WorkflowTestEngine"/>
-		</workflow>        			
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
 		<publishmanager>
 			<history-size>10</history-size>

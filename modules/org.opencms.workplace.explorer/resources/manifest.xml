@@ -10,13 +10,13 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.explorer</name>
-		<nicename><![CDATA[OpenCms 6 Workplace explorer]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Workplace explorer]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.3.8</version>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.3.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -716,25 +716,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/project_myworkflow.png</source>
-			<destination>system/workplace/resources/explorer/project_myworkflow.png</destination>
-			<type>image</type>
-			<uuidstructure>ffa95631-2205-11db-af69-d5561bf1e338</uuidstructure>
-			<uuidresource>ffa95632-2205-11db-af69-d5561bf1e338</uuidresource>
-			<datelastmodified>Wed, 02 Aug 2006 09:06:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/explorer/project_none.gif</source>
 			<destination>system/workplace/resources/explorer/project_none.gif</destination>
 			<type>image</type>
@@ -760,25 +741,6 @@
 			<uuidstructure>ff9d6f47-2205-11db-af69-d5561bf1e338</uuidstructure>
 			<uuidresource>ff9d6f48-2205-11db-af69-d5561bf1e338</uuidresource>
 			<datelastmodified>Wed, 02 Aug 2006 09:05:31 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:16,h:16]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/explorer/project_otherworkflow.png</source>
-			<destination>system/workplace/resources/explorer/project_otherworkflow.png</destination>
-			<type>image</type>
-			<uuidstructure>ffae1126-2205-11db-af69-d5561bf1e338</uuidstructure>
-			<uuidresource>ffae1127-2205-11db-af69-d5561bf1e338</uuidresource>
-			<datelastmodified>Wed, 02 Aug 2006 09:06:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 02 Aug 2006 09:05:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestConcurrentOperations.java,v $
- * Date   : $Date: 2006/08/10 15:00:49 $
- * Version: $Revision: 1.1.4.2 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.4.2 $
+ * @version $Revision: 1.1.4.3 $
  */
 public class TestConcurrentOperations extends OpenCmsTestCase {
   
@@ -203,9 +203,9 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
             // not the right number of exception where thrown
             fail("Exception count " + c + " id not return the expected result " + (count - value[0].intValue()));
         }
-        if (ec == 0) {
-            // the "concurrent creation" exception was not thrown once - this must be an error
-            fail("Did not catch expected concurrent creation exception at least once");
+        if (ec != 0) {
+            // the "concurrent creation" exception was thrown one or mote times - this must be an error
+            fail("Did catch concurrent creation exception at least once - no concurrent exceptions expected!");
         }
         echo("Concurrent folder creation test success: No duplicates created - "
             + ec

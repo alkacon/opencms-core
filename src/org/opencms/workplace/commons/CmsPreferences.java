@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/03/06 10:34:35 $
- * Version: $Revision: 1.31.4.11 $
+ * Date   : $Date: 2007/05/03 13:48:55 $
+ * Version: $Revision: 1.31.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.11 $
+ * @version $Revision: 1.31.4.12 $
  * 
  * @since 6.0.0
  */
@@ -198,9 +198,6 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace search result list style. */
     public static final String PARAM_EXPLORER_SEARCH_RESULT = "tabexworkplacesearchresult";
 
-    /** Request parameter name for the explorer file state. */
-    public static final String PARAM_EXPLORER_WORKFLOW_STATUS = "tabexworkflowstatus";
-
     /** Request parameter name for the new password. */
     public static final String PARAM_NEWPASSWORD = "newpassword";
 
@@ -209,24 +206,6 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name prefix for the preferred editors. */
     public static final String PARAM_PREFERREDEDITOR_PREFIX = "tabedprefed_";
-
-    /** Request parameter name for the workflow filter. */
-    public static final String PARAM_WORKFLOW_FILTER = "tabwffilter";
-
-    /** Request parameter name for the workflow message accepted. */
-    public static final String PARAM_WORKFLOW_MESSAGEACCEPTED = "tabwfmessageaccepted";
-
-    /** Request parameter name for the workflow message completed. */
-    public static final String PARAM_WORKFLOW_MESSAGECOMPLETED = "tabwfmessagecompleted";
-
-    /** Request parameter name for the workflow message forwarded. */
-    public static final String PARAM_WORKFLOW_MESSAGEFORWARDED = "tabwfmessageforwarded";
-
-    /** Request parameter name for the workflow message members. */
-    public static final String PARAM_WORKFLOW_MESSAGEMEMBERS = "tabwfmessagemembers";
-
-    /** Request parameter name for the workflow show all projects. */
-    public static final String PARAM_WORKFLOW_SHOWALLPROJECTS = "tabwfshowallprojects";
 
     /** Request parameter name for the workplace button style. */
     public static final String PARAM_WORKPLACE_BUTTONSTYLE = "tabwpbuttonstyle";
@@ -1240,16 +1219,6 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Returns the "display workplace status" setting.<p>
-     * 
-     * @return <code>"true"</code> if the file last modified by input field is checked, otherwise ""
-     */
-    public String getParamTabExWorkflowStatus() {
-
-        return isParamEnabled(m_userSettings.showExplorerWorkflowState());
-    }
-
-    /**
      * Returns the "workplace search result style" setting.<p>
      * 
      * @return the "workplace search result style" setting
@@ -1709,16 +1678,6 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabExFileUserLastModified(String value) {
 
         m_userSettings.setShowExplorerFileUserLastModified(Boolean.valueOf(value).booleanValue());
-    }
-
-    /**
-     * Sets the "display workflow state in explorer" setting.<p>
-     * 
-     * @param value <code>"true"</code> to enable the "display workflow state" setting, all others to disable
-     */
-    public void setParamTabExWorkflowStatus(String value) {
-
-        m_userSettings.setShowExplorerWorkflowState(Boolean.valueOf(value).booleanValue());
     }
 
     /**

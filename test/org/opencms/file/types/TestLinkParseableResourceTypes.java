@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -456,7 +456,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         // now test deleting a target
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
         assertTrue(relations.isEmpty());
-        sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
+        cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
 
         cms.lockResource(targetName);
         cms.deleteResource(targetName, CmsResource.DELETE_PRESERVE_SIBLINGS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/02 16:55:26 $
- * Version: $Revision: 1.570.2.80 $
+ * Date   : $Date: 2007/05/03 16:00:24 $
+ * Version: $Revision: 1.570.2.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
@@ -111,7 +107,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -275,9 +270,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
-
-    /** Temporary concurrent lock list for the "create resource" method. */
-    private List m_concurrentCreateResourceLocks;
 
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
@@ -920,10 +912,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>source</code> argument is <code>null</code>
      * 
-     * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
-     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResourceCopyMode)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
+     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
-    public void copyResource(CmsDbContext dbc, CmsResource source, String destination, CmsResourceCopyMode siblingMode)
+    public void copyResource(CmsDbContext dbc, CmsResource source, String destination, CmsResource.CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
         // check the sibling mode to see if this resource has to be copied as a sibling
@@ -1223,7 +1215,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String description,
         String groupname,
         String managergroupname,
-        CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsDataAccessException {
+        CmsProject.CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsDataAccessException {
 
         if (CmsProject.ONLINE_PROJECT_NAME.equals(name)) {
             throw new CmsIllegalArgumentException(Messages.get().container(
@@ -1344,7 +1336,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(
+    public synchronized CmsResource createResource(
         CmsDbContext dbc,
         String resourcePath,
         CmsResource resource,
@@ -1354,13 +1346,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         CmsResource newResource = null;
 
-        // since this method is a long-runner, we must make sure to avoid concurrent creation of the same resource
-        checkCreateResourceLock(dbc, resourcePath);
-
         try {
-            // avoid concurrent creation issues
-            m_concurrentCreateResourceLocks.add(resourcePath);
-
             // check import configuration of "lost and found" folder
             boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
 
@@ -1452,7 +1438,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 if (currentResourceByName == null) {
                     // move resource back to original place
-                    moveResource(dbc, currentResourceById, resourcePath, true, false);
+                    moveResource(dbc, currentResourceById, resourcePath, true);
                 }
             }
 
@@ -1685,9 +1671,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // delete all relations for the resource, the relations will be rebuild as soon as needed
             deleteRelationsForResource(dbc, newResource, CmsRelationFilter.TARGETS);
         } finally {
-            // remove the create lock
-            m_concurrentCreateResourceLocks.remove(resourcePath);
-
             // clear the internal caches
             clearAccessControlListCache();
             OpenCms.getMemoryMonitor().flushProperties();
@@ -2315,7 +2298,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), false, false);
+        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), false);
         clearAccessControlListCache();
         clearResourceCache();
 
@@ -2425,10 +2408,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#deleteResource(String, CmsResourceDeleteMode)
-     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
+     * @see CmsObject#deleteResource(String, CmsResource.CmsResourceDeleteMode)
+     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    public void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
         // upgrade a potential inherited, non-shared lock into a common lock
@@ -2868,8 +2851,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // and with the last change done in the current project are candidates if lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
                     if (!directPublishResource.getState().isUnchanged()
-                        && lock.isLockableBy(dbc.currentUser())
-                        && !lock.getSystemLock().isWorkflow()) {
+                        && lock.isLockableBy(dbc.currentUser())) {
 
                         try {
                             m_securityManager.checkPermissions(
@@ -2929,7 +2911,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // when publishing a file directly this file is the only candidate
                     // if it is modified and lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
-                    if (lock.isLockableBy(dbc.currentUser()) && !lock.getSystemLock().isWorkflow()) {
+                    if (lock.isLockableBy(dbc.currentUser())) {
                         // check permissions
                         try {
                             m_securityManager.checkPermissions(
@@ -4043,9 +4025,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsRelationSystemValidator(this);
 
-        // initialize the lock list for the "CreateResource" method, use Vector for most efficient synchronization 
-        m_concurrentCreateResourceLocks = new Vector();
-
         // fills the defaults if needed
         getUserDriver().fillDefaults(new CmsDbContext());
         getProjectDriver().fillDefaults(new CmsDbContext());
@@ -4235,7 +4214,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#PUBLISH}</code></li>
      * </ul><p>
      * 
@@ -4492,83 +4470,66 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param source the resource to copy
      * @param destination the name of the copy destination with complete path
-     * @param internal if set nothing more than the path is modified 
-     * @param checkCreate if set the create resource lock is checked
+     * @param internal if set nothing more than the path is modified
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsSecurityManager#moveResource(CmsRequestContext, CmsResource, String)
      */
-    public void moveResource(
-        CmsDbContext dbc,
-        CmsResource source,
-        String destination,
-        boolean internal,
-        boolean checkCreate) throws CmsException {
+    public void moveResource(CmsDbContext dbc, CmsResource source, String destination, boolean internal)
+    throws CmsException {
 
-        if (checkCreate) {
-            // check the concurrent creation
-            checkCreateResourceLock(dbc, destination);
+        CmsFolder destinationFolder = readFolder(
+            dbc,
+            CmsResource.getParentFolder(destination),
+            CmsResourceFilter.IGNORE_EXPIRATION);
+        m_securityManager.checkPermissions(
+            dbc,
+            destinationFolder,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+
+        m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
+        // move lock 
+        m_lockManager.moveResource(source.getRootPath(), destination);
+
+        if (!internal) {
+            source.setState(source.getState().isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
+            // safe since this operation always uses the ids instead of the resource path
+            m_vfsDriver.writeResourceState(
+                dbc,
+                dbc.currentProject(),
+                source,
+                CmsDriverManager.UPDATE_STRUCTURE_STATE,
+                false);
         }
+
+        // flush all relevant caches
+        clearAccessControlListCache();
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
+        OpenCms.getMemoryMonitor().flushProjectResources();
+
+        List resources = new ArrayList(4);
+        // source
+        resources.add(source);
         try {
-            // avoid concurrent creation issues
-            m_concurrentCreateResourceLocks.add(destination);
-
-            CmsFolder destinationFolder = readFolder(
-                dbc,
-                CmsResource.getParentFolder(destination),
-                CmsResourceFilter.IGNORE_EXPIRATION);
-            m_securityManager.checkPermissions(
-                dbc,
-                destinationFolder,
-                CmsPermissionSet.ACCESS_WRITE,
-                false,
-                CmsResourceFilter.IGNORE_EXPIRATION);
-
-            m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
-            // move lock 
-            m_lockManager.moveResource(source.getRootPath(), destination);
-
-            if (!internal) {
-                source.setState(source.getState().isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
-                // safe since this operation always uses the ids instead of the resource path
-                m_vfsDriver.writeResourceState(
-                    dbc,
-                    dbc.currentProject(),
-                    source,
-                    CmsDriverManager.UPDATE_STRUCTURE_STATE,
-                    false);
+            resources.add(readFolder(dbc, CmsResource.getParentFolder(source.getRootPath()), CmsResourceFilter.ALL));
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
             }
-
-            // flush all relevant caches
-            clearAccessControlListCache();
-            OpenCms.getMemoryMonitor().flushProperties();
-            OpenCms.getMemoryMonitor().flushPropertyLists();
-            OpenCms.getMemoryMonitor().flushProjectResources();
-
-            List resources = new ArrayList(4);
-            // source
-            resources.add(source);
-            try {
-                resources.add(readFolder(dbc, CmsResource.getParentFolder(source.getRootPath()), CmsResourceFilter.ALL));
-            } catch (Exception e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(e);
-                }
-            }
-            // destination
-            CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
-            resources.add(destRes);
-            resources.add(destinationFolder);
-
-            // fire the events
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
-                "resources",
-                resources)));
-        } finally {
-            // remove the create lock
-            m_concurrentCreateResourceLocks.remove(destination);
         }
+        // destination
+        CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
+        resources.add(destRes);
+        resources.add(destinationFolder);
+
+        // fire the events
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MOVED, Collections.singletonMap(
+            "resources",
+            resources)));
     }
 
     /**
@@ -4899,7 +4860,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // lock this sibling, so during publishing 
                 // the siblings will be unlock when all siblings get published
                 lockResource(dbc, resource, CmsLockType.PUBLISH);
-            } else if (!lock.getSystemLock().isWorkflow()) {
+            } else {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
@@ -6582,7 +6543,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (!nameOk) {
             try {
                 readResource(dbc, resName, CmsResourceFilter.ALL);
-                int todo; // choice a better new name 
+                int todo; // choose a better new name 
                 resName += ".1";
             } catch (Exception e) {
                 // ok, we expect that the resource does not exists
@@ -6634,7 +6595,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             histRes.getResource().getVersion() + 1);
 
         // restore the resource!
-        newResource = createResource(dbc, resName, newResource, contents, properties, false);
+        createResource(dbc, resName, newResource, contents, properties, false);
     }
 
     /**
@@ -6948,15 +6909,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resource the name of the resource to apply this operation to
-     * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants 
+     * @param mode the undo mode, one of the <code>{@link org.opencms.file.CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants 
      *      please note that the recursive flag is ignored at this level
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
-     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
+     * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
+     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
-    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResourceUndoMode mode) throws CmsException {
+    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         if (resource.getState().isNew()) {
             // undo changes is impossible on a new resource
@@ -6992,7 +6953,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean moved = !onlineResource.getRootPath().equals(resource.getRootPath());
         // undo move operation if required
         if (moved && mode.isUndoMove()) {
-            moveResource(dbc, resource, onlineResource.getRootPath(), true, true);
+            moveResource(dbc, resource, onlineResource.getRootPath(), true);
             if ((onlineResourceByPath != null)
                 && !onlineResourceByPath.getRootPath().equals(onlineResource.getRootPath())) {
                 // was moved over deleted, so the deleted file has to be undone
@@ -7011,12 +6972,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Unlocks all resources in the given project.<p>
      * 
      * @param project the project to unlock the resources in
-     * @param removeWfLocks if the workflow lock should be removed too
      */
-    public void unlockProject(CmsProject project, boolean removeWfLocks) {
+    public void unlockProject(CmsProject project) {
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(project.getUuid(), false, removeWfLocks);
+        m_lockManager.removeResourcesInProject(project.getUuid(), false);
         clearResourceCache();
         OpenCms.getMemoryMonitor().flushProjects();
         // we must also clear the permission cache
@@ -7855,28 +7815,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Checks the lock for creating new resources.<p>
-     * 
-     * potential issue with this solution: <br>
-     * in theory, someone _without_ write permissions could "block" the concurrent creation of a resource
-     * for someone _with_ permissions this way since the permissions have not been checked yet.<p>
-     * 
-     * @param dbc the db context
-     * @param resourcePath the destination resource path to check for
-     * 
-     * @throws CmsVfsResourceAlreadyExistsException if the resource is already locked 
-     */
-    private void checkCreateResourceLock(CmsDbContext dbc, String resourcePath)
-    throws CmsVfsResourceAlreadyExistsException {
-
-        if (m_concurrentCreateResourceLocks.contains(resourcePath)) {
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1,
-                dbc.removeSiteRoot(resourcePath)));
-        }
-    }
-
-    /**
      * Checks the parent of a resource during publishing.<p> 
      * 
      * @param dbc the current database context
@@ -8113,7 +8051,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {
@@ -8175,7 +8113,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)i.next();
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {

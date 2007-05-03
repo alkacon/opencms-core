@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/02/12 15:56:21 $
- * Version: $Revision: 1.46.4.9 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.46.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.9 $ 
+ * @version $Revision: 1.46.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1237,8 +1237,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * over the link check process is required. For these cases, individual relation behaviour can 
      * be defined for the appinfo node.<p>
      * 
-     * Additional here can be defined an optional type for the relations, for instance, for the
-     * workflow engine.<p>
+     * Additional here can be defined an optional type for the relations, for instance.<p>
      * 
      * @param root the "relations" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the check rules belong to

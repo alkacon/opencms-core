@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/03 10:46:24 $
- * Version: $Revision: 1.146.4.39 $
+ * Date   : $Date: 2007/05/03 16:00:22 $
+ * Version: $Revision: 1.146.4.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -96,7 +92,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.39 $
+ * @version $Revision: 1.146.4.41 $
  * 
  * @since 6.0.0 
  */
@@ -416,7 +412,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * 
-     * @see #copyResource(String, String, CmsResourceCopyMode)
+     * @see #copyResource(String, String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(String source, String destination) throws CmsException, CmsIllegalArgumentException {
 
@@ -445,7 +441,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      */
-    public void copyResource(String source, String destination, CmsResourceCopyMode siblingMode)
+    public void copyResource(String source, String destination, CmsResource.CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -576,7 +572,7 @@ public final class CmsObject {
         String description,
         String groupname,
         String managergroupname,
-        CmsProjectType projecttype) throws CmsException {
+        CmsProject.CmsProjectType projecttype) throws CmsException {
 
         return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
@@ -852,7 +848,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void deleteResource(String resourcename, CmsResourceDeleteMode siblingMode) throws CmsException {
+    public void deleteResource(String resourcename, CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).deleteResource(this, m_securityManager, resource, siblingMode);
@@ -3750,7 +3746,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
+     * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
      */
     public void undeleteResource(String resourcename, boolean recursive) throws CmsException {
 
@@ -3763,7 +3759,7 @@ public final class CmsObject {
      * online project to the current offline project.<p>
      * 
      * @param resourcename the name of the resource to undo the changes for
-     * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants
+     * @param mode the undo mode, one of the <code>{@link CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
      * 
@@ -3772,7 +3768,7 @@ public final class CmsObject {
      * @see CmsResource#UNDO_MOVE_CONTENT
      * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
      */
-    public void undoChanges(String resourcename, CmsResourceUndoMode mode) throws CmsException {
+    public void undoChanges(String resourcename, CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
@@ -3787,7 +3783,7 @@ public final class CmsObject {
      */
     public void unlockProject(CmsUUID id) throws CmsException {
 
-        m_securityManager.unlockProject(m_context, id, false);
+        m_securityManager.unlockProject(m_context, id);
     }
 
     /**

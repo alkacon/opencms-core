@@ -136,7 +136,6 @@ case 2:
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILEUSERCREATED %>.checked = false;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILELOCKEDBY %>.checked = false;
 				theForm.<%= CmsPreferences.PARAM_EXPLORER_FILESTATE %>.checked = false;
-				theForm.<%= CmsPreferences.PARAM_EXPLORER_WORKFLOW_STATUS %>.checked = false;
 			}
 		//-->
 		</script>
@@ -165,8 +164,6 @@ case 2:
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_LAST_MODIFIED_0) %></td>
 			<td style="width: 40px;">&nbsp;</td>		
 			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %></td>			
-			<td style="width: 40px;">&nbsp;</td>		
-			<td><input type="checkbox" name="<%= CmsPreferences.PARAM_EXPLORER_WORKFLOW_STATUS %>" value="true"<%= wp.isChecked(wp.getParamTabExWorkflowStatus()) %>> <%= wp.key(Messages.GUI_LABEL_WORKFLOW_STATUS_0) %></td>			
 			<td>&nbsp;</td>
 		</tr>
 		<tr>

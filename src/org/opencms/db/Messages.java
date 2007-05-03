@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/05/02 16:55:26 $
- * Version: $Revision: 1.43.4.24 $
+ * Date   : $Date: 2007/05/03 13:48:50 $
+ * Version: $Revision: 1.43.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.24 $
+ * @version $Revision: 1.43.4.25 $
  * 
  * @since 6.0.0 
  */
@@ -526,7 +526,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RESET_PASSWORD_1 = "ERR_RESET_PASSWORD_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_LOCKED_IN_WORKFLOW_1 = "ERR_RESOURCE_LOCKED_IN_WORKFLOW_1";
+    public static final String ERR_RESOURCE_SYSTEM_LOCKED_1 = "ERR_RESOURCE_SYSTEM_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3 = "ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3";

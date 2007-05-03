@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/05/02 16:55:27 $
- * Version: $Revision: 1.36.4.22 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.36.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.22 $
+ * @version $Revision: 1.36.4.24 $
  * 
  * @since 6.0.0
  */
@@ -219,9 +219,6 @@ public class CmsUserSettings {
 
     /** Flag for displaying the user who last modified column. */
     public static final int FILELIST_USER_LASTMODIFIED = 2048;
-
-    /** Flag for displaying the workflow check column. */
-    public static final int FILELIST_WORKFLOW_STATE = 16384;
 
     /** Identifier prefix for all keys in the user additional info table. */
     public static final String PREFERENCES = "USERPREFERENCES_";
@@ -1273,7 +1270,7 @@ public class CmsUserSettings {
         }
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
-            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, new Boolean(
+            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, Boolean.valueOf(
                 getSynchronizeSettings().isEnabled()));
             m_user.setAdditionalInfo(
                 PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION,
@@ -1667,16 +1664,6 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the file last modified date should be shown in explorer view.<p>
-     * 
-     * @param show true if the workflow stat should be shown, otherwise false
-     */
-    public void setShowExplorerWorkflowState(boolean show) {
-
-        setExplorerSetting(show, CmsUserSettings.FILELIST_WORKFLOW_STATE);
-    }
-
-    /**
      * Controls whether to display a file upload icon or not.<p>
      * 
      * @param flag <code>true</code> or <code>false</code> to flag the use of the file upload button
@@ -1963,16 +1950,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserLastModified() {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
-    }
-
-    /**
-     * Determines if the file state should be shown in explorer view.<p>
-     * 
-     * @return true if the file state should be shown, otherwise false
-     */
-    public boolean showExplorerWorkflowState() {
-
-        return ((m_explorerSettings & CmsUserSettings.FILELIST_WORKFLOW_STATE) > 0);
     }
 
     /**

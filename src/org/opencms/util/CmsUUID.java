@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/05/03 10:47:51 $
- * Version: $Revision: 1.20.4.3 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.20.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.3 $ 
+ * @version $Revision: 1.20.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,7 +250,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * 
      * @throws NumberFormatException in case the String is no valid UUID
      */
-    public static CmsUUID valueOf(String uuid) {
+    public static CmsUUID valueOf(String uuid) throws NumberFormatException {
 
         return new CmsUUID(UUID.valueOf(uuid));
     }

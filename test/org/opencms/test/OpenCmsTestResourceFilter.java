@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.23.8.1 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.23.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.23.8.1 $
+ * @version $Revision: 1.23.8.2 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -101,6 +101,9 @@ public abstract class OpenCmsTestResourceFilter {
     /** Definition of a filter used for the replaceResource method. */
     public static final OpenCmsTestResourceFilter FILTER_REPLACERESOURCE = getFilterReplaceResource();
 
+    /** Definition of a filter used for the writeProperty method, for an individual property in the other sibling. */
+    public static final OpenCmsTestResourceFilter FILTER_SIBLING_PROPERTY = getFilterSiblingProperty();
+
     /** Definition of a filter used for the touch method. */
     public static final OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
 
@@ -112,9 +115,6 @@ public abstract class OpenCmsTestResourceFilter {
 
     /** Definition of a filter used for the writeProperty method. */
     public static final OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
-
-    /** Definition of a filter used for the writeProperty method, for an individual property in the other sibling. */
-    public static final OpenCmsTestResourceFilter FILTER_SIBLING_PROPERTY = getFilterSiblingProperty();
 
     /** Flag to enable/disable access (ACE) tests. */
     protected boolean m_ace;
@@ -131,11 +131,17 @@ public abstract class OpenCmsTestResourceFilter {
     /** Flag to enable/disable date created tests. */
     protected boolean m_dateCreated;
 
+    /** Flag to enable/disable date created tests (rounded to seconds, for imports). */
+    protected boolean m_dateCreatedSec = false;
+
     /** Flag to enable/disable date expired tests. */
     protected boolean m_dateExpired;
 
     /** Flag to enable/disable date last modified tests. */
     protected boolean m_dateLastModified;
+
+    /** Flag to enable/disable date last modified tests (rounded to seconds, for imports). */
+    protected boolean m_dateLastModifiedSec = false;
 
     /** Flag to enable/disable date released tests. */
     protected boolean m_dateReleased;
@@ -399,6 +405,8 @@ public abstract class OpenCmsTestResourceFilter {
 
         filter.disableDateLastModifiedTest();
         filter.disableDateCreatedTest();
+        filter.enableDateLastModifiedSecTest();
+        filter.enableDateCreatedSecTest();
         return filter;
     }
 
@@ -413,6 +421,8 @@ public abstract class OpenCmsTestResourceFilter {
 
         filter.disableStructureIdTest();
         filter.disableResourceIdTest();
+        filter.disableDateLastModifiedSecTest();
+        filter.disableDateCreatedSecTest();
         return filter;
     }
 
@@ -426,6 +436,9 @@ public abstract class OpenCmsTestResourceFilter {
         OpenCmsTestResourceConfigurableFilter filter = getFilterExistingSibling();
 
         filter.disableDateLastModifiedTest();
+        filter.disableDateCreatedTest();
+        filter.enableDateLastModifiedSecTest();
+        filter.enableDateCreatedSecTest();
 
         return filter;
     }
@@ -480,6 +493,21 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableContentsTest();
         filter.disableLengthTest();
         filter.disableProjectLastModifiedTest();
+        return filter;
+    }
+
+    /**
+     * Creates a new filter used for the "write property" method, with individual property on the other sibling.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterSiblingProperty() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
         return filter;
     }
 
@@ -547,21 +575,6 @@ public abstract class OpenCmsTestResourceFilter {
     }
 
     /**
-     * Creates a new filter used for the "write property" method, with individual property on the other sibling.<p>
-     * 
-     * @return the created filter
-     */
-    private static OpenCmsTestResourceFilter getFilterSiblingProperty() {
-
-        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
-
-        filter.disableProjectLastModifiedTest();
-        filter.disableDateLastModifiedTest();
-        filter.disableUserLastModifiedTest();
-        return filter;
-    }
-
-    /**
      * Returns true if the ace test is enabled.<p>
      *
      * @return true or false
@@ -612,6 +625,16 @@ public abstract class OpenCmsTestResourceFilter {
     }
 
     /**
+     * Returns true if the date created test (rounded to seconds, for imports) is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateCreatedSec() {
+
+        return m_dateCreatedSec;
+    }
+
+    /**
      * Returns true if the date expired test is enabled.<p>
      *
      * @return true or false
@@ -629,6 +652,16 @@ public abstract class OpenCmsTestResourceFilter {
     public boolean testDateLastModified() {
 
         return m_dateLastModified;
+    }
+
+    /**
+     * Returns true if the date last modified test (rounded to seconds, for imports) is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateLastModifiedSec() {
+
+        return m_dateLastModifiedSec;
     }
 
     /**

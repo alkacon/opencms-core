@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2007/05/03 12:42:23 $
- * Version: $Revision: 1.52.8.7 $
+ * Date   : $Date: 2007/05/03 13:48:50 $
+ * Version: $Revision: 1.52.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.db.generic.CmsSqlManager;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.52.8.7 $
+ * @version $Revision: 1.52.8.8 $
  * 
  * @since 6.0.0
  * 
@@ -57,6 +57,5 @@ public interface I_CmsBackupDriver extends I_CmsHistoryDriver {
      * 
      * @return the SqlManager of this driver
      */
-    // we need to have at least one method to avoid checkstyle warnings
     CmsSqlManager getSqlManager();
 }

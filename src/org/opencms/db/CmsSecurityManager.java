@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/02 16:55:26 $
- * Version: $Revision: 1.97.4.45 $
+ * Date   : $Date: 2007/05/03 16:00:25 $
+ * Version: $Revision: 1.97.4.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -666,14 +662,14 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if resource could not be copied 
      * 
-     * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResourceCopyMode)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsRequestContext context,
         CmsResource source,
         String destination,
-        CmsResourceCopyMode siblingMode) throws CmsException, CmsSecurityException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -852,7 +848,7 @@ public final class CmsSecurityManager {
         String description,
         String groupname,
         String managergroupname,
-        CmsProjectType projecttype) throws CmsException, CmsRoleViolationException {
+        CmsProject.CmsProjectType projecttype) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject result = null;
@@ -920,7 +916,7 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
-    public CmsResource createResource(
+    public synchronized CmsResource createResource(
         CmsRequestContext context,
         String resourcename,
         int type,
@@ -1164,7 +1160,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_HISTORY_2,
-                new Boolean(cleanUp),
+                Boolean.valueOf(cleanUp),
                 new Integer(versionsToKeep)), e);
         } finally {
             dbc.clear();
@@ -1309,9 +1305,9 @@ public final class CmsSecurityManager {
      * @param siblingMode indicates how to handle siblings of the deleted resource
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource. 
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsRequestContext context, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    public void deleteResource(CmsRequestContext context, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -1861,7 +1857,7 @@ public final class CmsSecurityManager {
      */
     public List getManageableResources(CmsRequestContext context, CmsRole role) throws CmsException {
 
-        List resources = new ArrayList();
+        List resources;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             resources = getManageableResources(dbc, role);
@@ -2660,7 +2656,6 @@ public final class CmsSecurityManager {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#PUBLISH}</code></li>
      * </ul><p>
      * 
@@ -3266,7 +3261,8 @@ public final class CmsSecurityManager {
      * @see CmsObject#readGroup(CmsUUID)
      * @see CmsObject#readHistoryPrincipal(CmsUUID)
      */
-    public CmsHistoryPrincipal readHistoricalPrincipal(CmsRequestContext context, CmsUUID principalId) throws CmsException {
+    public CmsHistoryPrincipal readHistoricalPrincipal(CmsRequestContext context, CmsUUID principalId)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsHistoryPrincipal result = null;
@@ -4369,9 +4365,7 @@ public final class CmsSecurityManager {
             // write permissions on parent folder are checked later
             m_driverManager.restoreDeletedResource(dbc, structureId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_RESTORE_DELETED_RESOURCE_1,
-                structureId), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_RESTORE_DELETED_RESOURCE_1, structureId), e);
         } finally {
             dbc.clear();
         }
@@ -4622,10 +4616,10 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
      * 
-     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
+     * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
-    public void undoChanges(CmsRequestContext context, CmsResource resource, CmsResourceUndoMode mode)
+    public void undoChanges(CmsRequestContext context, CmsResource resource, CmsResource.CmsResourceUndoMode mode)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4649,12 +4643,11 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param projectId the id of the project to be published
-     * @param removeWfLocks if the workflow lock should be removed too
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the required permissions. 
      */
-    public void unlockProject(CmsRequestContext context, CmsUUID projectId, boolean removeWfLocks)
+    public void unlockProject(CmsRequestContext context, CmsUUID projectId)
     throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4662,7 +4655,7 @@ public final class CmsSecurityManager {
 
         try {
             checkManagerOfProjectRole(dbc, project);
-            m_driverManager.unlockProject(project, removeWfLocks);
+            m_driverManager.unlockProject(project);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_PROJECT_2,
@@ -5242,7 +5235,7 @@ public final class CmsSecurityManager {
 
         if (m_lockManager.hasSystemLocks(dbc, resource)) {
             throw new CmsLockException(Messages.get().container(
-                Messages.ERR_RESOURCE_LOCKED_IN_WORKFLOW_1,
+                Messages.ERR_RESOURCE_SYSTEM_LOCKED_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
         }
     }
@@ -5256,7 +5249,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    protected void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
         if (resource.isFolder()) {
@@ -5624,7 +5617,7 @@ public final class CmsSecurityManager {
         }
 
         // target permissions will be checked later
-        m_driverManager.moveResource(dbc, source, destination, false, true);
+        m_driverManager.moveResource(dbc, source, destination, false);
 
         // make sure lock is set
         CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);
@@ -5632,7 +5625,7 @@ public final class CmsSecurityManager {
             // the destination must always get a new lock
             m_driverManager.lockResource(dbc, destinationResource, CmsLockType.EXCLUSIVE);
         } catch (Exception e) {
-            // could happen with workflow (and harder with shared) locks on single files
+            // could happen with with shared locks on single files
             if (LOG.isWarnEnabled()) {
                 LOG.warn(e);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.14.2.15 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.14.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14.2.15 $ 
+ * @version $Revision: 1.14.2.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -278,9 +278,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_USERLASTMODIFIED_0 = "GUI_INPUT_USERLASTMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_WORKFLOW_STATE_0 = "GUI_INPUT_WORKFLOW_STATE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_LOADING_0 = "GUI_LABEL_LOADING_0";
 
     /** Message constant for key in the resource bundle. */
@@ -516,12 +513,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0 = "GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_DISABLED_0 = "GUI_WORKFLOW_DISABLED_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_TASK_INFO_TOOLTIP_5 = "GUI_WORKFLOW_TASK_INFO_TOOLTIP_5";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_ACCESS_ENTRY_2 = "LOG_ADD_ACCESS_ENTRY_2";

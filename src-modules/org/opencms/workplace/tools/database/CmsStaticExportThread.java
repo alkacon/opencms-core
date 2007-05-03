@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportThread.java,v $
- * Date   : $Date: 2006/12/21 15:18:39 $
- * Version: $Revision: 1.7.4.1 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.7.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.7.4.1 $ 
+ * @version $Revision: 1.7.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
         try {
             OpenCms.getStaticExportManager().exportFullStaticRender(true, getReport());
             Map eventData = new HashMap();
-            eventData.put("purge", new Boolean(true));
+            eventData.put("purge", Boolean.TRUE);
             eventData.put(I_CmsEventListener.KEY_REPORT, getReport());
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FULLSTATIC_EXPORT, eventData));
         } catch (CmsException e) {

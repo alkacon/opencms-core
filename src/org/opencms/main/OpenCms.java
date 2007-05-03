@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2007/02/15 15:54:20 $
- * Version: $Revision: 1.58.4.9 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.58.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,6 @@ import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
@@ -97,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58.4.9 $ 
+ * @version $Revision: 1.58.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -504,16 +503,6 @@ public final class OpenCms {
     public static I_CmsValidationHandler getValidationHandler() {
 
         return OpenCmsCore.getInstance().getValidationHandler();
-    }
-
-    /**
-     * Returns the workflow manager.<p>
-     * 
-     * @return the workflow manage
-     */
-    public static I_CmsWorkflowManager getWorkflowManager() {
-
-        return OpenCmsCore.getInstance().getWorkflowManager();
     }
 
     /**

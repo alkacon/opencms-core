@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.90.4.24 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.90.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.24 $
+ * @version $Revision: 1.90.4.25 $
  * 
  * @since 6.0.0
  */
@@ -1683,6 +1683,19 @@ public class OpenCmsTestCase extends TestCase {
                         + "]\n";
                 }
             }
+            if (filter.testDateCreatedSec()) {
+                if ((storedResource.getDateCreated() / 1000) != (res.getDateCreated() / 1000)) {
+                    noMatches += "[DateCreated "
+                        + storedResource.getDateCreated()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(storedResource.getDateCreated())
+                        + " != "
+                        + res.getDateCreated()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateCreated())
+                        + "]\n";
+                }
+            }
             // compare the date expired if necessary
             if (filter.testDateExpired()) {
                 if (storedResource.getDateExpired() != res.getDateExpired()) {
@@ -1700,6 +1713,19 @@ public class OpenCmsTestCase extends TestCase {
             // compare the date last modified if necessary
             if (filter.testDateLastModified()) {
                 if (storedResource.getDateLastModified() != res.getDateLastModified()) {
+                    noMatches += "[DateLastModified "
+                        + storedResource.getDateLastModified()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(storedResource.getDateLastModified())
+                        + " != "
+                        + res.getDateLastModified()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateLastModified())
+                        + "]\n";
+                }
+            }
+            if (filter.testDateLastModifiedSec()) {
+                if ((storedResource.getDateLastModified() / 1000) != (res.getDateLastModified() / 1000)) {
                     noMatches += "[DateLastModified "
                         + storedResource.getDateLastModified()
                         + " i.e. "

@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.en</name>
-		<nicename><![CDATA[OpenCms 6 Workplace english online help]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Workplace english online help]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the english online help pages for the OpenCms workplace.</p>
-<p><i>(c) 2006 by Alkacon Software</i></p>]]></description>
-		<version>1.2.2</version>
+<p><i>(c) 2007 by Alkacon Software</i></p>]]></description>
+		<version>1.2.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 22:00:00 GMT</datecreated>
@@ -573,37 +573,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/en/help/editors/msdhtml.html</source>
-			<destination>system/workplace/locales/en/help/editors/msdhtml.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>04fb8a5b-11b8-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>a44478a7-d377-11d9-89d3-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[MSDHTML Editor]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[MSDHTML Editor]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/locales/en/help/explorer</destination>
 			<type>folder</type>
 			<uuidstructure>04fdd452-11b8-11db-91cd-fdbae480bac9</uuidstructure>
@@ -827,25 +796,6 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:610,h:427]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/en/help/images/msdhtml.jpg</source>
-			<destination>system/workplace/locales/en/help/images/msdhtml.jpg</destination>
-			<type>image</type>
-			<uuidstructure>052b260c-11b8-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>fbde527e-e7ad-11d9-8012-a1f5610ecc83</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:1016,h:1079]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

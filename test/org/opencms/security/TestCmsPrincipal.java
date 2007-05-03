@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.2.4.6 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.2.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -181,7 +181,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertEquals(group.getSimpleName(), histUser.getSimpleName());
         assertEquals(group.getOuFqn(), histUser.getOuFqn());
         assertEquals(group.getDescription(), histUser.getDescription());
-        assertEquals("", histUser.getEmail());
+        assertEquals("-", histUser.getEmail());
         assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
         assertTrue(before <= histUser.getDateDeleted());
         assertTrue(histUser.getDateDeleted() <= after);

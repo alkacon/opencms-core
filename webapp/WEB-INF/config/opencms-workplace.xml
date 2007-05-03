@@ -235,8 +235,8 @@
         <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
-          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
           <accessentry principal="ROLE.RoleDevelopers" permissions="+r+v+w+c"/>
+          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
         </accesscontrol>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
@@ -716,12 +716,6 @@
           <uri>/system/workplace/explorer/</uri>
           <name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
           <helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
-        </root>
-        <root>
-          <key>workflow</key>
-          <uri>/system/workplace/workflow/</uri>
-          <name>${key.GUI_WORKFLOW_VIEW_ROOT_NAME_0}</name>
-          <helptext>${key.GUI_WORKFLOW_VIEW_ROOT_HELP_0}</helptext>
         </root>
       </roots>
     </tool-manager>

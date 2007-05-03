@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/04/26 15:21:53 $
- * Version: $Revision: 1.40.4.22 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.40.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.22 $
+ * @version $Revision: 1.40.4.23 $
  * 
  * @since 6.0.0
  */
@@ -698,7 +698,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             }
         } else {
             // create a <separator> node
-            itemElement = parentElement.addElement(N_SEPARATOR);
+            parentElement.addElement(N_SEPARATOR);
         }
     }
 
