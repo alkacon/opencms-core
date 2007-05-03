@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:33 $
- * Version: $Revision: 1.76.4.14 $
+ * Date   : $Date: 2007/05/03 10:48:42 $
+ * Version: $Revision: 1.76.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.14 $ 
+ * @version $Revision: 1.76.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,6 +438,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // clear the cached message objects
                 m_messages = new HashMap();
+                m_editorDisplayOptions.clearCache();
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2007/05/03 10:49:03 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,10 +61,12 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * Define your editor display options in property files located in the VFS folder 
- * /system/workplace/editors/configuration/.<br> * 
+ * <code>/system/workplace/editors/configuration/</code>.<p>
+ *  
  * Set navigation position property values on the configuration files
  * and use the permission system to determine which groups and users
- * should use which configuration file.<br>
+ * should use which configuration file.<p>
+ * 
  * The configuration with the most enabled options should be the first in navigation, 
  * followed by configurations with less enabled options, because 
  * the first file readable for the current user will be used for configuration.<p>
@@ -74,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,6 +111,15 @@ public class CmsEditorDisplayOptions {
         // initialize members
         m_userMappings = new LRUMap(SIZE_USERENTRIES);
         m_loadedConfigurations = new LRUMap(SIZE_CONFIGURATIONFILES);
+    }
+
+    /**
+     * Clears the cached user configuration data, casing a reload off all configurations.<p> 
+     */
+    public synchronized void clearCache() {
+
+        m_userMappings.clear();
+        m_loadedConfigurations.clear();
     }
 
     /**
@@ -216,5 +227,4 @@ public class CmsEditorDisplayOptions {
 
         return ((displayOptions != null) && Boolean.valueOf(displayOptions.getProperty(key)).booleanValue());
     }
-
 }
