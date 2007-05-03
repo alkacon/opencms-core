@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.146.4.38 $
+ * Date   : $Date: 2007/05/03 10:46:24 $
+ * Version: $Revision: 1.146.4.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.38 $
+ * @version $Revision: 1.146.4.39 $
  * 
  * @since 6.0.0 
  */
@@ -2401,7 +2401,7 @@ public final class CmsObject {
         CmsResource resource;
         try {
             resource = readResource(new CmsUUID(resourceNameOrID));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             resource = readResource(resourceNameOrID);
         }
         return m_securityManager.readDefaultFile(m_context, resource);
