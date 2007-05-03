@@ -3,20 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:16:04 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Thu, 03 May 2007 12:28:57 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.democontent</name>
-		<nicename><![CDATA[OpenCms 6 Template One demo content]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Template One demo content]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[<p>Contains example pages for usage of the OpenCms Template One.</p>
 <p>Install this module if you are new to OpenCms and want to see what you can do with it.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>2.0.4</version>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>2.0.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -98,7 +98,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>ad58649c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6ab90729-0e30-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -137,7 +137,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>ad61d987-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>cd881ea1-0e2c-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:41:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -180,7 +180,7 @@
 			<type>emailform</type>
 			<uuidstructure>ad644a90-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>daad87c3-81cb-11d9-a0db-db858f1793fe</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -242,7 +242,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>ad74ec6c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bd63de8e-0e33-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -281,7 +281,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>ad775d7a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6e1da749-113b-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:45:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -371,7 +371,7 @@
 			<type>xmlcontent</type>
 			<uuidstructure>ad80d36a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2dfec389-1dbf-11d9-828b-95b5e57c814c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -390,7 +390,7 @@
 			<type>xmlcontent</type>
 			<uuidstructure>ad83446d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d4920099-1dbe-11d9-828b-95b5e57c814c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:41:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -442,7 +442,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>ad87ff66-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>6cf20449-e809-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -473,7 +473,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>adabb40c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>1c2701da-e801-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -525,7 +525,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>adb09616-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2b4f4ff7-1164-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:41:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -559,7 +559,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>adb5510d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2b4f4ff7-1164-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:41:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1050,7 +1050,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>b2754a73-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>d1532b51-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1214,7 +1214,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>b3233dcf-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>e39b1c8a-0e31-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:30:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1237,7 +1237,7 @@
 			<type>xmlpage</type>
 			<uuidstructure>b3281fd3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5dbcacd2-273b-11d9-b67d-1fd2a335da0f</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 May 2007 10:43:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1257,10 +1257,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>23d13ae7-f961-11db-a076-355a5e39b644</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Thu, 03 May 2007 10:29:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
