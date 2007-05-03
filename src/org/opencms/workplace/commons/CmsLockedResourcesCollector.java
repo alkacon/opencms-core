@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2007/04/26 14:31:14 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.4 
  */
@@ -137,7 +137,6 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
 
         item.set(
             CmsLockedResourcesList.LIST_COLUMN_IS_RELATED,
-            new Boolean(
-                (resUtil.getResource().getFlags() & CmsPublishResourcesList.FLAG_RELATED_RESOURCE) == CmsPublishResourcesList.FLAG_RELATED_RESOURCE));
+            Boolean.valueOf((resUtil.getResource().getFlags() & CmsPublishResourcesList.FLAG_RELATED_RESOURCE) == CmsPublishResourcesList.FLAG_RELATED_RESOURCE));
     }
 }

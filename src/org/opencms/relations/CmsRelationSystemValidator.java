@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -364,7 +364,7 @@ public class CmsRelationSystemValidator {
                     }
                 }
             }
-            validatedLinks.put(link, new Boolean(!isValidLink));
+            validatedLinks.put(link, Boolean.valueOf(!isValidLink));
         }
         return brokenRelations;
     }

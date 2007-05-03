@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2006/11/14 09:35:40 $
- * Version: $Revision: 1.13.4.7 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.13.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.4.7 $
+ * @version $Revision: 1.13.4.8 $
  * 
  * @since 6.0.0
  */
@@ -523,7 +523,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
             }
         }
         if (errors.length() > 0) {
-            fail(new String("\n" + errors));
+            fail("\n" + errors);
         }
     }
 }

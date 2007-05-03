@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileSelectionPanel.java,v $
- * Date   : $Date: 2006/12/18 11:07:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.swing.JScrollPane;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class FileSelectionPanel extends JPanel {
 
@@ -71,7 +71,7 @@ public class FileSelectionPanel extends JPanel {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      */
     class FileSelectionPane extends JPanel {
 
@@ -116,12 +116,11 @@ public class FileSelectionPanel extends JPanel {
     }
 
     /**
-     * A single row for path selection with a checkbox and a path.
-     * <p>
+     * A single row for path selection with a checkbox and a path.<p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      */
     class Row extends JPanel {
 

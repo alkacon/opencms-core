@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.5 
  */
@@ -225,8 +225,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                  */
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-                    item.set(LIST_COLUMN_IS_RELATED, new Boolean(
-                        (resUtil.getResource().getFlags() & FLAG_RELATED_RESOURCE) == FLAG_RELATED_RESOURCE));
+                    item.set(
+                        LIST_COLUMN_IS_RELATED,
+                        Boolean.valueOf((resUtil.getResource().getFlags() & FLAG_RELATED_RESOURCE) == FLAG_RELATED_RESOURCE));
                 }
             };
         }

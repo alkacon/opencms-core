@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/05/03 13:48:50 $
- * Version: $Revision: 1.36.4.23 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.36.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.23 $
+ * @version $Revision: 1.36.4.24 $
  * 
  * @since 6.0.0
  */
@@ -1270,7 +1270,7 @@ public class CmsUserSettings {
         }
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
-            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, new Boolean(
+            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, Boolean.valueOf(
                 getSynchronizeSettings().isEnabled()));
             m_user.setAdditionalInfo(
                 PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION,

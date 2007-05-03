@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportDialog.java,v $
- * Date   : $Date: 2007/03/16 16:39:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -186,7 +186,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
         result.append(" type=\"submit\"");
         result.append(" class=\"dialogbutton\"");
         result.append(">\n");
-        dialogButtonsHtml(result, BUTTON_CANCEL, new String());
+        dialogButtonsHtml(result, BUTTON_CANCEL, "");
         result.append(dialogButtonRow(HTML_END));
         return result.toString();
     }

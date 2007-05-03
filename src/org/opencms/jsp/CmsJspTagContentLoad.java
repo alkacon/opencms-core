@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2007/04/26 14:31:13 $
- * Version: $Revision: 1.31.4.5 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.31.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.5 $ 
+ * @version $Revision: 1.31.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,7 +78,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     private static final long serialVersionUID = 981176995635225294L;
 
     /** The CmsObject for the current user. */
-    private CmsObject m_cms;
+    private transient CmsObject m_cms;
 
     /** The name of the collector to use for list building. */
     private String m_collector;

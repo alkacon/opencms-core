@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/03 13:48:50 $
- * Version: $Revision: 1.97.4.46 $
+ * Date   : $Date: 2007/05/03 14:09:44 $
+ * Version: $Revision: 1.97.4.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -920,7 +920,7 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
-    public CmsResource createResource(
+    public synchronized CmsResource createResource(
         CmsRequestContext context,
         String resourcename,
         int type,
@@ -1164,7 +1164,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_HISTORY_2,
-                new Boolean(cleanUp),
+                Boolean.valueOf(cleanUp),
                 new Integer(versionsToKeep)), e);
         } finally {
             dbc.clear();
@@ -1861,7 +1861,7 @@ public final class CmsSecurityManager {
      */
     public List getManageableResources(CmsRequestContext context, CmsRole role) throws CmsException {
 
-        List resources = new ArrayList();
+        List resources;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             resources = getManageableResources(dbc, role);
@@ -5621,7 +5621,7 @@ public final class CmsSecurityManager {
         }
 
         // target permissions will be checked later
-        m_driverManager.moveResource(dbc, source, destination, false, true);
+        m_driverManager.moveResource(dbc, source, destination, false);
 
         // make sure lock is set
         CmsResource destinationResource = m_driverManager.readResource(dbc, destination, CmsResourceFilter.ALL);

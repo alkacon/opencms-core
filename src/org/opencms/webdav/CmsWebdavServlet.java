@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/03/16 10:11:59 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/03 14:09:46 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.6
  */
@@ -434,7 +434,7 @@ public class CmsWebdavServlet extends HttpServlet {
         try {
             value = getServletConfig().getInitParameter(INIT_PARAM_LIST);
             if (value != null) {
-                m_listings = (new Boolean(value)).booleanValue();
+                m_listings = Boolean.valueOf(value).booleanValue();
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
@@ -448,14 +448,14 @@ public class CmsWebdavServlet extends HttpServlet {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_READ_INIT_PARAM_2,
                 INIT_PARAM_LIST,
-                new Boolean(m_listings)));
+                Boolean.valueOf(m_listings)));
         }
 
         // init parameter: read only
         try {
             value = getServletConfig().getInitParameter(INIT_PARAM_READONLY);
             if (value != null) {
-                m_readOnly = (new Boolean(value)).booleanValue();
+                m_readOnly = Boolean.valueOf(value).booleanValue();
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
@@ -470,7 +470,7 @@ public class CmsWebdavServlet extends HttpServlet {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_READ_INIT_PARAM_2,
                 INIT_PARAM_READONLY,
-                new Boolean(m_readOnly)));
+                Boolean.valueOf(m_readOnly)));
         }
 
         // Load the MD5 helper used to calculate signatures.
@@ -1412,7 +1412,7 @@ public class CmsWebdavServlet extends HttpServlet {
                 }
 
             } else {
-                lock.setOwner(new String());
+                lock.setOwner("");
             }
 
         }
@@ -3367,10 +3367,10 @@ public class CmsWebdavServlet extends HttpServlet {
         String path = item.getName();
         Element responseElem = addElement(elem, TAG_RESPONSE);
 
-        String status = new String("HTTP/1.1 "
+        String status = "HTTP/1.1 "
             + CmsWebdavStatus.SC_OK
             + " "
-            + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_OK));
+            + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_OK);
 
         // Generating href element
         Element hrefElem = addElement(responseElem, TAG_HREF);
@@ -3530,10 +3530,10 @@ public class CmsWebdavServlet extends HttpServlet {
                 addElement(propstatElem, TAG_STATUS).addText(status);
 
                 if (propertiesNotFound.size() > 0) {
-                    status = new String("HTTP/1.1 "
+                    status = "HTTP/1.1 "
                         + CmsWebdavStatus.SC_NOT_FOUND
                         + " "
-                        + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_NOT_FOUND));
+                        + CmsWebdavStatus.getStatusText(CmsWebdavStatus.SC_NOT_FOUND);
 
                     propstatElem = addElement(responseElem, TAG_PROPSTAT);
                     propElem = addElement(propstatElem, TAG_PROP);
