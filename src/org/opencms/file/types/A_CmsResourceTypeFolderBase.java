@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2007/04/26 14:31:15 $
- * Version: $Revision: 1.16.4.15 $
+ * Date   : $Date: 2007/05/03 16:00:19 $
+ * Version: $Revision: 1.16.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -59,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.15 $ 
+ * @version $Revision: 1.16.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,14 +90,14 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResourceCopyMode)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResourceCopyMode siblingMode) throws CmsIllegalArgumentException, CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsIllegalArgumentException, CmsException {
 
         // first validate the destination name
         destination = validateFoldername(destination);
@@ -402,13 +400,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceUndoMode mode) throws CmsException {
+        CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         boolean recursive = mode.isRecursive();
         if (mode == CmsResource.UNDO_MOVE_CONTENT) {

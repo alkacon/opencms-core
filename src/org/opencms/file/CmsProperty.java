@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2007/01/19 10:02:38 $
- * Version: $Revision: 1.34.4.4 $
+ * Date   : $Date: 2007/05/03 16:00:22 $
+ * Version: $Revision: 1.34.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.4 $
+ * @version $Revision: 1.34.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -148,7 +148,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     private boolean m_autoCreatePropertyDefinition;
 
-    /** Indicates if the property is frozen (required for <code>{@link #NULL_PROPERTY}</code>). */
+    /** Indicates if the property is frozen (required for <code>NULL_PROPERTY</code>). */
     private boolean m_frozen;
 
     /** The name of this property. */

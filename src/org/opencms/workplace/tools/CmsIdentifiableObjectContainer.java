@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2006/11/20 09:36:17 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/03 16:00:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.1.2.2 $
+     * @version $Revision: 1.1.2.3 $
      * 
      * @since 6.0.0
      */
@@ -251,7 +251,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     /**
      * Removes an object with the given id.<p>
      * 
-     * if {@link #m_uniqueIds} is set, it will remove at most one object.
+     * if <code>m_uniqueIds</code> is set, it will remove at most one object.
      * otherwise it will remove all elements with the given id.<p>
      * 
      * @param id the id of the object to remove

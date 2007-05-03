@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.241.4.27 $
+ * Date   : $Date: 2007/05/03 16:00:20 $
+ * Version: $Revision: 1.241.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -100,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.27 $
+ * @version $Revision: 1.241.4.28 $
  * 
  * @since 6.0.0 
  */
@@ -116,7 +115,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProjectType)
+     * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, CmsProject.CmsProjectType)
      */
     public CmsProject createProject(
         CmsDbContext dbc,
@@ -127,7 +126,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String projectFqn,
         String description,
         int flags,
-        CmsProjectType type) throws CmsDataAccessException {
+        CmsProject.CmsProjectType type) throws CmsDataAccessException {
 
         CmsProject project = null;
 
@@ -2514,7 +2513,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID_0"))),
             res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS_0")),
             res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED_0")),
-            CmsProjectType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE_0"))));
+            CmsProject.CmsProjectType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE_0"))));
     }
 
     /**

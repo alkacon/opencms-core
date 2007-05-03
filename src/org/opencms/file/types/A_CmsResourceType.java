@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/04/26 14:31:15 $
- * Version: $Revision: 1.42.4.18 $
+ * Date   : $Date: 2007/05/03 16:00:19 $
+ * Version: $Revision: 1.42.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -70,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.18 $ 
+ * @version $Revision: 1.42.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,14 +243,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResourceCopyMode)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        CmsResourceCopyMode siblingMode) throws CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
 
         securityManager.copyResource(
             cms.getRequestContext(),
@@ -316,13 +313,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
     public void deleteResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
+        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
 
         securityManager.deleteResource(cms.getRequestContext(), resource, siblingMode);
     }
@@ -707,13 +704,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        CmsResourceUndoMode mode) throws CmsException {
+        CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         securityManager.undoChanges(cms.getRequestContext(), resource, mode);
         updateRelationForUndo(cms, securityManager, resource);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/03 14:09:45 $
- * Version: $Revision: 1.570.2.82 $
+ * Date   : $Date: 2007/05/03 16:00:24 $
+ * Version: $Revision: 1.570.2.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.CmsProject.CmsProjectType;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
@@ -916,10 +912,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>source</code> argument is <code>null</code>
      * 
-     * @see CmsObject#copyResource(String, String, CmsResourceCopyMode)
-     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResourceCopyMode)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
+     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
-    public void copyResource(CmsDbContext dbc, CmsResource source, String destination, CmsResourceCopyMode siblingMode)
+    public void copyResource(CmsDbContext dbc, CmsResource source, String destination, CmsResource.CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
         // check the sibling mode to see if this resource has to be copied as a sibling
@@ -1219,7 +1215,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String description,
         String groupname,
         String managergroupname,
-        CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsDataAccessException {
+        CmsProject.CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsDataAccessException {
 
         if (CmsProject.ONLINE_PROJECT_NAME.equals(name)) {
             throw new CmsIllegalArgumentException(Messages.get().container(
@@ -2412,10 +2408,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#deleteResource(String, CmsResourceDeleteMode)
-     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResourceDeleteMode)
+     * @see CmsObject#deleteResource(String, CmsResource.CmsResourceDeleteMode)
+     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResourceDeleteMode siblingMode)
+    public void deleteResource(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
         // upgrade a potential inherited, non-shared lock into a common lock
@@ -6913,15 +6909,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resource the name of the resource to apply this operation to
-     * @param mode the undo mode, one of the <code>{@link CmsResourceUndoMode}#UNDO_XXX</code> constants 
+     * @param mode the undo mode, one of the <code>{@link org.opencms.file.CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants 
      *      please note that the recursive flag is ignored at this level
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, CmsResourceUndoMode)
-     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResourceUndoMode)
+     * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
+     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
-    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResourceUndoMode mode) throws CmsException {
+    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         if (resource.getState().isNew()) {
             // undo changes is impossible on a new resource

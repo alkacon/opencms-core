@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/05/03 13:48:48 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/05/03 16:00:23 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.15 $ 
+ * @version $Revision: 1.1.2.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -804,7 +804,7 @@ public final class CmsResourceUtil {
     /**
      * Returns the size of the given resource as a String.<p>
      * 
-     * For directories it returns {@link #SIZE_DIR}.<p>
+     * For directories it returns <code>SIZE_DIR</code>.<p>
      * 
      * @return the size of the given resource as a String
      */

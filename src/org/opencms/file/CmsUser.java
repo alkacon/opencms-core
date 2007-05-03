@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/03/13 09:55:14 $
- * Version: $Revision: 1.32.4.18 $
+ * Date   : $Date: 2007/05/03 16:00:22 $
+ * Version: $Revision: 1.32.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.18 $
+ * @version $Revision: 1.32.4.19 $
  * 
  * @since 6.0.0
  * 
@@ -106,7 +106,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Creates a new, empty OpenCms user principal.<p>
      *
-     * Mostly intented to be used with the {@link org.opencms.workplace.tools.accounts.A_CmsEditUserDialog}.<p>
+     * Mostly intented to be used with the <code>org.opencms.workplace.tools.accounts.A_CmsEditUserDialog</code>.<p>
      */
     public CmsUser() {
 
@@ -271,7 +271,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Returns this users complete "additional information" storage map.<p>
      *
-     * The "additional information" storage map is a simple {@link java.util#Map}
+     * The "additional information" storage map is a simple {@link java.util.Map}
      * that can be used to store any key / value pairs for the user.
      * Some information parts of the users address are stored in this map
      * by default.<p>

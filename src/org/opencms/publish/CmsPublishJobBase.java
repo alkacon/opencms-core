@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobBase.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/03 16:00:19 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.5
  */
@@ -91,7 +91,7 @@ public class CmsPublishJobBase {
     }
 
     /**
-     * Returns the project name or {@link Messages#GUI_DIRECT_PUBLISH_PROJECT_NAME_0}
+     * Returns the project name or {@link org.opencms.publish.Messages#GUI_DIRECT_PUBLISH_PROJECT_NAME_0}
      * if it is a direct publish job.<p>
      * 
      * @return the project name

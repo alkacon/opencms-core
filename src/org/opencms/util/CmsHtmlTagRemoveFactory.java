@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2007/04/17 17:23:15 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/05/03 16:00:26 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * Create an instance, add the {@link org.htmlparser.Tag} instances to remove and assign this
  * factory to the {@link org.htmlparser.Parser} before starting a visit. A demo usage is shown in
- * {@link org.opencms.workplace.tools.content.CmsTagReplaceParser}.<p>
+ * <code>CmsTagReplaceParser</code>.<p>
  * 
  * The tags are not actually removed: They are linked in the document object model tree of the HTML
  * that the parser generates. They just will not accept any {@link NodeVisitor} instances and
@@ -65,7 +65,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.4 $
+ * @version $Revision: 1.2.4.5 $
  * 
  * @since 6.1.8
  */
@@ -83,7 +83,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.2.4.4 $
+     * @version $Revision: 1.2.4.5 $
      * 
      * @since 6.1.8
      */

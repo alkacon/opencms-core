@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2007/02/01 09:45:52 $
- * Version: $Revision: 1.23.4.5 $
+ * Date   : $Date: 2007/05/03 16:00:20 $
+ * Version: $Revision: 1.23.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23.4.5 $ 
+ * @version $Revision: 1.23.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,7 +391,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * ${name}_disabled.${ext}<p>
      * 
      * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key 
-     * <code>{@link #ARG_CONFIRMATION_NAME}</code>
+     * <code>#ARG_CONFIRMATION_NAME</code>
      * 
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, CmsToolRootHandler, java.lang.String)
      */
