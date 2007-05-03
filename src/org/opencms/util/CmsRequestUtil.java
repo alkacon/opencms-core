@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/12/12 14:45:58 $
- * Version: $Revision: 1.18.4.7 $
+ * Date   : $Date: 2007/05/03 10:55:49 $
+ * Version: $Revision: 1.18.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.7 $ 
+ * @version $Revision: 1.18.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Last-Modified". */
     public static final String HEADER_LAST_MODIFIED = "Last-Modified";
+
+    /** HTTP Header "Location". */
+    public static final String HEADER_LOCATION = "Location";
 
     /** HTTP Header for internal requests used during static export. */
     public static final String HEADER_OPENCMS_EXPORT = "OpenCms-Export";
