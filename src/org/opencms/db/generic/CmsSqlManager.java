@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/04/26 14:31:09 $
- * Version: $Revision: 1.65.4.7 $
+ * Date   : $Date: 2007/05/03 13:48:57 $
+ * Version: $Revision: 1.65.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.7 $
+ * @version $Revision: 1.65.4.8 $
  * 
  * @since 6.0.0 
  */
@@ -317,7 +317,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * Initializes this SQL manager.<p>
      * 
-     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) from where this SQL manager is referenced
+     * @param driverType the type ID of the driver (vfs,user,project or history) from where this SQL manager is referenced
      * @param poolUrl the pool URL to get connections from the JDBC driver manager
      */
     public void init(int driverType, String poolUrl) {

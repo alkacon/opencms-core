@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/03 10:46:24 $
- * Version: $Revision: 1.146.4.39 $
+ * Date   : $Date: 2007/05/03 13:48:53 $
+ * Version: $Revision: 1.146.4.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.39 $
+ * @version $Revision: 1.146.4.40 $
  * 
  * @since 6.0.0 
  */
@@ -3787,7 +3787,7 @@ public final class CmsObject {
      */
     public void unlockProject(CmsUUID id) throws CmsException {
 
-        m_securityManager.unlockProject(m_context, id, false);
+        m_securityManager.unlockProject(m_context, id);
     }
 
     /**

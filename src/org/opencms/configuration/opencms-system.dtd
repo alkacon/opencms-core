@@ -30,7 +30,6 @@
 	http-authentication,
 	resultcache,
 	content-notification?,
-	workflow?,
 	authorizationhandler?,
 	publishmanager?,
 	session-storageprovider?)>
@@ -469,18 +468,6 @@ Each job can have an optional list of parameters.
 # The project in which timestamps for the content notification are read
 -->
 <!ELEMENT notification-project (#PCDATA)>
-<!-- 
-# Workflow settings.
-# OpenCms allows you to connect an external workflow engine with the core in order to have fine-tuned
-# workflow control. A simple default implementation of such an engine ships with the distribution.
--->
-<!ELEMENT workflow (workflowmanager, workflowengine?)>
-
-<!ELEMENT workflowmanager EMPTY>
-<!ATTLIST workflowmanager class CDATA #REQUIRED>
-
-<!ELEMENT workflowengine EMPTY>
-<!ATTLIST workflowengine class CDATA #REQUIRED>
 
 <!--
 # Authorization handler:

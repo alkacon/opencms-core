@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.37.4.21 $
+ * Date   : $Date: 2007/05/03 13:48:50 $
+ * Version: $Revision: 1.37.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.List;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.21 $ 
+ * @version $Revision: 1.37.4.22 $ 
  * 
  * @since 6.0.0 
  * 
@@ -220,7 +220,7 @@ public final class CmsLockManager {
             lock = getParentLock(resource.getRootPath());
         }
         if (lock.getSystemLock().isPublish()
-            || (lock.getSystemLock().isWorkflow() && !lock.isLockableBy(dbc.currentUser()))) {
+            || (!lock.isLockableBy(dbc.currentUser()))) {
             lock = lock.getSystemLock();
         } else {
             lock = lock.getEditionLock();
@@ -481,9 +481,8 @@ public final class CmsLockManager {
      * 
      * @param projectId the ID of the project where the resources have been locked
      * @param forceUnlock if <code>true</code>, exclusive locks in other projects are removed for resources locked with a system lock
-     * @param removeWfLocks if <code>true</code>, workflow locks are removed
      */
-    public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock, boolean removeWfLocks) {
+    public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock) {
 
         Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator(); // prevent CME
         while (itLocks.hasNext()) {
@@ -493,11 +492,6 @@ public final class CmsLockManager {
                     if (forceUnlock || (currentLock.getEditionLock().getProjectId().equals(projectId))) {
                         unlockResource(currentLock.getResourceName(), false);
                     }
-                }
-                if (removeWfLocks
-                    && currentLock.getSystemLock().isWorkflow()
-                    && (currentLock.getProjectId().equals(projectId))) {
-                    unlockResource(currentLock.getResourceName(), true);
                 }
             } else {
                 if (currentLock.getProjectId().equals(projectId)) {
@@ -602,7 +596,7 @@ public final class CmsLockManager {
 
         if (!currentLock.isLockableBy(user)) {
             // check type, owner and project for system locks
-            // this is required if publishing, or create a workflow for, several siblings
+            // this is required if publishing several siblings
             if (currentLock.getSystemLock().isUnlocked()
                 || currentLock.getType() != type
                 || !currentLock.isOwnedInProjectBy(user, project)) {
@@ -611,10 +605,6 @@ public final class CmsLockManager {
                 if (currentLock.getSystemLock().isPublish()) {
                     message = Messages.get().container(
                         Messages.ERR_RESOURCE_LOCKED_FORPUBLISH_1,
-                        dbc.getRequestContext().getSitePath(resource));
-                } else if (currentLock.getSystemLock().isWorkflow()) {
-                    message = Messages.get().container(
-                        Messages.ERR_RESOURCE_LOCKED_INWORKFLOW_1,
                         dbc.getRequestContext().getSitePath(resource));
                 } else if (currentLock.getEditionLock().isInherited()) {
                     message = Messages.get().container(

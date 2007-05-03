@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.19.8.4 $
+ * Date   : $Date: 2007/05/03 13:48:53 $
+ * Version: $Revision: 1.19.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.19.8.4 $
+ * @version $Revision: 1.19.8.5 $
  * 
  * @since 6.0.0 
  */
@@ -62,9 +62,6 @@ public class CmsProject implements Cloneable, Comparable {
 
         /** Project type temporary. */
         protected static final CmsProjectType MODE_PROJECT_TEMPORARY = new CmsProjectType(1);
-
-        /** Project type workflow. */
-        protected static final CmsProjectType MODE_PROJECT_WORKFLOW = new CmsProjectType(2);
 
         /** Serializable version id. */
         private static final long serialVersionUID = -8701314451776599534L;
@@ -93,9 +90,8 @@ public class CmsProject implements Cloneable, Comparable {
                     return CmsProjectType.MODE_PROJECT_NORMAL;
                 case 1:
                     return CmsProjectType.MODE_PROJECT_TEMPORARY;
-                case 2:
                 default:
-                    return CmsProjectType.MODE_PROJECT_WORKFLOW;
+                    return CmsProjectType.MODE_PROJECT_NORMAL;
             }
         }
     }
@@ -117,9 +113,6 @@ public class CmsProject implements Cloneable, Comparable {
 
     /** Indicates a temporary project that is deleted after it is published. */
     public static final CmsProjectType PROJECT_TYPE_TEMPORARY = CmsProjectType.MODE_PROJECT_TEMPORARY;
-
-    /** Indicates a project that is used to bundle resources for a workflow task. */
-    public static final CmsProjectType PROJECT_TYPE_WORKFLOW = CmsProjectType.MODE_PROJECT_WORKFLOW;
 
     /** The creation date of this project. */
     private long m_dateCreated;
@@ -462,16 +455,6 @@ public class CmsProject implements Cloneable, Comparable {
     public boolean isOnlineProject() {
 
         return isOnlineProject(m_id);
-    }
-
-    /**
-     * Returns <code>true</code> if this project is a workflow project.<p>
-     * 
-     * @return <code>true</code> if this project is a workflow project
-     */
-    public boolean isWorkflowProject() {
-
-        return m_type == CmsProject.PROJECT_TYPE_WORKFLOW;
     }
 
     /**

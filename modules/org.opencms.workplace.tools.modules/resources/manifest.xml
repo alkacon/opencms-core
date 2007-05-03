@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.modules</name>
-		<nicename><![CDATA[OpenCms 6 Module management]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Module management]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains administration tools for managing the OpenCms modules.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.3</version>
+		<version>1.2.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

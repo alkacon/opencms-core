@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/02 16:55:26 $
- * Version: $Revision: 1.570.2.80 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.570.2.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2315,7 +2315,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), false, false);
+        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), false);
         clearAccessControlListCache();
         clearResourceCache();
 
@@ -2868,8 +2868,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // and with the last change done in the current project are candidates if lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
                     if (!directPublishResource.getState().isUnchanged()
-                        && lock.isLockableBy(dbc.currentUser())
-                        && !lock.getSystemLock().isWorkflow()) {
+                        && lock.isLockableBy(dbc.currentUser())) {
 
                         try {
                             m_securityManager.checkPermissions(
@@ -2929,7 +2928,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // when publishing a file directly this file is the only candidate
                     // if it is modified and lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
-                    if (lock.isLockableBy(dbc.currentUser()) && !lock.getSystemLock().isWorkflow()) {
+                    if (lock.isLockableBy(dbc.currentUser())) {
                         // check permissions
                         try {
                             m_securityManager.checkPermissions(
@@ -4235,7 +4234,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#PUBLISH}</code></li>
      * </ul><p>
      * 
@@ -4899,7 +4897,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // lock this sibling, so during publishing 
                 // the siblings will be unlock when all siblings get published
                 lockResource(dbc, resource, CmsLockType.PUBLISH);
-            } else if (!lock.getSystemLock().isWorkflow()) {
+            } else {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
@@ -7011,12 +7009,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Unlocks all resources in the given project.<p>
      * 
      * @param project the project to unlock the resources in
-     * @param removeWfLocks if the workflow lock should be removed too
      */
-    public void unlockProject(CmsProject project, boolean removeWfLocks) {
+    public void unlockProject(CmsProject project) {
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(project.getUuid(), false, removeWfLocks);
+        m_lockManager.removeResourcesInProject(project.getUuid(), false);
         clearResourceCache();
         OpenCms.getMemoryMonitor().flushProjects();
         // we must also clear the permission cache
@@ -8113,7 +8110,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {
@@ -8175,7 +8172,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)i.next();
             try {
                 CmsLock lock = getLock(dbc, res);
-                if (!lock.isLockableBy(dbc.currentUser()) || lock.getSystemLock().isWorkflow()) {
+                if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
                     if (lock.isShared() && publishList != null) {

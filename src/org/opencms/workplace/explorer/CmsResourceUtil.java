@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,25 +39,20 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsTouch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -69,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.14 $ 
+ * @version $Revision: 1.1.2.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,9 +75,6 @@ public final class CmsResourceUtil {
      */
     public static class CmsResourceProjectState extends A_CmsModeIntEnumeration {
 
-        /** Constant for the project state of a resource in a workflow that the current user can lock. */
-        protected static final CmsResourceProjectState LOCKABLE_WORKFLOW = new CmsResourceProjectState(3);
-
         /** Constant for the project state locked for publishing. */
         protected static final CmsResourceProjectState LOCKED_FOR_PUBLISHING = new CmsResourceProjectState(5);
 
@@ -91,9 +83,6 @@ public final class CmsResourceUtil {
 
         /** Constant for the project state locked in other project. */
         protected static final CmsResourceProjectState LOCKED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
-
-        /** Constant for the project state of a resource in a workflow that the current user can not lock. */
-        protected static final CmsResourceProjectState NOT_LOCKABLE_WORKFLOW = new CmsResourceProjectState(4);
 
         /** Constant for the project state unlocked. */
         protected static final CmsResourceProjectState UNLOCKED = new CmsResourceProjectState(0);
@@ -108,16 +97,6 @@ public final class CmsResourceUtil {
         protected CmsResourceProjectState(int mode) {
 
             super(mode);
-        }
-
-        /**
-         * Checks if this is a {@link #LOCKABLE_WORKFLOW} state.<p>
-         * 
-         * @return <code>true</code> if this is a {@link #LOCKABLE_WORKFLOW} state
-         */
-        public boolean isLockableInWorkflow() {
-
-            return (this == LOCKABLE_WORKFLOW);
         }
 
         /**
@@ -148,16 +127,6 @@ public final class CmsResourceUtil {
         public boolean isLockedInOtherProject() {
 
             return (this == LOCKED_IN_OTHER_PROJECT);
-        }
-
-        /**
-         * Checks if this is a {@link #NOT_LOCKABLE_WORKFLOW} state.<p>
-         * 
-         * @return <code>true</code> if this is a {@link #NOT_LOCKABLE_WORKFLOW} state
-         */
-        public boolean isNotLockableInWorkflow() {
-
-            return (this == NOT_LOCKABLE_WORKFLOW);
         }
 
         /**
@@ -203,9 +172,6 @@ public final class CmsResourceUtil {
     /** Constant that signalizes that all path operations will be based on the root path. */
     public static final CmsResourceUtilSiteMode SITE_MODE_ROOT = new CmsResourceUtilSiteMode();
 
-    /** Constant for the project state of a resource in a workflow that the current user can lock. */
-    public static final CmsResourceProjectState STATE_LOCKABLE_WORKFLOW = CmsResourceProjectState.LOCKABLE_WORKFLOW;
-
     /** Constant for the project state locked for publishing. */
     public static final CmsResourceProjectState STATE_LOCKED_FOR_PUBLISHING = CmsResourceProjectState.LOCKED_FOR_PUBLISHING;
 
@@ -215,14 +181,8 @@ public final class CmsResourceUtil {
     /** Constant for the project state locked in other project. */
     public static final CmsResourceProjectState STATE_LOCKED_IN_OTHER_PROJECT = CmsResourceProjectState.LOCKED_IN_OTHER_PROJECT;
 
-    /** Constant for the project state of a resource in a workflow that the current user can not lock. */
-    public static final CmsResourceProjectState STATE_NOT_LOCKABLE_WORKFLOW = CmsResourceProjectState.NOT_LOCKABLE_WORKFLOW;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceUtil.class);
-
-    /** The configured workflow manager, may be <code>null</code>. */
-    private static I_CmsWorkflowManager m_wfManager;
 
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
@@ -293,15 +253,6 @@ public final class CmsResourceUtil {
     public CmsResourceUtil(CmsResource resource) {
 
         setResource(resource);
-    }
-
-    static {
-        // initialize the workflow manager
-        try {
-            m_wfManager = OpenCms.getWorkflowManager();
-        } catch (CmsRuntimeException e) {
-            m_wfManager = null;
-        }
     }
 
     /**
@@ -449,10 +400,6 @@ public final class CmsResourceUtil {
             iconPath = "this.png";
         } else if (getProjectState() == STATE_LOCKED_IN_OTHER_PROJECT) {
             iconPath = "other.png";
-        } else if (getProjectState() == STATE_LOCKABLE_WORKFLOW) {
-            iconPath = "myworkflow.png";
-        } else if (getProjectState() == STATE_NOT_LOCKABLE_WORKFLOW) {
-            iconPath = "otherworkflow.png";
         } else if (getProjectState() == STATE_LOCKED_FOR_PUBLISHING) {
             iconPath = "publish.png";
         } else {
@@ -732,19 +679,6 @@ public final class CmsResourceUtil {
 
         if (getLock().getSystemLock().isPublish()) {
             return STATE_LOCKED_FOR_PUBLISHING;
-        } else if (m_wfManager != null && getLock().getSystemLock().isWorkflow()) {
-            boolean isLockable = false;
-            if (getWorkflowProject() != null) {
-                isLockable = m_wfManager.isLockableInWorkflow(
-                    getCms().getRequestContext().currentUser(),
-                    getLock(),
-                    false);
-            }
-            if (isLockable) {
-                return STATE_LOCKABLE_WORKFLOW;
-            } else {
-                return STATE_NOT_LOCKABLE_WORKFLOW;
-            }
         }
         if (!getLock().isUnlocked() && !getResource().getState().isUnchanged()) {
             if (getLockedInProjectId().equals(getReferenceProject().getUuid())) {
@@ -963,9 +897,7 @@ public final class CmsResourceUtil {
      */
     public String getSystemLockInfo(boolean forExplorer) {
 
-        if (getLock().getSystemLock().isWorkflow()) {
-            return getWorkflowProjectInfo();
-        } else if (getLock().getSystemLock().isPublish()) {
+        if (getLock().getSystemLock().isPublish()) {
             if (!forExplorer) {
                 return getMessages().key(Messages.GUI_PUBLISH_TOOLTIP_0);
             } else {
@@ -1089,81 +1021,6 @@ public final class CmsResourceUtil {
             }
         }
         return user;
-    }
-
-    /**
-     * Returns the workflow project, or <code>null</code> if no workflow is found.<p>
-     * 
-     * @return the workflow project
-     */
-    public CmsProject getWorkflowProject() {
-
-        CmsLock lock = getLock().getSystemLock();
-        if ((m_wfManager == null) || !lock.isWorkflow()) {
-            return null;
-        }
-        try {
-            return m_wfManager.getTask(getCms(), getCms().getSitePath(getResource()));
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the workflow project information tooltip for the explorer view.<p>
-     * 
-     * @return the workflow project information tooltip
-     */
-    public String getWorkflowProjectInfo() {
-
-        if (m_wfManager == null) {
-            return getMessages().key(Messages.GUI_WORKFLOW_DISABLED_0);
-        }
-        CmsProject wfProject = getWorkflowProject();
-        if (wfProject == null) {
-            return "";
-        }
-        String projectInfo = "";
-        try {
-            String taskType = m_wfManager.getTaskType(wfProject, getLocale());
-            projectInfo = Messages.get().container(
-                Messages.GUI_WORKFLOW_TASK_INFO_TOOLTIP_5,
-                new Object[] {
-                    taskType,
-                    m_wfManager.getTaskDescription(wfProject),
-                    getWorkflowTaskState(),
-                    getMessages().getDateTime(m_wfManager.getTaskStartTime(wfProject)),
-                    m_wfManager.getTaskOwner(wfProject).getName()}).key();
-        } catch (CmsException exc) {
-            LOG.error(exc);
-            projectInfo = exc.getLocalizedMessage(getLocale());
-        }
-        return projectInfo;
-    }
-
-    /**
-     * Returns the workflow task state.<p>
-     * 
-     * @return the workflow task state
-     */
-    public String getWorkflowTaskState() {
-
-        if (m_wfManager == null) {
-            return getMessages().key(Messages.GUI_WORKFLOW_DISABLED_0);
-        }
-        CmsProject wfProject = getWorkflowProject();
-        if (wfProject == null) {
-            return "";
-        }
-        String taskState = "";
-        try {
-            taskState = m_wfManager.getTaskState(wfProject, getLocale());
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            taskState = e.getLocalizedMessage(getLocale());
-        }
-        return taskState;
     }
 
     /**
@@ -1321,20 +1178,6 @@ public final class CmsResourceUtil {
             return CmsOrganizationalUnit.getSimpleName(name);
         }
         return CmsOrganizationalUnit.SEPARATOR + name;
-    }
-
-    /**
-     * Returns the current locale, or the default locale if no locale is set.<p>
-     * 
-     * @return the current locale
-     */
-    private Locale getLocale() {
-
-        if (m_request != null) {
-            return m_request.getLocale();
-        } else {
-            return CmsLocaleManager.getDefaultLocale();
-        }
     }
 
     /**

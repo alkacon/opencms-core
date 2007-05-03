@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameUnlockedInactiveNotDeletedNoAl.java,v $
- * Date   : $Date: 2007/04/26 15:21:53 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -69,8 +69,7 @@ public class CmsMirPrSameUnlockedInactiveNotDeletedNoAl extends A_CmsMenuItemRul
         if (resourceUtil[0].isInsideProject()) {
             //if (resourceUtil.getLock().isNullLock()) {
             boolean matches = (!resourceUtil[0].getProjectState().isLockedForPublishing())
-                && (CmsStringUtil.isEmptyOrWhitespaceOnly(resourceUtil[0].getLockedByName()))
-                || (resourceUtil[0].getLock().getType().isWorkflow());
+                && (CmsStringUtil.isEmptyOrWhitespaceOnly(resourceUtil[0].getLockedByName()));
             return matches && !OpenCms.getWorkplaceManager().autoLockResources();
             //}
         }

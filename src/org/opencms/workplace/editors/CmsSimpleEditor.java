@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2006/10/13 08:40:05 $
- * Version: $Revision: 1.12.8.2 $
+ * Date   : $Date: 2007/05/03 13:48:47 $
+ * Version: $Revision: 1.12.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,6 @@ import org.apache.commons.logging.Log;
 /**
  * Creates the output for editing a resource (text or JSP files).<p> 
  * 
- * This class is extended by the LEdit class, so be careful when changing anything.<p>
- * 
  * The following files use this class:
  * <ul>
  * <li>/editors/simple/editor.jsp</li>
@@ -62,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.8.2 $ 
+ * @version $Revision: 1.12.8.3 $ 
  * 
  * @since 6.0.0 
  */

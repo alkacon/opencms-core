@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2007/03/21 13:14:00 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/03 13:48:50 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.0.0
  */
@@ -88,9 +88,6 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     /** Type of the NULL lock obtained by {@link CmsLock#getNullLock()}. */
     public static final CmsLockType UNLOCKED = new CmsLockType(0);
 
-    /** A lock that indicates that the resource is assigned to a task in a workflow. */
-    public static final CmsLockType WORKFLOW = new CmsLockType(5);
-
     /** Type of the NULL system lock. */
     protected static final CmsLockType SYSTEM_UNLOCKED = new CmsLockType(8);
 
@@ -127,8 +124,6 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
                 return INHERITED;
             case 4:
                 return EXCLUSIVE;
-            case 5:
-                return WORKFLOW;
             case 6:
                 return TEMPORARY;
             case 7:
@@ -177,7 +172,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isPersistent() {
 
-        return (this == CmsLockType.EXCLUSIVE) || isWorkflow() || isPublish();
+        return (this == CmsLockType.EXCLUSIVE) || isPublish();
     }
 
     /**
@@ -227,7 +222,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
      */
     public boolean isSystem() {
 
-        return (isWorkflow() || isPublish() || (this == CmsLockType.SYSTEM_UNLOCKED));
+        return (isPublish() || (this == CmsLockType.SYSTEM_UNLOCKED));
     }
 
     /**
@@ -254,16 +249,6 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     }
 
     /**
-     * Returns <code>true</code> if this is a workflow lock.<p>
-     * 
-     * @return <code>true</code> if this is a workflow lock
-     */
-    public boolean isWorkflow() {
-
-        return (this == CmsLockType.WORKFLOW);
-    }
-
-    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -277,8 +262,6 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
                 return "inherited";
             case 4:
                 return "exclusive";
-            case 5:
-                return "workflow";
             case 6:
                 return "temporary exclusive";
             case 7:

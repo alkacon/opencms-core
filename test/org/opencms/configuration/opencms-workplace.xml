@@ -713,12 +713,6 @@
           <name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
           <helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
         </root>
-        <root>
-          <key>workflow</key>
-          <uri>/system/workplace/workflow/</uri>
-          <name>${key.GUI_WORKFLOW_VIEW_ROOT_NAME_0}</name>
-          <helptext>${key.GUI_WORKFLOW_VIEW_ROOT_HELP_0}</helptext>
-        </root>
       </roots>
     </tool-manager>
   </workplace>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/04/26 14:31:16 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2007/05/03 13:48:55 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -61,6 +62,7 @@ import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,6 +99,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
+        suite.addTest(new TestCmsImportExport("testSetup"));
         suite.addTest(new TestCmsImportExport("testUserImport"));
         suite.addTest(new TestCmsImportExport("testImportExportFolder"));
         suite.addTest(new TestCmsImportExport("testImportExportId"));
@@ -1249,6 +1252,26 @@ public class TestCmsImportExport extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the import of resources during setup.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testSetup() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of resources during setup.");
+
+        CmsResource resource = cms.readResource("index.html");
+
+        long expectedDateCreated = convertTimestamp("Tue, 01 Jun 2004 09:11:24 GMT");
+        long expectedDateLastModified = convertTimestamp("Wed, 27 Sep 2006 15:11:58 GMT");
+
+        assertEquals(expectedDateCreated, resource.getDateCreated());
+        assertEquals(expectedDateLastModified, resource.getDateLastModified());
+    }
+
+    /**
      * Tests if the user passwords are imported correctly.<p>
      * The password digests are hex-128 (legacy) encoded, and
      * should be converted to base-64. 
@@ -1281,5 +1304,33 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // check the test2 user
         user = cms.readUser("test2");
         assertEquals(user.getPassword(), passwordHandler.digest("test2", "MD5", CmsEncoder.ENCODING_UTF_8));
+    }
+
+    /**
+     * Convert a given timestamp from a String format to a long value.<p>
+     * 
+     * The timestamp is either the string representation of a long value (old export format)
+     * or a user-readable string format.
+     * 
+     * @param timestamp timestamp to convert
+     * @return long value of the timestamp
+     */
+    private long convertTimestamp(String timestamp) {
+
+        long value = 0;
+        // try to parse the timestamp string
+        // if it successes, its an old style long value
+        try {
+            value = Long.parseLong(timestamp);
+
+        } catch (NumberFormatException e) {
+            // the timestamp was in in a user-readable string format, create the long value form it
+            try {
+                value = CmsDateUtil.parseHeaderDate(timestamp);
+            } catch (ParseException pe) {
+                value = System.currentTimeMillis();
+            }
+        }
+        return value;
     }
 }

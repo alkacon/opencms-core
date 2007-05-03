@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/02 16:55:26 $
- * Version: $Revision: 1.97.4.45 $
+ * Date   : $Date: 2007/05/03 13:48:50 $
+ * Version: $Revision: 1.97.4.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2660,7 +2660,6 @@ public final class CmsSecurityManager {
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLockType#WORKFLOW}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLockType#PUBLISH}</code></li>
      * </ul><p>
      * 
@@ -3266,7 +3265,8 @@ public final class CmsSecurityManager {
      * @see CmsObject#readGroup(CmsUUID)
      * @see CmsObject#readHistoryPrincipal(CmsUUID)
      */
-    public CmsHistoryPrincipal readHistoricalPrincipal(CmsRequestContext context, CmsUUID principalId) throws CmsException {
+    public CmsHistoryPrincipal readHistoricalPrincipal(CmsRequestContext context, CmsUUID principalId)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsHistoryPrincipal result = null;
@@ -4369,9 +4369,7 @@ public final class CmsSecurityManager {
             // write permissions on parent folder are checked later
             m_driverManager.restoreDeletedResource(dbc, structureId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_RESTORE_DELETED_RESOURCE_1,
-                structureId), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_RESTORE_DELETED_RESOURCE_1, structureId), e);
         } finally {
             dbc.clear();
         }
@@ -4649,12 +4647,11 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param projectId the id of the project to be published
-     * @param removeWfLocks if the workflow lock should be removed too
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the required permissions. 
      */
-    public void unlockProject(CmsRequestContext context, CmsUUID projectId, boolean removeWfLocks)
+    public void unlockProject(CmsRequestContext context, CmsUUID projectId)
     throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4662,7 +4659,7 @@ public final class CmsSecurityManager {
 
         try {
             checkManagerOfProjectRole(dbc, project);
-            m_driverManager.unlockProject(project, removeWfLocks);
+            m_driverManager.unlockProject(project);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_PROJECT_2,
@@ -5242,7 +5239,7 @@ public final class CmsSecurityManager {
 
         if (m_lockManager.hasSystemLocks(dbc, resource)) {
             throw new CmsLockException(Messages.get().container(
-                Messages.ERR_RESOURCE_LOCKED_IN_WORKFLOW_1,
+                Messages.ERR_RESOURCE_SYSTEM_LOCKED_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
         }
     }
@@ -5632,7 +5629,7 @@ public final class CmsSecurityManager {
             // the destination must always get a new lock
             m_driverManager.lockResource(dbc, destinationResource, CmsLockType.EXCLUSIVE);
         } catch (Exception e) {
-            // could happen with workflow (and harder with shared) locks on single files
+            // could happen with with shared locks on single files
             if (LOG.isWarnEnabled()) {
                 LOG.warn(e);
             }

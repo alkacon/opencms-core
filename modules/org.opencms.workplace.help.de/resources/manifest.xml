@@ -10,14 +10,14 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.de</name>
-		<nicename><![CDATA[OpenCms 6 Workplace german online help]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Workplace german online help]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
 		<description><![CDATA[This module contains the online help pages for the OpenCms workplace in German language.
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.2.2</version>
+		<version>1.2.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1038,37 +1038,6 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/de/help/editors/msdhtml.html</source>
-			<destination>system/workplace/locales/de/help/editors/msdhtml.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f6eb61f4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>c5d6c0cc-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[MSDHTML Editor]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Der Microsoft Dynamic HTML Editor]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/locales/de/help/editors/simple.html</source>
 			<destination>system/workplace/locales/de/help/editors/simple.html</destination>
 			<type>xmlpage</type>
@@ -1522,7 +1491,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 6.0.0]]></value>
+					<value><![CDATA[Beschreibung des Berechtigungssystems von OpenCms 7.0.0]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2535,25 +2504,6 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Images for the German Online Help]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/help/images/editor_msdhtml.png</source>
-			<destination>system/workplace/locales/de/help/images/editor_msdhtml.png</destination>
-			<type>image</type>
-			<uuidstructure>f783f89c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>b74ab790-efb0-11d9-b28c-21bd740a33b2</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Jul 2005 13:03:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:450,h:366]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

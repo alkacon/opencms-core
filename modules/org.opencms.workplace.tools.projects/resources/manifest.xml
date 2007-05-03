@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.projects</name>
-		<nicename><![CDATA[OpenCms 6 Project management]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Project management]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for managing the OpenCms projects.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.5</version>
+		<version>1.2.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

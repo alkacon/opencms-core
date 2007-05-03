@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2007/03/27 14:16:25 $
- * Version: $Revision: 1.14.4.9 $
+ * Date   : $Date: 2007/05/03 13:48:56 $
+ * Version: $Revision: 1.14.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.9 $
+ * @version $Revision: 1.14.4.10 $
  * 
  * @since 6.0.0
  */
@@ -226,12 +226,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_VFS_XML_CONTENT_FINISHED_0 = "INIT_VFS_XML_CONTENT_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_ENGINE_SUCCESS_1 = "INIT_WORKFLOW_ENGINE_SUCCESS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_MANAGER_SUCCESS_1 = "INIT_WORKFLOW_MANAGER_SUCCESS_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_FINISHED_0 = "INIT_WORKPLACE_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -281,12 +275,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1 = "LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_WORKFLOW_ENGINE_FAILURE_1 = "LOG_INIT_WORKFLOW_ENGINE_FAILURE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INIT_WORKFLOW_MANAGER_FAILURE_1 = "LOG_INIT_WORKFLOW_MANAGER_FAILURE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_CONFIG_BASE_FOLDER_1 = "LOG_INVALID_CONFIG_BASE_FOLDER_1";

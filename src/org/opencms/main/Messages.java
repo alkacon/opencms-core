@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2007/03/21 09:45:19 $
- * Version: $Revision: 1.28.4.9 $
+ * Date   : $Date: 2007/05/03 13:48:48 $
+ * Version: $Revision: 1.28.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.9 $ 
+ * @version $Revision: 1.28.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,9 +115,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NO_SESSIONINFO_SESSION_0 = "ERR_NO_SESSIONINFO_SESSION_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_NO_WORKFLOW_CLASS_0 = "ERR_NO_WORKFLOW_CLASS_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NO_WORKPLACE_PERMISSIONS_0 = "ERR_NO_WORKPLACE_PERMISSIONS_0";

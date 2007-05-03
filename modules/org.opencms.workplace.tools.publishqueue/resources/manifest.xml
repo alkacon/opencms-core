@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.publishqueue</name>
-		<nicename><![CDATA[OpenCms 6 Publish queue]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Publish queue]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[This module contains the tools for view the OpenCms publish queue.
 (c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>1.0.9</version>
+		<version>1.0.10</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

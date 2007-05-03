@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2007/02/20 08:30:09 $
- * Version: $Revision: 1.23.4.14 $
+ * Date   : $Date: 2007/05/03 13:48:57 $
+ * Version: $Revision: 1.23.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.14 $ 
+ * @version $Revision: 1.23.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -284,9 +284,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_NAME_0 = "GUI_WORKFLOW_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_DIALOG_HANDLER_2 = "INIT_ADD_DIALOG_HANDLER_2";
 
     /** Message constant for key in the resource bundle. */
@@ -363,12 +360,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_VFS_ACCESS_INITIALIZED_0 = "INIT_VFS_ACCESS_INITIALIZED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0 = "INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0 = "INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_INITIALIZE_START_0 = "INIT_WORKPLACE_INITIALIZE_START_0";
