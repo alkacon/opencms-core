@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:17:32 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Thu, 03 May 2007 09:54:32 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.welcome</name>
@@ -18,7 +18,7 @@
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
 <p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>4.2.4</version>
+		<version>4.2.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -347,68 +347,6 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_6.9.1.html</source>
-			<destination>release/notes_6.9.1.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>a2c48bac-876e-22db-aab7-85e26798f8a4</uuidstructure>
-			<uuidresource>1187aafa-5f7f-dedb-123e-6d3a42edecd8</uuidresource>
-			<datelastmodified>Thu, 19 Oct 2006 14:51:40 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 19 Oct 2006 14:36:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.25E-5]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.9.1 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.9.1 Release Notes]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_6.2.beta.html</source>
-			<destination>release/notes_6.2.beta.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0e728a2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>e4e5c285-98bb-11da-890c-c9ea5eb4afdb</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 08 Feb 2006 15:59:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[0.0010]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.2 Beta Release Notes]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.2 Beta Release Notes]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>release/notes_6.2.html</source>
 			<destination>release/notes_6.2.html</destination>
 			<type>xmlpage</type>
@@ -435,6 +373,37 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_7rc1.html</source>
+			<destination>release/notes_7rc1.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>a2c48bac-876e-22db-aab7-85e26798f8a4</uuidstructure>
+			<uuidresource>1187aafa-5f7f-dedb-123e-6d3a42edecd8</uuidresource>
+			<datelastmodified>Thu, 03 May 2007 09:41:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Oct 2006 14:36:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.25E-5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[OpenCms 7 RC 1 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 7 RC 1 Release Notes]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
