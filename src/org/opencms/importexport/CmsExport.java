@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/03/13 09:55:15 $
- * Version: $Revision: 1.84.4.13 $
+ * Date   : $Date: 2007/05/03 10:44:13 $
+ * Version: $Revision: 1.84.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.13 $ 
+ * @version $Revision: 1.84.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1039,6 +1039,8 @@ public class CmsExport {
             // write the properties to the manifest
             Element propertiesElement = fileElement.addElement(CmsImportExportManager.N_PROPERTIES);
             List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
+            // sort the properties for a well defined output order
+            Collections.sort(properties);
             for (int i = 0, n = properties.size(); i < n; i++) {
                 CmsProperty property = (CmsProperty)properties.get(i);
                 if (isIgnoredProperty(property)) {
