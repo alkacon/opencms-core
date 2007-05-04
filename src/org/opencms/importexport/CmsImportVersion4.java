@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.87.4.9 $
+ * Date   : $Date: 2007/05/04 09:33:28 $
+ * Version: $Revision: 1.87.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.87.4.9 $ 
+ * @version $Revision: 1.87.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -590,19 +590,23 @@ public class CmsImportVersion4 extends A_CmsImport {
     /**
      * Rewrites all parseable files, to assure link check.<p>
      */
-    private void rewriteParseables() {
+    protected void rewriteParseables() {
 
         Iterator it = m_parseables.iterator();
         while (it.hasNext()) {
             CmsResource res = (CmsResource)it.next();
             try {
-                m_cms.writeFile(CmsFile.upgrade(res, m_cms));
-            } catch (CmsException e) {
+                // make sure the date last modified is kept...
+                CmsFile file = CmsFile.upgrade(res, m_cms);
+                file.setDateLastModified(res.getDateLastModified());
+                m_cms.writeFile(file);
+            } catch (Throwable e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()));
+                    LOG.warn(
+                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()),
+                        e);
                 }
             }
         }
-
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/05/03 13:48:56 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/05/04 09:33:28 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.3.0 
  * 
@@ -614,7 +614,7 @@ public class CmsImportVersion5 extends A_CmsImport {
     /**
      * Rewrites all parseable files, to assure link check.<p>
      */
-    private void rewriteParseables() {
+    protected void rewriteParseables() {
 
         Iterator it = m_parseables.iterator();
         while (it.hasNext()) {
