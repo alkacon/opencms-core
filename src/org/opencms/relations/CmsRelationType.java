@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/05/04 15:26:54 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.util.Locale;
  *   <li>{@link #JSP_STRONG}</li>
  *   <li>{@link #JSP_WEAK}</li>
  *   <li>{@link #OU_RESOURCE}</li>
+ *   <li>{@link #CATEGORY}</li>
  * </ul>
  * <p>
  * 
@@ -57,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.3.0
  */
@@ -76,6 +77,9 @@ public final class CmsRelationType implements Serializable {
 
     /** String constant for "WEAK" relations. */
     private static final String VALUE_WEAK = "WEAK";
+
+    /** Constant for the category of an <code>OpenCmsVfsFile</code>. */
+    public static final CmsRelationType CATEGORY = new CmsRelationType("CATEGORY", 9);
 
     /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
     public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", 2);
@@ -103,7 +107,7 @@ public final class CmsRelationType implements Serializable {
 
     /** Constant indicating the starting mode for user defined relation types. */
     private static final int USER_DEFINED_MODE_LIMIT = 100;
-    
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
@@ -116,7 +120,8 @@ public final class CmsRelationType implements Serializable {
         JSP_STRONG,
         JSP_WEAK,
         EMBEDDED_OBJECT,
-        OU_RESOURCE};
+        OU_RESOURCE,
+        CATEGORY};
 
     /** Internal representation. */
     private final int m_mode;
@@ -313,6 +318,9 @@ public final class CmsRelationType implements Serializable {
             case 8: // ou resource
                 nameKey = Messages.GUI_RELATION_TYPE_OU_RESOURCE_0;
                 break;
+            case 9: // category
+                nameKey = Messages.GUI_RELATION_TYPE_CATEGORY_0;
+                break;
             default:
                 return Messages.get().getBundle(locale).key(
                     Messages.GUI_RELATION_TYPE_UNKNOWN_1,
@@ -346,7 +354,7 @@ public final class CmsRelationType implements Serializable {
 
         return m_type;
     }
-    
+
     /**
      * Returns the short type name.<p>
      * 
@@ -396,7 +404,7 @@ public final class CmsRelationType implements Serializable {
      * @return <code>true</code> if this is an internal relation type
      */
     public boolean isInternal() {
-        
+
         return (getMode() <= USER_DEFINED_MODE_LIMIT);
     }
 
