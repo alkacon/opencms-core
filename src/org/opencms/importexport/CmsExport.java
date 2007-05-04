@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/05/03 10:44:13 $
- * Version: $Revision: 1.84.4.14 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.84.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -91,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.14 $ 
+ * @version $Revision: 1.84.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,6 +181,91 @@ public class CmsExport {
 
         this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport(
             cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            true);
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            recursive,
+            false);
     }
 
     /**
@@ -280,91 +367,6 @@ public class CmsExport {
 
             throw new CmsImportExportException(message, ioe);
         }
-    }
-
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param cms the cmsObject to work with
-     * @param exportFile the file or folder to export to
-     * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
-     * @param includeUnchanged <code>true</code>, if unchanged files should be included
-     * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and grou pdata will also be exported
-     * @param contentAge export contents changed after this date/time
-     * @param report to handle the log messages
-     * 
-     * @throws CmsImportExportException if something goes wrong
-     * @throws CmsRoleViolationException if the current user has not the required role
-     */
-    public CmsExport(
-        CmsObject cms,
-        String exportFile,
-        List resourcesToExport,
-        boolean includeSystem,
-        boolean includeUnchanged,
-        Element moduleElement,
-        boolean exportUserdata,
-        long contentAge,
-        I_CmsReport report)
-    throws CmsImportExportException, CmsRoleViolationException {
-
-        this(
-            cms,
-            exportFile,
-            resourcesToExport,
-            includeSystem,
-            includeUnchanged,
-            moduleElement,
-            exportUserdata,
-            contentAge,
-            report,
-            true);
-    }
-
-    /**
-     * Constructs a new export.<p>
-     *
-     * @param cms the cmsObject to work with
-     * @param exportFile the file or folder to export to
-     * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
-     * @param includeUnchanged <code>true</code>, if unchanged files should be included
-     * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and grou pdata will also be exported
-     * @param contentAge export contents changed after this date/time
-     * @param report to handle the log messages
-     * @param recursive recursive flag
-     * 
-     * @throws CmsImportExportException if something goes wrong
-     * @throws CmsRoleViolationException if the current user has not the required role
-     */
-    public CmsExport(
-        CmsObject cms,
-        String exportFile,
-        List resourcesToExport,
-        boolean includeSystem,
-        boolean includeUnchanged,
-        Element moduleElement,
-        boolean exportUserdata,
-        long contentAge,
-        I_CmsReport report,
-        boolean recursive)
-    throws CmsImportExportException, CmsRoleViolationException {
-
-        this(
-            cms,
-            exportFile,
-            resourcesToExport,
-            includeSystem,
-            includeUnchanged,
-            moduleElement,
-            exportUserdata,
-            contentAge,
-            report,
-            recursive,
-            false);
     }
 
     /**
@@ -941,6 +943,25 @@ public class CmsExport {
     }
 
     /**
+     * Adds a relation node to the <code>manifest.xml</code>.<p>
+     * 
+     * @param relationsElement the parent element to append the node to
+     * @param structureId the structure id of the target relation
+     * @param sitePath the site path of the target relation
+     * @param relationType the type of the relation
+     */
+    private void addRelationNode(Element relationsElement, String structureId, String sitePath, String relationType) {
+
+        if ((structureId != null) && (sitePath != null) && (relationType != null)) {
+            Element relationElement = relationsElement.addElement(CmsImportExportManager.N_RELATION);
+
+            relationElement.addElement(CmsImportExportManager.N_RELATION_ATTRIBUTE_ID).addText(structureId);
+            relationElement.addElement(CmsImportExportManager.N_RELATION_ATTRIBUTE_PATH).addText(sitePath);
+            relationElement.addElement(CmsImportExportManager.N_RELATION_ATTRIBUTE_TYPE).addText(relationType);
+        }
+    }
+
+    /**
      * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      * 
      * @param resource the resource to get the data from
@@ -1048,6 +1069,21 @@ public class CmsExport {
                 }
                 addPropertyNode(propertiesElement, property.getName(), property.getStructureValue(), false);
                 addPropertyNode(propertiesElement, property.getName(), property.getResourceValue(), true);
+            }
+
+            // Write the relations to the manifest
+            List relations = getCms().getRelationsForResource(fileName, CmsRelationFilter.TARGETS);
+            CmsRelation relation = null;
+            Element relationsElement = fileElement.addElement(CmsImportExportManager.N_RELATIONS);
+            // iterate over the relations
+            for (Iterator iter = relations.iterator(); iter.hasNext();) {
+                relation = (CmsRelation)iter.next();
+                CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                String structureId = target.getStructureId().toString();
+                String sitePath = getCms().getSitePath(target);
+                String relationType = relation.getType().getType();
+
+                addRelationNode(relationsElement, structureId, sitePath, relationType);
             }
 
             // append the nodes for access control entries
@@ -1406,4 +1442,5 @@ public class CmsExport {
         }
         return resourceName;
     }
+
 }

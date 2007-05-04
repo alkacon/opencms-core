@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.13.8.2 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.13.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.8.2 $ 
+ * @version $Revision: 1.13.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1 = "ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1 = "ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_APPENDING_RESOURCE_TO_MANIFEST_1 = "ERR_IMPORTEXPORT_ERROR_APPENDING_RESOURCE_TO_MANIFEST_1";
@@ -243,6 +246,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1 = "LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle.<p> */
+    public static final String LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1 = "LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTING_4 = "LOG_IMPORTING_4";

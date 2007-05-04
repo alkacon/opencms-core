@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/05/04 09:33:28 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 6.3.0 
  * 
@@ -490,7 +490,8 @@ public class CmsImportVersion5 extends A_CmsImport {
                         dateexpired,
                         flags,
                         properties);
-
+                    // Add the relations for thre resource.
+                    addRelationsFromManifest(currentElement);
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
                         List aceList = new ArrayList();

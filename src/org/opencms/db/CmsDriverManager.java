@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/03 16:00:24 $
- * Version: $Revision: 1.570.2.83 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.570.2.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,6 +80,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationSystemValidator;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -470,6 +471,32 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // return the configured driver manager
         return driverManager;
+    }
+
+    /**
+     * Adds a new relation to the given resource.<p>
+     * 
+     * @param dbc the database context
+     * @param resource the resource to add the relation to
+     * @param id the structure id of the target relation
+     * @param target the target of the relation
+     * @param type the type of the relation
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addRelationToResource(CmsDbContext dbc, CmsResource resource, CmsUUID id, String target, String type)
+    throws CmsException {
+
+        CmsRelation relation = new CmsRelation(
+            resource.getStructureId(),
+            resource.getRootPath(),
+            id,
+            target,
+            0,
+            0,
+            CmsRelationType.valueOf(type));
+        m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
+
     }
 
     /**
@@ -2850,8 +2877,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // the folder and all modified resources within the tree below this folder 
                     // and with the last change done in the current project are candidates if lockable
                     CmsLock lock = getLock(dbc, directPublishResource);
-                    if (!directPublishResource.getState().isUnchanged()
-                        && lock.isLockableBy(dbc.currentUser())) {
+                    if (!directPublishResource.getState().isUnchanged() && lock.isLockableBy(dbc.currentUser())) {
 
                         try {
                             m_securityManager.checkPermissions(
@@ -8938,4 +8964,5 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
         }
     }
+
 }

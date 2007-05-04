@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/03 16:00:25 $
- * Version: $Revision: 1.97.4.48 $
+ * Date   : $Date: 2007/05/04 16:03:17 $
+ * Version: $Revision: 1.97.4.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -164,6 +164,37 @@ public final class CmsSecurityManager {
         securityManager.init(configurationManager, runtimeInfoFactory, publishEngine);
 
         return securityManager;
+    }
+
+    /**
+     * Adds a new relation to a given resource.<p>
+     * 
+     * @param context the request context
+     * @param resource the resource to add the relation to
+     * @param id the structure id of the target relation
+     * @param target the target of the relation
+     * @param type the type of the relation
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addRelationToResource(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsUUID id,
+        String target,
+        String type) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            m_driverManager.addRelationToResource(dbc, resource, id, target, type);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_ADD_RELATION_TO_RESOURCE_1,
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -5714,4 +5745,5 @@ public final class CmsSecurityManager {
         // access was granted - return the resource
         return resource;
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.84.4.12 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.84.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.i18n.I_CmsMessageBundle;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsRole;
-import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,10 +50,28 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
-
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
@@ -83,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.12 $ 
+ * @version $Revision: 1.84.4.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -161,6 +160,64 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
 
         return new String(Base64.encodeBase64(data));
+    }
+
+    /**
+     * Reads all the relations of the resource from the <code>manifest.xml</code> file
+     * and adds them to the according resource.<p>
+     * 
+     * @param parentElement the current element
+     */
+    protected void addRelationsFromManifest(Element parentElement) {
+
+        // Get the nodes for the relations        
+        List relationElements = parentElement.selectNodes("./"
+            + CmsImportExportManager.N_RELATIONS
+            + "/"
+            + CmsImportExportManager.N_RELATION);
+
+        Element relationElement = null;
+        String structureID = null;
+        String sitePath = null;
+        String relationType = null;
+        String resourceName = CmsImport.getChildElementTextValue(parentElement, CmsImportExportManager.N_SOURCE);
+        
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceName)) {
+                // Delete the already existing relations.
+                m_cms.deleteRelationsFromResource(resourceName, CmsRelationFilter.TARGETS);
+            }
+        } catch (CmsException e1) {
+            LOG.warn(Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1,
+                resourceName), e1);
+        }
+        
+        // iterate over the nodes
+        for (Iterator iter = relationElements.iterator(); iter.hasNext();) {
+            relationElement = (Element)iter.next();
+            structureID = CmsImport.getChildElementTextValue(
+                relationElement,
+                CmsImportExportManager.N_RELATION_ATTRIBUTE_ID);
+            sitePath = CmsImport.getChildElementTextValue(
+                relationElement,
+                CmsImportExportManager.N_RELATION_ATTRIBUTE_PATH);
+            relationType = CmsImport.getChildElementTextValue(
+                relationElement,
+                CmsImportExportManager.N_RELATION_ATTRIBUTE_TYPE);
+            CmsUUID id = new CmsUUID(structureID);
+            try {
+                // Add the relation to the resource
+                m_cms.addRelationToResource(resourceName, id, sitePath, relationType);
+            } catch (CmsException e) {
+
+                LOG.error(Messages.get().container(
+                    Messages.ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1,
+                    resourceName), e);
+
+            }
+        }
+
     }
 
     /**
@@ -725,16 +782,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
                 }
                 // import this user
-                importUser(
-                    name,
-                    flags,
-                    password,
-                    firstname,
-                    lastname,
-                    email,
-                    0,
-                    userInfo,
-                    userGroups);
+                importUser(name, flags, password, firstname, lastname, email, 0, userInfo, userGroups);
             }
         } catch (CmsImportExportException e) {
             throw e;
@@ -816,4 +864,5 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         return new ArrayList(properties.values());
     }
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/03 16:00:22 $
- * Version: $Revision: 1.146.4.41 $
+ * Date   : $Date: 2007/05/04 16:03:18 $
+ * Version: $Revision: 1.146.4.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.41 $
+ * @version $Revision: 1.146.4.42 $
  * 
  * @since 6.0.0 
  */
@@ -117,6 +117,22 @@ public final class CmsObject {
     public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
         init(securityManager, context);
+    }
+
+    /**
+     * Adds a new relation to the given resource.<p>
+     * 
+     * @param resourceName the name of the source resource
+     * @param id the structure id of the target resource
+     * @param target the target of the relation
+     * @param type the type of the relation
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addRelationToResource(String resourceName, CmsUUID id, String target, String type) throws CmsException {
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        m_securityManager.addRelationToResource(m_context, resource, id, target, type);
     }
 
     /**
@@ -830,6 +846,20 @@ public final class CmsObject {
     public void deletePropertyDefinition(String name) throws CmsException {
 
         m_securityManager.deletePropertyDefinition(m_context, name);
+    }
+
+    /**
+     * Deletes the relations to a given resource.<p>
+     *
+     * @param resourceName the resource to delete the relations from
+     * @param filter the filter to use for deleting the relations
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteRelationsFromResource(String resourceName, CmsRelationFilter filter) throws CmsException {
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        m_securityManager.deleteRelationsForResource(m_context, resource, filter);
     }
 
     /**

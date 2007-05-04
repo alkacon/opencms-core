@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/03/12 16:37:55 $
- * Version: $Revision: 1.30.4.5 $
+ * Date   : $Date: 2007/05/04 16:03:16 $
+ * Version: $Revision: 1.30.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.5 $ 
+ * @version $Revision: 1.30.4.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -203,6 +203,21 @@ public class CmsImportExportManager {
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "shared" property type attribute value. */
     public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
+
+    /** Tag in the [@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
+    public static final String N_RELATION = "relation";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_ID = "id";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "path" relation attribute, contains the path to the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_PATH = "path";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" relation attribute, contains the type of relation. */
+    public static final String N_RELATION_ATTRIBUTE_TYPE = "type";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relations" node, starts the list of relations of a VFS resources. */
+    public static final String N_RELATIONS = "relations";
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "source" node, contains the source path of a VFS resource in the import zip (or folder). */
     public static final String N_SOURCE = "source";
@@ -342,8 +357,8 @@ public class CmsImportExportManager {
                 manifest = saxReader.read(reader);
             }
         } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
                     Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource),
                     e);
             }
