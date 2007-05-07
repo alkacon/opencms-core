@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/05/07 10:24:31 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_UNSCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
+                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             } finally {
                 getList().removeAllItems(removedItems, getLocale());
             }
@@ -220,7 +220,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_SCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
+                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
         } else {
             throwListUnsupportedActionException();
