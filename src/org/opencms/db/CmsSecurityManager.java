@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/04 16:03:17 $
- * Version: $Revision: 1.97.4.49 $
+ * Date   : $Date: 2007/05/07 09:28:08 $
+ * Version: $Revision: 1.97.4.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -190,8 +190,9 @@ public final class CmsSecurityManager {
             m_driverManager.addRelationToResource(dbc, resource, id, target, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_ADD_RELATION_TO_RESOURCE_1,
-                context.getSitePath(resource)), e);
+                Messages.ERR_ADD_RELATION_TO_RESOURCE_3, target,
+                context.getSitePath(resource), type), e);
+
         } finally {
             dbc.clear();
         }

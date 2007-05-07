@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/05/04 16:03:16 $
- * Version: $Revision: 1.84.4.13 $
+ * Date   : $Date: 2007/05/07 09:28:08 $
+ * Version: $Revision: 1.84.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.13 $ 
+ * @version $Revision: 1.84.4.14 $ 
  * 
  * @since 6.0.0 
  * 
@@ -188,9 +188,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_cms.deleteRelationsFromResource(resourceName, CmsRelationFilter.TARGETS);
             }
         } catch (CmsException e1) {
-            LOG.warn(Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1,
-                resourceName), e1);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e1.getLocalizedMessage(), e1);    
+            }            
         }
         
         // iterate over the nodes
@@ -210,11 +210,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // Add the relation to the resource
                 m_cms.addRelationToResource(resourceName, id, sitePath, relationType);
             } catch (CmsException e) {
-
-                LOG.error(Messages.get().container(
-                    Messages.ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1,
-                    resourceName), e);
-
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
 
