@@ -99,6 +99,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.legacy.compatibility/setup/mssql.sql</source>
+			<destination>system/modules/org.opencms.legacy.compatibility/setup/mssql.sql</destination>
+			<type>plain</type>
+			<uuidresource>0d0949e6-f8ab-11db-bf8c-274b4127afbe</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</source>
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</destination>
 			<type>plain</type>
