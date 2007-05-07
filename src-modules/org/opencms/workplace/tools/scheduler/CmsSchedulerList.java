@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.27.4.2 $
+ * Date   : $Date: 2007/05/07 10:45:13 $
+ * Version: $Revision: 1.27.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.27.4.2 $ 
+ * @version $Revision: 1.27.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_UNSCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
+                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
             || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
@@ -218,7 +218,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_SCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
+                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
         } else {
             throwListUnsupportedActionException();
