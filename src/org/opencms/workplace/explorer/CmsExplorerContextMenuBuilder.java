@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/04/26 15:21:54 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/08 07:59:15 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -382,7 +382,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             } else {
                 // separator line
                 if ((firstEntryWritten) && (!lastWasSeparator) && (it.hasNext())) {
-                    menu.append("<li class=\"cmsep\"><span class=\"cmsep\"></span></li>");
+                    menu.append("<li class=\"cmsep\"><span></span></li>");
                     lastWasSeparator = true;
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/05/03 13:48:58 $
- * Version: $Revision: 1.13.4.26 $
+ * Date   : $Date: 2007/05/08 07:59:15 $
+ * Version: $Revision: 1.13.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -344,17 +344,17 @@ function showContextMenu(msg, state) {
     if (state == 'ok') {
         var menu = msg;
 		if (menu.length > 0) {
-			var elouter = win.files.getElementById("contextmenuouter");
-			var elinner = win.files.getElementById("contextmenu");
-			elinner.innerHTML = menu;
+			var cmouter = win.files.getElementById("contextmenuouter");
+			var cminner = win.files.getElementById("contextmenu");
+			cminner.innerHTML = menu;
+			// set menu x position
 			var x = 12;
-			elouter.style.left = x + "px";
+			cmouter.style.left = x + "px";
+			cmouter.style.display = "block";
 			// calculate menu y position before setting visibility to avoid display errors
 			var y = getMenuPosY(win.files, active_mouse_id);
-			elouter.style.top =  y + "px";
-			elouter.style.visibility = "visible";
-			elouter.style.display = "block";
-			elinner.style.visibility = "visible";
+			cmouter.style.top =  y + "px";
+			cmouter.style.visibility = "visible";
 		} // end if (access)
     	last_id = active_mouse_id;
 	    contextOpen = true;
@@ -367,11 +367,9 @@ function showContextMenu(msg, state) {
 // closes a context menu
 function closeContext() {
 
-	var cm = win.files.getElementById("contextmenu");
-	cm.style.visibility = "hidden";
-	var elouter = win.files.getElementById("contextmenuouter");
-	elouter.style.visibility = "hidden";
-	elouter.style.display = "none";
+	var cmouter = win.files.getElementById("contextmenuouter");
+	cmouter.style.visibility = "hidden";
+	cmouter.style.display = "none";
 	contextOpen = false;
 }
 
@@ -843,14 +841,14 @@ function oSubC(openID, keepIDs) {
 			}
 		}
 		if (!keepOpen) {
-			win.files.getElementById(currOpenID).style.display = "none";
+			win.files.getElementById(currOpenID).style.visibility = "hidden";
 		} else if (currOpenID != openID) {
 			tempOpenMenus[tempOpenMenus.length] = currOpenID;
 		}
 
 	}
 
-	win.files.getElementById(openID).style.display = "block";
+	win.files.getElementById(openID).style.visibility = "visible";
 	tempOpenMenus[tempOpenMenus.length] = openID;
 	openSubMenus = tempOpenMenus;
 }
@@ -870,7 +868,7 @@ function cSubC(keepIDs) {
 			}
 		}
 		if (!keepOpen) {
-			win.files.getElementById(currOpenID).style.display = "none";
+			win.files.getElementById(currOpenID).style.visibility = "hidden";
 		} else {
 			tempOpenMenus[tempOpenMenus.length] = currOpenID;
 		}

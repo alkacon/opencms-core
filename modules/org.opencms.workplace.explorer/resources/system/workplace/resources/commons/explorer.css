@@ -26,8 +26,8 @@ a.nfi { text-decoration: underline; color: #000088; }
 .unselected { background: Window; color:WindowText; }
 
 /* context menu */
-div.cmwrapper { position: absolute; width: 500px; height: 350px; visibility: hidden; display: none; }
-div.cmo { width: 152px; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); }
+div.cmwrapper { position: absolute; top: 0px; left: 0px;  width: 500px; visibility: hidden; display: none; }
+div.cmo { width: 152px; background-color: ThreeDFace; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); }
 
 #menu {
 	box-sizing: border-box; -moz-box-sizing: border-box;
@@ -62,6 +62,8 @@ div.cmo { width: 152px; visibility: hidden; top: 0px; left: 0px; background-colo
 
 #menu li {
 	list-style-type:none;
+	padding: 0;
+	margin: 0;
 }
 
 #menu ul li {
@@ -89,7 +91,8 @@ div#menu ul, div#menu ul ul, div#menu ul ul ul {
 div#menu ul ul, div#menu ul ul ul {
 	background-color: ThreeDFace;
 	border: 2px outset ThreeDHighlight;
-	display: none;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3);
+	visibility: hidden;
 }
 
 /* expand items */
@@ -107,9 +110,11 @@ div#menu ul ul, div#menu ul ul ul {
 
 /* separators */
 li.cmsep {
-	 padding: 0; margin: 2px; border-bottom: 1px solid ThreeDHighlight;
+	 display: block; padding: 0; margin: 2px; height: 2px; line-height: 0; font-size: 0px;
+	 border: 1px solid ThreeDFace;
+	 border-bottom: 1px solid ThreeDHighlight;
 }
 
-span.cmsep {
-	display: block; height: 1px; font-size: 0px; border-bottom: 1px solid ThreeDShadow;
+li.cmsep span {
+	display: block; margin: 0; padding: 0; height: 1px; font-size: 0px; border-bottom: 1px solid ThreeDShadow;
 }
