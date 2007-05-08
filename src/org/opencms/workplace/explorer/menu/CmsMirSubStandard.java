@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirSubStandard.java,v $
- * Date   : $Date: 2007/04/26 15:21:53 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/08 14:28:01 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6
  */
@@ -47,7 +47,7 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
 
     /** The name of the standard rule set used for sub context menu entries. */
     public static final String RULE_NAME = "substandard";
-    
+
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, org.opencms.workplace.explorer.CmsResourceUtil[], org.opencms.workplace.explorer.menu.I_CmsMenuItemRule[])
      */
@@ -56,9 +56,15 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
         CmsResourceUtil[] resourceUtil,
         I_CmsMenuItemRule[] rule) {
 
-        // TODO: implement visibility for sub menu items
-        int todo = 1;
-        return getVisibility(cms, resourceUtil);
+        for (int i = 0; i < rule.length; i++) {
+            CmsMenuItemVisibilityMode mode = rule[i].getVisibility(cms, resourceUtil);
+            if (mode.isActive() || mode.isInActive()) {
+                // found the first visible item, return mode
+                return mode;
+            }
+        }
+        // no visible item found, sub menu entry is not displayed
+        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
     /**
@@ -66,6 +72,7 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
+        // this rule always matches        
         return true;
     }
 

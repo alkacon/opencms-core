@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/05/08 10:45:09 $
- * Version: $Revision: 1.717.2.174 $
+ * Date   : $Date: 2007/05/08 14:28:01 $
+ * Version: $Revision: 1.717.2.175 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,13 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 - Updated htmlparser.jar to version 1.6
 - Updated mysql-connector-java.jar to version 5.0.5
 - Updated quartz.jar to version 1.5.2
-# Fixed some issues with undefined orders of Maps in opencms-search.xml and opencms-workplace.xml
+* Fixed some issues with undefined orders of Maps in opencms-search.xml and opencms-workplace.xml
 ! Added context menue entries to get a list/explorer view of relations pointing to or from the resource
 - Backup driver renamed to History
 - Whole history driver redesigned, online content shared with history
 ! Context menus are now capable to show sub menu structures
 - Improved HTML output of context menus
-# Fixed issue in XML content creating localized default values in nested schemas using always english locale
+* Fixed issue in XML content creating localized default values in nested schemas using always english locale
 - Removed unfinished workflow implementation
 - Removed old unused editors (HtmlArea, Ledit and MSdhtml)
 * Fixed issue "Server Not Found" error (wrong redirect url) when displaying a resource online with apache and https configured. 

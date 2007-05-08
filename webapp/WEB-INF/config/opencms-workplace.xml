@@ -69,7 +69,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -123,7 +123,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp?editormode=edit" target="_top" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
@@ -132,7 +132,7 @@
             	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             	<separator/>
-            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="editcontrolcode"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
@@ -173,7 +173,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -218,7 +218,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -271,7 +271,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -315,7 +315,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -360,7 +360,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             </entry>
@@ -408,7 +408,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -452,7 +452,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
@@ -509,14 +509,14 @@
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
             <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
             <separator/>
-            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
             	<separator/>
-            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="editcontrolcode"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory%2Findex.html" rule="nondeleted"/>
@@ -616,6 +616,9 @@
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysActive" />
+    	</menurule>
+    	<menurule name="editcontrolcode">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirEditControlcode" />
     	</menurule>
     	<menurule name="showsiblings">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirShowSiblings" />

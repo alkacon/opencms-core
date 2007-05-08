@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/05/08 07:59:15 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/08 14:28:01 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workplace.explorer.menu.CmsMenuRuleTranslator;
 import org.opencms.workplace.explorer.menu.CmsMirMultiStandard;
 import org.opencms.workplace.explorer.menu.I_CmsMenuItemRule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,11 +60,14 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
 public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
+
+    /** The HTML code for a separator context menu entry. */
+    private static final String HTML_SEPARATOR = "<li class=\"cmsep\"><span></span></li>";
 
     /** The resource list parameter value. */
     private String m_paramResourcelist;
@@ -205,7 +209,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         boolean isSingleSelection,
         Map storedModes) {
 
-        boolean lastWasSeparator = false;
+        boolean insertSeparator = false;
         boolean firstEntryWritten = false;
 
         // for each defined menu item
@@ -225,10 +229,12 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             String itemLink = " ";
             String itemTarget = "";
 
+            // check if the current item is a sub item and collect the parent IDs
             StringBuffer parentIdsBuffer = new StringBuffer(64);
             CmsExplorerContextMenuItem pItem = item;
             boolean isFirst = true;
             while (pItem.isSubItem()) {
+                // this is a sub item, collect parent IDs
                 if (isFirst) {
                     parentIdsBuffer.append("'");
                     isFirst = false;
@@ -244,13 +250,38 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             String parentIds = parentIdsBuffer.toString();
 
             if (item.isParentItem()) {
-                int todo = 1;
-                // TODO: this is a parent item entry, check if it is displayed to open a new sublist
-                if (true) {
+                // this is a parent item entry, first check if it is displayed at all
+                CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                String itemRuleName = item.getRule();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemRuleName)) {
+                    CmsMenuRule rule = OpenCms.getWorkplaceManager().getMenuRule(itemRuleName);
+                    if (rule != null) {
+                        // get the first matching rule to apply for visibility
+                        I_CmsMenuItemRule itemRule = rule.getMatchingRule(getCms(), resUtil);
+                        if (itemRule != null) {
+                            // found a rule, now get the rules for all sub items
+                            List itemRules = new ArrayList(item.getSubItems().size());
+                            getSubItemRules(item, itemRules, resUtil);
+                            I_CmsMenuItemRule[] itemRulesArray = new I_CmsMenuItemRule[itemRules.size()];
+                            // determine the visibility for the parent item
+                            mode = itemRule.getVisibility(
+                                getCms(),
+                                resUtil,
+                                (I_CmsMenuItemRule[])itemRules.toArray(itemRulesArray));
+                        }
+                    }
+                }
+                // only show the entry if visible sub items were found
+                if (mode.isActive() || mode.isInActive()) {
+                    if (insertSeparator) {
+                        menu.append(HTML_SEPARATOR);
+                        insertSeparator = false;
+                    }
                     menu.append("\n<li><a href=\"#\" class=\"x\" onmouseover=\"top.oSubC('");
                     menu.append(item.getKey().hashCode());
                     menu.append("'");
                     if (CmsStringUtil.isNotEmpty(parentIds)) {
+                        // append the parent IDs to keep open
                         menu.append(",");
                         menu.append(parentIds);
                     }
@@ -267,7 +298,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         isSingleSelection,
                         storedModes);
                     menu.append("</li>");
-                    lastWasSeparator = false;
                     firstEntryWritten = true;
                 }
             } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
@@ -334,6 +364,10 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                     // found a visibility mode
                     if (mode.isActive()) {
                         // item is active
+                        if (insertSeparator) {
+                            menu.append(HTML_SEPARATOR);
+                            insertSeparator = false;
+                        }
                         StringBuffer link = new StringBuffer(128);
                         if (isSingleSelection) {
                             // create link for single resource context menu
@@ -362,28 +396,31 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append(link);
 
                         menu.append(" onmouseover=\"top.cSubC(");
+                        // append parent IDs to keep open
                         menu.append(parentIds);
                         menu.append(");\"");
 
                         menu.append(">");
                         menu.append(itemName);
                         menu.append("</a></li>");
-                        lastWasSeparator = false;
                         firstEntryWritten = true;
                     } else if (mode.isInActive()) {
                         // item is inactive
+                        if (insertSeparator) {
+                            menu.append(HTML_SEPARATOR);
+                            insertSeparator = false;
+                        }
                         menu.append("\n<li>");
                         menu.append("<a class=\"ina\" href=\"#\">").append(itemName).append("</a>");
                         menu.append("</li>");
-                        lastWasSeparator = false;
                         firstEntryWritten = true;
                     }
                 }
             } else {
-                // separator line
-                if ((firstEntryWritten) && (!lastWasSeparator) && (it.hasNext())) {
-                    menu.append("<li class=\"cmsep\"><span></span></li>");
-                    lastWasSeparator = true;
+                // separator line, set flag to remember that a separator has been set, the separator will then
+                // be written before the next visible item is appended
+                if (firstEntryWritten) {
+                    insertSeparator = true;
                 }
             }
         } // end while
@@ -396,6 +433,33 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);
+    }
+
+    /**
+     * Collects the matching rules of all sub items of a parent context menu entry.<p>
+     * 
+     * @param item the context menu item to check the sub items for
+     * @param itemRules the collected rules for the sub items
+     * @param resourceUtil the resources to be checked against the rules
+     */
+    private void getSubItemRules(CmsExplorerContextMenuItem item, List itemRules, CmsResourceUtil[] resourceUtil) {
+
+        Iterator i = item.getSubItems().iterator();
+        while (i.hasNext()) {
+            CmsExplorerContextMenuItem subItem = (CmsExplorerContextMenuItem)i.next();
+            if (subItem.isParentItem()) {
+                // this is a parent item, recurse into sub items
+                getSubItemRules(subItem, itemRules, resourceUtil);
+            } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(subItem.getType())) {
+                // this is a standard entry, get the matching rule to add to the list
+                String subItemRuleName = subItem.getRule();
+                CmsMenuRule subItemRule = OpenCms.getWorkplaceManager().getMenuRule(subItemRuleName);
+                I_CmsMenuItemRule rule = subItemRule.getMatchingRule(getCms(), resourceUtil);
+                if (rule != null) {
+                    itemRules.add(rule);
+                }
+            }
+        }
     }
 
 }
