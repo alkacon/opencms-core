@@ -100,7 +100,7 @@ function openAnchorDialogWindow(linkType, errorMessage) {
 		var params = "?showCss=" + USE_LINKSTYLEINPUTS;
 		if (linkInformation != null) {
 			if (linkType == "link") {
-				params += "&href=" + linkInformation["href"];
+				params += "&href=" + encodeURIComponent(linkInformation["href"]);
 				params += "&target=" + linkInformation["target"];
 				params += "&title= "+linkInformation["title"];
 			} else {
