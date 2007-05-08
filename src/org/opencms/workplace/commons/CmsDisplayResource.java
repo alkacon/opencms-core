@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2007/04/26 14:31:14 $
- * Version: $Revision: 1.21.4.4 $
+ * Date   : $Date: 2007/05/08 10:45:09 $
+ * Version: $Revision: 1.21.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.4.4 $ 
+ * @version $Revision: 1.21.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -226,7 +226,7 @@ public class CmsDisplayResource extends CmsDialog {
                 // code for display resource after all tests for displayability (exists, not deleted)
                 String url = getJsp().link(resourceStr);
                 // if in online project
-                if ((url.indexOf("//:") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
+                if ((url.indexOf("://") < 0) && getCms().getRequestContext().currentProject().isOnlineProject()) {
                     String site = getCms().getRequestContext().getSiteRoot();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
                         site = OpenCms.getSiteManager().getDefaultUri();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/05/03 13:48:56 $
- * Version: $Revision: 1.717.2.173 $
+ * Date   : $Date: 2007/05/08 10:45:09 $
+ * Version: $Revision: 1.717.2.174 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,7 @@ OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 # Fixed issue in XML content creating localized default values in nested schemas using always english locale
 - Removed unfinished workflow implementation
 - Removed old unused editors (HtmlArea, Ledit and MSdhtml)
+* Fixed issue "Server Not Found" error (wrong redirect url) when displaying a resource online with apache and https configured. 
 
 OpenCms 6.7.2 (aka 7.0 beta) - March 21, 2007
 * Move/Rename operation now uses filename translation like the "create new" operation
