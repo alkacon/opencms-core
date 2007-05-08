@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/05/07 10:29:01 $
- * Version: $Revision: 1.813 $
+ * Date   : $Date: 2007/05/08 08:59:18 $
+ * Version: $Revision: 1.814 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ OpenCms 6.2.4 - xxxx, 2007
 * Fixed issue with upload applet having a client side out of memory error when uploading large files
 - Added some servlet options to ensure BEA WLS 9.x compatibility
 - Improved SQL-Scripts for the MS SQL Server
+* Fixed issue in XML content creating localized default values in nested schemas using always english locale
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path
