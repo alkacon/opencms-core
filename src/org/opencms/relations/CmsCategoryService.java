@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/09 14:55:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2
  */
@@ -88,15 +88,20 @@ public class CmsCategoryService {
     public void addResourceToCategory(CmsObject cms, String resourceName, String categoryPath) throws CmsException {
 
         CmsCategory category = readCategory(cms, categoryPath);
-        cms.addRelationToResource(
-            resourceName,
-            category.getId(),
-            getCategoryFolderPath(categoryPath),
-            CmsRelationType.CATEGORY.getName());
+        if (!readResourceCategories(cms, resourceName).contains(category)) {
+            cms.addRelationToResource(
+                resourceName,
+                category.getId(),
+                getCategoryFolderPath(categoryPath),
+                CmsRelationType.CATEGORY.getName());
 
-        // recursively add to higher level categories
-        if (category.getPath().lastIndexOf('/') > 0) {
-            addResourceToCategory(cms, resourceName, categoryPath.substring(0, category.getPath().lastIndexOf('/')));
+            // recursively add to higher level categories
+            if (categoryPath.endsWith("/")) {
+                categoryPath = categoryPath.substring(0, categoryPath.lastIndexOf("/"));
+            }
+            if (categoryPath.lastIndexOf('/') > 0) {
+                addResourceToCategory(cms, resourceName, categoryPath.substring(0, categoryPath.lastIndexOf('/') + 1));
+            }
         }
     }
 
@@ -218,6 +223,35 @@ public class CmsCategoryService {
     }
 
     /**
+     * Reads the categories for a resource identified by the given resource name.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourceName the path of the resource to get the categories for
+     * 
+     * @return the categories list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
+
+        List result = new ArrayList();
+        Iterator itRelations = cms.getRelationsForResource(resourceName, CmsRelationFilter.TARGETS).iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            if (relation.getType().equals(CmsRelationType.CATEGORY)) {
+                CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
+                CmsCategory category = new CmsCategory(
+                    resource.getStructureId(),
+                    resource.getRootPath().substring(BASE_PATH.length()),
+                    cms.readPropertyObject(resource, "Title", false).getValue(),
+                    cms.readPropertyObject(resource, "Description", false).getValue());
+                result.add(category);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns all sub categories of the given category.<p>
      * 
      * @param cms the current cms context
@@ -249,17 +283,19 @@ public class CmsCategoryService {
         // check the category exists
         readCategory(cms, categoryPath);
 
-        // remove the resource just from this category
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
-        filter.filterType(CmsRelationType.CATEGORY);
-        filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
-        cms.deleteRelationsFromResource(resourceName, filter);
+        if (readResourceCategories(cms, resourceName).contains(readCategory(cms, categoryPath))) {
+            // recursively remove from deeper level categories
+            Iterator it = readSubCategories(cms, categoryPath, false).iterator();
+            while (it.hasNext()) {
+                CmsCategory category = (CmsCategory)it.next();
+                removeResourceFromCategory(cms, resourceName, category.getPath());
+            }
 
-        // recursively remove from deeper level categories
-        Iterator it = readSubCategories(cms, categoryPath, false).iterator();
-        while (it.hasNext()) {
-            CmsCategory category = (CmsCategory)it.next();
-            removeResourceFromCategory(cms, resourceName, category.getPath());
+            // remove the resource just from this category
+            CmsRelationFilter filter = CmsRelationFilter.TARGETS;
+            filter = filter.filterType(CmsRelationType.CATEGORY);
+            filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
+            cms.deleteRelationsFromResource(resourceName, filter);
         }
     }
 
@@ -312,7 +348,7 @@ public class CmsCategoryService {
 
         List resources = cms.readResources(
             BASE_PATH + baseCategory,
-            CmsResourceFilter.DEFAULT.addExcludeType(CmsResourceTypeFolder.RESOURCE_TYPE_ID),
+            CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.RESOURCE_TYPE_ID),
             includeSubCats);
         List categories = new ArrayList();
         Iterator it = resources.iterator();

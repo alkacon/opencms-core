@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/09 14:55:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2
  */
@@ -67,6 +67,21 @@ public class CmsCategory {
         m_path = path;
         m_title = title;
         m_description = description;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (!(obj instanceof CmsCategory)) {
+            return false;
+        }
+        CmsCategory compareCategory = (CmsCategory)obj;
+        if (!compareCategory.getId().equals(m_structureId)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -107,5 +122,13 @@ public class CmsCategory {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_structureId.hashCode();
     }
 }
