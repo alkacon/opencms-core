@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/05/08 14:28:01 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/09 10:12:42 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -212,29 +212,26 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         boolean insertSeparator = false;
         boolean firstEntryWritten = false;
 
-        // for each defined menu item
-        Iterator it = contextMenuEntries.iterator();
+        // open the menu list
         menu.append("\n<ul");
         if (parent != null) {
+            // we are in a sub menu, set the id
             menu.append(" id=\"");
             menu.append(parent.getKey().hashCode());
             menu.append("\"");
         }
         menu.append(">");
 
+        // loop the menu items
+        Iterator it = contextMenuEntries.iterator();
         while (it.hasNext()) {
             CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)it.next();
-
-            String itemName = "-";
-            String itemLink = " ";
-            String itemTarget = "";
-
             // check if the current item is a sub item and collect the parent IDs
             StringBuffer parentIdsBuffer = new StringBuffer(64);
             CmsExplorerContextMenuItem pItem = item;
             boolean isFirst = true;
             while (pItem.isSubItem()) {
-                // this is a sub item, collect parent IDs
+                // this is a sub item, collect parent IDs (used to determine which menus should be kept open)
                 if (isFirst) {
                     parentIdsBuffer.append("'");
                     isFirst = false;
@@ -251,6 +248,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
             if (item.isParentItem()) {
                 // this is a parent item entry, first check if it is displayed at all
+
                 CmsMenuItemVisibilityMode mode = CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                 String itemRuleName = item.getRule();
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemRuleName)) {
@@ -271,8 +269,9 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         }
                     }
                 }
+
                 // only show the entry if visible sub items were found
-                if (mode.isActive() || mode.isInActive()) {
+                if (!mode.isInVisible()) {
                     if (insertSeparator) {
                         menu.append(HTML_SEPARATOR);
                         insertSeparator = false;
@@ -301,13 +300,17 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                     firstEntryWritten = true;
                 }
             } else if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
-                itemName = key(item.getKey());
+                // this is a common menu entry
+
+                // first determine name, link and target or item
+                String itemName = key(item.getKey());
+                String itemLink = " ";
                 if (item.getUri().startsWith("/")) {
                     itemLink = getJsp().link(item.getUri());
                 } else {
                     itemLink = getJsp().link(CmsWorkplace.PATH_WORKPLACE + item.getUri());
                 }
-                itemTarget = item.getTarget();
+                String itemTarget = item.getTarget();
                 if (itemTarget == null) {
                     itemTarget = "";
                 }
@@ -411,7 +414,14 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                             insertSeparator = false;
                         }
                         menu.append("\n<li>");
-                        menu.append("<a class=\"ina\" href=\"#\">").append(itemName).append("</a>");
+                        menu.append("<a ");
+
+                        menu.append(" onmouseover=\"top.cSubC(");
+                        // append parent IDs to keep open
+                        menu.append(parentIds);
+                        menu.append(");\"");
+
+                        menu.append(" class=\"ina\" href=\"#\">").append(itemName).append("</a>");
                         menu.append("</li>");
                         firstEntryWritten = true;
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMenuItemVisibilityMode.java,v $
- * Date   : $Date: 2007/02/20 08:30:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/09 10:12:42 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.6 
  */
@@ -107,6 +107,16 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     public boolean isInActive() {
 
         return getMode() == VISIBILITY_INACTIVE.getMode();
+    }
+
+    /**
+     * Returns if the mode is set to {@link #VISIBILITY_INVISIBLE}.<p>
+     * 
+     * @return true if the mode is set to {@link #VISIBILITY_INVISIBLE}, otherwise false
+     */
+    public boolean isInVisible() {
+
+        return getMode() == VISIBILITY_INVISIBLE.getMode();
     }
 
 }

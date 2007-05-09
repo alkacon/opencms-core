@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirSubStandard.java,v $
- * Date   : $Date: 2007/05/08 14:28:01 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/09 10:12:42 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6
  */
@@ -58,7 +58,7 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
 
         for (int i = 0; i < rule.length; i++) {
             CmsMenuItemVisibilityMode mode = rule[i].getVisibility(cms, resourceUtil);
-            if (mode.isActive() || mode.isInActive()) {
+            if (!mode.isInVisible()) {
                 // found the first visible item, return mode
                 return mode;
             }
