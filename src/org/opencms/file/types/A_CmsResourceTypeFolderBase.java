@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2007/05/03 16:00:19 $
- * Version: $Revision: 1.16.4.16 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.16.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.16 $ 
+ * @version $Revision: 1.16.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,16 +238,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }
         // properties of a folder can be replaced, content is ignored
         super.replaceResource(cms, securityManager, resource, getTypeId(), null, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
-     */
-    public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resourename, int version)
-    throws CmsException {
-
-        // it is not possible to restore a folder from the historical archive
-        throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_0));
     }
 
     /**

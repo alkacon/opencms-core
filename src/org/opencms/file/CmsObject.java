@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/04 16:03:18 $
- * Version: $Revision: 1.146.4.42 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.146.4.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -92,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.42 $
+ * @version $Revision: 1.146.4.43 $
  * 
  * @since 6.0.0 
  */
@@ -132,7 +133,7 @@ public final class CmsObject {
     public void addRelationToResource(String resourceName, CmsUUID id, String target, String type) throws CmsException {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        m_securityManager.addRelationToResource(m_context, resource, id, target, type);
+        m_securityManager.addRelationToResource(m_context, resource, id, target, CmsRelationType.valueOf(type));
     }
 
     /**

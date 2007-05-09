@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.14.8.1 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.14.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,26 +41,29 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.8.1 $
+ * @version $Revision: 1.14.8.2 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsDriver {
 
-    /** Operator to concatenate exclude conditions. */
-    String BEGIN_EXCLUDE_CONDITION = " AND NOT (";
-    
-    /** Operator to concatenate include conditions. */
-    String BEGIN_INCLUDE_CONDITION = " AND (";
-    
-    /** String to end a single condition. */
-    String END_CONDITION = ") ";
-    
-    /** Operator to concatenate or conditions. */
-    String OR_CONDITION = " OR ";
-    
     /** Operator to concatenate or conditions. */
     String AND_CONDITION = " AND ";
+
+    /** String to start a single condition. */
+    String BEGIN_CONDITION = " (";
+
+    /** Operator to concatenate exclude conditions. */
+    String BEGIN_EXCLUDE_CONDITION = " AND NOT (";
+
+    /** Operator to concatenate include conditions. */
+    String BEGIN_INCLUDE_CONDITION = " AND (";
+
+    /** String to end a single condition. */
+    String END_CONDITION = ") ";
+
+    /** Operator to concatenate or conditions. */
+    String OR_CONDITION = " OR ";
 
     /**
      * Initializes the driver.<p>

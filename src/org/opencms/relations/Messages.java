@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2007/05/04 15:26:54 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.3.0 
  */
@@ -49,6 +49,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RELATION_TYPE_ILLEGAL_MODE_0 = "ERR_RELATION_TYPE_ILLEGAL_MODE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_RELATION_TYPE_INIT_1 = "ERR_RELATION_TYPE_INIT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_POINTING_TO_0 = "GUI_LINK_POINTING_TO_0";
 
     /** Message constant for key in the resource bundle. */
@@ -56,21 +59,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1 = "GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_VALIDATION_RESULTS_INTRO_1 = "GUI_LINK_VALIDATION_RESULTS_INTRO_1";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_TYPE_A_0 = "GUI_RELATION_TYPE_A_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_CATEGORY_0 = "GUI_RELATION_TYPE_CATEGORY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELATION_TYPE_EMBEDDED_IMAGE_0 = "GUI_RELATION_TYPE_EMBEDDED_IMAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELATION_TYPE_EMBEDDED_OBJECT_0 = "GUI_RELATION_TYPE_EMBEDDED_OBJECT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELATION_TYPE_HYPERLINK_0 = "GUI_RELATION_TYPE_HYPERLINK_0";
+    public static final String GUI_RELATION_TYPE_IMG_0 = "GUI_RELATION_TYPE_IMG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_JSP_STRONG_0 = "GUI_RELATION_TYPE_JSP_STRONG_0";
@@ -79,7 +79,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RELATION_TYPE_JSP_WEAK_0 = "GUI_RELATION_TYPE_JSP_WEAK_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RELATION_TYPE_OU_RESOURCE_0 = "GUI_RELATION_TYPE_OU_RESOURCE_0";
+    public static final String GUI_RELATION_TYPE_OBJECT_0 = "GUI_RELATION_TYPE_OBJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RELATION_TYPE_OU_0 = "GUI_RELATION_TYPE_OU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_TYPE_UNKNOWN_1 = "GUI_RELATION_TYPE_UNKNOWN_1";
@@ -110,7 +113,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_BROKEN_LINK_UPDATED_BY_NAME_3 = "LOG_BROKEN_LINK_UPDATED_BY_NAME_3";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_SEARCH_1 = "LOG_LINK_SEARCH_1";
     
@@ -119,7 +122,7 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_READBYPATH_FAILED_2 = "LOG_LINK_VALIDATION_READBYPATH_FAILED_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_RESOURCEDELETED_1 = "LOG_LINK_VALIDATION_RESOURCEDELETED_1";
 

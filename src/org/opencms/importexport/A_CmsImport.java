@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/05/07 09:28:08 $
- * Version: $Revision: 1.84.4.14 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.84.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.14 $ 
+ * @version $Revision: 1.84.4.15 $ 
  * 
  * @since 6.0.0 
  * 
@@ -166,9 +166,19 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Reads all the relations of the resource from the <code>manifest.xml</code> file
      * and adds them to the according resource.<p>
      * 
+     * @param resourceName the site path of the resource to add the relations for 
      * @param parentElement the current element
      */
-    protected void addRelationsFromManifest(Element parentElement) {
+    protected void addRelationsFromManifest(String resourceName, Element parentElement) {
+
+        try {
+            // Delete the already existing relations.
+            m_cms.deleteRelationsFromResource(resourceName, CmsRelationFilter.TARGETS.filterNotDefinedInContent());
+        } catch (CmsException e1) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e1.getLocalizedMessage(), e1);
+            }
+        }
 
         // Get the nodes for the relations        
         List relationElements = parentElement.selectNodes("./"
@@ -176,33 +186,16 @@ public abstract class A_CmsImport implements I_CmsImport {
             + "/"
             + CmsImportExportManager.N_RELATION);
 
-        Element relationElement = null;
-        String structureID = null;
-        String sitePath = null;
-        String relationType = null;
-        String resourceName = CmsImport.getChildElementTextValue(parentElement, CmsImportExportManager.N_SOURCE);
-        
-        try {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceName)) {
-                // Delete the already existing relations.
-                m_cms.deleteRelationsFromResource(resourceName, CmsRelationFilter.TARGETS);
-            }
-        } catch (CmsException e1) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e1.getLocalizedMessage(), e1);    
-            }            
-        }
-        
         // iterate over the nodes
         for (Iterator iter = relationElements.iterator(); iter.hasNext();) {
-            relationElement = (Element)iter.next();
-            structureID = CmsImport.getChildElementTextValue(
+            Element relationElement = (Element)iter.next();
+            String structureID = CmsImport.getChildElementTextValue(
                 relationElement,
                 CmsImportExportManager.N_RELATION_ATTRIBUTE_ID);
-            sitePath = CmsImport.getChildElementTextValue(
+            String sitePath = CmsImport.getChildElementTextValue(
                 relationElement,
                 CmsImportExportManager.N_RELATION_ATTRIBUTE_PATH);
-            relationType = CmsImport.getChildElementTextValue(
+            String relationType = CmsImport.getChildElementTextValue(
                 relationElement,
                 CmsImportExportManager.N_RELATION_ATTRIBUTE_TYPE);
             CmsUUID id = new CmsUUID(structureID);
@@ -215,7 +208,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
             }
         }
-
     }
 
     /**

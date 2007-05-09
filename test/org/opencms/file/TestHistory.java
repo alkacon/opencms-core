@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */
@@ -78,7 +79,9 @@ public class TestHistory extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestHistory.class.getName());
 
-        suite.addTest(new TestHistory("testCreateAndDeleteResources"));
+        suite.addTest(new TestHistory("testCreateAndDeleteFile"));
+        suite.addTest(new TestHistory("testCreateAndDeleteFolder"));
+        suite.addTest(new TestHistory("testMoveFile"));
         suite.addTest(new TestHistory("testFileHistory"));
         suite.addTest(new TestHistory("testFileHistoryFileWithSibling"));
         suite.addTest(new TestHistory("testFileVersions"));
@@ -101,14 +104,16 @@ public class TestHistory extends OpenCmsTestCase {
     }
 
     /**
-     * Creates and deletes a resource n-times and tests if the version ID of the history resources
-     * are correct and if the content could be restored for a specified version ID.<p>
+     * Creates and deletes a file n-times and tests if the historical data
+     * are correct and if the content can be properly restored.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCreateAndDeleteResources() throws Throwable {
+    public void testCreateAndDeleteFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
+        echo("Testing history creating, modifying and deleting a file");
+
         String filename = "/dummy1.txt";
         int counter = 2;
 
@@ -133,10 +138,10 @@ public class TestHistory extends OpenCmsTestCase {
             OpenCms.getPublishManager().waitWhileRunning();
         }
         CmsFile file = cms.readFile(filename);
-        file.setContents("content version 3".getBytes());
+        file.setContents(("content version " + (counter + 1)).getBytes());
         cms.lockResource(filename);
         cms.writeFile(file);
-        // delete the resource again
+        // delete the file
         cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(filename);
         OpenCms.getPublishManager().publishResource(cms, filename);
@@ -174,7 +179,80 @@ public class TestHistory extends OpenCmsTestCase {
     }
 
     /**
-     * creates a file, modifies and publishes it n-times, create a sibling, 
+     * Creates and deletes a folder n-times and tests if the historical data
+     * are correct and if the properties can be properly restored.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateAndDeleteFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing history creating, modifying and deleting a folder");
+
+        String folderName = "/dummy1/";
+        int counter = 2;
+
+        // create a folder
+        CmsResource res = cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId(), null, null);
+        cms.writePropertyObject(folderName, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "title version 0",
+            null));
+        cms.unlockResource(folderName);
+        OpenCms.getPublishManager().publishResource(cms, folderName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 1; i <= counter; i++) {
+            cms.lockResource(folderName);
+            cms.writePropertyObject(folderName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "title version "
+                + i, null));
+            OpenCms.getPublishManager().publishResource(cms, folderName);
+            OpenCms.getPublishManager().waitWhileRunning();
+        }
+        cms.lockResource(folderName);
+        cms.writePropertyObject(folderName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "title version "
+            + (counter + 1), null));
+        // delete the folder
+        cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(folderName);
+        OpenCms.getPublishManager().publishResource(cms, folderName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // the history works only by ID so the expected number of versions is ZERO
+        cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId(), null, null);
+        List historyResources = cms.readAllAvailableVersions(folderName);
+        assertTrue(historyResources.isEmpty());
+
+        // re-create the folder to be able to read all versions from the history
+        // assert that we have the expected number of versions in the history
+        String importFolder = "import/";
+        cms.importResource(importFolder, res, null, null);
+        historyResources = cms.readAllAvailableVersions(importFolder);
+        assertEquals(counter + 2, historyResources.size()); // counter + created + deleted
+
+        for (int i = 0; i < counter + 2; i++) {
+            // the list of historical resources contains at index 0 the 
+            // folder with the highest version and tag ID
+            int version = counter + 2 - i;
+            String title = "title version " + (version - 1);
+
+            // assert that the historical resource has the correct version
+            I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
+            assertEquals(version, historyResource.getVersion());
+
+            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            CmsProperty property = cms.readPropertyObject(
+                cms.readResource(importFolder),
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false);
+
+            // assert that the title and version fit together
+            assertEquals(title, property.getStructureValue());
+        }
+    }
+
+    /**
+     * Creates a file, modifies and publishes it n-times, create a sibling, 
      * publishes both and compares the histories.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -182,60 +260,52 @@ public class TestHistory extends OpenCmsTestCase {
     public void testFileHistory() throws Throwable {
 
         CmsObject cms = getCmsObject();
+        echo("Testing history with one sibling");
+
         String filename = "/testFileHistory1.txt";
         String siblingname = "/testFileHistory2.txt";
-        CmsProject offlineProject = cms.getRequestContext().currentProject();
         int counter = 2;
 
-        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            // switch to the default site in the offline project
-            cms.getRequestContext().setSiteRoot("/sites/default/");
-            cms.getRequestContext().setCurrentProject(offlineProject);
+        // create a plain text file
+        String contentStr = "content version " + 0;
+        cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+        OpenCms.getPublishManager().publishResource(cms, filename);
+        OpenCms.getPublishManager().waitWhileRunning();
 
-            // create a plain text file
-            String contentStr = "content version " + 0;
-            cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+        for (int i = 1; i <= counter; i++) {
+            // modify the plain text file
+            contentStr = "content version " + i;
+            CmsFile file = cms.readFile(filename);
+            file.setContents(contentStr.getBytes());
+            cms.lockResource(filename);
+            cms.writeFile(file);
+            cms.unlockResource(filename);
             OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
+        }
 
-            for (int i = 1; i <= counter; i++) {
-                // modify the plain text file
-                contentStr = "content version " + i;
-                CmsFile file = cms.readFile(filename);
-                file.setContents(contentStr.getBytes());
-                cms.lockResource(filename);
-                cms.writeFile(file);
-                cms.unlockResource(filename);
-                OpenCms.getPublishManager().publishResource(cms, filename);
-                OpenCms.getPublishManager().waitWhileRunning();
-            }
+        // create a sibling
+        cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
+        cms.unlockResource(siblingname);
+        OpenCms.getPublishManager().publishResource(cms, siblingname);
+        OpenCms.getPublishManager().waitWhileRunning();
 
-            // create a sibling
-            cms.copyResource(filename, siblingname, CmsResource.COPY_AS_SIBLING);
+        for (int i = 1; i <= counter; i++) {
+            // modify the sibling text file
+            contentStr = "sibling content version " + (counter + i);
+            CmsFile file = cms.readFile(siblingname);
+            file.setContents(contentStr.getBytes());
+            cms.lockResource(siblingname);
+            cms.writeFile(file);
             cms.unlockResource(siblingname);
             OpenCms.getPublishManager().publishResource(cms, siblingname);
             OpenCms.getPublishManager().waitWhileRunning();
-
-            for (int i = 1; i <= counter; i++) {
-                // modify the sibling text file
-                contentStr = "sibling content version " + (counter + i);
-                CmsFile file = cms.readFile(siblingname);
-                file.setContents(contentStr.getBytes());
-                cms.lockResource(siblingname);
-                cms.writeFile(file);
-                cms.unlockResource(siblingname);
-                OpenCms.getPublishManager().publishResource(cms, siblingname);
-                OpenCms.getPublishManager().waitWhileRunning();
-            }
-
-            List historyResourcesForFile = cms.readAllAvailableVersions(filename);
-            List historyResourcesForSibling = cms.readAllAvailableVersions(siblingname);
-            assertEquals(counter + 1, historyResourcesForFile.size());
-            assertEquals(2 * (counter + 1), historyResourcesForSibling.size());
-        } finally {
-            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
+
+        List historyResourcesForFile = cms.readAllAvailableVersions(filename);
+        List historyResourcesForSibling = cms.readAllAvailableVersions(siblingname);
+        assertEquals(counter + 1, historyResourcesForFile.size());
+        assertEquals(2 * (counter + 1), historyResourcesForSibling.size());
     }
 
     /**
@@ -248,13 +318,15 @@ public class TestHistory extends OpenCmsTestCase {
     public void testFileHistoryFileWithSibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
+        echo("Testing history with several siblings");
+
         String filename = "/testFileRoot.txt";
         String siblingname = "/testFileSibling1.txt";
         String siblingname2 = "/testFileSibling2.txt";
 
-        int counter = 5;
-        int counterSibl = 6;
-        int counterSibl2 = 7;
+        int counter = 3;
+        int counterSibl = 4;
+        int counterSibl2 = 5;
 
         // create a plain text file
         String contentStr = "content version " + 0;
@@ -328,10 +400,15 @@ public class TestHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, siblingname2);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // if this does not match, the logic for deletion of old versions is responsible
+        int todo;
+        List allFiles = cms.readAllAvailableVersions(siblingname);
+        //        assertEquals(counter + counterSibl + 1, allFiles.size());
+
         //Delete historical entries, keep only 3 latest versions. 
         cms.deleteHistoricalVersions(false, 3, new CmsShellReport(cms.getRequestContext().getLocale()));
 
-        List allFiles = cms.readAllAvailableVersions(siblingname);
+        allFiles = cms.readAllAvailableVersions(siblingname);
         assertEquals(3, allFiles.size());
 
         I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
@@ -344,9 +421,9 @@ public class TestHistory extends OpenCmsTestCase {
         // assert that the content and version fit together
         String restoredContent = getContentString(cms, file.getContents());
 
-        assertEquals("sibling content version 10", restoredContent);
+        assertEquals("sibling content version 6", restoredContent);
         CmsProperty prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals("SiblingTitle5", prop.getValue());
+        assertEquals("SiblingTitle3", prop.getValue());
 
         // create a new empty resource
         cms.createResource(siblingname2, CmsResourceTypePlain.getStaticTypeId(), null, null);
@@ -550,7 +627,89 @@ public class TestHistory extends OpenCmsTestCase {
          assert res version == 6 (res = 4, str = 2)
          assert sib version == 6 (res = 4, sib = 2)
 
+         move
+         
          */
+    }
+
+    /**
+     * Moves a resource n-times and tests if the version ID of the history resources
+     * are correct and if the content could be restored for a specified version ID.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testMoveFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing history after moving a resource n-times");
+
+        String filename = "/dummyMove";
+        String ext = ".txt";
+        String resName = filename + 0 + ext;
+        int counter = 2;
+
+        // create a plain text file
+        CmsResource res = cms.createResource(
+            resName,
+            CmsResourceTypePlain.getStaticTypeId(),
+            "content version 0".getBytes(),
+            null);
+        cms.unlockResource(resName);
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 1; i <= counter; i++) {
+            // create a plain text file
+            String contentStr = "content version " + i;
+            CmsFile file = cms.readFile(resName);
+            file.setContents(contentStr.getBytes());
+            cms.lockResource(resName);
+            cms.writeFile(file);
+            String newName = filename + i + ext;
+            cms.moveResource(resName, newName);
+            OpenCms.getPublishManager().publishResource(cms, newName);
+            OpenCms.getPublishManager().waitWhileRunning();
+            resName = newName;
+        }
+        CmsFile file = cms.readFile(resName);
+        file.setContents("content version 3".getBytes());
+        cms.lockResource(resName);
+        cms.writeFile(file);
+        // delete the resource again
+        cms.deleteResource(resName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(resName);
+        OpenCms.getPublishManager().publishResource(cms, resName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // the history works only by ID so the expected number of versions is ZERO
+        cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), null, null);
+        List historyResources = cms.readAllAvailableVersions(resName);
+        assertTrue(historyResources.isEmpty());
+
+        // re-create the resource to be able to read all versions from the history
+        // assert that we have the expected number of versions in the history
+        String importFile = "import.txt";
+        cms.importResource(importFile, res, "blah-blah".getBytes(), null);
+        historyResources = cms.readAllAvailableVersions(importFile);
+        assertEquals(counter + 2, historyResources.size()); // counter + created + deleted
+
+        for (int i = 0; i < counter + 2; i++) {
+            // the list of historical resources contains at index 0 the 
+            // resource with the highest version and tag ID
+            int version = counter + 2 - i;
+            String contentStr = "content version " + (version - 1);
+
+            // assert that the historical resource has the correct version
+            I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
+            assertEquals(version, historyResource.getVersion());
+
+            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            file = cms.readFile(importFile);
+
+            // assert that the content and version fit together
+            String restoredContent = getContentString(cms, file.getContents());
+            assertEquals(contentStr, restoredContent);
+        }
     }
 
     /**

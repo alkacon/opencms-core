@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2007/04/26 14:31:07 $
- * Version: $Revision: 1.5.4.4 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.5.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.comparison;
 
-import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5.4.4 $ 
+ * @version $Revision: 1.5.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,11 +117,11 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
 
-    /** The first file to compare. */
-    private CmsFile m_file1;
+    /** The first resource to compare. */
+    private CmsResource m_resource1;
 
-    /** The second file to compare. */
-    private CmsFile m_file2;
+    /** The second resource to compare. */
+    private CmsResource m_resource2;
 
     /** Parameter value for the structure id of the first file. */
     private String m_paramId1;
@@ -224,23 +224,23 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the file1.<p>
+     * Returns the resource 1.<p>
      *
-     * @return the file1
+     * @return the resource 1
      */
-    public CmsFile getFile1() {
+    public CmsResource getResource1() {
 
-        return m_file1;
+        return m_resource1;
     }
 
     /**
-     * Returns the file2.<p>
+     * Returns the resource 2.<p>
      *
-     * @return the file2
+     * @return the resource 2
      */
-    public CmsFile getFile2() {
+    public CmsResource getResource2() {
 
-        return m_file2;
+        return m_resource2;
     }
 
     /**
@@ -347,7 +347,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getFile1(), getFile2()).iterator();
+        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getResource1(), getResource2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
@@ -385,12 +385,12 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         super.initWorkplaceRequestValues(settings, request);
         try {
-            m_file1 = CmsResourceComparisonDialog.readFile(getCms(), new CmsUUID(getParamId1()), getParamVersion1());
-            m_file2 = CmsResourceComparisonDialog.readFile(getCms(), new CmsUUID(getParamId2()), getParamVersion2());
+            m_resource1 = CmsResourceComparisonDialog.readResource(getCms(), new CmsUUID(getParamId1()), getParamVersion1());
+            m_resource2 = CmsResourceComparisonDialog.readResource(getCms(), new CmsUUID(getParamId2()), getParamVersion2());
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        m_resourceType = m_file1.getTypeId();
+        m_resourceType = m_resource1.getTypeId();
     }
 
     /**

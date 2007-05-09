@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.258.4.19 $
+ * Date   : $Date: 2007/05/09 07:59:17 $
+ * Version: $Revision: 1.258.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.19 $
+ * @version $Revision: 1.258.4.20 $
  * 
  * @since 6.0.0 
  */
@@ -392,7 +392,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(4, relation.getTargetPath());
             stmt.setLong(5, relation.getDateBegin());
             stmt.setLong(6, relation.getDateEnd());
-            stmt.setInt(7, relation.getType().getMode());
+            stmt.setInt(7, relation.getType().getId());
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -953,6 +953,37 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#moveRelations(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.file.CmsResource)
+     */
+    public void moveRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_MOVE_RELATIONS_SOURCE");
+            stmt.setString(1, resource.getRootPath());
+            stmt.setString(2, resource.getStructureId().toString());
+
+            stmt.executeUpdate();
+            m_sqlManager.closeAll(dbc, null, stmt, null);
+
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_MOVE_RELATIONS_TARGET");
+            stmt.setString(1, resource.getRootPath());
+            stmt.setString(2, resource.getStructureId().toString());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
     }
 
     /**
@@ -1547,16 +1578,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readRelations(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.relations.CmsRelationFilter)
+     * @see org.opencms.db.I_CmsVfsDriver#readRelations(org.opencms.db.CmsDbContext, CmsUUID, CmsResource, org.opencms.relations.CmsRelationFilter)
      */
-    public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsRelationFilter filter)
+    public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException {
 
         List relations = new ArrayList();
 
         // prepare the selection criteria
         List params = new ArrayList(7);
-        String conditions = prepareRelationConditions(filter, null, params);
+        String conditions = prepareRelationConditions(filter, resource, params);
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2658,15 +2689,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
-    }
-
-    /**
      * Returns the count of properties for a property definition.<p>
      * 
      * @param dbc the current database context
@@ -3264,76 +3286,85 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // source or target filter
         if (filter.isSource() || filter.isTarget()) {
-            // source or target id filter
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
+            // source or target id filter from resource
+            if (resource != null) {
+                conditions.append(BEGIN_CONDITION);
                 if (filter.isSource()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
-                    params.add(filter.getStructureId().toString());
+                    params.add(resource.getStructureId().toString());
                     if (filter.isTarget()) {
                         // if both, then 'OR' condition is used
                         conditions.append(OR_CONDITION);
                         conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
-                        params.add(filter.getStructureId().toString());
-                    } else if (resource != null) {
-                        conditions.append(AND_CONDITION);
-                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
                         params.add(resource.getStructureId().toString());
                     }
-
                 } else if (filter.isTarget()) {
                     conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
-                    params.add(filter.getStructureId().toString());
-                    if (resource != null) {
-                        conditions.append(AND_CONDITION);
-                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
-                        params.add(resource.getRootPath());
-                    }
+                    params.add(resource.getStructureId().toString());
                 }
+                conditions.append(END_CONDITION);
             }
-            // source or target path filter
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter.getPath())) {
-                if ((filter.getStructureId() != null) && !filter.getStructureId().isNullUUID()) {
-                    // if path and id, then 'OR' condition is used, only if the resource param will not be used
-                    if (resource == null || (filter.isSource() && filter.isTarget())) {
-                        conditions.append(OR_CONDITION);
-                    } else {
-                        conditions.append(AND_CONDITION);
-                    }
+
+            // target or source id filter from filter parameter
+            if ((filter.getStructureId() != null) && (!filter.getStructureId().isNullUUID())) {
+                if (conditions.length() == 0) {
+                    conditions.append(BEGIN_CONDITION);
+                } else {
+                    conditions.append(BEGIN_INCLUDE_CONDITION);
                 }
+
+                if (filter.isSource()) {
+                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
+                    params.add(filter.getStructureId().toString());
+                    if (filter.isTarget()) {
+                        // if both, then 'OR' condition is used
+                        conditions.append(OR_CONDITION);
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
+                        params.add(filter.getStructureId().toString());
+                    }
+                } else if (filter.isTarget()) {
+                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
+                    params.add(filter.getStructureId().toString());
+                }
+                conditions.append(END_CONDITION);
+            }
+
+            // target or source id filter from filter parameter
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(filter.getPath())) {
+                if (conditions.length() == 0) {
+                    conditions.append(BEGIN_CONDITION);
+                } else {
+                    conditions.append(BEGIN_INCLUDE_CONDITION);
+                }
+
                 String queryPath = filter.getPath();
                 if (filter.isIncludeChilds()) {
                     queryPath += '%';
                 }
                 if (filter.isSource()) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
+                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
                     params.add(queryPath);
                     if (filter.isTarget()) {
                         // if both, or condition is used
                         conditions.append(OR_CONDITION);
-                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
+                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
                         params.add(queryPath);
-                    } else if (resource != null) {
-                        conditions.append(AND_CONDITION);
-                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
-                        params.add(resource.getRootPath());
                     }
                 } else if (filter.isTarget()) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
+                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
                     params.add(queryPath);
-                    if (resource != null) {
-                        conditions.append(AND_CONDITION);
-                        conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
-                        params.add(resource.getRootPath());
-                    }
                 }
+                conditions.append(END_CONDITION);
             }
-            conditions.append(END_CONDITION);
         }
 
         // date filter
         if (filter.getDate() > 0) {
-            conditions.append(BEGIN_INCLUDE_CONDITION);
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
             conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_DATE"));
             conditions.append(END_CONDITION);
             // once for the begin
@@ -3345,12 +3376,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // relation type filter
         Set types = filter.getTypes();
         if (!types.isEmpty()) {
-            conditions.append(BEGIN_INCLUDE_CONDITION);
+            if (conditions.length() == 0) {
+                conditions.append(BEGIN_CONDITION);
+            } else {
+                conditions.append(BEGIN_INCLUDE_CONDITION);
+            }
             Iterator it = types.iterator();
             while (it.hasNext()) {
                 CmsRelationType type = (CmsRelationType)it.next();
                 conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TYPE"));
-                params.add(String.valueOf(type.getMode()));
+                params.add(String.valueOf(type.getId()));
                 if (it.hasNext()) {
                     conditions.append(OR_CONDITION);
                 }
@@ -3358,10 +3393,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(END_CONDITION);
         }
 
-        // remove the leading " AND" if necessary
-        if (conditions.length() > BEGIN_INCLUDE_CONDITION.length()) {
-            return conditions.substring(BEGIN_INCLUDE_CONDITION.length() - 2);
-        }
         return conditions.toString();
     }
 

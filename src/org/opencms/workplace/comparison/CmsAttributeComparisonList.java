@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.3.4.3 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.3.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3.4.3 $ 
+ * @version $Revision: 1.3.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     protected List getListItems() {
 
         List ret = new ArrayList();
-        Iterator diffs = CmsResourceComparison.compareAttributes(getCms(), getFile1(), getFile2()).iterator();
+        Iterator diffs = CmsResourceComparison.compareAttributes(getCms(), getResource1(), getResource2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
@@ -157,6 +157,11 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
                 }
             }
             ret.add(item);
+
+            if (!diffs.hasNext()) {
+                getList().getMetadata().getIndependentAction(LIST_ACTION_VIEW1).setEnabled(getResource1().isFile());
+                getList().getMetadata().getIndependentAction(LIST_ACTION_VIEW2).setEnabled(getResource2().isFile());
+            }
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
             Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
@@ -178,7 +183,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(getLocale());
         String iconPath = null;
         try {
-            String typeName = OpenCms.getResourceManager().getResourceType(getFile1().getTypeId()).getTypeName();
+            String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
             iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
         } catch (CmsException e) {
             iconPath = "filetypes/"

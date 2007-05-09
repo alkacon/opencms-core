@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:09 $
- * Version: $Revision: 1.110.2.25 $
+ * Date   : $Date: 2007/05/09 07:59:18 $
+ * Version: $Revision: 1.110.2.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.25 $
+ * @version $Revision: 1.110.2.26 $
  * 
  * @since 6.0.0 
  */
@@ -846,7 +846,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
                 dbc,
                 dbc.currentProject().getUuid(),
-                filter.filterResource(parent)).iterator();
+                parent,
+                filter).iterator();
             while (itRelations.hasNext()) {
                 CmsRelation relation = (CmsRelation)itRelations.next();
                 String ouFqn = relation.getSourcePath().substring(ORGUNIT_BASE_FOLDER.length());
@@ -1236,6 +1237,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
                     groupFqn);
                 if (LOG.isWarnEnabled()) {
+                    // this may happen while deleting an orgunit
                     LOG.warn(message.key());
                 } else if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key(), new Exception());
@@ -1661,7 +1663,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
 
             // remove the resource
-            CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterPath(resourceName);
+            CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterPath(resourceName);
             m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
             m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
@@ -1946,15 +1948,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         sqlQuery += " ";
         sqlQuery += m_sqlManager.readQuery("C_GROUPS_ORDER_0");
         return sqlQuery;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
     }
 
     /**
@@ -2335,7 +2328,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected void internalDeleteOrgUnitResource(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterResource(resource);
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
 
         // first the online version
         if (!dbc.currentProject().isOnlineProject()) {
@@ -2364,7 +2357,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
                     dbc.getRequestContext().currentProject().getUuid(),
-                    null,
+                    resource,
                     filter);
             } finally {
                 dbc.getRequestContext().setCurrentProject(project);
@@ -2387,7 +2380,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
             dbc.getRequestContext().currentProject().getUuid(),
-            null,
+            resource,
             filter);
 
         // fire event

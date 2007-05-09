@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/07 09:28:08 $
- * Version: $Revision: 1.97.4.50 $
+ * Date   : $Date: 2007/05/09 07:59:18 $
+ * Version: $Revision: 1.97.4.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,6 +65,7 @@ import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -182,7 +183,7 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsUUID id,
         String target,
-        String type) throws CmsException {
+        CmsRelationType type) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -5359,15 +5360,6 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
     }
 
     /**

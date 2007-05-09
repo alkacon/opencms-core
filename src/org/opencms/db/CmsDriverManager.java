@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/04 16:03:16 $
- * Version: $Revision: 1.570.2.84 $
+ * Date   : $Date: 2007/05/09 07:59:18 $
+ * Version: $Revision: 1.570.2.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -484,8 +484,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void addRelationToResource(CmsDbContext dbc, CmsResource resource, CmsUUID id, String target, String type)
-    throws CmsException {
+    public void addRelationToResource(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsUUID id,
+        String target,
+        CmsRelationType type) throws CmsException {
 
         CmsRelation relation = new CmsRelation(
             resource.getStructureId(),
@@ -494,7 +498,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             target,
             0,
             0,
-            CmsRelationType.valueOf(type));
+            type);
         m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
 
     }
@@ -942,8 +946,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
      * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
-    public void copyResource(CmsDbContext dbc, CmsResource source, String destination, CmsResource.CmsResourceCopyMode siblingMode)
-    throws CmsException, CmsIllegalArgumentException {
+    public void copyResource(
+        CmsDbContext dbc,
+        CmsResource source,
+        String destination,
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException, CmsIllegalArgumentException {
 
         // check the sibling mode to see if this resource has to be copied as a sibling
         boolean copyAsSibling = false;
@@ -1695,7 +1702,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
                 }
             }
-            // delete all relations for the resource, the relations will be rebuild as soon as needed
+            // delete all relations for the resource, the content relations will be rebuild as soon as needed
             deleteRelationsForResource(dbc, newResource, CmsRelationFilter.TARGETS);
         } finally {
             // clear the internal caches
@@ -2410,12 +2417,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
-        if (resource != null) {
-            // delete by id and path
-            filter = filter.filterStructureId(resource.getStructureId());
-            filter = filter.filterPath(resource.getRootPath());
-        }
-        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), null, filter);
+        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
     }
 
     /**
@@ -3777,13 +3779,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
-        if (resource != null && CmsStringUtil.isEmptyOrWhitespaceOnly(filter.getPath())) {
-            filter = filter.filterPath(resource.getRootPath());
-        }
-        if (resource != null && (filter.getStructureId() == null || filter.getStructureId().isNullUUID())) {
-            filter = filter.filterStructureId(resource.getStructureId());
-        }
-        return m_vfsDriver.readRelations(dbc, dbc.currentProject().getUuid(), filter);
+        return m_vfsDriver.readRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
     }
 
     /**
@@ -6943,7 +6939,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
      * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
-    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceUndoMode mode) throws CmsException {
+    public void undoChanges(CmsDbContext dbc, CmsResource resource, CmsResource.CmsResourceUndoMode mode)
+    throws CmsException {
 
         if (resource.getState().isNew()) {
             // undo changes is impossible on a new resource
@@ -7157,7 +7154,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (it.hasNext()) {
             CmsResource sibling = (CmsResource)it.next();
             // clean the relation information for this sibling
-            deleteRelationsForResource(dbc, sibling, CmsRelationFilter.TARGETS);
+            deleteRelationsForResource(dbc, sibling, CmsRelationFilter.TARGETS.filterDefinedInContent());
         }
 
         // build the links again only if needed
@@ -7819,15 +7816,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         throw new CmsVfsResourceNotFoundException(Messages.get().container(
             Messages.ERR_ACCESS_FILE_AS_FOLDER_1,
             resource.getRootPath()));
-    }
-
-    /** 
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
     }
 
     /**

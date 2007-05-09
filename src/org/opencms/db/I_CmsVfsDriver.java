@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.114.4.13 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.114.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.13 $
+ * @version $Revision: 1.114.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -122,9 +122,12 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, CmsUUID projectId, String name, CmsPropertyDefinition.CmsPropertyType type)
-    throws CmsDataAccessException;
-    
+    CmsPropertyDefinition createPropertyDefinition(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        String name,
+        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException;
+
     /**
      * Creates a new {@link CmsRelation} object in the database.<p>
      * 
@@ -213,12 +216,13 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the id of the project to execute the query in
-     * @param resource the base resource (may be null, if you want to delete all relations for the resource in the filter)
+     * @param resource the base resource. May be <code>null</code> for all
      * @param filter the filter to restrict the relations to remove
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter) throws CmsDataAccessException;
+    void deleteRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
+    throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -245,6 +249,17 @@ public interface I_CmsVfsDriver {
      * @return the SQL manager for this driver
      */
     org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
+
+    /**
+     * Moves all relations of a resource to the new path.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the id of the project to apply the changes 
+     * @param resource the resource to apply the changes to
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void moveRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Moves the given resource to the specified destination path.<p>
@@ -306,8 +321,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    byte[] readContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
-    throws CmsDataAccessException;
+    byte[] readContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException;
 
     /**
      * Reads a folder specified by it's structure ID.<p>
@@ -414,13 +428,15 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the id of the project to execute the query in
-     * @param filter the filter to restrict the relations to remove
+     * @param resource the resource to read the relations for, may be <code>null</code> for all
+     * @param filter the filter to restrict the relations to retrieve
      * 
      * @return the read relations
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsRelationFilter filter) throws CmsDataAccessException;
+    List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
+    throws CmsDataAccessException;
 
     /**
      * Reads a resource specified by it's structure ID.<p>
@@ -461,7 +477,8 @@ public interface I_CmsVfsDriver {
      * @return a list with all resources that where read
      * @throws CmsDataAccessException if somethong goes wrong
      */
-    List readResources(CmsDbContext dbc, CmsUUID currentProject, CmsResourceState state, int mode) throws CmsDataAccessException;
+    List readResources(CmsDbContext dbc, CmsUUID currentProject, CmsResourceState state, int mode)
+    throws CmsDataAccessException;
 
     /**
      * Returns all resources associated to a given principal via an ACE.<p> 
@@ -594,8 +611,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void removeFile(CmsDbContext dbc, CmsProject currentProject, CmsResource resource)
-    throws CmsDataAccessException;
+    void removeFile(CmsDbContext dbc, CmsProject currentProject, CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Removes a folder physically in the database.<p>
@@ -648,7 +664,8 @@ public interface I_CmsVfsDriver {
      * @return true if a resource with the given id was found, false otherweise
      * @throws CmsDataAccessException if something goes wrong
      */
-    boolean validateResourceIdExists(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException;
+    boolean validateResourceIdExists(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
+    throws CmsDataAccessException;
 
     /**
      * Validates if the specified structure ID in the tables of the specified project {offline|online} exists.<p>
@@ -780,6 +797,10 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#UPDATE_ALL
      */
-    void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed, boolean isPublishing)
-    throws CmsDataAccessException;
+    void writeResourceState(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        int changed,
+        boolean isPublishing) throws CmsDataAccessException;
 }

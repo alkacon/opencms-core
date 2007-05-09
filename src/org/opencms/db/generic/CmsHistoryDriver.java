@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/02 17:25:41 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/09 07:59:17 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.CmsHistoryFolder;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -79,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.9.1
  */
@@ -126,16 +127,14 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
     /**
      * Creates a valid {@link I_CmsHistoryResource} instance from a JDBC ResultSet.<p>
+     * 
      * @param res the JDBC result set
-     * @param hasContent true if the file content is part of the result set
      * 
      * @return the new historical resource instance
      * 
      * @throws SQLException if a requested attribute was not found in the result set
      */
-    protected I_CmsHistoryResource createResource(ResultSet res, boolean hasContent) throws SQLException {
-
-        byte[] content = null;
+    protected I_CmsHistoryResource createResource(ResultSet res) throws SQLException {
 
         int version = res.getInt(m_sqlManager.readQuery("C_RESOURCES_HISTORY_VERSION"));
         int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
@@ -156,30 +155,49 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_HISTORY_PARENTID")));
 
-        if (hasContent) {
-            content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-        }
+        boolean isFolder = resourcePath.endsWith("/");
+
         long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
-        return new CmsHistoryFile(
-            tagId,
-            structureId,
-            resourceId,
-            resourcePath,
-            resourceType,
-            resourceFlags,
-            projectLastModified,
-            CmsResourceState.valueOf(state),
-            dateCreated,
-            userCreated,
-            dateLastModified,
-            userLastModified,
-            dateReleased,
-            dateExpired,
-            resourceSize,
-            dateContent,
-            version,
-            parentId,
-            content);
+        if (isFolder) {
+            return new CmsHistoryFolder(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                version,
+                parentId);
+        } else {
+            return new CmsHistoryFile(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                resourceSize,
+                dateContent,
+                version,
+                parentId,
+                null);
+        }
     }
 
     /**
@@ -208,13 +226,12 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
-            if (maxVersion - versionsToKeep < 0) {
+            if (maxVersion - versionsToKeep <= 0) {
                 // nothing to delete
                 return;
             }
 
-            // get the minimal structure publish tag to keep, 
-            // all entries with publish tag less than this will be deleted
+            // get the minimal structure publish tag to keep for this sibling
             int minStrPublishTagToKeep = -1;
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
             stmt.setString(1, structureId.toString());
@@ -227,6 +244,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 return;
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
+            if (minStrPublishTagToKeep < 1) {
+                // nothing to delete
+                return;
+            }
             minStrPublishTagToKeep++;
 
             // delete the properties
@@ -242,6 +263,26 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(2, minStrPublishTagToKeep);
             stmt.executeUpdate();
             m_sqlManager.closeAll(dbc, null, stmt, null);
+
+            /*
+             // check the maximal resource publish tag to keep,
+             // that are used by other siblings
+             int maxResPublishTagToKeep = minStrPublishTagToKeep;
+             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_SIBLING");
+             stmt.setString(1, resourceId.toString());
+             stmt.setString(2, structureId.toString());
+             res = stmt.executeQuery();
+             if (res.next()) {
+             maxResPublishTagToKeep = res.getInt(1);
+             } else {
+             // nothing to delete
+             return;
+             }
+             m_sqlManager.closeAll(dbc, null, stmt, res);
+             
+             // all entries with publish tag less than this will be deleted
+             int publishTag = Math.min(minStrPublishTagToKeep, maxResPublishTagToKeep);
+             */
 
             // get the minimal resource publish tag to keep, 
             // all entries with publish tag less than this will be deleted
@@ -481,7 +522,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(3, publishTag);
             res = stmt.executeQuery();
             while (res.next()) {
-                historyResources.add(createResource(res, false));
+                historyResources.add(createResource(res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -548,7 +589,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             res = stmt.executeQuery();
             while (res.next()) {
-                result.add(createResource(res, false));
+                result.add(createResource(res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -579,7 +620,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(2, tagId);
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createResource(res, true);
+                file = createResource(res);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -596,6 +637,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
+        ((CmsFile)file).setContents(readContent(dbc, structureId, file.getVersion()));
         return file;
     }
 
@@ -965,7 +1007,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(2, version);
             res = stmt.executeQuery();
             if (res.next()) {
-                resource = createResource(res, false);
+                resource = createResource(res);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -1227,17 +1269,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-    }
-
-    /**
-     * Releases any allocated resources during garbage collection.<p>
-     * 
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
     }
 
     /**

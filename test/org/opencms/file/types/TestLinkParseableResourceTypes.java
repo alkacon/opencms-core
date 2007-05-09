@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/05/09 07:59:16 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -679,7 +679,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         String targetName = "/folder1/image2.gif";
         CmsResource target = cms.readResource(targetName);
         List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-        assertEquals(relations.size(), 1);
+        assertEquals(1, relations.size());
         CmsRelation expected = new CmsRelation(
             source.getStructureId(),
             source.getRootPath(),
@@ -695,7 +695,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
         assertTrue(relations.isEmpty());
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
-        assertEquals(relations.size(), 20);
+        assertEquals(20, relations.size());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2007/05/02 16:55:31 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,22 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
+     * Returns an extended filter with defined in content type restriction.<p>
+     * 
+     * @return an extended filter with defined in content type restriction
+     */
+    public CmsRelationFilter filterDefinedInContent() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllDefinedInContent());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterDefinedInContent(filter.m_types));
+        }
+        return filter;
+    }
+
+    /**
      * Returns an extended filter that will extend the result to the given path and all its childs.<p>
      * 
      * @return an extended filter with the given relation date restriction
@@ -128,6 +144,38 @@ public final class CmsRelationFilter implements Cloneable {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
         filter.m_includeChilds = true;
+        return filter;
+    }
+
+    /**
+     * Returns an extended filter with internal type restriction.<p>
+     * 
+     * @return an extended filter with internal type restriction
+     */
+    public CmsRelationFilter filterInternal() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllInternal());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterInternal(filter.m_types));
+        }
+        return filter;
+    }
+
+    /**
+     * Returns an extended filter with not defined in content type restriction.<p>
+     * 
+     * @return an extended filter with not defined in content type restriction
+     */
+    public CmsRelationFilter filterNotDefinedInContent() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllNotDefinedInContent());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterNotDefinedInContent(filter.m_types));
+        }
         return filter;
     }
 
@@ -167,10 +215,11 @@ public final class CmsRelationFilter implements Cloneable {
     public CmsRelationFilter filterStrong() {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
-        filter.m_types.add(CmsRelationType.EMBEDDED_IMAGE);
-        filter.m_types.add(CmsRelationType.EMBEDDED_OBJECT);
-        filter.m_types.add(CmsRelationType.XML_STRONG);
-        filter.m_types.add(CmsRelationType.JSP_STRONG);
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllStrong());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterStrong(filter.m_types));
+        }
         return filter;
     }
 
@@ -203,6 +252,22 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
+     * Returns an extended filter with user defined type restriction.<p>
+     * 
+     * @return an extended filter with user defined type restriction
+     */
+    public CmsRelationFilter filterUserDefined() {
+
+        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllUserDefined());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterUserDefined(filter.m_types));
+        }
+        return filter;
+    }
+
+    /**
      * Returns an extended filter with weak type restriction.<p>
      * 
      * @return an extended filter with weak type restriction
@@ -210,9 +275,11 @@ public final class CmsRelationFilter implements Cloneable {
     public CmsRelationFilter filterWeak() {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
-        filter.m_types.add(CmsRelationType.HYPERLINK);
-        filter.m_types.add(CmsRelationType.JSP_WEAK);
-        filter.m_types.add(CmsRelationType.XML_WEAK);
+        if (filter.m_types.isEmpty()) {
+            filter.m_types.addAll(CmsRelationType.getAllWeak());
+        } else {
+            filter.m_types = new HashSet(CmsRelationType.filterWeak(filter.m_types));
+        }
         return filter;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.5.3
  */
@@ -174,9 +174,7 @@ public class CmsInternalLinksValidator {
             String folderName = (String)itFolders.next();
             List relations;
             try {
-                relations = m_cms.getRelationsForResource(
-                    folderName,
-                    filter.filterPath(m_cms.getRequestContext().addSiteRoot(folderName)));
+                relations = m_cms.getRelationsForResource(folderName, filter);
             } catch (CmsException e) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, folderName), e);
                 continue;

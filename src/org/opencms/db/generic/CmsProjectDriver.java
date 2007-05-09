@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/03 16:00:20 $
- * Version: $Revision: 1.241.4.28 $
+ * Date   : $Date: 2007/05/09 07:59:17 $
+ * Version: $Revision: 1.241.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.28 $
+ * @version $Revision: 1.241.4.29 $
  * 
  * @since 6.0.0 
  */
@@ -815,13 +815,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
                     onlineProject.getUuid(),
-                    null,
-                    CmsRelationFilter.TARGETS.filterResource(onlineFolder));
+                    onlineFolder,
+                    CmsRelationFilter.TARGETS);
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
                     dbc.currentProject().getUuid(),
-                    null,
-                    CmsRelationFilter.TARGETS.filterResource(onlineFolder));
+                    onlineFolder,
+                    CmsRelationFilter.TARGETS);
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -2411,15 +2411,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        destroy();
-        super.finalize();
-    }
-
-    /**
      * Checks if the given resource (by id) is available in the online project,
      * if there exists a resource with a different path (a moved file), then the 
      * online entry is moved to the right (new) location before publishing.<p>
@@ -2458,11 +2449,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             return offlineResource.getState();
         }
 
-        // remove the links of the moved resource
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
-        filter = filter.filterStructureId(onlineResource.getStructureId());
-        filter = filter.filterPath(onlineResource.getRootPath());
-        m_driverManager.getVfsDriver().deleteRelations(dbc, onlineProject.getUuid(), null, filter);
+        // move the relations of the moved resource
+        m_driverManager.getVfsDriver().moveRelations(dbc, onlineProject.getUuid(), onlineResource);
 
         // move the online resource to the new position
         m_driverManager.getVfsDriver().moveResource(
@@ -2902,13 +2890,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             m_driverManager.getVfsDriver().deleteRelations(
                 dbc,
                 onlineProject.getUuid(),
-                null,
-                CmsRelationFilter.TARGETS.filterResource(offlineResource));
+                offlineResource,
+                CmsRelationFilter.TARGETS);
             m_driverManager.getVfsDriver().deleteRelations(
                 dbc,
                 dbc.currentProject().getUuid(),
-                null,
-                CmsRelationFilter.TARGETS.filterResource(offlineResource));
+                offlineResource,
+                CmsRelationFilter.TARGETS);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(
@@ -3059,18 +3047,21 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     protected void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
     throws CmsDataAccessException {
 
+        // delete online relations
         m_driverManager.getVfsDriver().deleteRelations(
             dbc,
             onlineProject.getUuid(),
-            null,
-            CmsRelationFilter.TARGETS.filterResource(offlineResource));
+            offlineResource,
+            CmsRelationFilter.TARGETS);
+        
+        // copy offline to online relations
         Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
             dbc,
             dbc.currentProject().getUuid(),
-            CmsRelationFilter.TARGETS.filterResource(offlineResource)).iterator();
+            offlineResource,
+            CmsRelationFilter.TARGETS).iterator();
         while (itRelations.hasNext()) {
             m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());
         }
     }
-
 }

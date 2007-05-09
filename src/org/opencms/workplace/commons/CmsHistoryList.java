@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.5.4.14 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.5.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,12 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryProject;
-import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.14 $ 
+ * @version $Revision: 1.5.4.15 $ 
  * 
  * @since 6.0.2 
  */
@@ -360,62 +359,69 @@ public class CmsHistoryList extends A_CmsListDialog {
         List historicalVersions = getCms().readAllAvailableVersions(getParamResource());
         Iterator i = historicalVersions.iterator();
         while (i.hasNext()) {
+            I_CmsHistoryResource histRes = (I_CmsHistoryResource)i.next();
 
-            I_CmsHistoryResource file = (I_CmsHistoryResource)i.next();
-            if ((-1 != file.getVersion())
-                && getCms().existsResource(
-                    getCms().getRequestContext().removeSiteRoot(file.getResource().getRootPath()))) {
-                // the publish tag for the history project            
-                int publishTag = file.getPublishTag();
-                //String version = .toString();
-                CmsHistoryProject project = getCms().readHistoryProject(publishTag);
-                String filetype = String.valueOf(file.getResource().getTypeId());
-                String dateLastModified = getMessages().getDateTime(file.getResource().getDateLastModified());
-                String datePublished = getMessages().getDateTime(project.getPublishingDate());
-                CmsListItem item = getList().newItem("" + file.getVersion());
-                //version
-                item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(new Integer(file.getVersion())));
-                // filename
-                item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
-                // nicename
-                item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
-                // group           
-                item.set(LIST_COLUMN_FILE_TYPE, filetype);
-                // user           
-                item.set(LIST_COLUMN_USER, getCms().readUser(file.getResource().getUserLastModified()).getName());
-                // path           
-                item.set(LIST_COLUMN_RESOURCE_PATH, file.getResource().getRootPath());
-                // size 
-                item.set(LIST_COLUMN_SIZE, new Integer(file.getResource().getLength()).toString());
-                result.add(item);
-                // invisible publish tag (for reading history project in fillDetails)
-                item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
-                // invisible structure id           
-                item.set(LIST_COLUMN_STRUCTURE_ID, file.getResource().getStructureId().toString());
+            // the publish tag for the history project            
+            int publishTag = histRes.getPublishTag();
+
+            CmsHistoryProject project = getCms().readHistoryProject(publishTag);
+            String filetype = String.valueOf(histRes.getResource().getTypeId());
+            String dateLastModified = getMessages().getDateTime(histRes.getResource().getDateLastModified());
+            String datePublished = getMessages().getDateTime(project.getPublishingDate());
+
+            CmsListItem item = getList().newItem("" + histRes.getVersion());
+
+            //version
+            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(new Integer(histRes.getVersion())));
+            // filename
+            item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
+            // nicename
+            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
+            // group           
+            item.set(LIST_COLUMN_FILE_TYPE, filetype);
+            // user           
+            item.set(LIST_COLUMN_USER, getCms().readUser(histRes.getResource().getUserLastModified()).getName());
+            // path           
+            item.set(LIST_COLUMN_RESOURCE_PATH, histRes.getResource().getRootPath());
+            // size 
+            item.set(LIST_COLUMN_SIZE, new Integer(histRes.getResource().getLength()).toString());
+            // invisible publish tag (for reading history project in fillDetails)
+            item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
+            // invisible structure id           
+            item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getResource().getStructureId().toString());
+
+            result.add(item);
+
+            if (!i.hasNext()) {
+                // hide the size for folders
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(histRes.getResource().isFile());
+                // hide the preview button for folders
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_VIEW).setEnabled(
+                    false);
             }
         }
 
-        CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource offlineResource = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
         // display offline version, if state is not unchanged
-        if (!offlineFile.getState().isUnchanged()) {
-            CmsListItem item = getList().newItem("" + offlineFile.getVersion());
+        if (!offlineResource.getState().isUnchanged()) {
+            CmsListItem item = getList().newItem("" + offlineResource.getVersion());
             //version
             item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(OFFLINE_PROJECT));
             // filename
             item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
             // nicename
-            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineFile.getDateLastModified()));
+            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineResource.getDateLastModified()));
             // group           
-            item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineFile.getTypeId()));
+            item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineResource.getTypeId()));
             // user           
-            item.set(LIST_COLUMN_USER, getCms().readUser(offlineFile.getUserLastModified()).getName());
+            item.set(LIST_COLUMN_USER, getCms().readUser(offlineResource.getUserLastModified()).getName());
             // size 
-            item.set(LIST_COLUMN_SIZE, new Integer(offlineFile.getLength()).toString());
+            item.set(LIST_COLUMN_SIZE, new Integer(offlineResource.getLength()).toString());
             // path
-            item.set(LIST_COLUMN_RESOURCE_PATH, offlineFile.getRootPath());
+            item.set(LIST_COLUMN_RESOURCE_PATH, offlineResource.getRootPath());
             result.add(item);
             // invisible structure id           
-            item.set(LIST_COLUMN_STRUCTURE_ID, offlineFile.getStructureId().toString());
+            item.set(LIST_COLUMN_STRUCTURE_ID, offlineResource.getStructureId().toString());
 
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL1).setVisible(result.size() > 1);
@@ -430,10 +436,10 @@ public class CmsHistoryList extends A_CmsListDialog {
      */
     protected void performRestoreOperation() throws CmsException {
 
-        String resourcePath = (String)getSelectedItem().get(LIST_COLUMN_RESOURCE_PATH);
+        CmsUUID structureId = new CmsUUID((String)getSelectedItem().get(LIST_COLUMN_STRUCTURE_ID));
         int version = Integer.parseInt(((CmsListItem)getSelectedItems().get(0)).getId());
-        CmsResource res = getCms().readResource(resourcePath);
-        checkLock(resourcePath);
+        CmsResource res = getCms().readResource(structureId);
+        checkLock(getCms().getSitePath(res));
         getCms().restoreResourceVersion(res.getStructureId(), version);
     }
 

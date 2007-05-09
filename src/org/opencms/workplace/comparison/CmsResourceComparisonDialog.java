@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.4.4.5 $
+ * Date   : $Date: 2007/05/09 07:59:15 $
+ * Version: $Revision: 1.4.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.5 $ 
+ * @version $Revision: 1.4.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,6 +231,26 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     }
 
     /**
+     * Returns either the historical resource or the offline resource, depending on the version number.<p>
+     * 
+     * @param cms the CmsObject to use
+     * @param id the structure id of the resource
+     * @param version the historical version number
+     * 
+     * @return either the historical resource or the offline resource, depending on the version number
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
+
+        if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
+            return cms.readResource(id);
+        } else {
+            return cms.readResource(id, Integer.parseInt(version)).getResource();
+        }
+    }
+
+    /**
      * Display method for two list dialogs.<p>
      * 
      * @throws Exception if something goes wrong
@@ -276,6 +296,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists) {
 
+                /**
+                 * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
+                 */
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -297,6 +320,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists) {
 
+                /**
+                 * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
+                 */
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -311,7 +337,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             twoLists.writeDialog();
             // same as for CmsImageComparisonDialog
             pointers.displayDialog();
-        } else {
+        } else if (propertyDiff.getResource1().isFile()) {
 
             // display attributes and properties 
             lists.add(propertyDiff);
@@ -321,11 +347,11 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 return;
             }
 
-            String path1 = propertyDiff.getFile1().getRootPath();
-            String path2 = propertyDiff.getFile2().getRootPath();
+            String path1 = propertyDiff.getResource1().getRootPath();
+            String path2 = propertyDiff.getResource2().getRootPath();
 
-            byte[] content1 = propertyDiff.getFile1().getContents();
-            byte[] content2 = propertyDiff.getFile2().getContents();
+            byte[] content1 = readFile(getCms(), propertyDiff.getResource1().getStructureId(), getParamVersion1()).getContents();
+            byte[] content2 = readFile(getCms(), propertyDiff.getResource2().getStructureId(), getParamVersion2()).getContents();
 
             String originalSource = null;
             String copySource = null;
@@ -358,6 +384,17 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 // same as for CmsImageComparisonDialog
                 m_differenceDialog.displayDialog();
             }
+        } else {
+            // display attributes and properties 
+            lists.add(propertyDiff);
+            CmsMultiListDialog twoLists = new CmsMultiListDialog(lists);
+            twoLists.displayDialog(true);
+            if (twoLists.isForwarded()) {
+                return;
+            }
+
+            fileInfo.writeDialog();
+            twoLists.writeDialog();
         }
     }
 
@@ -575,11 +612,11 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         super.initWorkplaceRequestValues(settings, request);
         try {
-            CmsFile file1 = CmsResourceComparisonDialog.readFile(
+            CmsResource resource1 = CmsResourceComparisonDialog.readResource(
                 getCms(),
                 new CmsUUID(getParamId1()),
                 getParamVersion1());
-            CmsFile file2 = CmsResourceComparisonDialog.readFile(
+            CmsResource resource2 = CmsResourceComparisonDialog.readResource(
                 getCms(),
                 new CmsUUID(getParamId2()),
                 getParamVersion2());
@@ -590,17 +627,18 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog = new CmsDifferenceDialog(getJsp());
             }
             if (CmsResourceComparisonDialog.COMPARE_ATTRIBUTES.equals(getParamCompare())) {
-                List comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), file1, file2);
+                List comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), resource1, resource2);
                 String[] attributeStrings = getAttributesAsString(comparedAttributes);
                 m_differenceDialog.setOriginalSource(attributeStrings[0]);
                 m_differenceDialog.setCopySource(attributeStrings[1]);
             } else if (CmsResourceComparisonDialog.COMPARE_PROPERTIES.equals(getParamCompare())) {
-                List comparedProperties = CmsResourceComparison.compareProperties(getCms(), file1, file2);
+                List comparedProperties = CmsResourceComparison.compareProperties(getCms(), resource1, resource2);
                 String[] propertyStrings = getPropertiesAsString(comparedProperties);
                 m_differenceDialog.setOriginalSource(propertyStrings[0]);
                 m_differenceDialog.setCopySource(propertyStrings[1]);
-            } else {
-
+            } else if (resource1.isFile()) {
+                CmsFile file1 = readFile(getCms(), new CmsUUID(getParamId1()), getParamVersion1());
+                CmsFile file2 = readFile(getCms(), new CmsUUID(getParamId2()), getParamVersion2());
                 setContentAsSource(file1, file2);
             }
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/03/26 09:12:04 $
- * Version: $Revision: 1.100.4.9 $
+ * Date   : $Date: 2007/05/09 07:59:19 $
+ * Version: $Revision: 1.100.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.9 $ 
+ * @version $Revision: 1.100.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1207,10 +1207,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         int numberOfUpdates = updatedFiles.size();
         CmsObject cms = controller.getCmsObject();
-        CmsRelationFilter type = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
         Iterator it;
         try {
-            it = cms.getRelationsForResource(cms.getSitePath(resource), type).iterator();
+            it = cms.getRelationsForResource(cms.getSitePath(resource), filter).iterator();
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {
