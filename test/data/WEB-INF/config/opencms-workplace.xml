@@ -64,6 +64,8 @@
             <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -119,6 +121,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -169,6 +173,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -214,6 +220,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -267,6 +275,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -311,6 +321,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -356,6 +368,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -404,6 +418,8 @@
             <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -449,6 +465,8 @@
             <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
@@ -507,6 +525,8 @@
             	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
             	<separator/>
             	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
             </entry>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
