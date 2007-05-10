@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/05/09 14:55:27 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/10 13:26:10 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.2
  */
@@ -140,20 +140,12 @@ public class CmsCategoryService {
         folderPath = getCategoryFolderPath(name);
         CmsResource resource;
         try {
-            resource = cms.createResource(
-                BASE_PATH + folderPath,
-                CmsResourceTypeFolder.RESOURCE_TYPE_ID,
-                null,
-                properties);
+            resource = cms.createResource(folderPath, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, properties);
         } catch (CmsVfsResourceNotFoundException e) {
             // if parent not found, create it
             cms.createResource(BASE_PATH, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
             // now try again
-            resource = cms.createResource(
-                BASE_PATH + folderPath,
-                CmsResourceTypeFolder.RESOURCE_TYPE_ID,
-                null,
-                properties);
+            resource = cms.createResource(folderPath, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, properties);
         }
         return new CmsCategory(resource.getStructureId(), getCategoryPath(folderPath), title, description);
     }

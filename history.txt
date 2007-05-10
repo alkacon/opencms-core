@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/05/10 09:45:51 $
- * Version: $Revision: 1.717.2.176 $
+ * Date   : $Date: 2007/05/10 13:26:10 $
+ * Version: $Revision: 1.717.2.177 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,7 @@ OpenCms 7.0.0 - July 4, 2007
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 
+! Added new collector to retrieve a resource list for one or more given categories
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Historical publish reports are now stored in the publish job record, not in the file system
