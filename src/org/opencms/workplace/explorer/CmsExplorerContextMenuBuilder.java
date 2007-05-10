@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/05/09 10:12:42 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/05/10 15:40:32 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -276,7 +276,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append(HTML_SEPARATOR);
                         insertSeparator = false;
                     }
-                    menu.append("\n<li><a href=\"#\" class=\"x\" onmouseover=\"top.oSubC('");
+                    menu.append("\n<li><a class=\"x\" href=\"javascript:var ocm=1;\" onmouseover=\"window.status='';top.oSubC('");
                     menu.append(item.getKey().hashCode());
                     menu.append("'");
                     if (CmsStringUtil.isNotEmpty(parentIds)) {
@@ -284,7 +284,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append(",");
                         menu.append(parentIds);
                     }
-                    menu.append(");\">");
+                    menu.append(");return true;\">");
                     menu.append(key(item.getKey()));
                     menu.append("</a>");
                     // recurse into sub menu items
@@ -398,10 +398,10 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append("\n<li><a ");
                         menu.append(link);
 
-                        menu.append(" onmouseover=\"top.cSubC(");
+                        menu.append(" onmouseover=\"window.status='';top.cSubC(");
                         // append parent IDs to keep open
                         menu.append(parentIds);
-                        menu.append(");\"");
+                        menu.append(");return true;\"");
 
                         menu.append(">");
                         menu.append(itemName);
@@ -416,12 +416,12 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append("\n<li>");
                         menu.append("<a ");
 
-                        menu.append(" onmouseover=\"top.cSubC(");
+                        menu.append(" onmouseover=\"window.status='';top.cSubC(");
                         // append parent IDs to keep open
                         menu.append(parentIds);
-                        menu.append(");\"");
+                        menu.append(");return true;\"");
 
-                        menu.append(" class=\"ina\" href=\"#\">").append(itemName).append("</a>");
+                        menu.append(" class=\"ina\" href=\"javascript:var ocm=1;\">").append(itemName).append("</a>");
                         menu.append("</li>");
                         firstEntryWritten = true;
                     }
