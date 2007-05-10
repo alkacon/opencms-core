@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/05/03 13:48:55 $
- * Version: $Revision: 1.15.4.28 $
+ * Date   : $Date: 2007/05/10 09:45:51 $
+ * Version: $Revision: 1.15.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.28 $ 
+ * @version $Revision: 1.15.4.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,6 +203,105 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_CHOOSE_DATE_0 = "GUI_CALENDAR_CHOOSE_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_DESCRIPTION_NAME_0 = "GUI_CATEGORIES_DETAIL_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_HELP_0 = "GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_NAME_0 = "GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_HIDE_PATH_HELP_0 = "GUI_CATEGORIES_DETAIL_HIDE_PATH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_HIDE_PATH_NAME_0 = "GUI_CATEGORIES_DETAIL_HIDE_PATH_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_PATH_NAME_0 = "GUI_CATEGORIES_DETAIL_PATH_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_HELP_0 = "GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_NAME_0 = "GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_SHOW_PATH_HELP_0 = "GUI_CATEGORIES_DETAIL_SHOW_PATH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_DETAIL_SHOW_PATH_NAME_0 = "GUI_CATEGORIES_DETAIL_SHOW_PATH_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_ICON_0 = "GUI_CATEGORIES_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_ICON_HELP_0 = "GUI_CATEGORIES_LIST_COLS_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_NAME_0 = "GUI_CATEGORIES_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_PATH_0 = "GUI_CATEGORIES_LIST_COLS_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_STATE_0 = "GUI_CATEGORIES_LIST_COLS_STATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_COLS_STATE_HELP_0 = "GUI_CATEGORIES_LIST_COLS_STATE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_ADD_HELP_0 = "GUI_CATEGORIES_LIST_DEFACTION_ADD_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_ADD_NAME_0 = "GUI_CATEGORIES_LIST_DEFACTION_ADD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0 = "GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_SINGLE_0 = "GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_SINGLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0 = "GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0 = "GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_ADD_CONF_0 = "GUI_CATEGORIES_LIST_MACTION_ADD_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_ADD_HELP_0 = "GUI_CATEGORIES_LIST_MACTION_ADD_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_ADD_NAME_0 = "GUI_CATEGORIES_LIST_MACTION_ADD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_REMOVE_CONF_0 = "GUI_CATEGORIES_LIST_MACTION_REMOVE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_REMOVE_HELP_0 = "GUI_CATEGORIES_LIST_MACTION_REMOVE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_MACTION_REMOVE_NAME_0 = "GUI_CATEGORIES_LIST_MACTION_REMOVE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_NOTRESOURCE_HELP_0 = "GUI_CATEGORIES_LIST_NOTRESOURCE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_NOTRESOURCE_NAME_0 = "GUI_CATEGORIES_LIST_NOTRESOURCE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_TORESOURCE_HELP_0 = "GUI_CATEGORIES_LIST_TORESOURCE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LIST_TORESOURCE_NAME_0 = "GUI_CATEGORIES_LIST_TORESOURCE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_RELATION_0 = "GUI_CATEGORIES_RELATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHLINK_1 = "GUI_CHLINK_1";
@@ -748,6 +847,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NOTIFICATION_SETTINGS_0 = "GUI_NOTIFICATION_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTRESOURCECATEGORIES_LIST_NAME_0 = "GUI_NOTRESOURCECATEGORIES_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_OPERATION_BLOCKING_LOCKS_0 = "GUI_OPERATION_BLOCKING_LOCKS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1241,6 +1343,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REPLACE_FILE_1 = "GUI_REPLACE_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCECATEGORIES_LIST_NAME_0 = "GUI_RESOURCECATEGORIES_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SECURE_0 = "GUI_SECURE_0";

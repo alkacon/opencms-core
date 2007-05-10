@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2007/04/26 14:11:38 $
- * Version: $Revision: 1.11.4.4 $
+ * Date   : $Date: 2007/05/10 09:45:51 $
+ * Version: $Revision: 1.11.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11.4.4 $ 
+ * @version $Revision: 1.11.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_UPLEVEL_0 = "GUI_ADMIN_VIEW_UPLEVEL_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_RELATION_0 = "GUI_CATEGORIES_RELATION_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_COMPARE_NAVBAR_0 = "GUI_COMPARE_NAVBAR_0";
