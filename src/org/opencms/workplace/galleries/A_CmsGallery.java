@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.24.4.8 $
+ * Date   : $Date: 2007/05/11 12:48:46 $
+ * Version: $Revision: 1.24.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.8 $ 
+ * @version $Revision: 1.24.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,6 +125,9 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     /** The uri suffix for the gallery start page. */
     public static final String OPEN_URI_SUFFIX = "gallery_fs.jsp";
 
+    /** Request parameter name for the CSS path used in the preview area. */
+    public static final String PARAM_CSSPATH = "csspath";
+
     /** Request parameter name for the dialog mode (widget or editor). */
     public static final String PARAM_DIALOGMODE = "dialogmode";
 
@@ -169,6 +172,9 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
     /** The optional parameters for the gallery from the XML configuration. */
     private String m_galleryTypeParams;
+
+    /** The CSS path used in the preview area. */
+    private String m_paramCssPath;
 
     /** The dialog mode the gallery is running in. */
     private String m_paramDialogMode;
@@ -927,6 +933,16 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     }
 
     /**
+     * Returns the CSS path used in the preview area.<p>
+     * 
+     * @return the CSS path used in the preview area
+     */
+    public String getParamCssPath() {
+
+        return m_paramCssPath;
+    }
+
+    /**
      * Returns the current mode of the dialog.<p>
      * 
      * This is necessary to distinguish between widget mode, view mode and editor mode.<p>
@@ -1153,6 +1169,16 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public void setCurrentResource(CmsResource currentResource) {
 
         m_currentResource = currentResource;
+    }
+
+    /**
+     * Sets the CSS path used in the preview area.<p>
+     * 
+     * @param paramCssPath the CSS path used in the preview area
+     */
+    public void setParamCssPath(String paramCssPath) {
+
+        m_paramCssPath = paramCssPath;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.40.4.23 $
+ * Date   : $Date: 2007/05/11 12:48:46 $
+ * Version: $Revision: 1.40.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
 import org.opencms.workplace.CmsWorkplaceUserInfoEntry;
 import org.opencms.workplace.CmsWorkplaceUserInfoManager;
+import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
@@ -69,7 +70,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.23 $
+ * @version $Revision: 1.40.4.24 $
  * 
  * @since 6.0.0
  */
@@ -203,6 +204,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the editor action node. */
     public static final String N_EDITORACTION = "editoraction";
+
+    /** The name of the editor css handler node. */
+    public static final String N_EDITORCSSHANDLER = "editorcsshandler";
+
+    /** The name of the editor css handlers node. */
+    public static final String N_EDITORCSSHANDLERS = "editorcsshandlers";
 
     /** The node name of the editors general options node. */
     public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
@@ -752,6 +759,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add rules for editor action handler
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
+
+        // add rules for editor acss handler classes
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_EDITORCSSHANDLERS + "/" + N_EDITORCSSHANDLER,
+            "addEditorCssHandler",
+            1);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EDITORCSSHANDLERS + "/" + N_EDITORCSSHANDLER, 0, A_CLASS);
+
         // add rules for pre editor action classes
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
@@ -860,6 +875,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_EDITORACTION).addAttribute(
             A_CLASS,
             m_workplaceManager.getEditorActionHandler().getClass().getName());
+
+        if (m_workplaceManager.getEditorCssHandlers().size() > 0) {
+            Element editorCssHandlers = workplaceElement.addElement(N_EDITORCSSHANDLERS);
+            Iterator it = m_workplaceManager.getEditorCssHandlers().iterator();
+            while (it.hasNext()) {
+                I_CmsEditorCssHandler current = (I_CmsEditorCssHandler)it.next();
+                Element handler = editorCssHandlers.addElement(N_EDITORCSSHANDLER);
+                handler.addAttribute(A_CLASS, current.getClass().getName());
+            }
+        }
 
         if (m_workplaceManager.getPreEditorConditionDefinitions().size() > 0) {
             Element editorPreActions = workplaceElement.addElement(N_EDITORPRECONDITIONS);

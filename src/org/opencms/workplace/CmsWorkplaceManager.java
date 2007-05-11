@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/05/03 10:48:42 $
- * Version: $Revision: 1.76.4.15 $
+ * Date   : $Date: 2007/05/11 12:48:46 $
+ * Version: $Revision: 1.76.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
+import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider;
@@ -99,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.15 $ 
+ * @version $Revision: 1.76.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +141,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The edit action handler. */
     private I_CmsEditorActionHandler m_editorAction;
+
+    private List m_editorCssHandlers;
 
     /** The workplace editor display options. */
     private CmsEditorDisplayOptions m_editorDisplayOptions;
@@ -255,6 +258,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_multiContextMenu = new CmsExplorerContextMenu();
         m_multiContextMenu.setMultiMenu(true);
         m_preEditorConditionDefinitions = new ArrayList();
+        m_editorCssHandlers = new ArrayList();
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -290,6 +294,28 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 Messages.INIT_ADD_DIALOG_HANDLER_2,
                 clazz.getDialogHandler(),
                 clazz.getClass().getName()));
+        }
+    }
+
+    /**
+     * Adds an editor CSS handler class to the list of handlers.<p>
+     * 
+     * @param editorCssHandlerClassName full class name of the css handler class
+     */
+    public void addEditorCssHandler(String editorCssHandlerClassName) {
+
+        try {
+            I_CmsEditorCssHandler editorCssHandler = (I_CmsEditorCssHandler)Class.forName(editorCssHandlerClassName).newInstance();
+            m_editorCssHandlers.add(editorCssHandler);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EDITOR_CSSHANDLER_CLASS_1,
+                    editorCssHandlerClassName));
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
+                editorCssHandlerClassName), e);
         }
     }
 
@@ -516,6 +542,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public I_CmsEditorActionHandler getEditorActionHandler() {
 
         return m_editorAction;
+    }
+
+    /**
+     * Returns the instanciated editor CSS handler classes.<p>
+     * 
+     * @return the instanciated editor CSS handler classes
+     */
+    public List getEditorCssHandlers() {
+
+        return m_editorCssHandlers;
     }
 
     /**

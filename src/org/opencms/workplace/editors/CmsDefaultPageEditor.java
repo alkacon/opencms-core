@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2007/05/11 12:48:46 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.2 $ 
+ * @version $Revision: 1.22.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +106,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramElementname;
 
     private String m_paramOldelementname;
+    
+    /** The URI of the style sheet to use in the editor. */
+    private String m_uriStyleSheet;
 
     /**
      * Public constructor.<p>
@@ -436,18 +440,31 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String getUriStyleSheet() {
 
-        String result = "";
-        try {
-            String currentTemplate = getUriTemplate();
-            if (!"".equals(currentTemplate)) {
-                // read the stylesheet from the template file
-                result = getCms().readPropertyObject(currentTemplate, CmsPropertyDefinition.PROPERTY_TEMPLATE, false).getValue(
-                    "");
+        if (m_uriStyleSheet == null) {
+            try {
+                if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+                    // use the configured handlers to determine the CSS to use
+                    Iterator i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+                    while (i.hasNext()) {
+                        I_CmsEditorCssHandler cssHandler = (I_CmsEditorCssHandler)i.next();
+                        if (cssHandler.matches(getCms(), getParamTempfile())) {
+                            m_uriStyleSheet = cssHandler.getUriStyleSheet(getCms(), getParamTempfile());
+                            break;
+                        }
+                    }
+                } else {
+                    // for compatibility reasons, read the template property value from the template file to get the CSS
+                    String currentTemplate = getUriTemplate();
+                    m_uriStyleSheet = getCms().readPropertyObject(
+                        currentTemplate,
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                        false).getValue("");
+                }
+            } catch (CmsException e) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
             }
-        } catch (CmsException e) {
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
         }
-        return result;
+        return m_uriStyleSheet;
     }
 
     /**

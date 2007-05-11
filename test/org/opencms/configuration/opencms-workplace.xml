@@ -15,6 +15,9 @@
     </dialoghandlers>
     <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
     <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>
+    <editorcsshandlers>
+    	<editorcsshandler class="org.opencms.workplace.editors.CmsEditorCssHandlerDefault"/>
+    </editorcsshandlers>
     <editorpreconditions>
     	<editorprecondition name="xmlcontent" class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
     </editorpreconditions>

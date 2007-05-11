@@ -15,6 +15,7 @@
 	dialoghandlers, 
 	editorhandler, 
 	editoraction,
+	editorcsshandlers?,
 	editorpreconditions?,
 	directeditprovider?, 
 	exportpoints, 
@@ -128,6 +129,15 @@
 
 <!ELEMENT editoraction EMPTY>
 <!ATTLIST editoraction class CDATA #REQUIRED>
+
+<!--
+# The editor css handler classes.
+# Classes handling the CSS stylesheet assignment for edited files.
+# The specified class must implement the org.opencms.workplace.editors.I_CmsEditorCssHandler interface.
+-->
+<!ELEMENT editorcsshandlers (editorcsshandler+)>
+<!ELEMENT editorcsshandler EMPTY>
+<!ATTLIST editorcsshandler class CDATA #REQUIRED>
 
 <!--
 # The pre editor condition definition classes.
