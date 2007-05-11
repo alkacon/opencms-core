@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/11 15:43:08 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -58,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.1
  */
@@ -180,10 +181,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
 
             CmsListItem item = getList().newItem(res.getResource().getStructureId().toString());
             String resourcePath = getCms().getSitePath(res.getResource());
-            if (resourcePath.startsWith(m_resourcename)) {
-                resourcePath = resourcePath.substring(m_resourcename.length());
-            }
-            item.set(LIST_COLUMN_NAME, resourcePath);
+            item.set(LIST_COLUMN_NAME, m_resourcename + "|" + resourcePath);
             String dateDeleted = getMessages().getDateTime(res.getResource().getDateLastModified());
             item.set(LIST_COLUMN_DELETION_DATE, dateDeleted);
             item.set(LIST_COLUMN_VERSION, String.valueOf(res.getResource().getVersion()));
@@ -261,30 +259,30 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
              */
             public String format(Object data, Locale locale) {
 
-                String path = (String)data;
-                String org = path;
+                String[] dataArray = CmsStringUtil.splitAsArray((String)data, "|");
+                String resourceName = dataArray[0];
+                String resourcePath = dataArray[1];
 
-                while (path != null) {
-                    if (getCms().existsResource(path)) {
+                String orgResourcePath = resourcePath;
+
+                while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourcePath)) {
+
+                    try {
+                        getCms().readResource(getCms().getRequestContext().removeSiteRoot(resourcePath));
                         break;
+                    } catch (CmsException e) {
+                        resourcePath = CmsResource.getParentFolder(resourcePath);
                     }
-                    path = CmsResource.getParentFolder(path);
                 }
+
+                resourcePath = resourcePath.substring(resourceName.length());
+                orgResourcePath = orgResourcePath.substring(resourceName.length());
 
                 StringBuffer ret = new StringBuffer();
-                if (path != null) {
-                    ret.append(path);
-
-                    if (path.length() < org.length()) {
-                        ret.append("<span style=\"color:#0000aa;\">");
-                        ret.append(org.substring(path.length()));
-                        ret.append("</span>");
-                    }
-                } else {
-                    ret.append("<span style=\"color:#0000aa;\">");
-                    ret.append(org);
-                    ret.append("</span>");
-                }
+                ret.append(resourcePath);
+                ret.append("<span style=\"color:#0000aa;\">");
+                ret.append(orgResourcePath.substring(resourcePath.length()));
+                ret.append("</span>");
 
                 return ret.toString();
             }
