@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/05/03 13:48:48 $
- * Version: $Revision: 1.32.4.20 $
+ * Date   : $Date: 2007/05/11 13:40:44 $
+ * Version: $Revision: 1.32.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.20 $ 
+ * @version $Revision: 1.32.4.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,9 +91,6 @@ public class CmsExplorer extends CmsWorkplace {
     /** The "list" view selection. */
     public static final String VIEW_LIST = "listview";
 
-    /** The "siblings:" location prefix for VFS sibling display. */
-    private static final String LOCATION_SIBLING = "siblings:";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorer.class);
 
@@ -105,9 +102,6 @@ public class CmsExplorer extends CmsWorkplace {
 
     /** The "resource" parameter. */
     private static final String PARAMETER_RESOURCE = "resource";
-
-    /** The "showlinks" parameter. */
-    private static final String PARAMETER_SHOWLINKS = "showlinks";
 
     /** The "uri" parameter. */
     private static final String PARAMETER_URI = "uri";
@@ -168,8 +162,6 @@ public class CmsExplorer extends CmsWorkplace {
         boolean galleryView = VIEW_GALLERY.equals(getSettings().getExplorerMode());
         // if mode is "listview", all file in the set collector will be shown
         boolean listView = VIEW_LIST.equals(getSettings().getExplorerMode());
-        // if VFS links should be displayed, this is true
-        boolean showVfsLinks = getSettings().getExplorerShowLinks();
 
         String currentFolder = getSettings().getExplorerResource();
         try {
@@ -177,7 +169,6 @@ public class CmsExplorer extends CmsWorkplace {
         } catch (CmsException e) {
             // file was not readable
             currentFolder = "/";
-            showVfsLinks = false;
         }
 
         // start creating content
@@ -194,7 +185,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
 
-        if (!(galleryView || showVfsLinks)) {
+        if (!galleryView) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to split
@@ -222,7 +213,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showDateReleased = (preferences & CmsUserSettings.FILELIST_DATE_RELEASED) > 0;
         boolean showDateExpired = (preferences & CmsUserSettings.FILELIST_DATE_EXPIRED) > 0;
 
-        boolean fullPath = showVfsLinks || galleryView || listView;
+        boolean fullPath = galleryView || listView;
 
         // set the right reference project
         CmsProject referenceProject;
@@ -333,7 +324,7 @@ public class CmsExplorer extends CmsWorkplace {
         } else {
             content.append("\"\",");
         }
-        
+
         // position 5: type
         content.append(resource.getTypeId());
         content.append(",");
@@ -509,8 +500,7 @@ public class CmsExplorer extends CmsWorkplace {
 
         // if mode is "listview", all file in the set collector will be shown
         boolean listView = VIEW_LIST.equals(getSettings().getExplorerMode());
-        // if VFS links should be displayed, this is true
-        boolean showSiblings = getSettings().getExplorerShowLinks();
+
         String currentResourceName = getSettings().getExplorerResource();
 
         CmsResource currentResource = null;
@@ -519,15 +509,9 @@ public class CmsExplorer extends CmsWorkplace {
         } catch (CmsException e) {
             // file was not readable
         }
-        if (currentResource != null) {
-            // file / folder exists and is readable
-            if (showSiblings) {
-                currentResourceName = LOCATION_SIBLING + currentResourceName;
-            }
-        } else {
+        if (currentResource == null) {
             // show the root folder in case of an error and reset the state
             currentResourceName = "/";
-            showSiblings = false;
             try {
                 currentResource = getCms().readResource(currentResourceName, CmsResourceFilter.ALL);
             } catch (CmsException e) {
@@ -548,10 +532,6 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.mode=\"");
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
-
-        content.append("top.showlinks=");
-        content.append(showSiblings);
-        content.append(";\n");
 
         // the resource id of plain resources
         content.append("top.plainresid=");
@@ -584,7 +564,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("');\n");
         // set the writeAccess for the current Folder       
         boolean writeAccess = VIEW_EXPLORER.equals(getSettings().getExplorerMode());
-        if (writeAccess && (!showSiblings)) {
+        if (writeAccess) {
             writeAccess = getCms().isInsideCurrentProject(currentResourceName);
         }
         content.append("top.enableNewButton(");
@@ -594,12 +574,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
-        if (showSiblings) {
-            content.append(LOCATION_SIBLING);
-            content.append(getSettings().getExplorerResource());
-        } else {
-            content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
-        }
+        content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
         content.append("\");\n");
         content.append("top.rD();\n");
         List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
@@ -661,34 +636,17 @@ public class CmsExplorer extends CmsWorkplace {
 
         m_uri = request.getParameter(PARAMETER_URI);
 
-        boolean showLinks = Boolean.valueOf(request.getParameter(PARAMETER_SHOWLINKS)).booleanValue();
-
-        if (showLinks) {
-            // "showlinks" parameter found, set resource name
+        if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
+            // resource is a folder, set resource name
             settings.setExplorerResource(currentResource);
         } else {
-            // "showlinks" parameter not found 
-            if ((currentResource != null) && currentResource.startsWith(LOCATION_SIBLING)) {
-                // given resource starts with "siblings:", list of siblings is shown
-                showLinks = true;
-                settings.setExplorerResource(currentResource.substring(LOCATION_SIBLING.length()));
-            } else {
-                if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
-                    // resource is a folder, set resource name
-                    settings.setExplorerResource(currentResource);
-                } else {
-                    // other cases (resource null, no folder), first get the resource name from settings
-                    showLinks = settings.getExplorerShowLinks();
-                    currentResource = settings.getExplorerResource();
-                    if (!resourceExists(getCms(), currentResource)) {
-                        // resource does not exist, display root folder
-                        settings.setExplorerResource("/");
-                        showLinks = false;
-                    }
-                }
+            // other cases (resource null, no folder), first get the resource name from settings
+            currentResource = settings.getExplorerResource();
+            if (!resourceExists(getCms(), currentResource)) {
+                // resource does not exist, display root folder
+                settings.setExplorerResource("/");
             }
         }
-        settings.setExplorerShowLinks(showLinks);
 
         String selectedPage = request.getParameter(PARAMETER_PAGE);
         if (selectedPage != null) {
@@ -761,19 +719,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     private List getResources(String resource) {
 
-        if (getSettings().getExplorerShowLinks()) {
-            // show all siblings of a resource
-            try {
-                // also return "invisible" siblings (the user might get confused if not all are returned)
-                return getCms().readSiblings(resource, CmsResourceFilter.ALL);
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
-                }
-                return Collections.EMPTY_LIST;
-            }
-        } else if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
+        if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
             // check if the list must show the list view or the check content view
             I_CmsResourceCollector collector = getSettings().getCollector();
             if (collector != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/05/08 07:59:15 $
- * Version: $Revision: 1.13.4.27 $
+ * Date   : $Date: 2007/05/11 13:40:44 $
+ * Version: $Revision: 1.13.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -626,7 +626,8 @@ function printList(wo) {
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"16\">&nbsp;</td>");
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"16\">&nbsp;</td>");
 
-	if (vi.check_name)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_name && ((mode != "listview") && (mode != "galleryview"))) wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_name && ((mode == "listview") || (mode == "galleryview"))) wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[14] + "&nbsp;</td>");
 	if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
     if (vi.check_navtext)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[2] + "&nbsp;</td>");
 	if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2007/04/26 14:11:37 $
- * Version: $Revision: 1.4.4.9 $
+ * Date   : $Date: 2007/05/11 13:40:44 $
+ * Version: $Revision: 1.4.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.4.4.9 $ 
+ * @version $Revision: 1.4.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -508,8 +508,14 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 4: name
         CmsListColumnDefinition nameCol = new CmsListExplorerColumn(LIST_COLUMN_NAME);
-        nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        if (!(getSettings().getExplorerMode().equals(CmsExplorer.VIEW_GALLERY) || getSettings().getExplorerMode().equals(
+            CmsExplorer.VIEW_LIST))) {
+            nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        } else {
+            nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
+        }
 
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(

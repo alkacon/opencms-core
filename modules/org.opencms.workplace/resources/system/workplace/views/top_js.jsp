@@ -29,7 +29,8 @@ this.descr = new Array(
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0) %>",
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0) %>",  
 		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0) %>", 
-		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0) %>"
+		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0) %>", 
+		"<%= wp.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0) %>"
 );	    
 
 

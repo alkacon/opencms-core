@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2007/04/26 14:11:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/11 13:40:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.1 
  */
@@ -344,7 +345,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
         // position 4: name
         CmsListColumnDefinition nameCol = new CmsListResourceLinkRelationExplorerColumn(LIST_COLUMN_NAME);
         nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
 
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
@@ -489,5 +490,15 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamResource())) {
+            throw new Exception();
+        }
     }
 }
