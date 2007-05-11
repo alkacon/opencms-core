@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.7.2 (7 beta 1)</opencms_version>
-		<createdate>Thu, 26 Apr 2007 12:25:18 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Fri, 11 May 2007 12:35:06 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.3.10</version>
+		<version>1.3.11</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -604,6 +604,55 @@
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[path:/search/results]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/sibling</destination>
+			<type>folder</type>
+			<uuidstructure>d0f01852-ffb9-11db-a5e0-8323f99221af</uuidstructure>
+			<datelastmodified>Fri, 11 May 2007 12:19:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 May 2007 12:19:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/explorer/sibling/show_siblings.jsp</source>
+			<destination>system/workplace/explorer/sibling/show_siblings.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>cfeda6f8-ffba-11db-b8f1-8323f99221af</uuidstructure>
+			<uuidresource>cfeda6f9-ffba-11db-b8f1-8323f99221af</uuidresource>
+			<datelastmodified>Fri, 11 May 2007 12:32:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 May 2007 12:26:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_SHOW_SIBLINGS_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Show siblings]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:resource=${param.resource}|path:/siblings]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>

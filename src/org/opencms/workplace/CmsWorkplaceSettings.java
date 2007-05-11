@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2007/03/01 15:01:34 $
- * Version: $Revision: 1.57.4.5 $
+ * Date   : $Date: 2007/05/11 13:38:47 $
+ * Version: $Revision: 1.57.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57.4.5 $ 
+ * @version $Revision: 1.57.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,7 +67,6 @@ public class CmsWorkplaceSettings {
     private String m_explorerProjectFilter;
     private CmsUUID m_explorerProjectId;
     private Map m_explorerResource;
-    private boolean m_explorerShowLinks;
     private Map m_frameUris;
     private String m_galleryType;
     private Map m_lastUsedGalleries;
@@ -212,16 +211,6 @@ public class CmsWorkplaceSettings {
             resource = "/";
         }
         return resource;
-    }
-
-    /**
-     * Returns <code>true</code> if the explorer should show the siblings of a resource.<p>
-     * 
-     * @return <code>true</code> if the explorer should show the siblings of a resource
-     */
-    public boolean getExplorerShowLinks() {
-
-        return m_explorerShowLinks;
     }
 
     /**
@@ -518,16 +507,6 @@ public class CmsWorkplaceSettings {
         } else {
             m_explorerResource.put(mode, value);
         }
-    }
-
-    /**
-     * Sets the explorer view to show VFS links of a resource.<p>
-     * 
-     * @param b true, if VFS links should be shown, otherwise false
-     */
-    public void setExplorerShowLinks(boolean b) {
-
-        m_explorerShowLinks = b;
     }
 
     /**

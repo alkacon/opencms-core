@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/05/10 09:45:51 $
- * Version: $Revision: 1.15.4.29 $
+ * Date   : $Date: 2007/05/11 13:38:47 $
+ * Version: $Revision: 1.15.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.29 $ 
+ * @version $Revision: 1.15.4.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -1385,6 +1385,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SECURE_ONLINE_ADDRESS_0 = "GUI_SECURE_ONLINE_ADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHOW_SIBLINGS_LIST_NAME_0 = "GUI_SHOW_SIBLINGS_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SYNC_FOLDERS_AND_FILES_0 = "GUI_SYNC_FOLDERS_AND_FILES_0";
