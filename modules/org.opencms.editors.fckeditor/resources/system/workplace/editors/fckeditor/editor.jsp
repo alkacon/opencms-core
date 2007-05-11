@@ -92,6 +92,9 @@ var dialogPropertyWindow = null;
 // OpenCms context prefix, required for page editor because no link replacement is done here
 var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 
+// Path to the style sheet used in the editor
+var cssPath = "<%= wp.getUriStyleSheet() %>";
+
 // saves the editors contents
 function saveContent() {
     document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(false));
