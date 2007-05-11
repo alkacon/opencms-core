@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2007/05/11 12:49:30 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.22.4.2 $ 
+ * @version $Revision: 1.22.4.3 $ 
  * 
  * @since 6.7.1 
  */
@@ -605,7 +605,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
         }
 
         // create list iterator of given available resource types
-        return CmsStringUtil.splitAsList(availableResTypes, CmsProperty.VALUE_LIST_DELIMITER);
+        return CmsStringUtil.splitAsList(availableResTypes, CmsProperty.VALUE_LIST_DELIMITER, true);
     }
 
     /**
