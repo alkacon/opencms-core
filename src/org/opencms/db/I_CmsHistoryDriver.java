@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */
@@ -380,7 +380,6 @@ public interface I_CmsHistoryDriver {
      * @param resource the resource that is written to the history
      * @param properties the properties of the resource
      * @param publishTag the publish tag
-     * @param publishDate long timestamp when the resource was published
      * @param maxVersions maximum number of historical versions
      * 
      * @throws CmsDataAccessException if something goes wrong
@@ -390,6 +389,5 @@ public interface I_CmsHistoryDriver {
         CmsResource resource,
         List properties,
         int publishTag,
-        long publishDate,
         int maxVersions) throws CmsDataAccessException;
 }

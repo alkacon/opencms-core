@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/05/09 07:59:19 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -51,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.1
  */
@@ -79,9 +80,11 @@ public class TestHistory extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestHistory.class.getName());
 
+        suite.addTest(new TestHistory("testFileRestore"));
         suite.addTest(new TestHistory("testCreateAndDeleteFile"));
         suite.addTest(new TestHistory("testCreateAndDeleteFolder"));
         suite.addTest(new TestHistory("testMoveFile"));
+        suite.addTest(new TestHistory("testPathHistory"));
         suite.addTest(new TestHistory("testFileHistory"));
         suite.addTest(new TestHistory("testFileHistoryFileWithSibling"));
         suite.addTest(new TestHistory("testFileVersions"));
@@ -403,7 +406,7 @@ public class TestHistory extends OpenCmsTestCase {
         // if this does not match, the logic for deletion of old versions is responsible
         int todo;
         List allFiles = cms.readAllAvailableVersions(siblingname);
-        //        assertEquals(counter + counterSibl + 1, allFiles.size());
+        // assertEquals(maxcounter + counterSibl + 1, allFiles.size());
 
         //Delete historical entries, keep only 3 latest versions. 
         cms.deleteHistoricalVersions(false, 3, new CmsShellReport(cms.getRequestContext().getLocale()));
@@ -430,6 +433,100 @@ public class TestHistory extends OpenCmsTestCase {
 
         allFiles = cms.readAllAvailableVersions(siblingname2);
         assertTrue(allFiles.isEmpty());
+    }
+
+    /**
+     * Test restoring a file also possible missing folders are restored.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFileRestore() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing restoring a file also possible missing folders are restored");
+
+        // initial check
+        List deletedResources = cms.readDeletedResources("/", true);
+        assertTrue(deletedResources.isEmpty());
+
+        // create a new folder and resource
+        CmsResource folder = cms.createResource("testFolder", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        CmsResource res = cms.createResource(
+            "testFolder/test.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "test".getBytes(),
+            null);
+
+        storeResources(cms, "testFolder", true);
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, "testFolder");
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // delete the folder and file
+        cms.lockResource("testFolder");
+        cms.deleteResource("testFolder/test.txt", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.deleteResource("testFolder", CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // publish again
+        OpenCms.getPublishManager().publishResource(cms, "testFolder");
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the deleted resources
+        deletedResources = cms.readDeletedResources("/", false);
+        assertEquals(1, deletedResources.size());
+        assertEquals("/testFolder/", cms.getSitePath((CmsResource)deletedResources.get(0)));
+
+        deletedResources = cms.readDeletedResources("/", true);
+        assertEquals(2, deletedResources.size());
+        assertEquals("/testFolder/", cms.getSitePath((CmsResource)deletedResources.get(0)));
+        assertEquals("/testFolder/test.txt", cms.getSitePath((CmsResource)deletedResources.get(1)));
+
+        // restore the deleted file
+        cms.restoreDeletedResource(res.getStructureId());
+
+        // check the deleted resources
+        deletedResources = cms.readDeletedResources("/", true);
+        assertTrue(deletedResources.isEmpty());
+
+        // assert
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+        filter.enableDateCreatedSecTest();
+        assertFilter(cms, "testFolder/", filter);
+        assertFilter(cms, cms.getSitePath(res), filter);
+
+        // delete again
+        cms.lockResource("testFolder");
+        cms.deleteResource("testFolder/test.txt", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.deleteResource("testFolder", CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // create new ones
+        cms.createResource("testFolder", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource("testFolder/test.txt", CmsResourceTypePlain.getStaticTypeId(), "test".getBytes(), null);
+
+        // check the deleted resources
+        deletedResources = cms.readDeletedResources("/", false);
+        assertEquals(1, deletedResources.size());
+        assertEquals("/testFolder/", cms.getSitePath((CmsResource)deletedResources.get(0)));
+
+        deletedResources = cms.readDeletedResources("/", true);
+        assertEquals(2, deletedResources.size());
+        assertEquals("/testFolder/", cms.getSitePath((CmsResource)deletedResources.get(0)));
+        assertEquals("/testFolder/test.txt", cms.getSitePath((CmsResource)deletedResources.get(1)));
+
+        // restore the deleted file
+        cms.restoreDeletedResource(res.getStructureId());
+
+        // assert again, checking for the new name!
+        assertFalse(cms.readFolder("testFolder").getStructureId().equals(folder.getStructureId()));
+        setMapping("/testFolder/test_1.txt", "/testFolder/test.txt");
+        filter.disableNameTest();
+        assertFilter(cms, "/testFolder/test_1.txt", filter);
+
+        // restore the deleted folder
+        cms.restoreDeletedResource(folder.getStructureId());
+        setMapping("/testFolder_1/", "testFolder/");
+        assertFilter(cms, "/testFolder_1/", filter);
     }
 
     /**
@@ -703,6 +800,139 @@ public class TestHistory extends OpenCmsTestCase {
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
 
+            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            file = cms.readFile(importFile);
+
+            // assert that the content and version fit together
+            String restoredContent = getContentString(cms, file.getContents());
+            assertEquals(contentStr, restoredContent);
+        }
+    }
+
+    /**
+     * Tests reconstructing the resource path for the history.<p>
+     * 
+     * @throws Throwable if somethingg oes wrong
+     */
+    public void testPathHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the reconstruction of the resource path for the history");
+
+        String foldername = "/folderMove";
+        String filename = "/dummyMove";
+        String ext = ".txt";
+        String path = foldername + 0;
+        String resName = path + filename + 0 + ext;
+        int counter = 2;
+
+        // create folder
+        cms.createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+        cms.unlockResource(path);
+
+        // create a plain text file
+        CmsResource res = cms.createResource(
+            resName,
+            CmsResourceTypePlain.getStaticTypeId(),
+            "content version 0".getBytes(),
+            null);
+        cms.unlockResource(resName);
+        OpenCms.getPublishManager().publishResource(cms, path);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 1; i <= counter; i++) {
+            // modify the file
+            String contentStr = "content version " + i;
+            CmsFile file = cms.readFile(resName);
+            file.setContents(contentStr.getBytes());
+            cms.lockResource(resName);
+            cms.writeFile(file);
+            // move the folder
+            String newPath = foldername + i;
+            cms.lockResource(path);
+            cms.moveResource(path, newPath);
+            // move the file
+            String newName = newPath + filename + i + ext;
+            cms.moveResource(newPath + filename + (i - 1) + ext, newName);
+            // publish
+            OpenCms.getPublishManager().publishResource(cms, newPath);
+            OpenCms.getPublishManager().waitWhileRunning();
+            resName = newName;
+            path = newPath;
+        }
+        // modify the file
+        CmsFile file = cms.readFile(resName);
+        file.setContents(("content version " + (counter + 1)).getBytes());
+        cms.lockResource(resName);
+        cms.writeFile(file);
+        // move the folder
+        String newPath = foldername + (counter + 1);
+        cms.lockResource(path);
+        cms.moveResource(path, newPath);
+        // move the file
+        String newName = newPath + filename + (counter + 1) + ext;
+        cms.moveResource(newPath + filename + counter + ext, newName);
+
+        CmsFolder folder = cms.readFolder(newPath);
+        // delete the folder
+        cms.deleteResource(newPath, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, newPath);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        resName = filename + ext;
+        // the history works only by ID so the expected number of versions is ZERO
+        cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), null, null);
+        List historyResources = cms.readAllAvailableVersions(resName);
+        assertTrue(historyResources.isEmpty());
+
+        // re-create the resource to be able to read all versions from the history
+        // assert that we have the expected number of versions in the history
+        String importFile = "import.txt";
+        cms.importResource(importFile, res, "blah-blah".getBytes(), null);
+        historyResources = cms.readAllAvailableVersions(importFile);
+        assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
+
+        for (int i = 0; i < counter + 2; i++) {
+            // the list of historical resources contains at index 0 the 
+            // resource with the highest version and tag ID
+            int version = counter + 2 - i;
+            String contentStr = "content version " + (version - 1);
+            String histResName = foldername + (version - 1) + filename + (version - 1) + ext;
+
+            // assert that the historical resource has the correct version and path
+            I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
+            assertEquals(version, historyResource.getVersion());
+            assertEquals(histResName, cms.getSitePath(historyResource.getResource()));
+
+            // restore the version
+            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            file = cms.readFile(importFile);
+
+            // assert that the content and version fit together
+            String restoredContent = getContentString(cms, file.getContents());
+            assertEquals(contentStr, restoredContent);
+        }
+
+        // now recreate the folder 
+        String importFolder = "/import";
+        cms.importResource(importFolder, folder, null, null);
+        historyResources = cms.readAllAvailableVersions(importFile);
+        assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
+
+        for (int i = 0; i < counter + 2; i++) {
+            // the list of historical resources contains at index 0 the 
+            // resource with the highest version and tag ID
+            int version = counter + 2 - i;
+            String contentStr = "content version " + (version - 1);
+            String histResName = foldername + (version - 1) + filename + (version - 1) + ext;
+
+            // assert that the historical resource has the correct version and path
+            I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
+            assertEquals(version, historyResource.getVersion());
+            assertEquals(histResName, cms.getSitePath(historyResource.getResource()));
+
+            // restore the version
             cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
             file = cms.readFile(importFile);
 

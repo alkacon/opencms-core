@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/05/03 13:48:56 $
- * Version: $Revision: 1.90.4.25 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.90.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.25 $
+ * @version $Revision: 1.90.4.26 $
  * 
  * @since 6.0.0
  */
@@ -1776,8 +1776,17 @@ public class OpenCmsTestCase extends TestCase {
             // compare the lockstate if necessary
             if (filter.testLock()) {
                 CmsLock resLock = cms.getLock(res);
-                if (!storedResource.getLock().equals(resLock)) {
-                    noMatches += "[Lockstate " + storedResource.getLock() + " != " + resLock + "]\n";
+                if (filter.testName()) {
+                    if (!storedResource.getLock().equals(resLock)) {
+                        noMatches += "[Lockstate " + storedResource.getLock() + " != " + resLock + "]\n";
+                    }
+                } else {
+                    CmsLock other = storedResource.getLock();
+                    if (!other.getUserId().equals(resLock.getUserId())
+                        || !other.getProjectId().equals(resLock.getProjectId())
+                        || !other.getType().equals(resLock.getType())) {
+                        noMatches += "[Lockstate " + storedResource.getLock() + " != " + resLock + "]\n";
+                    }
                 }
             }
             // compare the name if necessary
@@ -2060,18 +2069,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
             // get the actual resource from the VFS
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-            CmsLock lock;
-            if (lockType.isSystem()) {
-                lock = cms.getLock(res).getSystemLock();
-            } else {
-                lock = cms.getLock(res).getEditionLock();
-                // for unlock check system lock also
-                if (lockType.isUnlocked()) {
-                    if (!cms.getLock(res).isNullLock()) {
-                        fail("[Lock " + resourceName + " must be unlocked]");
-                    }
-                }
-            }
+            CmsLock lock = cms.getLock(res);
 
             if (lockType.isUnlocked()) {
                 if (!lock.isNullLock()) {

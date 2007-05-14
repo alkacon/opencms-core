@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:16 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -76,7 +76,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
         try {
             // create the statement
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ_ALL");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {

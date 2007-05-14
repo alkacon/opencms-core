@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/05/07 09:28:08 $
- * Version: $Revision: 1.43.4.27 $
+ * Date   : $Date: 2007/05/14 12:26:15 $
+ * Version: $Revision: 1.43.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.27 $
+ * @version $Revision: 1.43.4.28 $
  * 
  * @since 6.0.0 
  */
@@ -533,9 +533,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3 = "ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESTORE_BAD_STATE_3 = "ERR_RESTORE_BAD_STATE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_DELETED_RESOURCE_1 = "ERR_RESTORE_DELETED_RESOURCE_1";

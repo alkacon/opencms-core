@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/09 07:59:17 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryFile;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.9.1
  */
@@ -134,7 +135,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * 
      * @throws SQLException if a requested attribute was not found in the result set
      */
-    protected I_CmsHistoryResource createResource(ResultSet res) throws SQLException {
+    protected I_CmsHistoryResource internalCreateResource(ResultSet res) throws SQLException {
 
         int version = res.getInt(m_sqlManager.readQuery("C_RESOURCES_HISTORY_VERSION"));
         int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
@@ -145,7 +146,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
         CmsUUID projectLastModified = new CmsUUID(
             res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
-        int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
+        int state = Math.max(
+            res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE")),
+            res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_STATE")));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
@@ -154,10 +157,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_HISTORY_PARENTID")));
+        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
 
         boolean isFolder = resourcePath.endsWith("/");
-
-        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
         if (isFolder) {
             return new CmsHistoryFolder(
                 tagId,
@@ -264,26 +266,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.executeUpdate();
             m_sqlManager.closeAll(dbc, null, stmt, null);
 
-            /*
-             // check the maximal resource publish tag to keep,
-             // that are used by other siblings
-             int maxResPublishTagToKeep = minStrPublishTagToKeep;
-             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_SIBLING");
-             stmt.setString(1, resourceId.toString());
-             stmt.setString(2, structureId.toString());
-             res = stmt.executeQuery();
-             if (res.next()) {
-             maxResPublishTagToKeep = res.getInt(1);
-             } else {
-             // nothing to delete
-             return;
-             }
-             m_sqlManager.closeAll(dbc, null, stmt, res);
-             
-             // all entries with publish tag less than this will be deleted
-             int publishTag = Math.min(minStrPublishTagToKeep, maxResPublishTagToKeep);
-             */
-
             // get the minimal resource publish tag to keep, 
             // all entries with publish tag less than this will be deleted
             int minResPublishTagToKeep = -1;
@@ -310,6 +292,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setString(1, resourceId.toString());
             stmt.setInt(2, minResPublishTagToKeep);
             stmt.executeUpdate();
+
+            int todo; // when this is a folder and there is no version left, then we have to delete also all subresources!
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -522,7 +506,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(3, publishTag);
             res = stmt.executeQuery();
             while (res.next()) {
-                historyResources.add(createResource(res));
+                historyResources.add(internalCreateResource(res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -589,7 +573,15 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             res = stmt.executeQuery();
             while (res.next()) {
-                result.add(createResource(res));
+                I_CmsHistoryResource histRes = internalCreateResource(res);
+                if (m_driverManager.getVfsDriver().validateStructureIdExists(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    histRes.getResource().getStructureId())) {
+                    // only add resources that are really deleted
+                    continue;
+                }
+                result.add(histRes);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -620,7 +612,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(2, tagId);
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createResource(res);
+                file = internalCreateResource(res);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -1007,7 +999,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setInt(2, version);
             res = stmt.executeQuery();
             if (res.next()) {
-                resource = createResource(res);
+                resource = internalCreateResource(res);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -1023,8 +1015,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-
-        int todo; // the path should be adjusted if needed         
         return resource;
     }
 
@@ -1143,14 +1133,13 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsHistoryDriver#writeResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, int, long, int)
+     * @see org.opencms.db.I_CmsHistoryDriver#writeResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, int, int)
      */
     public void writeResource(
         CmsDbContext dbc,
         CmsResource resource,
         List properties,
         int publishTag,
-        long publishDate,
         int maxVersions) throws CmsDataAccessException {
 
         Connection conn = null;
@@ -1177,7 +1166,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 stmt.setString(1, resource.getResourceId().toString());
                 stmt.setInt(2, resource.getTypeId());
                 stmt.setInt(3, resource.getFlags());
-                stmt.setLong(4, publishDate);
+                stmt.setLong(4, resource.getDateCreated());
                 stmt.setString(5, resource.getUserCreated().toString());
                 stmt.setLong(6, resource.getDateLastModified());
                 stmt.setString(7, resource.getUserLastModified().toString());

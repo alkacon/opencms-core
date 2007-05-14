@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/09 07:59:17 $
- * Version: $Revision: 1.241.4.29 $
+ * Date   : $Date: 2007/05/14 12:26:16 $
+ * Version: $Revision: 1.241.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.29 $
+ * @version $Revision: 1.241.4.30 $
  * 
  * @since 6.0.0 
  */
@@ -1299,13 +1299,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     properties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), resource);
                 }
 
-                m_driverManager.getHistoryDriver().writeResource(
-                    dbc,
-                    resource,
-                    properties,
-                    publishTag,
-                    publishDate,
-                    maxVersions);
+                m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag, maxVersions);
             }
             // write the resource to the publish history
             m_driverManager.getProjectDriver().writePublishHistory(
@@ -3053,7 +3047,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             onlineProject.getUuid(),
             offlineResource,
             CmsRelationFilter.TARGETS);
-        
+
         // copy offline to online relations
         Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
             dbc,
