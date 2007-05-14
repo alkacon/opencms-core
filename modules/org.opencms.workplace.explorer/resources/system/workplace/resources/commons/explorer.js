@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/05/11 13:40:44 $
- * Version: $Revision: 1.13.4.28 $
+ * Date   : $Date: 2007/05/14 15:58:14 $
+ * Version: $Revision: 1.13.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1290,13 +1290,15 @@ function findPosX(obj) {
 // returns the Y position of an object in the body
 function findPosY(obj) {
 	var curtop = 0;
-	if (obj.offsetParent) {
-		while (obj.offsetParent) {
-			curtop += obj.offsetTop;
-			obj = obj.offsetParent;
+	if (obj != null) {
+		if (obj.offsetParent) {
+			while (obj.offsetParent) {
+				curtop += obj.offsetTop;
+				obj = obj.offsetParent;
+			}
+		} else if (obj.y) {
+			curtop += obj.y;
 		}
-	} else if (obj.y) {
-		curtop += obj.y;
 	}
 	return curtop;
 }
