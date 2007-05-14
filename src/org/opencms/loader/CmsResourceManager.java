@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.36.4.7 $
+ * Date   : $Date: 2007/05/14 12:23:16 $
+ * Version: $Revision: 1.36.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsResourceTranslator;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.7 $ 
+ * @version $Revision: 1.36.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,6 +171,9 @@ public class CmsResourceManager {
     /** The list of all configured MIME types. */
     private List m_configuredMimeTypes;
 
+    /** The list of all configured relation types. */
+    private List m_configuredRelationTypes;
+
     /** Filename translator, used only for the creation of new files. */
     private CmsResourceTranslator m_fileTranslator;
 
@@ -209,6 +213,7 @@ public class CmsResourceManager {
         m_loaderList = new ArrayList();
         m_includeExtensions = new ArrayList();
         m_configuredMimeTypes = new ArrayList();
+        m_configuredRelationTypes = new ArrayList();
     }
 
     /**
@@ -353,13 +358,13 @@ public class CmsResourceManager {
      * @param extension the MIME type extension
      * @param type the MIME type description
      * 
-     * @return the created content collector instance
+     * @return the created mime type instance
      * 
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
     public CmsMimeType addMimeType(String extension, String type) throws CmsConfigurationException {
 
-        // check if new resource types can still be added
+        // check if new mime types can still be added
         if (m_frozen) {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
@@ -367,6 +372,28 @@ public class CmsResourceManager {
         CmsMimeType mimeType = new CmsMimeType(extension, type);
         m_configuredMimeTypes.add(mimeType);
         return mimeType;
+    }
+
+    /**
+     * Adds a new relation type from the XML configuration to the list of user defined relation types.<p> 
+     * 
+     * @param name the name of the relation type
+     * @param type the type of the relation type, weak or strong
+     * 
+     * @return the new created relation type instance
+     * 
+     * @throws CmsConfigurationException in case the resource manager configuration is already initialized
+     */
+    public CmsRelationType addRelationType(String name, String type) throws CmsConfigurationException {
+
+        // check if new relation types can still be added
+        if (m_frozen) {
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
+        }
+
+        CmsRelationType relationType = new CmsRelationType(m_configuredRelationTypes.size(), name, type);
+        m_configuredRelationTypes.add(relationType);
+        return relationType;
     }
 
     /**
@@ -587,6 +614,16 @@ public class CmsResourceManager {
     }
 
     /**
+     * Returns an unmodifiable List of the configured {@link CmsRelationType} objects.<p>
+     * 
+     * @return an unmodifiable List of the configured {@link CmsRelationType} objects
+     */
+    public List getRelationTypes() {
+
+        return m_configuredRelationTypes;
+    }
+
+    /**
      * Returns the initialized resource type instance for the given id.<p>
      * 
      * @param typeId the id of the resource type to get
@@ -675,6 +712,7 @@ public class CmsResourceManager {
         m_loaderList = Collections.unmodifiableList(m_loaderList);
         Collections.sort(m_configuredMimeTypes);
         m_configuredMimeTypes = Collections.unmodifiableList(m_configuredMimeTypes);
+        m_configuredRelationTypes = Collections.unmodifiableList(m_configuredRelationTypes);
 
         // initialize the resource types
         initResourceTypes();
@@ -797,6 +835,7 @@ public class CmsResourceManager {
         m_includeExtensions = null;
         m_mimeTypes = null;
         m_configuredMimeTypes = null;
+        m_configuredRelationTypes = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));

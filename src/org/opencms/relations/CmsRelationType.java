@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/05/14 12:23:16 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.3.0
  */
@@ -87,40 +87,37 @@ public final class CmsRelationType implements Serializable {
     private static final String VALUE_WEAK = "WEAK";
 
     /** Constant for the category of an <code>OpenCmsVfsFile</code>. */
-    public static final CmsRelationType CATEGORY = new CmsRelationType("CATEGORY", false, false, 9);
+    public static final CmsRelationType CATEGORY = new CmsRelationType(9, "CATEGORY", false, false);
 
     /** Constant for the <code>&ltimg src=''&gt</code> tag in a html page/element. */
-    public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType("IMG", true, true, 2);
+    public static final CmsRelationType EMBEDDED_IMAGE = new CmsRelationType(2, "IMG", true, true);
 
     /** Constant for the <code>&ltembed src=''&gt</code> tag in a html page/element. */
-    public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType("OBJECT", true, true, 7);
+    public static final CmsRelationType EMBEDDED_OBJECT = new CmsRelationType(7, "OBJECT", true, true);
 
     /** Constant for the <code>&lta href=''&gt</code> tag in a html page/element. */
-    public static final CmsRelationType HYPERLINK = new CmsRelationType("A", false, true, 1);
+    public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true);
 
     /** Constant for the all types of links in a jsp file using the <code>link.strong</code> macro. */
-    public static final CmsRelationType JSP_STRONG = new CmsRelationType(PREFIX_JSP + VALUE_STRONG, true, true, 5);
+    public static final CmsRelationType JSP_STRONG = new CmsRelationType(5, PREFIX_JSP + VALUE_STRONG, true, true);
 
     /** Constant for the all types of links in a jsp file using the <code>link.weak</code> macro. */
-    public static final CmsRelationType JSP_WEAK = new CmsRelationType(PREFIX_JSP + VALUE_WEAK, false, true, 6);
+    public static final CmsRelationType JSP_WEAK = new CmsRelationType(6, PREFIX_JSP + VALUE_WEAK, false, true);
 
     /** Constant for the organizational units resource associations. */
-    public static final CmsRelationType OU_RESOURCE = new CmsRelationType("OU", false, false, 8);
+    public static final CmsRelationType OU_RESOURCE = new CmsRelationType(8, "OU", false, false);
 
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'strong' links. */
-    public static final CmsRelationType XML_STRONG = new CmsRelationType(PREFIX_XML + VALUE_STRONG, true, true, 3);
+    public static final CmsRelationType XML_STRONG = new CmsRelationType(3, PREFIX_XML + VALUE_STRONG, true, true);
 
     /** Constant for the <code>OpenCmsVfsFile</code> values in xml content that were defined as 'weak' links. */
-    public static final CmsRelationType XML_WEAK = new CmsRelationType(PREFIX_XML + VALUE_WEAK, false, true, 4);
+    public static final CmsRelationType XML_WEAK = new CmsRelationType(4, PREFIX_XML + VALUE_WEAK, false, true);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -4060567973007877250L;
 
     /** Constant indicating the starting mode for user defined relation types. */
     private static final int USER_DEFINED_MODE_LIMIT = 100;
-
-    /** List of user defined relation types. */
-    private static final List USER_VALUES = new ArrayList();
 
     /** Array constant for all available system relation types. */
     private static final CmsRelationType[] VALUE_ARRAY = {
@@ -149,44 +146,36 @@ public final class CmsRelationType implements Serializable {
     /**
      * Public constructor for user defined relation types.<p>
      * 
+     * @param id the id of the relation type
      * @param name the name of the relation
-     * @param strong if the relation type is strong
+     * @param type the type of relation type, strong or weak
      */
-    public CmsRelationType(String name, boolean strong) {
+    public CmsRelationType(int id, String name, String type) {
 
         m_name = name.toUpperCase();
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
             // allow relation type definitions only during startup
             throw new CmsInitException(Messages.get().container(Messages.ERR_RELATION_TYPE_INIT_1, m_name));
         }
-        m_strong = strong;
+        m_strong = type.toUpperCase().equals(VALUE_STRONG);
         m_defInContent = false;
-        m_id = USER_DEFINED_MODE_LIMIT + USER_VALUES.size() + 1;
-
-        USER_VALUES.add(this);
+        m_id = USER_DEFINED_MODE_LIMIT + id;
     }
 
     /**
      * Private constructor for system relation types.<p>
      * 
+     * @param id the internal representation
      * @param name the name of the relation
      * @param strong if the relation is strong or weak
      * @param defInContent <code>true</code> if the link is defined in the content
-     * @param id the internal representation
      */
-    private CmsRelationType(String name, boolean strong, boolean defInContent, int id) {
+    private CmsRelationType(int id, String name, boolean strong, boolean defInContent) {
 
+        m_id = id;
         m_name = name;
         m_strong = strong;
         m_defInContent = defInContent;
-        m_id = id;
-
-        if ((VALUE_ARRAY != null) && (m_id <= USER_DEFINED_MODE_LIMIT)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_RELATION_TYPE_ILLEGAL_MODE_0,
-                name,
-                new Integer(id)));
-        }
     }
 
     /**
@@ -317,7 +306,7 @@ public final class CmsRelationType implements Serializable {
     public static List getAll() {
 
         List all = new ArrayList(Arrays.asList(VALUE_ARRAY));
-        all.addAll(USER_VALUES);
+        all.addAll(OpenCms.getResourceManager().getRelationTypes());
         return Collections.unmodifiableList(all);
     }
 
@@ -368,7 +357,7 @@ public final class CmsRelationType implements Serializable {
      */
     public static List getAllUserDefined() {
 
-        return Collections.unmodifiableList(USER_VALUES);
+        return OpenCms.getResourceManager().getRelationTypes();
     }
 
     /**
@@ -397,8 +386,8 @@ public final class CmsRelationType implements Serializable {
             return VALUE_ARRAY[id - 1];
         }
         id -= USER_DEFINED_MODE_LIMIT;
-        if ((id > 0) && (id <= USER_VALUES.size())) {
-            return (CmsRelationType)USER_VALUES.get(id);
+        if ((id > 0) && (id <= OpenCms.getResourceManager().getRelationTypes().size())) {
+            return (CmsRelationType)getAllUserDefined().get(id);
         }
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
             org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
@@ -497,8 +486,8 @@ public final class CmsRelationType implements Serializable {
                 return XML_STRONG;
             }
             // user defined
-            for (int i = 0; i < USER_VALUES.size(); i++) {
-                if (valueUp.equals(((CmsRelationType)USER_VALUES.get(i)).m_name)) {
+            for (int i = 0; i < getAllUserDefined().size(); i++) {
+                if (valueUp.equals(((CmsRelationType)getAllUserDefined().get(i)).m_name)) {
                     return VALUE_ARRAY[i];
                 }
             }
@@ -544,14 +533,10 @@ public final class CmsRelationType implements Serializable {
     }
 
     /**
-     * Returns the full type name.<p>
+     * Returns the type name.<p>
      * 
-     * This will always be the "full" descriptor like e.g. <code>"XML_WEAK"</code>.
-     * In case you need only the short form, use {@link #getTypeShort()}.<p>
+     * @return the type name
      * 
-     * @return the full type name
-     * 
-     * @see #getTypeShort()
      * @see CmsRelationType#valueOf(String) 
      */
     public String getName() {
@@ -560,10 +545,11 @@ public final class CmsRelationType implements Serializable {
     }
 
     /**
-     * Returns the short type name.<p>
+     * Returns the type name for xml output.<p>
      * 
      * The short type name of XML or JSP types is only <code>"WEAK"</code> or <code>"STRONG"</code>.
-     * For other types the short name is equal to the full name.<p> 
+     * For other types the short name is equal to the name.<p> 
+     * 
      * In case you need the full type name, use {@link #getName()}.<p>
      * 
      * @return the short type name
@@ -572,7 +558,7 @@ public final class CmsRelationType implements Serializable {
      * @see CmsRelationType#valueOfJsp(String)
      * @see CmsRelationType#valueOfXml(String)
      */
-    public String getTypeShort() {
+    public String getNameForXml() {
 
         String result;
         switch (getId()) {
@@ -592,6 +578,18 @@ public final class CmsRelationType implements Serializable {
                 result = getName();
         }
         return result;
+    }
+
+    /**
+     * Returns the string strong or weak.<p>
+     * 
+     * @return the string strong or weak
+     * 
+     * @see #isStrong()
+     */
+    public String getType() {
+
+        return isStrong() ? VALUE_STRONG : VALUE_WEAK;
     }
 
     /**
@@ -619,7 +617,7 @@ public final class CmsRelationType implements Serializable {
      */
     public boolean isInternal() {
 
-        return (getId() <= USER_DEFINED_MODE_LIMIT);
+        return (getId() < USER_DEFINED_MODE_LIMIT);
     }
 
     /**

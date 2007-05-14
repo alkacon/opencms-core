@@ -581,6 +581,10 @@
 			    <mimetype extension=".xgz" type="xgl/drawing" />
 			    <mimetype extension=".xmz" type="xgl/movie" />
 			</mimetypes>
+			<relationtypes>
+			   <relationtype name="TESTRELATION1" type="WEAK" />
+			   <relationtype name="TESTRELATION2" type="STRONG" />
+			</relationtypes>
 		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/05/14 12:23:16 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.3.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RELATION_TYPE_ILLEGAL_MODE_0 = "ERR_RELATION_TYPE_ILLEGAL_MODE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RELATION_TYPE_INIT_1 = "ERR_RELATION_TYPE_INIT_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLinkUpdateUtil.java,v $
- * Date   : $Date: 2006/10/14 08:44:57 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/14 12:23:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,7 +61,7 @@ public final class CmsLinkUpdateUtil {
      */
     public static void updateType(Element element, CmsRelationType type) {
 
-        updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, type.getTypeShort());
+        updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, type.getNameForXml());
     }
 
     /**
@@ -114,7 +114,7 @@ public final class CmsLinkUpdateUtil {
         // if element is not null
         if (element != null) {
             // update the type attribute
-            updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, link.getType().getTypeShort());
+            updateAttribute(element, CmsLink.ATTRIBUTE_TYPE, link.getType().getNameForXml());
             // update the sub-elements
             updateXml(link, element, false);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2006/09/14 11:34:50 $
- * Version: $Revision: 1.40.4.2 $
+ * Date   : $Date: 2007/05/14 12:23:16 $
+ * Version: $Revision: 1.40.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
@@ -59,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.2 $
+ * @version $Revision: 1.40.4.3 $
  * 
  * @since 6.0.0
  */
@@ -121,6 +122,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The mimetypes node name. */
     public static final String N_MIMETYPES = "mimetypes";
+
+    /** The relation type node name. */
+    public static final String N_RELATIONTYPE = "relationtype";
+
+    /** The relation types node name. */
+    public static final String N_RELATIONTYPES = "relationtypes";
 
     /** The properties node name. */
     public static final String N_PROPERTIES = "properties";
@@ -474,6 +481,20 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE, 0, A_EXTENSION);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_MIMETYPES + "/" + N_MIMETYPE, 1, A_TYPE);
 
+        // add relation type rules
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RELATIONTYPES + "/" + N_RELATIONTYPE,
+            "addRelationType",
+            2);
+        digester.addCallParam(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RELATIONTYPES + "/" + N_RELATIONTYPE,
+            0,
+            A_NAME);
+        digester.addCallParam(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RELATIONTYPES + "/" + N_RELATIONTYPE,
+            1,
+            A_TYPE);
+
         // generic <param> parameter rules
         digester.addCallMethod(
             "*/" + I_CmsXmlConfiguration.N_PARAM,
@@ -589,6 +610,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         while (it.hasNext()) {
             CmsMimeType type = (CmsMimeType)it.next();
             mimeTypesElement.addElement(N_MIMETYPE).addAttribute(A_EXTENSION, type.getExtension()).addAttribute(
+                A_TYPE,
+                type.getType());
+        }
+
+        // add relation types
+        Element relationTypesElement = resources.addElement(N_RELATIONTYPES);
+        it = m_resourceManager.getRelationTypes().iterator();
+        while (it.hasNext()) {
+            CmsRelationType type = (CmsRelationType)it.next();
+            relationTypesElement.addElement(N_RELATIONTYPE).addAttribute(A_NAME, type.getName()).addAttribute(
                 A_TYPE,
                 type.getType());
         }
