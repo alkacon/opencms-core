@@ -27,7 +27,12 @@ String cssPath = extConf.getUriStyleSheet();
 // An example for a style XML can be found in the VFS file "/system/workplace/resources/editors/fckeditor/fckstyles.xml". 
 boolean styleXMLPresent = false;
 if (CmsStringUtil.isNotEmpty(cssPath)) {
-	String styleXML = cssPath + CmsFCKEditor.SUFFIX_STYLESXML;
+	String pathUsed = cssPath;
+	int idx = pathUsed.indexOf('?');
+	if (idx != -1) {
+		pathUsed = cssPath.substring(0, idx);
+	}
+	String styleXML = pathUsed + CmsFCKEditor.SUFFIX_STYLESXML;
 	if (cms.getCmsObject().existsResource(styleXML)) {
 		styleXMLPresent = true;
 		%>FCKConfig.StylesXmlPath = "<%= cms.link(styleXML) %>";<%
