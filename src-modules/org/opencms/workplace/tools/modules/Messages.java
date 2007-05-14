@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/28 18:38:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/05/14 12:18:47 $
+ * Version: $Revision: 1.15.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.8.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_IMPORT_NOT_AVAILABLE_0 = "GUI_MODULES_IMPORT_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_DEPENDENCIES_DELETE_2 = "ERR_ACTION_DEPENDENCIES_DELETE_2";
@@ -69,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0";
@@ -291,6 +291,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_IMPORT_FILE_0 = "GUI_MODULES_IMPORT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_IMPORT_NOT_AVAILABLE_0 = "GUI_MODULES_IMPORT_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_AUTHOR_0 = "GUI_MODULES_LABEL_AUTHOR_0";
