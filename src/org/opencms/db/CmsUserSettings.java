@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.36.4.24 $
+ * Date   : $Date: 2007/05/14 09:57:15 $
+ * Version: $Revision: 1.36.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.24 $
+ * @version $Revision: 1.36.4.25 $
  * 
  * @since 6.0.0
  */
@@ -1246,6 +1246,10 @@ public class CmsUserSettings {
                     m_user.setAdditionalInfo(PREFERENCES
                         + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
                         + entry.getKey(), entry.getValue().toString());
+                } else {
+                    m_user.deleteAdditionalInfo(PREFERENCES
+                        + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS
+                        + entry.getKey());
                 }
             }
         } else if (cms != null) {
