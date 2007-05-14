@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.76.4.9 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.76.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.9 $
+ * @version $Revision: 1.76.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -122,12 +122,11 @@ public interface I_CmsProjectDriver {
      * Deletes all entries in the published resource table.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType)
+    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType)
     throws CmsDataAccessException;
 
     /**
@@ -177,7 +176,6 @@ public interface I_CmsProjectDriver {
      * Deletes a publish history entry with publish tags >=0 and < the specified max. publish tag.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the ID of the current project
      * @param publishHistoryId the id of the history to delete the entry from
      * @param publishResource the entry to delete
      * 
@@ -185,7 +183,6 @@ public interface I_CmsProjectDriver {
      */
     void deletePublishHistoryEntry(
         CmsDbContext dbc,
-        CmsUUID projectId,
         CmsUUID publishHistoryId,
         CmsPublishedResource publishResource) throws CmsDataAccessException;
 
@@ -211,7 +208,6 @@ public interface I_CmsProjectDriver {
      * Deletes an entry in the published resource table.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param resourceName The name of the resource to be deleted in the static export
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters of the resource
@@ -220,7 +216,6 @@ public interface I_CmsProjectDriver {
      */
     void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
-        CmsProject currentProject,
         String resourceName,
         int linkType,
         String linkParameter) throws CmsDataAccessException;
@@ -339,6 +334,7 @@ public interface I_CmsProjectDriver {
      * @param offlineFileHeader the offline header of the file of which the content gets published
      * @param publishedResourceIds a Set with the UUIDs of the already published content records
      * @param needToUpdateContent <code>true</code> if the content record has to be updated
+     * @param publishTag the publish tag
      * 
      * @return the published file (online)
      * 
@@ -350,7 +346,8 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineFileHeader,
         Set publishedResourceIds,
-        boolean needToUpdateContent) throws CmsDataAccessException;
+        boolean needToUpdateContent,
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -559,35 +556,32 @@ public interface I_CmsProjectDriver {
      * Reads the resources that were published during a publish process for a given publish history ID.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the ID of the current project
      * @param publishHistoryId unique int ID to identify the publish process in the publish history
      * 
      * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, CmsUUID projectId, CmsUUID publishHistoryId)
+    List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
     throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param rfsName the rfs name of the resource
      * 
      * @return the paramter string of the requested resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName)
+    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName)
     throws CmsDataAccessException;
 
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
      * @param timestamp the timestamp information
      * 
@@ -595,7 +589,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readStaticExportResources(CmsDbContext dbc, CmsProject currentProject, int parameterResources, long timestamp)
+    List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsDataAccessException;
 
     /**
@@ -643,7 +637,6 @@ public interface I_CmsProjectDriver {
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param resource the state of the resource *before* it was published
      * 
@@ -651,7 +644,6 @@ public interface I_CmsProjectDriver {
      */
     void writePublishHistory(
         CmsDbContext dbc,
-        CmsProject currentProject,
         CmsUUID publishId,
         CmsPublishedResource resource) throws CmsDataAccessException;
 
@@ -680,7 +672,6 @@ public interface I_CmsProjectDriver {
      * This is done during static export.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param resourceName The name of the resource to be added to the static export
      * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters added to the resource
@@ -690,7 +681,6 @@ public interface I_CmsProjectDriver {
      */
     void writeStaticExportPublishedResource(
         CmsDbContext dbc,
-        CmsProject currentProject,
         String resourceName,
         int linkType,
         String linkParameter,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/14 12:26:16 $
- * Version: $Revision: 1.241.4.30 $
+ * Date   : $Date: 2007/05/14 13:10:17 $
+ * Version: $Revision: 1.241.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.30 $
+ * @version $Revision: 1.241.4.31 $
  * 
  * @since 6.0.0 
  */
@@ -275,16 +275,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int)
+     * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.db.CmsDbContext, int)
      */
-    public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType)
-    throws CmsDataAccessException {
+    public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, linkType);
             stmt.executeUpdate();
@@ -312,7 +311,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_DELETE_1");
             // create the statement
             stmt.setString(1, project.getUuid().toString());
@@ -359,7 +358,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL_1");
             stmt.setString(1, project.getUuid().toString());
             stmt.executeUpdate();
@@ -382,7 +381,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_DELETE_PUBLISH_HISTORY");
             stmt.setInt(1, maxpublishTag);
             stmt.executeUpdate();
@@ -396,11 +395,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistoryEntry(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID, org.opencms.db.CmsPublishedResource)
+     * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistoryEntry(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.db.CmsPublishedResource)
      */
     public void deletePublishHistoryEntry(
         CmsDbContext dbc,
-        CmsUUID projectId,
         CmsUUID publishHistoryId,
         CmsPublishedResource publishedResource) throws CmsDataAccessException {
 
@@ -408,7 +406,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PUBLISH_HISTORY_ENTRY");
             stmt.setString(1, publishHistoryId.toString());
             stmt.setInt(2, publishedResource.getPublishTag());
@@ -469,11 +467,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.db.CmsDbContext, java.lang.String, int, java.lang.String)
      */
     public void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
-        CmsProject currentProject,
         String resourceName,
         int linkType,
         String linkParameter) throws CmsDataAccessException {
@@ -482,7 +479,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_LINKS");
             stmt.setString(1, resourceName);
             stmt.setInt(2, linkType);
@@ -902,6 +899,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     publishTag,
                     maxVersions);
 
+                dbc.pop();
+                // delete old historical entries
+                m_driverManager.getHistoryDriver().deleteEntries(
+                    dbc,
+                    offlineResource.getStructureId(),
+                    offlineResource.getResourceId(),
+                    maxVersions);
+
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
@@ -932,6 +937,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     publishTag,
                     maxVersions);
 
+                dbc.pop();
+                // delete old historical entries
+                m_driverManager.getHistoryDriver().deleteEntries(
+                    dbc,
+                    offlineResource.getStructureId(),
+                    offlineResource.getResourceId(),
+                    maxVersions);
+
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
@@ -959,6 +972,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     publishDate,
                     publishHistoryId,
                     publishTag,
+                    maxVersions);
+
+                dbc.pop();
+                // delete old historical entries
+                m_driverManager.getHistoryDriver().deleteEntries(
+                    dbc,
+                    offlineResource.getStructureId(),
+                    offlineResource.getResourceId(),
                     maxVersions);
 
                 report.println(
@@ -994,6 +1015,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         offlineResource));
                 }
             }
+        } catch (CmsException e) {
+            throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {
             // notify the app. that the published file and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
@@ -1003,7 +1026,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(CmsDbContext, CmsProject, CmsProject, CmsResource, Set, boolean)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(CmsDbContext, CmsProject, CmsProject, CmsResource, Set, boolean, int)
      */
     public CmsFile publishFileContent(
         CmsDbContext dbc,
@@ -1011,7 +1034,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedResourceIds,
-        boolean needToUpdateContent) throws CmsDataAccessException {
+        boolean needToUpdateContent,
+        int publishTag) throws CmsDataAccessException {
 
         CmsFile newFile = null;
         try {
@@ -1053,11 +1077,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 if (needToUpdateContent) {
                     // create the file content online
-                    m_driverManager.getVfsDriver().createContent(
+                    m_driverManager.getVfsDriver().createOnlineContent(
                         dbc,
-                        CmsProject.ONLINE_PROJECT_ID,
                         offlineFile.getResourceId(),
-                        offlineFile.getContents());
+                        offlineFile.getContents(),
+                        publishTag,
+                        true);
                 }
             }
             publishedResourceIds.add(offlineResource.getResourceId());
@@ -1260,64 +1285,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * Writes the needed history entries.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the offline resource
-     * @param state the state to store in the publish history entry
-     * @param properties the offline properties
-     * @param historyEnabled if the history is enabled or not
-     * @param publishDate the current publish process date
-     * @param publishHistoryId the current publish process id
-     * @param publishTag the current publish process tag
-     * @param maxVersions the maximal number of versions per resource to keep
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected void internalWriteHistory(
-        CmsDbContext dbc,
-        CmsResource resource,
-        CmsResourceState state,
-        List properties,
-        boolean historyEnabled,
-        long publishDate,
-        CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
-
-        try {
-            if (state.isDeleted() && !OpenCms.getSystemInfo().keepVersionHistory()) {
-                // delete all historical versions as well
-                m_driverManager.getHistoryDriver().deleteEntries(
-                    dbc,
-                    resource.getStructureId(),
-                    resource.getResourceId(),
-                    0);
-            } else if (historyEnabled) {
-                // write the resource to the historical archive
-                if (properties == null) {
-                    properties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), resource);
-                }
-
-                m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag, maxVersions);
-            }
-            // write the resource to the publish history
-            m_driverManager.getProjectDriver().writePublishHistory(
-                dbc,
-                dbc.currentProject(),
-                publishHistoryId,
-                new CmsPublishedResource(resource, publishTag, state));
-        } catch (CmsDataAccessException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WRITING_PUBLISHING_HISTORY_1,
-                    resource.getRootPath()), e);
-            }
-            throw e;
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
      */
     public void publishProject(
@@ -1387,6 +1354,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             publishDate,
                             publishList.getPublishHistoryId(),
                             publishTag,
+                            maxVersions);
+
+                        dbc.pop();
+                        // delete old historical entries
+                        m_driverManager.getHistoryDriver().deleteEntries(
+                            dbc,
+                            currentFolder.getStructureId(),
+                            currentFolder.getResourceId(),
                             maxVersions);
 
                         // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
@@ -1510,6 +1485,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         publishDate,
                         publishList.getPublishHistoryId(),
                         publishTag,
+                        maxVersions);
+
+                    dbc.pop();
+                    // delete old historical entries
+                    m_driverManager.getHistoryDriver().deleteEntries(
+                        dbc,
+                        currentFolder.getStructureId(),
+                        currentFolder.getResourceId(),
                         maxVersions);
 
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
@@ -1855,6 +1838,62 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        List publishedResources = new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_SELECT_PUBLISHED_RESOURCES");
+            stmt.setString(1, publishHistoryId.toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                CmsUUID structureId = new CmsUUID(res.getString("STRUCTURE_ID"));
+                CmsUUID resourceId = new CmsUUID(res.getString("RESOURCE_ID"));
+                String rootPath = res.getString("RESOURCE_PATH");
+                int resourceState = res.getInt("RESOURCE_STATE");
+                int resourceType = res.getInt("RESOURCE_TYPE");
+                int siblingCount = res.getInt("SIBLING_COUNT");
+                int publishTag = res.getInt("PUBLISH_TAG");
+
+                // compose the resource state
+                CmsResourceState state;
+                if (resourceState == CmsPublishedResource.STATE_MOVED_SOURCE.getState()) {
+                    state = CmsPublishedResource.STATE_MOVED_SOURCE;
+                } else if (resourceState == CmsPublishedResource.STATE_MOVED_DESTINATION.getState()) {
+                    state = CmsPublishedResource.STATE_MOVED_DESTINATION;
+                } else {
+                    state = CmsResourceState.valueOf(resourceState);
+                }
+
+                publishedResources.add(new CmsPublishedResource(
+                    structureId,
+                    resourceId,
+                    publishTag,
+                    rootPath,
+                    resourceType,
+                    structureId.isNullUUID() ? false : CmsFolder.isFolderType(resourceType),
+                    state,
+                    siblingCount));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return publishedResources;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishJob(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
     public CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId)
@@ -1999,69 +2038,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParameters(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public List readPublishedResources(CmsDbContext dbc, CmsUUID projectId, CmsUUID publishHistoryId)
+    public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName)
     throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        List publishedResources = new ArrayList();
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SELECT_PUBLISHED_RESOURCES");
-            stmt.setString(1, publishHistoryId.toString());
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                CmsUUID structureId = new CmsUUID(res.getString("STRUCTURE_ID"));
-                CmsUUID resourceId = new CmsUUID(res.getString("RESOURCE_ID"));
-                String rootPath = res.getString("RESOURCE_PATH");
-                int resourceState = res.getInt("RESOURCE_STATE");
-                int resourceType = res.getInt("RESOURCE_TYPE");
-                int siblingCount = res.getInt("SIBLING_COUNT");
-                int publishTag = res.getInt("PUBLISH_TAG");
-
-                // compose the resource state
-                CmsResourceState state;
-                if (resourceState == CmsPublishedResource.STATE_MOVED_SOURCE.getState()) {
-                    state = CmsPublishedResource.STATE_MOVED_SOURCE;
-                } else if (resourceState == CmsPublishedResource.STATE_MOVED_DESTINATION.getState()) {
-                    state = CmsPublishedResource.STATE_MOVED_DESTINATION;
-                } else {
-                    state = CmsResourceState.valueOf(resourceState);
-                }
-
-                publishedResources.add(new CmsPublishedResource(
-                    structureId,
-                    resourceId,
-                    publishTag,
-                    rootPath,
-                    resourceType,
-                    structureId.isNullUUID() ? false : CmsFolder.isFolderType(resourceType),
-                    state,
-                    siblingCount));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return publishedResources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParameters(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String)
-     */
-    public String readStaticExportPublishedResourceParameters(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        String rfsName) throws CmsDataAccessException {
 
         String returnValue = null;
         Connection conn = null;
@@ -2069,7 +2049,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_LINK_PARAMETERS");
             stmt.setString(1, rfsName);
             res = stmt.executeQuery();
@@ -2089,13 +2069,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int, long)
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.db.CmsDbContext, int, long)
      */
-    public List readStaticExportResources(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        int parameterResources,
-        long timestamp) throws CmsDataAccessException {
+    public List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2106,7 +2083,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             timestamp = 0;
         }
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, parameterResources);
             stmt.setLong(2, timestamp);
@@ -2136,7 +2113,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UNMARK");
             // create the statement
             stmt.setString(1, project.getUuid().toString());
@@ -2239,19 +2216,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.db.CmsPublishedResource)
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.db.CmsPublishedResource)
      */
-    public void writePublishHistory(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        CmsUUID publishId,
-        CmsPublishedResource resource) throws CmsDataAccessException {
+    public void writePublishHistory(CmsDbContext dbc, CmsUUID publishId, CmsPublishedResource resource)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
             stmt.setInt(1, resource.getPublishTag());
             stmt.setString(2, resource.getStructureId().toString());
@@ -2332,11 +2306,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
+     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, java.lang.String, int, java.lang.String, long)
      */
     public void writeStaticExportPublishedResource(
         CmsDbContext dbc,
-        CmsProject currentProject,
         String resourceName,
         int linkType,
         String linkParameter,
@@ -2348,7 +2321,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int returnValue = 0;
         // first check if a record with this resource name does already exist
         try {
-            conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_RESOURCES");
             stmt.setString(1, resourceName);
             res = stmt.executeQuery();
@@ -2366,7 +2339,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // there was no entry found, so add it to the database
         if (returnValue == 0) {
             try {
-                conn = m_sqlManager.getConnection(dbc, currentProject.getUuid());
+                conn = m_sqlManager.getConnection(dbc);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_WRITE_PUBLISHED_LINKS");
                 stmt.setString(1, new CmsUUID().toString());
                 stmt.setString(2, resourceName);
@@ -2457,7 +2430,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // write the resource to the publish history
             m_driverManager.getProjectDriver().writePublishHistory(
                 dbc,
-                dbc.currentProject(),
                 publishHistoryId,
                 new CmsPublishedResource(onlineResource, publishTag, CmsPublishedResource.STATE_MOVED_SOURCE));
         } catch (CmsDataAccessException e) {
@@ -2569,6 +2541,63 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
+     * Writes the needed history entries.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the offline resource
+     * @param state the state to store in the publish history entry
+     * @param properties the offline properties
+     * @param historyEnabled if the history is enabled or not
+     * @param publishDate the current publish process date
+     * @param publishHistoryId the current publish process id
+     * @param publishTag the current publish process tag
+     * @param maxVersions the maximal number of versions per resource to keep
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalWriteHistory(
+        CmsDbContext dbc,
+        CmsResource resource,
+        CmsResourceState state,
+        List properties,
+        boolean historyEnabled,
+        long publishDate,
+        CmsUUID publishHistoryId,
+        int publishTag,
+        int maxVersions) throws CmsDataAccessException {
+
+        try {
+            if (state.isDeleted() && !OpenCms.getSystemInfo().keepVersionHistory()) {
+                // delete all historical versions as well
+                m_driverManager.getHistoryDriver().deleteEntries(
+                    dbc,
+                    resource.getStructureId(),
+                    resource.getResourceId(),
+                    0);
+            } else if (historyEnabled) {
+                // write the resource to the historical archive
+                if (properties == null) {
+                    properties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), resource);
+                }
+
+                m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag, maxVersions);
+            }
+            // write the resource to the publish history
+            m_driverManager.getProjectDriver().writePublishHistory(
+                dbc,
+                publishHistoryId,
+                new CmsPublishedResource(resource, publishTag, state));
+        } catch (CmsDataAccessException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_WRITING_PUBLISHING_HISTORY_1,
+                    resource.getRootPath()), e);
+            }
+            throw e;
+        }
+    }
+
+    /**
      * Publishes a changed file.<p>
      * 
      * @param dbc the current database context
@@ -2668,7 +2697,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 onlineProject,
                 offlineResource,
                 publishedResourceIds,
-                needToUpdateContent);
+                needToUpdateContent,
+                publishTag);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2948,7 +2978,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 onlineProject,
                 offlineResource,
                 publishedContentIds,
-                true);
+                true,
+                publishTag);
         } catch (CmsVfsResourceAlreadyExistsException e) {
             try {
                 // remove the existing file and ensure that it's content is written 
@@ -2961,7 +2992,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     onlineProject,
                     offlineResource,
                     publishedContentIds,
-                    true);
+                    true,
+                    publishTag);
             } catch (CmsDataAccessException e1) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(

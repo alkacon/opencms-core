@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/03 13:48:57 $
- * Version: $Revision: 1.65.4.8 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.65.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.8 $
+ * @version $Revision: 1.65.4.9 $
  * 
  * @since 6.0.0 
  */
@@ -225,27 +225,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
 
-        return getConnection(dbc, CmsProject.ONLINE_PROJECT_ID);
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId the id of a project (to distinguish between online / offline tables)
-     * 
-     * @return a JDBC connection
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnection(CmsDbContext dbc, CmsUUID projectId) throws SQLException {
-
-        if (dbc == null) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
-        }
-        return getConnection(projectId);
+        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
+        return getConnectionByUrl(m_poolUrl);
     }
 
     /**
@@ -474,36 +455,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         super.finalize();
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
-     * 
-     * The project ID is (usually) the ID of the current project.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
-     * 
-     * @return a JDBC connection from the pool specified by the project-ID
-     *  
-     * @throws SQLException if a database access error occurs
-     */
-    protected Connection getConnection(CmsUUID projectId) throws SQLException {
-
-        // the specified project ID is not evaluated in this implementation.
-        // extensions of this object might evaluate the project ID to return
-        // different connections...        
-
-        if (projectId == null) {
-            throw new SQLException(Messages.get().getBundle().key(
-                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1,
-                projectId));
-        }
-
-        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-        return getConnectionByUrl(m_poolUrl);
     }
 
     /**

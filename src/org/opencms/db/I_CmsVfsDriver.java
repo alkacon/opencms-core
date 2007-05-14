@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/09 07:59:19 $
- * Version: $Revision: 1.114.4.14 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.114.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.14 $
+ * @version $Revision: 1.114.4.15 $
  * 
  * @since 6.0.0 
  */
@@ -109,6 +109,19 @@ public interface I_CmsVfsDriver {
      * @throws SQLException in case the result set does not include a requested table attribute
      */
     CmsFolder createFolder(ResultSet res, CmsUUID projectId, boolean hasProjectIdInResultSet) throws SQLException;
+
+    /**
+     * Creates a new content in the offline project.<p>
+     * 
+     * @param dbc the current database context
+     * @param resourceId the resource id of the content to write
+     * @param contents the content to publish
+     * @param publishTag the publish tag
+     * @param keepOnline if the content is online or has to be put in the history
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline) throws CmsDataAccessException;
 
     /**
      * Creates a new property defintion in the database.<p>

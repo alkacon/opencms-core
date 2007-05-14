@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/14 12:26:16 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,12 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryFolder;
-import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryPrincipal;
+import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -81,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.9.1
  */
@@ -738,6 +737,47 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsHistoryDriver#readPrincipal(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
+     */
+    public CmsHistoryPrincipal readPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        CmsHistoryPrincipal historyPrincipal = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_READ");
+            stmt.setString(1, principalId.toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                String userName = res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_NAME"));
+                String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_OU")));
+                historyPrincipal = new CmsHistoryPrincipal(
+                    principalId,
+                    ou + userName,
+                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_DESCRIPTION")),
+                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_EMAIL")),
+                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_TYPE")),
+                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_USERDELETED"))),
+                    res.getLong(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_DATEDELETED")));
+            } else {
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.ERR_HISTORY_PRINCIPAL_NOT_FOUND_1,
+                    principalId));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return historyPrincipal;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsHistoryDriver#readProject(org.opencms.db.CmsDbContext, int)
      */
     public CmsHistoryProject readProject(CmsDbContext dbc, int publishTag) throws CmsDataAccessException {
@@ -1019,6 +1059,41 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsHistoryDriver#writePrincipal(CmsDbContext, org.opencms.security.I_CmsPrincipal)
+     */
+    public void writePrincipal(CmsDbContext dbc, I_CmsPrincipal principal) throws CmsDbSqlException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
+            stmt.setString(1, principal.getId().toString());
+            stmt.setString(2, principal.getSimpleName());
+            stmt.setString(3, principal.getDescription() == null ? "-" : principal.getDescription());
+            stmt.setString(4, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
+            if (principal instanceof CmsUser) {
+                stmt.setString(5, ((CmsUser)principal).getEmail());
+                stmt.setString(6, I_CmsPrincipal.PRINCIPAL_USER);
+            } else {
+                stmt.setString(5, "-");
+                stmt.setString(6, I_CmsPrincipal.PRINCIPAL_GROUP);
+            }
+            stmt.setString(7, dbc.currentUser().getId().toString());
+            stmt.setLong(8, System.currentTimeMillis());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsHistoryDriver#writeProject(org.opencms.db.CmsDbContext, int, long)
      */
     public void writeProject(CmsDbContext dbc, int publishTag, long publishDate) throws CmsDataAccessException {
@@ -1142,6 +1217,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int publishTag,
         int maxVersions) throws CmsDataAccessException {
 
+        int todo; // remove maxVersions param
+        
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1185,39 +1262,21 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 if (resource instanceof CmsFile) {
                     if (resource.getState().isDeleted()) {
                         // if deleted, first copy content from offline to online content tables
-                        m_driverManager.getVfsDriver().createContent(
+                        m_driverManager.getVfsDriver().createOnlineContent(
                             dbc,
-                            CmsProject.ONLINE_PROJECT_ID,
                             resource.getResourceId(),
-                            ((CmsFile)resource).getContents());
+                            ((CmsFile)resource).getContents(),
+                            publishTag,
+                            false);
                     }
-                    // check if the last version has an content entry
-                    // try to update the publish tag
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_CREATE");
-                    stmt.setInt(1, publishTag);
-                    stmt.setInt(2, publishTag);
-                    stmt.setString(3, resource.getResourceId().toString());
-
-                    int result = stmt.executeUpdate();
-                    m_sqlManager.closeAll(dbc, null, stmt, null);
-
                     int lastPublishTag = readMaxPublishTag(dbc, resource);
                     // if no new content entry has been written to db
-                    if ((result == 0) && (lastPublishTag != 0)) {
+                    if ((lastPublishTag != publishTag) && !resource.getState().isDeleted()) {
                         // update old content entry                        
                         stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
                         stmt.setInt(1, publishTag);
                         stmt.setString(2, resource.getResourceId().toString());
                         stmt.setInt(3, lastPublishTag);
-
-                        stmt.executeUpdate();
-                        m_sqlManager.closeAll(dbc, null, stmt, null);
-                    }
-
-                    if (resource.getState().isDeleted()) {
-                        // put the online content in the history
-                        stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
-                        stmt.setString(1, resource.getResourceId().toString());
 
                         stmt.executeUpdate();
                         m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1248,15 +1307,87 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.executeUpdate();
 
             writeProperties(dbc, resource, properties, publishTag);
-
-            // delete old historical entries
-            deleteEntries(dbc, resource.getStructureId(), resource.getResourceId(), maxVersions);
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * Creates a valid {@link I_CmsHistoryResource} instance from a JDBC ResultSet.<p>
+     * 
+     * @param res the JDBC result set
+     * 
+     * @return the new historical resource instance
+     * 
+     * @throws SQLException if a requested attribute was not found in the result set
+     */
+    protected I_CmsHistoryResource createResource(ResultSet res) throws SQLException {
+
+        int version = res.getInt(m_sqlManager.readQuery("C_RESOURCES_HISTORY_VERSION"));
+        int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
+        CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
+        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
+        String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
+        int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
+        int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
+        CmsUUID projectLastModified = new CmsUUID(
+            res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
+        int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
+        long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
+        long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
+        long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
+        long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));
+        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
+        CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
+        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_HISTORY_PARENTID")));
+
+        boolean isFolder = resourcePath.endsWith("/");
+
+        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
+        if (isFolder) {
+            return new CmsHistoryFolder(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                version,
+                parentId);
+        } else {
+            return new CmsHistoryFile(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                resourceSize,
+                dateContent,
+                version,
+                parentId,
+                null);
         }
     }
 
@@ -1423,81 +1554,5 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return exists;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsHistoryDriver#readPrincipal(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
-     */
-    public CmsHistoryPrincipal readPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        CmsHistoryPrincipal historyPrincipal = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_READ");
-            stmt.setString(1, principalId.toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                String userName = res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_NAME"));
-                String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_OU")));
-                historyPrincipal = new CmsHistoryPrincipal(
-                    principalId,
-                    ou + userName,
-                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_DESCRIPTION")),
-                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_EMAIL")),
-                    res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_TYPE")),
-                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_USERDELETED"))),
-                    res.getLong(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_DATEDELETED")));
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_HISTORY_PRINCIPAL_NOT_FOUND_1,
-                    principalId));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return historyPrincipal;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsHistoryDriver#writePrincipal(CmsDbContext, org.opencms.security.I_CmsPrincipal)
-     */
-    public void writePrincipal(CmsDbContext dbc, I_CmsPrincipal principal) throws CmsDbSqlException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
-            stmt.setString(1, principal.getId().toString());
-            stmt.setString(2, principal.getSimpleName());
-            stmt.setString(3, principal.getDescription() == null ? "-" : principal.getDescription());
-            stmt.setString(4, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
-            if (principal instanceof CmsUser) {
-                stmt.setString(5, ((CmsUser)principal).getEmail());
-                stmt.setString(6, I_CmsPrincipal.PRINCIPAL_USER);
-            } else {
-                stmt.setString(5, "-");
-                stmt.setString(6, I_CmsPrincipal.PRINCIPAL_GROUP);
-            }
-            stmt.setString(7, dbc.currentUser().getId().toString());
-            stmt.setLong(8, System.currentTimeMillis());
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
     }
 }

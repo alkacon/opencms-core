@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2006/08/19 13:40:38 $
- * Version: $Revision: 1.14.8.1 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.14.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 
 /**
  * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.8.1 $
+ * @version $Revision: 1.14.8.2 $
  * 
  * @since 6.0.0
  */
@@ -55,6 +56,9 @@ public class CmsDbContext {
 
     /** The current Flex request context info (if available). */
     protected CmsFlexRequestContextInfo m_flexRequestContextInfo;
+
+    /** The project UUID for the context. */
+    protected CmsUUID m_projectUuid;
 
     /** The wrapped user request context. */
     protected CmsRequestContext m_requestContext;
@@ -118,6 +122,16 @@ public class CmsDbContext {
     public CmsFlexRequestContextInfo getFlexRequestContextInfo() {
 
         return m_flexRequestContextInfo;
+    }
+
+    /**
+     * Returns the project.<p>
+     *
+     * @return the project
+     */
+    public CmsUUID getProjectUuid() {
+
+        return m_projectUuid;
     }
 
     /**
@@ -195,6 +209,16 @@ public class CmsDbContext {
         }
 
         throwException(message, throwable);
+    }
+
+    /**
+     * Sets the project.<p>
+     *
+     * @param projectUuid the projectUuid to set
+     */
+    public void setProjectUuid(CmsUUID projectUuid) {
+
+        m_projectUuid = projectUuid;
     }
 
     /**

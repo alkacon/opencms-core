@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/09 07:59:18 $
- * Version: $Revision: 1.110.2.26 $
+ * Date   : $Date: 2007/05/14 13:10:16 $
+ * Version: $Revision: 1.110.2.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.26 $
+ * @version $Revision: 1.110.2.27 $
  * 
  * @since 6.0.0 
  */
@@ -190,12 +190,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             try {
                 // be sure the project was not deleted
-                m_driverManager.readProject(dbc, orgUnit.getProjectId());
+                CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
                 m_driverManager.getProjectDriver().createProjectResource(
                     dbc,
                     orgUnit.getProjectId(),
                     resource.getRootPath());
+
+                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+                    "project",
+                    project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
@@ -220,7 +224,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE_5");
 
             stmt.setString(1, resource.toString());
@@ -376,6 +380,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
             // add the given resource
             m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
+
+            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES, null);
             // return the new created ou
             return ou;
         } catch (CmsException e) {
@@ -527,7 +533,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SET_FLAGS_ALL_2");
 
             stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
@@ -1540,7 +1546,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_1");
 
             stmt.setString(1, resource.toString());
@@ -1570,7 +1576,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
 
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
 
             stmt.setString(1, principal.toString());
@@ -1584,7 +1590,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_ONLINE_1");
 
             stmt.setString(1, principal.toString());
@@ -1608,7 +1614,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_2");
 
             stmt.setString(1, resource.toString());
@@ -1669,9 +1675,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             try {
                 // be sure the project was not deleted
-                m_driverManager.readProject(dbc, orgUnit.getProjectId());
+                CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
                 m_driverManager.getProjectDriver().deleteProjectResource(dbc, orgUnit.getProjectId(), resourceName);
+
+                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+                    "project",
+                    project));
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
@@ -1721,7 +1731,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc, project.getUuid());
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY_2");
 
             stmt.setString(1, acEntry.getResource().toString());
@@ -1829,6 +1839,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     resource,
                     CmsDriverManager.NOTHING_CHANGED);
             }
+
+            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES, null);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }

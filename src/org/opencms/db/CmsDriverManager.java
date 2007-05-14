@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/14 12:26:15 $
- * Version: $Revision: 1.570.2.86 $
+ * Date   : $Date: 2007/05/14 13:10:15 $
+ * Version: $Revision: 1.570.2.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,6 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
@@ -848,8 +847,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 dbc = (CmsDbContext)event.getData().get(I_CmsEventListener.KEY_DBCONTEXT);
-                CmsUUID projectId = ((CmsUUID)event.getData().get(I_CmsEventListener.KEY_PROJECTID));
-                writeExportPoints(dbc, projectId, report, publishHistoryId);
+                writeExportPoints(dbc, report, publishHistoryId);
                 break;
 
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
@@ -2023,7 +2021,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsException {
 
-        m_projectDriver.deleteAllStaticExportPublishedResources(dbc, dbc.currentProject(), linkType);
+        m_projectDriver.deleteAllStaticExportPublishedResources(dbc, linkType);
     }
 
     /**
@@ -2652,7 +2650,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_projectDriver.deleteStaticExportPublishedResource(
             dbc,
-            dbc.currentProject(),
             resourceName,
             linkType,
             linkParameter);
@@ -5891,7 +5888,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        return m_projectDriver.readPublishedResources(dbc, dbc.currentProject().getUuid(), publishHistoryId);
+        return m_projectDriver.readPublishedResources(dbc, publishHistoryId);
     }
 
     /**
@@ -6265,7 +6262,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName) throws CmsException {
 
-        return m_projectDriver.readStaticExportPublishedResourceParameters(dbc, dbc.currentProject(), rfsName);
+        return m_projectDriver.readStaticExportPublishedResourceParameters(dbc, rfsName);
     }
 
     /**
@@ -6281,7 +6278,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp) throws CmsException {
 
-        return m_projectDriver.readStaticExportResources(dbc, dbc.currentProject(), parameterResources, timestamp);
+        return m_projectDriver.readStaticExportResources(dbc, parameterResources, timestamp);
     }
 
     /**
@@ -7413,16 +7410,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * specified by trhe given publish history ID.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the id of the project that was published
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      * @param publishHistoryId ID to identify the publish task in the publish history
      */
-    public void writeExportPoints(CmsDbContext dbc, CmsUUID projectId, I_CmsReport report, CmsUUID publishHistoryId) {
+    public void writeExportPoints(CmsDbContext dbc, I_CmsReport report, CmsUUID publishHistoryId) {
 
         boolean printReportHeaders = false;
         try {
             // read the "published resources" for the specified publish history ID
-            List publishedResources = m_projectDriver.readPublishedResources(dbc, projectId, publishHistoryId);
+            List publishedResources = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
             if (publishedResources.size() == 0) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
@@ -7872,7 +7868,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_projectDriver.writeStaticExportPublishedResource(
             dbc,
-            dbc.currentProject(),
             resourceName,
             linkType,
             linkParameter,

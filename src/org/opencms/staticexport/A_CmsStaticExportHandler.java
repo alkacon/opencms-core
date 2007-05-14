@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.3.4.14 $
+ * Date   : $Date: 2007/05/14 13:10:15 $
+ * Version: $Revision: 1.3.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.14 $ 
+ * @version $Revision: 1.3.4.15 $ 
  * 
  * @since 6.1.7 
  * 
@@ -268,6 +268,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      */
     protected List addMovedLinkSources(CmsObject cms, List publishedResources) {
         
+        publishedResources = new ArrayList(publishedResources);
         Set pubResources = new HashSet(publishedResources.size());
         // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
         // and with moved files you have 2 entries with the same id and different paths...
