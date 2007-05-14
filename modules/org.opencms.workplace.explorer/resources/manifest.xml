@@ -28,7 +28,6 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/commons/availability.jsp"/>
-			<resource uri="/system/workplace/commons/orgunit_selection.jsp"/>
 			<resource uri="/system/workplace/commons/chacc.jsp"/>
 			<resource uri="/system/workplace/commons/chnav.jsp"/>
 			<resource uri="/system/workplace/commons/chtype.jsp"/>
@@ -71,8 +70,6 @@
 			<resource uri="/system/workplace/commons/report-potentialbrokenrelations.jsp"/>
 			<resource uri="/system/workplace/commons/report-publishresources.jsp"/>
 			<resource uri="/system/workplace/commons/report-locks.jsp"/>
-			<resource uri="/system/workplace/commons/report-potentialbrokenrelations.jsp"/>
-			<resource uri="/system/workplace/commons/report-publishresources.jsp"/>
 			<resource uri="/system/workplace/commons/report-deleted.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/show_deleted.jsp"/>
@@ -109,7 +106,12 @@
 			<resource uri="/system/workplace/resources/explorer/"/>
 			<resource uri="/system/workplace/resources/tree/"/>
 			<resource uri="/system/workplace/views/explorer/"/>
-			<resource uri="/system/workplace/explorer/"/>
+			<resource uri="/system/workplace/explorer/categories/"/>
+			<resource uri="/system/workplace/explorer/history/"/>
+			<resource uri="/system/workplace/explorer/linkrelation/"/>
+			<resource uri="/system/workplace/explorer/search/"/>
+			<resource uri="/system/workplace/explorer/sibling/"/>
+			<resource uri="/system/workplace/explorer/readme.txt"/>
 			<resource uri="/system/workplace/resources/tools/ex_history/"/>
 		</resources>
 		<parameters/>
