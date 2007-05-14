@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/11/08 09:28:51 $
- * Version: $Revision: 1.24.4.9 $
+ * Date   : $Date: 2007/05/14 12:19:37 $
+ * Version: $Revision: 1.24.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.9 $ 
+ * @version $Revision: 1.24.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,6 @@ public final class CmsFileUtil {
         return result.toString();
     }
 
-
     /**
      * Returns the extension of a resource.<p>
      * 
@@ -219,7 +218,7 @@ public final class CmsFileUtil {
      * @return the extension of a resource
      */
     public static String getExtension(String resourceName) {
-    
+
         // if the resource name indicates a folder
         if (resourceName.endsWith("/")) {
             // folders have no extensions
@@ -255,7 +254,7 @@ public final class CmsFileUtil {
 
         // TODO: remove this method and replace it by #getExtension(String)
         int todo;
-        
+
         int pos = filename.lastIndexOf('.');
         return (pos >= 0) ? filename.substring(pos).toLowerCase() : "";
     }
@@ -661,7 +660,7 @@ public final class CmsFileUtil {
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource name is indirectly contained because a parent folder name is contained
                 String check = (String)result.get(j);
-                if (CmsResource.isFolder(check) && resourcename.startsWith(check)) {
+                if ((CmsResource.isFolder(check) && resourcename.startsWith(check)) || resourcename.equals(check)) {
                     valid = false;
                     break;
                 }
@@ -707,7 +706,7 @@ public final class CmsFileUtil {
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource is indirectly contained because a parent folder is contained
                 CmsResource check = (CmsResource)result.get(j);
-                if (check.isFolder() && resource.getRootPath().startsWith(check.getRootPath())) {
+                if ((check.isFolder() && resource.getRootPath().startsWith(check.getRootPath())) || resource.getRootPath().equals(check.getRootPath())) {
                     valid = false;
                     break;
                 }
