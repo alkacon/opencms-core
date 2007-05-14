@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/05/03 13:48:50 $
- * Version: $Revision: 1.37.4.22 $
+ * Date   : $Date: 2007/05/14 09:57:29 $
+ * Version: $Revision: 1.37.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.List;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.22 $ 
+ * @version $Revision: 1.37.4.23 $ 
  * 
  * @since 6.0.0 
  * 
@@ -219,8 +219,7 @@ public final class CmsLockManager {
             // if there is no parent lock, this will be the null lock as well
             lock = getParentLock(resource.getRootPath());
         }
-        if (lock.getSystemLock().isPublish()
-            || (!lock.isLockableBy(dbc.currentUser()))) {
+        if (!lock.getSystemLock().isUnlocked()) {
             lock = lock.getSystemLock();
         } else {
             lock = lock.getEditionLock();

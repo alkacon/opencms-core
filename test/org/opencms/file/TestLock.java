@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2007/02/21 14:27:09 $
- * Version: $Revision: 1.20.4.8 $
+ * Date   : $Date: 2007/05/14 09:57:29 $
+ * Version: $Revision: 1.20.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.8 $
+ * @version $Revision: 1.20.4.9 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -83,6 +83,7 @@ public class TestLock extends OpenCmsTestCase {
         suite.setName(TestLock.class.getName());
 
         suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
+        suite.addTest(new TestLock("testLockOtherUser"));
         suite.addTest(new TestLock("testLockForFile"));
         suite.addTest(new TestLock("testLockForFolder"));
         suite.addTest(new TestLock("testLockForFolderPrelockedShared"));
@@ -504,6 +505,41 @@ public class TestLock extends OpenCmsTestCase {
         // now the destination should have a shared lock
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, destination, CmsLockType.SHARED_EXCLUSIVE);
+    }
+
+    /**
+     * Tests a lock set by other user.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockOtherUser() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing a lock set by other user");
+
+        String source = "/folder1/image1.gif";
+
+        // get the offline project
+        CmsProject offlineProject = cms.readProject("Offline");
+
+        // login as user "test1"
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        // now lock the resource
+        cms.lockResource(source);
+
+        // make sure the file has an exclusive lock
+        assertLock(cms, source, CmsLockType.EXCLUSIVE);
+
+        // login back as admin
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        CmsUser test1 = cms.readUser("test1");
+
+        // make sure the file has still an exclusive lock on the test user
+        assertLock(cms, source, CmsLockType.EXCLUSIVE, test1);
     }
 
     /**
