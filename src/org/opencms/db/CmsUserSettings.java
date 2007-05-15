@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/05/14 09:57:15 $
- * Version: $Revision: 1.36.4.25 $
+ * Date   : $Date: 2007/05/15 10:36:08 $
+ * Version: $Revision: 1.36.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.25 $
+ * @version $Revision: 1.36.4.26 $
  * 
  * @since 6.0.0
  */
@@ -756,8 +756,15 @@ public class CmsUserSettings {
             m_workplaceButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceButtonStyle();
         }
         // worplace timewarp setting
+        Object timeWarpObj = m_user.getAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         try {
-            m_timeWarp = ((Long)m_user.getAdditionalInfo(ADDITIONAL_INFO_TIMEWARP)).longValue();
+            m_timeWarp = ((Long)timeWarpObj).longValue();
+        } catch (ClassCastException e) {
+            try {
+                m_timeWarp = Long.parseLong((String)timeWarpObj);
+            } catch (Throwable t) {
+                m_timeWarp = CmsContextInfo.CURRENT_TIME;
+            }
         } catch (Throwable t) {
             m_timeWarp = CmsContextInfo.CURRENT_TIME;
         }
