@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/05/11 12:48:46 $
- * Version: $Revision: 1.76.4.16 $
+ * Date   : $Date: 2007/05/15 14:18:14 $
+ * Version: $Revision: 1.76.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.76.4.16 $ 
+ * @version $Revision: 1.76.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
+
+    /** The customized workplace foot. */
+    private CmsWorkplaceCustomFoot m_customFoot;
 
     /** The default acces for explorer types. */
     private CmsExplorerTypeAccess m_defaultAccess;
@@ -259,6 +262,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_multiContextMenu.setMultiMenu(true);
         m_preEditorConditionDefinitions = new ArrayList();
         m_editorCssHandlers = new ArrayList();
+        m_customFoot = new CmsWorkplaceCustomFoot();
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -471,6 +475,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 break;
             default: // no operation
         }
+    }
+
+    /**
+     * Returns the customized workplace foot.<p>
+     * 
+     * @return the customized workplace foot
+     */
+    public CmsWorkplaceCustomFoot getCustomFoot() {
+
+        return m_customFoot;
     }
 
     /**
@@ -1121,6 +1135,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 m_autoLockResources ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
+    }
+
+    /**
+     * Sets the customized workplace foot.<p>
+     * 
+     * @param footCustom the customized workplace foot
+     */
+    public void setCustomFoot(CmsWorkplaceCustomFoot footCustom) {
+
+        m_customFoot = footCustom;
     }
 
     /**

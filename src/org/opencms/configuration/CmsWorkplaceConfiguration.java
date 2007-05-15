@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/05/11 12:48:46 $
- * Version: $Revision: 1.40.4.24 $
+ * Date   : $Date: 2007/05/15 14:18:14 $
+ * Version: $Revision: 1.40.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceCustomFoot;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
 import org.opencms.workplace.CmsWorkplaceUserInfoEntry;
@@ -70,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.24 $
+ * @version $Revision: 1.40.4.25 $
  * 
  * @since 6.0.0
  */
@@ -106,6 +107,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The "reference" attribute. */
     public static final String A_REFERENCE = "reference";
 
+    /** The "replace" attribute. */
+    public static final String A_REPLACE = "replace";
+
     /** The "rule" attribute. */
     public static final String A_RULE = "rule";
 
@@ -139,8 +143,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the autolock node. */
     public static final String N_AUTOLOCK = "autolock";
 
+    /** The name of the background color node. */
+    public static final String N_BACKGROUNDCOLOR = "background-color";
+
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
+
+    /** The name of the color node. */
+    public static final String N_COLOR = "color";
 
     /** The name of the context menu node. */
     public static final String N_CONTEXTMENU = "contextmenu";
@@ -394,6 +404,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the state column node. */
     public static final String N_STATE = "show-state";
 
+    /** The name of the text node. */
+    public static final String N_TEXT = "text";
+
     /** The node name of the title column node. */
     public static final String N_TITLE = "show-title";
 
@@ -426,6 +439,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the master workplace node. */
     public static final String N_WORKPLACE = "workplace";
+
+    /** The name of the workplace custom foot node. */
+    public static final String N_WORKPLACECUSTOMFOOT = "workplace-customfoot";
 
     /** The node name of the workplace general options node. */
     public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
@@ -760,7 +776,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORACTION, A_CLASS, CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EDITORACTION, "setEditorAction");
 
-        // add rules for editor acss handler classes
+        // add rules for editor css handler classes
         digester.addCallMethod(
             "*/" + N_WORKPLACE + "/" + N_EDITORCSSHANDLERS + "/" + N_EDITORCSSHANDLER,
             "addEditorCssHandler",
@@ -814,17 +830,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
 
         // add fileViewSettings rules
-        digester.addObjectCreate("*/" + N_RFSFILEVIEWESETTINGS, CmsRfsFileViewer.class);
-        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_FILEPATH);
-        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_ENABLED);
-        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_FILEENCODING);
-        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_ISLOGFILE);
-        digester.addBeanPropertySetter("*/" + N_RFSFILEVIEWESETTINGS + "/" + N_WINDOWSIZE);
+        String xPathPrefix = "*/" + N_RFSFILEVIEWESETTINGS;
+        digester.addObjectCreate(xPathPrefix, CmsRfsFileViewer.class);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEPATH);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_ENABLED);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEENCODING);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_ISLOGFILE);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_WINDOWSIZE);
 
         // Cms specific rule similar to SetNextRule with implicit first CmsObject argument (remains null). 
-        digester.addRule("*/" + N_RFSFILEVIEWESETTINGS, new CmsSetNextRule(
-            "setFileViewSettings",
-            CmsRfsFileViewer.class));
+        digester.addRule(xPathPrefix, new CmsSetNextRule("setFileViewSettings", CmsRfsFileViewer.class));
 
         // add explorer type rules
         addExplorerTypeXmlRules(digester);
@@ -834,6 +849,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         addUserInfoRules(digester);
         addDefaultPreferencesRules(digester);
+
+        // the customized workplace foot
+        xPathPrefix = "*/" + N_WORKPLACE + "/" + N_WORKPLACECUSTOMFOOT;
+        digester.addObjectCreate(xPathPrefix, CmsWorkplaceCustomFoot.class);
+        digester.addCallMethod(xPathPrefix + "/" + N_BACKGROUNDCOLOR, "setBackgroundColor", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_COLOR, "setColor", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_TEXT, "setText", 2);
+        digester.addCallParam(xPathPrefix + "/" + N_TEXT, 0);
+        digester.addCallParam(xPathPrefix + "/" + N_TEXT, 1, A_REPLACE);
+        digester.addSetNext(xPathPrefix, "setCustomFoot");
+
         addToolManagerRules(digester);
     }
 
@@ -1224,6 +1250,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             editor.addAttribute(A_TYPE, type);
             editor.addAttribute(A_VALUE, value);
         }
+        
+        if (m_workplaceManager.getCustomFoot() != null) {
+            // add the <workplace-footcustom> node
+            Element workplaceFootCustom = workplaceElement.addElement(N_WORKPLACECUSTOMFOOT);
+            workplaceFootCustom.addElement(N_COLOR).setText(m_workplaceManager.getCustomFoot().getColor());
+            workplaceFootCustom.addElement(N_BACKGROUNDCOLOR).setText(m_workplaceManager.getCustomFoot().getBackgroundColor());
+            Element textElement = workplaceFootCustom.addElement(N_TEXT);
+            textElement.addAttribute(A_REPLACE, Boolean.toString(m_workplaceManager.getCustomFoot().isReplaceDefault()));
+            textElement.setText(m_workplaceManager.getCustomFoot().getText());
+        }        
 
         // add the tool-manager node
         Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);

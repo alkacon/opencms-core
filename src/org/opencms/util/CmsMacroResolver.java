@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2007/03/01 15:01:33 $
- * Version: $Revision: 1.18.4.8 $
+ * Date   : $Date: 2007/05/15 14:18:14 $
+ * Version: $Revision: 1.18.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.8 $ 
+ * @version $Revision: 1.18.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +81,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specify the country of the current user as macro value. */
     public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
 
+    /** Key used to specify the display name of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_DISPLAYNAME = "currentuser.displayname";
+
     /** Key used to specify the email address of the current user as macro value. */
     public static final String KEY_CURRENT_USER_EMAIL = "currentuser.email";
 
@@ -89,6 +92,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the full name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_FULLNAME = "currentuser.fullname";
+
+    /** Key used to specify the last login date of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_LASTLOGIN = "currentuser.lastlogin";
 
     /** Key used to specify the last name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_LASTNAME = "currentuser.lastname";
@@ -145,7 +151,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding"};
+    static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding", "remoteaddress"};
 
     /** The "magic" commands wrapped in a List. */
     public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
@@ -241,7 +247,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 }
             }
         }
-        return "" + I_CmsMacroResolver.MACRO_DELIMITER
+        return ""
+            + I_CmsMacroResolver.MACRO_DELIMITER
             + I_CmsMacroResolver.MACRO_START
             + CmsMacroResolver.KEY_LOCALIZED_PREFIX
             + keyName
@@ -559,6 +566,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         // default.encoding
                         value = OpenCms.getSystemInfo().getDefaultEncoding();
                         break;
+                    case 4:
+                        // remoteaddress
+                        value = m_cms.getRequestContext().getRemoteAddress();
+                        break;
                     default:
                         // return the key "as is"
                         value = originalKey;
@@ -581,6 +592,21 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_LASTNAME.equals(macro)) {
                 // the key is the current users last name
                 return m_cms.getRequestContext().currentUser().getLastname();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_DISPLAYNAME.equals(macro)) {
+                // the key is the current users display name
+                try {
+                    if (m_messages != null) {
+                        return m_cms.getRequestContext().currentUser().getDisplayName(m_cms, m_messages.getLocale());
+                    } else {
+                        return m_cms.getRequestContext().currentUser().getDisplayName(
+                            m_cms,
+                            m_cms.getRequestContext().getLocale());
+                    }
+                } catch (CmsException e) {
+                    // ignore, macro can not be resolved
+                }
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_FULLNAME.equals(macro)) {
@@ -611,6 +637,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
                 return m_cms.getRequestContext().currentUser().getCity();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && m_messages != null) {
+                // the key is the current users last login timestamp
+                return m_messages.getDateTime(m_cms.getRequestContext().currentUser().getLastlogin());
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {

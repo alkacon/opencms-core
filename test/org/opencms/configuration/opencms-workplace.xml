@@ -725,6 +725,11 @@
         </editors-preferrededitors>
       </editors-preferences>
     </default-preferences>
+    <workplace-customfoot>
+    	<color>InfoText</color>
+    	<background-color>InfoBackground</background-color>
+    	<text replace="true">[Custom] (%(key.GUI_LABEL_USER_0) %(currentuser.name))</text>
+    </workplace-customfoot>
     <tool-manager>
       <roots>
         <root>

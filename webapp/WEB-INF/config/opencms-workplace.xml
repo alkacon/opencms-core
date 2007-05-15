@@ -732,6 +732,11 @@
         </editors-preferrededitors>
       </editors-preferences>
     </default-preferences>
+    <workplace-customfoot>
+    	<color></color>
+    	<background-color></background-color>
+    	<text replace="false"></text>
+    </workplace-customfoot>
     <tool-manager>
       <roots>
         <root>
