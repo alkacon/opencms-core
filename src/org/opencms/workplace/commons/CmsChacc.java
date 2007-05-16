@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/03/15 16:30:41 $
- * Version: $Revision: 1.24.4.11 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.24.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.11 $ 
+ * @version $Revision: 1.24.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -596,7 +596,7 @@ public class CmsChacc extends CmsDialog {
             if (entry.getKey() instanceof I_CmsPrincipal) {
                 I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
                 if (principal instanceof CmsGroup) {
-                    name = principal.getDescription() + " (" + principal.getSimpleName() + ")";
+                    name = ((CmsGroup)principal).getDescription(getLocale()) + " (" + principal.getSimpleName() + ")";
                     image = "commons/group.png";
                 } else {
                     name = ((CmsUser)principal).getFullName();
@@ -1354,7 +1354,7 @@ public class CmsChacc extends CmsDialog {
         String ou = null;
         if (principal instanceof CmsGroup) {
             name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
-                principal.getDescription(),
+                ((CmsGroup)principal).getDescription(getLocale()),
                 principal.getSimpleName()});
             ou = CmsOrganizationalUnit.getParentFqn(id);
         } else if (principal instanceof CmsUser) {

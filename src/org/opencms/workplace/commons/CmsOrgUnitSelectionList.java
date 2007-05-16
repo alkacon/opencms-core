@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -217,7 +217,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
             CmsListItem item = getList().newItem(orgUnit.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, orgUnit.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, orgUnit.getDescription(getLocale()));
             item.set(LIST_COLUMN_PATH, CmsOrganizationalUnit.SEPARATOR + orgUnit.getName());
             ret.add(item);
         }

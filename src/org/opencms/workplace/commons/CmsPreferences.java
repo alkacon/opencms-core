@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/05/03 13:48:55 $
- * Version: $Revision: 1.31.4.12 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.31.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.12 $
+ * @version $Revision: 1.31.4.13 $
  * 
  * @since 6.0.0
  */
@@ -173,7 +173,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name for the explorer file navtext. */
     public static final String PARAM_EXPLORER_FILENAVTEXT = "tabexfilenavtext";
-    
+
     /** Request parameter name for the explorer file permissions. */
     public static final String PARAM_EXPLORER_FILEPERMISSIONS = "tabexfilepermissions";
 
@@ -645,7 +645,7 @@ public class CmsPreferences extends CmsTabDialog {
             startProject = getParamTabWpProject();
 
             for (int i = 0, n = allProjects.size(); i < n; i++) {
-                CmsProject project = (CmsProject)allProjects.get(i);                
+                CmsProject project = (CmsProject)allProjects.get(i);
                 String projectName = project.getSimpleName();
                 if (!singleOu && !project.isOnlineProject()) {
                     try {
@@ -891,7 +891,7 @@ public class CmsPreferences extends CmsTabDialog {
         result.append(key(Messages.GUI_LABEL_DESCRIPTION_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\">");
-        result.append(user.getDescription());
+        result.append(user.getDescription(getLocale()));
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
@@ -1147,7 +1147,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         return isParamEnabled(m_userSettings.showExplorerFileNavText());
     }
-    
+
     /**
      * Returns the "display file permissions" setting.<p>
      * 
@@ -1609,7 +1609,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         m_userSettings.setShowExplorerFileNavText(Boolean.valueOf(value).booleanValue());
     }
-    
+
     /**
      * Sets the "display file permissions" setting.<p>
      * 

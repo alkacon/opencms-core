@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.5.6 
  */
@@ -83,7 +84,7 @@ public class CmsOrganizationalUnit {
         m_flags = flags;
         m_projectId = projectId;
     }
-    
+
     /**
      * Returns the parent fully qualified name.<p>
      * 
@@ -185,11 +186,28 @@ public class CmsOrganizationalUnit {
     /**
      * Returns the description of this organizational unit.<p>
      *
+     * This could return also just a macro, so please use the 
+     * {@link #getDescription(Locale)} method.<p>
+     *
      * @return the description of this organizational unit
      */
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the description of this organizational unit.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the description of this organizational unit
+     */
+    public String getDescription(Locale locale) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setMessages(Messages.get().getBundle(locale));
+        return macroResolver.resolveMacros(m_description);
     }
 
     /**
@@ -203,11 +221,11 @@ public class CmsOrganizationalUnit {
 
         if (getParentFqn() == null) {
             // for the root ou
-            return getDescription();
+            return getDescription(locale);
         }
         return Messages.get().getBundle(locale).key(
             Messages.GUI_ORGUNIT_DISPLAY_NAME_2,
-            getDescription(),
+            getDescription(locale),
             CmsOrganizationalUnit.SEPARATOR + getName());
     }
 
@@ -263,7 +281,7 @@ public class CmsOrganizationalUnit {
      * @return the id of the related default project
      */
     public CmsUUID getProjectId() {
-    
+
         return m_projectId;
     }
 

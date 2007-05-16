@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/04/10 12:26:34 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -671,7 +671,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(">\n");
             html.append(Messages.get().getBundle(m_locale).key(
                 Messages.GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1,
-                m_ou.getDescription()));
+                m_ou.getDescription(getCmsObject().getRequestContext().getLocale())));
             html.append("</div>\n");
         } else if (m_action == ACTION_LOGIN) {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_ALREADY_IN_0));

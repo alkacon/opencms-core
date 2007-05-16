@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/05/03 16:00:22 $
- * Version: $Revision: 1.32.4.19 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.32.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.security.Messages;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -71,7 +72,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.19 $
+ * @version $Revision: 1.32.4.20 $
  * 
  * @since 6.0.0
  * 
@@ -353,6 +354,20 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Returns the description of this organizational unit.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the description of this organizational unit
+     */
+    public String getDescription(Locale locale) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setMessages(Messages.get().getBundle(locale));
+        return macroResolver.resolveMacros((String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION));
+    }
+
+    /**
      * Returns <code>true</code> if this user is disabled.<p>
      *
      * @return <code>true</code> if this user is disabled
@@ -369,10 +384,14 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
 
-        return Messages.get().getBundle(locale).key(
-            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
-            getFullName(),
-            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+        if (OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).size() > 0) {
+            return Messages.get().getBundle(locale).key(
+                Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+                getFullName(),
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+        } else {
+            return getFullName();
+        }
     }
 
     /**
@@ -636,6 +655,18 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Sets the managed flag for this user to the given value.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setManaged(boolean value) {
+
+        if (isManaged() != value) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_MANAGED);
+        }
+    }
+
+    /**
      * Sets the password of this user.<p>
      *
      * @param value the password to set
@@ -648,18 +679,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             throw new CmsIllegalArgumentException(e.getMessageContainer());
         }
         m_password = value;
-    }
-
-    /**
-     * Sets the managed flag for this user to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setManaged(boolean value) {
-
-        if (isManaged() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_MANAGED);
-        }
     }
 
     /**

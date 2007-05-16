@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.19.4.9 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.19.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,11 @@ package org.opencms.file;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.security.Messages;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
+
+import java.util.Locale;
 
 /**
  * A group principal in the OpenCms permission system.<p>
@@ -42,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.9 $
+ * @version $Revision: 1.19.4.10 $
  * 
  * @since 6.0.0 
  * 
@@ -100,6 +104,20 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     public Object clone() {
 
         return new CmsGroup(m_id, m_parentId, m_name, m_description, m_flags);
+    }
+
+    /**
+     * Returns the description of this organizational unit.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the description of this organizational unit
+     */
+    public String getDescription(Locale locale) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setMessages(Messages.get().getBundle(locale));
+        return macroResolver.resolveMacros(m_description);
     }
 
     /**

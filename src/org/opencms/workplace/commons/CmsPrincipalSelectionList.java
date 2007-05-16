@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/16 08:38:38 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -403,12 +403,12 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             if (principal.isUser()) {
                 if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)
                     || principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
-                    item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getDescription());
+                    item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getDescription(getLocale()));
                 } else {
                     item.set(LIST_COLUMN_DESCRIPTION, ((CmsUser)principal).getFullName());
                 }
             } else {
-                item.set(LIST_COLUMN_DESCRIPTION, principal.getDescription());
+                item.set(LIST_COLUMN_DESCRIPTION, ((CmsGroup)principal).getDescription(getLocale()));
             }
             item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
             ret.add(item);
@@ -606,19 +606,23 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         otherOuDetails.setHideAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             */
+            public CmsMessageContainer getHelpText() {
+
+                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0);
+                } else {
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0);
+                }
+            }
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
             }
 
             /**
@@ -634,18 +638,26 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
+            }
+        });
+        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
             public CmsMessageContainer getHelpText() {
 
                 if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
-                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0);
+                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0);
                 } else {
-                    return Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0);
+                    return Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0);
                 }
             }
-        });
-        otherOuDetails.setShowAction(new CmsListIndependentAction(LIST_DETAIL_OTHEROU) {
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
@@ -653,14 +665,6 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
-            }
-
-            /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
-             */
-            public boolean isVisible() {
-
-                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
             }
 
             /**
@@ -676,15 +680,11 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
 
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
-            public CmsMessageContainer getHelpText() {
+            public boolean isVisible() {
 
-                if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
-                    return Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_OTHEROU_HELP_0);
-                } else {
-                    return Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_OTHEROU_HELP_0);
-                }
+                return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
             }
         });
         otherOuDetails.setName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0));
