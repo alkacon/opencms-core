@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/14 13:10:15 $
- * Version: $Revision: 1.570.2.87 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.570.2.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1645,7 +1645,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     unlockResource(dbc, newResource, true, false);
                 }
                 // resource does not exist.
-                newResource = m_vfsDriver.createResource(dbc, dbc.currentProject(), newResource, content);
+                newResource = m_vfsDriver.createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
             } else {
                 // lock the original resource
                 lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
@@ -1655,7 +1655,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
                 int updateStates = (overwrittenResource.getState().isNew() ? CmsDriverManager.NOTHING_CHANGED
                 : CmsDriverManager.UPDATE_ALL);
-                m_vfsDriver.writeResource(dbc, dbc.currentProject(), newResource, updateStates);
+                m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required                    
@@ -2257,7 +2257,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     currentFile,
                     CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 // delete the file
-                m_vfsDriver.removeFile(dbc, dbc.currentProject(), currentFile);
+                m_vfsDriver.removeFile(dbc, dbc.currentProject().getUuid(), currentFile);
                 // remove the access control entries
                 m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), currentFile.getResourceId());
                 // fire the corresponding event
@@ -2583,7 +2583,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             flags &= ~CmsResource.FLAG_LABELED;
                             currentResource.setFlags(flags);
                         }
-                        m_vfsDriver.removeFile(dbc, dbc.currentProject(), currentResource);
+                        m_vfsDriver.removeFile(dbc, dbc.currentProject().getUuid(), currentResource);
                     }
 
                     // ensure an exclusive lock is removed in the lock manager for a deleted new resource,
@@ -2648,11 +2648,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int linkType,
         String linkParameter) throws CmsException {
 
-        m_projectDriver.deleteStaticExportPublishedResource(
-            dbc,
-            resourceName,
-            linkType,
-            linkParameter);
+        m_projectDriver.deleteStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter);
     }
 
     /**
@@ -3777,7 +3773,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
-        return m_vfsDriver.readRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
+        return m_vfsDriver.readRelations(dbc, dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid()
+        : dbc.getProjectId(), resource, filter);
     }
 
     /**
@@ -4164,7 +4161,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             boolean isInside = false;
             boolean isOutside = false;
             // check if one of the other vfs links lies in a labeled site folder
-            List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject(), resource, false);
+            List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject().getUuid(), resource, false);
             updateContextDates(dbc, siblings);
             Iterator i = siblings.iterator();
             while (i.hasNext() && (!isInside || !isOutside)) {
@@ -5987,7 +5984,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // please note: the filter will be applied in the security manager later
         CmsResource resource = m_vfsDriver.readResource(
             dbc,
-            dbc.currentProject().getUuid(),
+            dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId(),
             structureID,
             filter.includeDeleted());
 
@@ -6019,7 +6016,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // please note: the filter will be applied in the security manager later
         CmsResource resource = m_vfsDriver.readResource(
             dbc,
-            dbc.currentProject().getUuid(),
+            dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId(),
             resourcePath,
             filter.includeDeleted());
 
@@ -6241,7 +6238,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readSiblings(CmsDbContext dbc, CmsResource resource, CmsResourceFilter filter) throws CmsException {
 
-        List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject(), resource, filter.includeDeleted());
+        List siblings = m_vfsDriver.readSiblings(dbc, dbc.currentProject().getUuid(), resource, filter.includeDeleted());
 
         // important: there is no permission check done on the returned list of siblings
         // this is because of possible issues with the "publish all siblings" option,
@@ -6646,9 +6643,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // check the name
         String path = CmsResource.getParentFolder(histRes.getResource().getRootPath()); // path
-        String resName = CmsResource.getName(histRes.getResource().getRootPath());      // name
-        String ext = CmsFileUtil.getExtension(resName);                                 // extension
-        String nameWOExt = resName.substring(0, resName.length() - ext.length() - 1);   // name without extension
+        String resName = CmsResource.getName(histRes.getResource().getRootPath()); // name
+        String ext = CmsFileUtil.getExtension(resName); // extension
+        String nameWOExt = resName.substring(0, resName.length() - ext.length() - 1); // name without extension
         boolean nameOk = false;
         int i = 1;
         while (!nameOk) {
@@ -7543,7 +7540,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
+        m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         long contentModificationDate = m_vfsDriver.writeContent(
             dbc,
@@ -7831,7 +7828,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // access was granted - write the resource
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
+        m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         // make sure the written resource has the state correctly set
         if (resource.getState().isUnchanged()) {
@@ -7866,12 +7863,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String linkParameter,
         long timestamp) throws CmsException {
 
-        m_projectDriver.writeStaticExportPublishedResource(
-            dbc,
-            resourceName,
-            linkType,
-            linkParameter,
-            timestamp);
+        m_projectDriver.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
     }
 
     /**
@@ -8801,7 +8793,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             restoredFolder.setDateLastModified(onlineResource.getDateLastModified());
 
             // write the folder
-            m_vfsDriver.writeResource(dbc, dbc.currentProject(), restoredFolder, NOTHING_CHANGED);
+            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), restoredFolder, NOTHING_CHANGED);
 
             // restore the properties from the online project
             m_vfsDriver.deletePropertyObjects(
@@ -9040,10 +9032,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         resource.setUserLastModified(dbc.currentUser().getId());
         if (resourceState) {
             // update the whole resource state
-            m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_STATE);
+            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
         } else {
             // update the structure state
-            m_vfsDriver.writeResource(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE_STATE);
+            m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_STRUCTURE_STATE);
         }
     }
 

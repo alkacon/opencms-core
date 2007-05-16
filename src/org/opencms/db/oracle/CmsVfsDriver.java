@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/16 08:35:17 $
- * Version: $Revision: 1.36.8.7 $
+ * Date   : $Date: 2007/05/16 15:33:07 $
+ * Version: $Revision: 1.36.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,12 +56,22 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.7 $
+ * @version $Revision: 1.36.8.8 $
  * 
  * @since 6.0.0 
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
+    /**
+     * @see org.opencms.db.generic.CmsVfsDriver#createOnlineContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[], int, boolean)
+     */
+    public void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline) throws CmsDataAccessException {
+    
+        // TODO Auto-generated method stub
+        int todo;
+        super.createOnlineContent(dbc, resourceId, contents, publishTag, keepOnline);
+    }
+    
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
      */
@@ -72,7 +82,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
                 // put the online content in the history
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ONLINE_CONTENTS_HISTORY");
@@ -104,21 +114,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.generic.CmsVfsDriver#createOnlineContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[], int, boolean)
-     */
-    public void createOnlineContent(
-        CmsDbContext dbc,
-        CmsUUID resourceId,
-        byte[] contents,
-        int publishTag,
-        boolean keepOnline) throws CmsDataAccessException {
-
-        // TODO Auto-generated method stub
-        int todo;
-        super.createOnlineContent(dbc, resourceId, contents, publishTag, keepOnline);
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#initSqlManager(String)
      */
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
@@ -140,7 +135,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         boolean wasInTransaction = false;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_OFFLINE_CONTENTS_UPDATECONTENT");
             } else {
@@ -232,7 +227,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         // update the content modification date
         long time = System.currentTimeMillis();
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
             stmt.setLong(1, time);
             stmt.setString(2, resourceId.toString());

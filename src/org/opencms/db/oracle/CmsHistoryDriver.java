@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/16 08:35:16 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.9.1
  */
@@ -76,7 +76,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_PROJECTS_READLAST_HISTORY");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();

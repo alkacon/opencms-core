@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/16 08:35:17 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.9.1
  */
@@ -107,7 +107,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_HISTORY");
             stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
@@ -136,7 +136,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             // get the maximal version number for this resource
             int maxVersion = -1;
@@ -237,7 +237,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         Map entries = new HashMap();
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             // get all historical entries that may come in question
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_READALL");
@@ -272,7 +272,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         Map entries = new HashMap();
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             // get all historical entries that may come in question
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_READ_DELETED");
@@ -314,7 +314,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
 
             // delete the historical property definition
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE_HISTORY");
             stmt.setString(1, metadef.getId().toString());
             stmt.executeUpdate();
@@ -412,7 +412,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             int publishTag = -1;
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_READ_MIN_PUBLISH_TAG");
@@ -453,7 +453,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         byte[] content = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_CONTENT");
             stmt.setString(1, structureId.toString());
             stmt.setInt(2, version);
@@ -484,7 +484,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         List result = new ArrayList();
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             if (userId == null) {
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_DELETED");
             } else {
@@ -529,7 +529,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_HISTORY_BYID");
             stmt.setString(1, structureId.toString());
             stmt.setInt(2, tagId);
@@ -567,7 +567,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int lastVersion = 0;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER");
             stmt.setString(1, structureId.toString());
             res = stmt.executeQuery();
@@ -599,7 +599,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int result = 0;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_PUBLISH_TAG");
             stmt.setString(1, resource.getResourceId().toString());
             res = stmt.executeQuery();
@@ -631,7 +631,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         try {
             // get the max version id
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_MAXTAG");
             res = stmt.executeQuery();
 
@@ -671,7 +671,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         CmsHistoryPrincipal historyPrincipal = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_READ");
             stmt.setString(1, principalId.toString());
             res = stmt.executeQuery();
@@ -711,7 +711,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ");
 
             stmt.setInt(1, publishTag);
@@ -746,7 +746,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         List projectResources = new ArrayList();
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_HISTORY_READ");
             stmt.setInt(1, publishTag);
             res = stmt.executeQuery();
@@ -776,7 +776,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ_ALL");
             res = stmt.executeQuery();
 
@@ -812,7 +812,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Map propertyMap = new HashMap();
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_READALL");
             stmt.setString(1, resource.getResource().getStructureId().toString());
             stmt.setString(2, resource.getResource().getResourceId().toString());
@@ -891,7 +891,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_READ_HISTORY");
             stmt.setString(1, name);
             res = stmt.executeQuery();
@@ -928,7 +928,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int maxVersion = 0;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ_TAG_FOR_DATE");
             stmt.setLong(1, maxdate);
             res = stmt.executeQuery();
@@ -957,7 +957,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_VERSION");
             stmt.setString(1, structureId.toString());
             stmt.setInt(2, version);
@@ -991,7 +991,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
             stmt.setString(1, principal.getId().toString());
             stmt.setString(2, principal.getSimpleName());
@@ -1031,7 +1031,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_CREATE");
             // first write the project
@@ -1080,7 +1080,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
@@ -1134,8 +1134,12 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#writeResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, int, int)
      */
-    public void writeResource(CmsDbContext dbc, CmsResource resource, List properties, int publishTag, int maxVersions)
-    throws CmsDataAccessException {
+    public void writeResource(
+        CmsDbContext dbc,
+        CmsResource resource,
+        List properties,
+        int publishTag,
+        int maxVersions) throws CmsDataAccessException {
 
         int todo; // remove maxVersions param
 
@@ -1146,7 +1150,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int resourceVersion = -1;
         int structureVersion = -1;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_RESOURCES_READ_VERSIONS");
             stmt.setString(1, resource.getStructureId().toString());
@@ -1331,7 +1335,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int returnValue;
         try {
             // create statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL_COUNT");
             stmt.setString(1, metadef.getId().toString());
             res = stmt.executeQuery();
@@ -1476,7 +1480,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         // first get all history ids of the entries which should be deleted
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             // we have all the nescessary information, so we can delete the old historical entries
             stmt1 = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_DELETE_STRUCTURE_BYHISTORYID");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_DELETE_RESOURCES_BYHISTORYID");
@@ -1535,7 +1539,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         boolean exists = false;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_EXISTS_RESOURCE");
             stmt.setString(1, resource.getResourceId().toString());
             stmt.setInt(2, publishTag);

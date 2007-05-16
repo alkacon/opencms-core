@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/16 08:35:17 $
- * Version: $Revision: 1.241.4.32 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.241.4.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobInfoBean;
-import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -99,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.32 $
+ * @version $Revision: 1.241.4.33 $
  * 
  * @since 6.0.0 
  */
@@ -139,7 +138,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // get a JDBC connection from the OpenCms standard pool
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_CREATE_10");
 
             stmt.setString(1, id.toString());
@@ -213,7 +212,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
 
         try {
-            conn = getSqlManager().getConnection();
+            conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_CREATE_2");
 
             // write new resource to the database
@@ -239,7 +238,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_CREATE");
             stmt.setString(1, publishJob.getPublishHistoryId().toString());
             stmt.setString(2, publishJob.getProjectId().toString());
@@ -283,7 +282,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, linkType);
             stmt.executeUpdate();
@@ -311,7 +310,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_DELETE_1");
             // create the statement
             stmt.setString(1, project.getUuid().toString());
@@ -334,7 +333,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETE_2");
             // delete resource from the database
             stmt.setString(1, projectId.toString());
@@ -358,7 +357,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL_1");
             stmt.setString(1, project.getUuid().toString());
             stmt.executeUpdate();
@@ -381,7 +380,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_DELETE_PUBLISH_HISTORY");
             stmt.setInt(1, maxpublishTag);
             stmt.executeUpdate();
@@ -406,7 +405,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PUBLISH_HISTORY_ENTRY");
             stmt.setString(1, publishHistoryId.toString());
             stmt.setInt(2, publishedResource.getPublishTag());
@@ -431,7 +430,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_DELETE");
             stmt.setString(1, publishHistoryId.toString());
             stmt.executeUpdate();
@@ -453,7 +452,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_DELETE_PUBLISHLIST");
             stmt.setString(1, publishHistoryId.toString());
             stmt.executeUpdate();
@@ -479,7 +478,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_LINKS");
             stmt.setString(1, resourceName);
             stmt.setInt(2, linkType);
@@ -570,11 +569,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsResource.DATE_EXPIRED_DEFAULT,
             0);
 
-        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, rootFolder, null);
+        m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), rootFolder, null);
 
         rootFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, rootFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject.getUuid(), rootFolder, CmsDriverManager.UPDATE_ALL);
 
         // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver().createProjectResource(dbc, onlineProject.getUuid(), rootFolder.getRootPath());
@@ -596,11 +595,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsResource.DATE_EXPIRED_DEFAULT,
             0);
 
-        m_driverManager.getVfsDriver().createResource(dbc, onlineProject, systemFolder, null);
+        m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), systemFolder, null);
 
         systemFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject, systemFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject.getUuid(), systemFolder, CmsDriverManager.UPDATE_ALL);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -621,13 +620,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // create the root-folder for the offline project       
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
             dbc,
-            setupProject,
+            setupProject.getUuid(),
             rootFolder,
             null);
 
         offlineRootFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, setupProject, offlineRootFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(dbc, setupProject.getUuid(), offlineRootFolder, CmsDriverManager.UPDATE_ALL);
 
         // important: must access through driver manager to ensure proper cascading        
         m_driverManager.getProjectDriver().createProjectResource(
@@ -638,7 +637,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // create the system-folder for the offline project       
         CmsResource offlineSystemFolder = m_driverManager.getVfsDriver().createResource(
             dbc,
-            setupProject,
+            setupProject.getUuid(),
             systemFolder,
             null);
 
@@ -646,7 +645,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_driverManager.getVfsDriver().writeResource(
             dbc,
-            setupProject,
+            setupProject.getUuid(),
             offlineSystemFolder,
             CmsDriverManager.UPDATE_ALL);
     }
@@ -1038,14 +1037,18 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int publishTag) throws CmsDataAccessException {
 
         CmsFile newFile = null;
+        
         try {
             // read the file content offline
+            CmsUUID projectId = dbc.getProjectId();
+            dbc.setProjectId(CmsUUID.getNullUUID());
             byte[] offlineContent = m_driverManager.getVfsDriver().readContent(
                 dbc,
                 offlineProject.getUuid(),
                 offlineResource.getResourceId());
             CmsFile offlineFile = new CmsFile(offlineResource);
             offlineFile.setContents(offlineContent);
+            dbc.setProjectId(projectId);
 
             // create the file online              
             newFile = (CmsFile)offlineFile.clone();
@@ -1138,7 +1141,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     CmsResource newFolder = (CmsFolder)offlineFolder.clone();
                     newFolder.setState(CmsResource.STATE_UNCHANGED);
 
-                    onlineFolder = m_driverManager.getVfsDriver().createResource(dbc, onlineProject, newFolder, null);
+                    onlineFolder = m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), newFolder, null);
                 } catch (CmsVfsResourceAlreadyExistsException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(
@@ -1183,7 +1186,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     try {
                         onlineFolder = m_driverManager.getVfsDriver().createResource(
                             dbc,
-                            onlineProject,
+                            onlineProject.getUuid(),
                             offlineFolder,
                             null);
                         internalResetResourceState(dbc, onlineFolder);
@@ -1263,7 +1266,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishTag,
                 maxVersions);
 
-            updateRelations(dbc, onlineProject, offlineFolder);
+            m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineFolder);
 
             report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -1540,7 +1543,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
         List locks = new ArrayList(256);
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_READALL");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -1584,7 +1587,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_1");
 
             stmt.setString(1, id.toString());
@@ -1619,7 +1622,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYNAME_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(projectFqn));
@@ -1656,7 +1659,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String resName = null;
 
         try {
-            conn = getSqlManager().getConnection();
+            conn = getSqlManager().getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_2");
 
             // select resource from the database
@@ -1692,7 +1695,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List result = new ArrayList();
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_BY_ID_1");
             stmt.setString(1, project.getUuid().toString());
             res = stmt.executeQuery();
@@ -1723,7 +1726,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYOU_1");
 
             stmt.setString(1, ouFqn + "%");
@@ -1755,7 +1758,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYGROUP_2");
 
             stmt.setString(1, group.getId().toString());
@@ -1787,7 +1790,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYMANAGER_1");
 
             stmt.setString(1, group.getId().toString());
@@ -1818,7 +1821,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYUSER_1");
 
             stmt.setString(1, user.getId().toString());
@@ -1848,7 +1851,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List publishedResources = new ArrayList();
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_SELECT_PUBLISHED_RESOURCES");
             stmt.setString(1, publishHistoryId.toString());
             res = stmt.executeQuery();
@@ -1905,7 +1908,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         CmsPublishJobInfoBean result = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOB");
             stmt.setString(1, publishHistoryId.toString());
             res = stmt.executeQuery();
@@ -1939,7 +1942,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         List result = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_JOBS_IN_TIMERANGE");
             stmt.setLong(1, startTime);
             stmt.setLong(2, endTime);
@@ -1971,7 +1974,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsPublishList publishList = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_PUBLISHLIST");
             stmt.setString(1, publishHistoryId.toString());
             res = stmt.executeQuery();
@@ -2010,7 +2013,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         byte[] bytes = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_READ_REPORT");
             stmt.setString(1, publishHistoryId.toString());
@@ -2049,7 +2052,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_LINK_PARAMETERS");
             stmt.setString(1, rfsName);
             res = stmt.executeQuery();
@@ -2083,7 +2086,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             timestamp = 0;
         }
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, parameterResources);
             stmt.setLong(2, timestamp);
@@ -2113,7 +2116,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UNMARK");
             // create the statement
             stmt.setString(1, project.getUuid().toString());
@@ -2135,7 +2138,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_DELETEALL");
             int deleted = stmt.executeUpdate();
             if (LOG.isDebugEnabled()) {
@@ -2196,7 +2199,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // get a JDBC connection from the OpenCms standard pools
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_WRITE_6");
             stmt.setString(1, project.getDescription());
@@ -2225,7 +2228,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
             stmt.setInt(1, resource.getPublishTag());
             stmt.setString(2, resource.getStructureId().toString());
@@ -2254,7 +2257,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_WRITE");
             stmt.setString(1, publishJob.getProjectId().toString());
             stmt.setString(2, publishJob.getProjectName());
@@ -2285,7 +2288,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_WRITE_REPORT");
 
             if (content.length < 2000) {
@@ -2321,7 +2324,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int returnValue = 0;
         // first check if a record with this resource name does already exist
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_RESOURCES");
             stmt.setString(1, resourceName);
             res = stmt.executeQuery();
@@ -2339,7 +2342,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // there was no entry found, so add it to the database
         if (returnValue == 0) {
             try {
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(dbc);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_WRITE_PUBLISHED_LINKS");
                 stmt.setString(1, new CmsUUID().toString());
                 stmt.setString(2, resourceName);
@@ -2447,6 +2450,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * Creates a new project from the current row of the given result set.<p>
      * 
+     * @param dbc the current database context
      * @param res the result set
      * 
      * @return the new project
@@ -2752,7 +2756,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             publishTag,
             maxVersions);
 
-        updateRelations(dbc, onlineProject, offlineResource);
+        m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineResource);
     }
 
     /**
@@ -2870,7 +2874,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             // remove the file online and offline
-            m_driverManager.getVfsDriver().removeFile(dbc, dbc.currentProject(), offlineResource);
+            m_driverManager.getVfsDriver().removeFile(dbc, dbc.currentProject().getUuid(), offlineResource);
 
             try {
                 m_driverManager.getVfsDriver().readResource(
@@ -2880,7 +2884,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     true);
             } catch (CmsVfsResourceNotFoundException e) {
                 // remove the online file only if it is really deleted offline
-                m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineResource);
+                m_driverManager.getVfsDriver().removeFile(dbc, onlineProject.getUuid(), onlineResource);
             }
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
@@ -2982,7 +2986,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             try {
                 // remove the existing file and ensure that it's content is written 
                 // in any case by removing it's resource ID from the set of published resource IDs
-                m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, offlineResource);
+                m_driverManager.getVfsDriver().removeFile(dbc, onlineProject.getUuid(), offlineResource);
                 publishedContentIds.remove(offlineResource.getResourceId());
                 newFile = m_driverManager.getProjectDriver().publishFileContent(
                     dbc,
@@ -3056,36 +3060,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             publishTag,
             maxVersions);
 
-        updateRelations(dbc, onlineProject, offlineResource);
+        m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineResource);
     }
 
-    /**
-     * Updates the relations on the online project copying the relations from the offline project.<p>
-     * 
-     * @param dbc the current database context
-     * @param onlineProject the online project
-     * @param offlineResource the resource to update the relations for
-     * 
-     * @throws CmsDataAccessException is something goes wrong
-     */
-    protected void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
-    throws CmsDataAccessException {
-
-        // delete online relations
-        m_driverManager.getVfsDriver().deleteRelations(
-            dbc,
-            onlineProject.getUuid(),
-            offlineResource,
-            CmsRelationFilter.TARGETS);
-
-        // copy offline to online relations
-        Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
-            dbc,
-            dbc.currentProject().getUuid(),
-            offlineResource,
-            CmsRelationFilter.TARGETS).iterator();
-        while (itRelations.hasNext()) {
-            m_driverManager.getVfsDriver().createRelation(dbc, onlineProject.getUuid(), (CmsRelation)itRelations.next());
-        }
-    }
 }

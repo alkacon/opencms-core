@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/05/14 12:26:16 $
- * Version: $Revision: 1.90.4.26 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.90.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.26 $
+ * @version $Revision: 1.90.4.27 $
  * 
  * @since 6.0.0
  */
@@ -181,9 +181,6 @@ public class OpenCmsTestCase extends TestCase {
 
     /** The setup connection data. */
     protected static ConnectionData m_setupConnection;
-
-    /** The additional connection name. */
-    private static String m_additionalConnectionName = "additional";
 
     /** The file date of the configuration files. */
     private static long[] m_dateConfigFiles;
@@ -491,6 +488,16 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Should return the additional connection name.<p>
+     * 
+     * @return the name of the additional connection
+     */
+    public String getConnectionName() {
+
+        return "additional";
+    }
+
+    /**
      * Returns the currently used database/configuration.<p>
      * 
      * @return he currently used database/configuration
@@ -605,16 +612,6 @@ public class OpenCmsTestCase extends TestCase {
 
         // turn on exceptions after error logging
         OpenCmsTestLogAppender.setBreakOnError(true);
-    }
-
-    /**
-     * Sets the additional connection name.<p>
-     * 
-     * @param additionalConnectionName the additional connection name
-     */
-    public static void setConnectionName(String additionalConnectionName) {
-
-        m_additionalConnectionName = additionalConnectionName;
     }
 
     /**
@@ -3308,7 +3305,7 @@ public class OpenCmsTestCase extends TestCase {
                 + "."
                 + CmsDbPool.KEY_JDBC_URL_PARAMS);
 
-            key = m_additionalConnectionName;
+            key = getConnectionName();
             if (m_configuration.getString(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
                 m_additionalConnection = new ConnectionData();
                 m_additionalConnection.m_dbName = m_configuration.getString(CmsDbPool.KEY_DATABASE_POOL

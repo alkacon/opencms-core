@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/05/14 09:57:29 $
- * Version: $Revision: 1.37.4.23 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.37.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.List;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.23 $ 
+ * @version $Revision: 1.37.4.24 $ 
  * 
  * @since 6.0.0 
  * 
@@ -748,7 +748,7 @@ public final class CmsLockManager {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // result in an infinite loop, therefore we must access the VFS driver directly
-        List siblings = m_driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
+        List siblings = m_driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject().getUuid(), resource, true);
         siblings.remove(resource);
         return siblings;
     }

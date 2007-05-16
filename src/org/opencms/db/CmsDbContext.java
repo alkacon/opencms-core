@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2007/05/14 13:49:17 $
- * Version: $Revision: 1.14.8.3 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.14.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.8.3 $
+ * @version $Revision: 1.14.8.4 $
  * 
  * @since 6.0.0
  */
@@ -79,6 +79,7 @@ public class CmsDbContext {
     public CmsDbContext(CmsRequestContext context) {
 
         m_requestContext = context;
+        m_projectId = CmsUUID.getNullUUID();
 
         if (m_requestContext != null) {
             m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(CmsRequestUtil.HEADER_LAST_MODIFIED);

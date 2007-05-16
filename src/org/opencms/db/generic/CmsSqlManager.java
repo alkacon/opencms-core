@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/16 08:35:17 $
- * Version: $Revision: 1.65.4.10 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.65.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.10 $
+ * @version $Revision: 1.65.4.11 $
  * 
  * @since 6.0.0 
  */
@@ -216,11 +216,17 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * Use this method to get a connection for reading/writing project independent data.<p>
      * 
+     * @param dbc the current database context
+     * 
      * @return a JDBC connection
      * @throws SQLException if the project id is not supported
      */
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection(CmsDbContext dbc) throws SQLException {
 
+        if (dbc == null) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
+        }
+        
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
         return getConnectionByUrl(m_poolUrl);
     }
@@ -334,7 +340,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     public String readQuery(CmsUUID projectId, String queryKey) {
 
         String key;
-        if (projectId != null) {
+        if ((projectId != null) && !projectId.isNullUUID()) {
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
@@ -364,7 +370,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
             query = CmsStringUtil.substitute(query, "\t", " ");
             query = CmsStringUtil.substitute(query, "\n", " ");
 
-            if (projectId != null) {
+            if ((projectId != null) && !projectId.isNullUUID()) {
                 // a project ID = 0 is an internal indicator that a project-independent 
                 // query was requested - further regex operations are not required then
                 query = CmsSqlManager.replaceProjectPattern(projectId, query);

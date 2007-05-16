@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/14 13:10:16 $
- * Version: $Revision: 1.114.4.15 $
+ * Date   : $Date: 2007/05/16 15:33:08 $
+ * Version: $Revision: 1.114.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.15 $
+ * @version $Revision: 1.114.4.16 $
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline) throws CmsDataAccessException;
+    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new property defintion in the database.<p>
@@ -158,7 +159,7 @@ public interface I_CmsVfsDriver {
      * This method works for both files and folders. Existing resources get overwritten.<p>
      * 
      * @param dbc the current database context
-     * @param project the current project
+     * @param projectId the id of the current project
      * @param resource the resource to be created
      * @param content the file content, or null in case of a folder
      * @return the created Cms resource
@@ -170,7 +171,7 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.file.CmsObject#createResource(String, int, byte[], List)
      * @see org.opencms.file.CmsObject#importResource(String, CmsResource, byte[], List)
      */
-    CmsResource createResource(CmsDbContext dbc, CmsProject project, CmsResource resource, byte[] content)
+    CmsResource createResource(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, byte[] content)
     throws CmsDataAccessException;
 
     /**
@@ -602,7 +603,7 @@ public interface I_CmsVfsDriver {
      * Reads all siblings that point to the resource record of a specified resource.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
+     * @param projectId the id of the current project
      * @param resource the specified resource
      * @param includeDeleted <code>true</code> if deleted siblings should be included in the result list
      * 
@@ -612,19 +613,19 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readSiblings(CmsDbContext dbc, CmsProject currentProject, CmsResource resource, boolean includeDeleted)
+    List readSiblings(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, boolean includeDeleted)
     throws CmsDataAccessException;
 
     /**
      * Removes a file physically in the database.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
+     * @param projectId the id of the current project
      * @param resource the resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void removeFile(CmsDbContext dbc, CmsProject currentProject, CmsResource resource) throws CmsDataAccessException;
+    void removeFile(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Removes a folder physically in the database.<p>
@@ -666,6 +667,18 @@ public interface I_CmsVfsDriver {
         CmsResource resource,
         CmsUUID createdUser,
         CmsUUID lastModifiedUser) throws CmsDataAccessException;
+
+    /**
+     * Updates the relations on the online project copying the relations from the offline project.<p>
+     * 
+     * @param dbc the current database context
+     * @param onlineProject the online project
+     * @param offlineResource the resource to update the relations for
+     * 
+     * @throws CmsDataAccessException is something goes wrong
+     */
+    void updateRelations(CmsDbContext dbc, CmsProject onlineProject, CmsResource offlineResource)
+    throws CmsDataAccessException;
 
     /**
      * Validates if the specified resource ID in the tables of the specified project {offline|online} exists.<p>
@@ -769,7 +782,7 @@ public interface I_CmsVfsDriver {
      * the resource state.<p>
      * 
      * @param dbc the current database context
-     * @param project the current project
+     * @param projectId the id of the current project
      * @param resource the resource to be updated
      * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
      * 
@@ -780,7 +793,7 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#NOTHING_CHANGED
      * @see #writeResourceState(CmsDbContext, CmsProject, CmsResource, int, boolean)
      */
-    void writeResource(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
+    void writeResource(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, int changed)
     throws CmsDataAccessException;
 
     /**
@@ -792,10 +805,10 @@ public interface I_CmsVfsDriver {
      * This method is frequently used while resources are published to set the file state
      * back to "unchanged".<p>
      * 
-     * Only file state attribs. get updated here. Use {@link #writeResource(CmsDbContext, CmsProject, CmsResource, int)}
+     * Only file state attribs. get updated here. Use {@link #writeResource(CmsDbContext, CmsUUID, CmsResource, int)}
      * instead to write the complete file header.<p>
      * 
-     * Please refer to the javadoc of {@link #writeResource(CmsDbContext, CmsProject, CmsResource, int)} to read
+     * Please refer to the javadoc of {@link #writeResource(CmsDbContext, CmsUUID, CmsResource, int)} to read
      * how setting resource state values affects the file state.<p>
      * 
      * @param dbc the current database context
