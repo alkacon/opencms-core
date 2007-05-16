@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/02 16:39:51 $
- * Version: $Revision: 1.55.4.10 $
+ * Date   : $Date: 2007/05/16 08:35:16 $
+ * Version: $Revision: 1.55.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.10 $
+ * @version $Revision: 1.55.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         try {
 
             // get connection
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
 
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERDATA_WRITE_3");
@@ -150,7 +150,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         try {
             // get connection
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
                 conn.setAutoCommit(false);

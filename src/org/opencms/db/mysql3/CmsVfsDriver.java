@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql3/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/14 13:10:15 $
- * Version: $Revision: 1.1.8.3 $
+ * Date   : $Date: 2007/05/16 08:35:17 $
+ * Version: $Revision: 1.1.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.8.3 $
+ * @version $Revision: 1.1.8.4 $
  * @since 6.0.0 
  */
 public class CmsVfsDriver extends org.opencms.db.mysql.CmsVfsDriver {
@@ -71,11 +71,14 @@ public class CmsVfsDriver extends org.opencms.db.mysql.CmsVfsDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             if (value == null) {
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF");
             } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF_VALUE");
+                stmt = m_sqlManager.getPreparedStatement(
+                    conn,
+                    projectId,
+                    "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF_VALUE");
             }
             stmt.setString(1, propertyDef.toString());
             stmt.setString(2, path + "%");

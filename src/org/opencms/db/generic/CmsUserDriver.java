@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/14 13:10:16 $
- * Version: $Revision: 1.110.2.27 $
+ * Date   : $Date: 2007/05/16 08:35:17 $
+ * Version: $Revision: 1.110.2.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.27 $
+ * @version $Revision: 1.110.2.28 $
  * 
  * @since 6.0.0 
  */
@@ -224,7 +224,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE_5");
 
             stmt.setString(1, resource.toString());
@@ -275,7 +275,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 parentId = readGroup(dbc, parentGroupFqn).getId();
             }
 
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_CREATE_GROUP_6");
 
             // write new group to the database
@@ -466,7 +466,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD_10");
 
             stmt.setString(1, id.toString());
@@ -504,7 +504,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         if (!internalValidateUserInGroup(dbc, userId, groupId)) {
             // if not, add this user to the group
             try {
-                conn = getSqlManager().getConnection(dbc);
+                conn = getSqlManager().getConnection();
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADD_USER_TO_GROUP_3");
 
                 // write the new assingment to the database
@@ -533,7 +533,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SET_FLAGS_ALL_2");
 
             stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
@@ -559,7 +559,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_DELETE_GROUP_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
@@ -610,7 +610,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETE_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
@@ -636,7 +636,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_DELETE_1");
 
             stmt.setString(1, userId.toString());
@@ -658,7 +658,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_REMOVE_USER_FROM_GROUP_2");
 
             stmt.setString(1, groupId.toString());
@@ -697,7 +697,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         boolean result = false;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READ_BY_NAME_2");
 
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
@@ -733,7 +733,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         boolean result = false;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_NAME_2");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             stmt.setString(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
@@ -792,7 +792,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         try {
             // create statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatementForSql(conn, sqlQuery);
 
             stmt.setString(1, ouFqn);
@@ -802,7 +802,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms group objects
             while (res.next()) {
-                groups.add(internalCreateGroup(dbc, res));
+                groups.add(internalCreateGroup(res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -907,7 +907,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         try {
             // create statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
 
             String param = CmsOrganizationalUnit.SEPARATOR + orgUnit.getName();
@@ -1024,7 +1024,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // then, we copy the access control entries from the offline project into the online project
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES_1");
 
             stmt.setString(1, offlineId.toString());
@@ -1059,7 +1059,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRIES_1");
 
             String resId = resource.toString();
@@ -1111,7 +1111,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY_2");
 
             stmt.setString(1, resource.toString());
@@ -1157,13 +1157,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // parent group exists, so get all childs
             if (parent != null) {
                 // create statement
-                conn = m_sqlManager.getConnection(dbc);
+                conn = m_sqlManager.getConnection();
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GET_CHILD_1");
                 stmt.setString(1, parent.getId().toString());
                 res = stmt.executeQuery();
                 // create new Cms group objects
                 while (res.next()) {
-                    childs.add(internalCreateGroup(dbc, res));
+                    childs.add(internalCreateGroup(res));
                 }
             }
         } catch (SQLException e) {
@@ -1188,7 +1188,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READ_BY_ID_1");
 
             // read the group from the database
@@ -1196,7 +1196,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(dbc, res);
+                group = internalCreateGroup(res);
             } else {
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_ID_1, groupId);
                 if (LOG.isDebugEnabled()) {
@@ -1227,7 +1227,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READ_BY_NAME_2");
 
             // read the group from the database
@@ -1237,7 +1237,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(dbc, res);
+                group = internalCreateGroup(res);
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
@@ -1287,7 +1287,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatementForSql(conn, sqlQuery);
 
             //  get all all groups of the user
@@ -1298,7 +1298,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
 
             while (res.next()) {
-                groups.add(internalCreateGroup(dbc, res));
+                groups.add(internalCreateGroup(res));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1337,7 +1337,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_ID_1");
 
             stmt.setString(1, id.toString());
@@ -1375,7 +1375,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_BY_NAME_2");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             stmt.setString(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
@@ -1415,7 +1415,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         CmsUser user = null;
         Connection conn = null;
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ_WITH_PWD_3");
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(userFqn));
             stmt.setString(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
@@ -1459,7 +1459,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         try {
             // create statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_READ_1");
 
             stmt.setString(1, userId.toString());
@@ -1515,7 +1515,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, sqlQuery);
             stmt.setString(1, CmsOrganizationalUnit.getSimpleName(groupFqn));
             stmt.setString(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(groupFqn));
@@ -1546,7 +1546,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_1");
 
             stmt.setString(1, resource.toString());
@@ -1576,7 +1576,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
 
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
 
             stmt.setString(1, principal.toString());
@@ -1590,7 +1590,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_ONLINE_1");
 
             stmt.setString(1, principal.toString());
@@ -1614,7 +1614,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_2");
 
             stmt.setString(1, resource.toString());
@@ -1700,7 +1700,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SET_ORGUNIT_2");
 
             if (orgUnit == null) {
@@ -1731,7 +1731,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY_2");
 
             stmt.setString(1, acEntry.getResource().toString());
@@ -1778,7 +1778,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
         if (group != null) {
             try {
-                conn = getSqlManager().getConnection(dbc);
+                conn = getSqlManager().getConnection();
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_WRITE_GROUP_4");
 
                 stmt.setString(1, m_sqlManager.validateEmpty(group.getDescription()));
@@ -1861,7 +1861,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SET_PWD_3");
             stmt.setString(1, OpenCms.getPasswordHandler().digest(newPassword));
             stmt.setString(2, CmsOrganizationalUnit.getSimpleName(userFqn));
@@ -1885,7 +1885,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE_6");
             // write data to database
             stmt.setString(1, m_sqlManager.validateEmpty(user.getFirstname()));
@@ -1914,7 +1914,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERDATA_WRITE_4");
             // write data to database
             stmt.setString(1, userId.toString());
@@ -2124,10 +2124,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(
-                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                m_sqlManager.getMacroResolver(dbc).resolveMacros(
-                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0, null))));
+            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, CmsMacroResolver.localizedKeyMacro(
+                Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0,
+                null)));
         createUserInGroup(dbc, guest.getId(), guests.getId());
 
         CmsUser admin = createUser(
@@ -2141,10 +2140,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(
-                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                m_sqlManager.getMacroResolver(dbc).resolveMacros(
-                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0, null))));
+            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, CmsMacroResolver.localizedKeyMacro(
+                Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0,
+                null)));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(CmsRole.ROOT_ADMIN.getGroupName()));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(administratorsGroup));
 
@@ -2164,8 +2162,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    m_sqlManager.getMacroResolver(dbc).resolveMacros(
-                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null))));
+                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null)));
             createUserInGroup(dbc, export.getId(), guests.getId());
         }
 
@@ -2186,8 +2183,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    m_sqlManager.getMacroResolver(dbc).resolveMacros(
-                        CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0, null))));
+                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0, null)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2198,13 +2194,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * Semi-constructor to create a {@link CmsGroup} instance from a JDBC result set.
      * 
-     * @param dbc the current database context
      * @param res the JDBC ResultSet
      * @return CmsGroup the new CmsGroup object
      * 
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    protected CmsGroup internalCreateGroup(CmsDbContext dbc, ResultSet res) throws SQLException {
+    protected CmsGroup internalCreateGroup(ResultSet res) throws SQLException {
 
         String ou = CmsOrganizationalUnit.removeLeadingSeparator(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_OU_0")));
         String description = res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION_0"));
@@ -2212,7 +2207,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID_0"))),
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID_0"))),
             ou + res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME_0")),
-            m_sqlManager.getMacroResolver(dbc).resolveMacros(description),
+            description,
             res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS_0")));
     }
 
@@ -2243,12 +2238,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
         String projectId = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_PROJECTID, false).getStructureValue();
         // create the object
-        return new CmsOrganizationalUnit(
-            resource.getStructureId(),
-            name,
-            m_sqlManager.getMacroResolver(dbc).resolveMacros(description),
-            flags,
-            (projectId == null ? null : new CmsUUID(projectId)));
+        return new CmsOrganizationalUnit(resource.getStructureId(), name, description, flags, (projectId == null ? null
+        : new CmsUUID(projectId)));
     }
 
     /**
@@ -2528,7 +2519,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = getSqlManager().getConnection(dbc);
+            conn = getSqlManager().getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USER_IN_GROUP_2");
 
             stmt.setString(1, groupId.toString());

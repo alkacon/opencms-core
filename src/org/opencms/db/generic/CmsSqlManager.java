@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/14 13:10:16 $
- * Version: $Revision: 1.65.4.9 $
+ * Date   : $Date: 2007/05/16 08:35:17 $
+ * Version: $Revision: 1.65.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -48,7 +47,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -59,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.9 $
+ * @version $Revision: 1.65.4.10 $
  * 
  * @since 6.0.0 
  */
@@ -218,12 +216,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * Use this method to get a connection for reading/writing project independent data.<p>
      * 
-     * @param dbc the current database context
-     * 
      * @return a JDBC connection
      * @throws SQLException if the project id is not supported
      */
-    public Connection getConnection(CmsDbContext dbc) throws SQLException {
+    public Connection getConnection() throws SQLException {
 
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
         return getConnectionByUrl(m_poolUrl);
@@ -455,28 +451,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         super.finalize();
-    }
-
-    /**
-     * Returns the macro resolver.<p>
-     * 
-     * @param dbc the current database context
-     * 
-     * @return the macro resolver
-     */
-    protected CmsMacroResolver getMacroResolver(CmsDbContext dbc) {
-
-        CmsMacroResolver macroResolver = new CmsMacroResolver();
-        Locale locale = null;
-        if (dbc.getRequestContext() != null) {
-            locale = dbc.getRequestContext().getLocale();
-        }
-        if (locale == null) {
-            macroResolver.setMessages(Messages.get().getBundle());
-        } else {
-            macroResolver.setMessages(Messages.get().getBundle(locale));
-        }
-        return macroResolver;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/16 08:35:17 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Clovis Wichoski
  * @author Fabiano Rech  
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.1
  */
@@ -77,14 +77,12 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_HISTORY");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                List resources = m_driverManager.getHistoryDriver().readProjectResources(
-                    dbc,
-                    res.getInt("PUBLISH_TAG"));
+                List resources = m_driverManager.getHistoryDriver().readProjectResources(dbc, res.getInt("PUBLISH_TAG"));
                 projects.add(internalCreateProject(res, resources));
             }
         } catch (SQLException e) {
