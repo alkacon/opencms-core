@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/02/06 17:04:07 $
- * Version: $Revision: 1.3.4.8 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.3.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3.4.8 $ 
+ * @version $Revision: 1.3.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,6 +155,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the localized description of a group.<p>
+     * 
+     * @return the localized description of a group
+     */
+    public String getDescription() {
+
+        return m_group.getDescription(getLocale());
+    }
+
+    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -182,6 +192,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     public String getParentGroup() {
 
         return m_parentGroup;
+    }
+
+    /**
+     * Sets the description for a group.<p>
+     * 
+     * @param description the description for a group
+     */
+    public void setDescription(String description) {
+
+        m_group.setDescription(description);
     }
 
     /**
@@ -278,7 +298,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
         }
         if (isEditable(m_group)) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsTextareaWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsTextareaWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsGroupWidget(
                 null,
                 null,
@@ -288,7 +308,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsCheckboxWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));

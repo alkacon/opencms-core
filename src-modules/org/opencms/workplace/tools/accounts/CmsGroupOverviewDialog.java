@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2007/02/05 09:14:28 $
- * Version: $Revision: 1.11.4.3 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.11.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11.4.3 $ 
+ * @version $Revision: 1.11.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,31 +76,6 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
 
     /** Auxiliary Property for better representation of the bean parentId property. */
     private String m_parentGroup;
-
-    /**
-     * Returns the description of the parent ou.<p>
-     * 
-     * @return the description of the parent ou
-     */
-    public String getAssignedOu() {
-
-        try {
-            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_group.getOuFqn()).getDisplayName(
-                getLocale());
-        } catch (CmsException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Setter for widget definition.<p>
-     * 
-     * @param assignedOu the ou description
-     */
-    public void setAssignedOu(String assignedOu) {
-
-        assignedOu.length();
-    }
 
     /**
      * Public constructor with JSP action element.<p>
@@ -135,6 +110,41 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_group.getOuFqn()).getDisplayName(
+                getLocale());
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the localized description of the group if the description is a message key.<p>
+     * 
+     * @return the localized description of the group if the description is a message key
+     */
+    public String getDescription() {
+
+        return m_group.getDescription(getLocale());
+    }
+
+    /**
+     * Returns the simple name of the user object.<p>
+     * 
+     * @return the simple name of the user object
+     */
+    public String getName() {
+
+        return m_group.getSimpleName();
+    }
+
+    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -152,6 +162,36 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     public String getParentGroup() {
 
         return m_parentGroup;
+    }
+
+    /**
+     * Setter for widget definition.<p>
+     * 
+     * @param assignedOu the ou description
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        assignedOu.length();
+    }
+
+    /**
+     * Sets the description of the group.<p>
+     * 
+     * @param description the description of the group
+     */
+    public void setDescription(String description) {
+
+        m_group.setDescription(description);
+    }
+
+    /**
+     * Sets the name of the user object.<p>
+     * 
+     * @param name the name of the user object
+     */
+    public void setName(String name) {
+
+        name.length();
     }
 
     /**
@@ -234,26 +274,6 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the simple name of the user object.<p>
-     * 
-     * @return the simple name of the user object
-     */
-    public String getName() {
-
-        return m_group.getSimpleName();
-    }
-
-    /**
-     * Sets the name of the user object.<p>
-     * 
-     * @param name the name of the user object
-     */
-    public void setName(String name) {
-
-        name.length();
-    }
-
-    /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
@@ -266,11 +286,11 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
         // widgets to display
         if (!isOverview()) {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));

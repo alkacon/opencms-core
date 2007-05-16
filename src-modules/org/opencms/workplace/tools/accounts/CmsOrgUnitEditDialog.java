@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/03/01 15:01:31 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.14 $ 
+ * @version $Revision: 1.1.2.15 $ 
  * 
  * @since 6.5.6
  */
@@ -255,7 +255,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     setResourcesInBean(m_orgUnitBean, resources);
                 } else {
                     m_orgUnitBean = new CmsOrgUnitBean();
-                    m_orgUnitBean.setDescription(m_orgunit.getDescription());
+                    m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
                     m_orgUnitBean.setName(m_orgunit.getName());
                     m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
                     m_orgUnitBean.setFqn(m_orgunit.getName());
@@ -279,7 +279,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
         } else {
             try {
                 m_orgUnitBean = new CmsOrgUnitBean();
-                m_orgUnitBean.setDescription(m_orgunit.getDescription());
+                m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
                 m_orgUnitBean.setName(m_orgunit.getName());
                 m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
                 m_orgUnitBean.setFqn(m_orgunit.getName());

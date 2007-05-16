@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.18.4.3 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.18.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18.4.3 $ 
+ * @version $Revision: 1.18.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,8 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     public String getAssignedOu() {
 
         try {
-            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription()
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription(
+                getLocale())
                 + " ("
                 + CmsOrganizationalUnit.SEPARATOR
                 + getParamOufqn()

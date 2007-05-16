@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2007/02/22 09:42:35 $
- * Version: $Revision: 1.12.4.7 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.12.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.4.7 $ 
+ * @version $Revision: 1.12.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +156,16 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the localized description of the user.<p>
+     * 
+     * @return the localized description of the user
+     */
+    public String getDescription() {
+
+        return m_user.getDescription(getLocale());
+    }
+
+    /**
      * Returns the last login.<p>
      *
      * Auxiliary Property for better representation.<p>
@@ -219,6 +229,16 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
         if (created == null) {
             // just to avoid warnings
         }
+    }
+
+    /**
+     * Sets the description of the user.<p>
+     * 
+     * @param description the user description
+     */
+    public void setDescription(String description) {
+
+        m_user.setDescription(description);
     }
 
     /**
@@ -330,7 +350,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
         // widgets to display
         if (isOverview()) {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));

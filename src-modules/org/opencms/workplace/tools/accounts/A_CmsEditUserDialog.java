@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/03/16 10:52:36 $
- * Version: $Revision: 1.4.4.11 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.4.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.11 $ 
+ * @version $Revision: 1.4.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,6 +214,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the localized description of the user if the description is a key.<p>
+     * 
+     * @return the localized description of the user if the description is a key
+     */
+    public String getDescription() {
+
+        return m_user.getDescription(getLocale());
+    }
+
+    /**
      * Returns the group.<p>
      *
      * @return the group
@@ -295,6 +305,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
         // nothing will be done here, just to avoid warnings
         assignedOu.length();
+    }
+
+    /**
+     * Sets the description for the user.<p>
+     * 
+     * @param description the description for the user
+     */
+    public void setDescription(String description) {
+
+        m_user.setDescription(description);
     }
 
     /**
@@ -451,7 +471,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
         }
         if (isEditable(m_user)) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(this, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
@@ -469,7 +489,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                     getParamOufqn())));
             }
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));

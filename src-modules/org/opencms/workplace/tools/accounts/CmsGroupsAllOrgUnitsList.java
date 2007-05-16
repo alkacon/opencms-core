@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/08 11:21:44 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -147,7 +147,8 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
             try {
                 if (detailId.equals(LIST_DETAIL_ORGUNIT_DESC)) {
                     CmsGroup group = getCms().readGroup(groupName);
-                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), group.getOuFqn()).getDescription());
+                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), group.getOuFqn()).getDescription(
+                        getLocale()));
                 } else {
                     continue;
                 }
@@ -260,7 +261,6 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
 
         // noop
     }
-
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()

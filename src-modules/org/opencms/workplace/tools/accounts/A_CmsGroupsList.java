@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2007/02/07 17:06:11 $
- * Version: $Revision: 1.3.4.7 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.3.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.7 $ 
+ * @version $Revision: 1.3.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,6 +104,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DESCRIPTION = "cc";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdn";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_EDIT = "ce";
@@ -388,9 +391,6 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
      */
     protected abstract List getGroups() throws CmsException;
 
-    /** list column id constant. */
-    public static final String LIST_COLUMN_DISPLAY = "cdn";
-
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
@@ -405,7 +405,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             ret.add(item);
         }
 

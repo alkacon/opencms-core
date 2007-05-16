@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupTransferList.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.3.4.3 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.3.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.3 $ 
+ * @version $Revision: 1.3.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,7 +314,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
             }
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             try {
                 item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
             } catch (Exception e) {
@@ -384,20 +384,6 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the icon actions for the transfer list.<p>
-     * 
-     * @param transferCol the column to set the action
-     */
-    protected void setTransferAction(CmsListColumnDefinition transferCol) {
-
-        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
-        transferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
-        transferAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
-        transferAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
-        transferCol.addDirectAction(transferAction);
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -435,6 +421,20 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
+    }
+
+    /**
+     * Sets the icon actions for the transfer list.<p>
+     * 
+     * @param transferCol the column to set the action
+     */
+    protected void setTransferAction(CmsListColumnDefinition transferCol) {
+
+        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
+        transferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
+        transferAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
+        transferAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
+        transferCol.addDirectAction(transferAction);
     }
 
     /**

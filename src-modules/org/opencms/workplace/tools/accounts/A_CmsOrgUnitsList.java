@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/02/13 14:21:55 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -296,7 +296,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
             ret.add(item);
         }
         return ret;

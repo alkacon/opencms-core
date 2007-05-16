@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2007/02/12 15:39:31 $
- * Version: $Revision: 1.18.4.8 $
+ * Date   : $Date: 2007/05/16 08:33:32 $
+ * Version: $Revision: 1.18.4.9 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.18.4.8 $ 
+ * @version $Revision: 1.18.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,7 +258,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
             item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + group.getOuFqn());
             ret.add(item);
         }
