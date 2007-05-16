@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.241.4.33 $
+ * Date   : $Date: 2007/05/16 15:37:44 $
+ * Version: $Revision: 1.241.4.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.33 $
+ * @version $Revision: 1.241.4.34 $
  * 
  * @since 6.0.0 
  */
@@ -2450,7 +2450,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * Creates a new project from the current row of the given result set.<p>
      * 
-     * @param dbc the current database context
      * @param res the result set
      * 
      * @return the new project
