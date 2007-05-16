@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/09 07:59:18 $
- * Version: $Revision: 1.97.4.51 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.97.4.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,8 +191,10 @@ public final class CmsSecurityManager {
             m_driverManager.addRelationToResource(dbc, resource, id, target, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_ADD_RELATION_TO_RESOURCE_3, target,
-                context.getSitePath(resource), type), e);
+                Messages.ERR_ADD_RELATION_TO_RESOURCE_3,
+                target,
+                context.getSitePath(resource),
+                type), e);
 
         } finally {
             dbc.clear();
@@ -1169,12 +1171,11 @@ public final class CmsSecurityManager {
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
-     * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
-     * 
      * @param context the current request context
-     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
-     * @param versionsToKeep the maximal number of versions per resource to keep 
-     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param folder the folder (with subresources) to delete historical versions for 
+     * @param versionsToKeep number of versions to keep, is ignored if negative 
+     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
+     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * @param report the report for output logging
      * 
      * @throws CmsException if operation was not succesful
@@ -1182,19 +1183,31 @@ public final class CmsSecurityManager {
      */
     public void deleteHistoricalVersions(
         CmsRequestContext context,
-        boolean cleanUp,
+        CmsFolder folder,
         int versionsToKeep,
+        int versionsDeleted,
+        long timeDeleted,
         I_CmsReport report) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
-            m_driverManager.deleteHistoricalVersions(dbc, cleanUp, versionsToKeep, report);
+            checkPermissions(dbc, folder, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+            m_driverManager.deleteHistoricalVersions(
+                dbc,
+                folder,
+                versionsToKeep,
+                versionsDeleted,
+                timeDeleted,
+                report);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_DELETE_HISTORY_2,
-                Boolean.valueOf(cleanUp),
-                new Integer(versionsToKeep)), e);
+                Messages.ERR_DELETE_HISTORY_4,
+                new Object[] {
+                    dbc.removeSiteRoot(folder.getRootPath()),
+                    new Integer(versionsToKeep),
+                    new Integer(versionsDeleted),
+                    new Date(timeDeleted)}), e);
         } finally {
             dbc.clear();
         }
@@ -1340,8 +1353,10 @@ public final class CmsSecurityManager {
      * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource. 
      * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsRequestContext context, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
-    throws CmsException, CmsSecurityException {
+    public void deleteResource(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {

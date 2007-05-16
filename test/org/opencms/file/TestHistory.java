@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/05/14 12:26:16 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.9.1
  */
@@ -409,7 +409,7 @@ public class TestHistory extends OpenCmsTestCase {
         // assertEquals(maxcounter + counterSibl + 1, allFiles.size());
 
         //Delete historical entries, keep only 3 latest versions. 
-        cms.deleteHistoricalVersions(false, 3, new CmsShellReport(cms.getRequestContext().getLocale()));
+        cms.deleteHistoricalVersions("/", 3, 3, -1, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         allFiles = cms.readAllAvailableVersions(siblingname);
         assertEquals(3, allFiles.size());
@@ -888,7 +888,7 @@ public class TestHistory extends OpenCmsTestCase {
 
         // re-create the resource to be able to read all versions from the history
         // assert that we have the expected number of versions in the history
-        String importFile = "import.txt";
+        String importFile = "import2.txt";
         cms.importResource(importFile, res, "blah-blah".getBytes(), null);
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
@@ -920,6 +920,8 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
 
+        cms.lockResource(importFile); // TODO: check this
+        
         for (int i = 0; i < counter + 2; i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
@@ -957,7 +959,7 @@ public class TestHistory extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         // set the versioning settings
-        OpenCms.getSystemInfo().setVersionHistorySettings(true, 3);
+        OpenCms.getSystemInfo().setVersionHistorySettings(true, 3, 3);
 
         // make 5 versions
         for (int i = 0; i < 5; i++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2007/04/26 14:31:09 $
- * Version: $Revision: 1.14.8.6 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.14.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.8.6 $
+ * @version $Revision: 1.14.8.7 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
 
@@ -108,7 +108,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing history overflow");
 
-        OpenCms.getSystemInfo().setVersionHistorySettings(true, C_MAX_VERSIONS);
+        OpenCms.getSystemInfo().setVersionHistorySettings(true, C_MAX_VERSIONS, C_MAX_VERSIONS);
 
         String resourcename = "/test-overflow1.txt";
         String contentStr = "1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2007/04/26 14:31:16 $
- * Version: $Revision: 1.17.4.5 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.17.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.5 $ 
+ * @version $Revision: 1.17.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public class CmsAdminHistoryClear extends CmsReport {
 
         CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer retValue = new StringBuffer(512);
-        int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+        int maxVersions = OpenCms.getSystemInfo().getHistoryVersions();
 
         // append settings info or disabled message if history is disabled
         retValue.append(dialogBlockStart(messages.key(Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0)));
@@ -190,7 +190,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      */
     public String buildSelectVersions(String attributes) {
 
-        return buildSelectNumbers("versions", attributes, 0, OpenCms.getSystemInfo().getVersionHistoryMaxCount());
+        return buildSelectNumbers("versions", attributes, 0, OpenCms.getSystemInfo().getHistoryVersions());
     }
 
     /**    
@@ -247,7 +247,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      */
     public boolean isHistoryEnabled() {
 
-        return OpenCms.getSystemInfo().isVersionHistoryEnabled();
+        return OpenCms.getSystemInfo().isHistoryEnabled();
     }
 
     /**
@@ -317,7 +317,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      * Returns the necessary parameters to perform the historical archive deletion.<p>
      * 
      * @return a map with necessary parameters for the 
-     *         {@link org.opencms.file.CmsObject#deleteHistoricalVersions(boolean, int, org.opencms.report.I_CmsReport)} 
+     *         {@link org.opencms.file.CmsObject#deleteHistoricalVersions(String, int, int, long, org.opencms.report.I_CmsReport)}
      *         method
      * 
      * @throws CmsIllegalArgumentException if something goes wrong

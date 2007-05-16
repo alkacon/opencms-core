@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/14 12:26:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.1
  */
@@ -85,34 +85,16 @@ public interface I_CmsHistoryDriver {
      * keeping maximal <code>versionsToKeep</code> versions.<p>
      * 
      * @param dbc the current database context
-     * @param structureId the structure id of the historical resource to delete 
-     * @param resourceId the resource id of the historical resource to delete 
+     * @param histResource the historical resource to delete versions for 
      * @param versionsToKeep the number of versions to keep
+     * @param time deleted resources older than this will also be deleted, is ignored if negative
+     * 
+     * @return the number of versions that were deleted
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteEntries(CmsDbContext dbc, CmsUUID structureId, CmsUUID resourceId, int versionsToKeep)
+    int deleteEntries(CmsDbContext dbc, I_CmsHistoryResource histResource, int versionsToKeep, long time)
     throws CmsDataAccessException;
-
-    /**
-     * Deletes old historical entries for all resources  
-     * keeping maximal <code>versions</code> versions for each resource.<p> 
-     * 
-     * @param dbc the current database context
-     * @param versionsToKeep how many versions to keep
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void deleteEntries(CmsDbContext dbc, int versionsToKeep) throws CmsDataAccessException;
-
-    /**
-     * Deletes all historical versions of resources that no longer exist.<p>
-     * 
-     * @param dbc the current database context
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void deleteOrphanEntries(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Deletes a property definition.<p>
@@ -130,6 +112,32 @@ public interface I_CmsHistoryDriver {
      * @throws Throwable if something goes wrong
      */
     void destroy() throws Throwable;
+
+    /**
+     * Returns all historical resources (of deleted resources) in the subtree
+     * of the folder identified by the given structure id.<p> 
+     * 
+     * @param dbc the current database context
+     * @param structureId the structrue id of the folder to get the historical resources for
+     *  
+     * @return a list of {@link I_CmsHistoryResource} objects
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List getAllDeletedEntries(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
+
+    /**
+     * Returns all historical resources (of not deleted resources) in the subtree
+     * of the folder identified by the given structure id.<p> 
+     * 
+     * @param dbc the current database context
+     * @param structureId the structrue id of the folder to get the historical resources for
+     *  
+     * @return a list of {@link I_CmsHistoryResource} objects
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List getAllNotDeletedEntries(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -380,14 +388,9 @@ public interface I_CmsHistoryDriver {
      * @param resource the resource that is written to the history
      * @param properties the properties of the resource
      * @param publishTag the publish tag
-     * @param maxVersions maximum number of historical versions
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeResource(
-        CmsDbContext dbc,
-        CmsResource resource,
-        List properties,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException;
+    void writeResource(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
+    throws CmsDataAccessException;
 }

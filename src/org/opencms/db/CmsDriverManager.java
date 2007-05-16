@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.570.2.88 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.570.2.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,6 +101,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2106,27 +2107,131 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
      * 
      * @param dbc the current database context
-     * @param cleanUp if set to <code>true</code> all versions of deleted resources will be removed
-     * @param versionsToKeep the maximal number of versions per resource to keep 
-     *                 (if cleanUp is set to <code>true</code> this does not applies to deleted resources)
+     * @param folder the folder (with subresources) to delete historical versions for 
+     * @param versionsToKeep number of versions to keep, is ignored if negative 
+     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
+     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * @param report the report for output logging
      * 
      * @throws CmsException if operation was not succesful
      */
-    public void deleteHistoricalVersions(CmsDbContext dbc, boolean cleanUp, int versionsToKeep, I_CmsReport report)
-    throws CmsException {
+    public void deleteHistoricalVersions(
+        CmsDbContext dbc,
+        CmsFolder folder,
+        int versionsToKeep,
+        int versionsDeleted,
+        long timeDeleted,
+        I_CmsReport report) throws CmsException {
 
-        report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.FORMAT_NOTE);
-        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+        report.println(Messages.get().container(Messages.RPT_START_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
+        if (versionsToKeep >= 0) {
+            report.println(Messages.get().container(
+                Messages.RPT_START_DELETE_ACT_VERSIONS_1,
+                new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
 
-        if (cleanUp) {
-            m_historyDriver.deleteOrphanEntries(dbc);
+            List resources = m_historyDriver.getAllNotDeletedEntries(dbc, folder.getStructureId());
+            if (resources.isEmpty()) {
+                report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
+            }
+            int n = resources.size();
+            int m = 1;
+            Iterator itResources = resources.iterator();
+            while (itResources.hasNext()) {
+                I_CmsHistoryResource histResource = (I_CmsHistoryResource)itResources.next();
+
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    dbc.removeSiteRoot(histResource.getResource().getRootPath())));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+                try {
+                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsToKeep, -1);
+
+                    report.print(
+                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
+                        I_CmsReport.FORMAT_NOTE);
+                    report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                } catch (CmsDataAccessException e) {
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ERROR_0),
+                        I_CmsReport.FORMAT_ERROR);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                m++;
+            }
+
+            report.println(
+                Messages.get().container(Messages.RPT_END_DELETE_ACT_VERSIONS_0),
+                I_CmsReport.FORMAT_HEADLINE);
         }
-        m_historyDriver.deleteEntries(dbc, versionsToKeep);
+        if ((versionsDeleted >= 0) || (timeDeleted >= 0)) {
+            if (timeDeleted >= 0) {
+                report.println(Messages.get().container(
+                    Messages.RPT_START_DELETE_DEL_VERSIONS_2,
+                    new Integer(versionsToKeep),
+                    new Date(timeDeleted)), I_CmsReport.FORMAT_HEADLINE);
+            } else {
+                report.println(Messages.get().container(
+                    Messages.RPT_START_DELETE_DEL_VERSIONS_1,
+                    new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
+            }
+            List resources = m_historyDriver.getAllDeletedEntries(dbc, folder.getStructureId());
+            if (resources.isEmpty()) {
+                report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
+            }
+            int n = resources.size();
+            int m = 1;
+            Iterator itResources = resources.iterator();
+            while (itResources.hasNext()) {
+                I_CmsHistoryResource histResource = (I_CmsHistoryResource)itResources.next();
 
-        report.println(
-            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-            I_CmsReport.FORMAT_OK);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    dbc.removeSiteRoot(histResource.getResource().getRootPath())));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+                try {
+                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsToKeep, timeDeleted);
+
+                    report.print(
+                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
+                        I_CmsReport.FORMAT_NOTE);
+                    report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                } catch (CmsDataAccessException e) {
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ERROR_0),
+                        I_CmsReport.FORMAT_ERROR);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                m++;
+            }
+            report.println(
+                Messages.get().container(Messages.RPT_END_DELETE_DEL_VERSIONS_0),
+                I_CmsReport.FORMAT_HEADLINE);
+        }
+        report.println(Messages.get().container(Messages.RPT_END_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -4798,17 +4903,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // clear the cache
             clearcache(false);
 
-            int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
             int publishTag = getNextPublishTag(dbc);
-
-            getProjectDriver().publishProject(
-                dbc,
-                report,
-                onlineProject,
-                publishList,
-                OpenCms.getSystemInfo().isVersionHistoryEnabled(),
-                publishTag,
-                maxVersions);
+            getProjectDriver().publishProject(dbc, report, onlineProject, publishList, publishTag);
 
             // iterate the initialized module action instances
             Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();

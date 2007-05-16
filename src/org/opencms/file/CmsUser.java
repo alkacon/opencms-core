@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.32.4.20 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.32.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.security.Messages;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -72,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.4.20 $
+ * @version $Revision: 1.32.4.21 $
  * 
  * @since 6.0.0
  * 
@@ -363,7 +362,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public String getDescription(Locale locale) {
 
         CmsMacroResolver macroResolver = new CmsMacroResolver();
-        macroResolver.setMessages(Messages.get().getBundle(locale));
+        macroResolver.setMessages(org.opencms.db.generic.Messages.get().getBundle(locale));
         return macroResolver.resolveMacros((String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION));
     }
 
@@ -385,8 +384,8 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
 
         if (OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).size() > 0) {
-            return Messages.get().getBundle(locale).key(
-                Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            return org.opencms.security.Messages.get().getBundle(locale).key(
+                org.opencms.security.Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
                 getFullName(),
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
         } else {

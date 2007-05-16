@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2006/03/28 10:20:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.12.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,8 +121,8 @@ public class CmsAdminHistorySettings extends CmsDialog {
     public String buildSettingsForm() {
 
         StringBuffer retValue = new StringBuffer(512);
-        boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
-        int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+        boolean histEnabled = OpenCms.getSystemInfo().isHistoryEnabled();
+        int maxVersions = OpenCms.getSystemInfo().getHistoryVersions();
         CmsMessages messages = Messages.get().getBundle(getLocale());
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
@@ -192,6 +192,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
         // get the new settings from the request parameters
         String paramEnabled = request.getParameter("enable");
         String paramVersions = request.getParameter("versions");
+        String paramVersionsDeleted = request.getParameter("versionsDeleted");
 
         // check the submitted values
         boolean enabled = Boolean.valueOf(paramEnabled).booleanValue();
@@ -202,12 +203,24 @@ public class CmsAdminHistorySettings extends CmsDialog {
             // no int value submitted, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_INT_ENTERED_0), e);
         }
-        if (versions < 1) {
+        if (versions < 0) {
+            // version value too low, throw exception
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
+        }
+        int versionsDeleted = 0;
+        try {
+            versionsDeleted = Integer.parseInt(paramVersionsDeleted);
+        } catch (NumberFormatException e) {
+            // no int value submitted, throw exception
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_INT_ENTERED_0), e);
+        }
+        if (versionsDeleted < 0) {
             // version value too low, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
         }
 
-        OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions);
+
+        OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions, versionsDeleted);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);
 
         return true;

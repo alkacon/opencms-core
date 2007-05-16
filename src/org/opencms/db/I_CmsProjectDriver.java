@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/14 13:10:16 $
- * Version: $Revision: 1.76.4.10 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.76.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76.4.10 $
+ * @version $Revision: 1.76.4.11 $
  * 
  * @since 6.0.0 
  */
@@ -126,8 +126,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType)
-    throws CmsDataAccessException;
+    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsDataAccessException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -181,10 +180,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistoryEntry(
-        CmsDbContext dbc,
-        CmsUUID publishHistoryId,
-        CmsPublishedResource publishResource) throws CmsDataAccessException;
+    void deletePublishHistoryEntry(CmsDbContext dbc, CmsUUID publishHistoryId, CmsPublishedResource publishResource)
+    throws CmsDataAccessException;
 
     /**
      * Deletes a publish job identified by its history id.<p>
@@ -214,11 +211,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteStaticExportPublishedResource(
-        CmsDbContext dbc,
-        String resourceName,
-        int linkType,
-        String linkParameter) throws CmsDataAccessException;
+    void deleteStaticExportPublishedResource(CmsDbContext dbc, String resourceName, int linkType, String linkParameter)
+    throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -264,11 +258,8 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param offlineFolder the offline folder to publish
-     * @param historyEnabled flag if history is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -279,11 +270,8 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder offlineFolder,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a new, changed or deleted file.<p>
@@ -295,11 +283,8 @@ public interface I_CmsProjectDriver {
      * @param onlineProject the online project
      * @param offlineResource the offline file to publish
      * @param publishedContentIds contains the UUIDs of already published content records
-     * @param historyEnabled flag if history is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -311,11 +296,8 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedContentIds,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes the content record of a file.<p>
@@ -358,11 +340,8 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param currentFolder the offline folder to publish
-     * @param historyEnabled flag if history is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the maxmum number of historical versions for each resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -373,11 +352,8 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder currentFolder,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -386,9 +362,7 @@ public interface I_CmsProjectDriver {
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
      * @param publishList a Cms publish list
-     * @param historyEnabled true if published resources should be written to the historical archive
      * @param publishTag the publish tag
-     * @param maxVersions maximum number of historical versions
      * 
      * @throws CmsException if something goes wrong
      */
@@ -397,9 +371,7 @@ public interface I_CmsProjectDriver {
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        boolean historyEnabled,
-        int publishTag,
-        int maxVersions) throws CmsException;
+        int publishTag) throws CmsException;
 
     /**
      * Reads the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
@@ -562,8 +534,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
-    throws CmsDataAccessException;
+    List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
@@ -575,8 +546,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName)
-    throws CmsDataAccessException;
+    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName) throws CmsDataAccessException;
 
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
@@ -642,10 +612,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writePublishHistory(
-        CmsDbContext dbc,
-        CmsUUID publishId,
-        CmsPublishedResource resource) throws CmsDataAccessException;
+    void writePublishHistory(CmsDbContext dbc, CmsUUID publishId, CmsPublishedResource resource)
+    throws CmsDataAccessException;
 
     /**
      * Writes a publish job.<p>

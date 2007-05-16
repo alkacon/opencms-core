@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/16 15:37:44 $
- * Version: $Revision: 1.241.4.34 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.241.4.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -68,7 +69,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.34 $
+ * @version $Revision: 1.241.4.35 $
  * 
  * @since 6.0.0 
  */
@@ -548,7 +548,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             users,
             projectmanager,
             CmsProject.ONLINE_PROJECT_NAME,
-            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULT_PROJECT_ONLINE_DESCRIPTION_0, null),
+            "The Online project",
             I_CmsPrincipal.FLAG_ENABLED,
             CmsProject.PROJECT_TYPE_NORMAL);
 
@@ -613,7 +613,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             administrators,
             administrators,
             SETUP_PROJECT_NAME,
-            CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULT_PROJECT_SETUP_DESCRIPTION_0, null),
+            "The Project for the initial import",
             I_CmsPrincipal.FLAG_ENABLED,
             CmsProject.PROJECT_TYPE_TEMPORARY);
 
@@ -697,7 +697,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, org.opencms.util.CmsUUID, int)
      */
     public void publishDeletedFolder(
         CmsDbContext dbc,
@@ -706,11 +706,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder currentFolder,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         try {
             report.print(org.opencms.report.Messages.get().container(
@@ -731,16 +728,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishTag);
 
             // write history before deleting
-            internalWriteHistory(
-                dbc,
-                currentFolder,
-                folderState,
-                null,
-                historyEnabled,
-                publishDate,
-                publishHistoryId,
-                publishTag,
-                maxVersions);
+            internalWriteHistory(dbc, currentFolder, folderState, null, publishHistoryId, publishTag);
 
             // read the folder online
             CmsFolder onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
@@ -849,7 +837,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFile(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFile(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set, org.opencms.util.CmsUUID, int)
      */
     public void publishFile(
         CmsDbContext dbc,
@@ -859,11 +847,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedContentIds,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         /*
          * Never use onlineResource.getState() here!
@@ -888,23 +873,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-                publishDeletedFile(
-                    dbc,
-                    onlineProject,
-                    offlineResource,
-                    historyEnabled,
-                    publishDate,
-                    publishHistoryId,
-                    publishTag,
-                    maxVersions);
+                publishDeletedFile(dbc, onlineProject, offlineResource, publishHistoryId, publishTag);
 
                 dbc.pop();
                 // delete old historical entries
                 m_driverManager.getHistoryDriver().deleteEntries(
                     dbc,
-                    offlineResource.getStructureId(),
-                    offlineResource.getResourceId(),
-                    maxVersions);
+                    new CmsHistoryFile(offlineResource),
+                    OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion(),
+                    -1);
 
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -930,19 +907,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     onlineProject,
                     offlineResource,
                     publishedContentIds,
-                    historyEnabled,
-                    publishDate,
                     publishHistoryId,
-                    publishTag,
-                    maxVersions);
+                    publishTag);
 
                 dbc.pop();
                 // delete old historical entries
                 m_driverManager.getHistoryDriver().deleteEntries(
                     dbc,
-                    offlineResource.getStructureId(),
-                    offlineResource.getResourceId(),
-                    maxVersions);
+                    new CmsHistoryFile(offlineResource),
+                    OpenCms.getSystemInfo().getHistoryVersions(),
+                    -1);
 
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -962,24 +936,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-                publishNewFile(
-                    dbc,
-                    onlineProject,
-                    offlineResource,
-                    publishedContentIds,
-                    historyEnabled,
-                    publishDate,
-                    publishHistoryId,
-                    publishTag,
-                    maxVersions);
+                publishNewFile(dbc, onlineProject, offlineResource, publishedContentIds, publishHistoryId, publishTag);
 
                 dbc.pop();
                 // delete old historical entries
                 m_driverManager.getHistoryDriver().deleteEntries(
                     dbc,
-                    offlineResource.getStructureId(),
-                    offlineResource.getResourceId(),
-                    maxVersions);
+                    new CmsHistoryFile(offlineResource),
+                    OpenCms.getSystemInfo().getHistoryVersions(),
+                    -1);
 
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -1037,7 +1002,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int publishTag) throws CmsDataAccessException {
 
         CmsFile newFile = null;
-        
         try {
             // read the file content offline
             CmsUUID projectId = dbc.getProjectId();
@@ -1101,7 +1065,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFolder(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFolder(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, org.opencms.util.CmsUUID, int)
      */
     public void publishFolder(
         CmsDbContext dbc,
@@ -1110,11 +1074,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder offlineFolder,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         try {
             report.print(org.opencms.report.Messages.get().container(
@@ -1255,16 +1216,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 throw e;
             }
 
-            internalWriteHistory(
-                dbc,
-                offlineFolder,
-                resourceState,
-                offlineProperties,
-                historyEnabled,
-                publishDate,
-                publishHistoryId,
-                publishTag,
-                maxVersions);
+            internalWriteHistory(dbc, offlineFolder, resourceState, offlineProperties, publishHistoryId, publishTag);
 
             m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineFolder);
 
@@ -1288,18 +1240,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, int)
      */
     public void publishProject(
         CmsDbContext dbc,
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        boolean historyEnabled,
-        int publishTag,
-        int maxVersions) throws CmsException {
+        int publishTag) throws CmsException {
 
-        long publishDate = System.currentTimeMillis();
         int publishedFolderCount = 0;
         int deletedFolderCount = 0;
         int publishedFileCount = 0;
@@ -1310,10 +1259,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             ////////////////////////////////////////////////////////////////////////////////////////
             // write the historical project entry
 
-            if (historyEnabled) {
+            if (OpenCms.getSystemInfo().isHistoryEnabled()) {
                 try {
                     // write an entry in the publish project log
-                    m_driverManager.getHistoryDriver().writeProject(dbc, publishTag, publishDate);
+                    m_driverManager.getHistoryDriver().writeProject(dbc, publishTag, System.currentTimeMillis());
                     dbc.pop();
                 } catch (Throwable t) {
                     dbc.report(report, Messages.get().container(
@@ -1353,19 +1302,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             foldersSize,
                             onlineProject,
                             new CmsFolder(currentFolder),
-                            historyEnabled,
-                            publishDate,
                             publishList.getPublishHistoryId(),
-                            publishTag,
-                            maxVersions);
+                            publishTag);
 
                         dbc.pop();
                         // delete old historical entries
                         m_driverManager.getHistoryDriver().deleteEntries(
                             dbc,
-                            currentFolder.getStructureId(),
-                            currentFolder.getResourceId(),
-                            maxVersions);
+                            new CmsHistoryFile(currentFolder),
+                            OpenCms.getSystemInfo().getHistoryVersions(),
+                            -1);
 
                         // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                         internalResetResourceState(dbc, currentFolder);
@@ -1430,11 +1376,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         onlineProject,
                         currentResource,
                         publishedContentIds,
-                        historyEnabled,
-                        publishDate,
                         publishList.getPublishHistoryId(),
-                        publishTag,
-                        maxVersions);
+                        publishTag);
 
                     if (!currentResource.getState().isDeleted()) {
                         // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
@@ -1484,19 +1427,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         deletedFoldersSize,
                         onlineProject,
                         new CmsFolder(currentFolder),
-                        historyEnabled,
-                        publishDate,
                         publishList.getPublishHistoryId(),
-                        publishTag,
-                        maxVersions);
+                        publishTag);
 
                     dbc.pop();
                     // delete old historical entries
                     m_driverManager.getHistoryDriver().deleteEntries(
                         dbc,
-                        currentFolder.getStructureId(),
-                        currentFolder.getResourceId(),
-                        maxVersions);
+                        new CmsHistoryFile(currentFolder),
+                        OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion(),
+                        -1);
 
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
 
@@ -2548,11 +2488,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param resource the offline resource
      * @param state the state to store in the publish history entry
      * @param properties the offline properties
-     * @param historyEnabled if the history is enabled or not
-     * @param publishDate the current publish process date
      * @param publishHistoryId the current publish process id
      * @param publishTag the current publish process tag
-     * @param maxVersions the maximal number of versions per resource to keep
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -2561,27 +2498,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsResource resource,
         CmsResourceState state,
         List properties,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         try {
-            if (state.isDeleted() && !OpenCms.getSystemInfo().keepVersionHistory()) {
-                // delete all historical versions as well
-                m_driverManager.getHistoryDriver().deleteEntries(
-                    dbc,
-                    resource.getStructureId(),
-                    resource.getResourceId(),
-                    0);
-            } else if (historyEnabled) {
+            if (OpenCms.getSystemInfo().isHistoryEnabled()) {
                 // write the resource to the historical archive
                 if (properties == null) {
                     properties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), resource);
                 }
 
-                m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag, maxVersions);
+                m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag);
             }
             // write the resource to the publish history
             m_driverManager.getProjectDriver().writePublishHistory(
@@ -2605,11 +2532,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedResourceIds contains the UUIDs of already published content records
-     * @param historyEnabled if history is enabled
-     * @param publishDate the publish date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the max number of version
      * 
      * @throws CmsDataAccessException is something goes wrong
      */
@@ -2618,11 +2542,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedResourceIds,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         CmsResourceState resourceState = fixMovedResource(
             dbc,
@@ -2744,16 +2665,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         CmsFile offlineFile = new CmsFile(offlineResource);
         offlineFile.setContents(newFile.getContents());
-        internalWriteHistory(
-            dbc,
-            offlineFile,
-            resourceState,
-            offlineProperties,
-            historyEnabled,
-            publishDate,
-            publishHistoryId,
-            publishTag,
-            maxVersions);
+        internalWriteHistory(dbc, offlineFile, resourceState, offlineProperties, publishHistoryId, publishTag);
 
         m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineResource);
     }
@@ -2764,11 +2676,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
-     * @param historyEnabled if history is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the number of versions to keep
      * 
      * @throws CmsDataAccessException is something goes wrong
      */
@@ -2776,11 +2685,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         CmsResourceState resourceState = fixMovedResource(
             dbc,
@@ -2818,16 +2724,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc,
             dbc.currentProject().getUuid(),
             offlineFile.getResourceId()));
-        internalWriteHistory(
-            dbc,
-            offlineFile,
-            resourceState,
-            null,
-            historyEnabled,
-            publishDate,
-            publishHistoryId,
-            publishTag,
-            maxVersions);
+        internalWriteHistory(dbc, offlineFile, resourceState, null, publishHistoryId, publishTag);
 
         int propertyDeleteOption = -1;
         try {
@@ -2939,11 +2836,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedContentIds contains the UUIDs of already published content records
-     * @param historyEnabled if history is enabled
-     * @param publishDate the publish date
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * @param maxVersions the max number of version
      * 
      * @throws CmsDataAccessException is something goes wrong
      */
@@ -2952,11 +2846,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedContentIds,
-        boolean historyEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int publishTag,
-        int maxVersions) throws CmsDataAccessException {
+        int publishTag) throws CmsDataAccessException {
 
         CmsResourceState resourceState = fixMovedResource(
             dbc,
@@ -3048,16 +2939,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         CmsFile offlineFile = new CmsFile(offlineResource);
         offlineFile.setContents(newFile.getContents());
-        internalWriteHistory(
-            dbc,
-            offlineFile,
-            resourceState,
-            offlineProperties,
-            historyEnabled,
-            publishDate,
-            publishHistoryId,
-            publishTag,
-            maxVersions);
+        internalWriteHistory(dbc, offlineFile, resourceState, offlineProperties, publishHistoryId, publishTag);
 
         m_driverManager.getVfsDriver().updateRelations(dbc, onlineProject, offlineResource);
     }

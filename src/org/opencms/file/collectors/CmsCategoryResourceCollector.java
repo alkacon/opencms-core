@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/05/10 13:26:10 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.2
  */
@@ -86,11 +86,11 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * @author Raphael Schnuck
      *
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      *
      * @since 6.9.2
      */
-    public final class CmsExtendedCollectorData extends CmsCollectorData {
+    private static final class CmsExtendedCollectorData extends CmsCollectorData {
 
         /** The collector parameter key for the resource type. */
         public static final String PARAM_KEY_CATEGORY_TYPES = "categoryTypes";
@@ -111,7 +111,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         public static final String PARAM_KEY_SUB_TREE = "subTree";
 
         /** The log object for this class. */
-        private final Log LOG = CmsLog.getLog(CmsExtendedCollectorData.class);
+        private static final Log LOG = CmsLog.getLog(CmsExtendedCollectorData.class);
 
         /** The list of category types. */
         private List m_categoryTypes;
@@ -176,7 +176,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         }
 
         /**
-         * Returns the resource type.p>
+         * Returns the resource type.<p>
          *
          * @return the resource type
          */

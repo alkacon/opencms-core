@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.110.2.29 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.110.2.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.29 $
+ * @version $Revision: 1.110.2.30 $
  * 
  * @since 6.0.0 
  */
@@ -1026,14 +1026,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             CmsUUID dbcProjectId = dbc.getProjectId();
             dbc.setProjectId(CmsUUID.getNullUUID());
-            
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES_1");
 
             stmt.setString(1, offlineId.toString());
 
             res = stmt.executeQuery();
-            
             dbc.setProjectId(dbcProjectId);
 
             while (res.next()) {
@@ -1042,7 +1040,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     m_driverManager.getUserDriver().writeAccessControlEntry(dbc, onlineProject, ace);
                 }
             }
-
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/05/02 16:55:30 $
- * Version: $Revision: 1.25.2.15 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.25.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25.2.15 $
+ * @version $Revision: 1.25.2.16 $
  * 
  * @since 6.0.0 
  */
@@ -243,15 +243,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_PROJECT_OFFLINE_DESCRIPTION_1 = "GUI_DEFAULT_PROJECT_OFFLINE_DESCRIPTION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_PROJECT_ONLINE_DESCRIPTION_0 = "GUI_DEFAULT_PROJECT_ONLINE_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULT_PROJECT_SETUP_DESCRIPTION_0 = "GUI_DEFAULT_PROJECT_SETUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1 = "GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2007/05/03 13:48:56 $
- * Version: $Revision: 1.14.4.10 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.14.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.10 $
+ * @version $Revision: 1.14.4.11 $
  * 
  * @since 6.0.0
  */
@@ -94,7 +94,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_GUESTS_GROUP_1 = "INIT_GUESTS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_HISTORY_SETTINGS_2 = "INIT_HISTORY_SETTINGS_2";
+    public static final String INIT_HISTORY_SETTINGS_3 = "INIT_HISTORY_SETTINGS_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_CONFIG_FINISHED_0 = "INIT_IMPORT_CONFIG_FINISHED_0";

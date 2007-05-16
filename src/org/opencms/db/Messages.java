@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/05/14 12:26:15 $
- * Version: $Revision: 1.43.4.28 $
+ * Date   : $Date: 2007/05/16 15:57:30 $
+ * Version: $Revision: 1.43.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.28 $
+ * @version $Revision: 1.43.4.29 $
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DELETE_GROUP_1 = "ERR_DELETE_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_HISTORY_2 = "ERR_DELETE_HISTORY_2";
+    public static final String ERR_DELETE_HISTORY_4 = "ERR_DELETE_HISTORY_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_ORGUNIT_1 = "ERR_DELETE_ORGUNIT_1";
@@ -769,7 +769,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETE_NOTHING_0 = "RPT_DELETE_NOTHING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_VERSIONS_0 = "RPT_DELETE_VERSIONS_0";
+    public static final String RPT_END_DELETE_ACT_VERSIONS_0 = "RPT_END_DELETE_ACT_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_DELETE_DEL_VERSIONS_0 = "RPT_END_DELETE_DEL_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_DELETE_VERSIONS_0 = "RPT_END_DELETE_VERSIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_POINTS_DELETE_0 = "RPT_EXPORT_POINTS_DELETE_0";
@@ -788,6 +794,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_REMOVED_RESOURCE_1 = "RPT_PUBLISH_REMOVED_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_DELETE_ACT_VERSIONS_1 = "RPT_START_DELETE_ACT_VERSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_DELETE_DEL_VERSIONS_1 = "RPT_START_DELETE_DEL_VERSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_DELETE_DEL_VERSIONS_2 = "RPT_START_DELETE_DEL_VERSIONS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_DELETE_VERSIONS_0 = "RPT_START_DELETE_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_VERSION_DELETING_1 = "RPT_VERSION_DELETING_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.messages";

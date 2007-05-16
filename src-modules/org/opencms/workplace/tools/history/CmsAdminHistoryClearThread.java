@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2007/04/26 14:31:16 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9.4.1 $ 
+ * @version $Revision: 1.9.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,11 +93,13 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
 
         // get the necessary parameters from the map
         int versions = Integer.parseInt((String)m_params.get("versions"));
-        boolean cleanUp = Boolean.valueOf((String)m_params.get("cleanUp")).booleanValue();
+        int versionsDeleted = Integer.parseInt((String)m_params.get("versionsDeleted"));
+        long timeDeleted = Long.parseLong((String)m_params.get("timeDeleted"));
+        String folderName = (String)m_params.get("folderName");
 
         // delete the historical files
         try {
-            getCms().deleteHistoricalVersions(cleanUp, versions, getReport());
+            getCms().deleteHistoricalVersions(folderName, versions, versionsDeleted, timeDeleted, getReport());
         } catch (CmsException e) {
             getReport().println(e);
         }

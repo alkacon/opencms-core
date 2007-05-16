@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 6.5.6 
  */
@@ -206,7 +206,7 @@ public class CmsOrganizationalUnit {
     public String getDescription(Locale locale) {
 
         CmsMacroResolver macroResolver = new CmsMacroResolver();
-        macroResolver.setMessages(Messages.get().getBundle(locale));
+        macroResolver.setMessages(org.opencms.db.generic.Messages.get().getBundle(locale));
         return macroResolver.resolveMacros(m_description);
     }
 

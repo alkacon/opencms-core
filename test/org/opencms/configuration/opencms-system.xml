@@ -61,7 +61,7 @@
 		<events>
 			<eventmanager class="org.opencms.main.CmsTestEventManager"/>
 		</events>	
-	   	<versionhistory enabled="true" count="10"/>
+	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
 			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
 			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/05/03 13:48:47 $
- * Version: $Revision: 1.218.4.37 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.218.4.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.37 $ 
+ * @version $Revision: 1.218.4.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -1000,8 +1000,9 @@ public final class OpenCmsCore {
 
         // set version history information        
         getSystemInfo().setVersionHistorySettings(
-            systemConfiguration.isVersionHistoryEnabled(),
-            systemConfiguration.getVersionHistoryMaxCount());
+            systemConfiguration.isHistoryEnabled(),
+            systemConfiguration.getHistoryVersions(),
+            systemConfiguration.getHistoryVersionsAfterDeletion());
         // set mail configuration
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
@@ -1164,7 +1165,7 @@ public final class OpenCmsCore {
             m_publishManager.setPublishEngine(m_publishEngine);
             m_publishManager.setSecurityManager(m_securityManager);
             m_publishManager.initialize(initCmsObject(adminCms));
-            
+
             // intialize the module manager
             m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 
@@ -1181,7 +1182,7 @@ public final class OpenCmsCore {
             m_sessionManager.initialize(sessionStorageProvider);
 
             // everything is initialized, now start publishing
-            m_publishManager.startPublishing();            
+            m_publishManager.startPublishing();
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }

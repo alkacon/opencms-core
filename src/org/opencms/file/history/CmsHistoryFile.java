@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryFile.java,v $
- * Date   : $Date: 2007/05/02 16:55:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */
@@ -59,6 +59,18 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
 
     /** The publish tag of this historical resource. */
     private int m_publishTag;
+
+    /**
+     * Creates a dummy historical file from the given resource.<p>
+     * 
+     * @param resource the resource to wrap
+     */
+    public CmsHistoryFile(CmsResource resource) {
+
+        super(resource);
+        m_publishTag = 0;
+        m_parentId = null;
+    }
 
     /**
      * Constructor from a history resource.<p>

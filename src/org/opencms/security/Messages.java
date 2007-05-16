@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.20.4.9 $
+ * Date   : $Date: 2007/05/16 15:57:31 $
+ * Version: $Revision: 1.20.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.4.9 $ 
+ * @version $Revision: 1.20.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,16 +145,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ZIPCODE_VALIDATION_1 = "ERR_ZIPCODE_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0 = "GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0 = "GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_DISPLAY_NAME_2 = "GUI_ORGUNIT_DISPLAY_NAME_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ORGUNIT_ROOT_DESCRIPTION_0 = "GUI_ORGUNIT_ROOT_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PRINCIPAL_DISPLAY_NAME_2 = "GUI_PRINCIPAL_DISPLAY_NAME_2";
