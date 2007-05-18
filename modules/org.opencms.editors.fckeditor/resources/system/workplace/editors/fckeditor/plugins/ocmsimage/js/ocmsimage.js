@@ -353,7 +353,7 @@ function Ok()
 		oLink = FCK.Selection.MoveToAncestorNode("A");
 
 
-		var sLnkUrl = GetE('txtLnkUrl').value.trim();
+		var sLnkUrl = GetE('txtLnkUrl').value.Trim();
 		var linkOri = "";
 
  		if (insertLinkToOriginal()) {
@@ -407,7 +407,7 @@ function Ok()
 
 	} // end simple image tag
 
-	return true ;
+	return true;
 }
 
 function createEnhancedImage() {
@@ -621,7 +621,7 @@ function UpdatePreview(useTimeout)
 		}
 		UpdateImage( eImgPreview, true, true) ;
 
-		if ( GetE('txtLnkUrl').value.trim().length > 0 )
+		if ( GetE('txtLnkUrl').value.Trim().length > 0 )
 			eImgPreviewLink.href = 'javascript:void(null);' ;
 		else
 			SetAttribute( eImgPreviewLink, 'href', '' ) ;

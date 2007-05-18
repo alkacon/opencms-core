@@ -1,35 +1,38 @@
 <cfsetting enablecfoutputonly="Yes">
 <!---
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckeditor.cfm
- * 	ColdFusion integration. 
- * 	Note this module is created for use with Coldfusion 4.52 and above.
- * 	For a cfc version for coldfusion mx check the fckeditor.cfc.
- * 
- * 	Syntax: 
- * 
- * 	<cfmodule name="path/to/cfc/fckeditor" 
- * 		instanceName="myEditor"
- * 		toolbarSet="..."
- * 		width="..."
- * 		height="..:"
- * 		value="..."
- * 		config="..." 
- * 	>
- * 
- * File Authors:
- * 		Hendrik Kramer (hk@lwd.de)
- * 		Mark Woods (mark@thickpaddy.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * ColdFusion integration.
+ * Note this module is created for use with Coldfusion 4.52 and above.
+ * For a cfc version for coldfusion mx check the fckeditor.cfc.
+ *
+ * Syntax:
+ *
+ * <cfmodule name="path/to/cfc/fckeditor"
+ * 	instanceName="myEditor"
+ * 	toolbarSet="..."
+ * 	width="..."
+ * 	height="..:"
+ * 	value="..."
+ * 	config="..."
+ * >
 --->
 <!--- ::
 	 * 	Attribute validation
@@ -46,7 +49,7 @@
 <!--- ::
 	 * check browser compatibility via HTTP_USER_AGENT, if checkBrowser is true
 	:: --->
-	
+
 <cfscript>
 if( attributes.checkBrowser )
 {
@@ -108,7 +111,7 @@ else
 		// create configuration string: Key1=Value1&Key2=Value2&... (Key/Value:HTML encoded)
 
 		/**
-		 * CFML doesn't store casesensitive names for structure keys, but the configuration names must be casesensitive for js. 
+		 * CFML doesn't store casesensitive names for structure keys, but the configuration names must be casesensitive for js.
 		 * So we need to find out the correct case for the configuration keys.
 		 * We "fix" this by comparing the caseless configuration keys to a list of all available configuration options in the correct case.
 		 * changed 20041206 hk@lwd.de (improvements are welcome!)
@@ -120,9 +123,9 @@ else
 		lConfigKeys = lConfigKeys & ",LinkBrowser,LinkBrowserURL,LinkBrowserWindowWidth,LinkBrowserWindowHeight";
 		lConfigKeys = lConfigKeys & ",LinkUpload,LinkUploadURL,LinkUploadWindowWidth,LinkUploadWindowHeight,LinkUploadAllowedExtensions,LinkUploadDeniedExtensions";
 		lConfigKeys = lConfigKeys & ",ImageBrowser,ImageBrowserURL,ImageBrowserWindowWidth,ImageBrowserWindowHeight,SmileyPath,SmileyImages,SmileyColumns,SmileyWindowWidth,SmileyWindowHeight";
-		
+
 		sConfig = "";
-		
+
 		for( key in attributes.config )
 		{
 			iPos = listFindNoCase( lConfigKeys, key );
@@ -130,10 +133,10 @@ else
 			{
 				if( len( sConfig ) )
 					sConfig = sConfig & "&amp;";
-	
+
 				fieldValue = attributes.config[key];
 				fieldName = listGetAt( lConfigKeys, iPos );
-				
+
 				sConfig = sConfig & urlEncodedFormat( fieldName ) & '=' & urlEncodedFormat( fieldValue );
 			}
 		}
@@ -166,7 +169,7 @@ else
 	<div>
 	<textarea name="#attributes.instanceName#" rows="4" cols="40" style="WIDTH: #attributes.width#; HEIGHT: #attributes.height#">#HTMLEditFormat(attributes.value)#</textarea>
 	</div>
-	</cfoutput>	
+	</cfoutput>
 
 </cfif>
 

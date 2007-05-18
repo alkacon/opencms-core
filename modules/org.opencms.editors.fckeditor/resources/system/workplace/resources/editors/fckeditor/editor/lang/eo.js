@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: eo.js
- * 	Esperanto language file.
- * 
- * File Authors:
- * 		Tim Morley (timsk@openoffice.org)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Esperanto language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Atributoj de Elekta Kampo",
 TextareaProp		: "Atributoj de Teksta Areo",
 FormProp			: "Formularaj Atributoj",
 
-FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",
+FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Traktado de XHTML. Bonvolu pacienci...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Elekti Ankron",
 DlgLnkAnchorByName	: "Per Ankronomo",
 DlgLnkAnchorById	: "Per Elementidentigilo",
-DlgLnkNoAnchors		: "<Ne disponeblas ankroj en la dokumento>",
+DlgLnkNoAnchors		: "<Ne disponeblas ankroj en la dokumento>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Retadreso",
 DlgLnkEMailSubject	: "Temlinio",
 DlgLnkEMailBody		: "Mesaĝa korpo",
@@ -333,14 +337,14 @@ DlgReplaceReplAllBtn	: "Anstataŭigi Ĉiun",
 DlgReplaceWordChk		: "Tuta Vorto",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras intergluajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-V).",
 PasteErrorCut	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras eltondajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-X).",
 PasteErrorCopy	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras kopiajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-C).",
 
 PasteAsText		: "Interglui kiel Tekston",
 PasteFromWord	: "Interglui el Word",
 
-DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",	//MISSING
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<strong>Ctrl+V</strong>) and hit <strong>OK</strong>.",	//MISSING
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignore Font Face definitions",	//MISSING
 DlgPasteRemoveStyles	: "Remove Styles definitions",	//MISSING
 DlgPasteCleanBox		: "Clean Up Box",	//MISSING
@@ -486,7 +490,7 @@ DlgDocPreview		: "Aspekto",
 // Templates Dialog
 Templates			: "Templates",	//MISSING
 DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br />(the actual contents will be lost):",	//MISSING
 DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
 DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 DlgTemplatesReplace	: "Replace actual contents",	//MISSING
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "Pri",
 DlgAboutBrowserInfoTab	: "Informoj pri TTT-legilo",
 DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "versio",
-DlgAboutLicense		: "Disdonata laŭ la GNU Lesser General Public License",
 DlgAboutInfo		: "Por pli da informoj, vizitu"
-}
+};

@@ -1,20 +1,24 @@
 """
-FCKeditor - The text editor for internet
-Copyright (C) 2003-2006 Frederico Caldeira Knabben
+FCKeditor - The text editor for Internet - http://www.fckeditor.net
+Copyright (C) 2003-2007 Frederico Caldeira Knabben
 
-Licensed under the terms of the GNU Lesser General Public License:
-		http://www.opensource.org/licenses/lgpl-license.php
+== BEGIN LICENSE ==
 
-For further information visit:
-		http://www.fckeditor.net/
+Licensed under the terms of any of the following licenses at your
+choice:
 
-"Support Open Source software. What about a donation today?"
+ - GNU General Public License Version 2 or later (the "GPL")
+   http://www.gnu.org/licenses/gpl.html
 
-File Name: fckeditor.py
-	This is the integration file for Python.
+ - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+   http://www.gnu.org/licenses/lgpl.html
 
-File Authors:
-		Andrew Liu (andrew@liuholdings.com)
+ - Mozilla Public License Version 1.1 or later (the "MPL")
+   http://www.mozilla.org/MPL/MPL-1.1.html
+
+== END LICENSE ==
+
+This is the integration file for Python.
 """
 
 import cgi
@@ -102,7 +106,7 @@ class FCKeditor(object):
 					)
 		Html += "</div>"
 		return Html
-	
+
 	def IsCompatible(self):
 		if (os.environ.has_key("HTTP_USER_AGENT")):
 			sAgent = os.environ.get("HTTP_USER_AGENT", "")
@@ -142,4 +146,4 @@ class FCKeditor(object):
 				else:
 					sParams += "%s=%s" % (k, v)
 		return sParams
-					
+

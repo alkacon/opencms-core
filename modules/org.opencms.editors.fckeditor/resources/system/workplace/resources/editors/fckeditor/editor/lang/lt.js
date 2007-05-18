@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: lt.js
- * 	Lithuanian language file.
- * 
- * File Authors:
- * 		Tauras Paliulis (tauras.paliulis@tauras.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Lithuanian language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Atrankos lauko savybės",
 TextareaProp		: "Teksto srities savybės",
 FormProp			: "Formos savybės",
 
-FontFormats			: "Normalus;Formuotas;Kreipinio;Antraštinis 1;Antraštinis 2;Antraštinis 3;Antraštinis 4;Antraštinis 5;Antraštinis 6",
+FontFormats			: "Normalus;Formuotas;Kreipinio;Antraštinis 1;Antraštinis 2;Antraštinis 3;Antraštinis 4;Antraštinis 5;Antraštinis 6",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Apdorojamas XHTML. Prašome palaukti...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Pasirinkite žymę",
 DlgLnkAnchorByName	: "Pagal žymės vardą",
 DlgLnkAnchorById	: "Pagal žymės Id",
-DlgLnkNoAnchors		: "<Šiame dokumente žymių nėra>",
+DlgLnkNoAnchors		: "<Šiame dokumente žymių nėra>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "El.pašto adresas",
 DlgLnkEMailSubject	: "Žinutės tema",
 DlgLnkEMailBody		: "Žinutės turinys",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "Pakeisti viską",
 DlgReplaceWordChk		: "Atitikti pilną žodį",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Jūsų naršyklės saugumo nustatymai neleidžia redaktoriui automatiškai įvykdyti įdėjimo operacijų. Tam prašome naudoti klaviatūrą (Ctrl+V).",
 PasteErrorCut	: "Jūsų naršyklės saugumo nustatymai neleidžia redaktoriui automatiškai įvykdyti iškirpimo operacijų. Tam prašome naudoti klaviatūrą (Ctrl+X).",
 PasteErrorCopy	: "Jūsų naršyklės saugumo nustatymai neleidžia redaktoriui automatiškai įvykdyti kopijavimo operacijų. Tam prašome naudoti klaviatūrą (Ctrl+C).",
 
@@ -341,6 +344,7 @@ PasteAsText		: "Įdėti kaip gryną tekstą",
 PasteFromWord	: "Įdėti iš Word",
 
 DlgPasteMsg2	: "Žemiau esančiame įvedimo lauke įdėkite tekstą, naudodami klaviatūrą (<STRONG>Ctrl+V</STRONG>) ir spūstelkite mygtuką <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignoruoti šriftų nustatymus",
 DlgPasteRemoveStyles	: "Pašalinti stilių nustatymus",
 DlgPasteCleanBox		: "Trinti įvedimo lauką",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "Apie",
 DlgAboutBrowserInfoTab	: "Naršyklės informacija",
 DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "versija",
-DlgAboutLicense		: "Licencijuota pagal GNU mažesnės atsakomybės pagrindinės viešos licencijos sąlygas",
 DlgAboutInfo		: "Papildomą informaciją galima gauti"
-}
+};

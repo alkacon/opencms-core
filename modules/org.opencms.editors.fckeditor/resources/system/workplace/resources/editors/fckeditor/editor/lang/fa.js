@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fa.js
- * 	Persian language file.
- * 
- * File Authors:
- * 		Hamed Taj-Abadi (hamed@ranginkaman.com)
- * 		Pooyan Mahdavi (pooyanmx -@- gmail -.- com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Persian language file.
  */
 
 var FCKLang =
@@ -131,7 +134,7 @@ SelectionFieldProp	: "ویژگیهای فیلد چندگزینه‌ای",
 TextareaProp		: "ویژگیهای ناحیهٴ متنی",
 FormProp			: "ویژگیهای فرم",
 
-FontFormats			: "نرمال;فرمت‌شده;آدرس;سرنویس 1;سرنویس 2;سرنویس 3;سرنویس 4;سرنویس 5;سرنویس 6;بند;(DIV)",
+FontFormats			: "نرمال;فرمت‌شده;آدرس;سرنویس 1;سرنویس 2;سرنویس 3;سرنویس 4;سرنویس 5;سرنویس 6;بند;(DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "پردازش XHTML. لطفا صبر کنید...",
@@ -226,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "یک لنگر برگزینید",
 DlgLnkAnchorByName	: "با نام لنگر",
 DlgLnkAnchorById	: "با شناسهٴ المان",
-DlgLnkNoAnchors		: "<در این سند لنگری دردسترس نیست>",
+DlgLnkNoAnchors		: "<در این سند لنگری دردسترس نیست>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "نشانی پست الکترونیکی",
 DlgLnkEMailSubject	: "موضوع پیام",
 DlgLnkEMailBody		: "متن پیام",
@@ -259,7 +262,7 @@ DlgLnkPopTop		: "موقعیت ِبالا",
 DlnLnkMsgNoUrl		: "لطفا URL پیوند را بنویسید",
 DlnLnkMsgNoEMail	: "لطفا نشانی پست الکترونیکی را بنویسید",
 DlnLnkMsgNoAnchor	: "لطفا لنگری را برگزینید",
-DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
+DlnLnkMsgInvPopName	: "نام پنجرهٴ پاپاپ باید با یک نویسهٴ الفبایی آغاز گردد و نباید فاصله‌های خالی در آن باشند",
 
 // Color Dialog
 DlgColorTitle		: "گزینش رنگ",
@@ -334,7 +337,6 @@ DlgReplaceReplAllBtn	: "جایگزینی همهٴ یافته‌ها",
 DlgReplaceWordChk		: "همسانی با واژهٴ کامل",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "تنظیمات امنیتی مرورگر شما اجازه نمی‌دهد که ویرایشگر به طور خودکار عملکردهای چسباندن را انجام دهد. لطفا با دکمه‌های صفحه‌کلید این کار را انجام دهید (Ctrl+V).",
 PasteErrorCut	: "تنظیمات امنیتی مرورگر شما اجازه نمی‌دهد که ویرایشگر به طور خودکار عملکردهای برش را انجام دهد. لطفا با دکمه‌های صفحه‌کلید این کار را انجام دهید (Ctrl+X).",
 PasteErrorCopy	: "تنظیمات امنیتی مرورگر شما اجازه نمی‌دهد که ویرایشگر به طور خودکار عملکردهای کپی‌کردن را انجام دهد. لطفا با دکمه‌های صفحه‌کلید این کار را انجام دهید (Ctrl+C).",
 
@@ -342,6 +344,7 @@ PasteAsText		: "چسباندن به عنوان متن ِساده",
 PasteFromWord	: "چسباندن از Word",
 
 DlgPasteMsg2	: "لطفا متن را با کلیدهای (<STRONG>Ctrl+V</STRONG>) در این جعبهٴ متنی بچسبانید و <STRONG>پذیرش</STRONG> را بزنید.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "چشم‌پوشی از تعاریف نوع قلم",
 DlgPasteRemoveStyles	: "چشم‌پوشی از تعاریف سبک (style)",
 DlgPasteCleanBox		: "پاک‌کردن ناحیه",
@@ -378,9 +381,9 @@ IeSpellDownload			: "بررسی‌کنندهٴ املا نصب نشده است. 
 // Button Dialog
 DlgButtonText		: "متن (مقدار)",
 DlgButtonType		: "نوع",
-DlgButtonTypeBtn	: "Button",	//MISSING
-DlgButtonTypeSbm	: "Submit",	//MISSING
-DlgButtonTypeRst	: "Reset",	//MISSING
+DlgButtonTypeBtn	: "دکمه",
+DlgButtonTypeSbm	: "Submit",
+DlgButtonTypeRst	: "بازنشانی (Reset)",
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "نام",
@@ -429,7 +432,7 @@ DlgHiddenValue	: "مقدار",
 // Bulleted List Dialog
 BulletedListProp	: "ویژگیهای فهرست نقطه‌ای",
 NumberedListProp	: "ویژگیهای فهرست شماره‌دار",
-DlgLstStart			: "Start",	//MISSING
+DlgLstStart			: "آغاز",
 DlgLstType			: "نوع",
 DlgLstTypeCircle	: "دایره",
 DlgLstTypeDisc		: "قرص",
@@ -452,15 +455,15 @@ DlgDocLangDirLTR	: "چپ به راست (LTR(",
 DlgDocLangDirRTL	: "راست به چپ (RTL(",
 DlgDocLangCode		: "کد زبان",
 DlgDocCharSet		: "رمزگذاری نویسه‌گان",
-DlgDocCharSetCE		: "Central European",	//MISSING
-DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
-DlgDocCharSetCR		: "Cyrillic",	//MISSING
-DlgDocCharSetGR		: "Greek",	//MISSING
-DlgDocCharSetJP		: "Japanese",	//MISSING
-DlgDocCharSetKR		: "Korean",	//MISSING
-DlgDocCharSetTR		: "Turkish",	//MISSING
-DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
-DlgDocCharSetWE		: "Western European",	//MISSING
+DlgDocCharSetCE		: "اروپای مرکزی",
+DlgDocCharSetCT		: "چینی رسمی (Big5)",
+DlgDocCharSetCR		: "سیریلیک",
+DlgDocCharSetGR		: "یونانی",
+DlgDocCharSetJP		: "ژاپنی",
+DlgDocCharSetKR		: "کره‌ای",
+DlgDocCharSetTR		: "ترکی",
+DlgDocCharSetUN		: "یونیکُد (UTF-8)",
+DlgDocCharSetWE		: "اروپای غربی",
 DlgDocCharSetOther	: "رمزگذاری نویسه‌گان دیگر",
 
 DlgDocDocType		: "عنوان نوع سند",
@@ -487,16 +490,15 @@ DlgDocPreview		: "پیش‌نمایش",
 // Templates Dialog
 Templates			: "الگوها",
 DlgTemplatesTitle	: "الگوهای محتویات",
-DlgTemplatesSelMsg	: "لطفا الگوی موردنظر را برای بازکردن در ویرایشگر برگزینید<br>(محتویات اصلی از دست خواهند رفت):",
+DlgTemplatesSelMsg	: "لطفا الگوی موردنظر را برای بازکردن در ویرایشگر برگزینید<br>(محتویات کنونی از دست خواهند رفت):",
 DlgTemplatesLoading	: "بارگذاری فهرست الگوها. لطفا صبر کنید...",
 DlgTemplatesNoTpl	: "(الگوئی تعریف نشده است)",
-DlgTemplatesReplace	: "Replace actual contents",	//MISSING
+DlgTemplatesReplace	: "محتویات کنونی جایگزین شوند",
 
 // About Dialog
 DlgAboutAboutTab	: "درباره",
 DlgAboutBrowserInfoTab	: "اطلاعات مرورگر",
 DlgAboutLicenseTab	: "گواهینامه",
 DlgAboutVersion		: "نگارش",
-DlgAboutLicense		: "لیسانس برپایهٴبندهای آیین‌نامهٴ GNU Lesser General Public License",
 DlgAboutInfo		: "برای آگاهی بیشتر به این نشانی بروید"
-}
+};

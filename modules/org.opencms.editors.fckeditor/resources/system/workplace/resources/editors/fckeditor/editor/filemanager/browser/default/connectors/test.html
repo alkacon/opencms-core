@@ -1,36 +1,39 @@
 <!--
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: test.html
- * 	Test page for the File Browser connectors.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Test page for the File Browser connectors.
 -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>FCKeditor - Connectors Tests</title>
-	<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
 	<script type="text/javascript">
 
 function BuildBaseUrl( command )
 {
-	var sUrl =  
+	var sUrl =
 		document.getElementById('cmbConnector').value +
 		'?Command=' + command +
 		'&Type=' + document.getElementById('cmbType').value +
 		'&CurrentFolder=' + document.getElementById('txtFolder').value ;
-	
+
 	return sUrl ;
 }
 
@@ -40,12 +43,12 @@ function SetFrameUrl( url )
 		eRunningFrame.document.location = url ;
 	else
 		document.getElementById('eRunningFrame').src = url ;
-		
+
 	document.getElementById('eUrl').innerHTML = url ;
 }
 
 function GetFolders()
-{	
+{
 	SetFrameUrl( BuildBaseUrl( 'GetFolders' ) ) ;
 	return false ;
 }
@@ -59,12 +62,12 @@ function GetFoldersAndFiles()
 function CreateFolder()
 {
 	var sFolder = prompt( 'Type the folder name:', 'Test Folder' ) ;
-	
+
 	if ( ! sFolder )
-		return ;
-	
+		return false ;
+
 	var sUrl = BuildBaseUrl( 'CreateFolder' ) ;
-	sUrl += '&NewFolderName=' + escape( sFolder ) ;
+	sUrl += '&NewFolderName=' + encodeURIComponent( sFolder ) ;
 
 	SetFrameUrl( sUrl ) ;
 	return false ;
@@ -78,7 +81,7 @@ function OnUploadCompleted( errorNumber, fileName )
 			alert( 'File uploaded with no errors' ) ;
 			break ;
 		case 201 :
-			GetFoldersAndFiles()
+			GetFoldersAndFiles() ;
 			alert( 'A file with the same name is already available. The uploaded file has been renamed to "' + fileName + '"' ) ;
 			break ;
 		case 202 :
@@ -168,7 +171,7 @@ function SetAction()
 		</tr>
 		<tr>
 			<td height="100%" valign="top">
-				<iframe id="eRunningFrame" src="../../../../fckblank.html" name="eRunningFrame" width="100%"
+				<iframe id="eRunningFrame" src="javascript:void(0)" name="eRunningFrame" width="100%"
 					height="100%"></iframe>
 			</td>
 		</tr>

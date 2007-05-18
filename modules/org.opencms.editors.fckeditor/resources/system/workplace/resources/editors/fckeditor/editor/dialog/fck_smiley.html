@@ -1,22 +1,26 @@
-<!--
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fck_smiley.html
- * 	Smileys (emoticons) dialog window.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
--->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<!--
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Smileys (emoticons) dialog window.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title></title>
@@ -44,7 +48,7 @@ function InsertSmiley( url )
 	var oImg = oEditor.FCK.CreateElement( 'IMG' ) ;
 	oImg.src = url ;
 	oImg.setAttribute( '_fcksavedurl', url ) ;
-	
+
 	// For long smileys list, it seams that IE continues loading the images in
 	// the background when you quickly select one image. so, let's clear
 	// everything before closing.
@@ -73,7 +77,7 @@ var FCKConfig = oEditor.FCKConfig ;
 var sBasePath	= FCKConfig.SmileyPath ;
 var aImages		= FCKConfig.SmileyImages ;
 var iCols		= FCKConfig.SmileyColumns ;
-var iColWidth	= parseInt( 100 / iCols ) ;
+var iColWidth	= parseInt( 100 / iCols, 10 ) ;
 
 var i = 0 ;
 while (i < aImages.length)

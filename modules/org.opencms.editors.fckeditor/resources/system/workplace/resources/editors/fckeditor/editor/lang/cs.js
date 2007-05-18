@@ -1,22 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: cs.js
- * 	Czech language file.
- * 
- * File Authors:
- * 		David Horák (david.horak@email.cz)
- * 		Petr Plavjaník (plavjanik@gmail.com)
- * 		Dave MacBlack (davemacblack@users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Czech language file.
  */
 
 var FCKLang =
@@ -132,7 +134,7 @@ SelectionFieldProp	: "Vlastnosti seznamu",
 TextareaProp		: "Vlastnosti textové oblasti",
 FormProp			: "Vlastnosti formuláře",
 
-FontFormats			: "Normální;Formátovaný;Adresa;Nadpis 1;Nadpis 2;Nadpis 3;Nadpis 4;Nadpis 5;Nadpis 6",
+FontFormats			: "Normální;Formátovaný;Adresa;Nadpis 1;Nadpis 2;Nadpis 3;Nadpis 4;Nadpis 5;Nadpis 6",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Probíhá zpracování XHTML. Prosím čekejte...",
@@ -227,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Vybrat kotvu",
 DlgLnkAnchorByName	: "Podle jména kotvy",
 DlgLnkAnchorById	: "Podle Id objektu",
-DlgLnkNoAnchors		: "<Ve stránce žádná kotva není definována>",
+DlgLnkNoAnchors		: "<Ve stránce žádná kotva není definována>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mailová adresa",
 DlgLnkEMailSubject	: "Předmět zprávy",
 DlgLnkEMailBody		: "Tělo zprávy",
@@ -335,7 +337,6 @@ DlgReplaceReplAllBtn	: "Nahradit vše",
 DlgReplaceWordChk		: "Pouze celá slova",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Bezpečnostní nastavení Vašeho prohlížeče nedovolují editoru spustit funkci pro vložení textu ze schránky. Prosím vložte text ze schránky pomocí klávesnice (Ctrl+V).",
 PasteErrorCut	: "Bezpečnostní nastavení Vašeho prohlížeče nedovolují editoru spustit funkci pro vyjmutí zvoleného textu do schránky. Prosím vyjměte zvolený text do schránky pomocí klávesnice (Ctrl+X).",
 PasteErrorCopy	: "Bezpečnostní nastavení Vašeho prohlížeče nedovolují editoru spustit funkci pro kopírování zvoleného textu do schránky. Prosím zkopírujte zvolený text do schránky pomocí klávesnice (Ctrl+C).",
 
@@ -343,6 +344,7 @@ PasteAsText		: "Vložit jako čistý text",
 PasteFromWord	: "Vložit text z Wordu",
 
 DlgPasteMsg2	: "Do následujícího pole vložte požadovaný obsah pomocí klávesnice (<STRONG>Ctrl+V</STRONG>) a stiskněte <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignorovat písmo",
 DlgPasteRemoveStyles	: "Odstranit styly",
 DlgPasteCleanBox		: "Vyčistit",
@@ -498,6 +500,5 @@ DlgAboutAboutTab	: "O aplikaci",
 DlgAboutBrowserInfoTab	: "Informace o prohlížeči",
 DlgAboutLicenseTab	: "Licence",
 DlgAboutVersion		: "verze",
-DlgAboutLicense		: "Licencováno pod GNU Lesser General Public License",
 DlgAboutInfo		: "Více informací získáte na"
-}
+};

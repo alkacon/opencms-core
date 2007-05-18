@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckxhtmlentities.js
- * 	This file define the HTML entities handled by the editor.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * This file define the HTML entities handled by the editor.
  */
 
 var FCKXHtmlEntities = new Object() ;
@@ -25,6 +29,7 @@ FCKXHtmlEntities.Initialize = function()
 		return ;
 
 	var sChars = '' ;
+	var oEntities, e ;
 
 	if ( FCKConfig.ProcessHTMLEntities )
 	{
@@ -134,7 +139,7 @@ FCKXHtmlEntities.Initialize = function()
 			'♥':'hearts',
 			'♦':'diams',
 
-			// Other Special Characters 
+			// Other Special Characters
 
 			'"':'quot',
 		//	'&':'amp',		// This entity is automatically handled by the XHTML parser.
@@ -166,13 +171,13 @@ FCKXHtmlEntities.Initialize = function()
 		} ;
 
 		// Process Base Entities.
-		for ( var e in FCKXHtmlEntities.Entities )
+		for ( e in FCKXHtmlEntities.Entities )
 			sChars += e ;
 
 		// Include Latin Letters Entities.
 		if ( FCKConfig.IncludeLatinEntities )
 		{
-			var oEntities = {
+			oEntities = {
 				'À':'Agrave',
 				'Á':'Aacute',
 				'Â':'Acirc',
@@ -240,21 +245,21 @@ FCKXHtmlEntities.Initialize = function()
 				'Š':'Scaron',
 				'š':'scaron',
 				'Ÿ':'Yuml'
-			} ; 
-			
-			for ( var e in oEntities )
+			} ;
+
+			for ( e in oEntities )
 			{
 				FCKXHtmlEntities.Entities[ e ] = oEntities[ e ] ;
 				sChars += e ;
 			}
-			
+
 			oEntities = null ;
 		}
 
 		// Include Greek Letters Entities.
 		if ( FCKConfig.IncludeGreekEntities )
 		{
-			var oEntities = {
+			oEntities = {
 				'Α':'Alpha',
 				'Β':'Beta',
 				'Γ':'Gamma',
@@ -306,14 +311,14 @@ FCKXHtmlEntities.Initialize = function()
 				'ω':'omega'
 			} ;
 
-			for ( var e in oEntities )
+			for ( e in oEntities )
 			{
 				FCKXHtmlEntities.Entities[ e ] = oEntities[ e ] ;
 				sChars += e ;
 			}
 
 			oEntities = null ;
-		}		
+		}
 	}
 	else
 	{
@@ -327,13 +332,13 @@ FCKXHtmlEntities.Initialize = function()
 
 	// Create the Regex used to find entities in the text.
 	var sRegexPattern = '[' + sChars + ']' ;
-	
+
 	if ( FCKConfig.ProcessNumericEntities )
 		sRegexPattern = '[^ -~]|' + sRegexPattern ;
 
 	var sAdditional = FCKConfig.AdditionalNumericEntities ;
 
-	if ( sAdditional || sAdditional.length > 0 )
+	if ( sAdditional && sAdditional.length > 0 )
 		sRegexPattern += '|' + FCKConfig.AdditionalNumericEntities ;
 
 	FCKXHtmlEntities.EntitiesRegex = new RegExp( sRegexPattern, 'g' ) ;

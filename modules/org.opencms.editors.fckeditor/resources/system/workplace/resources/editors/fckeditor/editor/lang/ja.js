@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: ja.js
- * 	Japanese language file.
- * 
- * File Authors:
- * 		Takashi Yamaguchi (jack@omakase.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Japanese language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "選択フィールド プロパティ",
 TextareaProp		: "テキストエリア プロパティ",
 FormProp			: "フォーム プロパティ",
 
-FontFormats			: "標準;書式付き;アドレス;見出し 1;見出し 2;見出し 3;見出し 4;見出し 5;見出し 6;標準 (DIV)",
+FontFormats			: "標準;書式付き;アドレス;見出し 1;見出し 2;見出し 3;見出し 4;見出し 5;見出し 6;標準 (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "XHTML処理中. しばらくお待ちください...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "アンカーを選択",
 DlgLnkAnchorByName	: "アンカー名",
 DlgLnkAnchorById	: "エレメントID",
-DlgLnkNoAnchors		: "<ドキュメントにおいて利用可能なアンカーはありません。>",
+DlgLnkNoAnchors		: "<ドキュメントにおいて利用可能なアンカーはありません。>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mail アドレス",
 DlgLnkEMailSubject	: "件名",
 DlgLnkEMailBody		: "本文",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "すべて置換え",
 DlgReplaceWordChk		: "単語単位で一致",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "ブラウザーのセキュリティ設定によりエディタの貼り付け操作が自動で実行することができません。実行するには手動でキーボードの(Ctrl+V)を使用してください。",
 PasteErrorCut	: "ブラウザーのセキュリティ設定によりエディタの切り取り操作が自動で実行することができません。実行するには手動でキーボードの(Ctrl+X)を使用してください。",
 PasteErrorCopy	: "ブラウザーのセキュリティ設定によりエディタのコピー操作が自動で実行することができません。実行するには手動でキーボードの(Ctrl+C)を使用してください。",
 
@@ -341,6 +344,7 @@ PasteAsText		: "プレーンテキスト貼り付け",
 PasteFromWord	: "ワード文章から貼り付け",
 
 DlgPasteMsg2	: "キーボード(<STRONG>Ctrl+V</STRONG>)を使用して、次の入力エリア内で貼って、<STRONG>OK</STRONG>を押してください。",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "FontタグのFace属性を無視します。",
 DlgPasteRemoveStyles	: "スタイル定義を削除します。",
 DlgPasteCleanBox		: "入力エリアクリア",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "バージョン情報",
 DlgAboutBrowserInfoTab	: "ブラウザ情報",
 DlgAboutLicenseTab	: "ライセンス",
 DlgAboutVersion		: "バージョン",
-DlgAboutLicense		: "Licensed under the terms of the GNU Lesser General Public License",
 DlgAboutInfo		: "より詳しい情報はこちらで"
-}
+};
