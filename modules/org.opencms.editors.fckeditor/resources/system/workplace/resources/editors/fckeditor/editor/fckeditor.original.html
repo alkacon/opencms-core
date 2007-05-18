@@ -1,21 +1,25 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckeditor.original.html
- * 	Main page that holds the editor.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Main page that holds the editor.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -34,7 +38,7 @@
 
 function LoadScript( url )
 {
-	document.write( '<script type="text/javascript" src="' + url + '" onerror="alert(\'Error loading \' + this.src);"><\/script>' ) ;
+	document.write( '<scr' + 'ipt type="text/javascript" src="' + url + '" onerror="alert(\'Error loading \' + this.src);"><\/scr' + 'ipt>' ) ;
 }
 
 function LoadCss( url )
@@ -58,27 +62,37 @@ if ( sSuffix == 'ie' )
 
 LoadScript( '_source/internals/fckbrowserinfo.js' ) ;
 LoadScript( '_source/internals/fckurlparams.js' ) ;
+LoadScript( '_source/classes/fckevents.js' ) ;
 LoadScript( '_source/internals/fck.js' ) ;
+LoadScript( '_source/internals/fck_' + sSuffix + '.js' ) ;
 LoadScript( '_source/internals/fckconfig.js' ) ;
 
 LoadScript( '_source/internals/fckdebug.js' ) ;
+LoadScript( '_source/internals/fckdomtools.js' ) ;
 LoadScript( '_source/internals/fcktools.js' ) ;
 LoadScript( '_source/internals/fcktools_' + sSuffix + '.js' ) ;
 LoadScript( '_source/fckeditorapi.js' ) ;
+LoadScript( '_source/classes/fckimagepreloader.js' ) ;
 LoadScript( '_source/internals/fckregexlib.js' ) ;
+LoadScript( '_source/internals/fcklistslib.js' ) ;
 LoadScript( '_source/internals/fcklanguagemanager.js' ) ;
-LoadScript( '_source/classes/fckevents.js' ) ;
 LoadScript( '_source/internals/fckxhtmlentities.js' ) ;
 LoadScript( '_source/internals/fckxhtml.js' ) ;
 LoadScript( '_source/internals/fckxhtml_' + sSuffix + '.js' ) ;
 LoadScript( '_source/internals/fckcodeformatter.js' ) ;
 LoadScript( '_source/internals/fckundo_' + sSuffix + '.js' ) ;
 LoadScript( '_source/classes/fckeditingarea.js' ) ;
+LoadScript( '_source/classes/fckkeystrokehandler.js' ) ;
+
+LoadScript( '_source/internals/fcklisthandler.js' ) ;
+LoadScript( '_source/classes/fckelementpath.js' ) ;
+LoadScript( '_source/classes/fckdomrange.js' ) ;
+LoadScript( '_source/classes/fckdocumentfragment_' + sSuffix + '.js' ) ;
+LoadScript( '_source/classes/fckw3crange.js' ) ;
+LoadScript( '_source/classes/fckdomrange_' + sSuffix + '.js' ) ;
+LoadScript( '_source/classes/fckenterkey.js' ) ;
+
 LoadScript( '_source/internals/fckdocumentprocessor.js' ) ;
-LoadScript( '_source/internals/fck_1.js' ) ;
-LoadScript( '_source/internals/fck_1_' + sSuffix + '.js' ) ;
-LoadScript( '_source/internals/fck_2.js' ) ;
-LoadScript( '_source/internals/fck_2_' + sSuffix + '.js' ) ;
 LoadScript( '_source/internals/fckselection.js' ) ;
 LoadScript( '_source/internals/fckselection_' + sSuffix + '.js' ) ;
 
@@ -133,9 +147,20 @@ LoadScript( '../fckconfig.js' ) ;
 	</script>
 	<script type="text/javascript">
 
-// Create the default cleanup object used by the editor.
 if ( FCKBrowserInfo.IsIE )
 {
+	// Remove IE mouse flickering.
+	try
+	{
+		document.execCommand( 'BackgroundImageCache', false, true ) ;
+	}
+	catch (e)
+	{
+		// We have been reported about loading problems caused by the above
+		// line. For safety, let's just ignore errors.
+	}
+
+	// Create the default cleanup object used by the editor.
 	FCK.IECleanup = new FCKIECleanup( window ) ;
 	FCK.IECleanup.AddItem( FCKTempBin, FCKTempBin.Reset ) ;
 	FCK.IECleanup.AddItem( FCK, FCK_Cleanup ) ;
@@ -174,13 +199,13 @@ FCKPlugins.Load() ;
 
 	</script>
 	<script type="text/javascript">
-	
+
 // Set the editor interface direction.
 window.document.dir = FCKLang.Dir ;
 
 // Activate pasting operations.
 if ( FCKConfig.ForcePasteAsPlainText || FCKConfig.AutoDetectPasteFromWord )
-	FCK.Events.AttachEvent( "OnPaste", FCK.Paste ) ;
+	FCK.Events.AttachEvent( 'OnPaste', FCK.Paste ) ;
 
 	</script>
 	<script type="text/javascript">
@@ -203,7 +228,7 @@ function LoadToolbarSetup()
 function LoadToolbar()
 {
 	var oToolbarSet = FCK.ToolbarSet = FCKToolbarSet_Create() ;
-	
+
 	if ( oToolbarSet.IsLoaded )
 		StartEditor() ;
 	else
@@ -233,12 +258,14 @@ function WaitForActive( editorInstance, newStatus )
 		if ( FCKBrowserInfo.IsGecko )
 			FCKTools.RunFunction( window.onresize ) ;
 
+		_AttachFormSubmitToAPI() ;
+
 		FCK.SetStatus( FCK_STATUS_COMPLETE ) ;
 
-		// Call the special "FCKeditor_OnComplete" function that should be present in 
+		// Call the special "FCKeditor_OnComplete" function that should be present in
 		// the HTML page where the editor is located.
 		if ( typeof( window.parent.FCKeditor_OnComplete ) == 'function' )
-			window.parent.FCKeditor_OnComplete( FCK ) ;	
+			window.parent.FCKeditor_OnComplete( FCK ) ;
 	}
 }
 
@@ -253,8 +280,8 @@ if ( FCKBrowserInfo.IsGecko )
 
 		var oCell = document.getElementById( 'xEditingArea' ) ;
 
-		var eInnerElement ;
-		if ( eInnerElement = oCell.firstChild )
+		var eInnerElement = oCell.firstChild ;
+		if ( eInnerElement )
 		{
 			eInnerElement.style.height = 0 ;
 			eInnerElement.style.height = oCell.scrollHeight - 2 ;
@@ -284,8 +311,8 @@ if ( FCKBrowserInfo.IsGecko )
 				</table>
 			</td>
 		</tr>
-		<tr style="height: 100%">
-			<td id="xEditingArea" valign="top"></td>
+		<tr>
+			<td id="xEditingArea" valign="top" style="height: 100%"></td>
 		</tr>
 	</table>
 </body>

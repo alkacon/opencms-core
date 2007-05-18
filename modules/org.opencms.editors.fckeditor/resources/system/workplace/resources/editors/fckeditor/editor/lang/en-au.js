@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: en-au.js
- * 	English (Australia) language file.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
- * 		Christopher Dawes (fckeditor@dawes.id.au)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * English (Australia) language file.
  */
 
 var FCKLang =
@@ -131,7 +134,7 @@ SelectionFieldProp	: "Selection Field Properties",
 TextareaProp		: "Textarea Properties",
 FormProp			: "Form Properties",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Processing XHTML. Please wait...",
@@ -226,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Select an Anchor",
 DlgLnkAnchorByName	: "By Anchor Name",
 DlgLnkAnchorById	: "By Element Id",
-DlgLnkNoAnchors		: "<No anchors available in the document>",
+DlgLnkNoAnchors		: "(No anchors available in the document)",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mail Address",
 DlgLnkEMailSubject	: "Message Subject",
 DlgLnkEMailBody		: "Message Body",
@@ -334,7 +337,6 @@ DlgReplaceReplAllBtn	: "Replace All",
 DlgReplaceWordChk		: "Match whole word",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Your browser security settings don't permit the editor to automatically execute pasting operations. Please use the keyboard for that (Ctrl+V).",
 PasteErrorCut	: "Your browser security settings don't permit the editor to automatically execute cutting operations. Please use the keyboard for that (Ctrl+X).",
 PasteErrorCopy	: "Your browser security settings don't permit the editor to automatically execute copying operations. Please use the keyboard for that (Ctrl+C).",
 
@@ -342,6 +344,7 @@ PasteAsText		: "Paste as Plain Text",
 PasteFromWord	: "Paste from Word",
 
 DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",
 DlgPasteIgnoreFont		: "Ignore Font Face definitions",
 DlgPasteRemoveStyles	: "Remove Styles definitions",
 DlgPasteCleanBox		: "Clean Up Box",
@@ -497,6 +500,5 @@ DlgAboutAboutTab	: "About",
 DlgAboutBrowserInfoTab	: "Browser Info",
 DlgAboutLicenseTab	: "License",
 DlgAboutVersion		: "version",
-DlgAboutLicense		: "Licensed under the terms of the GNU Lesser General Public License",
 DlgAboutInfo		: "For further information go to"
-}
+};

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2006/10/18 08:00:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/05/18 14:42:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,15 @@ function showToolbar(editorInstance) {
     	}
 }
 
-// add event for selection change
+// un-maximize the editor if it loses the focus
+function fitWindow(editorInstance) {
+	if (editorInstance.Commands.GetCommand("FitWindow").IsMaximized) {
+		editorInstance.Commands.GetCommand("FitWindow").Execute();
+	}
+}
+
+// add event for selection change & blur
 function FCKeditor_OnComplete(editorInstance) {
-	editorInstance.Events.AttachEvent("OnFocus", showToolbar) ;
+	editorInstance.Events.AttachEvent("OnFocus", showToolbar);
+	editorInstance.Events.AttachEvent("OnBlur", fitWindow);
 }

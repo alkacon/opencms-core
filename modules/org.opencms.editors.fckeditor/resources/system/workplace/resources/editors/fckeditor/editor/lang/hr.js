@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: hr.js
- * 	Croatian language file.
- * 
- * File Authors:
- * 		Alex Varga (avarga@globaldizajn.hr)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Croatian language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Selection svojstva",
 TextareaProp		: "Textarea svojstva",
 FormProp			: "Form svojstva",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Obrađujem XHTML. Molimo pričekajte...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Odaberi sidro",
 DlgLnkAnchorByName	: "Po nazivu sidra",
 DlgLnkAnchorById	: "Po Id elementa",
-DlgLnkNoAnchors		: "<Nema dostupnih sidra>",
+DlgLnkNoAnchors		: "<Nema dostupnih sidra>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mail adresa",
 DlgLnkEMailSubject	: "Naslov",
 DlgLnkEMailBody		: "Sadržaj poruke",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "Zamijeni sve",
 DlgReplaceWordChk		: "Usporedi cijele riječi",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog ljepljenja. Molimo koristite kraticu na tipkovnici (Ctrl+V).",
 PasteErrorCut	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog izrezivanja. Molimo koristite kraticu na tipkovnici (Ctrl+X).",
 PasteErrorCopy	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog kopiranja. Molimo koristite kraticu na tipkovnici (Ctrl+C).",
 
@@ -341,6 +344,7 @@ PasteAsText		: "Zalijepi kao čisti tekst",
 PasteFromWord	: "Zalijepi iz Worda",
 
 DlgPasteMsg2	: "Molimo zaljepite unutar doljnjeg okvira koristeći tipkovnicu (<STRONG>Ctrl+V</STRONG>) i kliknite <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Zanemari definiciju vrste fonta",
 DlgPasteRemoveStyles	: "Ukloni definicije stilova",
 DlgPasteCleanBox		: "Očisti okvir",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "O FCKEditoru",
 DlgAboutBrowserInfoTab	: "Podaci o pretraživaču",
 DlgAboutLicenseTab	: "Licenca",
 DlgAboutVersion		: "inačica",
-DlgAboutLicense		: "Licencirano pod uvjetima GNU Lesser General Public License",
 DlgAboutInfo		: "Za više informacija posjetite"
-}
+};

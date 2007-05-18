@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: el.js
- * 	Greek language file.
- * 
- * File Authors:
- * 		Vangelis Bibakis (bibakisv[-a-t-]yahoo.com)
- * 		Spyros Barbatos (sbarbatos{at}users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Greek language file.
  */
 
 var FCKLang =
@@ -131,7 +134,7 @@ SelectionFieldProp	: "Ιδιότητες πεδίου επιλογής",
 TextareaProp		: "Ιδιότητες περιοχής κειμένου",
 FormProp			: "Ιδιότητες φόρμας",
 
-FontFormats			: "Κανονικό;Μορφοποιημένο;Διεύθυνση;Επικεφαλίδα 1;Επικεφαλίδα 2;Επικεφαλίδα 3;Επικεφαλίδα 4;Επικεφαλίδα 5;Επικεφαλίδα 6",
+FontFormats			: "Κανονικό;Μορφοποιημένο;Διεύθυνση;Επικεφαλίδα 1;Επικεφαλίδα 2;Επικεφαλίδα 3;Επικεφαλίδα 4;Επικεφαλίδα 5;Επικεφαλίδα 6",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Επεξεργασία XHTML. Παρακαλώ περιμένετε...",
@@ -226,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Επιλέξτε μια άγκυρα",
 DlgLnkAnchorByName	: "Βάσει του Ονόματος (Name) της άγκυρας",
 DlgLnkAnchorById	: "Βάσει του Element Id",
-DlgLnkNoAnchors		: "<Δεν υπάρχουν άγκυρες στο κείμενο>",
+DlgLnkNoAnchors		: "<Δεν υπάρχουν άγκυρες στο κείμενο>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Διεύθυνση Ηλεκτρονικού Ταχυδρομείου",
 DlgLnkEMailSubject	: "Θέμα Μηνύματος",
 DlgLnkEMailBody		: "Κείμενο Μηνύματος",
@@ -334,7 +337,6 @@ DlgReplaceReplAllBtn	: "Αντικατάσταση Όλων",
 DlgReplaceWordChk		: "Εύρεση πλήρους λέξης",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία επικόλλησης. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+V).",
 PasteErrorCut	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία αποκοπής. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+X).",
 PasteErrorCopy	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία αντιγραφής. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+C).",
 
@@ -342,6 +344,7 @@ PasteAsText		: "Επικόλληση ως Απλό Κείμενο",
 PasteFromWord	: "Επικόλληση από το Word",
 
 DlgPasteMsg2	: "Παρακαλώ επικολήστε στο ακόλουθο κουτί χρησιμοποιόντας το πληκτρολόγιο (<STRONG>Ctrl+V</STRONG>) και πατήστε <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Αγνόηση προδιαγραφών γραμματοσειράς",
 DlgPasteRemoveStyles	: "Αφαίρεση προδιαγραφών στύλ",
 DlgPasteCleanBox		: "Κουτί εκαθάρισης",
@@ -497,6 +500,5 @@ DlgAboutAboutTab	: "Σχετικά",
 DlgAboutBrowserInfoTab	: "Πληροφορίες Browser",
 DlgAboutLicenseTab	: "Άδεια",
 DlgAboutVersion		: "έκδοση",
-DlgAboutLicense		: "Άδεια χρήσης υπό τους όρους της GNU Lesser General Public License",
 DlgAboutInfo		: "Για περισσότερες πληροφορίες"
-}
+};

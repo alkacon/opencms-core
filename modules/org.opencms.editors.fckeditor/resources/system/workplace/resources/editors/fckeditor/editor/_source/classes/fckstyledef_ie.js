@@ -1,40 +1,44 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckstyledef_ie.js
- * 	FCKStyleDef Class: represents a single stylke definition. (IE specific)
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * FCKStyleDef Class: represents a single stylke definition. (IE specific)
  */
 
 FCKStyleDef.prototype.ApplyToSelection = function()
 {
 	var oSelection = FCK.ToolbarSet.CurrentInstance.EditorDocument.selection ;
-	
+
 	if ( oSelection.type == 'Text' )
 	{
 		var oRange = oSelection.createRange() ;
-		
+
 		// Create the main element.
 		var e = document.createElement( this.Element ) ;
 		e.innerHTML = oRange.htmlText ;
-		
+
 		// Set the attributes.
 		this._AddAttributes( e ) ;
-		
+
 		// Remove the duplicated elements.
 		this._RemoveDuplicates( e ) ;
-		
+
 		// Replace the selection with the resulting HTML.
 		oRange.pasteHTML( e.outerHTML ) ;
 	}
@@ -62,7 +66,6 @@ FCKStyleDef.prototype._AddAttributes = function( targetElement )
 
 			case 'src' :
 				targetElement.setAttribute( '_fcksavedurl', this.Attributes[a], 0 ) ;
-
 			default :
 				targetElement.setAttribute( a, this.Attributes[a], 0 ) ;
 		}
@@ -75,7 +78,7 @@ FCKStyleDef.prototype._RemoveDuplicates = function( parent )
 	{
 		var oChild = parent.children[i] ;
 		this._RemoveDuplicates( oChild ) ;
-		
+
 		if ( this.IsEqual( oChild ) )
 			FCKTools.RemoveOuterTags( oChild ) ;
 	}
@@ -85,7 +88,7 @@ FCKStyleDef.prototype.IsEqual = function( e )
 {
 	if ( e.tagName != this.Element )
 		return false ;
-	
+
 	for ( var a in this.Attributes )
 	{
 		switch ( a.toLowerCase() )
@@ -103,7 +106,7 @@ FCKStyleDef.prototype.IsEqual = function( e )
 					return false ;
 		}
 	}
-	
+
 	return true ;
 }
 
@@ -134,6 +137,6 @@ FCKStyleDef.prototype._RemoveMe = function( elementToCheck )
 		else
 			FCKTools.RemoveOuterTags( elementToCheck ) ;
 	}
-	
+
 	this._RemoveMe( oParent ) ;
 }

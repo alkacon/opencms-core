@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fr.js
- * 	French language file.
- * 
- * File Authors:
- * 		Hubert Garrido (liane@users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * French language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Propriétés de la liste/du menu",
 TextareaProp		: "Propriétés de la zone de texte",
 FormProp			: "Propriétés du formulaire",
 
-FontFormats			: "Normal;Formaté;Adresse;En-tête 1;En-tête 2;En-tête 3;En-tête 4;En-tête 5;En-tête 6;Normal (DIV)",
+FontFormats			: "Normal;Formaté;Adresse;En-tête 1;En-tête 2;En-tête 3;En-tête 4;En-tête 5;En-tête 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Calcul XHTML. Veuillez patienter...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Sélectionner une ancre",
 DlgLnkAnchorByName	: "Par nom",
 DlgLnkAnchorById	: "Par id",
-DlgLnkNoAnchors		: "<Pas d'ancre disponible dans le document>",
+DlgLnkNoAnchors		: "<Pas d'ancre disponible dans le document>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Adresse E-Mail",
 DlgLnkEMailSubject	: "Sujet du message",
 DlgLnkEMailBody		: "Corps du message",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "Tout remplacer",
 DlgReplaceWordChk		: "Mot entier",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Les paramètres de sécurité de votre navigateur empêchent l'éditeur de coller automatiquement vos données. Veuillez utiliser les équivalents claviers (Ctrl+V).",
 PasteErrorCut	: "Les paramètres de sécurité de votre navigateur empêchent l'éditeur de couper automatiquement vos données. Veuillez utiliser les équivalents claviers (Ctrl+X).",
 PasteErrorCopy	: "Les paramètres de sécurité de votre navigateur empêchent l'éditeur de copier automatiquement vos données. Veuillez utiliser les équivalents claviers (Ctrl+C).",
 
@@ -341,6 +344,7 @@ PasteAsText		: "Coller comme texte",
 PasteFromWord	: "Coller à partir de Word",
 
 DlgPasteMsg2	: "Veuillez coller dans la zone ci-dessous en utilisant le clavier (<STRONG>Ctrl+V</STRONG>) et cliquez sur <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignorer les polices de caractères",
 DlgPasteRemoveStyles	: "Supprimer les styles",
 DlgPasteCleanBox		: "Effacer le contenu",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "A propos de",
 DlgAboutBrowserInfoTab	: "Navigateur",
 DlgAboutLicenseTab	: "License",
 DlgAboutVersion		: "version",
-DlgAboutLicense		: "License selon les termes de GNU Lesser General Public License",
 DlgAboutInfo		: "Pour plus d'informations, aller à"
-}
+};

@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: de.js
- * 	German language file.
- * 
- * File Authors:
- * 		Maik Unruh (m.unruh@mm-concept.de)
- * 		Hendrik Kramer (HK@lwd.de)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * German language file.
  */
 
 var FCKLang =
@@ -75,10 +78,10 @@ BulletedListLbl		: "Liste",
 BulletedList		: "Liste einfügen/entfernen",
 ShowTableBorders	: "Zeige Tabellenrahmen",
 ShowDetails			: "Zeige Details",
-Style				: "Style",
+Style				: "Stil",
 FontFormat			: "Format",
 Font				: "Schriftart",
-FontSize			: "Size",
+FontSize			: "Größe",
 TextColor			: "Textfarbe",
 BGColor				: "Hintergrundfarbe",
 Source				: "Quellcode",
@@ -131,7 +134,7 @@ SelectionFieldProp	: "Auswahlfeld Eigenschaften",
 TextareaProp		: "Textfeld (mehrzeilig) Eigenschaften",
 FormProp			: "Formular Eigenschaften",
 
-FontFormats			: "Normal;Formatiert;Addresse;Überschrift 1;Überschrift 2;Überschrift 3;Überschrift 4;Überschrift 5;Überschrift 6;Normal (DIV)",
+FontFormats			: "Normal;Formatiert;Addresse;Überschrift 1;Überschrift 2;Überschrift 3;Überschrift 4;Überschrift 5;Überschrift 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Bearbeite XHTML. Bitte warten...",
@@ -226,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Anker auswählen",
 DlgLnkAnchorByName	: "nach Anker Name",
 DlgLnkAnchorById	: "nach Element Id",
-DlgLnkNoAnchors		: "<keine Anker im Dokument vorhanden>",
+DlgLnkNoAnchors		: "<keine Anker im Dokument vorhanden>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mail Addresse",
 DlgLnkEMailSubject	: "Betreffzeile",
 DlgLnkEMailBody		: "Nachrichtentext",
@@ -334,7 +337,6 @@ DlgReplaceReplAllBtn	: "Alle Ersetzen",
 DlgReplaceWordChk		: "Nur ganze Worte suchen",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch einzufügen. Bitte benutzen Sie die System-Zwischenablage über STRG-C (kopieren) und STRG-V (einfügen).",
 PasteErrorCut	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch auszuschneiden. Bitte benutzen Sie die System-Zwischenablage über STRG-X (ausschneiden) und STRG-V (einfügen).",
 PasteErrorCopy	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch kopieren. Bitte benutzen Sie die System-Zwischenablage über STRG-C (kopieren).",
 
@@ -342,6 +344,7 @@ PasteAsText		: "Als Text einfügen",
 PasteFromWord	: "Aus Word einfügen",
 
 DlgPasteMsg2	: "Bitte fügen Sie den Text in der folgenden Box über die Tastatur (mit <STRONG>Ctrl+V</STRONG>) ein und bestätigen Sie mit <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignoriere Schriftart-Definitionen",
 DlgPasteRemoveStyles	: "Entferne Style-Definitionen",
 DlgPasteCleanBox		: "Inhalt aufräumen",
@@ -449,7 +452,7 @@ DlgDocMetaTab		: "Metadaten",
 DlgDocPageTitle		: "Seitentitel",
 DlgDocLangDir		: "Schriftrichtung",
 DlgDocLangDirLTR	: "Links nach Rechts",
-DlgDocLangDirRTL	: "rechts nach Links",
+DlgDocLangDirRTL	: "Rechts nach Links",
 DlgDocLangCode		: "Sprachkürzel",
 DlgDocCharSet		: "Zeichenkodierung",
 DlgDocCharSetCE		: "Zentraleuropäisch",
@@ -497,6 +500,5 @@ DlgAboutAboutTab	: "Über",
 DlgAboutBrowserInfoTab	: "Browser-Info",
 DlgAboutLicenseTab	: "Lizenz",
 DlgAboutVersion		: "Version",
-DlgAboutLicense		: "Lizensiert unter den Richtlinien der GNU Lesser General Public License",
 DlgAboutInfo		: "Für weitere Informationen siehe"
-}
+};

@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckcommands.js
- * 	Define all commands available in the editor.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Define all commands available in the editor.
  */
 
 var FCKCommands = FCK.Commands = new Object() ;
@@ -28,7 +32,7 @@ FCKCommands.RegisterCommand = function( commandName, command )
 FCKCommands.GetCommand = function( commandName )
 {
 	var oCommand = FCKCommands.LoadedCommands[ commandName ] ;
-	
+
 	if ( oCommand )
 		return oCommand ;
 
@@ -36,11 +40,11 @@ FCKCommands.GetCommand = function( commandName )
 	{
 		case 'DocProps'		: oCommand = new FCKDialogCommand( 'DocProps'	, FCKLang.DocProps				, 'dialog/fck_docprops.html'	, 400, 390, FCKCommands.GetFullPageState ) ; break ;
 		case 'Templates'	: oCommand = new FCKDialogCommand( 'Templates'	, FCKLang.DlgTemplatesTitle		, 'dialog/fck_template.html'	, 380, 450 ) ; break ;
-		case 'Link'			: oCommand = new FCKDialogCommand( 'Link'		, FCKLang.DlgLnkWindowTitle		, 'dialog/fck_link.html'		, 400, 330, FCK.GetNamedCommandState, 'CreateLink' ) ; break ;
+		case 'Link'			: oCommand = new FCKDialogCommand( 'Link'		, FCKLang.DlgLnkWindowTitle		, 'dialog/fck_link.html'		, 400, 330 ) ; break ;
 		case 'Unlink'		: oCommand = new FCKUnlinkCommand() ; break ;
 		case 'Anchor'		: oCommand = new FCKDialogCommand( 'Anchor'		, FCKLang.DlgAnchorTitle		, 'dialog/fck_anchor.html'		, 370, 170 ) ; break ;
-		case 'BulletedList'	: oCommand = new FCKDialogCommand( 'BulletedList', FCKLang.BulletedListProp		, 'dialog/fck_listprop.html'	, 370, 170 ) ; break ;
-		case 'NumberedList'	: oCommand = new FCKDialogCommand( 'NumberedList', FCKLang.NumberedListProp		, 'dialog/fck_listprop.html'	, 370, 170 ) ; break ;
+		case 'BulletedList'	: oCommand = new FCKDialogCommand( 'BulletedList', FCKLang.BulletedListProp		, 'dialog/fck_listprop.html?UL'	, 370, 170 ) ; break ;
+		case 'NumberedList'	: oCommand = new FCKDialogCommand( 'NumberedList', FCKLang.NumberedListProp		, 'dialog/fck_listprop.html?OL'	, 370, 170 ) ; break ;
 		case 'About'		: oCommand = new FCKDialogCommand( 'About'		, FCKLang.About					, 'dialog/fck_about.html'		, 400, 330 ) ; break ;
 
 		case 'Find'			: oCommand = new FCKDialogCommand( 'Find'		, FCKLang.DlgFindTitle			, 'dialog/fck_find.html'		, 340, 170 ) ; break ;
@@ -53,7 +57,6 @@ FCKCommands.GetCommand = function( commandName )
 		case 'Table'		: oCommand = new FCKDialogCommand( 'Table'		, FCKLang.DlgTableTitle			, 'dialog/fck_table.html'		, 450, 250 ) ; break ;
 		case 'TableProp'	: oCommand = new FCKDialogCommand( 'Table'		, FCKLang.DlgTableTitle			, 'dialog/fck_table.html?Parent', 400, 250 ) ; break ;
 		case 'TableCellProp': oCommand = new FCKDialogCommand( 'TableCell'	, FCKLang.DlgCellTitle			, 'dialog/fck_tablecell.html'	, 550, 250 ) ; break ;
-		case 'UniversalKey'	: oCommand = new FCKDialogCommand( 'UniversalKey', FCKLang.UniversalKeyboard	, 'dialog/fck_universalkey.html', 415, 300 ) ; break ;
 
 		case 'Style'		: oCommand = new FCKStyleCommand() ; break ;
 
@@ -70,6 +73,7 @@ FCKCommands.GetCommand = function( commandName )
 		case 'TextColor'	: oCommand = new FCKTextColorCommand('ForeColor') ; break ;
 		case 'BGColor'		: oCommand = new FCKTextColorCommand('BackColor') ; break ;
 
+		case 'Paste'		: oCommand = new FCKPasteCommand() ; break ;
 		case 'PasteText'	: oCommand = new FCKPastePlainTextCommand() ; break ;
 		case 'PasteWord'	: oCommand = new FCKPasteWordCommand() ; break ;
 
@@ -99,9 +103,11 @@ FCKCommands.GetCommand = function( commandName )
 		case 'Undo'	: oCommand = new FCKUndoCommand() ; break ;
 		case 'Redo'	: oCommand = new FCKRedoCommand() ; break ;
 
+		case 'SelectAll' : oCommand = new FCKSelectAllCommand() ; break ;
+
 		// Generic Undefined command (usually used when a command is under development).
 		case 'Undefined'	: oCommand = new FCKUndefinedCommand() ; break ;
-		
+
 		// By default we assume that it is a named command.
 		default:
 			if ( FCKRegexLib.NamedCommands.test( commandName ) )
@@ -112,9 +118,9 @@ FCKCommands.GetCommand = function( commandName )
 				return null ;
 			}
 	}
-	
+
 	FCKCommands.LoadedCommands[ commandName ] = oCommand ;
-	
+
 	return oCommand ;
 }
 

@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: ca.js
- * 	Catalan language file.
- * 
- * File Authors:
- * 		Jordi Cerdan (nan@myp.ad)
- * 		Marc Folch (mcus21@gmail.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Catalan language file.
  */
 
 var FCKLang =
@@ -131,7 +134,7 @@ SelectionFieldProp	: "Propietats del camp de selecció",
 TextareaProp		: "Propietats de l'àrea de text",
 FormProp			: "Propietats del formulari",
 
-FontFormats			: "Normal;Formatejat;Adreça;Encapçalament 1;Encapçalament 2;Encapçalament 3;Encapçalament 4;Encapçalament 5;Encapçalament 6",
+FontFormats			: "Normal;Formatejat;Adreça;Encapçalament 1;Encapçalament 2;Encapçalament 3;Encapçalament 4;Encapçalament 5;Encapçalament 6",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Processant XHTML. Si us plau esperi...",
@@ -226,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Selecciona una àncora",
 DlgLnkAnchorByName	: "Per nom d'àncora",
 DlgLnkAnchorById	: "Per Id d'element",
-DlgLnkNoAnchors		: "<No hi ha àncores disponibles en aquest document>",
+DlgLnkNoAnchors		: "<No hi ha àncores disponibles en aquest document>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Adreça d'E-Mail",
 DlgLnkEMailSubject	: "Assumpte del missatge",
 DlgLnkEMailBody		: "Cos del missatge",
@@ -334,7 +337,6 @@ DlgReplaceReplAllBtn	: "Reemplaça'ls tots",
 DlgReplaceWordChk		: "Cerca paraula completa",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "La seguretat del vostre navegador no permet executar automàticament les operacions d'enganxat. Si us plau, utilitzeu el teclat (Ctrl+V).",
 PasteErrorCut	: "La seguretat del vostre navegador no permet executar automàticament les operacions de retallar. Si us plau, utilitzeu el teclat (Ctrl+X).",
 PasteErrorCopy	: "La seguretat del vostre navegador no permet executar automàticament les operacions de copiar. Si us plau, utilitzeu el teclat (Ctrl+C).",
 
@@ -342,6 +344,7 @@ PasteAsText		: "Enganxa com a text sense format",
 PasteFromWord	: "Enganxa com a Word",
 
 DlgPasteMsg2	: "Si us plau, enganxeu dins del següent camp utilitzant el teclat (<STRONG>Ctrl+V</STRONG>) i premeu <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignora definicions de font",
 DlgPasteRemoveStyles	: "Elimina definicions d'estil",
 DlgPasteCleanBox		: "Neteja camp",
@@ -497,6 +500,5 @@ DlgAboutAboutTab	: "Quant a",
 DlgAboutBrowserInfoTab	: "Informació del navegador",
 DlgAboutLicenseTab	: "Llicència",
 DlgAboutVersion		: "versió",
-DlgAboutLicense		: "Segons els termes de la Llicència GNU Lesser General Public License",
 DlgAboutInfo		: "Per a més informació aneu a"
-}
+};

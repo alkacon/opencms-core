@@ -109,7 +109,7 @@ toolbar.append(",'-','Rule'");
 
 // determine if the insert special characters button should be shown
 if (options.showElement("option.specialchars", displayOptions)) {
-	toolbar.append(",'SpecialChar','UniversalKey'");
+	toolbar.append(",'SpecialChar'");
 }
 
 // insert print button
@@ -198,6 +198,28 @@ if (options.showElement("option.form", displayOptions)) {
 }
 
 %>
+
+FCKConfig.Keystrokes = [
+	[ CTRL + 65 /*A*/, true ],
+	[ CTRL + 67 /*C*/, true ],
+	[ CTRL + 70 /*F*/, true ],
+	[ CTRL + 83 /*S*/, true ],
+	[ CTRL + 88 /*X*/, true ],
+	[ CTRL + 86 /*V*/, 'Paste' ],
+	[ SHIFT + 45 /*INS*/, 'Paste' ],
+	[ CTRL + 90 /*Z*/, 'Undo' ],
+	[ CTRL + 89 /*Y*/, 'Redo' ],
+	[ CTRL + SHIFT + 90 /*Z*/, 'Redo' ],
+	[ CTRL + 76 /*L*/, 'Link' ],
+	[ CTRL + 66 /*B*/, 'Bold' ],
+	[ CTRL + 73 /*I*/, 'Italic' ],
+	[ CTRL + 85 /*U*/, 'Underline' ],
+	[ CTRL + SHIFT + 83 /*S*/, true ],
+	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ]<% 
+	if (options.showElement("option.sourcecode", displayOptions)) { %>,
+	[ CTRL + 9 /*TAB*/, 'Source' ]<%
+	} %>
+] ;
 
 FCKConfig.ToolbarSets["OpenCms"] = [
         <%= toolbar %>

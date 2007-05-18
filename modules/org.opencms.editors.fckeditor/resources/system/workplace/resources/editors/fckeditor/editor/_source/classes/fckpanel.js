@@ -1,43 +1,48 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckpanel.js
- * 	Component that creates floating panels. It is used by many 
- * 	other components, like the toolbar items, context menu, etc...
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Component that creates floating panels. It is used by many
+ * other components, like the toolbar items, context menu, etc...
  */
-
 
 var FCKPanel = function( parentWindow )
 {
 	this.IsRTL			= ( FCKLang.Dir == 'rtl' ) ;
 	this.IsContextMenu	= false ;
 	this._LockCounter	= 0 ;
-	
+
 	this._Window = parentWindow || window ;
-	
+
 	var oDocument ;
-	
+
 	if ( FCKBrowserInfo.IsIE )
 	{
 		// Create the Popup that will hold the panel.
 		this._Popup	= this._Window.createPopup() ;
 		oDocument = this.Document = this._Popup.document ;
+
+		FCK.IECleanup.AddItem( this, FCKPanel_Cleanup ) ;
 	}
 	else
 	{
-		var oIFrame = this._IFrame = this._Window.document.createElement('iframe') ; 
+		var oIFrame = this._IFrame = this._Window.document.createElement('iframe') ;
 		oIFrame.src					= 'javascript:void(0)' ;
 		oIFrame.allowTransparency	= true ;
 		oIFrame.frameBorder			= '0' ;
@@ -50,9 +55,9 @@ var FCKPanel = function( parentWindow )
 			window.frameElement.parentNode.insertBefore( oIFrame, window.frameElement ) ;
 		else
 			this._Window.document.body.appendChild( oIFrame ) ;
-		
-		var oIFrameWindow = oIFrame.contentWindow ; 
-		
+
+		var oIFrameWindow = oIFrame.contentWindow ;
+
 		oDocument = this.Document = oIFrameWindow.document ;
 
 		// Initialize the IFRAME document body.
@@ -65,7 +70,7 @@ var FCKPanel = function( parentWindow )
 	}
 
 	oDocument.dir = FCKLang.Dir ;
-	
+
 	oDocument.oncontextmenu = FCKTools.CancelEvent ;
 
 
@@ -74,9 +79,6 @@ var FCKPanel = function( parentWindow )
 
 	// The "float" property must be set so Firefox calculates the size correcly.
 	this.MainNode.style.cssFloat = this.IsRTL ? 'right' : 'left' ;
-
-	if ( FCK.IECleanup )
-		FCK.IECleanup.AddItem( this, FCKPanel_Cleanup ) ;
 }
 
 
@@ -87,7 +89,7 @@ FCKPanel.prototype.AppendStyleSheet = function( styleSheet )
 
 FCKPanel.prototype.Preload = function( x, y, relElement )
 {
-	// The offsetWidth and offsetHeight properties are not available if the 
+	// The offsetWidth and offsetHeight properties are not available if the
 	// element is not visible. So we must "show" the popup with no size to
 	// be able to use that values in the second call (IE only).
 	if ( this._Popup )
@@ -96,19 +98,21 @@ FCKPanel.prototype.Preload = function( x, y, relElement )
 
 FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 {
+	var iMainWidth ;
+
 	if ( this._Popup )
 	{
-		// The offsetWidth and offsetHeight properties are not available if the 
+		// The offsetWidth and offsetHeight properties are not available if the
 		// element is not visible. So we must "show" the popup with no size to
 		// be able to use that values in the second call.
 		this._Popup.show( x, y, 0, 0, relElement ) ;
 
-		// The following lines must be place after the above "show", otherwise it 
+		// The following lines must be place after the above "show", otherwise it
 		// doesn't has the desired effect.
 		this.MainNode.style.width	= width ? width + 'px' : '' ;
 		this.MainNode.style.height	= height ? height + 'px' : '' ;
-		
-		var iMainWidth = this.MainNode.offsetWidth ;
+
+		iMainWidth = this.MainNode.offsetWidth ;
 
 		if ( this.IsRTL )
 		{
@@ -117,10 +121,10 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 			else if ( relElement )
 				x  = ( x * -1 ) + relElement.offsetWidth - iMainWidth ;
 		}
-	
+
 		// Second call: Show the Popup at the specified location, with the correct size.
 		this._Popup.show( x, y, iMainWidth, this.MainNode.offsetHeight, relElement ) ;
-		
+
 		if ( this.OnHide )
 		{
 			if ( this._Timer )
@@ -141,7 +145,7 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 		this.MainNode.style.width	= width ? width + 'px' : '' ;
 		this.MainNode.style.height	= height ? height + 'px' : '' ;
 
-		var iMainWidth = this.MainNode.offsetWidth ;
+		iMainWidth = this.MainNode.offsetWidth ;
 
 		if ( !width )	this._IFrame.width	= 1 ;
 		if ( !height )	this._IFrame.height	= 1 ;
@@ -152,7 +156,11 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 		// work when the editor is in RTL.
 		iMainWidth = this.MainNode.offsetWidth ;
 
-		var oPos = FCKTools.GetElementPosition( ( relElement.nodeType == 9 ? relElement.body : relElement), this._Window ) ;
+		var oPos = FCKTools.GetElementPosition(
+			relElement.nodeType == 9 ?
+				( FCKTools.IsStrictMode( relElement ) ? relElement.documentElement : relElement.body ) :
+				relElement,
+			this._Window ) ;
 
 		if ( this.IsRTL && !this.IsContextMenu )
 			x = ( x * -1 ) ;
@@ -171,7 +179,7 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 		{
 			var oViewPaneSize = FCKTools.GetViewPaneSize( this._Window ) ;
 			var oScrollPosition = FCKTools.GetScrollPosition( this._Window ) ;
-			
+
 			var iViewPaneHeight	= oViewPaneSize.Height + oScrollPosition.Y ;
 			var iViewPaneWidth	= oViewPaneSize.Width + oScrollPosition.X ;
 
@@ -181,17 +189,17 @@ FCKPanel.prototype.Show = function( x, y, relElement, width, height )
 			if ( ( y + this.MainNode.offsetHeight ) > iViewPaneHeight )
 				y -= y + this.MainNode.offsetHeight - iViewPaneHeight ;
 		}
-		
+
 		if ( x < 0 )
 			 x = 0 ;
 
 		// Set the context menu DIV in the specified location.
 		this._IFrame.style.left	= x + 'px' ;
 		this._IFrame.style.top	= y + 'px' ;
-		
+
 		var iWidth	= iMainWidth ;
 		var iHeight	= this.MainNode.offsetHeight ;
-		
+
 		this._IFrame.width	= iWidth ;
 		this._IFrame.height = iHeight ;
 
@@ -212,17 +220,17 @@ FCKPanel.prototype.Hide = function( ignoreOnHide )
 	{
 		if ( !this._IsOpened )
 			return ;
-		
+
 		// Enable the editor to fire the "OnBlur".
 		if ( typeof( FCKFocusManager ) != 'undefined' )
 			FCKFocusManager.Unlock() ;
 
-		// It is better to set the sizes to 0, otherwise Firefox would have 
+		// It is better to set the sizes to 0, otherwise Firefox would have
 		// rendering problems.
 		this._IFrame.width = this._IFrame.height = 0 ;
 
 		this._IsOpened = false ;
-		
+
 		if ( this.ParentPanel )
 			this.ParentPanel.Unlock() ;
 
@@ -241,11 +249,11 @@ FCKPanel.prototype.CheckIsOpened = function()
 
 FCKPanel.prototype.CreateChildPanel = function()
 {
-	var oWindow = this._Popup ? FCKTools.GetParentWindow( this.Document ) : this._Window ;
+	var oWindow = this._Popup ? FCKTools.GetDocumentWindow( this.Document ) : this._Window ;
 
 	var oChildPanel = new FCKPanel( oWindow, true ) ;
 	oChildPanel.ParentPanel = this ;
-	
+
 	return oChildPanel ;
 }
 
@@ -270,7 +278,7 @@ function FCKPanel_Window_OnFocus( e, panel )
 function FCKPanel_Window_OnBlur( e, panel )
 {
 	panel.HasFocus = false ;
-	
+
 	if ( panel._LockCounter == 0 )
 		FCKTools.RunFunction( panel.Hide, panel ) ;
 }
@@ -281,7 +289,7 @@ function CheckPopupOnHide( forceHide )
 	{
 		window.clearInterval( this._Timer ) ;
 		this._Timer = null ;
-	
+
 		FCKTools.RunFunction( this.OnHide, this ) ;
 	}
 }

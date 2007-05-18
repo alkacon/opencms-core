@@ -66,6 +66,12 @@ body, .BackColor
 	background-color: ButtonFace;
 }
 
+#btnOk
+{
+	width: 100px;
+}
+
+
 .DarkBackground
 {
 	background-color: ThreeDShadow;

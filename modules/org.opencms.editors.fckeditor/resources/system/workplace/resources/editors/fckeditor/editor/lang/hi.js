@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: hi.js
- * 	Hindi language file.
- * 
- * File Authors:
- * 		Utkarshraj Atmaram (utcursch@gmail.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Hindi language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "चुनाव फ़ील्ड प्रॉपर्ट�
 TextareaProp		: "टेक्स्त एरिया प्रॉपर्टीज़",
 FormProp			: "फ़ॉर्म प्रॉपर्टीज़",
 
-FontFormats			: "साधारण;फ़ॉर्मैटॅड;पता;शीर्षक 1;शीर्षक 2;शीर्षक 3;शीर्षक 4;शीर्षक 5;शीर्षक 6;शीर्षक (DIV)",
+FontFormats			: "साधारण;फ़ॉर्मैटॅड;पता;शीर्षक 1;शीर्षक 2;शीर्षक 3;शीर्षक 4;शीर्षक 5;शीर्षक 6;शीर्षक (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "XHTML प्रोसॅस हो रहा है। ज़रा ठहरें...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "ऐंकर चुनें",
 DlgLnkAnchorByName	: "ऐंकर नाम से",
 DlgLnkAnchorById	: "ऍलीमॅन्ट Id से",
-DlgLnkNoAnchors		: "<डॉक्यूमॅन्ट में ऐंकर्स की संख्या>",
+DlgLnkNoAnchors		: "<डॉक्यूमॅन्ट में ऐंकर्स की संख्या>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "ई-मेल पता",
 DlgLnkEMailSubject	: "संदेश विषय",
 DlgLnkEMailBody		: "संदेश",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "सभी रिप्लेस करें",
 DlgReplaceWordChk		: "पूरा शब्द मिलायें",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "आपके ब्रा‌उज़र की सुरक्षा सॅटिन्ग्स ने पेस्ट करने की अनुमति नहीं प्रदान की है। (Ctrl+V) का प्रयोग करें।",
 PasteErrorCut	: "आपके ब्राउज़र की सुरक्षा सॅटिन्ग्स ने कट करने की अनुमति नहीं प्रदान की है। (Ctrl+X) का प्रयोग करें।",
 PasteErrorCopy	: "आपके ब्राआउज़र की सुरक्षा सॅटिन्ग्स ने कॉपी करने की अनुमति नहीं प्रदान की है। (Ctrl+C) का प्रयोग करें।",
 
@@ -341,6 +344,7 @@ PasteAsText		: "पेस्ट (सादा टॅक्स्ट)",
 PasteFromWord	: "पेस्ट (वर्ड से)",
 
 DlgPasteMsg2	: "Ctrl+V का प्रयोग करके पेस्ट करें और ठीक है करें.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "फ़ॉन्ट परिभाषा निकालें",
 DlgPasteRemoveStyles	: "स्टाइल परिभाषा निकालें",
 DlgPasteCleanBox		: "बॉक्स साफ़ करें",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "FCKEditor के बारे में",
 DlgAboutBrowserInfoTab	: "ब्राउज़र के बारे में",
 DlgAboutLicenseTab	: "लाइसैन्स",
 DlgAboutVersion		: "वर्ज़न",
-DlgAboutLicense		: "लाइसेंस :GNU LGPL",
 DlgAboutInfo		: "अधिक जानकारी के लिये यहाँ जायें:"
-}
+};

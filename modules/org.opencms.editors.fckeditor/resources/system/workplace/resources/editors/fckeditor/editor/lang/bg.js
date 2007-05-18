@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: bg.js
- * 	Bulgarian language file.
- * 
- * File Authors:
- * 		Miroslav Ivanov (miro@primal-chaos.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Bulgarian language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Параметри на падащото меню с оп�
 TextareaProp		: "Параметри на текстовата област",
 FormProp			: "Параметри на формуляра",
 
-FontFormats			: "Нормален;Форматиран;Адрес;Заглавие 1;Заглавие 2;Заглавие 3;Заглавие 4;Заглавие 5;Заглавие 6;Параграф (DIV)",
+FontFormats			: "Нормален;Форматиран;Адрес;Заглавие 1;Заглавие 2;Заглавие 3;Заглавие 4;Заглавие 5;Заглавие 6;Параграф (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Обработка на XHTML. Моля изчакайте...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "Пълен път (URL)",
 DlgLnkAnchorSel		: "Изберете котва",
 DlgLnkAnchorByName	: "По име на котвата",
 DlgLnkAnchorById	: "По идентификатор на елемент",
-DlgLnkNoAnchors		: "<Няма котви в текущия документ>",
+DlgLnkNoAnchors		: "<Няма котви в текущия документ>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Адрес за е-поща",
 DlgLnkEMailSubject	: "Тема на писмото",
 DlgLnkEMailBody		: "Текст на писмото",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "Замести всички",
 DlgReplaceWordChk		: "Търси същата дума",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Настройките за сигурност на вашия бразуър не разрешават на редактора да изпълни вмъкването. За целта използвайте клавиатурата (Ctrl+V).",
 PasteErrorCut	: "Настройките за сигурност на вашия бразуър не разрешават на редактора да изпълни изрязването. За целта използвайте клавиатурата (Ctrl+X).",
 PasteErrorCopy	: "Настройките за сигурност на вашия бразуър не разрешават на редактора да изпълни запаметяването. За целта използвайте клавиатурата (Ctrl+C).",
 
@@ -341,6 +344,7 @@ PasteAsText		: "Вмъкни като чист текст",
 PasteFromWord	: "Вмъкни от MS Word",
 
 DlgPasteMsg2	: "Вмъкнете тук съдъжанието с клавиатуарата (<STRONG>Ctrl+V</STRONG>) и натиснете <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Игнорирай шрифтовите дефиниции",
 DlgPasteRemoveStyles	: "Изтрий стиловите дефиниции",
 DlgPasteCleanBox		: "Изчисти",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "За",
 DlgAboutBrowserInfoTab	: "Информация за браузъра",
 DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "версия",
-DlgAboutLicense		: "Лиценз по условията на GNU Lesser General Public License",
 DlgAboutInfo		: "За повече информация посетете"
-}
+};

@@ -1,21 +1,25 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckxhtml_ie.js
- * 	Defines the FCKXHtml object, responsible for the XHTML operations.
- * 	IE specific.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Defines the FCKXHtml object, responsible for the XHTML operations.
+ * IE specific.
  */
 
 FCKXHtml._GetMainXmlString = function()
@@ -37,12 +41,12 @@ FCKXHtml._AppendAttributes = function( xmlNode, htmlNode, node, nodeName )
 			var sAttValue ;
 
 			// Ignore any attribute starting with "_fck".
-			if ( sAttName.startsWith( '_fck' ) )
+			if ( sAttName.StartsWith( '_fck' ) )
 				continue ;
 			// The following must be done because of a bug on IE regarding the style
 			// attribute. It returns "null" for the nodeValue.
 			else if ( sAttName == 'style' )
-				sAttValue = htmlNode.style.cssText ;
+				sAttValue = htmlNode.style.cssText.replace( FCKRegexLib.StyleProperties, FCKTools.ToLowerCase ) ;
 			// There are two cases when the oAttribute.nodeValue must be used:
 			//		- for the "class" attribute
 			//		- for events attributes (on IE only).
@@ -53,11 +57,17 @@ FCKXHtml._AppendAttributes = function( xmlNode, htmlNode, node, nodeName )
 			// XHTML doens't support attribute minimization like "CHECKED". It must be trasformed to cheched="checked".
 			else if ( oAttribute.nodeValue === true )
 				sAttValue = sAttName ;
-			// We must use getAttribute to get it exactly as it is defined.
-			else if ( ! (sAttValue = htmlNode.getAttribute( sAttName, 2 ) ) )
-				sAttValue = oAttribute.nodeValue ;
-
-			this._AppendAttribute( node, sAttName, sAttValue ) ;
+			else
+			{
+				// We must use getAttribute to get it exactly as it is defined.
+				// There are some rare cases that IE throws an error here, so we must try/catch.
+				try
+				{
+					sAttValue = htmlNode.getAttribute( sAttName, 2 ) ;
+				}
+				catch (e) {}
+			}
+			this._AppendAttribute( node, sAttName, sAttValue || oAttribute.nodeValue ) ;
 		}
 	}
 }
@@ -87,7 +97,7 @@ FCKXHtml.TagProcessors['font'] = function( node, htmlNode )
 	if ( node.attributes.length == 0 )
 		node = FCKXHtml.XML.createDocumentFragment() ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+	node = FCKXHtml._AppendChildNodes( node, htmlNode ) ;
 
 	return node ;
 }
@@ -113,7 +123,7 @@ FCKXHtml.TagProcessors['option'] = function( node, htmlNode )
 	if ( htmlNode.selected && !node.attributes.getNamedItem( 'selected' ) )
 		FCKXHtml._AppendAttribute( node, 'selected', 'selected' ) ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+	node = FCKXHtml._AppendChildNodes( node, htmlNode ) ;
 
 	return node ;
 }
@@ -130,9 +140,9 @@ FCKXHtml.TagProcessors['area'] = function( node, htmlNode )
 
 	if ( ! node.attributes.getNamedItem( 'shape' ) )
 	{
-		var sCoords = htmlNode.getAttribute( 'shape', 2 ) ;
-		if ( sCoords && sCoords.length > 0 )
-			FCKXHtml._AppendAttribute( node, 'shape', sCoords ) ;
+		var sShape = htmlNode.getAttribute( 'shape', 2 ) ;
+		if ( sShape && sShape.length > 0 )
+			FCKXHtml._AppendAttribute( node, 'shape', sShape ) ;
 	}
 
 	return node ;
@@ -143,7 +153,7 @@ FCKXHtml.TagProcessors['label'] = function( node, htmlNode )
 	if ( htmlNode.htmlFor.length > 0 )
 		FCKXHtml._AppendAttribute( node, 'for', htmlNode.htmlFor ) ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+	node = FCKXHtml._AppendChildNodes( node, htmlNode ) ;
 
 	return node ;
 }
@@ -153,24 +163,24 @@ FCKXHtml.TagProcessors['form'] = function( node, htmlNode )
 	if ( htmlNode.acceptCharset && htmlNode.acceptCharset.length > 0 && htmlNode.acceptCharset != 'UNKNOWN' )
 		FCKXHtml._AppendAttribute( node, 'accept-charset', htmlNode.acceptCharset ) ;
 
-	if ( htmlNode.name ) 
-		FCKXHtml._AppendAttribute( node, 'name', htmlNode.name ) ; 
+	if ( htmlNode.name )
+		FCKXHtml._AppendAttribute( node, 'name', htmlNode.name ) ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+	node = FCKXHtml._AppendChildNodes( node, htmlNode ) ;
 
 	return node ;
 }
 
 // IE doens't hold the name attribute as an attribute for the <TEXTAREA> and <SELECT> tags.
 FCKXHtml.TagProcessors['textarea'] = FCKXHtml.TagProcessors['select'] = function( node, htmlNode )
-{ 
-	if ( htmlNode.name ) 
-		FCKXHtml._AppendAttribute( node, 'name', htmlNode.name ) ; 
+{
+	if ( htmlNode.name )
+		FCKXHtml._AppendAttribute( node, 'name', htmlNode.name ) ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ; 
- 
-	return node ; 
-} 
+	node = FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+
+	return node ;
+}
 
 // On very rare cases, IE is loosing the "align" attribute for DIV. (right align and apply bulleted list)
 FCKXHtml.TagProcessors['div'] = function( node, htmlNode )
@@ -178,7 +188,7 @@ FCKXHtml.TagProcessors['div'] = function( node, htmlNode )
 	if ( htmlNode.align.length > 0 )
 		FCKXHtml._AppendAttribute( node, 'align', htmlNode.align ) ;
 
-	FCKXHtml._AppendChildNodes( node, htmlNode ) ;
+	node = FCKXHtml._AppendChildNodes( node, htmlNode, true ) ;
 
 	return node ;
 }

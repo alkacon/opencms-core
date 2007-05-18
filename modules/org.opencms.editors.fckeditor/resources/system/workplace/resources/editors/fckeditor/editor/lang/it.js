@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: it.js
- * 	Italian language file.
- * 
- * File Authors:
- * 		Simone Chiaretta (simone@piyosailing.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Italian language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "Proprietà menu di selezione",
 TextareaProp		: "Proprietà area di testo",
 FormProp			: "Proprietà modulo",
 
-FontFormats			: "Normale;Formattato;Indirizzo;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",
+FontFormats			: "Normale;Formattato;Indirizzo;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Elaborazione XHTML in corso. Attendere prego...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Scegli Ancora",
 DlgLnkAnchorByName	: "Per Nome",
 DlgLnkAnchorById	: "Per id elemento",
-DlgLnkNoAnchors		: "<Nessuna ancora disponibile nel documento>",
+DlgLnkNoAnchors		: "<Nessuna ancora disponibile nel documento>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Indirizzo E-Mail",
 DlgLnkEMailSubject	: "Oggetto del messaggio",
 DlgLnkEMailBody		: "Corpo del messaggio",
@@ -258,7 +262,7 @@ DlgLnkPopTop		: "Posizione dall'alto",
 DlnLnkMsgNoUrl		: "Devi inserire l'URL del collegamento",
 DlnLnkMsgNoEMail	: "Devi inserire un'indirizzo e-mail",
 DlnLnkMsgNoAnchor	: "Devi selezionare un'ancora",
-DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
+DlnLnkMsgInvPopName	: "Il nome del popup deve iniziare con una lettera, e non può contenere spazi",
 
 // Color Dialog
 DlgColorTitle		: "Seleziona colore",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "Sostituisci tutto",
 DlgReplaceWordChk		: "Solo parole intere",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Le impostazioni di sicurezza del browser non permettono di incollare automaticamente il testo. Usa la tastiera (Ctrl+V).",
 PasteErrorCut	: "Le impostazioni di sicurezza del browser non permettono di tagliare automaticamente il testo. Usa la tastiera (Ctrl+X).",
 PasteErrorCopy	: "Le impostazioni di sicurezza del browser non permettono di copiare automaticamente il testo. Usa la tastiera (Ctrl+C).",
 
@@ -341,6 +344,7 @@ PasteAsText		: "Incolla come testo semplice",
 PasteFromWord	: "Incolla da Word",
 
 DlgPasteMsg2	: "Incolla il testo all'interno dell'area sottostante usando la scorciatoia di tastiere (<STRONG>Ctrl+V</STRONG>) e premi <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignora le definizioni di Font",
 DlgPasteRemoveStyles	: "Rimuovi le definizioni di Stile",
 DlgPasteCleanBox		: "Svuota area di testo",
@@ -377,9 +381,9 @@ IeSpellDownload			: "Contollo ortografico non installato. Lo vuoi scaricare ora?
 // Button Dialog
 DlgButtonText		: "Testo (Value)",
 DlgButtonType		: "Tipo",
-DlgButtonTypeBtn	: "Button",	//MISSING
-DlgButtonTypeSbm	: "Submit",	//MISSING
-DlgButtonTypeRst	: "Reset",	//MISSING
+DlgButtonTypeBtn	: "Bottone",
+DlgButtonTypeSbm	: "Invio",
+DlgButtonTypeRst	: "Annulla",
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nome",
@@ -428,7 +432,7 @@ DlgHiddenValue	: "Valore",
 // Bulleted List Dialog
 BulletedListProp	: "Proprietà lista puntata",
 NumberedListProp	: "Proprietà lista numerata",
-DlgLstStart			: "Start",	//MISSING
+DlgLstStart			: "Inizio",
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Tondo",
 DlgLstTypeDisc		: "Disco",
@@ -451,15 +455,15 @@ DlgDocLangDirLTR	: "Da Sinistra a Destra (LTR)",
 DlgDocLangDirRTL	: "Da Destra a Sinistra (RTL)",
 DlgDocLangCode		: "Codice Lingua",
 DlgDocCharSet		: "Set di caretteri",
-DlgDocCharSetCE		: "Central European",	//MISSING
-DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
-DlgDocCharSetCR		: "Cyrillic",	//MISSING
-DlgDocCharSetGR		: "Greek",	//MISSING
-DlgDocCharSetJP		: "Japanese",	//MISSING
-DlgDocCharSetKR		: "Korean",	//MISSING
-DlgDocCharSetTR		: "Turkish",	//MISSING
-DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
-DlgDocCharSetWE		: "Western European",	//MISSING
+DlgDocCharSetCE		: "Europa Centrale",
+DlgDocCharSetCT		: "Cinese Tradizionale (Big5)",
+DlgDocCharSetCR		: "Cirillico",
+DlgDocCharSetGR		: "Greco",
+DlgDocCharSetJP		: "Giapponese",
+DlgDocCharSetKR		: "Coreano",
+DlgDocCharSetTR		: "Turco",
+DlgDocCharSetUN		: "Unicode (UTF-8)",
+DlgDocCharSetWE		: "Europa Occidentale",
 DlgDocCharSetOther	: "Altro set di caretteri",
 
 DlgDocDocType		: "Intestazione DocType",
@@ -489,13 +493,12 @@ DlgTemplatesTitle	: "Contenuto dei modelli",
 DlgTemplatesSelMsg	: "Seleziona il modello da aprire nell'editor<br />(il contenuto attuale verrà eliminato):",
 DlgTemplatesLoading	: "Caricamento modelli in corso. Attendere prego...",
 DlgTemplatesNoTpl	: "(Nessun modello definito)",
-DlgTemplatesReplace	: "Replace actual contents",	//MISSING
+DlgTemplatesReplace	: "Cancella il contenuto corrente",
 
 // About Dialog
 DlgAboutAboutTab	: "Informazioni",
 DlgAboutBrowserInfoTab	: "Informazioni Browser",
 DlgAboutLicenseTab	: "Licenza",
 DlgAboutVersion		: "versione",
-DlgAboutLicense		: "Rilasciato sotto la licensa GNU Lesser General Public License",
-DlgAboutInfo		: "Localizzazione in Italiano realizzata da Simone Chiaretta<br /><a target=\"_blank\" href=\"http://www.piyosailing.com/S/\">www.piyosailing.com</a><br /><br />Per maggiori informazioni visitare"
-}
+DlgAboutInfo		: "Per maggiori informazioni visitare"
+};

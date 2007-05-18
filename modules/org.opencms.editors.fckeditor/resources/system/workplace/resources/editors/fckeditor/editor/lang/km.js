@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: km.js
- * 	Khmer language file.
- * 
- * File Authors:
- * 		Chay Sengtha (sengtha@e-khmer.com - http://translate.e-khmer.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Khmer language file.
  */
 
 var FCKLang =
@@ -130,7 +134,7 @@ SelectionFieldProp	: "ការកំណត់ជួរជ្រើសរើស"
 TextareaProp		: "ការកំណត់កន្លែងសរសេរអត្ថបទ",
 FormProp			: "ការកំណត់បែបបទ",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "កំពុងដំណើរការ XHTML ។ សូមរងចាំ...",
@@ -225,7 +229,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "ជ្រើសរើសយុថ្កា",
 DlgLnkAnchorByName	: "តាមឈ្មោះរបស់យុថ្កា",
 DlgLnkAnchorById	: "តាម Id",
-DlgLnkNoAnchors		: "<ពុំមានយុថ្កានៅក្នុងឯកសារនេះទេ>",
+DlgLnkNoAnchors		: "<ពុំមានយុថ្កានៅក្នុងឯកសារនេះទេ>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "អ៊ីមែល",
 DlgLnkEMailSubject	: "ចំណងជើងអត្ថបទ",
 DlgLnkEMailBody		: "អត្ថបទ",
@@ -333,7 +337,6 @@ DlgReplaceReplAllBtn	: "ជំនួសទាំងអស់",
 DlgReplaceWordChk		: "ត្រូវពាក្យទាំងអស់",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Your browser security settings don't permit the editor to automatically execute pasting operations. Please use the keyboard for that (Ctrl+V).",	//MISSING
 PasteErrorCut	: "ការកំណត់សុវត្ថភាពរបស់កម្មវិធីរុករករបស់លោកអ្នក នេះ​មិនអាចធ្វើកម្មវិធីតាក់តែងអត្ថបទ កាត់អត្ថបទយកដោយស្វ័យប្រវត្តបានឡើយ ។ សូមប្រើប្រាស់បន្សំ ឃីដូចនេះ  (Ctrl+X) ។",
 PasteErrorCopy	: "ការកំណត់សុវត្ថភាពរបស់កម្មវិធីរុករករបស់លោកអ្នក នេះ​មិនអាចធ្វើកម្មវិធីតាក់តែងអត្ថបទ ចំលងអត្ថបទយកដោយស្វ័យប្រវត្តបានឡើយ ។ សូមប្រើប្រាស់បន្សំ ឃីដូចនេះ (Ctrl+C)។",
 
@@ -341,6 +344,7 @@ PasteAsText		: "ចំលងដាក់អត្ថបទធម្មតា",
 PasteFromWord	: "ចំលងពាក្យពីកម្មវិធី Word",
 
 DlgPasteMsg2	: "សូមចំលងអត្ថបទទៅដាក់ក្នុងប្រអប់ដូចខាងក្រោមដោយប្រើប្រាស់ ឃី ​(<STRONG>Ctrl+V</STRONG>) ហើយចុច <STRONG>OK</STRONG> ។",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "មិនគិតអំពីប្រភេទពុម្ភអក្សរ",
 DlgPasteRemoveStyles	: "លប់ម៉ូត",
 DlgPasteCleanBox		: "លប់អត្ថបទចេញពីប្រអប់",
@@ -496,6 +500,5 @@ DlgAboutAboutTab	: "អំពី",
 DlgAboutBrowserInfoTab	: "ព៌តមានកម្មវិធីរុករក",
 DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "ជំនាន់",
-DlgAboutLicense		: "Licensed under the terms of the GNU Lesser General Public License",
 DlgAboutInfo		: "សំរាប់ព៌តមានផ្សេងទៀត សូមទាក់ទង"
-}
+};
