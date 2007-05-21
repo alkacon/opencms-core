@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2007/03/20 15:08:58 $
- * Version: $Revision: 1.14.4.4 $
+ * Date   : $Date: 2007/05/21 15:39:40 $
+ * Version: $Revision: 1.14.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.4.4 $ 
+ * @version $Revision: 1.14.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,7 +252,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         if (type != null) {
             typeName = type.getTypeName();
         }
-        document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.NO));
+        document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.UN_TOKENIZED));
 
         // set individual document boost factor for the search
         float boost = CmsSearchField.BOOST_DEFAULT;
