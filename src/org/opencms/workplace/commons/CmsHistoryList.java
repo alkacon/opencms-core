@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/05/09 07:59:19 $
- * Version: $Revision: 1.5.4.15 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.5.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.15 $ 
+ * @version $Revision: 1.5.4.16 $ 
  * 
  * @since 6.0.2 
  */
@@ -365,8 +365,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             int publishTag = histRes.getPublishTag();
 
             CmsHistoryProject project = getCms().readHistoryProject(publishTag);
-            String filetype = String.valueOf(histRes.getResource().getTypeId());
-            String dateLastModified = getMessages().getDateTime(histRes.getResource().getDateLastModified());
+            String filetype = String.valueOf(histRes.getTypeId());
+            String dateLastModified = getMessages().getDateTime(histRes.getDateLastModified());
             String datePublished = getMessages().getDateTime(project.getPublishingDate());
 
             CmsListItem item = getList().newItem("" + histRes.getVersion());
@@ -380,21 +380,21 @@ public class CmsHistoryList extends A_CmsListDialog {
             // group           
             item.set(LIST_COLUMN_FILE_TYPE, filetype);
             // user           
-            item.set(LIST_COLUMN_USER, getCms().readUser(histRes.getResource().getUserLastModified()).getName());
+            item.set(LIST_COLUMN_USER, getCms().readUser(histRes.getUserLastModified()).getName());
             // path           
-            item.set(LIST_COLUMN_RESOURCE_PATH, histRes.getResource().getRootPath());
+            item.set(LIST_COLUMN_RESOURCE_PATH, histRes.getRootPath());
             // size 
-            item.set(LIST_COLUMN_SIZE, new Integer(histRes.getResource().getLength()).toString());
+            item.set(LIST_COLUMN_SIZE, new Integer(histRes.getLength()).toString());
             // invisible publish tag (for reading history project in fillDetails)
             item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
             // invisible structure id           
-            item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getResource().getStructureId().toString());
+            item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getStructureId().toString());
 
             result.add(item);
 
             if (!i.hasNext()) {
                 // hide the size for folders
-                getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(histRes.getResource().isFile());
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(histRes.isFile());
                 // hide the preview button for folders
                 getList().getMetadata().getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_VIEW).setEnabled(
                     false);

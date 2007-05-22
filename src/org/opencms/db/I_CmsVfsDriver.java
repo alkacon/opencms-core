@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.114.4.16 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.114.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.16 $
+ * @version $Revision: 1.114.4.17 $
  * 
  * @since 6.0.0 
  */
@@ -710,7 +710,6 @@ public interface I_CmsVfsDriver {
      * Writes the resource content with the specified resource id.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the id of the current project
      * @param resourceId the id of the resource used to identify the content to update
      * @param content the new content of the file
      * 
@@ -718,7 +717,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    long writeContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
+    long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException;
 
     /**

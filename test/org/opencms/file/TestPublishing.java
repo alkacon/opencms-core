@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.21.4.10 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.21.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.10 $
+ * @version $Revision: 1.21.4.11 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -266,7 +266,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
 
         cms.lockResource(resName);
-        CmsFile offlineFile = CmsFile.upgrade(offlineResource, cms);
+        CmsFile offlineFile = cms.readFile(offlineResource);
         time = System.currentTimeMillis();
         offlineFile.setContents("".getBytes());
         offlineFile = cms.writeFile(offlineFile);

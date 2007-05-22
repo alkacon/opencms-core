@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.9.1
  */
@@ -172,7 +172,7 @@ public class TestHistory extends OpenCmsTestCase {
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
 
-            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            cms.restoreResourceVersion(historyResource.getStructureId(), historyResource.getVersion());
             file = cms.readFile(importFile);
 
             // assert that the content and version fit together
@@ -243,7 +243,7 @@ public class TestHistory extends OpenCmsTestCase {
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
 
-            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            cms.restoreResourceVersion(historyResource.getStructureId(), historyResource.getVersion());
             CmsProperty property = cms.readPropertyObject(
                 cms.readResource(importFolder),
                 CmsPropertyDefinition.PROPERTY_TITLE,
@@ -307,8 +307,17 @@ public class TestHistory extends OpenCmsTestCase {
 
         List historyResourcesForFile = cms.readAllAvailableVersions(filename);
         List historyResourcesForSibling = cms.readAllAvailableVersions(siblingname);
-        assertEquals(counter + 1, historyResourcesForFile.size());
-        assertEquals(2 * (counter + 1), historyResourcesForSibling.size());
+
+        // 1 creation
+        // counter modifications of original file
+        // 0 sibling creation, does not affects the history for the original file
+        // counter modifications of sibling
+        assertEquals(1 + counter + 0 + counter, historyResourcesForFile.size());
+        // 1 creation
+        // counter modifications of original file
+        // 1 sibling creation
+        // counter modifications of sibling
+        assertEquals(1 + counter + 1 + counter, historyResourcesForSibling.size());
     }
 
     /**
@@ -403,30 +412,42 @@ public class TestHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, siblingname2);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // if this does not match, the logic for deletion of old versions is responsible
-        int todo;
         List allFiles = cms.readAllAvailableVersions(siblingname);
-        // assertEquals(maxcounter + counterSibl + 1, allFiles.size());
+        // 0 creation is not published
+        // 'counter' modifications to the original file
+        // '1' first sibling creation
+        // 'counterSibl' first sibling modifications
+        // '0' second sibling creation, affects just the given sibling
+        // 'counterSibl2' second sibling modifications
+        // '0' original file deletion, affects just the given sibling
+        // '0' second sibling deletion, affects just the given sibling
+        // -3 versions deleted due to history overflow, while deleting original file
+        assertEquals(0 + counter + 1 + counterSibl + 0 + counterSibl2 + 0 + 0 - 3, allFiles.size());
 
         //Delete historical entries, keep only 3 latest versions. 
         cms.deleteHistoricalVersions("/", 3, 3, -1, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         allFiles = cms.readAllAvailableVersions(siblingname);
-        assertEquals(3, allFiles.size());
+        // 3 the number of versions that should remain for the sibling
+        // 3 the number of versions that should remain for the second sibling
+        // 2 additional remaining versions of the original file (one overlap)
+        assertEquals(3 + counterSibl2, allFiles.size()); // it is not 3 since there are more versions comming from the siblings!
 
         I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
         cms.lockResource(siblingname);
         //and restore it from history
-        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
         cms.unlockResource(siblingname);
         CmsFile file = cms.readFile(siblingname);
 
         // assert that the content and version fit together
         String restoredContent = getContentString(cms, file.getContents());
 
-        assertEquals("sibling content version 6", restoredContent);
+        // the content is comming from a sibling2 modification
+        assertEquals("sibling2 content version 12", restoredContent);
         CmsProperty prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals("SiblingTitle3", prop.getValue());
+        // the property is comming from the sibling's last set title
+        assertEquals("SiblingTitle4", prop.getValue());
 
         // create a new empty resource
         cms.createResource(siblingname2, CmsResourceTypePlain.getStaticTypeId(), null, null);
@@ -800,7 +821,7 @@ public class TestHistory extends OpenCmsTestCase {
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
 
-            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            cms.restoreResourceVersion(historyResource.getStructureId(), historyResource.getVersion());
             file = cms.readFile(importFile);
 
             // assert that the content and version fit together
@@ -903,10 +924,10 @@ public class TestHistory extends OpenCmsTestCase {
             // assert that the historical resource has the correct version and path
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
-            assertEquals(histResName, cms.getSitePath(historyResource.getResource()));
+            assertEquals(histResName, cms.getSitePath((CmsResource)historyResource));
 
             // restore the version
-            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            cms.restoreResourceVersion(historyResource.getStructureId(), historyResource.getVersion());
             file = cms.readFile(importFile);
 
             // assert that the content and version fit together
@@ -921,7 +942,7 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
 
         cms.lockResource(importFile); // TODO: check this
-        
+
         for (int i = 0; i < counter + 2; i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
@@ -932,10 +953,10 @@ public class TestHistory extends OpenCmsTestCase {
             // assert that the historical resource has the correct version and path
             I_CmsHistoryResource historyResource = (I_CmsHistoryResource)historyResources.get(i);
             assertEquals(version, historyResource.getVersion());
-            assertEquals(histResName, cms.getSitePath(historyResource.getResource()));
+            assertEquals(histResName, cms.getSitePath((CmsResource)historyResource));
 
             // restore the version
-            cms.restoreResourceVersion(historyResource.getResource().getStructureId(), historyResource.getVersion());
+            cms.restoreResourceVersion(historyResource.getStructureId(), historyResource.getVersion());
             file = cms.readFile(importFile);
 
             // assert that the content and version fit together

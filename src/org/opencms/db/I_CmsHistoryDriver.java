@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/16 15:57:30 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.9.1
  */
@@ -177,14 +177,14 @@ public interface I_CmsHistoryDriver {
      * identified by its structure id.<p>
      * 
      * @param dbc the current database context
-     * @param structureId the structure id of the resource to read the content for
-     * @param version the version number
+     * @param resourceId the resource id of the resource to read the content for
+     * @param publishTag the publish tag of the version
      * 
      * @return the content if found
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    byte[] readContent(CmsDbContext dbc, CmsUUID structureId, int version) throws CmsDataAccessException;
+    byte[] readContent(CmsDbContext dbc, CmsUUID resourceId, int publishTag) throws CmsDataAccessException;
 
     /**
      * Reads all deleted (historical) resources below the given path, that the given user deleted by itself.<p>

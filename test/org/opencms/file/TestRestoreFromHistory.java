@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.14.8.7 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.14.8.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.8.7 $
+ * @version $Revision: 1.14.8.8 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
 
@@ -140,7 +140,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
             // now check the previous version if available
             if (version > 1) {
                 I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
-                cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+                cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
 
                 // check the content - must be version-1
                 assertContent(cms, resourcename, Integer.toString(version - 1).getBytes());
@@ -221,7 +221,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(0);
 
         // and restore it from history
-        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
 
         // check the content
         assertContent(cms, resourcename, contentStr.getBytes());
@@ -283,7 +283,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // and restore it from history
         cms.lockResource(newresname);
-        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
 
         // check the content
         assertContent(cms, newresname, contentStr.getBytes());
@@ -383,7 +383,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
         // now restore the first version
         cms.lockResource(resourcename);
-        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
 
         // check the content - must be version 1
         assertContent(cms, resourcename, contentStr1.getBytes());

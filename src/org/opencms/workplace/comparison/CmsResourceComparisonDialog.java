@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.4.4.6 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.4.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.6 $ 
+ * @version $Revision: 1.4.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,7 +246,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
             return cms.readResource(id);
         } else {
-            return cms.readResource(id, Integer.parseInt(version)).getResource();
+            return (CmsResource)cms.readResource(id, Integer.parseInt(version));
         }
     }
 

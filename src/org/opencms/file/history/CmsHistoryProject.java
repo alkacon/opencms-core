@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryProject.java,v $
- * Date   : $Date: 2007/05/02 16:55:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file.history;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */
@@ -135,6 +136,22 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     }
 
     /**
+     * Returns the project manager group name.<p>
+     *
+     * @param cms the current cms context 
+     *
+     * @return the projects manager group name
+     */
+    public String getGroupManagersName(CmsObject cms) {
+
+        try {
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getManagerGroupId()).getName();
+        } catch (CmsException e) {
+            return getManagerGroupId().toString();
+        }
+    }
+
+    /**
      * Returns the projects user group name.<p>
      * 
      * @return the projects user group name
@@ -156,13 +173,9 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     public String getGroupUsersName(CmsObject cms) {
 
         try {
-            return cms.readGroup(getGroupId()).getName();
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getGroupId()).getName();
         } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getGroupId()).getName();
-            } catch (CmsException e1) {
-                return getGroupId().toString();
-            }
+            return getGroupId().toString();
         }
     }
 
@@ -176,26 +189,6 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     public String getManagerGroupName() {
 
         return getManagerGroupId().toString();
-    }
-
-    /**
-     * Returns the project manager group name.<p>
-     *
-     * @param cms the current cms context 
-     *
-     * @return the projects manager group name
-     */
-    public String getGroupManagersName(CmsObject cms) {
-
-        try {
-            return cms.readGroup(getManagerGroupId()).getName();
-        } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getManagerGroupId()).getName();
-            } catch (CmsException e1) {
-                return getManagerGroupId().toString();
-            }
-        }
     }
 
     /**
@@ -220,13 +213,9 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     public String getOwnerName(CmsObject cms) {
 
         try {
-            return cms.readUser(getOwnerId()).getName();
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getOwnerId()).getName();
         } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getOwnerId()).getName();
-            } catch (CmsException e1) {
-                return getOwnerId().toString();
-            }
+            return getOwnerId().toString();
         }
     }
 
@@ -272,13 +261,9 @@ public class CmsHistoryProject extends CmsProject implements Cloneable {
     public String getPublishedByName(CmsObject cms) {
 
         try {
-            return cms.readUser(getPublishedBy()).getName();
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getPublishedBy()).getName();
         } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getPublishedBy()).getName();
-            } catch (CmsException e1) {
-                return getPublishedBy().toString();
-            }
+            return getPublishedBy().toString();
         }
     }
 

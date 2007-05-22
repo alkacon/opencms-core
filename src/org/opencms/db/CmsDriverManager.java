@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/16 15:57:30 $
- * Version: $Revision: 1.570.2.89 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.570.2.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -501,7 +501,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             0,
             type);
         m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
-
+        //        setDateLastModified(dbc, resource, System.currentTimeMillis());
     }
 
     /**
@@ -1662,7 +1662,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // also update file content if required                    
                     long contentModificationDate = m_vfsDriver.writeContent(
                         dbc,
-                        dbc.currentProject().getUuid(),
                         newResource.getResourceId(),
                         content);
                     newResource = new CmsResource(
@@ -1703,7 +1702,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             // delete all relations for the resource, the content relations will be rebuild as soon as needed
-            deleteRelationsForResource(dbc, newResource, CmsRelationFilter.TARGETS);
+            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
         } finally {
             // clear the internal caches
             clearAccessControlListCache();
@@ -2145,7 +2144,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(histResource.getResource().getRootPath())));
+                    dbc.removeSiteRoot(histResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -2202,7 +2201,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(histResource.getResource().getRootPath())));
+                    dbc.removeSiteRoot(histResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -2522,6 +2521,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
+        //        setDateLastModified(dbc, resource, System.currentTimeMillis());
     }
 
     /**
@@ -2713,7 +2713,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResource);
                 }
             }
-            deleteRelationsForResource(dbc, currentResource, CmsRelationFilter.TARGETS);
+            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), currentResource, CmsRelationFilter.TARGETS);
         }
 
         if ((resource.getSiblingCount() <= 1) || allSiblingsRemoved) {
@@ -5231,9 +5231,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!getVfsDriver().validateStructureIdExists(
                     dbc,
                     dbc.currentProject().getUuid(),
-                    histRes.getResource().getStructureId())) {
+                    histRes.getStructureId())) {
                     // adjust the path in case of deleted files
-                    String resourcePath = histRes.getResource().getRootPath();
+                    String resourcePath = histRes.getRootPath();
                     String resName = CmsResource.getName(resourcePath);
                     String path = CmsResource.getParentFolder(resourcePath);
 
@@ -5255,42 +5255,46 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (isFolder) {
                         newResult.add(new CmsHistoryFolder(
                             histRes.getPublishTag(),
-                            histRes.getResource().getStructureId(),
-                            histRes.getResource().getResourceId(),
+                            histRes.getStructureId(),
+                            histRes.getResourceId(),
                             resourcePath,
-                            histRes.getResource().getTypeId(),
-                            histRes.getResource().getFlags(),
-                            histRes.getResource().getProjectLastModified(),
-                            histRes.getResource().getState(),
-                            histRes.getResource().getDateCreated(),
-                            histRes.getResource().getUserCreated(),
-                            histRes.getResource().getDateLastModified(),
-                            histRes.getResource().getUserLastModified(),
-                            histRes.getResource().getDateReleased(),
-                            histRes.getResource().getDateExpired(),
-                            histRes.getResource().getVersion(),
-                            parentId));
+                            histRes.getTypeId(),
+                            histRes.getFlags(),
+                            histRes.getProjectLastModified(),
+                            histRes.getState(),
+                            histRes.getDateCreated(),
+                            histRes.getUserCreated(),
+                            histRes.getDateLastModified(),
+                            histRes.getUserLastModified(),
+                            histRes.getDateReleased(),
+                            histRes.getDateExpired(),
+                            histRes.getVersion(),
+                            parentId,
+                            histRes.getResourceVersion(),
+                            histRes.getStructureVersion()));
                     } else {
                         newResult.add(new CmsHistoryFile(
                             histRes.getPublishTag(),
-                            histRes.getResource().getStructureId(),
-                            histRes.getResource().getResourceId(),
+                            histRes.getStructureId(),
+                            histRes.getResourceId(),
                             resourcePath,
-                            histRes.getResource().getTypeId(),
-                            histRes.getResource().getFlags(),
-                            histRes.getResource().getProjectLastModified(),
-                            histRes.getResource().getState(),
-                            histRes.getResource().getDateCreated(),
-                            histRes.getResource().getUserCreated(),
-                            histRes.getResource().getDateLastModified(),
-                            histRes.getResource().getUserLastModified(),
-                            histRes.getResource().getDateReleased(),
-                            histRes.getResource().getDateExpired(),
-                            histRes.getResource().getLength(),
-                            histRes.getResource().getDateContent(),
-                            histRes.getResource().getVersion(),
+                            histRes.getTypeId(),
+                            histRes.getFlags(),
+                            histRes.getProjectLastModified(),
+                            histRes.getState(),
+                            histRes.getDateCreated(),
+                            histRes.getUserCreated(),
+                            histRes.getDateLastModified(),
+                            histRes.getUserLastModified(),
+                            histRes.getDateReleased(),
+                            histRes.getDateExpired(),
+                            histRes.getLength(),
+                            histRes.getDateContent(),
+                            histRes.getVersion(),
                             parentId,
-                            null));
+                            null,
+                            histRes.getResourceVersion(),
+                            histRes.getStructureVersion()));
                     }
                 } else {
                     newResult.add(histRes);
@@ -5306,8 +5310,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Iterator itDeleted = deletedResources.iterator();
             while (itDeleted.hasNext()) {
                 I_CmsHistoryResource delResource = (I_CmsHistoryResource)itDeleted.next();
-                if (delResource.getResource().isFolder()) {
-                    newResult.addAll(readDeletedResources(dbc, delResource.getResource(), readTree, isVfsManager));
+                if (delResource.isFolder()) {
+                    newResult.addAll(readDeletedResources(dbc, (CmsFolder)delResource, readTree, isVfsManager));
                 }
             }
             try {
@@ -5355,12 +5359,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         CmsUUID projectId = dbc.currentProject().getUuid();
-        CmsFile file;
+        CmsFile file = null;
         if (resource instanceof I_CmsHistoryResource) {
             file = new CmsHistoryFile((I_CmsHistoryResource)resource);
-            file.setContents(m_historyDriver.readContent(dbc, resource.getStructureId(), resource.getVersion()));
+            file.setContents(m_historyDriver.readContent(
+                dbc,
+                resource.getResourceId(),
+                ((I_CmsHistoryResource)resource).getPublishTag()));
         } else {
-            file = new CmsFile(resource);
+            file = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
             file.setContents(m_vfsDriver.readContent(dbc, projectId, resource.getResourceId()));
         }
         return file;
@@ -6056,7 +6063,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public I_CmsHistoryResource readResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
 
-        return m_historyDriver.readResource(dbc, resource.getStructureId(), version);
+        Iterator itVersions = m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId()).iterator();
+        while (itVersions.hasNext()) {
+            I_CmsHistoryResource histRes = (I_CmsHistoryResource)itVersions.next();
+            if (histRes.getVersion() == version) {
+                return histRes;
+            }
+        }
+        throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
+            org.opencms.db.generic.Messages.ERR_HISTORY_FILE_NOT_FOUND_1,
+            resource.getStructureId()));
     }
 
     /**
@@ -6721,7 +6737,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 parent = m_vfsDriver.readResource(
                     dbc,
                     dbc.currentProject().getUuid(),
-                    CmsResource.getParentFolder(histRes.getResource().getRootPath()),
+                    CmsResource.getParentFolder(histRes.getRootPath()),
                     false);
             } catch (CmsVfsResourceNotFoundException e1) {
                 // if not found try to restore the parent resource
@@ -6738,8 +6754,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check the name
-        String path = CmsResource.getParentFolder(histRes.getResource().getRootPath()); // path
-        String resName = CmsResource.getName(histRes.getResource().getRootPath()); // name
+        String path = CmsResource.getParentFolder(histRes.getRootPath()); // path
+        String resName = CmsResource.getName(histRes.getRootPath()); // name
         String ext = CmsFileUtil.getExtension(resName); // extension
         String nameWOExt = resName.substring(0, resName.length() - ext.length() - 1); // name without extension
         boolean nameOk = false;
@@ -6774,7 +6790,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (histRes instanceof CmsFile) {
             contents = ((CmsFile)histRes).getContents();
             if ((contents == null) || (contents.length == 0)) {
-                contents = m_historyDriver.readContent(dbc, structureId, version);
+                contents = m_historyDriver.readContent(dbc, histRes.getResourceId(), histRes.getPublishTag());
             }
             isFolder = false;
         }
@@ -6785,23 +6801,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // create the object to create
         CmsResource newResource = new CmsResource(
             id,
-            histRes.getResource().getResourceId(),
+            histRes.getResourceId(),
             path + resName,
-            histRes.getResource().getTypeId(),
+            histRes.getTypeId(),
             isFolder,
-            histRes.getResource().getFlags(),
+            histRes.getFlags(),
             dbc.currentProject().getUuid(),
             CmsResource.STATE_NEW,
-            histRes.getResource().getDateCreated(),
-            histRes.getResource().getUserCreated(),
-            histRes.getResource().getDateLastModified(),
+            histRes.getDateCreated(),
+            histRes.getUserCreated(),
+            histRes.getDateLastModified(),
             dbc.currentUser().getId(),
-            histRes.getResource().getDateReleased(),
-            histRes.getResource().getDateExpired(),
-            histRes.getResource().getSiblingCount(),
-            histRes.getResource().getLength(),
-            histRes.getResource().getDateContent(),
-            histRes.getResource().getVersion() + 1);
+            histRes.getDateReleased(),
+            histRes.getDateExpired(),
+            histRes.getSiblingCount(),
+            histRes.getLength(),
+            histRes.getDateContent(),
+            histRes.getVersion() + 1);
 
         // prevent the date last modified is set to the current time
         newResource.setDateLastModified(newResource.getDateLastModified());
@@ -6836,7 +6852,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // is the resource a file?
         if (historyResource instanceof CmsFile) {
             // get the historical up flags 
-            int flags = historyResource.getResource().getFlags();
+            int flags = historyResource.getFlags();
             if (resource.isLabeled()) {
                 // set the flag for labeled links on the restored file
                 flags |= CmsResource.FLAG_LABELED;
@@ -6845,19 +6861,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resource.getStructureId(),
                 resource.getResourceId(),
                 resource.getRootPath(),
-                historyResource.getResource().getTypeId(),
+                historyResource.getTypeId(),
                 flags,
                 dbc.currentProject().getUuid(),
                 state,
                 resource.getDateCreated(),
-                historyResource.getResource().getUserCreated(),
+                historyResource.getUserCreated(),
                 resource.getDateLastModified(),
                 dbc.currentUser().getId(),
-                historyResource.getResource().getDateReleased(),
-                historyResource.getResource().getDateExpired(),
+                historyResource.getDateReleased(),
+                historyResource.getDateExpired(),
                 resource.getSiblingCount(),
-                historyResource.getResource().getLength(),
-                historyResource.getResource().getDateContent(),
+                historyResource.getLength(),
+                historyResource.getDateContent(),
                 newVersion,
                 readFile(dbc, (CmsHistoryFile)historyResource).getContents());
 
@@ -6868,16 +6884,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resource.getStructureId(),
                 resource.getResourceId(),
                 resource.getRootPath(),
-                historyResource.getResource().getTypeId(),
-                historyResource.getResource().getFlags(),
+                historyResource.getTypeId(),
+                historyResource.getFlags(),
                 dbc.currentProject().getUuid(),
                 state,
                 resource.getDateCreated(),
-                historyResource.getResource().getUserCreated(),
+                historyResource.getUserCreated(),
                 resource.getDateLastModified(),
                 dbc.currentUser().getId(),
-                historyResource.getResource().getDateReleased(),
-                historyResource.getResource().getDateExpired(),
+                historyResource.getDateReleased(),
+                historyResource.getDateExpired(),
                 newVersion);
 
             writeResource(dbc, newResource);
@@ -7343,7 +7359,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (it.hasNext()) {
             CmsResource sibling = (CmsResource)it.next();
             // clean the relation information for this sibling
-            deleteRelationsForResource(dbc, sibling, CmsRelationFilter.TARGETS.filterDefinedInContent());
+            m_vfsDriver.deleteRelations(
+                dbc,
+                dbc.currentProject().getUuid(),
+                sibling,
+                CmsRelationFilter.TARGETS.filterDefinedInContent());
         }
 
         // build the links again only if needed
@@ -7638,34 +7658,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
-        long contentModificationDate = m_vfsDriver.writeContent(
-            dbc,
-            dbc.currentProject().getUuid(),
-            resource.getResourceId(),
-            resource.getContents());
-        resource = new CmsFile(
-            resource.getStructureId(),
-            resource.getResourceId(),
-            resource.getRootPath(),
-            resource.getTypeId(),
-            resource.getFlags(),
-            resource.getProjectLastModified(),
-            resource.getState(),
-            resource.getDateCreated(),
-            resource.getUserCreated(),
-            resource.getDateLastModified(),
-            resource.getUserLastModified(),
-            resource.getDateReleased(),
-            resource.getDateExpired(),
-            resource.getSiblingCount(),
-            resource.getLength(),
-            contentModificationDate,
-            resource.getVersion(),
-            resource.getContents());
+        byte[] contents = resource.getContents();
+        m_vfsDriver.writeContent(dbc, resource.getResourceId(), contents);
 
-        if (resource.getState().isUnchanged()) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
+        // read the file back from db
+        resource = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
+        resource.setContents(contents);
 
         // update the cache
         clearResourceCache();

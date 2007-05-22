@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/04/26 14:31:08 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -246,7 +246,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         cms.importResource(resName, resource, "import".getBytes(), null);
         List historicalVersions = cms.readAllAvailableVersions(resName);
         I_CmsHistoryResource history = (I_CmsHistoryResource)historicalVersions.get(historicalVersions.size() - 1);
-        cms.restoreResourceVersion(history.getResource().getStructureId(), history.getVersion());
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
         cms.unlockResource(resName);
         OpenCms.getPublishManager().publishResource(cms, resName, true, report);
         OpenCms.getPublishManager().waitWhileRunning();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2006/10/31 12:13:18 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +98,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_BEGIN_UPDATE_MODULE_1 = "RPT_BEGIN_UPDATE_MODULE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_COMPATIBLE_1 = "RPT_COMPATIBLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_JAR_FILE_3 = "RPT_DELETE_JAR_FILE_3";
 
     /** Message constant for key in the resource bundle. */
@@ -113,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELETE_JARS_FAILED_1 = "RPT_DELETE_JARS_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_CREATE_RELATIONS_0 = "RPT_END_CREATE_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_END_DELETE_JARS_0 = "RPT_END_DELETE_JARS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -122,10 +128,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_END_IMPORT_MODULE_1 = "RPT_END_IMPORT_MODULE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_READ_RESOURCES_0 = "RPT_END_READ_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_END_UPDATE_JARS_0 = "RPT_END_UPDATE_JARS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_END_UPDATE_MODULE_1 = "RPT_END_UPDATE_MODULE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_UPDATE_RELATIONS_0 = "RPT_END_UPDATE_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LINKS_1 = "RPT_LINKS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_LOCKED_RESOURCE_1 = "RPT_LOCKED_RESOURCE_1";
@@ -135,6 +150,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_MODULE_UPTODATE_1 = "RPT_MODULE_UPTODATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_READ_RESOURCES_1 = "RPT_READ_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_CREATE_RELATIONS_0 = "RPT_START_CREATE_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_READ_RESOURCES_0 = "RPT_START_READ_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_UPDATE_RELATIONS_0 = "RPT_START_UPDATE_RELATIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1 = "RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1";
@@ -156,6 +183,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JARS_PERMISSIONS_1 = "RPT_UPDATE_JARS_PERMISSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_WRITE_RELATIONS_1 = "RPT_WRITE_RELATIONS_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.setup.messages";

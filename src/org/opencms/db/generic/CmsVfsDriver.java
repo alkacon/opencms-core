@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.258.4.23 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.258.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.23 $
+ * @version $Revision: 1.258.4.25 $
  * 
  * @since 6.0.0 
  */
@@ -622,7 +622,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 if (resource.isFile()) {
                     if (content != null) {
                         // update the file content
-                        writeContent(dbc, projectId, resource.getResourceId(), content);
+                        writeContent(dbc, resource.getResourceId(), content);
                     } else if (resource.getState().isKeep()) {
                         // special case sibling creation - update the link Count
                         stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_SIBLING_COUNT");
@@ -2173,7 +2173,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         try {
             // write the file content
-            writeContent(dbc, dbc.currentProject().getUuid(), newResource.getResourceId(), resContent);
+            writeContent(dbc, newResource.getResourceId(), resContent);
 
             // update the resource record
             conn = m_sqlManager.getConnection(dbc);
@@ -2326,9 +2326,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.util.CmsUUID, byte[])
+     * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
-    public long writeContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
+    public long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
         Connection conn = null;
@@ -2336,7 +2336,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_CONTENTS_UPDATE");
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_OFFLINE_CONTENTS_UPDATE");
             // update the file content in the database.
             if (content.length < 2000) {
                 stmt.setBytes(1, content);
@@ -2355,7 +2355,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // store the content modification time
         long time = System.currentTimeMillis();
         try {
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCE_UPDATE_CONTENT_DATE");
             stmt.setLong(1, time);
             stmt.setString(2, resourceId.toString());
             stmt.executeUpdate();
@@ -2579,6 +2579,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsResourceState resourceState = resource.getState();
         CmsResourceState structureStateOld = internalReadStructureState(dbc, projectId, resource);
         CmsResourceState resourceStateOld = internalReadResourceState(dbc, projectId, resource);
+        CmsUUID projectLastModified = projectId;
 
         if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE) {
             resourceState = resourceStateOld;
@@ -2588,7 +2589,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             structureState = structureStateOld;
             structureState = (structureState.isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
         } else if (changed == CmsDriverManager.NOTHING_CHANGED) {
-            projectId = resource.getProjectLastModified();
+            projectLastModified = resource.getProjectLastModified();
         } else {
             resourceState = resourceStateOld;
             resourceState = (resourceState.isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
@@ -2612,7 +2613,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(5, resourceState.getState());
                 stmt.setInt(6, resource.getLength());
                 stmt.setLong(7, resource.getDateContent());
-                stmt.setString(8, projectId.toString());
+                stmt.setString(8, projectLastModified.toString());
                 stmt.setInt(9, internalCountSiblings(dbc, projectId, resource.getResourceId()));
                 stmt.setString(10, resource.getResourceId().toString());
                 stmt.executeUpdate();
@@ -2625,7 +2626,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setString(4, resource.getUserLastModified().toString());
                 stmt.setInt(5, resource.getLength());
                 stmt.setLong(6, resource.getDateContent());
-                stmt.setString(7, projectId.toString());
+                stmt.setString(7, projectLastModified.toString());
                 stmt.setInt(8, internalCountSiblings(dbc, projectId, resource.getResourceId()));
                 stmt.setString(9, resource.getResourceId().toString());
                 stmt.executeUpdate();

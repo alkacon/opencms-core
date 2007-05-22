@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryFile.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -45,7 +46,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.1
  */
@@ -59,6 +60,12 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
 
     /** The publish tag of this historical resource. */
     private int m_publishTag;
+
+    /** The version number of the structure part for this historical resource. */
+    private int m_structureVersion;
+
+    /** The version number of the resource part for this historical resource. */
+    private int m_resourceVersion;
 
     /**
      * Creates a dummy historical file from the given resource.<p>
@@ -81,24 +88,26 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
 
         this(
             resource.getPublishTag(),
-            resource.getResource().getStructureId(),
-            resource.getResource().getResourceId(),
-            resource.getResource().getRootPath(),
-            resource.getResource().getTypeId(),
-            resource.getResource().getFlags(),
-            resource.getResource().getProjectLastModified(),
-            resource.getResource().getState(),
-            resource.getResource().getDateCreated(),
-            resource.getResource().getUserCreated(),
-            resource.getResource().getDateLastModified(),
-            resource.getResource().getUserLastModified(),
-            resource.getResource().getDateReleased(),
-            resource.getResource().getDateExpired(),
-            resource.getResource().getLength(),
-            resource.getResource().getDateContent(),
+            resource.getStructureId(),
+            resource.getResourceId(),
+            resource.getRootPath(),
+            resource.getTypeId(),
+            resource.getFlags(),
+            resource.getProjectLastModified(),
+            resource.getState(),
+            resource.getDateCreated(),
+            resource.getUserCreated(),
+            resource.getDateLastModified(),
+            resource.getUserLastModified(),
+            resource.getDateReleased(),
+            resource.getDateExpired(),
+            resource.getLength(),
+            resource.getDateContent(),
             resource.getVersion(),
             resource.getParentId(),
-            resource.getResource().isFile() ? ((CmsFile)resource.getResource()).getContents() : null);
+            resource.isFile() ? ((CmsFile)resource).getContents() : null,
+            resource.getResourceVersion(),
+            resource.getStructureVersion());
     }
 
     /**
@@ -123,6 +132,8 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
      * @param version the version number of this resource
      * @param parentId structure id of the parent of this historical resource
      * @param content the content of this version
+     * @param resourceVersion the version number of the resource part for this historical resource
+     * @param structureVersion the version number of the structure part for this historical resource
      */
     public CmsHistoryFile(
         int publishTag,
@@ -143,7 +154,9 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
         long dateContent,
         int version,
         CmsUUID parentId,
-        byte[] content) {
+        byte[] content,
+        int resourceVersion,
+        int structureVersion) {
 
         super(
             structureId,
@@ -167,6 +180,8 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
 
         m_publishTag = publishTag;
         m_parentId = parentId;
+        m_resourceVersion = resourceVersion;
+        m_structureVersion = structureVersion;
     }
 
     /**
@@ -195,7 +210,9 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
             getDateContent(),
             getVersion(),
             getParentId(),
-            getContents());
+            getContents(),
+            getResourceVersion(),
+            getStructureVersion());
     }
 
     /**
@@ -255,14 +272,6 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
     }
 
     /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getResource()
-     */
-    public CmsResource getResource() {
-
-        return this;
-    }
-
-    /**
      * Returns the name of the user that created this resource.<p>
      *
      * @param cms the current cms context 
@@ -272,13 +281,9 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
     public String getUserCreatedName(CmsObject cms) {
 
         try {
-            return cms.readUser(getUserCreated()).getName();
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getUserCreated()).getName();
         } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getUserCreated()).getName();
-            } catch (CmsException e1) {
-                return getUserCreated().toString();
-            }
+            return getUserCreated().toString();
         }
     }
 
@@ -292,13 +297,47 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource, Clo
     public String getUserLastModifiedName(CmsObject cms) {
 
         try {
-            return cms.readUser(getUserLastModified()).getName();
+            return CmsPrincipal.readPrincipalIncludingHistory(cms, getUserLastModified()).getName();
         } catch (CmsException e) {
-            try {
-                return cms.readHistoryPrincipal(getUserLastModified()).getName();
-            } catch (CmsException e1) {
-                return getUserLastModified().toString();
-            }
+            return getUserLastModified().toString();
         }
+    }
+
+    /**
+     * @see org.opencms.file.history.I_CmsHistoryResource#getResourceVersion()
+     */
+    public int getResourceVersion() {
+
+        return m_resourceVersion;
+    }
+
+    /**
+     * @see org.opencms.file.history.I_CmsHistoryResource#getStructureVersion()
+     */
+    public int getStructureVersion() {
+
+        return m_structureVersion;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer();
+
+        result.append("[");
+        result.append(super.toString());
+        result.append(", resource version: ");
+        result.append(m_resourceVersion);
+        result.append(", structure version ");
+        result.append(m_structureVersion);
+        result.append(", parent id: ");
+        result.append(m_parentId);
+        result.append(", publish tag: ");
+        result.append(m_publishTag);
+        result.append("]");
+
+        return result.toString();
     }
 }

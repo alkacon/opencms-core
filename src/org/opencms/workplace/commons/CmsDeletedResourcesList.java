@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2007/05/11 15:43:08 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.1
  */
@@ -179,13 +179,13 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
         while (iter.hasNext()) {
             I_CmsHistoryResource res = (I_CmsHistoryResource)iter.next();
 
-            CmsListItem item = getList().newItem(res.getResource().getStructureId().toString());
-            String resourcePath = getCms().getSitePath(res.getResource());
+            CmsListItem item = getList().newItem(res.getStructureId().toString());
+            String resourcePath = getCms().getSitePath((CmsResource)res);
             item.set(LIST_COLUMN_NAME, m_resourcename + "|" + resourcePath);
-            String dateDeleted = getMessages().getDateTime(res.getResource().getDateLastModified());
+            String dateDeleted = getMessages().getDateTime(res.getDateLastModified());
             item.set(LIST_COLUMN_DELETION_DATE, dateDeleted);
-            item.set(LIST_COLUMN_VERSION, String.valueOf(res.getResource().getVersion()));
-            item.set(LIST_COLUMN_TYPEID, String.valueOf(res.getResource().getTypeId()));
+            item.set(LIST_COLUMN_VERSION, String.valueOf(res.getVersion()));
+            item.set(LIST_COLUMN_TYPEID, String.valueOf(res.getTypeId()));
             ret.add(item);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/16 15:57:30 $
- * Version: $Revision: 1.97.4.52 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.97.4.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -188,6 +188,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
+            //            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.addRelationToResource(dbc, resource, id, target, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -1193,13 +1194,7 @@ public final class CmsSecurityManager {
         try {
             checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
             checkPermissions(dbc, folder, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
-            m_driverManager.deleteHistoricalVersions(
-                dbc,
-                folder,
-                versionsToKeep,
-                versionsDeleted,
-                timeDeleted,
-                report);
+            m_driverManager.deleteHistoricalVersions(dbc, folder, versionsToKeep, versionsDeleted, timeDeleted, report);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_HISTORY_4,
@@ -1325,6 +1320,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            checkOfflineProject(dbc);
+            //            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.deleteRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -3371,7 +3368,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
-                context.getSitePath(resource.getResource())), e);
+                context.getSitePath((CmsResource)resource)), e);
         } finally {
             dbc.clear();
         }

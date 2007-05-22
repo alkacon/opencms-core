@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2007/05/08 10:45:09 $
- * Version: $Revision: 1.21.4.5 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.21.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21.4.5 $ 
+ * @version $Revision: 1.21.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,11 +141,11 @@ public class CmsDisplayResource extends CmsDialog {
             } finally {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
-            if (res.getResource().isFile()) {
+            if (res.isFile()) {
                 byte[] historyResourceContent = ((CmsFile)res).getContents();
                 if ((historyResourceContent == null) || (historyResourceContent.length == 0)) {
                     try {
-                        CmsFile file = cms.readFile(res.getResource());
+                        CmsFile file = cms.readFile((CmsResource)res);
                         historyResourceContent = file.getContents();
                     } catch (CmsException e) {
                         // ignore

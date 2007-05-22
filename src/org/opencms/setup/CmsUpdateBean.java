@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/03/01 15:01:39 $
- * Version: $Revision: 1.6.4.11 $
+ * Date   : $Date: 2007/05/22 16:07:07 $
+ * Version: $Revision: 1.6.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,12 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -45,6 +48,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
 import org.opencms.module.CmsModuleXmlHandler;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
@@ -72,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.11 $ 
+ * @version $Revision: 1.6.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,9 +104,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
-    /** Static flag to indicate if all modules should be updated regardless of their version number. */ 
+    /** Static flag to indicate if all modules should be updated regardless of their version number. */
     private static final boolean UPDATE_ALL_MODULES = false;
-    
+
     /** The used admin user name. */
     private String m_adminGroup = "_tmpUpdateGroup" + (System.currentTimeMillis() % 1000);
 
@@ -586,6 +591,111 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Fills the relations db tables during the update.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void updateRelations() throws Exception {
+
+        I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+        String storedSite = m_cms.getRequestContext().getSiteRoot();
+        try {
+            report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+            m_cms.getRequestContext().setSiteRoot(""); // change to the root site
+            m_cms.lockResource("/"); // lock everything
+
+            List resources = new ArrayList();
+
+            report.println(Messages.get().container(Messages.RPT_START_READ_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
+            Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
+            while (itTypes.hasNext()) {
+                I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                report.print(Messages.get().container(Messages.RPT_READ_RESOURCES_1, type.getTypeName()));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                if (type instanceof I_CmsLinkParseable) {
+                    try {
+                        List typeResources = m_cms.readResources(
+                            "/",
+                            CmsResourceFilter.ALL.addRequireType(type.getTypeId()),
+                            true);
+                        resources.add(typeResources);
+                        report.print(Messages.get().container(
+                            Messages.RPT_COMPATIBLE_1,
+                            new Integer(typeResources.size())));
+                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
+                    } catch (Exception e) {
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
+                        report.addError(e);
+                        // log the error
+                        e.printStackTrace(System.err);
+                    }
+                } else {
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SKIPPED_0));
+                }
+            }
+            report.println(Messages.get().container(Messages.RPT_END_READ_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
+
+            report.println(Messages.get().container(Messages.RPT_START_CREATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+            Iterator itResources = resources.iterator();
+            while (itResources.hasNext()) {
+                CmsResource resource = (CmsResource)itResources.next();
+
+                report.print(Messages.get().container(Messages.RPT_WRITE_RELATIONS_1, m_cms.getSitePath(resource)));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+                if (type instanceof I_CmsLinkParseable) {
+                    I_CmsLinkParseable lp = (I_CmsLinkParseable)type;
+                    try {
+                        CmsFile file = CmsFile.upgrade(resource, m_cms);
+                        List links = lp.parseLinks(m_cms, file);
+                        if (links.isEmpty()) {
+                            report.println(org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_SKIPPED_0));
+                        } else {
+                            report.print(Messages.get().container(Messages.RPT_LINKS_1, new Integer(links.size())));
+                            report.print(org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_DOTS_0));
+
+                            Iterator itLinks = links.iterator();
+                            while (itLinks.hasNext()) {
+                                CmsLink link = (CmsLink)itLinks.next();
+                                m_cms.addRelationToResource(
+                                    m_cms.getSitePath(resource),
+                                    link.getStructureId(),
+                                    link.getTarget(),
+                                    link.getType().getName());
+                            }
+                            report.println(org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                        }
+                    } catch (Exception e) {
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
+                        report.addError(e);
+                        // log the error
+                        e.printStackTrace(System.err);
+                    }
+                }
+            }
+            report.println(Messages.get().container(Messages.RPT_END_CREATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+        } finally {
+            try {
+                m_cms.unlockResource("/"); // unlock everything
+            } finally {
+                m_cms.getRequestContext().setSiteRoot(storedSite);
+                report.println(
+                    Messages.get().container(Messages.RPT_END_UPDATE_RELATIONS_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+            }
+        }
+    }
+
+    /**
      * Returns the admin Group.<p>
      *
      * @return the admin Group
@@ -637,13 +747,13 @@ public class CmsUpdateBean extends CmsSetupBean {
             cms.getRequestContext().setSiteRoot("");
             cms.getRequestContext().setCurrentProject(unlockProject);
             cms.copyResourceToProject(CmsWorkplace.VFS_PATH_SYSTEM);
-            
+
             // first unlock system folder if neccessary
             if (!cms.getLock(CmsWorkplace.VFS_PATH_SYSTEM).isUnlocked()) {
                 cms.changeLock(CmsWorkplace.VFS_PATH_SYSTEM);
                 cms.unlockResource(CmsWorkplace.VFS_PATH_SYSTEM);
             }
-            
+
             // afterwards, check resources inside
             List lockedResources = cms.getLockedResources(CmsWorkplace.VFS_PATH_SYSTEM, CmsLockFilter.FILTER_ALL);
             if (!lockedResources.isEmpty()) {

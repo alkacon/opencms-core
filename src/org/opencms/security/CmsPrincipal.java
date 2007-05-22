@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/02/04 21:03:14 $
- * Version: $Revision: 1.2.4.8 $
+ * Date   : $Date: 2007/05/22 16:07:08 $
+ * Version: $Revision: 1.2.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.8 $ 
+ * @version $Revision: 1.2.4.9 $ 
  * 
  * @since 6.2.0 
  */
@@ -261,6 +261,41 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         }
         // invalid principal type was given
         throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_TYPE_2, type, name));
+    }
+
+    /**
+     * Utility function to read a principal by its id from the OpenCms database using the 
+     * provided OpenCms user context.<p>
+     * 
+     * @param cms the OpenCms user context to use when reading the principal
+     * @param id the id of the principal to read
+     * 
+     * @return the principal read from the OpenCms database
+     * 
+     * @throws CmsException in case the principal could not be read
+     */
+    public static I_CmsPrincipal readPrincipalIncludingHistory(CmsObject cms, CmsUUID id) throws CmsException {
+
+        try {
+            // first try to read the principal as a user
+            return cms.readUser(id);
+        } catch (CmsException exc) {
+            // assume user does not exist
+        }
+        try {
+            // now try to read the principal as a group
+            return cms.readGroup(id);
+        } catch (CmsException exc) {
+            //  assume group does not exist
+        }
+        try {
+            // at the end try to read the principal from the history
+            return cms.readHistoryPrincipal(id);
+        } catch (CmsException exc) {
+            //  assume the principal does not exist at all
+        }
+        // invalid principal name was given
+        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**
