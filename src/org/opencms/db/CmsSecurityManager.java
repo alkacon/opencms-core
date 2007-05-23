@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.97.4.53 $
+ * Date   : $Date: 2007/05/23 13:00:43 $
+ * Version: $Revision: 1.97.4.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -402,6 +402,32 @@ public final class CmsSecurityManager {
         try {
             // check the access permissions
             checkPermissions(dbc, resource, requiredPermissions, checkLock, filter);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Checks if the current user has the permissions to publish the given publish list 
+     * (which contains the information about the resources / project to publish).<p>
+     * 
+     * @param context the current request context
+     * @param publishList the publish list to check (contains the information about the resources / project to publish)
+     * 
+     * @throws CmsException if the user does not have the required permissions becasue of project lock state
+     * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
+     *         whose parent folder is new or deleted in the offline project, 
+     *         or if the current user has no management access to the current project
+     *         
+     * @deprecated notice that checking is no longer possible at this way
+     */
+    public void checkPublishPermissions(CmsRequestContext context, CmsPublishList publishList)
+    throws CmsException, CmsMultiException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            // check the access permissions
+            checkPublishPermissions(dbc, publishList);
         } finally {
             dbc.clear();
         }

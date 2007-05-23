@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.146.4.44 $
+ * Date   : $Date: 2007/05/23 12:58:17 $
+ * Version: $Revision: 1.146.4.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.44 $
+ * @version $Revision: 1.146.4.45 $
  * 
  * @since 6.0.0 
  */
@@ -357,6 +357,19 @@ public final class CmsObject {
             newValue,
             recursive);
     }
+    /**
+     * Checks if the given base publish list can be published by the current user.<p>
+     * 
+     * @param publishList the base publish list to check
+     * 
+     * @throws CmsException in case the publish permissions are not granted
+     * 
+     * @deprecated notice that checking is no longer possible from the CmsObject
+     */
+    public void checkPublishPermissions(CmsPublishList publishList) throws CmsException {
+
+        m_securityManager.checkPublishPermissions(m_context, publishList);
+    }
 
     /**
      * Checks if the user of this OpenCms context is a member of the given role.<p>
@@ -436,6 +449,25 @@ public final class CmsObject {
         copyResource(source, destination, CmsResource.COPY_PRESERVE_SIBLING);
     }
 
+    /**
+     * Copies a resource.<p>
+     * 
+     * The copied resource will always be locked to the current user
+     * after the copy operation.<p>
+     * 
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
+     * @param siblingMode indicates how to handle siblings during copy
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
+     * 
+     * @deprecated use {@link #copyResource(String, String, CmsResource.CmsResourceCopyMode)} method instead
+     */
+    public void copyResource(String source, String destination, int siblingMode)
+    throws CmsException, CmsIllegalArgumentException {
+    	copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
+    }
     /**
      * Copies a resource.<p>
      * 
@@ -593,6 +625,30 @@ public final class CmsObject {
 
         return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
+    
+    /**
+     * Creates a new project.<p>
+     *
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
+     * @param projecttype the type of the project (normal or temporary)
+     * 
+     * @return the created project
+     * 
+     * @throws CmsException if operation was not successful
+     * @deprecated use {@link #createProject(String,String,String,String,CmsProject.CmsProjectType)} method instead
+     */
+    public CmsProject createProject(
+        String name,
+        String description,
+        String groupname,
+        String managergroupname,
+        int projecttype) throws CmsException {
+    	
+    	return createProject(name, description, groupname, managergroupname,CmsProject.CmsProjectType.valueOf(projecttype));
+     }
 
     /**
      * Creates a property definition.<p>
@@ -895,6 +951,24 @@ public final class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).deleteResource(this, m_securityManager, resource, siblingMode);
     }
+    
+    /**
+     * Deletes a resource given its name.<p>
+     * 
+     * The <code>siblingMode</code> parameter controls how to handle siblings 
+     * during the delete operation.<br>
+     * 
+     * @param resourcename the name of the resource to delete (full path)
+     * @param siblingMode indicates how to handle siblings of the deleted resource
+     *
+     * @throws CmsException if something goes wrong
+     *      
+     * @deprecated use {@link #deleteResource(String, CmsResource.CmsResourceDeleteMode)} method instead
+     */
+    public void deleteResource(String resourcename, int siblingMode) throws CmsException {
+
+        deleteResource(resourcename, CmsResource.CmsResourceDeleteMode.valueOf(siblingMode));
+    }
 
     /**
      * Deletes a published resource entry.<p>
@@ -1131,7 +1205,19 @@ public final class CmsObject {
 
         return m_securityManager.getAllManageableProjects(m_context);
     }
-
+    
+    /**
+     * Returns the next version id for the published backup resources.<p>
+     *
+     * @return int the new version id
+     * 
+     * @deprecated notice don´t use this method anymore.
+     */
+    public int getBackupTagId() throws CmsException{
+    	
+    	return ((CmsHistoryProject)getAllHistoricalProjects().get(0)).getPublishTag() + 1;
+    }
+    
     /**
      * Returns all child groups of a group.<p>
      *
@@ -1262,6 +1348,22 @@ public final class CmsObject {
         return getGroupsOfUser(username, directGroupsOnly, true);
     }
 
+    /**
+     * Returns the groups of a user filtered by the specified IP address.<p>
+     *
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result list
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
+     * 
+     * @throws CmsException if operation was not succesful
+     * @deprecated use {@link #getGroupsOfUser(String, boolean, boolean, String)} instead
+     */
+    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
+
+        return getGroupsOfUser(username, false, false,remoteAddress);
+    }
+    
     /**
      * Returns all the groups the given user belongs to.<p>
      *
@@ -1765,6 +1867,36 @@ public final class CmsObject {
             checkLock,
             filter);
     }
+    
+    /**
+     * Checks if the given resource or the current project can be published by the current user 
+     * using his current OpenCms context.<p>
+     * 
+     * If the resource parameter is <code>null</code>, then the current project is checked,
+     * otherwise the resource is checked for direct publish permissions.<p>
+     * 
+     * @param resourcename the direct publish resource name (optional, if null only the current project is checked)
+     * 
+     * @return <code>true</code>, if the current user can direct publish the given resource in his current context
+     * 
+     * @deprecated notice that checking is no longer possible from the CmsObject
+     */
+    public boolean hasPublishPermissions(String resourcename) {
+
+        CmsResource resource = null;
+        if (resourcename != null) {
+            // resource name is optional
+            try {
+                resource = readResource(resourcename, CmsResourceFilter.ALL);
+                checkPublishPermissions(new CmsPublishList(Collections.singletonList(resource), false));
+            } catch (CmsException e) {
+                // if any exception (e.g. security) occurs the result is false
+                return false;
+            }
+        }
+        // no exception means permissions are granted
+        return true;
+    }
 
     /**
      * Checks if the user of the current OpenCms context 
@@ -1975,6 +2107,23 @@ public final class CmsObject {
     public void lockResource(String resourcename) throws CmsException {
 
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
+    }
+    
+    /**
+     * Locks a resource.<p>
+     *
+     * The <code>mode</code> parameter controls what kind of lock is used.<br>
+     * 
+     * @param resourcename the name of the resource to lock (full path)
+     * @param mode flag indicating the mode for the lock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #lockResource()} methods instead
+     */
+    public void lockResource(String resourcename, int mode) throws CmsException {
+
+        lockResource(resourcename, CmsLockType.valueOf(mode));
     }
 
     /**
@@ -2826,6 +2975,24 @@ public final class CmsObject {
     public List readProjectView(int projectId, CmsResourceState state) throws CmsException {
 
         return readProjectView(m_securityManager.getProjectId(m_context, projectId), state);
+    }
+    
+    /**
+     * Reads all resources of a project that match a given state from the VFS.<p>
+     * 
+     * 
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match
+     *
+     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #readProjectView(CmsUUID, CmsResourceState)} instead
+     */
+    public List readProjectView(int projectId, int state) throws CmsException {
+
+    	return readProjectView(m_securityManager.getProjectId(m_context, projectId), CmsResourceState.valueOf(state));
     }
 
     /**
@@ -3776,7 +3943,28 @@ public final class CmsObject {
             setDateLastModified(resourcename, dateLastModified, recursive);
         }
     }
+    
+    /**
+     * Undeletes a resource (this is the same operation as "undo changes").<p>
+     * 
+     * Only resources that have already been published once can be undeleted,
+     * if a "new" resource is deleted it can not be undeleted.<p>
+     * 
+     * Internally, this method undos all changes to a resource by restoring 
+     * the version from the online project, that is to the state of last 
+     * publishing.<p>
+     * 
+     * @param resourcename the name of the resource to undelete (full path)
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #undeleteResource(String,boolean)} methods instead
+     */
+    public void undeleteResource(String resourcename) throws CmsException {
 
+    	undeleteResource(resourcename, false);
+    }
+    
     /**
      * Undeletes a resource.<p>
      * 
@@ -3814,6 +4002,26 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
+    }
+    
+    /**
+     * Undos all changes to a resource by restoring the version from the 
+     * online project to the current offline project.<p>
+     * 
+     * @param resourcename the name of the resource to undo the changes for (full path)
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link #undoChanges(String,CmsResource.CmsResourceUndoMode)} methods instead
+     */
+    public void undoChanges(String resourcename, boolean recursive) throws CmsException {
+
+    	if(recursive){
+    		undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
+    	}else{
+    		undoChanges(resourcename, CmsResource.UNDO_CONTENT);
+    	}
     }
 
     /**
