@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/23 12:58:17 $
- * Version: $Revision: 1.146.4.45 $
+ * Date   : $Date: 2007/05/23 13:24:47 $
+ * Version: $Revision: 1.146.4.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.45 $
+ * @version $Revision: 1.146.4.46 $
  * 
  * @since 6.0.0 
  */
@@ -357,6 +357,7 @@ public final class CmsObject {
             newValue,
             recursive);
     }
+
     /**
      * Checks if the given base publish list can be published by the current user.<p>
      * 
@@ -466,8 +467,10 @@ public final class CmsObject {
      */
     public void copyResource(String source, String destination, int siblingMode)
     throws CmsException, CmsIllegalArgumentException {
-    	copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
+
+        copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
     }
+
     /**
      * Copies a resource.<p>
      * 
@@ -625,7 +628,7 @@ public final class CmsObject {
 
         return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
-    
+
     /**
      * Creates a new project.<p>
      *
@@ -646,9 +649,14 @@ public final class CmsObject {
         String groupname,
         String managergroupname,
         int projecttype) throws CmsException {
-    	
-    	return createProject(name, description, groupname, managergroupname,CmsProject.CmsProjectType.valueOf(projecttype));
-     }
+
+        return createProject(
+            name,
+            description,
+            groupname,
+            managergroupname,
+            CmsProject.CmsProjectType.valueOf(projecttype));
+    }
 
     /**
      * Creates a property definition.<p>
@@ -951,7 +959,7 @@ public final class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).deleteResource(this, m_securityManager, resource, siblingMode);
     }
-    
+
     /**
      * Deletes a resource given its name.<p>
      * 
@@ -1205,7 +1213,7 @@ public final class CmsObject {
 
         return m_securityManager.getAllManageableProjects(m_context);
     }
-    
+
     /**
      * Returns the next version id for the published backup resources.<p>
      *
@@ -1213,11 +1221,11 @@ public final class CmsObject {
      * 
      * @deprecated notice don´t use this method anymore.
      */
-    public int getBackupTagId() throws CmsException{
-    	
-    	return ((CmsHistoryProject)getAllHistoricalProjects().get(0)).getPublishTag() + 1;
+    public int getBackupTagId() throws CmsException {
+
+        return ((CmsHistoryProject)getAllHistoricalProjects().get(0)).getPublishTag() + 1;
     }
-    
+
     /**
      * Returns all child groups of a group.<p>
      *
@@ -1361,9 +1369,9 @@ public final class CmsObject {
      */
     public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
 
-        return getGroupsOfUser(username, false, false,remoteAddress);
+        return getGroupsOfUser(username, false, false, remoteAddress);
     }
-    
+
     /**
      * Returns all the groups the given user belongs to.<p>
      *
@@ -1867,7 +1875,7 @@ public final class CmsObject {
             checkLock,
             filter);
     }
-    
+
     /**
      * Checks if the given resource or the current project can be published by the current user 
      * using his current OpenCms context.<p>
@@ -2108,7 +2116,7 @@ public final class CmsObject {
 
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
     }
-    
+
     /**
      * Locks a resource.<p>
      *
@@ -2976,7 +2984,7 @@ public final class CmsObject {
 
         return readProjectView(m_securityManager.getProjectId(m_context, projectId), state);
     }
-    
+
     /**
      * Reads all resources of a project that match a given state from the VFS.<p>
      * 
@@ -2992,7 +3000,7 @@ public final class CmsObject {
      */
     public List readProjectView(int projectId, int state) throws CmsException {
 
-    	return readProjectView(m_securityManager.getProjectId(m_context, projectId), CmsResourceState.valueOf(state));
+        return readProjectView(m_securityManager.getProjectId(m_context, projectId), CmsResourceState.valueOf(state));
     }
 
     /**
@@ -3943,7 +3951,7 @@ public final class CmsObject {
             setDateLastModified(resourcename, dateLastModified, recursive);
         }
     }
-    
+
     /**
      * Undeletes a resource (this is the same operation as "undo changes").<p>
      * 
@@ -3962,9 +3970,9 @@ public final class CmsObject {
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
-    	undeleteResource(resourcename, false);
+        undeleteResource(resourcename, false);
     }
-    
+
     /**
      * Undeletes a resource.<p>
      * 
@@ -4003,7 +4011,7 @@ public final class CmsObject {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
     }
-    
+
     /**
      * Undos all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
@@ -4017,11 +4025,11 @@ public final class CmsObject {
      */
     public void undoChanges(String resourcename, boolean recursive) throws CmsException {
 
-    	if(recursive){
-    		undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
-    	}else{
-    		undoChanges(resourcename, CmsResource.UNDO_CONTENT);
-    	}
+        if (recursive) {
+            undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
+        } else {
+            undoChanges(resourcename, CmsResource.UNDO_CONTENT);
+        }
     }
 
     /**
