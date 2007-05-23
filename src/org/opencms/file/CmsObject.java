@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/23 13:24:47 $
- * Version: $Revision: 1.146.4.46 $
+ * Date   : $Date: 2007/05/23 13:33:13 $
+ * Version: $Revision: 1.146.4.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.46 $
+ * @version $Revision: 1.146.4.47 $
  * 
  * @since 6.0.0 
  */
@@ -456,27 +456,6 @@ public final class CmsObject {
      * The copied resource will always be locked to the current user
      * after the copy operation.<p>
      * 
-     * @param source the name of the resource to copy (full path)
-     * @param destination the name of the copy destination (full path)
-     * @param siblingMode indicates how to handle siblings during copy
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
-     * 
-     * @deprecated use {@link #copyResource(String, String, CmsResource.CmsResourceCopyMode)} method instead
-     */
-    public void copyResource(String source, String destination, int siblingMode)
-    throws CmsException, CmsIllegalArgumentException {
-
-        copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
-    }
-
-    /**
-     * Copies a resource.<p>
-     * 
-     * The copied resource will always be locked to the current user
-     * after the copy operation.<p>
-     * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
      * during the copy operation.<br>
      * Possible values for this parameter are: <br>
@@ -498,6 +477,27 @@ public final class CmsObject {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, destination, siblingMode);
+    }
+
+    /**
+     * Copies a resource.<p>
+     * 
+     * The copied resource will always be locked to the current user
+     * after the copy operation.<p>
+     * 
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
+     * @param siblingMode indicates how to handle siblings during copy
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
+     * 
+     * @deprecated use {@link #copyResource(String, String, CmsResource.CmsResourceCopyMode)} method instead
+     */
+    public void copyResource(String source, String destination, int siblingMode)
+    throws CmsException, CmsIllegalArgumentException {
+
+        copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
     }
 
     /**
@@ -1357,22 +1357,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the groups of a user filtered by the specified IP address.<p>
-     *
-     * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result list
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
-     * 
-     * @throws CmsException if operation was not succesful
-     * @deprecated use {@link #getGroupsOfUser(String, boolean, boolean, String)} instead
-     */
-    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
-
-        return getGroupsOfUser(username, false, false, remoteAddress);
-    }
-
-    /**
      * Returns all the groups the given user belongs to.<p>
      *
      * @param username the name of the user
@@ -1405,6 +1389,22 @@ public final class CmsObject {
 
         return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus ? ""
         : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
+    }
+
+    /**
+     * Returns the groups of a user filtered by the specified IP address.<p>
+     *
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result list
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
+     * 
+     * @throws CmsException if operation was not succesful
+     * @deprecated use {@link #getGroupsOfUser(String, boolean, boolean, String)} instead
+     */
+    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
+
+        return getGroupsOfUser(username, false, false, remoteAddress);
     }
 
     /**
@@ -3996,26 +3996,6 @@ public final class CmsObject {
      * Undos all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
-     * @param resourcename the name of the resource to undo the changes for
-     * @param mode the undo mode, one of the <code>{@link CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsResource#UNDO_CONTENT
-     * @see CmsResource#UNDO_CONTENT_RECURSIVE
-     * @see CmsResource#UNDO_MOVE_CONTENT
-     * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
-     */
-    public void undoChanges(String resourcename, CmsResource.CmsResourceUndoMode mode) throws CmsException {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
-    }
-
-    /**
-     * Undos all changes to a resource by restoring the version from the 
-     * online project to the current offline project.<p>
-     * 
      * @param resourcename the name of the resource to undo the changes for (full path)
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      *
@@ -4030,6 +4010,26 @@ public final class CmsObject {
         } else {
             undoChanges(resourcename, CmsResource.UNDO_CONTENT);
         }
+    }
+
+    /**
+     * Undos all changes to a resource by restoring the version from the 
+     * online project to the current offline project.<p>
+     * 
+     * @param resourcename the name of the resource to undo the changes for
+     * @param mode the undo mode, one of the <code>{@link CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsResource#UNDO_CONTENT
+     * @see CmsResource#UNDO_CONTENT_RECURSIVE
+     * @see CmsResource#UNDO_MOVE_CONTENT
+     * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
+     */
+    public void undoChanges(String resourcename, CmsResource.CmsResourceUndoMode mode) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
     }
 
     /**
