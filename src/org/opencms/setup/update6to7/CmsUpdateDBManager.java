@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 15:10:51 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/24 15:29:10 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -195,6 +195,8 @@ public class CmsUpdateDBManager {
         CmsSetupDb setupDb = new CmsSetupDb(m_webAppRfsPath);
 
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
             CmsUpdateDBDropOldIndexes dropIndexes = new CmsUpdateDBDropOldIndexes(setupDb, m_webAppRfsPath);
             dropIndexes.dropAllIndexes();
         } catch (SQLException e) {
@@ -212,73 +214,98 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(setupDb, m_webAppRfsPath);
         try {
-            // Generate the new tables
-            newTables.createNewTables();
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
 
+            // Generate the new tables
+            CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(setupDb, m_webAppRfsPath);
+            newTables.createNewTables();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBHistoryTables historyTables = new CmsUpdateDBHistoryTables(setupDb, m_webAppRfsPath);
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
             // transfer the data from the backup tables to the new history tables
+            CmsUpdateDBHistoryTables historyTables = new CmsUpdateDBHistoryTables(setupDb, m_webAppRfsPath);
             historyTables.transferBackupToHistoryTables();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBHistoryPrincipals updateHistoryPrincipals = new CmsUpdateDBHistoryPrincipals(
-            setupDb,
-            m_webAppRfsPath);
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBHistoryPrincipals updateHistoryPrincipals = new CmsUpdateDBHistoryPrincipals(
+                setupDb,
+                m_webAppRfsPath);
             boolean update = updateHistoryPrincipals.insertHistoryPrincipals();
             if (update) {
                 updateHistoryPrincipals.updateHistoryPrincipals();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
             indexUpdater.updateIndexes();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBDropUnusedTables dropUnusedTables = new CmsUpdateDBDropUnusedTables(setupDb, m_webAppRfsPath);
-
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBDropUnusedTables dropUnusedTables = new CmsUpdateDBDropUnusedTables(setupDb, m_webAppRfsPath);
             dropUnusedTables.dropUnusedTables();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBContentTables updateContentTables = new CmsUpdateDBContentTables(setupDb, m_webAppRfsPath);
-
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBContentTables updateContentTables = new CmsUpdateDBContentTables(setupDb, m_webAppRfsPath);
             updateContentTables.transferData();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBAlterTables alterTables = new CmsUpdateDBAlterTables(setupDb, m_webAppRfsPath);
-
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBAlterTables alterTables = new CmsUpdateDBAlterTables(setupDb, m_webAppRfsPath);
             alterTables.updateRemaingTables();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
-        CmsUpdateDBDropBackupTables dropBackupTables = new CmsUpdateDBDropBackupTables(setupDb, m_webAppRfsPath);
-
         try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBDropBackupTables dropBackupTables = new CmsUpdateDBDropBackupTables(setupDb, m_webAppRfsPath);
             dropBackupTables.dropBackupTables();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
         }
 
         try {
