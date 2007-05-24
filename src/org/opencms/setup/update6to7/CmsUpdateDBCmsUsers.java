@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/24 14:51:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,13 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 /**
  * This class makes an update of the CMS_USERS table splitting it up into CMS_USERS and CMS_USERDATA.<p>
  * Unnecessary colums from CMS_USERS will be deleted and the new column USER_DATECREATED is added.
  * 
  * @author metzler
- *
  */
 public class CmsUpdateDBCmsUsers {
 
@@ -81,8 +81,14 @@ public class CmsUpdateDBCmsUsers {
     /** Constant for the sql query to add the USER_DATECREATED column to CMS_USERS.<p> */
     private static final String QUERY_ADD_USER_DATECREATED_COLUMN = "Q_ADD_USER_DATECREATED";
 
+    /** Constant for the sql query to add all webusers to the group with the given id.<p> */
+    private static final String QUERY_ADD_WEBUSERS_TO_GROUP = "Q_ADD_WEBUSERS_TO_GROUP";
+
     /** Constant for the query to create the user data table.<p> */
     private static final String QUERY_CREATE_TABLE_USERDATA = "Q_CREATE_TABLE_USERDATA";
+
+    /** Constant for the sql query to create a new group in the CMS_GROUPS table for the webusers.<p> */
+    private static final String QUERY_CREATE_WEBUSERS_GROUP = "Q_CREATE_WEBUSERS_GROUP";
 
     /** Constant for the sql query to drop the USER_ADDRESS column from CMS_USERS.<p> */
     private static final String QUERY_DROP_USER_ADDRESS_COLUMN = "Q_DROP_USER_ADDRESS_COLUMN";
@@ -208,7 +214,16 @@ public class CmsUpdateDBCmsUsers {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         try {
-
+            if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
+                CmsUUID id = createWebusersGroup();
+                addWebusersToGroup(id);
+            } else {
+                System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
             // Check if the CMS_USERDATA table exists            
             if (!checkUserDataTable()) {
                 createUserDataTable(); // Could throw Exception during table creation
@@ -268,7 +283,6 @@ public class CmsUpdateDBCmsUsers {
      * Adds the new column USER_DATECREATED to the CMS_USERS table.<p> 
      * 
      * @throws SQLException if something goes wrong 
-     *
      */
     private void addUserDateCreated() throws SQLException {
 
@@ -287,6 +301,21 @@ public class CmsUpdateDBCmsUsers {
         } else {
             System.out.println("column " + USER_DATECREATED + " in table " + CMS_USERS_TABLE + " already exists");
         }
+    }
+
+    /**
+     * Adds all webusers to the new previously created webusers group.<p>
+     * 
+     * @param id the id of the new webusers group
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    private void addWebusersToGroup(CmsUUID id) throws SQLException {
+
+        String sql = (String)m_queryProperties.get(QUERY_ADD_WEBUSERS_TO_GROUP);
+        Map replacements = new HashMap();
+        replacements.put("${GROUP_ID}", id.toString());
+        m_dbcon.updateSqlStatement(sql, replacements, null);
     }
 
     /**
@@ -311,6 +340,28 @@ public class CmsUpdateDBCmsUsers {
         System.out.println(new Exception().getStackTrace()[0].toString());
         String createStatement = m_queryProperties.getString(QUERY_CREATE_TABLE_USERDATA);
         m_dbcon.updateSqlStatement(createStatement, null, null);
+    }
+
+    /**
+     * creates a new group for the webusers.<p>
+     * 
+     * @return the id of the new generated group
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    private CmsUUID createWebusersGroup() throws SQLException {
+
+        String sql = (String)m_queryProperties.get(QUERY_CREATE_WEBUSERS_GROUP);
+        List params = new ArrayList();
+        CmsUUID id = new CmsUUID();
+        params.add(id.toString());
+        params.add(CmsUUID.getNullUUID().toString());
+        params.add("allWebusersFromUpgrade6to7");
+        params.add("This group was created by the OpenCms Upgrade Wizard to facilitate the handling of former called WebUsers, can be deleted if needed.");
+        params.add(new Integer(0));
+        params.add("/");
+        m_dbcon.updateSqlStatement(sql, null, params);
+        return id;
     }
 
     /**

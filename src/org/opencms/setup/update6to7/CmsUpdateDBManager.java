@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 14:01:29 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/24 14:51:44 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -185,15 +185,22 @@ public class CmsUpdateDBManager {
 
         boolean result = false;
 
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        System.out.println("DbPool: " + pool);
+        System.out.println("DbDriver: " + getDbDriver(pool));
+        System.out.println("DbUrl: " + getDbUrl(pool));
+        System.out.println("DbParams: " + getDbParams(pool));
+        System.out.println("DbUser: " + getDbUser(pool));
+        
         CmsSetupDb setupDb = new CmsSetupDb(m_webAppRfsPath);
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBUpdateOU updateOU = new CmsUpdateDBUpdateOU(setupDb, m_webAppRfsPath);
-            result = updateOU.updateUOsForTables();
-        } finally {
-            setupDb.closeConnection();
-        }
+//        try {
+//            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+//
+//            CmsUpdateDBUpdateOU updateOU = new CmsUpdateDBUpdateOU(setupDb, m_webAppRfsPath);
+//            result = updateOU.updateUOsForTables();
+//        } finally {
+//            setupDb.closeConnection();
+//        }
 
         try {
             setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
@@ -204,16 +211,16 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-            // generate the new UUIDs
-            CmsUpdateDBProjectId updateProjectIDs = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
-            updateProjectIDs.updateUUIDs();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
+//        try {
+//            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+//            // generate the new UUIDs
+//            CmsUpdateDBProjectId updateProjectIDs = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
+//            updateProjectIDs.updateUUIDs();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            setupDb.closeConnection();
+//        }
 
         //        CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(m_setupDb, m_setupBean.getWebAppRfsPath());
         //        try {
