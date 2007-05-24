@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBIndexUpdater.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/24 15:10:51 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.util.CmsPropertyUtils;
  * These tables are
  * CMS_GROUPS
  * CMS_PROJECTS
- * CMS_PUBISH_HISTORY
+ * CMS_PUBLISH_HISTORY
  * 
  * @author metzler
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/24 14:01:29 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/24 15:10:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,20 +79,8 @@ public class CmsUpdateDBProjectId {
     /** Constant for the sql column TEMP_PROJECT_UUID.<p> */
     private static final String COLUMN_TEMP_PROJECT_UUID = "TEMP_PROJECT_UUID";
 
-    /** Constant for the sql query for the creation of the new index consiting of the two columns.<p> */
-    private static final String COLUMNS_PROJECT_LASTMODIFIED_RESOURCE_SIZE = "PROJECT_LASTMODIFIED,RESOURCE_SIZE";
-
     /** Constant for the table name of the CMS_HISTORY_PROJECTS table.<p> */
     private static final String HISTORY_PROJECTS_TABLE = "CMS_HISTORY_PROJECTS";
-
-    /** Constant for the index of the online and offline resources project lastmodified.<p> */
-    private static final String ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_IDX = "PROJECT_LASTMODIFIED_IDX";
-
-    /** Constant for the index of the online and offline resources project lastmodified resource size.<p> */
-    private static final String ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_SIZE_IDX = "PROJECT_LASTMODIFIED_RESOURCE_SIZE_IDX";
-
-    /** Constant for the sql query to add a new index to the table.<p> */
-    private static final String QUERY_ADD_INDEX = "Q_ADD_INDEX";
 
     /** Constant for the sql query to add a new primary key.<p> */
     private static final String QUERY_ADD_PRIMARY_KEY = "Q_ADD_PRIMARY_KEY";
@@ -147,9 +135,6 @@ public class CmsUpdateDBProjectId {
 
     /** Constant for the replacement in the SQL query for the index name.<p> */
     private static final String REPLACEMENT_INDEX = "${index}";
-
-    /** Constant for the replacement in the SQL query for the index columns.<p> */
-    private static final String REPLACEMENT_INDEX_COLUMNS = "${indexcolumns}";
 
     /** Constant for the replacement in the SQL query for the new columnname.<p> */
     private static final String REPLACEMENT_NEW_COLUMN = "${newcolumn}";
@@ -416,20 +401,13 @@ public class CmsUpdateDBProjectId {
                  * indexes and primary keys are added.
                  */
                 if (isInResourcesList) {
-                    dropPrimaryKeyAndIndex(tablename, false, ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_IDX);
-                    dropPrimaryKeyAndIndex(tablename, false, ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_SIZE_IDX);
 
                     // Drop the column PROJECT_LASTMODIFIED
                     dropColumn(tablename, COLUMN_PROJECT_LASTMODIFIED);
                     // rename the column TEMP_PROJECT_UUID to PROJECT_LASTMODIFIED
                     renameColumn(tablename, COLUMN_TEMP_PROJECT_UUID, COLUMN_PROJECT_LASTMODIFIED);
 
-                    //add the new index
-                    addIndex(tablename, ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_IDX, COLUMN_PROJECT_LASTMODIFIED);
-                    addIndex(
-                        tablename,
-                        ONLINE_OFFLINE_RESOURCES_LASTMODIFIED_SIZE_IDX,
-                        COLUMNS_PROJECT_LASTMODIFIED_RESOURCE_SIZE);
+
                 } else {
                     // Drop only the primary key
                     dropPrimaryKeyAndIndex(tablename, true, null);
@@ -453,30 +431,6 @@ public class CmsUpdateDBProjectId {
         }
     }
 
-    /**
-     * Adds a new index to the given table.<p>
-     * 
-     * @param tablename the table to add the index to
-     * @param index the name of the new index
-     * @param indexcolumns the columns belonging to the new index
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void addIndex(String tablename, String index, String indexcolumns) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, null)) {
-            String query = (String)m_queryProperties.get(QUERY_ADD_INDEX);
-            Map replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_INDEX, index);
-            replacer.put(REPLACEMENT_INDEX_COLUMNS, indexcolumns);
-
-            m_dbcon.updateSqlStatement(query, replacer, null);
-        } else {
-            System.out.println("table " + tablename + " does not exists");
-        }
-    }
 
     /**
      * Adds a new primary key to the given table.<p>

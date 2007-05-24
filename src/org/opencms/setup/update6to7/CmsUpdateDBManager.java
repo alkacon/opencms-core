@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 14:51:44 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/24 15:10:51 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,16 +191,17 @@ public class CmsUpdateDBManager {
         System.out.println("DbUrl: " + getDbUrl(pool));
         System.out.println("DbParams: " + getDbParams(pool));
         System.out.println("DbUser: " + getDbUser(pool));
-        
+
         CmsSetupDb setupDb = new CmsSetupDb(m_webAppRfsPath);
-//        try {
-//            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-//
-//            CmsUpdateDBUpdateOU updateOU = new CmsUpdateDBUpdateOU(setupDb, m_webAppRfsPath);
-//            result = updateOU.updateUOsForTables();
-//        } finally {
-//            setupDb.closeConnection();
-//        }
+
+        try {
+            CmsUpdateDBDropOldIndexes dropIndexes = new CmsUpdateDBDropOldIndexes(setupDb, m_webAppRfsPath);
+            dropIndexes.dropAllIndexes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
+        }
 
         try {
             setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
@@ -211,92 +212,85 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-//        try {
-//            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-//            // generate the new UUIDs
-//            CmsUpdateDBProjectId updateProjectIDs = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
-//            updateProjectIDs.updateUUIDs();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            setupDb.closeConnection();
-//        }
+        CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(setupDb, m_webAppRfsPath);
+        try {
+            // Generate the new tables
+            newTables.createNewTables();
 
-        //        CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(m_setupDb, m_setupBean.getWebAppRfsPath());
-        //        try {
-        //            // Generate the new tables
-        //            newTables.createNewTables();
-        //
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBHistoryTables historyTables = new CmsUpdateDBHistoryTables(m_setupDb, m_setupBean.getWebAppRfsPath());
-        //        try {
-        //            // transfer the data from the backup tables to the new history tables
-        //            historyTables.transferBackupToHistoryTables();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBHistoryPrincipals updateHistoryPrincipals = new CmsUpdateDBHistoryPrincipals(
-        //            m_setupDb,
-        //            m_setupBean.getWebAppRfsPath());
-        //        try {
-        //            boolean update = updateHistoryPrincipals.insertHistoryPrincipals();
-        //            if (update) {
-        //                updateHistoryPrincipals.updateHistoryPrincipals();
-        //            }
-        //
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(m_setupDb, m_setupBean.getWebAppRfsPath());
-        //        try {
-        //            indexUpdater.updateIndexes();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBDropUnusedTables dropUnusedTables = new CmsUpdateDBDropUnusedTables(
-        //            m_setupDb,
-        //            m_setupBean.getWebAppRfsPath());
-        //
-        //        try {
-        //            dropUnusedTables.dropUnusedTables();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBContentTables updateContentTables = new CmsUpdateDBContentTables(
-        //            m_setupDb,
-        //            m_setupBean.getWebAppRfsPath());
-        //
-        //        try {
-        //            updateContentTables.transferData();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBAlterTables alterTables = new CmsUpdateDBAlterTables(m_setupDb, m_setupBean.getWebAppRfsPath());
-        //
-        //        try {
-        //            alterTables.updateRemaingTables();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        CmsUpdateDBDropBackupTables dropBackupTables = new CmsUpdateDBDropBackupTables(
-        //            m_setupDb,
-        //            m_setupBean.getWebAppRfsPath());
-        //
-        //        try {
-        //            dropBackupTables.dropBackupTables();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        }
-        setupDb.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBHistoryTables historyTables = new CmsUpdateDBHistoryTables(setupDb, m_webAppRfsPath);
+        try {
+            // transfer the data from the backup tables to the new history tables
+            historyTables.transferBackupToHistoryTables();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBHistoryPrincipals updateHistoryPrincipals = new CmsUpdateDBHistoryPrincipals(
+            setupDb,
+            m_webAppRfsPath);
+        try {
+            boolean update = updateHistoryPrincipals.insertHistoryPrincipals();
+            if (update) {
+                updateHistoryPrincipals.updateHistoryPrincipals();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
+        try {
+            indexUpdater.updateIndexes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBDropUnusedTables dropUnusedTables = new CmsUpdateDBDropUnusedTables(setupDb, m_webAppRfsPath);
+
+        try {
+            dropUnusedTables.dropUnusedTables();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBContentTables updateContentTables = new CmsUpdateDBContentTables(setupDb, m_webAppRfsPath);
+
+        try {
+            updateContentTables.transferData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBAlterTables alterTables = new CmsUpdateDBAlterTables(setupDb, m_webAppRfsPath);
+
+        try {
+            alterTables.updateRemaingTables();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        CmsUpdateDBDropBackupTables dropBackupTables = new CmsUpdateDBDropBackupTables(setupDb, m_webAppRfsPath);
+
+        try {
+            dropBackupTables.dropBackupTables();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+            // generate the new UUIDs
+            CmsUpdateDBCreateIndexes7 createNewIndexes = new CmsUpdateDBCreateIndexes7(setupDb, m_webAppRfsPath);
+            createNewIndexes.createNewIndexes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
+        }
 
         return result;
     }

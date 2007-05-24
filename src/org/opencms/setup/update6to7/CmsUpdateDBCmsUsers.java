@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/05/24 14:51:44 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/24 15:10:51 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,23 +60,8 @@ public class CmsUpdateDBCmsUsers {
     /** Constant for the table CMS_USERDATA.<p> */
     private static final String CHECK_CMS_USERDATA = "CMS_USERDATA";
 
-    /** Constant name for the index USER_FQN_IDX.<p> */
-    private static final String CMS_USERS_INDEX_USER_FQN = "USER_FQN_IDX";
-
-    /** Constant name for the index columns for the USER_FQN_IDX.<p> */
-    private static final String CMS_USERS_INDEX_USER_FQN_COLS = "USER_OU,USER_NAME";
-
-    /** Constant name for the index USER_OU_IDX.<p> */
-    private static final String CMS_USERS_INDEX_USER_OU_IDX = "USER_OU_IDX";
-
-    /** Constant name for the index columns for the USER_OU_IDX.<p> */
-    private static final String CMS_USERS_INDEX_USER_OU_IDX_COLS = "USER_OU";
-
     /** Constant for the table name of CMS_USERS.<p> */
     private static final String CMS_USERS_TABLE = "CMS_USERS";
-
-    /** Constant for the sql query to add a new index to CMS_USERS.<p> */
-    private static final String QUERY_ADD_INDEX = "Q_ADD_INDEX";
 
     /** Constant for the sql query to add the USER_DATECREATED column to CMS_USERS.<p> */
     private static final String QUERY_ADD_USER_DATECREATED_COLUMN = "Q_ADD_USER_DATECREATED";
@@ -113,12 +98,6 @@ public class CmsUpdateDBCmsUsers {
 
     /** Constant for the sql query to set the USER_DATECREATED value.<p> */
     private static final String QUERY_SET_USER_DATECREATED = "Q_SET_USER_DATECREATED";
-
-    /** Cosntant for the replacement of the index columns in the sql query.<p> */
-    private static final String REPLACEMENT_INDEX_COLUMNS = "${indexcolumns}";
-
-    /** Cosntant for the replacement of the tablename in the sql query.<p> */
-    private static final String REPLACEMENT_INDEXNAME = "${indexname}";
 
     /** Constant for the columnname USER_ID of the resultset.<p> */
     private static final String RESULTSET_USER_ID = "USER_ID";
@@ -269,8 +248,6 @@ public class CmsUpdateDBCmsUsers {
                 // remove the unnecessary columns from CMS_USERS
                 removeUnnecessaryColumns();
 
-                // update the indexes
-                updateIndexes();
             } else {
                 System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
             }
@@ -400,30 +377,6 @@ public class CmsUpdateDBCmsUsers {
         } else {
             System.out.println("no column " + USER_TYPE + " in table " + CMS_USERS_TABLE + " found");
         }
-    }
-
-    /**
-     * Updates the indexes of the CMS_USERS table.<p> 
-     * 
-     * @throws SQLException if something goes wrong 
-     *
-     */
-    private void updateIndexes() throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = (String)m_queryProperties.get(QUERY_ADD_INDEX);
-        HashMap replacer = new HashMap();
-        // Update the USER_FQN index
-        replacer.put(REPLACEMENT_INDEXNAME, CMS_USERS_INDEX_USER_FQN);
-        replacer.put(REPLACEMENT_INDEX_COLUMNS, CMS_USERS_INDEX_USER_FQN_COLS);
-        m_dbcon.updateSqlStatement(query, replacer, null);
-
-        replacer.clear();
-        // Update the USER_OU index
-        replacer.put(REPLACEMENT_INDEXNAME, CMS_USERS_INDEX_USER_OU_IDX);
-        replacer.put(REPLACEMENT_INDEX_COLUMNS, CMS_USERS_INDEX_USER_OU_IDX_COLS);
-        m_dbcon.updateSqlStatement(query, replacer, null);
-
     }
 
     /**
