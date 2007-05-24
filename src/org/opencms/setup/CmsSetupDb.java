@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.25.4.3 $
+ * Date   : $Date: 2007/05/24 13:07:19 $
+ * Version: $Revision: 1.25.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,24 +31,28 @@
 
 package org.opencms.setup;
 
-import org.opencms.main.CmsException;
-import org.opencms.util.CmsStringUtil;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsDataTypeUtil;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Helper class to call database setup scripts.<p>
@@ -56,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.3 $ 
+ * @version $Revision: 1.25.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,10 +169,13 @@ public class CmsSetupDb extends Object {
     public void closeConnection() {
 
         try {
-            m_con.close();
+            if (m_con != null) {
+                m_con.close();
+            }
         } catch (Exception e) {
             // ignore
         }
+        m_con = null;
     }
 
     /**
@@ -283,6 +290,33 @@ public class CmsSetupDb extends Object {
     }
 
     /**
+     * Creates and executes a database statment from a String returning the result set.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public ResultSet executeSqlStatement(String query, Map replacer) throws SQLException {
+
+        Statement stmt = null;
+        ResultSet resultSet = null;
+
+        stmt = m_con.createStatement();
+        String queryToExecute = query;
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        resultSet = stmt.executeQuery(queryToExecute);
+
+        return resultSet;
+    }
+
+    /**
      * Returns a Vector of Error messages.<p>
      * 
      * @return all error messages collected internally
@@ -290,6 +324,73 @@ public class CmsSetupDb extends Object {
     public Vector getErrors() {
 
         return m_errors;
+    }
+
+    /**
+     * Checks if the given table, column or combination of both is available in the database.<P>
+     * 
+     * @param table the sought table
+     * @param column the sought column
+     * 
+     * @return true if the requested table/column is available, false if not
+     */
+    public boolean hasTableOrColumn(String table, String column) {
+
+        boolean result = false;
+        ResultSet set = null;
+
+        try {
+
+            // Check the table 
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(table)) {
+                set = m_con.getMetaData().getTables(null, null, table, null);
+
+                while (set.next()) {
+                    String tablename = set.getString("TABLE_NAME");
+                    if (tablename.equalsIgnoreCase(table)) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                }
+
+                set.close();
+                set = null;
+            }
+
+            // Check if the column is given
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(column)) {
+                result = false; // reset the boolean value to false
+                set = m_con.getMetaData().getColumns(null, null, table, column);
+
+                while (set.next()) {
+                    String colname = set.getString("COLUMN_NAME");
+                    if (colname.equalsIgnoreCase(column)) {
+                        result = true; // The column is available
+                    } else {
+                        result = false;
+                    }
+                }
+                set.close();
+                set = null;
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            result = false;
+        } finally {
+            try {
+                if (set != null) {
+                    set.close();
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -362,6 +463,65 @@ public class CmsSetupDb extends Object {
 
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, abortOnError);
+    }
+
+    /**
+     * Creates and executes a database statment from a String.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * @param params the list of parameters for the statement
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public int updateSqlStatement(String query, Map replacer, List params) throws SQLException {
+
+        PreparedStatement stmt = null;
+        int result;
+
+        String queryToExecute = query;
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        stmt = m_con.prepareStatement(queryToExecute);
+        // Check the params
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                Object item = params.get(i);
+
+                // Check if the parameter is a string
+                if (item instanceof String) {
+                    stmt.setString(i + 1, (String)item);
+                }
+                if (item instanceof Integer) {
+                    Integer number = (Integer)item;
+                    stmt.setInt(i + 1, number.intValue());
+                }
+                if (item instanceof Long) {
+                    Long longNumber = (Long)item;
+                    stmt.setLong(i + 1, longNumber.longValue());
+                }
+
+                // If item is none of types above set the statement to use the bytes
+                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                    try {
+                        stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+
+        result = stmt.executeUpdate();
+
+        return result;
     }
 
     /**
@@ -531,7 +691,7 @@ public class CmsSetupDb extends Object {
         Iterator keys = replacers.entrySet().iterator();
         while (keys.hasNext()) {
             Map.Entry entry = (Map.Entry)keys.next();
-            
+
             String key = (String)entry.getKey();
             String value = (String)entry.getValue();
 
@@ -540,4 +700,5 @@ public class CmsSetupDb extends Object {
 
         return sql;
     }
+
 }

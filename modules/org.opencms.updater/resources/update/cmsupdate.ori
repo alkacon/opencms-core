@@ -13,7 +13,13 @@ rebuildAllIndexes
 # purge the jsp repository
 purgeJspRepository
 
+# update content relation engine data
+updateRelations
+
 # Import the modules that have been selected in the update wizard
 updateModulesFromUpdateBean
+
+# purge the jsp repository
+purgeJspRepository
 
 exit

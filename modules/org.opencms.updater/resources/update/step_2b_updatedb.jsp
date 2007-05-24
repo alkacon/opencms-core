@@ -1,28 +1,15 @@
 <%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
---%><jsp:useBean id="xmlBean" class="org.opencms.setup.xml.CmsSetupXmlManager" scope="page" /><%--
---%><jsp:setProperty name="xmlBean" property="*" /><%
+--%><jsp:useBean id="dbBean" class="org.opencms.setup.update6to7.CmsUpdateDBManager" scope="page" /><%--
+--%><jsp:setProperty name="dbBean" property="*" /><%
 	
-	// next page
-	String nextPage = "step_4_module_selection.jsp";	
+    // next page
+	String nextPage = "step_3_xmlupdate.jsp";	
 	// previous page
-	String prevPage = "step_2b_updatedb.jsp";
+	String prevPage = "step_2_settings.jsp";
 	
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
-	
-	String htmlAvailablePlugins = "";
-	if (Bean.isInitialized()) {
-	  if (isFormSubmitted) {
-	    xmlBean.execute(Bean);
-		response.sendRedirect(nextPage);
-		return;
-      }
-	  htmlAvailablePlugins = xmlBean.htmlAvailablePlugins(Bean);
-	  if (htmlAvailablePlugins.trim().length()==0) {
-		response.sendRedirect(nextPage);
-		return;
-      }
-	}	
+		
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Update Wizard
@@ -30,40 +17,27 @@ OpenCms Update Wizard
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
-<script type="text/javascript">//<!--
-function getSelectedPlugins2() {
-	var form = document.xmlupdate;	
-	var selPlugins = new Array();
 
-	if (form.availablePlugins.length > 1) {		
-		for (var i=0;i<form.availablePlugins.length;i++) {
-			if (form.availablePlugins[i].checked == true) {	
-				selPlugins.push(form.availablePlugins[i].value);
-			}
-		}	
-		form.selectedPlugins.value = selPlugins.join("|");
-	} else {
-		if (form.availablePlugins != null) {
-			form.selectedPlugins.value = form.availablePlugins.value;
-		}
+<script type="text/javascript">
+<!--
+	function checkSubmit()	{
+		
+		
+		return true
 	}
-	//alert(form.selectedPlugins.value);
-	return false;
-}
 
-function switchview(id) {
-	
-	var elem = document.getElementById(id);
-	if (elem != undefined) {
-		if (elem.style.display == "block") {
-			elem.style.display = "none";
-		} else {
-			elem.style.display = "block";
+	<%
+		if(isFormSubmitted)	{
+			// initialize the CmsUpdateManager
+			dbBean.initialize(Bean);
+			dbBean.run();
+		    //dbBean.closeDatabaseConnection();
+			out.println("location.href='"+nextPage+"';");
 		}
-	}
-}
+	%>
 //-->
 </script>
+
 <style type="text/css">
 	pre.code {
 		font-family: "Courier New", Courier, monospace;
@@ -77,21 +51,21 @@ function switchview(id) {
 	}
 </style>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Update Wizard - XML Configuration Files Update
+OpenCms Update Wizard - Database upgrade
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
-<form method="post" class="nomargin" name="xmlupdate" onSubmit="getSelectedPlugins2();">
+<form method="post" class="nomargin" name="dbupdate" onSubmit="return checkSubmit()">
 <input type="hidden" name="selectedPlugins" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td valign="top">
 	
-<%= Bean.getHtmlPart("C_BLOCK_START", "XML changes available for update") %>
+<%= Bean.getHtmlPart("C_BLOCK_START", "Upgrade of the database") %>
 
 	<div style="width:96%; height: 300px; overflow: auto;">
     <table border="0" cellpadding="2" cellspacing="0">
-<%= htmlAvailablePlugins %>
+		<tr><td>You are about to upgrade the database</td></tr>
 	</table>
 	</div>
 

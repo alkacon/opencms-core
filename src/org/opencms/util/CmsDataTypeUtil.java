@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDataTypeUtil.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/24 13:07:19 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -48,7 +50,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -153,7 +155,15 @@ public final class CmsDataTypeUtil {
         ObjectOutputStream oout = new ObjectOutputStream(bout);
         Object obj = data;
         if (data instanceof Map) {
-            obj = new Hashtable((Map)data);
+            Hashtable ht = new Hashtable();
+            Iterator it = ((Map)data).entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Entry)it.next();
+                if ((entry.getKey() != null) && (entry.getValue() != null)) {
+                    ht.put(entry.getKey(), entry.getValue());
+                }
+            }
+            obj = ht;
         }
         oout.writeObject(obj);
         oout.close();

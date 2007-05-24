@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "step_3_xmlupdate.jsp";		
+	String nextPage = "step_2b_updatedb.jsp";		
 	// previous page
 	String prevPage = "index.jsp";
 	
