@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.6.4.12 $
+ * Date   : $Date: 2007/05/24 19:15:39 $
+ * Version: $Revision: 1.6.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.setup.update6to7.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.CmsXmlException;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.12 $ 
+ * @version $Revision: 1.6.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +108,12 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** Static flag to indicate if all modules should be updated regardless of their version number. */
     private static final boolean UPDATE_ALL_MODULES = false;
 
+    /** The new logging offset in the database update thread. */
+    protected int m_newLoggingDBOffset;
+
+    /** The lod logging offset in the database update thread. */
+    protected int m_oldLoggingDBOffset;
+
     /** The used admin user name. */
     private String m_adminGroup = "_tmpUpdateGroup" + (System.currentTimeMillis() % 1000);
 
@@ -115,6 +122,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The used admin user name. */
     private String m_adminUser = "Admin";
+
+    /** The update database thread. */
+    private CmsUpdateDBThread m_dbUpdateThread;
 
     /** List of module to be updated. */
     private List m_modulesToUpdate;
@@ -248,6 +258,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns the update database thread.<p>
+     * 
+     * @return the update database thread
+     */
+    public CmsUpdateDBThread getUpdateDBThread() {
+
+        return m_dbUpdateThread;
+    }
+
+    /**
      * Returns the update Project.<p>
      *
      * @return the update Project
@@ -352,7 +372,6 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param webAppRfsPath path to the OpenCms web application
      * @param servletMapping the OpenCms servlet mapping
      * @param defaultWebApplication the name of the default web application
-     * 
      */
     public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
@@ -365,6 +384,14 @@ public class CmsUpdateBean extends CmsSetupBean {
                 }
                 m_workplaceUpdateThread = null;
             }
+            if (m_dbUpdateThread != null) {
+                if (m_dbUpdateThread.isAlive()) {
+                    m_dbUpdateThread.kill();
+                }
+                m_dbUpdateThread = null;
+                m_newLoggingOffset = 0;
+                m_oldLoggingOffset = 0;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -372,7 +399,77 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Prepares step 4 of the update wizard.<p>
+     * Prepares step 1 of the update wizard.<p>
+     */
+    public void prepareUpdateStep1() {
+
+        // nothing to do jet
+    }
+
+    /**
+     * Prepares step 1 of the update wizard.<p>
+     */
+    public void prepareUpdateStep1b() {
+
+        if (!isInitialized()) {
+            return;
+        }
+
+        if ((m_dbUpdateThread != null) && (m_dbUpdateThread.isFinished())) {
+            // update is already finished, just wait for client to collect final data
+            return;
+        }
+
+        if (m_dbUpdateThread == null) {
+            m_dbUpdateThread = new CmsUpdateDBThread(this);
+        }
+
+        if (!m_dbUpdateThread.isAlive()) {
+            m_dbUpdateThread.start();
+        }
+    }
+
+    /**
+     * Generates the output for step 1 of the setup wizard.<p>
+     * 
+     * @param out the JSP print stream
+     * @throws IOException in case errors occur while writing to "out"
+     */
+    public void prepareUpdateStep1bOutput(JspWriter out) throws IOException {
+
+        m_oldLoggingDBOffset = m_newLoggingDBOffset;
+        m_newLoggingDBOffset = m_dbUpdateThread.getLoggingThread().getMessages().size();
+        if (isInitialized()) {
+            for (int i = m_oldLoggingDBOffset; i < m_newLoggingDBOffset; i++) {
+                String str = m_dbUpdateThread.getLoggingThread().getMessages().get(i).toString();
+                str = CmsEncoder.escapeWBlanks(str, CmsEncoder.ENCODING_UTF_8);
+                out.println("output[" + (i - m_oldLoggingDBOffset) + "] = \"" + str + "\";");
+            }
+        } else {
+            out.println("output[0] = 'ERROR';");
+        }
+
+        boolean threadFinished = m_dbUpdateThread.isFinished();
+        boolean allWritten = m_oldLoggingDBOffset >= m_dbUpdateThread.getLoggingThread().getMessages().size();
+
+        out.println("function initThread() {");
+        if (isInitialized()) {
+            out.print("send();");
+            if (threadFinished && allWritten) {
+                out.println("setTimeout('top.display.finish()', 1000);");
+            } else {
+                int timeout = 5000;
+                if (getUpdateDBThread().getLoggingThread().getMessages().size() < 20) {
+                    timeout = 2000;
+                }
+                out.println("setTimeout('location.reload()', " + timeout + ");");
+            }
+        }
+        out.println("}");
+    }
+
+    /**
+     * Prepares step 5 of the update wizard.<p>
      */
     public void prepareUpdateStep5() {
 
@@ -406,7 +503,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Prepares the update wizard.<p>
+     * Prepares step 5 of the update wizard.<p>
      */
     public void prepareUpdateStep5b() {
 

@@ -6,7 +6,7 @@
 	// next page
 	String nextPage = "step_4_module_selection.jsp";	
 	// previous page
-	String prevPage = "step_2b_updatedb.jsp";
+	String prevPage = "step_2_settings.jsp";
 	
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	

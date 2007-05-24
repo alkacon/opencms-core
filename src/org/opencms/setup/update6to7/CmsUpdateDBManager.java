@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 15:29:10 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/24 19:15:39 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.setup.update6to7;
 
+import org.opencms.setup.CmsSetupBean;
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.util.CmsUUID;
+
 import java.io.IOException;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +45,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
 
-import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSystemInfo;
-import org.opencms.setup.CmsSetupBean;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.setup.CmsSetupLoggingThread;
-import org.opencms.util.CmsUUID;
-
 /**
  * This manager controls the update of the database from OpenCms 6 to OpenCms 7.<p>
  * 
@@ -58,19 +53,11 @@ import org.opencms.util.CmsUUID;
  */
 public class CmsUpdateDBManager {
 
+    /** The database name. */
+    private String m_dbName;
+
+    /** The pools connection data. */
     private Map m_dbPools = new HashMap();
-
-    /** Logging thread. */
-    private CmsSetupLoggingThread m_loggingThread;
-
-    /** System.out and System.err are redirected to this stream. */
-    private PipedOutputStream m_pipedOut;
-
-    /** Saves the System.err stream so it can be restored. */
-    private PrintStream m_tempErr;
-
-    /** Saves the System.out stream so it can be restored. */
-    private PrintStream m_tempOut;
 
     /** The rfs path to the web app. */
     private String m_webAppRfsPath;
@@ -81,6 +68,64 @@ public class CmsUpdateDBManager {
     public CmsUpdateDBManager() {
 
         // Stays empty
+    }
+
+    /**
+     * Returns the configured jdbc driver for the given pool.<p>
+     * 
+     * @param pool the db pool to get the driver for
+     * 
+     * @return the driver class name
+     */
+    public String getDbDriver(String pool) {
+
+        return (String)((Map)m_dbPools.get(pool)).get("driver");
+    }
+
+    /**
+     * Returns the database name.<p>
+     *
+     * @return the database name
+     */
+    public String getDbName() {
+
+        return m_dbName;
+    }
+
+    /**
+     * Returns the configured jdbc url parameters for the given pool.<p>
+     * 
+     * @param pool the db pool to get the params for
+     * 
+     * @return the jdbc url parameters
+     */
+    public String getDbParams(String pool) {
+
+        return (String)((Map)m_dbPools.get(pool)).get("params");
+    }
+
+    /**
+     * Returns the configured jdbc connection url for the given pool.<p>
+     * 
+     * @param pool the db pool to get the url for
+     * 
+     * @return the jdbc connection url
+     */
+    public String getDbUrl(String pool) {
+
+        return (String)((Map)m_dbPools.get(pool)).get("url");
+    }
+
+    /**
+     * Returns the configured database user for the given pool.<p>
+     * 
+     * @param pool the db pool to get the user for
+     * 
+     * @return the database user
+     */
+    public String getDbUser(String pool) {
+
+        return (String)((Map)m_dbPools.get(pool)).get("user");
     }
 
     /**
@@ -111,6 +156,8 @@ public class CmsUpdateDBManager {
             // Initialize the CmsUUID generator.
             CmsUUID.init(props.getString("server.ethernet.address"));
 
+            m_dbName = props.getString("db.name");
+
             List pools = props.getList("db.pools");
             for (Iterator it = pools.iterator(); it.hasNext();) {
                 String pool = (String)it.next();
@@ -125,50 +172,23 @@ public class CmsUpdateDBManager {
         } else {
             throw new Exception("setup bean not initialized");
         }
-
     }
 
     /**
-     * @see java.lang.Runnable#run()
+     * Updates all database pools.<p>
      */
     public void run() {
 
-        // save the original out and err stream 
-        m_tempOut = System.out;
-        m_tempErr = System.err;
-        try {
-            // init stream and logging thread
-            m_pipedOut = new PipedOutputStream();
-            m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, new StringBuffer(m_webAppRfsPath).append(
-                CmsSystemInfo.FOLDER_WEBINF).append(CmsLog.FOLDER_LOGS).append(
-                "db-" + (String)getPools().get(0) + "-update.log").toString());
-
-            // redirect the streams 
-            System.setOut(new PrintStream(m_pipedOut));
-            System.setErr(new PrintStream(m_pipedOut));
-
-            // start the logging thread 
-            m_loggingThread.start();
-
-            updateDatabase((String)getPools().get(0));
-        } catch (Throwable t) {
-            t.printStackTrace();
-        } finally {
-            // stop the logging thread
-            if (m_loggingThread != null) {
-                m_loggingThread.stopThread();
-            }
+        Iterator it = getPools().iterator();
+        while (it.hasNext()) {
+            String dbPool = (String)it.next();
+            System.out.println("Starting DB Update for pool " + dbPool + "... ");
             try {
-                if (m_pipedOut != null) {
-                    m_pipedOut.close();
-                }
-            } catch (IOException e) {
-                //ignore
-                e.printStackTrace();
+                updateDatabase(dbPool);
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
-            // restore to the old streams
-            System.setOut(m_tempOut);
-            System.setErr(m_tempErr);
+            System.out.println("... DB Update finished for " + dbPool + ".");
         }
     }
 
@@ -185,12 +205,10 @@ public class CmsUpdateDBManager {
 
         boolean result = false;
 
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        System.out.println("DbPool: " + pool);
-        System.out.println("DbDriver: " + getDbDriver(pool));
-        System.out.println("DbUrl: " + getDbUrl(pool));
-        System.out.println("DbParams: " + getDbParams(pool));
-        System.out.println("DbUser: " + getDbUser(pool));
+        System.out.println("JDBC Driver:                " + getDbDriver(pool));
+        System.out.println("JDBC Connection Url:        " + getDbUrl(pool));
+        System.out.println("JDBC Connection Url Params: " + getDbParams(pool));
+        System.out.println("Database User:              " + getDbUser(pool));
 
         CmsSetupDb setupDb = new CmsSetupDb(m_webAppRfsPath);
 
@@ -201,6 +219,15 @@ public class CmsUpdateDBManager {
             dropIndexes.dropAllIndexes();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
+        }
+
+        try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
+            CmsUpdateDBUpdateOU updateOUs = new CmsUpdateDBUpdateOU(setupDb, m_webAppRfsPath);
+            updateOUs.updateUOsForTables();
         } finally {
             setupDb.closeConnection();
         }
@@ -322,28 +349,15 @@ public class CmsUpdateDBManager {
         return result;
     }
 
-    private String getDbDriver(String pool) {
-
-        return (String)((Map)m_dbPools.get(pool)).get("driver");
-    }
-
-    private String getDbParams(String pool) {
-
-        return (String)((Map)m_dbPools.get(pool)).get("params");
-    }
-
+    /**
+     * Returns the configured database password for the given pool.<p>
+     * 
+     * @param pool the db pool to get the password for
+     * 
+     * @return the database password
+     */
     private String getDbPwd(String pool) {
 
         return (String)((Map)m_dbPools.get(pool)).get("pwd");
-    }
-
-    private String getDbUrl(String pool) {
-
-        return (String)((Map)m_dbPools.get(pool)).get("url");
-    }
-
-    private String getDbUser(String pool) {
-
-        return (String)((Map)m_dbPools.get(pool)).get("user");
     }
 }

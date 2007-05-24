@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/05/24 15:29:10 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/24 19:15:39 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.util.CmsPropertyUtils;
  * This is done so that the indexes can be updated to the version 6.2.3 and afterwards to version 7
  * 
  * @author metzler
- *
  */
 public class CmsUpdateDBDropOldIndexes {
 
@@ -113,6 +112,8 @@ public class CmsUpdateDBDropOldIndexes {
         for (Iterator tableIterator = tablenames.iterator(); tableIterator.hasNext();) {
             String tablename = (String)tableIterator.next();
             List indexes = getIndexes(tablename);
+
+            System.out.println("Dropping indexes for table " + tablename);
             // Iterate over the indexes of one table
             for (Iterator indexIterator = indexes.iterator(); indexIterator.hasNext();) {
                 String indexname = (String)indexIterator.next();
@@ -121,11 +122,11 @@ public class CmsUpdateDBDropOldIndexes {
                 replacer.put(REPLACEMENT_TABLENAME, tablename);
                 replacer.put(REPLACEMENT_INDEX, indexname);
                 // Drop the index
+                System.out.println("Dropping index " + indexname + " for table " + tablename);
                 m_dbcon.updateSqlStatement(dropIndexQuery, replacer, null);
             }
             indexes.clear(); // Clear the indexes for the next loop
         }
-
     }
 
     /**
