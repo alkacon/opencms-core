@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/24 14:01:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.main.CmsSystemInfo;
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.CmsSetupLoggingThread;
+import org.opencms.util.CmsUUID;
 
 /**
  * This manager controls the update of the database from OpenCms 6 to OpenCms 7.<p>
@@ -58,9 +59,6 @@ import org.opencms.setup.CmsSetupLoggingThread;
 public class CmsUpdateDBManager {
 
     private Map m_dbPools = new HashMap();
-
-    /** The ethernet address of the system.<p> */
-    private String m_ethernetAddress;
 
     /** Logging thread. */
     private CmsSetupLoggingThread m_loggingThread;
@@ -83,26 +81,6 @@ public class CmsUpdateDBManager {
     public CmsUpdateDBManager() {
 
         // Stays empty
-    }
-
-    /**
-     * Gets the ethernet address of the system.<p>
-     * 
-     * @return the ethernetAddress
-     */
-    public String getEthernetAddress() {
-
-        return m_ethernetAddress;
-    }
-
-    /**
-     * Returns the logging thread.<p>
-     * 
-     * @return the logging thread
-     */
-    public CmsSetupLoggingThread getLoggingThread() {
-
-        return m_loggingThread;
     }
 
     /**
@@ -130,7 +108,8 @@ public class CmsUpdateDBManager {
             //String db = updateBean.getDatabase(); // just to initialize some internal vars
             ExtendedProperties props = updateBean.getProperties();
 
-            m_ethernetAddress = props.getString("server.ethernet.address");
+            // Initialize the CmsUUID generator.
+            CmsUUID.init(props.getString("server.ethernet.address"));
 
             List pools = props.getList("db.pools");
             for (Iterator it = pools.iterator(); it.hasNext();) {
@@ -147,36 +126,6 @@ public class CmsUpdateDBManager {
             throw new Exception("setup bean not initialized");
         }
 
-    }
-
-    /** 
-     * Returns the status of the logging thread.<p>
-     * 
-     * @return the status of the logging thread 
-     */
-    public boolean isFinished() {
-
-        return m_loggingThread.isFinished();
-    }
-
-    /**
-     * Kills this Thread as well as the included logging Thread.<p> 
-     */
-    public void kill() {
-
-        if (m_loggingThread != null) {
-            m_loggingThread.stopThread();
-        }
-    }
-
-    /**
-     * Write somthing to System.out during setup.<p>
-     * 
-     * @param str the string to write
-     */
-    public void printToStdOut(String str) {
-
-        m_tempOut.println(str);
     }
 
     /**
@@ -206,7 +155,9 @@ public class CmsUpdateDBManager {
             t.printStackTrace();
         } finally {
             // stop the logging thread
-            kill();
+            if (m_loggingThread != null) {
+                m_loggingThread.stopThread();
+            }
             try {
                 if (m_pipedOut != null) {
                     m_pipedOut.close();
@@ -219,16 +170,6 @@ public class CmsUpdateDBManager {
             System.setOut(m_tempOut);
             System.setErr(m_tempErr);
         }
-    }
-
-    /**
-     * Sets the ethernet address of the system.<p>
-     * 
-     * @param ethernetAddress the ethernetAddress to set
-     */
-    public void setEthernetAddress(String ethernetAddress) {
-
-        m_ethernetAddress = ethernetAddress;
     }
 
     /**
@@ -267,7 +208,7 @@ public class CmsUpdateDBManager {
             setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
             // generate the new UUIDs
             CmsUpdateDBProjectId updateProjectIDs = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
-            updateProjectIDs.updateUUIDs(m_ethernetAddress);
+            updateProjectIDs.updateUUIDs();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

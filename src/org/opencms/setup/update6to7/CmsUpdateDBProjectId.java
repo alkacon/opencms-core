@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/24 14:01:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -225,14 +225,11 @@ public class CmsUpdateDBProjectId {
 
     /**
      * Generates the new UUIDs for the project ids.<p>
-     * The new uuids are stored in the temporary table.
-     * 
-     * @param ethernetAddress the ethernet address of the system needed to create uuids
+     * The new uuids are stored in the temporary table.<p>
      * 
      * @throws SQLException if something goes wrong 
-     *
      */
-    public void generateUUIDs(String ethernetAddress) throws SQLException {
+    public void generateUUIDs() throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         String query = (String)m_queryProperties.get(QUERY_GET_PROJECT_IDS);
@@ -244,9 +241,6 @@ public class CmsUpdateDBProjectId {
         if (columnType == java.sql.Types.INTEGER) {
             if (!m_dbcon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
                 createNewTable(QUERY_CREATE_TEMP_TABLE_UUIDS);
-
-                // Initialize the CmsUUID generator.
-                CmsUUID.init(ethernetAddress);
 
                 String updateQuery = (String)m_queryProperties.get(QUERY_INSERT_UUIDS);
                 List params = new ArrayList();
@@ -368,14 +362,11 @@ public class CmsUpdateDBProjectId {
     /**
      * Updates the tables with the according new UUIDs.<p>
      * 
-     * @param ethernetAddress the ethernet address of the system needed to create uuids
-     * 
      * @throws SQLException if something goes wrong 
      */
-    public void updateUUIDs(String ethernetAddress) throws SQLException {
+    public void updateUUIDs() throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        generateUUIDs(ethernetAddress);
 
         // Check for the CMS_HISTORY_PROJECTS table and transfer the data to it
         if (!m_dbcon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
