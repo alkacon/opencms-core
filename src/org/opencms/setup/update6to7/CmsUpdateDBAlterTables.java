@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 08:14:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,12 +50,10 @@ import org.opencms.util.CmsPropertyUtils;
  * 
  * The following tables will be altered
  * 
- * CMS_OFFLINE_CONTENTS             Change the primary key and drop the original one
  * CMS_ONLINE/OFFLINE_PROPERTYDEF   Add the TYPE column
  * CMS_ONLINE/OFFLINE_RESOURCES     Add the columns DATE_CONTENT and RESOURCE_VERSION
  * CMS_ONLINE/OFFLINE_STRUCTURE     Add the column STRUCTURE_VERSION
  * CMS_PROJECTS                     Drop the column TASK_ID
- * CMS_PUBLISH_HISTORY              Change the primary key and drop the original one
  * 
  * @author metzler
  */
@@ -63,9 +61,7 @@ public class CmsUpdateDBAlterTables {
 
     /** Constant array with the queries for the CMS_ONLINE_CONTENTS table.<p> */
     private static final String[] CMS_OFFLINE_CONTENTS_QUERIES = {
-        "Q_OFFLINE_CONTENTS_DROP_PRIMARY_KEY",
-        "Q_OFFLINE_CONTENTS_DROP_COLUMN",
-        "Q_OFFLINE_CONTENTS_ADD_PRIMARY_KEY"};
+        "Q_OFFLINE_CONTENTS_DROP_COLUMN"};
 
     /** Constant ArrayList of the queries of the CMS_OFFLINE table.<p> */
     private static final List CMS_OFFLINE_CONTENTS_QUERIES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_OFFLINE_CONTENTS_QUERIES));
@@ -221,14 +217,17 @@ public class CmsUpdateDBAlterTables {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Update the CMS_OFFLINE_CONTENTS table
-        // Drop primary key, drop column content_id, add primary key to resource_id
+        // drop column content_id
         if (m_dbcon.hasTableOrColumn(TABLE_CMS_OFFLINE_CONTENTS, COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID)) {
             for (Iterator it = CMS_OFFLINE_CONTENTS_QUERIES_LIST.iterator(); it.hasNext();) {
                 String query = (String)m_queryProperties.get(it.next());
                 m_dbcon.updateSqlStatement(query, null, null);
             }
         } else {
-            System.out.println("no column " + COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID + " in table " + TABLE_CMS_OFFLINE_CONTENTS);
+            System.out.println("no column "
+                + COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID
+                + " in table "
+                + TABLE_CMS_OFFLINE_CONTENTS);
         }
 
         // Update the CMS_ONLINE/OFFLINE_PROPERTYDEF tables
@@ -272,7 +271,11 @@ public class CmsUpdateDBAlterTables {
                     m_dbcon.updateSqlStatement(updateQuery, replacer, params);
                 }
             } else {
-                System.out.println("column " + COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION + " in table " + table + " already exists");
+                System.out.println("column "
+                    + COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION
+                    + " in table "
+                    + table
+                    + " already exists");
             }
         } // end update structure_version
 
@@ -304,7 +307,11 @@ public class CmsUpdateDBAlterTables {
                 String addResourceVersion = (String)m_queryProperties.get(QUERY_UPDATE_RESOURCES_RESOURCE_VERSION);
                 m_dbcon.updateSqlStatement(addResourceVersion, replacer, null);
             } else {
-                System.out.println("column " + COLUMN_RESOURCES_RESOURCE_VERSION + " in table " + table + " already exists");
+                System.out.println("column "
+                    + COLUMN_RESOURCES_RESOURCE_VERSION
+                    + " in table "
+                    + table
+                    + " already exists");
             }
 
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/24 19:15:39 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/25 08:14:37 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -244,6 +244,18 @@ public class CmsUpdateDBManager {
         try {
             setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
 
+            CmsUpdateDBProjectId updateProjectIds = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
+            updateProjectIds.generateUUIDs();
+            updateProjectIds.updateUUIDs();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            setupDb.closeConnection();
+        }
+
+        try {
+            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+
             // Generate the new tables
             CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(setupDb, m_webAppRfsPath);
             newTables.createNewTables();
@@ -280,16 +292,16 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
-            indexUpdater.updateIndexes();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
+        //        try {
+        //            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
+        //
+        //            CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
+        //            indexUpdater.updateIndexes();
+        //        } catch (SQLException e) {
+        //            e.printStackTrace();
+        //        } finally {
+        //            setupDb.closeConnection();
+        //        }
 
         try {
             setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));

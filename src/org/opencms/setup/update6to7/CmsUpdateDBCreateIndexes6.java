@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBCreateIndexes6.java,v $
- * Date   : $Date: 2007/05/24 15:10:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 08:14:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,7 @@ import org.opencms.util.CmsPropertyUtils;
  * 
  * This is done so that there is a clean set of indexes to be able to update the database faster.<p>
  * 
- * 
  * @author metzler
- *
  */
 public class CmsUpdateDBCreateIndexes6 {
 
@@ -64,14 +62,13 @@ public class CmsUpdateDBCreateIndexes6 {
      * @param rfsPath the path to the opencms installation
      * 
      * @throws IOException if the query properties cannot be read
-     * 
      */
     public CmsUpdateDBCreateIndexes6(CmsSetupDb dbcon, String rfsPath)
     throws IOException {
 
+        System.err.println(getClass().getName());
         m_dbcon = dbcon;
         m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
-
     }
     
     
@@ -125,6 +122,7 @@ public class CmsUpdateDBCreateIndexes6 {
      */
     public void addTemporaryIndexes() {
         
+        // TODO
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBDropBackupTables.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 08:14:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,6 +99,7 @@ public class CmsUpdateDBDropBackupTables {
     public CmsUpdateDBDropBackupTables(CmsSetupDb dbcon, String rfsPath)
     throws IOException {
 
+        System.err.println(getClass().getName());
         m_dbcon = dbcon;
         m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
     }
@@ -111,6 +112,7 @@ public class CmsUpdateDBDropBackupTables {
      */
     public void dropBackupTables() throws SQLException {
 
+        System.out.println(new Exception().getStackTrace()[0].toString());
         String dropQuery = (String)m_queryProperties.get(QUERY_DROP_TABLE);
         for (Iterator it = BACKUP_TABLES_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
@@ -159,5 +161,4 @@ public class CmsUpdateDBDropBackupTables {
 
         m_queryProperties = queryProperties;
     }
-
 }
