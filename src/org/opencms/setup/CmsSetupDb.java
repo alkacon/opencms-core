@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
- * Version: $Revision: 1.25.4.4 $
+ * Date   : $Date: 2007/05/25 14:46:53 $
+ * Version: $Revision: 1.25.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.4 $ 
+ * @version $Revision: 1.25.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -511,14 +511,16 @@ public class CmsSetupDb extends Object {
                     try {
                         stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
-
             }
         }
 
+        System.out.println("executing query: " + queryToExecute);
+        if ((params != null) && !params.isEmpty()) {
+            System.out.println("params: " + params);
+        }
         result = stmt.executeUpdate();
 
         return result;

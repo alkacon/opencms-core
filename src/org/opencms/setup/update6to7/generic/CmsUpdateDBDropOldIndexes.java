@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 14:46:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import java.util.List;
  * This is done so that the indexes can be updated to the version 6.2.3 and afterwards to version 7
  * 
  * @author metzler
- *
  */
 public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 

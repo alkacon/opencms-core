@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 14:46:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,11 @@ import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class creates the table CMS_CONTENTS and fills it with data from the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS.<p>
@@ -60,6 +63,9 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
     /** Constant for the sql query to transfer the online contents.<p> */
     private static final String QUERY_TRANSFER_ONLINE_CONTENTS = "Q_TRANSFER_ONLINE_CONTENTS";
 
+    /** Constant for the sql query to read the max publish tag.<p> */
+    private static final String QUERY_READ_MAX_PUBTAG = "Q_READ_MAX_PUBTAG";
+    
     /** Constant for the replacement in the SQL query for the tablename.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
 
@@ -101,8 +107,16 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
         // Transfer the online contents if the table exists
         if (dbCon.hasTableOrColumn(TABLE_CMS_ONLINE_CONTENTS, null)) {
+            int pubTag = 1;
+            query = readQuery(QUERY_READ_MAX_PUBTAG);
+            ResultSet res = dbCon.executeSqlStatement(query, null);
+            if (res.next()) {
+                pubTag = res.getInt(1);
+            }
+            res.close();
             query = readQuery(QUERY_TRANSFER_ONLINE_CONTENTS);
-            dbCon.updateSqlStatement(query, null, null);
+            Map replacer = Collections.singletonMap("${pubTag}", "" + pubTag);
+            dbCon.updateSqlStatement(query, replacer, null);
         } else {
             System.out.println("no table " + TABLE_CMS_ONLINE_CONTENTS + " found");
         }
