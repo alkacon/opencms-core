@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/05/25 15:05:58 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/25 15:14:28 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,6 +127,8 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            } else {
+                System.out.println("Table "+ query + "does not exist.");
             }
 
         }
