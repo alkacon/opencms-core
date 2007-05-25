@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBUpdateOU.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBUpdateOU.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,16 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
 
 /**
  * This class upgrades the database tables containing new OU columns.<p>
@@ -52,7 +51,7 @@ import org.opencms.util.CmsPropertyUtils;
  * 
  * @author metzler
  */
-public class CmsUpdateDBUpdateOU {
+public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
     /** Constant for the GROUP_OU column.<p> */
     private static final String GROUP_OU_COLUMN = "GROUP_OU";
@@ -67,7 +66,7 @@ public class CmsUpdateDBUpdateOU {
     private static final String QUERY_KEY_ALTER_TABLE = "Q_ALTER_TABLE_ADD_OU_COLUMN";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/ou_query.properties";
+    private static final String QUERY_PROPERTY_FILE = "ou_query.properties";
 
     /** Constant for the replacement in the SQL query for the columnname.<p> */
     private static final String REPLACEMENT_COLUMNNAME = "${columnname}";
@@ -90,135 +89,81 @@ public class CmsUpdateDBUpdateOU {
     /** Constant for the USER_OU column.<p> */
     private static final String USER_OU_COLUMN = "USER_OU";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
-     * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
+     * Constructor.<p>
      * 
      * @throws IOException if the sql queries properties file could not be read
      */
-    public CmsUpdateDBUpdateOU(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBUpdateOU()
     throws IOException {
 
-        System.out.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
     }
 
     /**
-     * Gets the database connection.<p>
-     * 
-     * @return the dbcon
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public CmsSetupDb getDbcon() {
+    public String getSqlQueriesFile() {
 
-        return m_dbcon;
+        return QUERY_PROPERTY_FILE;
     }
 
     /**
-     * Gets the sql statements in the extended properties.<p> 
-     * 
-     * @return the queryProperties
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the sql statements for the extended properties.<p>
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Updates the OUs for the tables using OUs.<p>
-     * 
-     * @return true if everything worked out, false if not
-     */
-    public boolean updateUOsForTables() {
+    protected void internalExecute(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        boolean result = false;
-        int errorCode = 0;
 
-        errorCode += updateOUs(TABLE_CMS_USERS, USER_OU_COLUMN);
-        errorCode += updateOUs(TABLE_CMS_GROUPS, GROUP_OU_COLUMN);
-        errorCode += updateOUs(TABLE_PROJECTS, PROJECT_OU_COLUMN);
-        errorCode += updateOUs(TABLE_BACKUP_PROJECTS, PROJECT_OU_COLUMN);
-
-        // Check if one of the 
-        if (errorCode > 0) {
-            result = false;
-        } else {
-            result = true;
-        }
-
-        return result;
+        updateOUs(dbCon, TABLE_CMS_USERS, USER_OU_COLUMN);
+        updateOUs(dbCon, TABLE_CMS_GROUPS, GROUP_OU_COLUMN);
+        updateOUs(dbCon, TABLE_PROJECTS, PROJECT_OU_COLUMN);
+        updateOUs(dbCon, TABLE_BACKUP_PROJECTS, PROJECT_OU_COLUMN);
     }
 
     /**
      * Checks if the column USER_OU is found in the resultset.<p>
      * 
+     * @param dbCon the db connection interface
      * @param table the table to check
      * @param ouColumn the type of OU to find (e.g. USER_OU or GROUP_OU)
      * 
      * @return true if the column is in the result set, false if not
      */
-    private boolean findOUColumn(String table, String ouColumn) {
+    private boolean findOUColumn(CmsSetupDb dbCon, String table, String ouColumn) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        return m_dbcon.hasTableOrColumn(table, ouColumn);
+        return dbCon.hasTableOrColumn(table, ouColumn);
     }
 
     /**
      * Updates the database tables with the new OUs if necessary for the given table.<p>
      * 
+     * @param dbCon the db connection interface
      * @param table the table to update
      * @param ouColumn the column to insert
      * 
      * @return true if everything worked fine, false if not
      */
-    private int updateOUs(String table, String ouColumn) {
+    private int updateOUs(CmsSetupDb dbCon, String table, String ouColumn) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         int result = 1;
         try {
 
-            if (!findOUColumn(table, ouColumn)) {
+            if (!findOUColumn(dbCon, table, ouColumn)) {
                 // Alter the table and add the OUs
                 Map replacements = new HashMap();
                 replacements.put(REPLACEMENT_TABLENAME, table);
                 replacements.put(REPLACEMENT_COLUMNNAME, ouColumn);
-                String alterQuery = (String)m_queryProperties.get(QUERY_KEY_ALTER_TABLE);
+                String alterQuery = readQuery(QUERY_KEY_ALTER_TABLE);
 
                 // Update the database and alter the table to add the OUs
-                m_dbcon.updateSqlStatement(alterQuery, replacements, null);
+                dbCon.updateSqlStatement(alterQuery, replacements, null);
 
                 // Insert the value '/' into the OUs
-                String insertQuery = (String)m_queryProperties.get(QUERY_ADD_OUS_TO_TABLE);
-                m_dbcon.updateSqlStatement(insertQuery, replacements, null);
+                String insertQuery = readQuery(QUERY_ADD_OUS_TO_TABLE);
+                dbCon.updateSqlStatement(insertQuery, replacements, null);
                 result = 0;
             } else {
                 System.out.println("column " + ouColumn + " in table " + table + " already exists");

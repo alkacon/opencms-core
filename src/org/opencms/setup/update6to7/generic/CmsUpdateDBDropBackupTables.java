@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBDropBackupTables.java,v $
- * Date   : $Date: 2007/05/25 08:14:37 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropBackupTables.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -38,10 +41,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
 
 /** 
  * This class drops the CMS_BACKUP tables that are no longer used after all the transfers are finished.<p> 
@@ -58,7 +57,7 @@ import org.opencms.util.CmsPropertyUtils;
  * 
  * @author metzler
  */
-public class CmsUpdateDBDropBackupTables {
+public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
 
     /** Array of the BACKUP tables that are to be dropped.<p> */
     private static final String[] BACKUP_TABLES = {
@@ -76,89 +75,46 @@ public class CmsUpdateDBDropBackupTables {
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_drop_backup_tables_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_drop_backup_tables_queries.properties";
 
     /** Constant for the replacement of the tablename in the sql query.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
-     * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
+     * Constructor.<p>
      * 
      * @throws IOException if the query properties cannot be read
-     * 
      */
-    public CmsUpdateDBDropBackupTables(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBDropBackupTables()
     throws IOException {
 
-        System.err.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
     }
 
     /**
-     * Drops the CMS_BACKUP tables that are no longer used.<p>
-     * 
-     * @throws SQLException if something goes wrong
-     *
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public void dropBackupTables() throws SQLException {
+    public String getSqlQueriesFile() {
+
+        return QUERY_PROPERTY_FILE;
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
+     */
+    protected void internalExecute(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String dropQuery = (String)m_queryProperties.get(QUERY_DROP_TABLE);
+        String dropQuery = readQuery(QUERY_DROP_TABLE);
         for (Iterator it = BACKUP_TABLES_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
             HashMap replacer = new HashMap();
             replacer.put(REPLACEMENT_TABLENAME, table);
-            m_dbcon.updateSqlStatement(dropQuery, replacer, null);
+            try {
+                dbCon.updateSqlStatement(dropQuery, replacer, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    /**
-     * Gets the database connection.<p>
-     * 
-     * @return the dbcon
-     */
-    public CmsSetupDb getDbcon() {
-
-        return m_dbcon;
-    }
-
-    /**
-     * Gets the sql statements in the extended properties.<p> 
-     * 
-     * @return the queryProperties
-     */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the sql statements for the extended properties.<p>
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
     }
 }

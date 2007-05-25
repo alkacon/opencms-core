@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,22 +29,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
 
 /**
  * This class creates the table CMS_CONTENTS and fills it with data from the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS.<p>
  *
  * @author metzler
  */
-public class CmsUpdateDBContentTables {
+public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to create the CMS_CONTENTS table.<p> */
     private static final String QUERY_CREATE_CMS_CONTENTS_TABLE = "Q_CREATE_CMS_CONTENTS_TABLE";
@@ -53,7 +52,7 @@ public class CmsUpdateDBContentTables {
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_content_table_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_content_table_queries.properties";
 
     /** Constant for the sql query to transfer the backup contents.<p> */
     private static final String QUERY_TRANSFER_BACKUP_CONTENTS = "Q_TRANSFER_BACKUP_CONTENTS";
@@ -70,124 +69,74 @@ public class CmsUpdateDBContentTables {
     /** Constant for the tbale CMS_ONLINE_CONTENTS.<p> */
     private static final String TABLE_CMS_ONLINE_CONTENTS = "CMS_ONLINE_CONTENTS";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
-     * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
+     * Constructor.<p>
      * 
      * @throws IOException if the query properties cannot be read
-     * 
      */
-    public CmsUpdateDBContentTables(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBContentTables()
     throws IOException {
 
-        System.out.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
-
+        super();
     }
 
     /**
-     * Gets the database connection.<p> 
-     * 
-     * @return the dbcon
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public CmsSetupDb getDbcon() {
+    public String getSqlQueriesFile() {
 
-        return m_dbcon;
+        return QUERY_PROPERTY_FILE;
     }
 
     /**
-     * Gets the sql query properties.<p>
-     * 
-     * @return the queryProperties
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p> 
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the sql query properties.<p> 
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Transfers the data from the CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS table to the new CMS_CONTENTS table.<p> 
-     * 
-     * If the table does not exist yet, it is created.
-     * 
-     * @throws SQLException if something goes wrong 
-     *
-     */
-    public void transferData() throws SQLException {
+    protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Create the CMS_CONTENTS table if it does not exist yet. 
         // The database checks if the table exists before creating it.
-        String query = (String)m_queryProperties.get(QUERY_CREATE_CMS_CONTENTS_TABLE);
-        m_dbcon.updateSqlStatement(query, null, null);
+        String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE);
+        dbCon.updateSqlStatement(query, null, null);
 
         // Transfer the online contents if the table exists
-        if (m_dbcon.hasTableOrColumn(TABLE_CMS_ONLINE_CONTENTS, null)) {
-            query = (String)m_queryProperties.get(QUERY_TRANSFER_ONLINE_CONTENTS);
-            m_dbcon.updateSqlStatement(query, null, null);
+        if (dbCon.hasTableOrColumn(TABLE_CMS_ONLINE_CONTENTS, null)) {
+            query = readQuery(QUERY_TRANSFER_ONLINE_CONTENTS);
+            dbCon.updateSqlStatement(query, null, null);
         } else {
             System.out.println("no table " + TABLE_CMS_ONLINE_CONTENTS + " found");
         }
 
         // Transfer the backup contents if the table exists
-        if (m_dbcon.hasTableOrColumn(TABLE_CMS_BACKUP_CONTENTS, null)) {
-            query = (String)m_queryProperties.get(QUERY_TRANSFER_BACKUP_CONTENTS);
-            m_dbcon.updateSqlStatement(query, null, null);
+        if (dbCon.hasTableOrColumn(TABLE_CMS_BACKUP_CONTENTS, null)) {
+            query = readQuery(QUERY_TRANSFER_BACKUP_CONTENTS);
+            dbCon.updateSqlStatement(query, null, null);
         } else {
             System.out.println("no table " + TABLE_CMS_BACKUP_CONTENTS + " found");
         }
 
         // Drop the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS
-        cleanUpContentsTables();
+        cleanUpContentsTables(dbCon);
     }
 
     /**
-     * After the transfer the tables CMS_ONLINE_CONTENTS and CMS_BACKUP contents are dropped as they are no longer needed.<p> 
-     * 
+     * After the transfer the tables CMS_ONLINE_CONTENTS and CMS_BACKUP contents are dropped as they are no longer needed.<p>
+     *  
+     * @param dbCon the db connection interface
      * @throws SQLException if something goes wrong 
-     *
      */
-    private void cleanUpContentsTables() throws SQLException {
+    private void cleanUpContentsTables(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = (String)m_queryProperties.get(QUERY_DROP_TABLE);
+        String query = readQuery(QUERY_DROP_TABLE);
         HashMap replacers = new HashMap();
         // Drop the CMS_ONLINE_CONTENTS table
         replacers.put(REPLACEMENT_TABLENAME, TABLE_CMS_ONLINE_CONTENTS);
-        m_dbcon.updateSqlStatement(query, replacers, null);
+        dbCon.updateSqlStatement(query, replacers, null);
 
         replacers.clear();
         // Drop the CMS_BACKUP_CONTENTS table
         replacers.put(REPLACEMENT_TABLENAME, TABLE_CMS_BACKUP_CONTENTS);
-        m_dbcon.updateSqlStatement(query, replacers, null);
+        dbCon.updateSqlStatement(query, replacers, null);
     }
 }

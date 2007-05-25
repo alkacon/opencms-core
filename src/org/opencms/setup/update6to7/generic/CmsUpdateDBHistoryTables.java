@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBHistoryTables.java,v $
- * Date   : $Date: 2007/05/24 13:07:19 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryTables.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,19 +29,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
 
 /**
  * This class converts the backup tables to history tables.<p>
@@ -63,99 +62,56 @@ import org.opencms.util.CmsPropertyUtils;
  * @author metzler
  *
  */
-public class CmsUpdateDBHistoryTables {
+public class CmsUpdateDBHistoryTables extends A_CmsUpdateDBPart {
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_history_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_history_queries.properties";
 
     /** Constant for the sql query to count the contents of a table.<p> */
     private static final String QUERY_SELECT_COUNT_HISTORY_TABLE = "Q_SELECT_COUNT_HISTORY_TABLE";
 
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
-     * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
+     * Constructor.<p>
      * 
      * @throws IOException if the sql queries properties file could not be read
      */
-    public CmsUpdateDBHistoryTables(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBHistoryTables()
     throws IOException {
 
-        System.out.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
     }
 
     /**
-     * Gets the database connection.<p>
-     * 
-     * @return the dbcon
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public CmsSetupDb getDbcon() {
+    public String getSqlQueriesFile() {
 
-        return m_dbcon;
+        return QUERY_PROPERTY_FILE;
     }
 
     /**
-     * Gets the sql statements in the extended properties.<p> 
-     * 
-     * @return the queryProperties
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the sql statements for the extended properties.<p>
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Transfers the data from the CMS_BACKUP* tables to the CMS_HISTORY* tables.<p> 
-     * 
-     * @throws SQLException if something goes wrong
-     *
-     */
-    public void transferBackupToHistoryTables() throws SQLException {
+    protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String query;
 
-        Set elements = m_queryProperties.entrySet();
+        Set elements = new HashSet();
+        elements.add("CMS_HISTORY_PROJECTRESOURCES");
+        elements.add("CMS_HISTORY_PROPERTIES");
+        elements.add("CMS_HISTORY_PROPERTYDEF");
+        elements.add("CMS_HISTORY_RESOURCES");
+        elements.add("CMS_HISTORY_STRUCTURE");
 
         for (Iterator it = elements.iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry)it.next();
-            if (m_dbcon.hasTableOrColumn((String)entry.getKey(), null)) {
+            String table = (String)it.next();
+            System.out.println("Updating table " + table);
+            if (dbCon.hasTableOrColumn(table, null)) {
                 HashMap replacer = new HashMap();
-                replacer.put(REPLACEMENT_TABLENAME, entry.getKey());
-                ResultSet set = m_dbcon.executeSqlStatement(
-                    (String)m_queryProperties.get(QUERY_SELECT_COUNT_HISTORY_TABLE),
-                    replacer);
+                replacer.put(REPLACEMENT_TABLENAME, table);
+                ResultSet set = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), replacer);
                 boolean update = false;
                 if (set.next()) {
                     if (set.getInt("COUNT") <= 0) {
@@ -164,11 +120,13 @@ public class CmsUpdateDBHistoryTables {
                 }
                 set.close();
                 if (update) {
-                    query = (String)entry.getValue();
-                    m_dbcon.updateSqlStatement(query, null, null);
+                    String query = readQuery(table);
+                    dbCon.updateSqlStatement(query, null, null);
+                } else {
+                    System.out.println("table " + table + " already has data");
                 }
             } else {
-                System.out.println("table " + entry.getKey() + " does not exists");
+                System.out.println("table " + table + " does not exists");
             }
         }
     }

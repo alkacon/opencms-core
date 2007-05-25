@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/25 08:50:38 $
- * Version: $Revision: 1.1.2.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.file.CmsProject;
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -44,12 +49,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.file.CmsProject;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
-import org.opencms.util.CmsUUID;
-
 /**
  * This class updates the project ids from integer values to CmsUUIDs in all existing database tables.<p>
  * 
@@ -61,7 +60,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author metzler
  */
-public class CmsUpdateDBProjectId {
+public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /** Constant for the sql column PROJECT_ID.<p> */
     private static final String COLUMN_PROJECT_ID = "PROJECT_ID";
@@ -112,7 +111,7 @@ public class CmsUpdateDBProjectId {
     private static final String QUERY_INSERT_UUIDS = "Q_INSERT_UUIDS_TEMP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_projectid_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_projectid_queries.properties";
 
     /** Constant for the sql query to add a rename a column in the table.<p> */
     private static final String QUERY_RENAME_COLUMN = "Q_RENAME_COLUMN";
@@ -160,64 +159,257 @@ public class CmsUpdateDBProjectId {
     /** Constant for the name of temporary table containing the project ids and uuids.<p> */
     private static final String TEMPORARY_TABLE_NAME = "TEMP_PROJECT_UUIDS";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
-     * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
+     * Constructor.<p>
      * 
      * @throws IOException if the query properties cannot be read
-     * 
      */
-    public CmsUpdateDBProjectId(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBProjectId()
     throws IOException {
 
-        System.out.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
+     */
+    public String getSqlQueriesFile() {
+
+        return QUERY_PROPERTY_FILE;
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
+     */
+    protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+
+        generateUUIDs(dbCon);
+
+        // Check for the CMS_HISTORY_PROJECTS table and transfer the data to it
+        if (!dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
+            createNewTable(dbCon, QUERY_CREATE_HISTORY_PROJECTS_TABLE);
+            transferDataToHistoryTable(dbCon);
+        } else {
+            System.out.println("table " + HISTORY_PROJECTS_TABLE + " already exists");
+        }
+
+        Map uuids = getUUIDs(dbCon); // Get the UUIDS
+
+        /*
+         * Add the temporary column for the new UUIDs and fill it with data
+         */
+        for (Iterator it = TABLES_LIST.iterator(); it.hasNext();) {
+            String tablename = (String)it.next();
+
+            if (needsUpdating(dbCon, tablename)) {
+                addUUIDColumnToTable(dbCon, tablename, TEMP_UUID_COLUMN);
+                boolean isInResourcesList = RESOURCES_TABLES_LIST.contains(tablename);
+                // Add the new uuids
+                Iterator entries = uuids.entrySet().iterator();
+                while (entries.hasNext()) {
+                    Map.Entry entry = (Map.Entry)entries.next();
+                    if (entry.getKey() != null && entry.getValue() != null) {
+                        if (isInResourcesList) {
+                            fillUUIDSColumn(
+                                dbCon,
+                                tablename,
+                                TEMP_UUID_COLUMN,
+                                (String)entry.getValue(),
+                                COLUMN_PROJECT_LASTMODIFIED,
+                                (String)entry.getKey());
+                        } else {
+                            fillUUIDSColumn(
+                                dbCon,
+                                tablename,
+                                TEMP_UUID_COLUMN,
+                                (String)entry.getValue(),
+                                COLUMN_PROJECT_ID,
+                                (String)entry.getKey());
+                        }
+                    }
+                }
+
+                /*
+                 * In this phase the primary keys or indexes are dropped and the old columns containing the 
+                 * old project ids are dropped. After that the temporary columns are renamed and the new
+                 * indexes and primary keys are added.
+                 */
+                if (isInResourcesList) {
+                    // Drop the column PROJECT_LASTMODIFIED
+                    dropColumn(dbCon, tablename, COLUMN_PROJECT_LASTMODIFIED);
+                    // rename the column TEMP_PROJECT_UUID to PROJECT_LASTMODIFIED
+                    renameColumn(dbCon, tablename, COLUMN_TEMP_PROJECT_UUID, COLUMN_PROJECT_LASTMODIFIED);
+                } else {
+                    // drop the columns
+                    dropColumn(dbCon, tablename, COLUMN_PROJECT_ID);
+
+                    // rename the column TEMP_PROJECT_UUID to PROJECT_ID
+                    renameColumn(dbCon, tablename, COLUMN_TEMP_PROJECT_UUID, COLUMN_PROJECT_ID);
+
+                    // add the new primary key
+                    if (tablename.equals("CMS_PROJECTRESOURCES")) {
+                        addPrimaryKey(dbCon, tablename, COLUMN_PROJECT_ID_RESOURCE_PATH);
+                    }
+                    if (tablename.equals("CMS_PROJECTS")) {
+                        addPrimaryKey(dbCon, tablename, COLUMN_PROJECT_ID);
+                    }
+                }
+            } else {
+                System.out.println("table " + tablename + " does not need to be updated");
+            }
+        }
+    }
+
+    /**
+     * Adds a new primary key to the given table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to add the primary key to
+     * @param primaryKey the new primary key
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    private void addPrimaryKey(CmsSetupDb dbCon, String tablename, String primaryKey) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(tablename, null)) {
+            String query = readQuery(QUERY_ADD_PRIMARY_KEY);
+            Map replacer = new HashMap();
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_PRIMARY_KEY, primaryKey);
+            dbCon.updateSqlStatement(query, replacer, null);
+        } else {
+            System.out.println("table " + tablename + " does not exists");
+        }
+    }
+
+    /**
+     * Adds the new column for the uuids to a table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to add the column to
+     * @param column the new colum to add
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    private void addUUIDColumnToTable(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (!dbCon.hasTableOrColumn(tablename, column)) {
+            String query = readQuery(QUERY_ADD_TEMP_UUID_COLUMN); // Get the query
+            // if the table is not one of the ONLINE or OFFLINE resources add the new column in the first position
+            if (!RESOURCES_TABLES_LIST.contains(tablename)) {
+                query += " FIRST";
+            }
+            Map replacer = new HashMap(); // Build the replacements
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_COLUMN, column);
+            dbCon.updateSqlStatement(query, replacer, null); // execute the query
+        } else {
+            System.out.println("column " + column + " in table " + tablename + " already exists");
+        }
     }
 
     /**
      * Creates the temporary table to store the project ids and uuids.<p>
      * 
+     * @param dbCon the db connection interface
      * @param toCreate the constant of the table name to create
      * 
      * @throws SQLException if something goes wrong
-     * 
      */
-    public void createNewTable(String toCreate) throws SQLException {
+    private void createNewTable(CmsSetupDb dbCon, String toCreate) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = (String)m_queryProperties.get(toCreate);
-        m_dbcon.updateSqlStatement(query, null, null);
+        String query = readQuery(toCreate);
+        dbCon.updateSqlStatement(query, null, null);
+    }
+
+    /**
+     * Drops the column of the given table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table in which the columns shall be dropped
+     * @param column the column to drop
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    private void dropColumn(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(tablename, column)) {
+            String query = readQuery(QUERY_DROP_COLUMN);
+            Map replacer = new HashMap();
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_COLUMN, column);
+            dbCon.updateSqlStatement(query, replacer, null);
+        } else {
+            System.out.println("column " + column + " in table " + tablename + " does not exist");
+        }
+
+    }
+
+    /**
+     * Updates the given table with the new UUID value.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to update
+     * @param column the column to update
+     * @param newvalue the new value to insert
+     * @param oldid the old id to compare the old value to
+     * @param tempValue the old value in the temporary table
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    private void fillUUIDSColumn(
+        CmsSetupDb dbCon,
+        String tablename,
+        String column,
+        String newvalue,
+        String oldid,
+        String tempValue) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(tablename, column)) {
+            String query = readQuery(QUERY_TRANSFER_UUID);
+            Map replacer = new HashMap();
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_COLUMN, column);
+            replacer.put(REPLACEMENT_OLDID, oldid);
+            List params = new ArrayList();
+            params.add(newvalue);
+            params.add(new Integer(tempValue)); // Change type to integer
+
+            dbCon.updateSqlStatement(query, replacer, params);
+        } else {
+            System.out.println("column " + column + " in table " + tablename + " does not exists");
+        }
     }
 
     /**
      * Generates the new UUIDs for the project ids.<p>
      * The new uuids are stored in the temporary table.<p>
      * 
+     * @param dbCon the db connection interface
+     * 
      * @throws SQLException if something goes wrong 
      */
-    public void generateUUIDs() throws SQLException {
+    private void generateUUIDs(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = (String)m_queryProperties.get(QUERY_GET_PROJECT_IDS);
+        String query = readQuery(QUERY_GET_PROJECT_IDS);
 
-        ResultSet set = m_dbcon.executeSqlStatement(query, null);
+        ResultSet set = dbCon.executeSqlStatement(query, null);
         ResultSetMetaData metaData = set.getMetaData();
         // Check the type of the column if it is integer, then create the new uuids
         int columnType = metaData.getColumnType(1);
         if (columnType == java.sql.Types.INTEGER) {
-            if (!m_dbcon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
-                createNewTable(QUERY_CREATE_TEMP_TABLE_UUIDS);
+            if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
+                createNewTable(dbCon, QUERY_CREATE_TEMP_TABLE_UUIDS);
 
-                String updateQuery = (String)m_queryProperties.get(QUERY_INSERT_UUIDS);
+                String updateQuery = readQuery(QUERY_INSERT_UUIDS);
                 List params = new ArrayList();
                 // Get the project id and insert it with a new uuid into the temp table
                 boolean hasNullId = false;
@@ -238,7 +430,7 @@ public class CmsUpdateDBProjectId {
                     params.add(uuid); // Add the uuid
 
                     // Insert the values to the temp table
-                    m_dbcon.updateSqlStatement(updateQuery, null, params);
+                    dbCon.updateSqlStatement(updateQuery, null, params);
 
                     params.clear();
                 }
@@ -247,7 +439,7 @@ public class CmsUpdateDBProjectId {
                 if (!hasNullId) {
                     params.add(new Integer(0));
                     params.add(CmsUUID.getNullUUID());
-                    m_dbcon.updateSqlStatement(updateQuery, null, params);
+                    dbCon.updateSqlStatement(updateQuery, null, params);
                 }
             } else {
                 System.out.println("table " + TEMPORARY_TABLE_NAME + " already exists");
@@ -256,287 +448,21 @@ public class CmsUpdateDBProjectId {
     }
 
     /**
-     * Gets the database connection.<p>
-     * 
-     * @return the dbcon
-     */
-    public CmsSetupDb getDbcon() {
-
-        return m_dbcon;
-    }
-
-    /**
-     * Gets the query properties.<p>
-     * 
-     * @return the queryProperties
-     */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the query properties.<p>
+     * Gets the UUIDs from the temporary table TEMP_CMS_UUIDS.<p>
      *  
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
-     * 
-     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value
-     * 
-     * @throws SQLException if something goes wrong
-     *
-     */
-    public void transferDataToHistoryTable() throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        // Get the data from the CMS_BACKUP table
-        String query = (String)m_queryProperties.get(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
-        ResultSet set = m_dbcon.executeSqlStatement(query, null);
-
-        List params = new ArrayList();
-        String insertQuery = (String)m_queryProperties.get(QUERY_INSERT_CMS_HISTORY_TABLE);
-        while (set.next()) {
-            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
-            params.add(set.getString("PROJECT_UUID"));
-            params.add(set.getString("PROJECT_NAME"));
-            params.add(set.getString("PROJECT_DESCRIPTION"));
-            params.add(new Integer(set.getInt("PROJECT_TYPE")));
-            params.add(set.getString("USER_ID"));
-            params.add(set.getString("GROUP_ID"));
-            params.add(set.getString("MANAGERGROUP_ID"));
-            params.add(new Long(set.getLong("DATE_CREATED")));
-            params.add(new Integer(set.getInt("PUBLISH_TAG")));
-            Date date = set.getDate("PROJECT_PUBLISHDATE");
-            params.add(new Long(date.getTime()));
-            params.add(set.getString("PROJECT_PUBLISHED_BY"));
-            params.add(set.getString("PROJECT_OU"));
-
-            m_dbcon.updateSqlStatement(insertQuery, null, params);
-            // Clear the parameter list for the next loop
-            params.clear();
-        }
-    }
-
-    /**
-     * Updates the tables with the according new UUIDs.<p>
-     * 
-     * @throws SQLException if something goes wrong 
-     */
-    public void updateUUIDs() throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-
-        // Check for the CMS_HISTORY_PROJECTS table and transfer the data to it
-        if (!m_dbcon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
-            createNewTable(QUERY_CREATE_HISTORY_PROJECTS_TABLE);
-            transferDataToHistoryTable();
-        } else {
-            System.out.println("table " + HISTORY_PROJECTS_TABLE + " already exists");
-        }
-
-        Map uuids = getUUIDs(); // Get the UUIDS
-        
-        /*
-         * Add the temporary column for the new UUIDs and fill it with data
-         */
-        for (Iterator it = TABLES_LIST.iterator(); it.hasNext();) {
-            String tablename = (String)it.next();
-
-            if (needsUpdating(tablename)) {
-                addUUIDColumnToTable(tablename, TEMP_UUID_COLUMN);
-                boolean isInResourcesList = RESOURCES_TABLES_LIST.contains(tablename);
-                // Add the new uuids
-                Iterator entries = uuids.entrySet().iterator();
-                while (entries.hasNext()) {
-                    Map.Entry entry = (Map.Entry)entries.next();
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        if (isInResourcesList) {
-                            fillUUIDSColumn(
-                                tablename,
-                                TEMP_UUID_COLUMN,
-                                (String)entry.getValue(),
-                                COLUMN_PROJECT_LASTMODIFIED,
-                                (String)entry.getKey());
-                        } else {
-                            fillUUIDSColumn(
-                                tablename,
-                                TEMP_UUID_COLUMN,
-                                (String)entry.getValue(),
-                                COLUMN_PROJECT_ID,
-                                (String)entry.getKey());
-                        }
-                    }
-                }
-
-                /*
-                 * In this phase the primary keys or indexes are dropped and the old columns containing the 
-                 * old project ids are dropped. After that the temporary columns are renamed and the new
-                 * indexes and primary keys are added.
-                 */
-                if (isInResourcesList) {
-
-                    // Drop the column PROJECT_LASTMODIFIED
-                    dropColumn(tablename, COLUMN_PROJECT_LASTMODIFIED);
-                    // rename the column TEMP_PROJECT_UUID to PROJECT_LASTMODIFIED
-                    renameColumn(tablename, COLUMN_TEMP_PROJECT_UUID, COLUMN_PROJECT_LASTMODIFIED);
-
-
-                } else {
-                    // drop the columns
-                    dropColumn(tablename, COLUMN_PROJECT_ID);
-
-                    // rename the column TEMP_PROJECT_UUID to PROJECT_ID
-                    renameColumn(tablename, COLUMN_TEMP_PROJECT_UUID, COLUMN_PROJECT_ID);
-
-                    // add the new primary key
-                    if (tablename.equals("CMS_PROJECTRESOURCES")) {
-                        addPrimaryKey(tablename, COLUMN_PROJECT_ID_RESOURCE_PATH);
-                    }
-                    if (tablename.equals("CMS_PROJECTS")) {
-                        addPrimaryKey(tablename, COLUMN_PROJECT_ID);
-                    }
-                }
-            } else {
-                System.out.println("table " + tablename + " does not need to be updated");
-            }
-        }
-    }
-
-
-    /**
-     * Adds a new primary key to the given table.<p>
-     * 
-     * @param tablename the table to add the primary key to
-     * @param primaryKey the new primary key
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void addPrimaryKey(String tablename, String primaryKey) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, null)) {
-            String query = (String)m_queryProperties.get(QUERY_ADD_PRIMARY_KEY);
-            Map replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_PRIMARY_KEY, primaryKey);
-            m_dbcon.updateSqlStatement(query, replacer, null);
-        } else {
-            System.out.println("table " + tablename + " does not exists");
-        }
-    }
-
-    /**
-     * Adds the new column for the uuids to a table.<p>
-     * 
-     * @param tablename the table to add the column to
-     * @param column the new colum to add
-     * 
-     * @throws SQLException if something goes wrong
-     * 
-     */
-    private void addUUIDColumnToTable(String tablename, String column) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (!m_dbcon.hasTableOrColumn(tablename, column)) {
-            String query = (String)m_queryProperties.get(QUERY_ADD_TEMP_UUID_COLUMN); // Get the query
-            // if the table is not one of the ONLINE or OFFLINE resources add the new column in the first position
-            if (!RESOURCES_TABLES_LIST.contains(tablename)) {
-                query += " FIRST";
-            }
-            Map replacer = new HashMap(); // Build the replacements
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_COLUMN, column);
-            m_dbcon.updateSqlStatement(query, replacer, null); // execute the query
-        } else {
-            System.out.println("column " + column + " in table " + tablename + " already exists");
-        }
-    }
-
-    /**
-     * Drops the column of the given table.<p>
-     * 
-     * @param tablename the table in which the columns shall be dropped
-     * @param column the column to drop
-     * 
-     * @throws SQLException if something goes wrong 
-     */
-    private void dropColumn(String tablename, String column) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, column)) {
-            String query = (String)m_queryProperties.get(QUERY_DROP_COLUMN);
-            Map replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_COLUMN, column);
-            m_dbcon.updateSqlStatement(query, replacer, null);
-        } else {
-            System.out.println("column " + column + " in table " + tablename + " does not exist");
-        }
-
-    }
-
-    /**
-     * Updates the given table with the new UUID value.<p>
-     * 
-     * @param tablename the table to update
-     * @param column the column to update
-     * @param newvalue the new value to insert
-     * @param oldid the old id to compare the old value to
-     * @param tempValue the old value in the temporary table
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void fillUUIDSColumn(String tablename, String column, String newvalue, String oldid, String tempValue)
-    throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, column)) {
-            String query = (String)m_queryProperties.get(QUERY_TRANSFER_UUID);
-            Map replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_COLUMN, column);
-            replacer.put(REPLACEMENT_OLDID, oldid);
-            List params = new ArrayList();
-            params.add(newvalue);
-            params.add(new Integer(tempValue)); // Change type to integer
-
-            m_dbcon.updateSqlStatement(query, replacer, params);
-        } else {
-            System.out.println("column " + column + " in table " + tablename + " does not exists");
-        }
-    }
-
-    /**
-     * Gets the UUIDs from the temporary table TEMP_CMS_UUIDS.<p> 
+     * @param dbCon the db connection interface
      * 
      * @return a map with the old project ids and the new uuids
      * 
      * @throws SQLException if something goes wrong 
      */
-    private Map getUUIDs() throws SQLException {
+    private Map getUUIDs(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         Map result = new HashMap();
 
-        String query = (String)m_queryProperties.get(QUERY_GET_UUIDS);
-        ResultSet set = m_dbcon.executeSqlStatement(query, null);
+        String query = readQuery(QUERY_GET_UUIDS);
+        ResultSet set = dbCon.executeSqlStatement(query, null);
         while (set.next()) {
             String key = Integer.toString(set.getInt(COLUMN_PROJECT_ID));
             String value = set.getString(COLUMN_PROJECT_UUID);
@@ -549,21 +475,22 @@ public class CmsUpdateDBProjectId {
     /**
      * Checks if the given table needs an update of the uuids.<p>
      * 
+     * @param dbCon the db connection interface
      * @param tablename the table to check
      * 
      * @return true if the project ids are not yet updated, false if nothing needs to be done
      * 
      * @throws SQLException if something goes wrong 
      */
-    private boolean needsUpdating(String tablename) throws SQLException {
+    private boolean needsUpdating(CmsSetupDb dbCon, String tablename) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         boolean result = true;
 
-        String query = (String)m_queryProperties.get(QUERY_DESCRIBE_TABLE);
+        String query = readQuery(QUERY_DESCRIBE_TABLE);
         Map replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
-        ResultSet set = m_dbcon.executeSqlStatement(query, replacer);
+        ResultSet set = dbCon.executeSqlStatement(query, replacer);
 
         while (set.next()) {
             String fieldname = set.getString("Field");
@@ -585,25 +512,66 @@ public class CmsUpdateDBProjectId {
     /**
      * Renames the column of the given table the new name.<p>
      * 
+     * @param dbCon the db connection interface
      * @param tablename the table in which the column shall be renamed
      * @param oldname the old name of the column
      * @param newname the new name of the column
      * 
      * @throws SQLException if something goes wrong
      */
-    private void renameColumn(String tablename, String oldname, String newname) throws SQLException {
+    private void renameColumn(CmsSetupDb dbCon, String tablename, String oldname, String newname) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, oldname)) {
-            String query = (String)m_queryProperties.get(QUERY_RENAME_COLUMN);
+        if (dbCon.hasTableOrColumn(tablename, oldname)) {
+            String query = readQuery(QUERY_RENAME_COLUMN);
             Map replacer = new HashMap();
             replacer.put(REPLACEMENT_TABLENAME, tablename);
             replacer.put(REPLACEMENT_COLUMN, oldname);
             replacer.put(REPLACEMENT_NEW_COLUMN, newname);
 
-            m_dbcon.updateSqlStatement(query, replacer, null);
+            dbCon.updateSqlStatement(query, replacer, null);
         } else {
             System.out.println("column " + oldname + " in table " + tablename + " not found exists");
+        }
+    }
+
+    /**
+     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
+     * 
+     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
+     * 
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    private void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        // Get the data from the CMS_BACKUP table
+        String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
+        ResultSet set = dbCon.executeSqlStatement(query, null);
+
+        List params = new ArrayList();
+        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
+        while (set.next()) {
+            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
+            params.add(set.getString("PROJECT_UUID"));
+            params.add(set.getString("PROJECT_NAME"));
+            params.add(set.getString("PROJECT_DESCRIPTION"));
+            params.add(new Integer(set.getInt("PROJECT_TYPE")));
+            params.add(set.getString("USER_ID"));
+            params.add(set.getString("GROUP_ID"));
+            params.add(set.getString("MANAGERGROUP_ID"));
+            params.add(new Long(set.getLong("DATE_CREATED")));
+            params.add(new Integer(set.getInt("PUBLISH_TAG")));
+            Date date = set.getDate("PROJECT_PUBLISHDATE");
+            params.add(new Long(date.getTime()));
+            params.add(set.getString("PROJECT_PUBLISHED_BY"));
+            params.add(set.getString("PROJECT_OU"));
+
+            dbCon.updateSqlStatement(insertQuery, null, params);
+            // Clear the parameter list for the next loop
+            params.clear();
         }
     }
 }

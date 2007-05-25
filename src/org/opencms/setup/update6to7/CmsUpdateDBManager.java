@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/25 08:14:37 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,20 @@
 package org.opencms.setup.update6to7;
 
 import org.opencms.setup.CmsSetupBean;
-import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBAlterTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBCreateIndexes7;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBDropBackupTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBDropOldIndexes;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBDropUnusedTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryPrincipals;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBNewTables;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBProjectId;
+import org.opencms.setup.update6to7.generic.CmsUpdateDBUpdateOU;
 import org.opencms.util.CmsUUID;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,15 +68,15 @@ public class CmsUpdateDBManager {
     /** The pools connection data. */
     private Map m_dbPools = new HashMap();
 
-    /** The rfs path to the web app. */
-    private String m_webAppRfsPath;
+    /** List of xml update plugins. */
+    private List m_plugins;
 
     /**
      * Default constructor.<p>
      */
     public CmsUpdateDBManager() {
 
-        // Stays empty
+        // no-op
     }
 
     /**
@@ -148,9 +157,6 @@ public class CmsUpdateDBManager {
     public void initialize(CmsSetupBean updateBean) throws Exception {
 
         if (updateBean.isInitialized()) {
-            m_webAppRfsPath = updateBean.getWebAppRfsPath();
-
-            //String db = updateBean.getDatabase(); // just to initialize some internal vars
             ExtendedProperties props = updateBean.getProperties();
 
             // Initialize the CmsUUID generator.
@@ -179,15 +185,38 @@ public class CmsUpdateDBManager {
      */
     public void run() {
 
+        try {
+            // add a list of plugins to execute
+            // be sure to use the right order 
+            m_plugins = new ArrayList();
+
+            m_plugins.add(new CmsUpdateDBDropOldIndexes());
+            m_plugins.add(new CmsUpdateDBUpdateOU());
+            m_plugins.add(new CmsUpdateDBCmsUsers());
+            m_plugins.add(new CmsUpdateDBProjectId());
+            m_plugins.add(new CmsUpdateDBNewTables());
+            m_plugins.add(new CmsUpdateDBHistoryTables());
+            m_plugins.add(new CmsUpdateDBHistoryPrincipals());
+            m_plugins.add(new CmsUpdateDBDropUnusedTables());
+            m_plugins.add(new CmsUpdateDBContentTables());
+            m_plugins.add(new CmsUpdateDBAlterTables());
+            m_plugins.add(new CmsUpdateDBDropBackupTables());
+            m_plugins.add(new CmsUpdateDBCreateIndexes7());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
         Iterator it = getPools().iterator();
         while (it.hasNext()) {
             String dbPool = (String)it.next();
             System.out.println("Starting DB Update for pool " + dbPool + "... ");
+
             try {
                 updateDatabase(dbPool);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
+
             System.out.println("... DB Update finished for " + dbPool + ".");
         }
     }
@@ -195,181 +224,19 @@ public class CmsUpdateDBManager {
     /**
      * Updates the database.<p>
      * 
-     * @return true if everything worked out, false if not
-     * 
      * @param pool the database pool to update
-     * 
-     * @throws IOException if the query properties are unreadable
      */
-    public boolean updateDatabase(String pool) throws IOException {
-
-        boolean result = false;
+    public void updateDatabase(String pool) {
 
         System.out.println("JDBC Driver:                " + getDbDriver(pool));
         System.out.println("JDBC Connection Url:        " + getDbUrl(pool));
         System.out.println("JDBC Connection Url Params: " + getDbParams(pool));
         System.out.println("Database User:              " + getDbUser(pool));
 
-        CmsSetupDb setupDb = new CmsSetupDb(m_webAppRfsPath);
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBDropOldIndexes dropIndexes = new CmsUpdateDBDropOldIndexes(setupDb, m_webAppRfsPath);
-            dropIndexes.dropAllIndexes();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
+        Iterator it = m_plugins.iterator();
+        while (it.hasNext()) {
+            I_CmsUpdateDBPart updatePart = (I_CmsUpdateDBPart)it.next();
+            updatePart.execute((Map)m_dbPools.get(pool));
         }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBUpdateOU updateOUs = new CmsUpdateDBUpdateOU(setupDb, m_webAppRfsPath);
-            updateOUs.updateUOsForTables();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBCmsUsers updateCmsUsers = new CmsUpdateDBCmsUsers(setupDb, m_webAppRfsPath);
-            updateCmsUsers.updateCmsUsers();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBProjectId updateProjectIds = new CmsUpdateDBProjectId(setupDb, m_webAppRfsPath);
-            updateProjectIds.generateUUIDs();
-            updateProjectIds.updateUUIDs();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            // Generate the new tables
-            CmsUpdateDBNewTables newTables = new CmsUpdateDBNewTables(setupDb, m_webAppRfsPath);
-            newTables.createNewTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-            // transfer the data from the backup tables to the new history tables
-            CmsUpdateDBHistoryTables historyTables = new CmsUpdateDBHistoryTables(setupDb, m_webAppRfsPath);
-            historyTables.transferBackupToHistoryTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBHistoryPrincipals updateHistoryPrincipals = new CmsUpdateDBHistoryPrincipals(
-                setupDb,
-                m_webAppRfsPath);
-            boolean update = updateHistoryPrincipals.insertHistoryPrincipals();
-            if (update) {
-                updateHistoryPrincipals.updateHistoryPrincipals();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        //        try {
-        //            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-        //
-        //            CmsUpdateDBIndexUpdater indexUpdater = new CmsUpdateDBIndexUpdater(setupDb, m_webAppRfsPath);
-        //            indexUpdater.updateIndexes();
-        //        } catch (SQLException e) {
-        //            e.printStackTrace();
-        //        } finally {
-        //            setupDb.closeConnection();
-        //        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBDropUnusedTables dropUnusedTables = new CmsUpdateDBDropUnusedTables(setupDb, m_webAppRfsPath);
-            dropUnusedTables.dropUnusedTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBContentTables updateContentTables = new CmsUpdateDBContentTables(setupDb, m_webAppRfsPath);
-            updateContentTables.transferData();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBAlterTables alterTables = new CmsUpdateDBAlterTables(setupDb, m_webAppRfsPath);
-            alterTables.updateRemaingTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-
-            CmsUpdateDBDropBackupTables dropBackupTables = new CmsUpdateDBDropBackupTables(setupDb, m_webAppRfsPath);
-            dropBackupTables.dropBackupTables();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        try {
-            setupDb.setConnection(getDbDriver(pool), getDbUrl(pool), getDbParams(pool), getDbUser(pool), getDbPwd(pool));
-            // generate the new UUIDs
-            CmsUpdateDBCreateIndexes7 createNewIndexes = new CmsUpdateDBCreateIndexes7(setupDb, m_webAppRfsPath);
-            createNewIndexes.createNewIndexes();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            setupDb.closeConnection();
-        }
-
-        return result;
-    }
-
-    /**
-     * Returns the configured database password for the given pool.<p>
-     * 
-     * @param pool the db pool to get the password for
-     * 
-     * @return the database password
-     */
-    private String getDbPwd(String pool) {
-
-        return (String)((Map)m_dbPools.get(pool)).get("pwd");
     }
 }

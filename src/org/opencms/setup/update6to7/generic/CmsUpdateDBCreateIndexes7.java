@@ -1,0 +1,109 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCreateIndexes7.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ * This class creates all the indexes that are used in the database version 7.<p>
+ * 
+ * @author metzler
+ */
+public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
+
+    /** Constant for the SQL query properties.<p> */
+    private static final String QUERY_PROPERTY_FILE = "cms_add_new_indexes_queries.properties";
+
+    /**
+     * Constructor.<p>
+     * 
+     * @throws IOException if the query properties cannot be read
+     */
+    public CmsUpdateDBCreateIndexes7()
+    throws IOException {
+
+        super();
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
+     */
+    public String getSqlQueriesFile() {
+
+        return QUERY_PROPERTY_FILE;
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
+     */
+    protected void internalExecute(CmsSetupDb dbCon) {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        Set elements = new HashSet();
+        elements.add("CMS_CONTENTS");
+        elements.add("CMS_GROUPS");
+        elements.add("CMS_GROUPUSERS");
+        elements.add("CMS_OFFLINE_ACCESSCONTROL");
+        elements.add("CMS_OFFLINE_CONTENTS");
+        elements.add("CMS_OFFLINE_PROPERTIES");
+        elements.add("CMS_OFFLINE_PROPERTYDEF");
+        elements.add("CMS_OFFLINE_RESOURCES");
+        elements.add("CMS_OFFLINE_STRUCTURE");
+        elements.add("CMS_ONLINE_ACCESCONTROL");
+        elements.add("CMS_ONLINE_PROPERTIES");
+        elements.add("CMS_ONLINE_PROPERTYDEF");
+        elements.add("CMS_ONLINE_RESOURCES");
+        elements.add("CMS_ONLINE_STRUCTURE");
+        elements.add("CMS_PROJECTRESOURCES");
+        elements.add("CMS_PROJECTS");
+        elements.add("CMS_PUBLISH_HISTORY");
+        elements.add("CMS_STATICEXPORT_LINKS");
+        elements.add("CMS_USERS");
+
+        // iterate the queries
+        for (Iterator it = elements.iterator(); it.hasNext();) {
+            String query = (String)it.next();
+            try {
+                dbCon.updateSqlStatement(readQuery(query), null, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

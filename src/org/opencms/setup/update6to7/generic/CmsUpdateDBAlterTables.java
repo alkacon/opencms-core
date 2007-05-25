@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/05/25 08:50:38 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -40,10 +43,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
 
 /**
  * This class makes the remaining changes to some tables in order to update them.<p>
@@ -57,7 +56,7 @@ import org.opencms.util.CmsPropertyUtils;
  * 
  * @author metzler
  */
-public class CmsUpdateDBAlterTables {
+public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant array with the queries for the CMS_ONLINE_CONTENTS table.<p> */
     private static final String[] CMS_OFFLINE_CONTENTS_QUERIES = {"Q_OFFLINE_CONTENTS_DROP_COLUMN"};
@@ -108,7 +107,7 @@ public class CmsUpdateDBAlterTables {
     private static final String QUERY_CMS_STRUCTURE_ADD_STRUCTURE_VERSION = "Q_CMS_STRUCTURE_ADD_STRUCTURE_VERSION";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_alter_remaining_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_alter_remaining_queries.properties";
 
     /** Constant for the sql query to add the PROPERTYDEF_TYPE to the PROPERTYDEF tables.<p> */
     private static final String QUERY_PROPERTYDEF_TYPE = "Q_CMS_PROPERTYDEF";
@@ -134,82 +133,37 @@ public class CmsUpdateDBAlterTables {
     /** Constant for the table name CMS_PROJECTS.<p> */
     private static final String TABLE_CMS_PROJECTS = "CMS_PROJECTS";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
+     * Default constructor.<p>
      * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
-     * 
-     * @throws IOException if the sql query properties file could not be read
+     * @throws IOException if the default sql queries property file could not be read 
      */
-    public CmsUpdateDBAlterTables(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBAlterTables()
     throws IOException {
 
-        System.err.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
     }
 
     /**
-     * Gets the database connection.<p> 
-     * 
-     * @return the dbcon
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public CmsSetupDb getDbcon() {
+    public String getSqlQueriesFile() {
 
-        return m_dbcon;
+        return QUERY_PROPERTY_FILE;
     }
 
     /**
-     * Gets the sql query properties.<p>
-     * 
-     * @return the queryProperties
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the sql query properties.<p>
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Executes the remaing updates for some of the tables to bring them to the new structure.<p>
-     *
-     * @throws SQLException if something goes wrong
-     */
-    public void updateRemaingTables() throws SQLException {
+    public void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Update the CMS_OFFLINE_CONTENTS table
         // drop column content_id
-        if (m_dbcon.hasTableOrColumn(TABLE_CMS_OFFLINE_CONTENTS, COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID)) {
+        if (dbCon.hasTableOrColumn(TABLE_CMS_OFFLINE_CONTENTS, COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID)) {
             for (Iterator it = CMS_OFFLINE_CONTENTS_QUERIES_LIST.iterator(); it.hasNext();) {
-                String query = (String)m_queryProperties.get(it.next());
-                m_dbcon.updateSqlStatement(query, null, null);
+                String query = readQuery((String)it.next());
+                dbCon.updateSqlStatement(query, null, null);
             }
         } else {
             System.out.println("no column "
@@ -222,11 +176,11 @@ public class CmsUpdateDBAlterTables {
         // Add the column PROPERTYDEF_TYPE
         for (Iterator it = CMS_PROPERTYDEF_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
-            if (!m_dbcon.hasTableOrColumn(table, COLUMN_CMS_PROPERTYDEF_TYPE)) {
-                String query = (String)m_queryProperties.get(QUERY_PROPERTYDEF_TYPE);
+            if (!dbCon.hasTableOrColumn(table, COLUMN_CMS_PROPERTYDEF_TYPE)) {
+                String query = readQuery(QUERY_PROPERTYDEF_TYPE);
                 HashMap replacer = new HashMap();
                 replacer.put(REPLACEMENT_TABLENAME, table);
-                m_dbcon.updateSqlStatement(query, replacer, null);
+                dbCon.updateSqlStatement(query, replacer, null);
                 replacer.clear();
             } else {
                 System.out.println("column " + COLUMN_CMS_PROPERTYDEF_TYPE + " in table " + table + " already exists");
@@ -238,25 +192,25 @@ public class CmsUpdateDBAlterTables {
         for (Iterator it = CMS_STRUCTURE_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
             // Add the column if needed
-            if (!m_dbcon.hasTableOrColumn(table, COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION)) {
-                String addColumn = (String)m_queryProperties.get(QUERY_CMS_STRUCTURE_ADD_STRUCTURE_VERSION);
+            if (!dbCon.hasTableOrColumn(table, COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION)) {
+                String addColumn = readQuery(QUERY_CMS_STRUCTURE_ADD_STRUCTURE_VERSION);
                 // Add the column
                 HashMap replacer = new HashMap();
                 replacer.put(REPLACEMENT_TABLENAME, table);
-                m_dbcon.updateSqlStatement(addColumn, replacer, null);
+                dbCon.updateSqlStatement(addColumn, replacer, null);
 
                 // Update the entries of the newly created column
-                String structureVersion = (String)m_queryProperties.get(QUERY_SELECT_CMS_STRUCTURE_VERSION);
-                ResultSet set = m_dbcon.executeSqlStatement(structureVersion, replacer);
+                String structureVersion = readQuery(QUERY_SELECT_CMS_STRUCTURE_VERSION);
+                ResultSet set = dbCon.executeSqlStatement(structureVersion, replacer);
                 // update each row
                 while (set.next()) {
-                    String updateQuery = (String)m_queryProperties.get(QUERY_UPDATE_STRUCTURE_VERSION);
+                    String updateQuery = readQuery(QUERY_UPDATE_STRUCTURE_VERSION);
                     String structureId = set.getString("STRUCTURE_ID");
                     int version = set.getInt("STRUCTURE_VERSION");
                     List params = new ArrayList();
                     params.add(new Integer(version)); // add the version
                     params.add(structureId);
-                    m_dbcon.updateSqlStatement(updateQuery, replacer, params);
+                    dbCon.updateSqlStatement(updateQuery, replacer, params);
                 }
             } else {
                 System.out.println("column "
@@ -268,9 +222,9 @@ public class CmsUpdateDBAlterTables {
         } // end update structure_version
 
         // Drop the TASK_ID column from CMS_PROJECTS
-        if (m_dbcon.hasTableOrColumn(TABLE_CMS_PROJECTS, COLUMN_PROJECTS_TASK_ID)) {
-            String dropTaskId = (String)m_queryProperties.get(QUERY_CMS_PROJECTS_DROP_TASK_ID);
-            m_dbcon.updateSqlStatement(dropTaskId, null, null);
+        if (dbCon.hasTableOrColumn(TABLE_CMS_PROJECTS, COLUMN_PROJECTS_TASK_ID)) {
+            String dropTaskId = readQuery(QUERY_CMS_PROJECTS_DROP_TASK_ID);
+            dbCon.updateSqlStatement(dropTaskId, null, null);
         } else {
             System.out.println("no column " + COLUMN_PROJECTS_TASK_ID + " in table " + TABLE_CMS_PROJECTS);
         }
@@ -282,18 +236,18 @@ public class CmsUpdateDBAlterTables {
             String table = (String)it.next();
             HashMap replacer = new HashMap();
             replacer.put(REPLACEMENT_TABLENAME, table);
-            if (!m_dbcon.hasTableOrColumn(table, COLUMN_RESOURCES_DATE_CONTENT)) {
-                String addDateContent = (String)m_queryProperties.get(QUERY_UPDATE_RESOURCES_DATE_CONTENT);
+            if (!dbCon.hasTableOrColumn(table, COLUMN_RESOURCES_DATE_CONTENT)) {
+                String addDateContent = readQuery(QUERY_UPDATE_RESOURCES_DATE_CONTENT);
                 // add the DATE_CONTENT column
-                m_dbcon.updateSqlStatement(addDateContent, replacer, null);
+                dbCon.updateSqlStatement(addDateContent, replacer, null);
             } else {
                 System.out.println("column " + COLUMN_RESOURCES_DATE_CONTENT + " in table " + table + " already exists");
             }
 
-            if (!m_dbcon.hasTableOrColumn(table, COLUMN_RESOURCES_RESOURCE_VERSION)) {
+            if (!dbCon.hasTableOrColumn(table, COLUMN_RESOURCES_RESOURCE_VERSION)) {
                 // add the RESOURCE_VERISION column
-                String addResourceVersion = (String)m_queryProperties.get(QUERY_UPDATE_RESOURCES_RESOURCE_VERSION);
-                m_dbcon.updateSqlStatement(addResourceVersion, replacer, null);
+                String addResourceVersion = readQuery(QUERY_UPDATE_RESOURCES_RESOURCE_VERSION);
+                dbCon.updateSqlStatement(addResourceVersion, replacer, null);
             } else {
                 System.out.println("column "
                     + COLUMN_RESOURCES_RESOURCE_VERSION

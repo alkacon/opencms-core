@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/05/24 15:10:51 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCmsUsers.java,v $
+ * Date   : $Date: 2007/05/25 11:54:08 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.generic;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,19 +48,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.util.CmsPropertyUtils;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
-
 /**
  * This class makes an update of the CMS_USERS table splitting it up into CMS_USERS and CMS_USERDATA.<p>
  * Unnecessary colums from CMS_USERS will be deleted and the new column USER_DATECREATED is added.
  * 
  * @author metzler
  */
-public class CmsUpdateDBCmsUsers {
+public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
 
     /** Constant for the table CMS_USERDATA.<p> */
     private static final String CHECK_CMS_USERDATA = "CMS_USERDATA";
@@ -91,7 +90,7 @@ public class CmsUpdateDBCmsUsers {
     private static final String QUERY_INSERT_CMS_USERDATA = "Q_INSERT_CMS_USERDATA";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "/update/sql/cms_users_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_users_queries.properties";
 
     /** Constant for the query to the select the user infos for a user.<p> */
     private static final String QUERY_SELECT_USER_DATA = "Q_SELECT_USER_DATA";
@@ -120,82 +119,35 @@ public class CmsUpdateDBCmsUsers {
     /** Constant for the columnname USER_TYPE.<p> */
     private static final String USER_TYPE = "USER_TYPE";
 
-    /** The database connection.<p> */
-    private CmsSetupDb m_dbcon;
-
-    /** The sql queries.<p> */
-    private ExtendedProperties m_queryProperties;
-
     /**
-     * Constructor with paramaters for the database connection and query properties file.<p>
+     * Default constructor.<p>
      * 
-     * @param dbcon the database connection
-     * @param rfsPath the path to the opencms installation
-     * 
-     * @throws IOException if the sql query props could not be read
+     * @throws IOException if the default sql queries property file could not be read 
      */
-    public CmsUpdateDBCmsUsers(CmsSetupDb dbcon, String rfsPath)
+    public CmsUpdateDBCmsUsers()
     throws IOException {
 
-        System.out.println(getClass().getName());
-        m_dbcon = dbcon;
-        m_queryProperties = CmsPropertyUtils.loadProperties(rfsPath + QUERY_PROPERTY_FILE);
+        super();
     }
 
     /**
-     * Gets the database connection.<p>
-     * 
-     * @return the dbcon
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
      */
-    public CmsSetupDb getDbcon() {
+    public String getSqlQueriesFile() {
 
-        return m_dbcon;
+        return QUERY_PROPERTY_FILE;
     }
 
     /**
-     * Gets the query properties.<p>
-     * 
-     * @return the queryProperties
+     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
-    public ExtendedProperties getQueryProperties() {
-
-        return m_queryProperties;
-    }
-
-    /**
-     * Sets the database connection.<p>
-     * 
-     * @param dbcon the dbcon to set
-     */
-    public void setDbcon(CmsSetupDb dbcon) {
-
-        m_dbcon = dbcon;
-    }
-
-    /**
-     * Sets the query properties.<p>
-     * 
-     * @param queryProperties the queryProperties to set
-     */
-    public void setQueryProperties(ExtendedProperties queryProperties) {
-
-        m_queryProperties = queryProperties;
-    }
-
-    /**
-     * Executes the necessary steps to update the CMS_USERS table to the new version.<p> 
-     * 
-     * The CMS_USERS table is split up into the CMS_USERS and the CMS_USERDATA table.
-     * The unnecessary columns from CMS_USERS are removed after the transfer of the
-     * data to the CMS_USERDATA table.
-     */
-    public void updateCmsUsers() {
+    public void internalExecute(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         try {
-            if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
-                CmsUUID id = createWebusersGroup();
-                addWebusersToGroup(id);
+            if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
+                CmsUUID id = createWebusersGroup(dbCon);
+                addWebusersToGroup(dbCon, id);
             } else {
                 System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
             }
@@ -204,11 +156,11 @@ public class CmsUpdateDBCmsUsers {
         }
         try {
             // Check if the CMS_USERDATA table exists            
-            if (!checkUserDataTable()) {
-                createUserDataTable(); // Could throw Exception during table creation
+            if (!checkUserDataTable(dbCon)) {
+                createUserDataTable(dbCon); // Could throw Exception during table creation
 
-                String query = (String)m_queryProperties.get(QUERY_SELECT_USER_DATA);
-                ResultSet set = m_dbcon.executeSqlStatement(query, null);
+                String query = readQuery(QUERY_SELECT_USER_DATA);
+                ResultSet set = dbCon.executeSqlStatement(query, null);
                 while (set.next()) {
                     String userID = (String)set.getObject(RESULTSET_USER_ID);
                     System.out.println("UserId: " + userID);
@@ -236,17 +188,17 @@ public class CmsUpdateDBCmsUsers {
                         }
 
                         // Write the user data to the table
-                        writeAdditionalUserInfo(userID, infos);
+                        writeAdditionalUserInfo(dbCon, userID, infos);
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
                 }
 
                 // add the column USER_DATECREATED
-                addUserDateCreated();
+                addUserDateCreated(dbCon);
 
                 // remove the unnecessary columns from CMS_USERS
-                removeUnnecessaryColumns();
+                removeUnnecessaryColumns(dbCon);
 
             } else {
                 System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
@@ -259,22 +211,24 @@ public class CmsUpdateDBCmsUsers {
     /**
      * Adds the new column USER_DATECREATED to the CMS_USERS table.<p> 
      * 
+     * @param dbCon the db connection interface
+     * 
      * @throws SQLException if something goes wrong 
      */
-    private void addUserDateCreated() throws SQLException {
+    private void addUserDateCreated(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Add the column to the table if necessary
-        if (!m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_DATECREATED)) {
-            String addUserDateCreated = (String)m_queryProperties.get(QUERY_ADD_USER_DATECREATED_COLUMN);
-            m_dbcon.updateSqlStatement(addUserDateCreated, null, null);
+        if (!dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_DATECREATED)) {
+            String addUserDateCreated = readQuery(QUERY_ADD_USER_DATECREATED_COLUMN);
+            dbCon.updateSqlStatement(addUserDateCreated, null, null);
 
-            String setUserDateCreated = (String)m_queryProperties.get(QUERY_SET_USER_DATECREATED);
+            String setUserDateCreated = readQuery(QUERY_SET_USER_DATECREATED);
             List param = new ArrayList();
             // Set the creation date to the current time
             param.add(new Long(System.currentTimeMillis()));
 
-            m_dbcon.updateSqlStatement(setUserDateCreated, null, param);
+            dbCon.updateSqlStatement(setUserDateCreated, null, param);
         } else {
             System.out.println("column " + USER_DATECREATED + " in table " + CMS_USERS_TABLE + " already exists");
         }
@@ -283,52 +237,58 @@ public class CmsUpdateDBCmsUsers {
     /**
      * Adds all webusers to the new previously created webusers group.<p>
      * 
+     * @param dbCon the db connection interface
      * @param id the id of the new webusers group
      * 
      * @throws SQLException if something goes wrong 
      */
-    private void addWebusersToGroup(CmsUUID id) throws SQLException {
+    private void addWebusersToGroup(CmsSetupDb dbCon, CmsUUID id) throws SQLException {
 
-        String sql = (String)m_queryProperties.get(QUERY_ADD_WEBUSERS_TO_GROUP);
+        String sql = readQuery(QUERY_ADD_WEBUSERS_TO_GROUP);
         Map replacements = new HashMap();
         replacements.put("${GROUP_ID}", id.toString());
-        m_dbcon.updateSqlStatement(sql, replacements, null);
+        dbCon.updateSqlStatement(sql, replacements, null);
     }
 
     /**
      * Checks if the CMS_USERDATA table exists.<p> 
      * 
+     * @param dbCon the db connection interface
+     * 
      * @return true if it exists, false if not.
      */
-    private boolean checkUserDataTable() {
+    private boolean checkUserDataTable(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        return m_dbcon.hasTableOrColumn(CHECK_CMS_USERDATA, null);
+        return dbCon.hasTableOrColumn(CHECK_CMS_USERDATA, null);
     }
 
     /**
-     * Creates the CMS_USERDATA table if it does not exist yet.<p> 
+     * Creates the CMS_USERDATA table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
      * 
-     * @throws SQLException 
-     *
+     * @throws SQLException if soemthing goes wrong
      */
-    private void createUserDataTable() throws SQLException {
+    private void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String createStatement = m_queryProperties.getString(QUERY_CREATE_TABLE_USERDATA);
-        m_dbcon.updateSqlStatement(createStatement, null, null);
+        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
+        dbCon.updateSqlStatement(createStatement, null, null);
     }
 
     /**
      * creates a new group for the webusers.<p>
      * 
+     * @param dbCon the db connection interface
+     * 
      * @return the id of the new generated group
      * 
      * @throws SQLException if something goes wrong 
      */
-    private CmsUUID createWebusersGroup() throws SQLException {
+    private CmsUUID createWebusersGroup(CmsSetupDb dbCon) throws SQLException {
 
-        String sql = (String)m_queryProperties.get(QUERY_CREATE_WEBUSERS_GROUP);
+        String sql = readQuery(QUERY_CREATE_WEBUSERS_GROUP);
         List params = new ArrayList();
         CmsUUID id = new CmsUUID();
         params.add(id.toString());
@@ -337,43 +297,44 @@ public class CmsUpdateDBCmsUsers {
         params.add("This group was created by the OpenCms Upgrade Wizard to facilitate the handling of former called WebUsers, can be deleted if needed.");
         params.add(new Integer(0));
         params.add("/");
-        m_dbcon.updateSqlStatement(sql, null, params);
+        dbCon.updateSqlStatement(sql, null, params);
         return id;
     }
 
     /**
      * Removes the columns USER_INFO, USER_ADDRESS, USER_DESCRIPTION and USER_TYPE from the CMS_USERS table.<p>
      * 
+     * @param dbCon the db connection interface
+     * 
      * @throws SQLException if something goes wrong 
-     *
      */
-    private void removeUnnecessaryColumns() throws SQLException {
+    private void removeUnnecessaryColumns(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Get the sql queries to drop the columns
-        String dropUserInfo = (String)m_queryProperties.get(QUERY_DROP_USER_INFO_COLUMN);
-        String dropUserAddress = (String)m_queryProperties.get(QUERY_DROP_USER_ADDRESS_COLUMN);
-        String dropUserDescription = (String)m_queryProperties.get(QUERY_DROP_USER_DESCRIPTION_COLUMN);
-        String dropUserType = (String)m_queryProperties.get(QUERY_DROP_USER_TYPE_COLUMN);
+        String dropUserInfo = readQuery(QUERY_DROP_USER_INFO_COLUMN);
+        String dropUserAddress = readQuery(QUERY_DROP_USER_ADDRESS_COLUMN);
+        String dropUserDescription = readQuery(QUERY_DROP_USER_DESCRIPTION_COLUMN);
+        String dropUserType = readQuery(QUERY_DROP_USER_TYPE_COLUMN);
 
         // execute the queries to drop the columns, if they exist
-        if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_INFO)) {
-            m_dbcon.updateSqlStatement(dropUserInfo, null, null);
+        if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_INFO)) {
+            dbCon.updateSqlStatement(dropUserInfo, null, null);
         } else {
             System.out.println("no column " + USER_INFO + " in table " + CMS_USERS_TABLE + " found");
         }
-        if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_ADDRESS)) {
-            m_dbcon.updateSqlStatement(dropUserAddress, null, null);
+        if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_ADDRESS)) {
+            dbCon.updateSqlStatement(dropUserAddress, null, null);
         } else {
             System.out.println("no column " + USER_ADDRESS + " in table " + CMS_USERS_TABLE + " found");
         }
-        if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_DESCRIPTION)) {
-            m_dbcon.updateSqlStatement(dropUserDescription, null, null);
+        if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_DESCRIPTION)) {
+            dbCon.updateSqlStatement(dropUserDescription, null, null);
         } else {
             System.out.println("no column " + USER_DESCRIPTION + " in table " + CMS_USERS_TABLE + " found");
         }
-        if (m_dbcon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
-            m_dbcon.updateSqlStatement(dropUserType, null, null);
+        if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
+            dbCon.updateSqlStatement(dropUserType, null, null);
         } else {
             System.out.println("no column " + USER_TYPE + " in table " + CMS_USERS_TABLE + " found");
         }
@@ -382,17 +343,18 @@ public class CmsUpdateDBCmsUsers {
     /**
      * Writes the additional user infos to the database.<p>
      * 
-     * @param id
-     * @param additionalInfo
+     * @param dbCon the db connection interface
+     * @param id the user id
+     * @param additionalInfo the additional info of the user
      */
-    private void writeAdditionalUserInfo(String id, Map additionalInfo) {
+    private void writeAdditionalUserInfo(CmsSetupDb dbCon, String id, Map additionalInfo) {
 
         Iterator entries = additionalInfo.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry entry = (Map.Entry)entries.next();
             if (entry.getKey() != null && entry.getValue() != null) {
                 // Write the additional user information to the database
-                writeUserInfo(id, (String)entry.getKey(), entry.getValue());
+                writeUserInfo(dbCon, id, (String)entry.getKey(), entry.getValue());
             }
         }
     }
@@ -400,13 +362,14 @@ public class CmsUpdateDBCmsUsers {
     /**
      * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
      * 
+     * @param dbCon the db connection interface
      * @param id the user id 
      * @param key the data key
      * @param value the data value
      */
-    private void writeUserInfo(String id, String key, Object value) {
+    private void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
 
-        String query = m_queryProperties.getString(QUERY_INSERT_CMS_USERDATA);
+        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
 
         try {
             // Generate the list of parameters to add into the user info table
@@ -416,7 +379,7 @@ public class CmsUpdateDBCmsUsers {
             params.add(value);
             params.add(value.getClass().getName());
 
-            m_dbcon.updateSqlStatement(query, null, params);
+            dbCon.updateSqlStatement(query, null, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
