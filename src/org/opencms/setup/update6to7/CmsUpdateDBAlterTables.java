@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/05/25 08:14:37 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/25 08:50:38 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,7 @@ import org.opencms.util.CmsPropertyUtils;
 public class CmsUpdateDBAlterTables {
 
     /** Constant array with the queries for the CMS_ONLINE_CONTENTS table.<p> */
-    private static final String[] CMS_OFFLINE_CONTENTS_QUERIES = {
-        "Q_OFFLINE_CONTENTS_DROP_COLUMN"};
+    private static final String[] CMS_OFFLINE_CONTENTS_QUERIES = {"Q_OFFLINE_CONTENTS_DROP_COLUMN"};
 
     /** Constant ArrayList of the queries of the CMS_OFFLINE table.<p> */
     private static final List CMS_OFFLINE_CONTENTS_QUERIES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_OFFLINE_CONTENTS_QUERIES));
@@ -71,14 +70,6 @@ public class CmsUpdateDBAlterTables {
 
     /** Constant ArrayList of the two PROPERTYDEF tables.<p> */
     private static final List CMS_PROPERTYDEF_LIST = Collections.unmodifiableList(Arrays.asList(CMS_PROPERTYDEF));
-
-    /** Constant array with the queries for the CMS_PUBLISH_HISTORY table.<p> */
-    private static final String[] CMS_PUBLISH_HISTORY_QUERIES = {
-        "Q_PUBLISH_HISTORY_DROP_PRIMARY_KEY",
-        "Q_PUBLISH_HISTORY_ADD_PRIMARY_KEY"};
-
-    /** Constant ArrayList of the queries for the CMS_PUBLISH_HISTORY table.<p> */
-    private static final List CMS_PUBLISH_HISTORY_QUERIES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_PUBLISH_HISTORY_QUERIES));
 
     /** Constant array with the ONLINE and OFFLINE RESOURCES tables.<p> */
     private static final String[] CMS_RESOURCES = {"CMS_OFFLINE_RESOURCES", "CMS_ONLINE_RESOURCES"};
@@ -142,9 +133,6 @@ public class CmsUpdateDBAlterTables {
 
     /** Constant for the table name CMS_PROJECTS.<p> */
     private static final String TABLE_CMS_PROJECTS = "CMS_PROJECTS";
-
-    /** Constant for the table name CMS_PUBLISH_HISTORY.<p> */
-    private static final String TABLE_CMS_PUBLISH_HISTORY = "CMS_PUBLISH_HISTORY";
 
     /** The database connection.<p> */
     private CmsSetupDb m_dbcon;
@@ -316,14 +304,5 @@ public class CmsUpdateDBAlterTables {
 
         }
 
-        // Update the CMS_PUBLISH_HISTORY table
-        if (m_dbcon.hasTableOrColumn(TABLE_CMS_PUBLISH_HISTORY, null)) {
-            for (Iterator it = CMS_PUBLISH_HISTORY_QUERIES_LIST.iterator(); it.hasNext();) {
-                String query = (String)m_queryProperties.get(it.next());
-                m_dbcon.updateSqlStatement(query, null, null);
-            }
-        } else {
-            System.out.println("no table " + TABLE_CMS_PUBLISH_HISTORY + " found");
-        }
     }
 }

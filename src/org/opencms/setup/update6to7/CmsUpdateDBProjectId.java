@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/24 15:10:51 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/25 08:50:38 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.opencms.file.CmsProject;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsPropertyUtils;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -100,12 +99,6 @@ public class CmsUpdateDBProjectId {
     /** Constant for the sql query to drop a given column.<p> */
     private static final String QUERY_DROP_COLUMN = "Q_DROP_COLUMN";
 
-    /** Constant for the sql query to drop the given index.<p> */
-    private static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
-
-    /** Constant for the sql query to drop the primary key of a table.<p> */
-    private static final String QUERY_DROP_PRIMARY_KEY = "Q_DROP_PRIMARY_KEY";
-
     /** Constant for the sql query to get the project ids.<p> */
     private static final String QUERY_GET_PROJECT_IDS = "Q_SELECT_PROJECT_IDS";
 
@@ -132,9 +125,6 @@ public class CmsUpdateDBProjectId {
 
     /** Constant for the replacement in the SQL query for the columnname.<p> */
     private static final String REPLACEMENT_COLUMN = "${column}";
-
-    /** Constant for the replacement in the SQL query for the index name.<p> */
-    private static final String REPLACEMENT_INDEX = "${index}";
 
     /** Constant for the replacement in the SQL query for the new columnname.<p> */
     private static final String REPLACEMENT_NEW_COLUMN = "${newcolumn}";
@@ -409,8 +399,6 @@ public class CmsUpdateDBProjectId {
 
 
                 } else {
-                    // Drop only the primary key
-                    dropPrimaryKeyAndIndex(tablename, true, null);
                     // drop the columns
                     dropColumn(tablename, COLUMN_PROJECT_ID);
 
@@ -502,40 +490,6 @@ public class CmsUpdateDBProjectId {
             System.out.println("column " + column + " in table " + tablename + " does not exist");
         }
 
-    }
-
-    /**
-     * Drops the primary key and the given index of the given table.<p> 
-     *
-     * @param tablename the table to alter
-     * @param primaryKey boolean value to determine if the primary key shall also be dropped
-     * @param index the index to drop
-     * 
-     * @throws SQLException if something goes wrong
-     *
-     */
-    private void dropPrimaryKeyAndIndex(String tablename, boolean primaryKey, String index) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (m_dbcon.hasTableOrColumn(tablename, null)) {
-            // Drop the primary key
-            Map replacer = new HashMap();
-            if (primaryKey) {
-                String dropPrimaryKey = (String)m_queryProperties.get(QUERY_DROP_PRIMARY_KEY);
-                replacer.put(REPLACEMENT_TABLENAME, tablename);
-                m_dbcon.updateSqlStatement(dropPrimaryKey, replacer, null);
-                replacer.clear();
-            }
-
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(index)) {
-                String dropIndex = (String)m_queryProperties.get(QUERY_DROP_INDEX);
-                replacer.put(REPLACEMENT_TABLENAME, tablename);
-                replacer.put(REPLACEMENT_INDEX, index);
-                m_dbcon.updateSqlStatement(dropIndex, replacer, null);
-            }
-        } else {
-            System.out.println("table " + tablename + " does not exist");
-        }
     }
 
     /**
