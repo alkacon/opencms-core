@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/05/25 14:46:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/25 15:05:58 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * CMS_ONLINE/OFFLINE_PROPERTYDEF   Add the TYPE column
  * CMS_ONLINE/OFFLINE_RESOURCES     Add the columns DATE_CONTENT and RESOURCE_VERSION
  * CMS_ONLINE/OFFLINE_STRUCTURE     Add the column STRUCTURE_VERSION
- * CMS_PROJECTS                     Drop the column TASK_ID
+ * CMS_PROJECTS                     Drop the column TASK_ID and change the size for the project name
  * 
  * @author metzler
  */
@@ -93,6 +93,9 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the column TASK_ID of the CMS_PROJECTS table.<p> */
     private static final String COLUMN_PROJECTS_TASK_ID = "TASK_ID";
+    
+    /** Constant for the column PROJECT_NAME of the CMS_PROJECTS table.<p> */
+    private static final String COLUMN_PROJECTS_PROJECT_NAME = "PROJECT_NAME";
 
     /** Constant for the new column DATE_CONTENT of the CMS_RESOURCES tables.<p> */
     private static final String COLUMN_RESOURCES_DATE_CONTENT = "DATE_CONTENT";
@@ -102,6 +105,9 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to drop the TASK_ID from the CMS_PROJECTS table.<p> */
     private static final String QUERY_CMS_PROJECTS_DROP_TASK_ID = "Q_CMS_PROJECTS_DROP_TASK_ID";
+    
+    /** Constant for the sql query to change the colum PROJECT_NAME.<p> */
+    private static final String QUERY_CMS_PROJECTS_CHANGE_PROJECT_NAME = "Q_CMS_PROJECTS_CHANGE_PROJECT_NAME_SIZE";
 
     /** Constant for the sql query to add the STRUCTURE_VERSION column to the STRUCTURE tables.<p> */
     private static final String QUERY_CMS_STRUCTURE_ADD_STRUCTURE_VERSION = "Q_CMS_STRUCTURE_ADD_STRUCTURE_VERSION";
@@ -229,6 +235,14 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
             System.out.println("no column " + COLUMN_PROJECTS_TASK_ID + " in table " + TABLE_CMS_PROJECTS);
         }
 
+        // Change the size of the project names
+        if (dbCon.hasTableOrColumn(TABLE_CMS_PROJECTS, COLUMN_PROJECTS_PROJECT_NAME)) {
+            String changeProjectName = readQuery(QUERY_CMS_PROJECTS_CHANGE_PROJECT_NAME);
+            dbCon.updateSqlStatement(changeProjectName, null, null);
+        } else {
+            System.out.println("no column " + COLUMN_PROJECTS_PROJECT_NAME + " in table " + TABLE_CMS_PROJECTS);
+        }
+        
         // Update CMS_GROUPS and add the system roles
 
         // Update CMS_RESOURCES tables

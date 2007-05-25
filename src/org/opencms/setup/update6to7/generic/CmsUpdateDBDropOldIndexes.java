@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/05/25 14:46:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/25 15:05:58 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.setup.update6to7.generic;
 
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -100,9 +101,6 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     /** Constant for the sql query to drop an index from a table.<p> */
     private static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
 
-    /** Constant for the sql query to drop the primary key.<p> */
-    private static final String QUERY_DROP_PRIMARY_KEY = "Q_DROP_PRIMARY_KEY";
-
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "cms_drop_all_indexes_queries.properties";
 
@@ -110,7 +108,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     private static final String QUERY_SHOW_INDEX = "Q_SHOW_INDEXES";
 
     /** Constant for the sql query replacement of the index.<p> */
-    private static final String REPLACEMENT_INDEX = "${index}";
+    private static final String REPLACEMENT_INDEX = "${dropindexes}";
 
     /** Constant for the sql query replacement of the tablename.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
@@ -149,31 +147,46 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
             if (dbCon.hasTableOrColumn(tablename, null)) {
                 try {
                     List indexes = getIndexes(dbCon, tablename);
-                    // Iterate over the indexes of one table
-                    for (Iterator indexIterator = indexes.iterator(); indexIterator.hasNext();) {
-                        String indexname = (String)indexIterator.next();
 
-                        System.out.println("dropping index " + indexname + "for table " + tablename);
+                    // Iterate over the indexes of one table
+                    StringBuffer buffer = new StringBuffer();
+                    for (Iterator indexIt = indexes.iterator(); indexIt.hasNext();) {
+                        String index = (String)indexIt.next();
+                        // Drop the primary key
+                        if (index.equalsIgnoreCase(PRIMARY_KEY)) {
+                            buffer.append("DROP PRIMARY KEY");
+                            if (indexIt.hasNext()) {
+                                buffer.append(",");
+                            }
+                        } else {
+                            // Drop the index
+                            buffer.append(" DROP INDEX ");
+                            buffer.append(index);
+                            if (indexIt.hasNext()) {
+                                buffer.append(",");
+                            }
+                        }
+                    }
+                    String tempIndex = readQuery(tablename);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tempIndex)) {
+                        buffer.append(", ");
+                        buffer.append(tempIndex);
+                    }
+
+                    // Only execute the query if there is something to change
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buffer.toString())) {
                         String dropIndexQuery = readQuery(QUERY_DROP_INDEX);
                         HashMap replacer = new HashMap();
                         replacer.put(REPLACEMENT_TABLENAME, tablename);
-                        replacer.put(REPLACEMENT_INDEX, indexname);
-                        // Drop the index
+                        replacer.put(REPLACEMENT_INDEX, buffer.toString());
+                        // Drop the indexes
                         try {
                             dbCon.updateSqlStatement(dropIndexQuery, replacer, null);
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                // Drop the primary key
-                String dropPrimaryKey = readQuery(QUERY_DROP_PRIMARY_KEY);
-                HashMap primaryKeyReplacer = new HashMap();
-                primaryKeyReplacer.put(REPLACEMENT_TABLENAME, tablename);
-                try {
-                    dbCon.updateSqlStatement(dropPrimaryKey, primaryKeyReplacer, null);
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -200,11 +213,9 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
         ResultSet set = dbCon.executeSqlStatement(tableIndex, replacer);
         while (set.next()) {
             String index = set.getString(FIELD_INDEX);
-            // Drop all indexes
-            if (!index.equals(PRIMARY_KEY)) {
-                if (!indexes.contains(index)) {
-                    indexes.add(index);
-                }
+
+            if (!indexes.contains(index)) {
+                indexes.add(index);
             }
 
         }

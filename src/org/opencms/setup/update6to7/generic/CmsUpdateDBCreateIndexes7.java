@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/25 15:05:58 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,13 @@ import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,6 +53,21 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "cms_add_new_indexes_queries.properties";
+
+    /** Constant for the replacement of the tablename in the sql query.<p> */
+    private static final String REPLACEMENT_TABLENAME = "${tablename}";
+    
+    /** Constant for the replacement of the indexes to drop.<p> */
+    private static final String REPLACEMENT_INDEXES = "${dropindexes}";
+
+    /** Constant for the sql query to read the indexes.<p> */
+    private static final String QUERY_SHOW_INDEX = "QUERY_SHOW_INDEX";
+
+    /** Constant for the field of the index name.<p> */
+    private static final String FIELD_INDEX = "KEY_NAME";
+    
+    /** Constant for the primary key.<p> */
+    private static final String PRIMARY_KEY = "PRIMARY";
 
     /**
      * Constructor.<p>
@@ -99,11 +118,61 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
         // iterate the queries
         for (Iterator it = elements.iterator(); it.hasNext();) {
             String query = (String)it.next();
-            try {
-                dbCon.updateSqlStatement(readQuery(query), null, null);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            // Check if the table exists
+            if (dbCon.hasTableOrColumn(query, null)) {
+                HashMap replacer = new HashMap();
+                replacer.put(REPLACEMENT_INDEXES, getIndexesToDrop(dbCon, query));
+                try {
+                    dbCon.updateSqlStatement(readQuery(query), replacer, null);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
     }
+
+    /**
+     * Returns the string of the indexes that shall be dropped before adding the final new indexes.<p>
+     * 
+     * @parm dbCon the connection to the database
+     * @param tablename the table to drop the indexes from
+     * 
+     * @return the string to drop the temporary indexes
+     */
+    private String getIndexesToDrop(CmsSetupDb dbCon, String tablename) {
+
+        List indexes = new ArrayList();
+        String tableIndex = readQuery(QUERY_SHOW_INDEX);
+        HashMap replacer = new HashMap();
+        replacer.put(REPLACEMENT_TABLENAME, tablename);
+        try {
+            ResultSet set = dbCon.executeSqlStatement(tableIndex, replacer);
+            while (set.next()) {
+                String index = set.getString(FIELD_INDEX);
+                    if (!indexes.contains(index)) {
+                        indexes.add(index);
+                    }
+
+            }
+            set.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        StringBuffer dropIndex = new StringBuffer();
+        for (Iterator it=indexes.iterator(); it.hasNext();) {
+            String index = (String)it.next();
+            if (index.equals(PRIMARY_KEY)) {
+                dropIndex.append("DROP PRIMARY KEY, ");
+            } else {
+                dropIndex.append("DROP INDEX ");
+                dropIndex.append(index);
+                dropIndex.append(", ");
+            }
+
+        }
+        return dropIndex.toString();
+    }
+
 }
