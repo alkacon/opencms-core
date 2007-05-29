@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/29 12:58:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,6 +109,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to insert a pair of values to the temp table.<p> */
     private static final String QUERY_INSERT_UUIDS = "Q_INSERT_UUIDS_TEMP_TABLE";
+
+    /** Constant for the sql query to repair lost project ids.<p> */
+    private static final String QUERY_UPDATE_NULL_PROJECTID = "Q_UPDATE_NULL_PROJECTID";
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "cms_projectid_queries.properties";
@@ -230,13 +233,19 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                         }
                     }
                 }
-
+                
                 /*
                  * In this phase the primary keys or indexes are dropped and the old columns containing the 
                  * old project ids are dropped. After that the temporary columns are renamed and the new
                  * indexes and primary keys are added.
                  */
                 if (isInResourcesList) {
+                    // fix lost project ids
+                    Map replacer = Collections.singletonMap("${tablename}", tablename);
+                    List params = Collections.singletonList(CmsUUID.getNullUUID().toString());
+                    String query = readQuery(QUERY_UPDATE_NULL_PROJECTID);
+                    dbCon.updateSqlStatement(query, replacer, params);
+                    
                     // Drop the column PROJECT_LASTMODIFIED
                     dropColumn(dbCon, tablename, COLUMN_PROJECT_LASTMODIFIED);
                     // rename the column TEMP_PROJECT_UUID to PROJECT_LASTMODIFIED

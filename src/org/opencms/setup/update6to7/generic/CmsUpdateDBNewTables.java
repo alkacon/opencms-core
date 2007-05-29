@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/29 12:58:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 /**
  * This class creates the new tables for the database version of OpenCms 7.<p>
@@ -83,7 +83,7 @@ public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
 
-        Set elements = new HashSet();
+        List elements = new ArrayList();
         elements.add("CMS_OFFLINE_RESOURCE_RELATIONS");
         elements.add("CMS_ONLINE_RESOURCE_RELATIONS");
         elements.add("CMS_PUBLISH_JOBS");

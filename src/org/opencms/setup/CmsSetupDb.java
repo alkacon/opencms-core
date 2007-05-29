@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/05/25 14:46:53 $
- * Version: $Revision: 1.25.4.5 $
+ * Date   : $Date: 2007/05/29 12:58:48 $
+ * Version: $Revision: 1.25.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.5 $ 
+ * @version $Revision: 1.25.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -517,9 +517,12 @@ public class CmsSetupDb extends Object {
             }
         }
 
-        System.out.println("executing query: " + queryToExecute);
-        if ((params != null) && !params.isEmpty()) {
-            System.out.println("params: " + params);
+        if (!queryToExecute.startsWith("UPDATE CMS_ONLINE_STRUCTURE SET STRUCTURE_VERSION")
+            && !queryToExecute.startsWith("UPDATE CMS_OFFLINE_STRUCTURE SET STRUCTURE_VERSION")) {
+            System.out.println("executing query: " + queryToExecute);
+            if ((params != null) && !params.isEmpty()) {
+                System.out.println("params: " + params);
+            }
         }
         result = stmt.executeUpdate();
 

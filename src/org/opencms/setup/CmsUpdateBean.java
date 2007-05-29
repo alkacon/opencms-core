@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/05/24 19:15:39 $
- * Version: $Revision: 1.6.4.13 $
+ * Date   : $Date: 2007/05/29 12:58:48 $
+ * Version: $Revision: 1.6.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.13 $ 
+ * @version $Revision: 1.6.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -696,9 +696,26 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
         String storedSite = m_cms.getRequestContext().getSiteRoot();
+        CmsProject project = null;
         try {
             report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+            
+            String projectName = "Update relations project";
+            try {
+                // try to read a (leftover) unlock project
+                project = m_cms.readProject(projectName);
+            } catch (CmsException e) {
+                // create a Project to unlock the resources
+                project = m_cms.createProject(
+                    projectName,
+                    projectName,
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
+            }
+
             m_cms.getRequestContext().setSiteRoot(""); // change to the root site
+            m_cms.getRequestContext().setCurrentProject(project);
             m_cms.lockResource("/"); // lock everything
 
             List resources = new ArrayList();
@@ -782,12 +799,18 @@ public class CmsUpdateBean extends CmsSetupBean {
             report.println(Messages.get().container(Messages.RPT_END_CREATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
         } finally {
             try {
-                m_cms.unlockResource("/"); // unlock everything
+                if (project != null) {
+                    try {
+                        m_cms.unlockResource("/"); // unlock everything
+                    } finally {
+                        m_cms.getRequestContext().setCurrentProject(m_cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                        report.println(
+                            Messages.get().container(Messages.RPT_END_UPDATE_RELATIONS_0),
+                            I_CmsReport.FORMAT_HEADLINE);
+                    }
+                }
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSite);
-                report.println(
-                    Messages.get().container(Messages.RPT_END_UPDATE_RELATIONS_0),
-                    I_CmsReport.FORMAT_HEADLINE);
             }
         }
     }
