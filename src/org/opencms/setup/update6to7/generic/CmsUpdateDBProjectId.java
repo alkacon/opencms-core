@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/29 12:58:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/29 14:52:12 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.setup.update6to7.generic;
 
 import org.opencms.file.CmsProject;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 import org.opencms.util.CmsUUID;
@@ -110,20 +111,27 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /** Constant for the sql query to insert a pair of values to the temp table.<p> */
     private static final String QUERY_INSERT_UUIDS = "Q_INSERT_UUIDS_TEMP_TABLE";
 
-    /** Constant for the sql query to repair lost project ids.<p> */
-    private static final String QUERY_UPDATE_NULL_PROJECTID = "Q_UPDATE_NULL_PROJECTID";
-
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "cms_projectid_queries.properties";
 
+    private static final String QUERY_READ_ADMIN_GROUP = "Q_READ_ADMIN_GROUP";
+
+    private static final String QUERY_READ_ADMIN_USER = "Q_READ_ADMIN_USER";
+
     /** Constant for the sql query to add a rename a column in the table.<p> */
     private static final String QUERY_RENAME_COLUMN = "Q_RENAME_COLUMN";
+
+    /** Constant for the sql query to count the hsitorical projects.<p> */
+    private static final String QUERY_SELECT_COUNT_HISTORY_TABLE = "Q_SELECT_COUNT_HISTORY_TABLE";
 
     /** Constant for the sql query to select the data from the CMS_BACKUP_PROJECTS table.<p> */
     private static final String QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS = "Q_SELECT_DATA_FROM_BACKUP_PROJECTS";
 
     /** Constant for the sql query to transfer the new uuids to the temporary column.<p> */
     private static final String QUERY_TRANSFER_UUID = "Q_TRANSFER_UUID";
+
+    /** Constant for the sql query to repair lost project ids.<p> */
+    private static final String QUERY_UPDATE_NULL_PROJECTID = "Q_UPDATE_NULL_PROJECTID";
 
     /** Constant for the replacement in the SQL query for the columnname.<p> */
     private static final String REPLACEMENT_COLUMN = "${column}";
@@ -233,7 +241,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                         }
                     }
                 }
-                
+
                 /*
                  * In this phase the primary keys or indexes are dropped and the old columns containing the 
                  * old project ids are dropped. After that the temporary columns are renamed and the new
@@ -245,7 +253,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                     List params = Collections.singletonList(CmsUUID.getNullUUID().toString());
                     String query = readQuery(QUERY_UPDATE_NULL_PROJECTID);
                     dbCon.updateSqlStatement(query, replacer, params);
-                    
+
                     // Drop the column PROJECT_LASTMODIFIED
                     dropColumn(dbCon, tablename, COLUMN_PROJECT_LASTMODIFIED);
                     // rename the column TEMP_PROJECT_UUID to PROJECT_LASTMODIFIED
@@ -268,6 +276,48 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             } else {
                 System.out.println("table " + tablename + " does not need to be updated");
             }
+        }
+
+        ResultSet set = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), null);
+        boolean update = false;
+        if (set.next()) {
+            if (set.getInt("COUNT") <= 0) {
+                update = true;
+            }
+        }
+        set.close();
+        if (update) {
+            System.out.println("table " + HISTORY_PROJECTS_TABLE + " has no content, create a dummy entry");
+
+            CmsUUID userId = CmsUUID.getNullUUID();
+            set = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_USER), null);
+            if (set.next()) {
+                userId = new CmsUUID(set.getString(1));
+            }
+            CmsUUID groupId = CmsUUID.getNullUUID();
+            set = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_GROUP), null);
+            if (set.next()) {
+                groupId = new CmsUUID(set.getString(1));
+            }
+
+            List params = new ArrayList();
+            params.add(new CmsUUID().toString());
+            params.add("updateWizardDummyProject");
+            params.add("dummy project just for having an entry");
+            params.add(new Integer(1));
+            params.add(userId);
+            params.add(groupId);
+            params.add(groupId);
+            params.add(new Long(System.currentTimeMillis()));
+            params.add(new Integer(1));
+            params.add(new Long(System.currentTimeMillis()));
+            params.add(userId);
+            params.add(CmsOrganizationalUnit.SEPARATOR);
+
+            String query = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
+            dbCon.updateSqlStatement(query, null, params);
+        } else {
+            System.out.println("table " + HISTORY_PROJECTS_TABLE + " has content");
         }
     }
 
@@ -560,10 +610,10 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
         ResultSet set = dbCon.executeSqlStatement(query, null);
 
-        List params = new ArrayList();
         String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
         while (set.next()) {
             // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
+            List params = new ArrayList();
             params.add(set.getString("PROJECT_UUID"));
             params.add(set.getString("PROJECT_NAME"));
             params.add(set.getString("PROJECT_DESCRIPTION"));
@@ -579,8 +629,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             params.add(set.getString("PROJECT_OU"));
 
             dbCon.updateSqlStatement(insertQuery, null, params);
-            // Clear the parameter list for the next loop
-            params.clear();
         }
     }
 }

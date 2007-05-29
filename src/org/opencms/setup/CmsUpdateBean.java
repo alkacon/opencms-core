@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/05/29 12:58:48 $
- * Version: $Revision: 1.6.4.14 $
+ * Date   : $Date: 2007/05/29 14:52:12 $
+ * Version: $Revision: 1.6.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.14 $ 
+ * @version $Revision: 1.6.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -699,7 +699,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         CmsProject project = null;
         try {
             report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
-            
+
             String projectName = "Update relations project";
             try {
                 // try to read a (leftover) unlock project
@@ -732,7 +732,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                             "/",
                             CmsResourceFilter.ALL.addRequireType(type.getTypeId()),
                             true);
-                        resources.add(typeResources);
+                        resources.addAll(typeResources);
                         report.print(Messages.get().container(
                             Messages.RPT_COMPATIBLE_1,
                             new Integer(typeResources.size())));

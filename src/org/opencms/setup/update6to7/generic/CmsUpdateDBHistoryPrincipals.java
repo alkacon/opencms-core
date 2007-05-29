@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/29 14:52:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
     private static final String QUERY_HISTORY_PRINCIPALS_RESOURCES = "Q_HISTORY_PRINCIPALS_RESOURCES";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "history_principals_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_history_principals_queries.properties";
 
     /** Constant for the sql query to select the count of history principals.<p> */
     private static final String QUERY_SELECT_COUNT_HISTORY_PRINCIPALS = "Q_SELECT_COUNT_HISTORY_PRINICPALS";

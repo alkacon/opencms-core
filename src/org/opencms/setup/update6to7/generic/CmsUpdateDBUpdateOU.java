@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBUpdateOU.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/29 14:52:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
     private static final String QUERY_KEY_ALTER_TABLE = "Q_ALTER_TABLE_ADD_OU_COLUMN";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "ou_query.properties";
+    private static final String QUERY_PROPERTY_FILE = "cms_ou_query.properties";
 
     /** Constant for the replacement in the SQL query for the columnname.<p> */
     private static final String REPLACEMENT_COLUMNNAME = "${columnname}";
