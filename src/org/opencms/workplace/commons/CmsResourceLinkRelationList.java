@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2007/05/11 13:40:44 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.1 
  */
@@ -231,10 +231,11 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             Map itemValues = item.getValues();
             CmsListItem newItem = getList().newItem(localizedRelationType + "_" + resource.getStructureId().toString());
 
-            Iterator itItemValuesKeys = itemValues.keySet().iterator();
+            Iterator itItemValuesKeys = itemValues.entrySet().iterator();
             while (itItemValuesKeys.hasNext()) {
-                String currentKey = (String)itItemValuesKeys.next();
-                newItem.set(currentKey, itemValues.get(currentKey));
+                Map.Entry e = (Map.Entry)itItemValuesKeys.next();
+                String currentKey = (String)e.getKey();
+                newItem.set(currentKey, e.getValue());
             }
             newItem.set(LIST_COLUMN_RELATION_TYPE, localizedRelationType);
             newItems.add(newItem);

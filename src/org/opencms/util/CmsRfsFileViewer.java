@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.17.4.6 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.17.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.17.4.6 $ 
+ * @version $Revision: 1.17.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 }
                 reader.close();
                 // if 11.75 windows are available, we don't want to end on window nr. 10 
-                int availWindows = (int)Math.ceil(lines / m_windowSize);
+                int availWindows = (int)Math.ceil((double)lines / (double)m_windowSize);
                 // we start with window 0
                 m_windowPos = availWindows - 1;
             } catch (IOException ioex) {

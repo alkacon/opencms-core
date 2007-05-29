@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.2
  */
@@ -86,7 +86,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * @author Raphael Schnuck
      *
-     * @version $Revision: 1.1.2.2 $
+     * @version $Revision: 1.1.2.3 $
      *
      * @since 6.9.2
      */
@@ -234,11 +234,11 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 } else if (PARAM_KEY_RESOURCE_TYPE.equals(key)) {
                     m_type = OpenCms.getResourceManager().getResourceType(value);
                 } else if (PARAM_KEY_SORT_ASC.equals(key)) {
-                    m_sortAsc = new Boolean(value).booleanValue();
+                    m_sortAsc = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_SORT_BY.equals(key)) {
                     m_sortBy = value;
                 } else if (PARAM_KEY_SUB_TREE.equals(key)) {
-                    m_subTree = new Boolean(value).booleanValue();
+                    m_subTree = Boolean.valueOf(value).booleanValue();
                 } else {
                     LOG.error("Unknow key found in collector parameters.");
                 }

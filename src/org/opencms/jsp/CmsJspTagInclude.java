@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2006/10/25 16:53:42 $
- * Version: $Revision: 1.36.4.1 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.36.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.1 $ 
+ * @version $Revision: 1.36.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -428,8 +428,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     if (prop != null) {
                         target = prop + getSuffix();
                     }
+                } catch (RuntimeException e) {
+                    // target must be null
+                    target = null;
                 } catch (Exception e) {
                     // target will be null
+                    e = null;
                 }
             } else if (m_attribute != null) {
                 // option 3: target is set in "attribute" parameter
@@ -438,8 +442,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     if (attr != null) {
                         target = attr + getSuffix();
                     }
+                } catch (RuntimeException e) {
+                    // target must be null
+                    target = null;
                 } catch (Exception e) {
                     // target will be null
+                    e = null;
                 }
             } else {
                 // option 4: target might be set in body

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2006/09/20 08:48:14 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.1.3
  */
@@ -72,14 +72,14 @@ public class CmsJspTagParse extends BodyTagSupport {
      */
     public static final String ATT_VISITOR_CLASS = "parserClass";
 
+    /** Tag name constant for log output. */
+    public static final String TAG_NAME = "parse";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagParse.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6541745426202242240L;
-
-    /** Tag name constant for log output. */
-    public static final String TAG_NAME = "parse";
 
     /** The visitor / parser classname to use. */
     private String m_configuredParserClassname;
@@ -174,7 +174,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     public String getNoAutoCloseTags() {
 
         StringBuffer result = new StringBuffer();
-        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
+        if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
             Iterator it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');
@@ -291,9 +291,9 @@ public class CmsJspTagParse extends BodyTagSupport {
      *      tag should not correct missing closing tags.
      */
     public void setNoAutoCloseTags(String noAutoCloseTagList) {
-    
+
         m_noAutoCloseTags = CmsStringUtil.splitAsList(noAutoCloseTagList, ',');
-        
+
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.6
  */
@@ -3592,10 +3592,11 @@ public class CmsWebdavServlet extends HttpServlet {
         Document doc = DocumentHelper.createDocument();
         Element multiStatusElem = doc.addElement(new QName(TAG_MULTISTATUS, Namespace.get(DEFAULT_NAMESPACE)));
 
-        Iterator iter = errors.keySet().iterator();
-        while (iter.hasNext()) {
-            String errorPath = (String)iter.next();
-            int errorCode = ((Integer)errors.get(errorPath)).intValue();
+        Iterator it = errors.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry e = (Map.Entry)it.next();
+            String errorPath = (String)e.getKey();
+            int errorCode = ((Integer)e.getValue()).intValue();
 
             Element responseElem = addElement(multiStatusElem, TAG_RESPONSE);
 

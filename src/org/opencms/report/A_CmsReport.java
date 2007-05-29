@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2007/03/16 10:48:19 $
- * Version: $Revision: 1.21.4.3 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.21.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * @author Jan Baudisch 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.21.4.3 $ 
+ * @version $Revision: 1.21.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,7 +230,7 @@ public abstract class A_CmsReport implements I_CmsReport {
         }
 
         String siteRoot = CmsRequestContext.getAdjustedSiteRoot(m_siteRoot, resourcename);
-        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
+        if ((siteRoot.equals(m_siteRoot)) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;

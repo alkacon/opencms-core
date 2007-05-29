@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.test.OpenCmsTestCase;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -44,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.4.1 $
  * 
  * @since 6.0.0
  */
@@ -90,11 +91,13 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         System.out.println("Checking properties from " + outputFile);
         ExtendedProperties newProperties = bean.loadProperties(outputFile);
 
-        for (Iterator i = oldProperties.keySet().iterator(); i.hasNext();) {
-            String key = (String)i.next();
-            String oldValue = "", newValue = "";
-            Object obj = oldProperties.get(key);
+        Iterator it = oldProperties.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry e = (Map.Entry)it.next();            
+            String key = (String)e.getKey();
+            Object obj = e.getValue();
 
+            String oldValue = "", newValue = "";
             if (obj instanceof Vector) {
                 StringBuffer buf;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.7.8.1 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.7.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.8.1 $ 
+ * @version $Revision: 1.7.8.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,8 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
                 m_documentSummary = (DocumentSummaryInformation)PropertySetFactory.create(event.getStream());
                 return;
             }
+        } catch (RuntimeException e) {
+            // ignore            
         } catch (Exception e) {
             // ignore
         }

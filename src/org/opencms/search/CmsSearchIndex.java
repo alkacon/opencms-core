@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2007/02/28 15:47:38 $
- * Version: $Revision: 1.60.4.7 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.60.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
@@ -79,7 +80,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.7 $ 
+ * @version $Revision: 1.60.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -862,9 +863,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             timeResultProcessing += System.currentTimeMillis();
-
-        } catch (Exception exc) {
-            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), exc);
+        } catch (RuntimeException e) {    
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
+        } catch (Exception e) {
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
         } finally {
 
             // re-set thread to previous priority
@@ -1050,10 +1052,17 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // permission check needs only to be performed for VFS documents that contain both fields
             return true;
         }
+        
+        String type = typeField.stringValue();
+        if (!A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX.equals(type)
+            && !OpenCms.getResourceManager().hasResourceType(type)) {
+            // this is not a known VFS resource type (also not the generic "VFS" type of OpenCms before 7.0)
+            return true;
+        }
 
-        String rootPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
-
-        // check if the resource "exits", this will implicitly check read permission and if the resource was deleted
-        return cms.existsResource(rootPath);
+        // check if the resource exits in the VFS, 
+        // this will implicitly check read permission and if the resource was deleted
+        String contextPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
+        return cms.existsResource(contextPath);
     }
 }

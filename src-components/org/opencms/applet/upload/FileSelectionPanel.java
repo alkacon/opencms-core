@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileSelectionPanel.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.swing.JScrollPane;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  */
 public class FileSelectionPanel extends JPanel {
 
@@ -71,9 +71,9 @@ public class FileSelectionPanel extends JPanel {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.2 $
+     * @version $Revision: 1.1.2.3 $
      */
-    class FileSelectionPane extends JPanel {
+    static class FileSelectionPane extends JPanel {
 
         /** Generated <code>serialVersionUID</code>. */
         private static final long serialVersionUID = -3040601958000155698L;
@@ -120,9 +120,9 @@ public class FileSelectionPanel extends JPanel {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.2 $
+     * @version $Revision: 1.1.2.3 $
      */
-    class Row extends JPanel {
+    static class Row extends JPanel {
 
         /** Generated <code>serialVersionUID</code>. */
         private static final long serialVersionUID = -1002437588400330504L;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/09/14 11:22:46 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -116,7 +116,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private boolean m_partialTag;
 
     /** The given image scaler parameters. */
-    private CmsImageScaler m_scaler;
+    private transient CmsImageScaler m_scaler;
 
     /** The image source. */
     private String m_src;
@@ -171,12 +171,12 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         // append the image source              
         result.append(" src=\"");
-        
+
         String imageLink = cms.getSitePath(imageRes);
         if (scaler.isValid()) {
             // now append the scaler parameters
             imageLink += scaler.toRequestParam();
-        }        
+        }
         result.append(OpenCms.getLinkManager().substituteLink(cms, imageLink));
         result.append("\"");
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/23 13:33:13 $
- * Version: $Revision: 1.146.4.47 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.146.4.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.47 $
+ * @version $Revision: 1.146.4.48 $
  * 
  * @since 6.0.0 
  */
@@ -1219,7 +1219,9 @@ public final class CmsObject {
      *
      * @return int the new version id
      * 
-     * @deprecated notice don´t use this method anymore.
+     * @throws CmsException if operation was not successful
+     * 
+     * @deprecated this concept has been abandoned for OpenCms version 7
      */
     public int getBackupTagId() throws CmsException {
 
@@ -2127,7 +2129,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated use {@link #lockResource()} methods instead
+     * @deprecated use {@link #lockResource(String)} or {@link #lockResourceTemporary(String)} instead
      */
     public void lockResource(String resourcename, int mode) throws CmsException {
 

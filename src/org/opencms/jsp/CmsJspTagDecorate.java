@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2006/09/20 08:47:59 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -171,7 +171,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     public String getNoAutoCloseTags() {
 
         StringBuffer result = new StringBuffer();
-        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
+        if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
             Iterator it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');

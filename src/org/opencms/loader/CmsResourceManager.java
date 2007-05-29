@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/05/14 12:23:16 $
- * Version: $Revision: 1.36.4.8 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.36.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.8 $ 
+ * @version $Revision: 1.36.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -633,7 +633,7 @@ public class CmsResourceManager {
     public I_CmsResourceType getResourceType(int typeId) throws CmsLoaderException {
 
         I_CmsResourceType result = null;
-        if (typeId < m_configuration.m_resourceTypes.length) {
+        if ((typeId >= 0) && (typeId < m_configuration.m_resourceTypes.length)) {
             result = m_configuration.m_resourceTypes[typeId];
         }
         if (result == null) {
@@ -697,6 +697,37 @@ public class CmsResourceManager {
 
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
         return new CmsTemplateLoaderFacade(getLoader(template), resource, template);
+    }
+
+    /**
+     * Checks if an initialized resource type instance for the given resource type is is available.<p>
+     * 
+     * @param typeId the id of the resource type to check
+     * @return <code>true</code> if such a resource type has been configured, <code>false</code> otherwise
+     * 
+     * @see #getResourceType(int)
+     */
+    public boolean hasResourceType(int typeId) {
+
+        I_CmsResourceType result = null;
+        if ((typeId >= 0) && (typeId < m_configuration.m_resourceTypes.length)) {
+            result = m_configuration.m_resourceTypes[typeId];
+        }
+        return result != null;
+    }
+
+    /**
+     * Checks if an initialized resource type instance for the given resource type name is available.<p>
+     * 
+     * @param typeName the name of the resource type to check
+     * @return <code>true</code> if such a resource type has been configured, <code>false</code> otherwise
+     * 
+     * @see #getResourceType(String)
+     */
+    public boolean hasResourceType(String typeName) {
+
+        I_CmsResourceType result = (I_CmsResourceType)m_configuration.getResourceTypeMap().get(typeName);
+        return result != null;
     }
 
     /**

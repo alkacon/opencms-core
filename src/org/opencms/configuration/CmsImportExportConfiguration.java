@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/03/12 16:37:56 $
- * Version: $Revision: 1.25.4.6 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.25.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.4.6 $
+ * @version $Revision: 1.25.4.7 $
  * 
  * @since 6.0.0
  */
@@ -849,10 +849,11 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                     if ((config != null) && (config.size() > 0)) {
                         Element paramsElement = repositoryElement.addElement(N_PARAMS);
 
-                        Iterator it = config.keySet().iterator();
+                        Iterator it = config.entrySet().iterator();
                         while (it.hasNext()) {
-                            String key = (String)it.next();
-                            String[] value = (String[])config.get(key);
+                            Map.Entry e = (Map.Entry)it.next();
+                            String key = (String)e.getKey();
+                            String[] value = (String[])e.getValue();
 
                             // <param> nodes
                             for (int j = 0; j < value.length; j++) {

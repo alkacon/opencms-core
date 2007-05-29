@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2006/11/28 16:20:44 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2007/05/29 10:53:53 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.4.2 $ 
+ * @version $Revision: 1.8.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,8 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
                         // noop                                           
                 }
             }
+        } catch (RuntimeException e) {
+            // ignore
         } catch (Exception e) {
             // ignore
         }
