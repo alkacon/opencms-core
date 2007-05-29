@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/05/29 13:56:50 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsUser;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.buffer.BoundedFifoBuffer;
+import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 
 /**
  * Stores information about a user that has authenticated himself the OpenCms security system.<p>
@@ -52,7 +52,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public class CmsSessionInfo implements Comparable {
         m_maxInactiveInterval = maxInactiveInterval;
         m_user = context.currentUser();
         update(context);
-        m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(QUEUE_SIZE));
+        m_broadcastQueue = BufferUtils.synchronizedBuffer(new UnboundedFifoBuffer(QUEUE_SIZE));
     }
 
     /**
