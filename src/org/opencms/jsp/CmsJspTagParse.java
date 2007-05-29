@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2006/09/19 14:29:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/05/29 10:11:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.3
  */
@@ -174,7 +174,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     public String getNoAutoCloseTags() {
 
         StringBuffer result = new StringBuffer();
-        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
+        if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
             Iterator it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');
