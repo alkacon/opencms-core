@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2006/11/29 15:04:13 $
- * Version: $Revision: 1.9.4.2 $
+ * Date   : $Date: 2007/05/30 13:57:29 $
+ * Version: $Revision: 1.9.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.9.4.2 $ 
+ * @version $Revision: 1.9.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LINK_VALIDATION_0 = "ERR_LINK_VALIDATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_VALUE_EMPTY_0 = "ERR_VALUE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XMLCONTENT_VFSFOLDER_1 = "ERR_XMLCONTENT_VFSFOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DB_IMPORT_THREAD_NAME_1 = "GUI_DB_IMPORT_THREAD_NAME_1";
@@ -80,6 +86,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SYNCHRONIZE_THREAD_NAME_1 = "GUI_SYNCHRONIZE_THREAD_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_XMLCONTENTREPAIR_THREAD_NAME_0 = "GUI_XMLCONTENTREPAIR_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DELETE_THREAD_CONSTRUCTED_0 = "LOG_DELETE_THREAD_CONSTRUCTED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -107,19 +116,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_REPLACE_THREAD_START_IMPORT_0 = "LOG_REPLACE_THREAD_START_IMPORT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_PROCESSING_XMLCONTENT_0 = "RPT_PROCESSING_XMLCONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_RELATIONS_DELETION_BEGIN_0 = "RPT_RELATIONS_DELETION_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_RELATIONS_DELETION_BREAK_0 = "RPT_RELATIONS_DELETION_BREAK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_RELATIONS_DELETION_VALIDATION_1 = "RPT_RELATIONS_DELETION_VALIDATION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0 = "RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_RELATIONS_DELETION_VALIDATION_END_0 = "RPT_RELATIONS_DELETION_VALIDATION_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_RELATIONS_DELETION_END_0 = "RPT_RELATIONS_DELETION_END_0";
@@ -146,6 +149,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_RELATIONS_DELETION_REFERENCING_1 = "RPT_RELATIONS_DELETION_REFERENCING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_1 = "RPT_RELATIONS_DELETION_VALIDATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0 = "RPT_RELATIONS_DELETION_VALIDATION_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RELATIONS_DELETION_VALIDATION_END_0 = "RPT_RELATIONS_DELETION_VALIDATION_END_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SYNCHRONIZE_BEGIN_0 = "RPT_SYNCHRONIZE_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
@@ -162,6 +174,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TEST_REPORT_OUTPUT_0 = "RPT_TEST_REPORT_OUTPUT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_XMLCONTENTREPAIR_BEGIN_2 = "RPT_XMLCONTENTREPAIR_BEGIN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_XMLCONTENTREPAIR_END_0 = "RPT_XMLCONTENTREPAIR_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_XMLCONTENTREPAIR_NOTLOCKED_0 = "RPT_XMLCONTENTREPAIR_NOTLOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_XMLCONTENTREPAIR_REPAIRED_0 = "RPT_XMLCONTENTREPAIR_REPAIRED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_XMLCONTENTREPAIR_SKIPFILE_0 = "RPT_XMLCONTENTREPAIR_SKIPFILE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.threads.messages";

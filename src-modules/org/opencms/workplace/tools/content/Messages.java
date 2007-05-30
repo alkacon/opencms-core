@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2006/04/13 13:21:00 $
- * Version: $Revision: 1.14.4.2 $
+ * Date   : $Date: 2007/05/30 13:57:29 $
+ * Version: $Revision: 1.14.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.14.4.2 $
+ * @version $Revision: 1.14.4.3 $
  * 
  * @since 6.0.0
  */
@@ -136,7 +136,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-
     public static final String GUI_EDITPROPERTYINFO_0 = "GUI_EDITPROPERTYINFO_0";
 
     /** Message constant for key in the resource bundle. */
@@ -165,9 +164,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_WIDGETVALUE_EMPTY_0 = "GUI_ERR_WIDGETVALUE_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ERR_XMLCONTENT_VFSFOLDER_1 = "GUI_ERR_XMLCONTENT_VFSFOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LOCKEDBY_0 = "GUI_EXPLORER_LOCKEDBY_0";
@@ -347,9 +343,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_XMLCONTENTREPAIR_DIALOG_RESTYPE_SELECT_0 = "GUI_XMLCONTENTREPAIR_DIALOG_RESTYPE_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_XMLCONTENTREPAIR_THREAD_NAME_0 = "GUI_XMLCONTENTREPAIR_THREAD_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_TAGREPLACE_ELEMENT_2 = "LOG_DEBUG_TAGREPLACE_ELEMENT_2";
 
     /** Message constant for key in the resource bundle. */
@@ -506,9 +499,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_PROCESSING_PAGE_0 = "RPT_PROCESSING_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_PROCESSING_XMLCONTENT_0 = "RPT_PROCESSING_XMLCONTENT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_READ_CONTENT_2 = "RPT_READ_CONTENT_2";
 
     /** Message constant for key in the resource bundle. */
@@ -564,21 +554,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_WRITE_CONTENT_1 = "RPT_WRITE_CONTENT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_XMLCONTENTREPAIR_BEGIN_2 = "RPT_XMLCONTENTREPAIR_BEGIN_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_XMLCONTENTREPAIR_END_0 = "RPT_XMLCONTENTREPAIR_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_XMLCONTENTREPAIR_NOTLOCKED_0 = "RPT_XMLCONTENTREPAIR_NOTLOCKED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_XMLCONTENTREPAIR_REPAIRED_0 = "RPT_XMLCONTENTREPAIR_REPAIRED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_XMLCONTENTREPAIR_SKIPFILE_0 = "RPT_XMLCONTENTREPAIR_SKIPFILE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.messages";

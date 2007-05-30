@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/05/29 14:52:12 $
- * Version: $Revision: 1.6.4.15 $
+ * Date   : $Date: 2007/05/30 13:57:29 $
+ * Version: $Revision: 1.6.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,9 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockFilter;
@@ -48,13 +46,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
 import org.opencms.module.CmsModuleXmlHandler;
-import org.opencms.relations.CmsLink;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.setup.update6to7.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
+import org.opencms.workplace.threads.CmsXmlContentRepairThread;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.15 $ 
+ * @version $Revision: 1.6.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -698,8 +697,6 @@ public class CmsUpdateBean extends CmsSetupBean {
         String storedSite = m_cms.getRequestContext().getSiteRoot();
         CmsProject project = null;
         try {
-            report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
-
             String projectName = "Update relations project";
             try {
                 // try to read a (leftover) unlock project
@@ -716,30 +713,23 @@ public class CmsUpdateBean extends CmsSetupBean {
 
             m_cms.getRequestContext().setSiteRoot(""); // change to the root site
             m_cms.getRequestContext().setCurrentProject(project);
-            m_cms.lockResource("/"); // lock everything
 
-            List resources = new ArrayList();
-
-            report.println(Messages.get().container(Messages.RPT_START_READ_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
             Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
-                report.print(Messages.get().container(Messages.RPT_READ_RESOURCES_1, type.getTypeName()));
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 if (type instanceof I_CmsLinkParseable) {
                     try {
-                        List typeResources = m_cms.readResources(
-                            "/",
-                            CmsResourceFilter.ALL.addRequireType(type.getTypeId()),
-                            true);
-                        resources.addAll(typeResources);
-                        report.print(Messages.get().container(
-                            Messages.RPT_COMPATIBLE_1,
-                            new Integer(typeResources.size())));
-                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                        report.println(
-                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                            I_CmsReport.FORMAT_OK);
+                        CmsXmlContentRepairSettings settings = new CmsXmlContentRepairSettings(m_cms);
+                        settings.setIncludeSubFolders(true);
+                        settings.setVfsFolder("/");
+                        settings.setResourceType(type.getTypeName());
+
+                        CmsXmlContentRepairThread t = new CmsXmlContentRepairThread(m_cms, settings);
+                        t.start();
+
+                        synchronized (this) {
+                            t.join();
+                        }
                     } catch (Exception e) {
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
@@ -752,51 +742,6 @@ public class CmsUpdateBean extends CmsSetupBean {
                         org.opencms.report.Messages.RPT_SKIPPED_0));
                 }
             }
-            report.println(Messages.get().container(Messages.RPT_END_READ_RESOURCES_0), I_CmsReport.FORMAT_HEADLINE);
-
-            report.println(Messages.get().container(Messages.RPT_START_CREATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
-            Iterator itResources = resources.iterator();
-            while (itResources.hasNext()) {
-                CmsResource resource = (CmsResource)itResources.next();
-
-                report.print(Messages.get().container(Messages.RPT_WRITE_RELATIONS_1, m_cms.getSitePath(resource)));
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                if (type instanceof I_CmsLinkParseable) {
-                    I_CmsLinkParseable lp = (I_CmsLinkParseable)type;
-                    try {
-                        CmsFile file = CmsFile.upgrade(resource, m_cms);
-                        List links = lp.parseLinks(m_cms, file);
-                        if (links.isEmpty()) {
-                            report.println(org.opencms.report.Messages.get().container(
-                                org.opencms.report.Messages.RPT_SKIPPED_0));
-                        } else {
-                            report.print(Messages.get().container(Messages.RPT_LINKS_1, new Integer(links.size())));
-                            report.print(org.opencms.report.Messages.get().container(
-                                org.opencms.report.Messages.RPT_DOTS_0));
-
-                            Iterator itLinks = links.iterator();
-                            while (itLinks.hasNext()) {
-                                CmsLink link = (CmsLink)itLinks.next();
-                                m_cms.addRelationToResource(
-                                    m_cms.getSitePath(resource),
-                                    link.getStructureId(),
-                                    link.getTarget(),
-                                    link.getType().getName());
-                            }
-                            report.println(org.opencms.report.Messages.get().container(
-                                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
-                        }
-                    } catch (Exception e) {
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
-                        report.addError(e);
-                        // log the error
-                        e.printStackTrace(System.err);
-                    }
-                }
-            }
-            report.println(Messages.get().container(Messages.RPT_END_CREATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
         } finally {
             try {
                 if (project != null) {
@@ -804,9 +749,6 @@ public class CmsUpdateBean extends CmsSetupBean {
                         m_cms.unlockResource("/"); // unlock everything
                     } finally {
                         m_cms.getRequestContext().setCurrentProject(m_cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                        report.println(
-                            Messages.get().container(Messages.RPT_END_UPDATE_RELATIONS_0),
-                            I_CmsReport.FORMAT_HEADLINE);
                     }
                 }
             } finally {

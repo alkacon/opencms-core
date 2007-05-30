@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Attic/CmsXmlContentRepairSettings.java,v $
- * Date   : $Date: 2006/04/11 10:12:17 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairSettings.java,v $
+ * Date   : $Date: 2007/05/30 13:57:29 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.content;
+package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
@@ -46,7 +46,6 @@ import org.opencms.util.CmsStringUtil;
  * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.2.0
- * 
  */
 public final class CmsXmlContentRepairSettings {
 
@@ -120,7 +119,7 @@ public final class CmsXmlContentRepairSettings {
     public void setResourceType(String resourceType) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourceType)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.GUI_ERR_WIDGETVALUE_EMPTY_0));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_VALUE_EMPTY_0));
         }
         m_resourceType = resourceType;
     }
@@ -135,16 +134,15 @@ public final class CmsXmlContentRepairSettings {
     public void setVfsFolder(String vfsFolder) throws CmsIllegalArgumentException {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(vfsFolder)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.GUI_ERR_WIDGETVALUE_EMPTY_0));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_VALUE_EMPTY_0));
         }
         // test if it is a valid path
         if (!m_cms.existsResource(vfsFolder, CmsResourceFilter.ALL.addRequireFolder())) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_ERR_XMLCONTENT_VFSFOLDER_1,
+                Messages.ERR_XMLCONTENT_VFSFOLDER_1,
                 vfsFolder));
         }
         m_vfsFolder = vfsFolder;
-
     }
 
     /**
@@ -163,5 +161,4 @@ public final class CmsXmlContentRepairSettings {
         }
         return -1;
     }
-
 }
