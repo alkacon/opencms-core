@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.3.4.4 $
+ * Date   : $Date: 2007/05/30 15:34:49 $
+ * Version: $Revision: 1.3.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3.4.4 $ 
+ * @version $Revision: 1.3.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,9 +235,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             public String buttonHtml(CmsWorkplace wp) {
 
                 try {
-                    return getViewVersionButtonHtml(
-                        getCms().readResource(new CmsUUID(getParamId1())).getRootPath(),
-                        getParamVersion1());
+                    return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
+                        wp.getCms().readResource(new CmsUUID(((CmsAttributeComparisonList)wp).getParamId1())).getRootPath(),
+                        ((CmsAttributeComparisonList)wp).getParamVersion1());
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);
                 }
@@ -253,9 +253,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             public String buttonHtml(CmsWorkplace wp) {
 
                 try {
-                    return getViewVersionButtonHtml(
-                        getCms().readResource(new CmsUUID(getParamId2())).getRootPath(),
-                        getParamVersion2());
+                    return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
+                        wp.getCms().readResource(new CmsUUID(((CmsAttributeComparisonList)wp).getParamId2())).getRootPath(),
+                        ((CmsAttributeComparisonList)wp).getParamVersion2());
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/30 15:34:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.1
  */
@@ -91,7 +91,7 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
      */
     public static boolean isHistoryRequest(ServletRequest req) {
 
-        return null != req.getAttribute(ATTRIBUTE_NAME);
+        return (null != req.getAttribute(ATTRIBUTE_NAME));
     }
 
     /**

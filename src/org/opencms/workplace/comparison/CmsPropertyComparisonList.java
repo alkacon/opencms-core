@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.5.4.5 $
+ * Date   : $Date: 2007/05/30 15:34:49 $
+ * Version: $Revision: 1.5.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5.4.5 $ 
+ * @version $Revision: 1.5.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,12 +117,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
 
-    /** The first resource to compare. */
-    private CmsResource m_resource1;
-
-    /** The second resource to compare. */
-    private CmsResource m_resource2;
-
     /** Parameter value for the structure id of the first file. */
     private String m_paramId1;
 
@@ -134,6 +128,12 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
+
+    /** The first resource to compare. */
+    private CmsResource m_resource1;
+
+    /** The second resource to compare. */
+    private CmsResource m_resource2;
 
     /** The type of the files. */
     private int m_resourceType;
@@ -162,6 +162,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
+     * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -178,7 +179,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         String searchableColId) {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
-
     }
 
     /**
@@ -224,26 +224,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the resource 1.<p>
-     *
-     * @return the resource 1
-     */
-    public CmsResource getResource1() {
-
-        return m_resource1;
-    }
-
-    /**
-     * Returns the resource 2.<p>
-     *
-     * @return the resource 2
-     */
-    public CmsResource getResource2() {
-
-        return m_resource2;
-    }
-
-    /**
      * Returns the paramId1.<p>
      *
      * @return the paramId1
@@ -281,6 +261,26 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     public String getParamVersion2() {
 
         return m_paramVersion2;
+    }
+
+    /**
+     * Returns the resource 1.<p>
+     *
+     * @return the resource 1
+     */
+    public CmsResource getResource1() {
+
+        return m_resource1;
+    }
+
+    /**
+     * Returns the resource 2.<p>
+     *
+     * @return the resource 2
+     */
+    public CmsResource getResource2() {
+
+        return m_resource2;
     }
 
     /**
@@ -385,8 +385,14 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         super.initWorkplaceRequestValues(settings, request);
         try {
-            m_resource1 = CmsResourceComparisonDialog.readResource(getCms(), new CmsUUID(getParamId1()), getParamVersion1());
-            m_resource2 = CmsResourceComparisonDialog.readResource(getCms(), new CmsUUID(getParamId2()), getParamVersion2());
+            m_resource1 = CmsResourceComparisonDialog.readResource(
+                getCms(),
+                new CmsUUID(getParamId1()),
+                getParamVersion1());
+            m_resource2 = CmsResourceComparisonDialog.readResource(
+                getCms(),
+                new CmsUUID(getParamId2()),
+                getParamVersion2());
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

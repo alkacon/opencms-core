@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.5.4.16 $
+ * Date   : $Date: 2007/05/30 15:34:49 $
+ * Version: $Revision: 1.5.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.16 $ 
+ * @version $Revision: 1.5.4.17 $ 
  * 
  * @since 6.0.2 
  */
@@ -382,7 +382,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             // user           
             item.set(LIST_COLUMN_USER, getCms().readUser(histRes.getUserLastModified()).getName());
             // path           
-            item.set(LIST_COLUMN_RESOURCE_PATH, histRes.getRootPath());
+            item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getRequestContext().removeSiteRoot(histRes.getRootPath()));
             // size 
             item.set(LIST_COLUMN_SIZE, new Integer(histRes.getLength()).toString());
             // invisible publish tag (for reading history project in fillDetails)
@@ -392,16 +392,15 @@ public class CmsHistoryList extends A_CmsListDialog {
 
             result.add(item);
 
-            if (!i.hasNext()) {
-                // hide the size for folders
-                getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(histRes.isFile());
-                // hide the preview button for folders
-                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_VIEW).setEnabled(
-                    false);
-            }
         }
 
         CmsResource offlineResource = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+        
+        // hide the size for folders
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(offlineResource.isFile());
+        // hide the preview button for folders
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_ICON).setVisible(offlineResource.isFile());
+
         // display offline version, if state is not unchanged
         if (!offlineResource.getState().isUnchanged()) {
             CmsListItem item = getList().newItem("" + offlineResource.getVersion());
@@ -418,11 +417,11 @@ public class CmsHistoryList extends A_CmsListDialog {
             // size 
             item.set(LIST_COLUMN_SIZE, new Integer(offlineResource.getLength()).toString());
             // path
-            item.set(LIST_COLUMN_RESOURCE_PATH, offlineResource.getRootPath());
-            result.add(item);
+            item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(offlineResource));
             // invisible structure id           
             item.set(LIST_COLUMN_STRUCTURE_ID, offlineResource.getStructureId().toString());
 
+            result.add(item);
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL1).setVisible(result.size() > 1);
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL2).setVisible(result.size() > 1);
@@ -487,6 +486,9 @@ public class CmsHistoryList extends A_CmsListDialog {
             LIST_COLUMN_FILE_TYPE,
             getCms()) {
 
+            /**
+             * @see org.opencms.workplace.list.CmsListResourceIconAction#defButtonHtml(org.opencms.jsp.CmsJspActionElement, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
+             */
             public String defButtonHtml(
                 CmsJspActionElement jsp,
                 String id,
@@ -502,8 +504,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
                 CmsVersionWrapper version = (CmsVersionWrapper)getItem().get(LIST_COLUMN_VERSION);
-                String resourcePath = jsp.getRequestContext().removeSiteRoot(
-                    getItem().get(LIST_COLUMN_RESOURCE_PATH).toString());
+                String resourcePath = getItem().get(LIST_COLUMN_RESOURCE_PATH).toString();
 
                 // is the resource already a sibling already deleted?
                 boolean allowPreview = getCms().existsResource(resourcePath);
