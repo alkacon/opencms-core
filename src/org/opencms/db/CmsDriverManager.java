@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.570.2.90 $
+ * Date   : $Date: 2007/05/30 11:52:03 $
+ * Version: $Revision: 1.570.2.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5169,7 +5169,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             } catch (CmsException e) {
                 // ignore all other exceptions and continue the lookup process
-                LOG.error(e.getLocalizedMessage(), e);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
             }
             if (resource.isFolder()) {
                 String folderName = CmsResource.getFolderPath(resource.getRootPath());
@@ -5184,7 +5186,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         break;
                     } catch (CmsException e) {
                         // ignore all other exceptions and continue the lookup process
-                        LOG.error(e.getLocalizedMessage(), e);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(e.getLocalizedMessage(), e);
+                        }
                     }
                 }
             }
