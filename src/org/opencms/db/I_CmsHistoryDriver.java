@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.9.1
  */
@@ -228,16 +228,16 @@ public interface I_CmsHistoryDriver {
     int readLastVersion(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
 
     /**
-     * Reads the maximal publish tag for a specified resource.<p>
+     * Reads the maximal publish tag for a specified resource id.<p>
      * 
      * @param dbc the current database context
-     * @param resource the resource the get the publish tag for
+     * @param resourceId the id of the resource the get the publish tag for
      * 
      * @return the maximal publish tag for the given resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    int readMaxPublishTag(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException;
+    int readMaxPublishTag(CmsDbContext dbc, CmsUUID resourceId) throws CmsDataAccessException;
 
     /**
      * Returns the next available history publish tag.<p>

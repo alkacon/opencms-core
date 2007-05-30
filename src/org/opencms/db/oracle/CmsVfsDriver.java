@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:06 $
- * Version: $Revision: 1.36.8.9 $
+ * Date   : $Date: 2007/05/30 13:59:12 $
+ * Version: $Revision: 1.36.8.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.9 $
+ * @version $Revision: 1.36.8.10 $
  * 
  * @since 6.0.0 
  */
@@ -93,14 +93,15 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.generic.CmsVfsDriver#createOnlineContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[], int, boolean)
+     * @see org.opencms.db.generic.CmsVfsDriver#createOnlineContent(CmsDbContext, CmsUUID, byte[], int, boolean, boolean)
      */
     public void createOnlineContent(
         CmsDbContext dbc,
         CmsUUID resourceId,
         byte[] contents,
         int publishTag,
-        boolean keepOnline) throws CmsDataAccessException {
+        boolean keepOnline,
+        boolean needToUpdateContent) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -108,20 +109,38 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
 
-            // put the online content in the history
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
-            stmt.setString(1, resourceId.toString());
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+            if (needToUpdateContent) {
+                // put the online content in the history
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                stmt.setString(1, resourceId.toString());
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
 
-            // create new empty online content entry
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_ONLINE_CONTENTS_WRITE");
+                // create new empty online content entry
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_ONLINE_CONTENTS_WRITE");
 
-            stmt.setString(1, resourceId.toString());
-            stmt.setInt(2, publishTag);
-            stmt.setInt(3, publishTag);
-            stmt.setInt(4, keepOnline ? 1 : 0);
-            stmt.executeUpdate();
+                stmt.setString(1, resourceId.toString());
+                stmt.setInt(2, publishTag);
+                stmt.setInt(3, publishTag);
+                stmt.setInt(4, keepOnline ? 1 : 0);
+                stmt.executeUpdate();
+
+                // now update the file content
+                internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);
+            } else {
+                int lastPublishTag = m_driverManager.getHistoryDriver().readMaxPublishTag(dbc, resourceId);
+                // if no new content entry has been written to db
+                if (lastPublishTag != publishTag) {
+                    // update old content entry                        
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
+                    stmt.setInt(1, publishTag);
+                    stmt.setString(2, resourceId.toString());
+                    stmt.setInt(3, lastPublishTag);
+
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
+            }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -129,8 +148,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, null, stmt, null);
         }
-        // now update the file content
-        internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);
     }
 
     /**

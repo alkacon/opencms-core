@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.9.1
  */
@@ -674,9 +674,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsHistoryDriver#readMaxPublishTag(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsHistoryDriver#readMaxPublishTag(CmsDbContext, CmsUUID)
      */
-    public int readMaxPublishTag(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+    public int readMaxPublishTag(CmsDbContext dbc, CmsUUID resourceId) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -686,7 +686,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_PUBLISH_TAG");
-            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
 
             if (res.next()) {
@@ -1258,19 +1258,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                             resource.getResourceId(),
                             ((CmsFile)resource).getContents(),
                             publishTag,
-                            false);
-                    }
-                    int lastPublishTag = readMaxPublishTag(dbc, resource);
-                    // if no new content entry has been written to db
-                    if ((lastPublishTag != publishTag) && !resource.getState().isDeleted()) {
-                        // update old content entry                        
-                        stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
-                        stmt.setInt(1, publishTag);
-                        stmt.setString(2, resource.getResourceId().toString());
-                        stmt.setInt(3, lastPublishTag);
-
-                        stmt.executeUpdate();
-                        m_sqlManager.closeAll(dbc, null, stmt, null);
+                            false, 
+                            true);
                     }
                 }
             }

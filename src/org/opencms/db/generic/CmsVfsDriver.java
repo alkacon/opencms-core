@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.258.4.25 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.258.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.25 $
+ * @version $Revision: 1.258.4.26 $
  * 
  * @since 6.0.0 
  */
@@ -335,14 +335,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createOnlineContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[], int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#createOnlineContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[], int, boolean, boolean)
      */
     public void createOnlineContent(
         CmsDbContext dbc,
         CmsUUID resourceId,
         byte[] contents,
         int publishTag,
-        boolean keepOnline) throws CmsDataAccessException {
+        boolean keepOnline,
+        boolean needToUpdateContent) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -350,41 +351,50 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
 
-            // put the online content in the history
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
-            stmt.setString(1, resourceId.toString());
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+            if (needToUpdateContent) {
+                // put the online content in the history
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                stmt.setString(1, resourceId.toString());
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
 
-            // create new online content
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_WRITE");
+                // create new online content
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_WRITE");
 
-            stmt.setString(1, resourceId.toString());
-            if (contents.length < 2000) {
-                stmt.setBytes(2, contents);
+                stmt.setString(1, resourceId.toString());
+                if (contents.length < 2000) {
+                    stmt.setBytes(2, contents);
+                } else {
+                    stmt.setBinaryStream(2, new ByteArrayInputStream(contents), contents.length);
+                }
+                stmt.setInt(3, publishTag);
+                stmt.setInt(4, publishTag);
+                stmt.setInt(5, keepOnline ? 1 : 0);
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
+
+                // set the content modification date
+                stmt = m_sqlManager.getPreparedStatement(
+                    conn,
+                    CmsProject.ONLINE_PROJECT_ID,
+                    "C_RESOURCE_UPDATE_CONTENT_DATE");
+                stmt.setLong(1, System.currentTimeMillis());
+                stmt.setString(2, resourceId.toString());
+                stmt.executeUpdate();
             } else {
-                stmt.setBinaryStream(2, new ByteArrayInputStream(contents), contents.length);
+                int lastPublishTag = m_driverManager.getHistoryDriver().readMaxPublishTag(dbc, resourceId);
+                // if no new content entry has been written to db
+                if (lastPublishTag != publishTag) {
+                    // update old content entry                        
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
+                    stmt.setInt(1, publishTag);
+                    stmt.setString(2, resourceId.toString());
+                    stmt.setInt(3, lastPublishTag);
+
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
             }
-            stmt.setInt(3, publishTag);
-            stmt.setInt(4, publishTag);
-            stmt.setInt(5, keepOnline ? 1 : 0);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, null);
-        }
-        // set the content modification date
-        try {
-            stmt = m_sqlManager.getPreparedStatement(
-                conn,
-                CmsProject.ONLINE_PROJECT_ID,
-                "C_RESOURCE_UPDATE_CONTENT_DATE");
-            stmt.setLong(1, System.currentTimeMillis());
-            stmt.setString(2, resourceId.toString());
-            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1304,8 +1314,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_FILE_WITH_STRUCTURE_ID_1,
-                    resourceId));
+                    Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
+                    resourceId,
+                    Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2246,7 +2257,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } else {
             projectId = dbc.currentProject().getUuid();
         }
-        
+
         // copy offline to online relations
         CmsUUID dbcProjectId = dbc.getProjectId();
         dbc.setProjectId(CmsUUID.getNullUUID());
@@ -2328,8 +2339,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
-    public long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content)
-    throws CmsDataAccessException {
+    public long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;

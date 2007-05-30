@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.241.4.36 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.241.4.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.36 $
+ * @version $Revision: 1.241.4.37 $
  * 
  * @since 6.0.0 
  */
@@ -572,7 +572,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         rootFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject.getUuid(), rootFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            onlineProject.getUuid(),
+            rootFolder,
+            CmsDriverManager.UPDATE_ALL);
 
         // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver().createProjectResource(dbc, onlineProject.getUuid(), rootFolder.getRootPath());
@@ -598,7 +602,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         systemFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, onlineProject.getUuid(), systemFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            onlineProject.getUuid(),
+            systemFolder,
+            CmsDriverManager.UPDATE_ALL);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -625,7 +633,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         offlineRootFolder.setState(CmsResource.STATE_UNCHANGED);
 
-        m_driverManager.getVfsDriver().writeResource(dbc, setupProject.getUuid(), offlineRootFolder, CmsDriverManager.UPDATE_ALL);
+        m_driverManager.getVfsDriver().writeResource(
+            dbc,
+            setupProject.getUuid(),
+            offlineRootFolder,
+            CmsDriverManager.UPDATE_ALL);
 
         // important: must access through driver manager to ensure proper cascading        
         m_driverManager.getProjectDriver().createProjectResource(
@@ -1041,15 +1053,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // update the online/offline structure and resource records of the file
                 m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, newFile, offlineFile);
 
-                if (needToUpdateContent) {
-                    // create the file content online
-                    m_driverManager.getVfsDriver().createOnlineContent(
-                        dbc,
-                        offlineFile.getResourceId(),
-                        offlineFile.getContents(),
-                        publishTag,
-                        true);
-                }
+                // create the file content online
+                m_driverManager.getVfsDriver().createOnlineContent(
+                    dbc,
+                    offlineFile.getResourceId(),
+                    offlineFile.getContents(),
+                    publishTag,
+                    true,
+                    needToUpdateContent);
             }
             publishedResourceIds.add(offlineResource.getResourceId());
         } catch (CmsDataAccessException e) {
@@ -1101,7 +1112,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     CmsResource newFolder = (CmsFolder)offlineFolder.clone();
                     newFolder.setState(CmsResource.STATE_UNCHANGED);
 
-                    onlineFolder = m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), newFolder, null);
+                    onlineFolder = m_driverManager.getVfsDriver().createResource(
+                        dbc,
+                        onlineProject.getUuid(),
+                        newFolder,
+                        null);
                 } catch (CmsVfsResourceAlreadyExistsException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(

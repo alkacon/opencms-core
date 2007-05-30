@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/24 14:19:21 $
- * Version: $Revision: 1.110.2.31 $
+ * Date   : $Date: 2007/05/30 13:59:12 $
+ * Version: $Revision: 1.110.2.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.31 $
+ * @version $Revision: 1.110.2.32 $
  * 
  * @since 6.0.0 
  */
@@ -2454,14 +2454,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         CmsGroup group = readGroup(dbc, groupName);
         if ((CmsRole.valueOf(group) == null) || !CmsRole.valueOf(group).equals(role)) {
             CmsGroup roleGroup = readGroup(dbc, role.getGroupName());
-            // move all users from the group to the role
-            // HINT: this could be improved with an special query like:
-            // UPDATE CMS_GROUPUSERS SET GROUP_ID = ? WHERE GROUP_ID = ?
-            // but it does not really matters since it is used only to update from version 6 to 7
+            // copy all users from the group to the role
             Iterator it = readUsersOfGroup(dbc, groupName, false).iterator();
             while (it.hasNext()) {
                 CmsUser user = (CmsUser)it.next();
-                deleteUserInGroup(dbc, user.getId(), group.getId());
                 createUserInGroup(dbc, user.getId(), roleGroup.getId());
             }
             // set the right flags

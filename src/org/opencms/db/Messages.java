@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/05/16 15:57:30 $
- * Version: $Revision: 1.43.4.29 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.43.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.29 $
+ * @version $Revision: 1.43.4.30 $
  * 
  * @since 6.0.0 
  */
@@ -757,10 +757,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_WRITE_EXPORT_POINT_1 = "LOG_WRITE_EXPORT_POINT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_WRITE_EXPORT_POINT_FAILED_1 = "LOG_WRITE_EXPORT_POINT_FAILED_1";
+    public static final String LOG_WRITE_EXPORT_POINT_ERROR_1 = "LOG_WRITE_EXPORT_POINT_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_WRITE_EXPORT_POINTS_ERROR_0 = "LOG_WRITE_EXPORT_POINTS_ERROR_0";
+    public static final String LOG_WRITE_EXPORT_POINT_FAILED_1 = "LOG_WRITE_EXPORT_POINT_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CHECKING_0 = "RPT_CHECKING_0";

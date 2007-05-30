@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/30 11:52:03 $
- * Version: $Revision: 1.570.2.91 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.570.2.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1660,10 +1660,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required                    
-                    long contentModificationDate = m_vfsDriver.writeContent(
-                        dbc,
-                        newResource.getResourceId(),
-                        content);
+                    long contentModificationDate = m_vfsDriver.writeContent(dbc, newResource.getResourceId(), content);
                     newResource = new CmsResource(
                         newResource.getStructureId(),
                         newResource.getResourceId(),
@@ -7533,62 +7530,82 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void writeExportPoints(CmsDbContext dbc, I_CmsReport report, CmsUUID publishHistoryId) {
 
         boolean printReportHeaders = false;
+        List publishedResources = null;
         try {
             // read the "published resources" for the specified publish history ID
-            List publishedResources = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
-            if (publishedResources.size() == 0) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
-                }
-                return;
+            publishedResources = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READ_PUBLISHED_RESOURCES_FOR_ID_1,
+                    publishHistoryId), e);
             }
-
-            // read the export points and return immediately if there are no export points at all         
-            Set exportPoints = new HashSet();
-            exportPoints.addAll(OpenCms.getExportPoints());
-            exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
-            if (exportPoints.size() == 0) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
-                }
-                return;
+        }
+        if ((publishedResources == null) || publishedResources.isEmpty()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
             }
+            return;
+        }
 
-            // create the driver to write the export points
-            CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
+        // read the export points and return immediately if there are no export points at all         
+        Set exportPoints = new HashSet();
+        exportPoints.addAll(OpenCms.getExportPoints());
+        exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
+        if (exportPoints.size() == 0) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
+            }
+            return;
+        }
 
-            // the report may be null if the export point write was started by an event
-            if (report == null) {
-                if (dbc.getRequestContext() != null) {
-                    report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
+        // create the driver to write the export points
+        CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
+
+        // the report may be null if the export point write was started by an event
+        if (report == null) {
+            if (dbc.getRequestContext() != null) {
+                report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
+            } else {
+                report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+            }
+        }
+
+        // iterate over all published resources to export them
+        Iterator i = publishedResources.iterator();
+        while (i.hasNext()) {
+            CmsPublishedResource currentPublishedResource = (CmsPublishedResource)i.next();
+            String currentExportPoint = exportPointDriver.getExportPoint(currentPublishedResource.getRootPath());
+
+            if (currentExportPoint != null) {
+                if (!printReportHeaders) {
+                    report.println(
+                        Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_BEGIN_0),
+                        I_CmsReport.FORMAT_HEADLINE);
+                    printReportHeaders = true;
+                }
+
+                // print report message
+                if (currentPublishedResource.getState().isDeleted()) {
+                    report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0), I_CmsReport.FORMAT_NOTE);
                 } else {
-                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+                    report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0), I_CmsReport.FORMAT_NOTE);
                 }
-            }
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    currentPublishedResource.getRootPath()));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-            // iterate over all published resources to export them
-            Iterator i = publishedResources.iterator();
-            while (i.hasNext()) {
-                CmsPublishedResource currentPublishedResource = (CmsPublishedResource)i.next();
-                String currentExportPoint = exportPointDriver.getExportPoint(currentPublishedResource.getRootPath());
-
-                if (currentExportPoint != null) {
-                    if (!printReportHeaders) {
-                        report.println(
-                            Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_BEGIN_0),
-                            I_CmsReport.FORMAT_HEADLINE);
-                        printReportHeaders = true;
-                    }
-
-                    if (currentPublishedResource.isFolder()) {
-                        // export the folder                        
-                        if (currentPublishedResource.getState().isDeleted()) {
-                            exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
-                        } else {
-                            exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
-                        }
+                if (currentPublishedResource.isFolder()) {
+                    // export the folder                        
+                    if (currentPublishedResource.getState().isDeleted()) {
+                        exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                     } else {
-                        // export the file            
+                        exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
+                    }
+                } else {
+                    // export the file            
+                    try {
                         if (currentPublishedResource.getState().isDeleted()) {
                             exportPointDriver.deleteResource(currentPublishedResource.getRootPath(), currentExportPoint);
                         } else {
@@ -7602,37 +7619,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 currentExportPoint,
                                 onlineContent);
                         }
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(Messages.get().getBundle().key(
+                                Messages.LOG_WRITE_EXPORT_POINT_ERROR_1,
+                                currentPublishedResource.getRootPath()), e);
+                        }
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
                     }
-
-                    // print report message
-                    if (currentPublishedResource.getState().isDeleted()) {
-                        report.print(
-                            Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0),
-                            I_CmsReport.FORMAT_NOTE);
-                    } else {
-                        report.print(
-                            Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0),
-                            I_CmsReport.FORMAT_NOTE);
-                    }
-                    report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        currentPublishedResource.getRootPath()));
-                    report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                    report.println(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.FORMAT_OK);
                 }
+
             }
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRITE_EXPORT_POINTS_ERROR_0), e);
-            }
-        } finally {
-            if (printReportHeaders) {
-                report.println(
-                    Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_END_0),
-                    I_CmsReport.FORMAT_HEADLINE);
-            }
+        }
+        if (printReportHeaders) {
+            report.println(
+                Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_END_0),
+                I_CmsReport.FORMAT_HEADLINE);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.114.4.17 $
+ * Date   : $Date: 2007/05/30 13:59:11 $
+ * Version: $Revision: 1.114.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.17 $
+ * @version $Revision: 1.114.4.18 $
  * 
  * @since 6.0.0 
  */
@@ -118,10 +118,11 @@ public interface I_CmsVfsDriver {
      * @param contents the content to publish
      * @param publishTag the publish tag
      * @param keepOnline if the content is online or has to be put in the history
+     * @param needToUpdateContent if the content blob has to be updated
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline)
+    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline, boolean needToUpdateContent)
     throws CmsDataAccessException;
 
     /**
