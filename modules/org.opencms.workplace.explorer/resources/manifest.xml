@@ -194,7 +194,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview]]></value>
+					<value><![CDATA[/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview&reload=true]]></value>
 				</property>
 			</properties>
 			<relations/>

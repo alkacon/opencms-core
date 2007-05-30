@@ -10,8 +10,12 @@
 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
-<script language="JavaScript">
+<script type="text/javascript">
 <%
+
+if (request.getParameter("reload") != null) {
+	%>top.body.location.reload();<%
+}
 	String files = wp.getFileList();
 	// System.err.println(files);
 	out.println(files);
