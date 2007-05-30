@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.570.2.92 $
+ * Date   : $Date: 2007/05/30 15:37:21 $
+ * Version: $Revision: 1.570.2.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2175,12 +2175,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (timeDeleted >= 0) {
                 report.println(Messages.get().container(
                     Messages.RPT_START_DELETE_DEL_VERSIONS_2,
-                    new Integer(versionsToKeep),
+                    new Integer(versionsDeleted),
                     new Date(timeDeleted)), I_CmsReport.FORMAT_HEADLINE);
             } else {
                 report.println(Messages.get().container(
                     Messages.RPT_START_DELETE_DEL_VERSIONS_1,
-                    new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
+                    new Integer(versionsDeleted)), I_CmsReport.FORMAT_HEADLINE);
             }
             List resources = m_historyDriver.getAllDeletedEntries(dbc, folder.getStructureId());
             if (resources.isEmpty()) {
@@ -2202,7 +2202,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
-                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsToKeep, timeDeleted);
+                    int deleted = m_historyDriver.deleteEntries(dbc, histResource, versionsDeleted, timeDeleted);
 
                     report.print(
                         Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
