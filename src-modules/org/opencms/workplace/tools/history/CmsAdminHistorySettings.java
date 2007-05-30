@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.12.4.1 $
+ * Date   : $Date: 2007/05/30 15:35:53 $
+ * Version: $Revision: 1.12.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,11 @@
 
 package org.opencms.workplace.tools.history;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -38,11 +43,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for the history settings dialog.<p> 
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.4.1 $ 
+ * @version $Revision: 1.12.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,6 @@ public class CmsAdminHistorySettings extends CmsDialog {
             actionCloseDialog();
         } catch (CmsIllegalArgumentException e) {
             // error setting history values, show error dialog
-
             includeErrorpage(this, e);
         }
     }
@@ -120,9 +119,9 @@ public class CmsAdminHistorySettings extends CmsDialog {
      */
     public String buildSettingsForm() {
 
-        StringBuffer retValue = new StringBuffer(512);
+        StringBuffer retValue = new StringBuffer();
         boolean histEnabled = OpenCms.getSystemInfo().isHistoryEnabled();
-        int maxVersions = OpenCms.getSystemInfo().getHistoryVersions();
+        int historyVersionsAfterDeletion = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
         CmsMessages messages = Messages.get().getBundle(getLocale());
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
@@ -143,16 +142,38 @@ public class CmsAdminHistorySettings extends CmsDialog {
         retValue.append("</tr>\n");
         retValue.append("</table>\n");
 
-        retValue.append("<div class=\"hide\" id=\"settings\">\n");
+        retValue.append("<div class=\"show\" >\n");
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
         retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTNUMBER_0) + "</td>\n");
-        retValue.append("<td colspan=\"5\"><input type=\"text\" name=\"versions\" value=\"");
-        if (maxVersions != -1) {
-            retValue.append(maxVersions);
-        }
-        retValue.append("\" onkeypress=\"event.returnValue=isDigit();\"></td>\n");
+        retValue.append("<td colspan=\"5\">\n" + buildSelectVersionNumbers("versions", null) + "</td>\n");
         retValue.append("</tr>\n");
+
+        retValue.append("<tr>\n");
+        retValue.append("<td colspan=\"5\">"
+            + messages.key(Messages.GUI_INPUT_HISTORY_RESTORE_DELETED_RESOURCES_0)
+            + "</td>\n");
+        retValue.append("<td><input type=\"checkbox\" name=\"restoreDeleted\" id=\"settingsRestore\" value=\"true\" onclick=\"checkDeletedVersionsEnabled();\"");
+        if (historyVersionsAfterDeletion != 0) {
+            retValue.append(" checked=\"checked\"");
+        }
+        retValue.append(">");
+        retValue.append("<input type=\"hidden\" name=\"restoreDeletedHidden\" id=\"restoreDeletedHidden\" value=\"\"></td>\n");
+        retValue.append("</tr>\n");
+
+        retValue.append("<tr id=\"keepDeleted\">\n");
+        retValue.append("<td colspan=\"5\">"
+            + "&nbsp;&nbsp;"
+            + messages.key(Messages.GUI_INPUT_HISTORY_KEEP_DELETED_RESOURCES_0)
+            + "</td>\n");
+        retValue.append("<td><input type=\"checkbox\" name=\"versionsDeleted\" id=\"settingsKeep\" value=\"true\" onclick=\"updateHiddenFields();\"");
+        if (historyVersionsAfterDeletion > 1 || historyVersionsAfterDeletion == -1) {
+            retValue.append(" checked=\"checked\"");
+        }
+        retValue.append(">");
+        retValue.append("<input type=\"hidden\" name=\"versionsDeletedHidden\" id=\"versionsDeletedHidden\" value=\"\"></td>\n");
+        retValue.append("</tr>\n");
+
         retValue.append("</table>\n");
         retValue.append("</div>\n");
 
@@ -181,10 +202,85 @@ public class CmsAdminHistorySettings extends CmsDialog {
     }
 
     /**
+     * Creates the HTML code for a select box with integer values.<p>
+     * 
+     * @param fieldName the name of the select box
+     * @param attributes the optional tag attributes
+     * 
+     * @return the HTML code for the select box
+     */
+    private String buildSelectVersionNumbers(String fieldName, String attributes) {
+
+        StringBuffer retValue = new StringBuffer();
+
+        retValue.append("<select id=\"settingsSelect\" name=\"" + fieldName + "\"");
+        if (attributes != null) {
+            retValue.append(" " + attributes);
+        }
+        retValue.append(">\n");
+        int defaultHistoryVersions = OpenCms.getSystemInfo().getHistoryVersions();
+        int historyVersions = 0;
+        boolean hasSelected = false;
+        String selected = "";
+        // Iterate from 1 to 50 with a stepping of 1 for the first 10 entries and a stepping of five for the entries from 10 to 50
+        while (historyVersions < 50) {
+            historyVersions++; // increment the history version
+            // Check if the current history version is the default history version and mark it as selected                        
+            if (historyVersions == defaultHistoryVersions) {
+                selected = " selected=\"selected\" ";
+                hasSelected = true;
+            }
+            if (historyVersions % 5 == 0 || historyVersions <= 10 || hasSelected) {
+                retValue.append("\t<option value=\""
+                    + historyVersions
+                    + "\""
+                    + selected
+                    + ">"
+                    + historyVersions
+                    + "</option>\n");
+            }
+            selected = ""; // Reset the selected string
+            hasSelected = false;
+
+        }
+        // If the default setting for the version history is more than 50
+        if (defaultHistoryVersions > historyVersions) {
+            hasSelected = true;
+            selected = " selected=\"selected\" ";
+            retValue.append("\t<option value=\""
+                + defaultHistoryVersions
+                + "\""
+                + selected
+                + ">"
+                + defaultHistoryVersions
+                + "</option>\n");
+        }
+
+        // Add the unlimited value
+        if (defaultHistoryVersions == -1) {
+            hasSelected = true;
+            selected = " selected=\"selected\" ";
+        }
+        // Add the option for unlimited version history
+        retValue.append("\t<option value=\""
+            + (-1)
+            + "\""
+            + selected
+            + ">"
+            + Messages.get().getBundle(getLocale()).key(Messages.GUI_INPUT_HISTORY_SELECT_VERSIONS_0)
+            + "</option>\n");
+        retValue.append("</select>\n"); // End the selection
+
+        return retValue.toString();
+    }
+
+    /**
      * Performs the change of the history settings.<p>
      * 
      * @param request the HttpServletRequest
+     * 
      * @return true if everything was ok
+     * 
      * @throws CmsIllegalArgumentException if the entered number is no positive integer
      */
     private boolean performEditOperation(HttpServletRequest request) throws CmsIllegalArgumentException {
@@ -192,7 +288,8 @@ public class CmsAdminHistorySettings extends CmsDialog {
         // get the new settings from the request parameters
         String paramEnabled = request.getParameter("enable");
         String paramVersions = request.getParameter("versions");
-        String paramVersionsDeleted = request.getParameter("versionsDeleted");
+        String paramRestoreDeleted = request.getParameter("restoreDeletedHidden");
+        String paramVersionsDeleted = request.getParameter("versionsDeletedHidden");
 
         // check the submitted values
         boolean enabled = Boolean.valueOf(paramEnabled).booleanValue();
@@ -203,22 +300,24 @@ public class CmsAdminHistorySettings extends CmsDialog {
             // no int value submitted, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_INT_ENTERED_0), e);
         }
-        if (versions < 0) {
-            // version value too low, throw exception
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
-        }
-        int versionsDeleted = 0;
-        try {
-            versionsDeleted = Integer.parseInt(paramVersionsDeleted);
-        } catch (NumberFormatException e) {
-            // no int value submitted, throw exception
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_INT_ENTERED_0), e);
-        }
-        if (versionsDeleted < 0) {
+        if (versions < -1) {
             // version value too low, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
         }
 
+        int versionsDeleted = 0;
+        boolean restoreDeleted = Boolean.valueOf(paramRestoreDeleted).booleanValue();
+        // Check if the checkbox to restore deleted resources is enabled
+        if (restoreDeleted) {
+            versionsDeleted = 1;
+        }
+
+        boolean keepDeletedHistory = false;
+        // Check if the checkbox for keeping deleted resources in the history is enabled 
+        keepDeletedHistory = Boolean.valueOf(paramVersionsDeleted).booleanValue();
+        if (keepDeletedHistory && restoreDeleted) {
+            versionsDeleted = versions;
+        }
 
         OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions, versionsDeleted);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);

@@ -55,13 +55,50 @@ function isDigit() {
 function checkEnabled() {
 	var isEnabled = document.getElementById("enabled").checked;
 	if (isEnabled) {
-		document.getElementById("settings").className = "show";
+		document.getElementById("settingsSelect").disabled = false;
+		document.getElementById("settingsRestore").disabled = false;
+		document.getElementById("settingsKeep").disabled = false;
 	} else {
-		document.getElementById("settings").className = "hide";
+		document.getElementById("settingsSelect").disabled = true;
+		document.getElementById("settingsRestore").disabled = true;
+		document.getElementById("settingsKeep").disabled = true;
 	}
+	checkDeletedVersionsEnabled();
+	updateHiddenFields();
+}
+
+
+function checkDeletedVersionsEnabled() {
+	var isChecked = document.getElementById("settingsRestore").checked;
+        var isDisabled = document.getElementById("settingsRestore").disabled;
+	if (isChecked && !isDisabled) {
+		document.getElementById("settingsKeep").disabled = false;
+        } else {
+		document.getElementById("settingsKeep").disabled = true;
+        }
+	updateHiddenFields();
+}
+
+
+function updateHiddenFields() {
+    var updateRestore = document.getElementById("settingsRestore").checked;
+    if (updateRestore) {
+        document.getElementById("restoreDeletedHidden").value = "true";
+    } else {
+        document.getElementById("restoreDeletedHidden").value = "false";
+    }
+ 
+    var updateKeep = document.getElementById("settingsKeep").checked;
+    if (updateKeep) {
+        document.getElementById("versionsDeletedHidden").value = "true";
+    } else {
+        document.getElementById("versionsDeletedHidden").value = "false";
+    }
 }
 
 checkEnabled();
+checkDeletedVersionsEnabled();
+updateHiddenFields();
 
 //-->
 </script>

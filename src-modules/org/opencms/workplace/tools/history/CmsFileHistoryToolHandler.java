@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsFileHistoryToolHandler.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.1.8.2 $
+ * Date   : $Date: 2007/05/30 15:35:53 $
+ * Version: $Revision: 1.1.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.8.2 $ 
+ * @version $Revision: 1.1.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,11 @@ public class CmsFileHistoryToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
+        boolean enabled = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
+        if (getPath().endsWith("clearhistory")) {
+            enabled &= OpenCms.getSystemInfo().isHistoryEnabled();
+        }
+        return enabled;
     }
 
     /**

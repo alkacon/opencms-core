@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.17.4.6 $
+ * Date   : $Date: 2007/05/30 15:35:53 $
+ * Version: $Revision: 1.17.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17.4.6 $ 
+ * @version $Revision: 1.17.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +165,10 @@ public class CmsAdminHistoryClear extends CmsReport {
             retValue.append("</tr>\n");
             retValue.append("<tr><td colspan=\"3\">&nbsp;</td></tr>\n");
             retValue.append("<tr>\n");
+            retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_NUMBER_HISTORIC_0) + "</td>\n");
+            retValue.append("<td colspan=\"\2\">" + buildSelectKeepDeletedVersions(null) + "</td>\n");
+            retValue.append("</tr>\n");
+            retValue.append("<tr>\n");
             retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_DATE_0) + "</td>\n");
             retValue.append("<td>");
             retValue.append("<input type=\"text\" name=\"date\" id=\"date\">");
@@ -180,6 +185,22 @@ public class CmsAdminHistoryClear extends CmsReport {
         }
 
         return retValue.toString();
+    }
+
+    /**
+     * Build the HTML code for a select box of the deleted versions to keep.<p>
+     * 
+     * @param attributes optional additional attributes of the select tag
+     * 
+     * @return the HTML colde for a select box of historic versions
+     */
+    public String buildSelectKeepDeletedVersions(String attributes) {
+
+        return buildSelectNumbers(
+            "versionsDeleted",
+            attributes,
+            0,
+            OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion());
     }
 
     /**
@@ -291,6 +312,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      * @param attributes the optional tag attributes
      * @param startValue the start integer value for the options
      * @param endValue the end integer value for the options
+     * 
      * @return the HTML code for the select box
      */
     private String buildSelectNumbers(String fieldName, String attributes, int startValue, int endValue) {
@@ -305,9 +327,21 @@ public class CmsAdminHistoryClear extends CmsReport {
         retValue.append("\t<option value=\"\" selected=\"selected\">"
             + Messages.get().getBundle(getLocale()).key(Messages.GUI_INPUT_HISTORY_CLEAR_SELECT_0)
             + "</option>\n");
-        for (int i = startValue; i <= endValue; i++) {
-            retValue.append("\t<option value=\"" + i + "\">" + i + "</option>\n");
+        // If the end value is greater than zero everything is fine.
+        if (endValue > 0) {
+            for (int i = startValue; i <= endValue; i++) {
+                retValue.append("\t<option value=\"" + i + "\">" + i + "</option>\n");
+            }
+        } else {
+            // create a select box with values from 1 to 50. 
+            // the values from 10 to 50 are done in steps of 5 (10, 15, 20 and so on)
+            for (int i = 1; i <= 50; i++) {
+                if (i % 5 == 0 || i <= 10) {
+                    retValue.append("\t<option value=\"" + i + "\">" + i + "</option>\n");
+                }
+            }
         }
+
         retValue.append("</select>\n");
 
         return retValue.toString();
@@ -330,37 +364,45 @@ public class CmsAdminHistoryClear extends CmsReport {
         // get the delete information from the request parameters
         String paramVersions = request.getParameter("versions");
         String paramDate = request.getParameter("date");
+        String paramDeletedVersions = request.getParameter("versionsDeleted");
 
         // check the submitted values        
         int versions = -1;
-        long timeStamp = 0;
-        boolean useVersions = false;
+        int deletedVersions = -1;
+        long timeStamp = -1;
         try {
             versions = Integer.parseInt(paramVersions);
-            useVersions = true;
-        } catch (NumberFormatException e) {
-            // no int value submitted, check date fields
-            try {
+        } catch (NumberFormatException exVersions) {
+            // ignored; operation will continue with default value of -1
+        }
+
+        try {
+            deletedVersions = Integer.parseInt(paramDeletedVersions);
+        } catch (NumberFormatException exDeletedVersions) {
+            // ignored; operation will continue with default value of -1
+        }
+
+        // no int value submitted, check date fields
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramDate)) {
                 timeStamp = CmsCalendarWidget.getCalendarDate(getMessages(), paramDate, false);
-            } catch (ParseException ex) {
-                // no date values submitted, throw exception
-
-                throw new CmsIllegalArgumentException(
-                    Messages.get().container(Messages.ERR_INVALID_DATE_1, paramDate),
-                    ex);
             }
+            if (timeStamp == 0) {
+                timeStamp = -1;
+            }
+        } catch (ParseException ex) {
+            // no date values submitted, throw exception
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_DATE_1, paramDate), ex);
         }
 
-        // set the timeStamp to 0 if use Version
-        if (useVersions) {
-            timeStamp = 0;
-        }
         if (DEBUG) {
             System.err.println("Versions: " + versions + "\nDate: " + timeStamp);
         }
         // add the correct values to the parameter map
-        parameterMap.put("timeStamp", String.valueOf(timeStamp));
+        parameterMap.put("timeDeleted", String.valueOf(timeStamp));
         parameterMap.put("versions", String.valueOf(versions));
+        parameterMap.put("versionsDeleted", String.valueOf(deletedVersions));
+        parameterMap.put("folderName", "/"); // Add the root folder to the map
 
         if (DEBUG) {
             System.err.println("Done");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2006/04/05 11:54:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/05/30 15:35:53 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_HISTORY_CLEAR_NUMBER_0 = "GUI_INPUT_HISTORY_CLEAR_NUMBER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_HISTORY_CLEAR_NUMBER_HISTORIC_0 = "GUI_INPUT_HISTORY_CLEAR_NUMBER_HISTORIC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_SELECT_0 = "GUI_INPUT_HISTORY_CLEAR_SELECT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -122,6 +125,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1 = "GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_HISTORY_KEEP_DELETED_RESOURCES_0 = "GUI_INPUT_HISTORY_KEEP_DELETED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_HISTORY_RESTORE_DELETED_RESOURCES_0 = "GUI_INPUT_HISTORY_RESTORE_DELETED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_HISTORY_SELECT_VERSIONS_0 = "GUI_INPUT_HISTORY_SELECT_VERSIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_ADMIN_HISTORY_CLEAR_0 = "GUI_LABEL_ADMIN_HISTORY_CLEAR_0";
