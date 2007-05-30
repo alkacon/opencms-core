@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/03/30 14:25:48 $
- * Version: $Revision: 1.12.4.18 $
+ * Date   : $Date: 2007/05/30 13:56:16 $
+ * Version: $Revision: 1.12.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.Collections;
@@ -75,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.18 $ 
+ * @version $Revision: 1.12.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -363,11 +361,7 @@ public class CmsSessionManager {
             throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
         }
 
-        CmsPermissionSet permissions = OpenCmsCore.getInstance().getSecurityManager().getPermissions(
-            cms.getRequestContext(),
-            cms.readResource(CmsFrameset.JSP_WORKPLACE_URI),
-            user);
-        if (permissions == null || (permissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_READ) == 0) {
+        if (!OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.WORKPLACE_USER)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_NO_WORKPLACE_PERMISSIONS_0));
         }
 
