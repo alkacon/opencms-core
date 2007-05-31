@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/31 10:03:15 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/05/31 12:43:43 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  * 
  * @since 6.9.1
  */
@@ -1111,10 +1111,14 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
             stmt.setString(1, principal.getId().toString());
             stmt.setString(2, principal.getSimpleName());
-            stmt.setString(3, principal.getDescription() == null ? "-" : principal.getDescription());
+            String desc = principal.getDescription();
+            desc = CmsStringUtil.isEmptyOrWhitespaceOnly(desc) ? "-" : desc;
+            stmt.setString(3, desc);
             stmt.setString(4, CmsOrganizationalUnit.SEPARATOR + principal.getOuFqn());
             if (principal instanceof CmsUser) {
-                stmt.setString(5, ((CmsUser)principal).getEmail());
+                String email = ((CmsUser)principal).getEmail();
+                email = CmsStringUtil.isEmptyOrWhitespaceOnly(email) ? "-" : email;
+                stmt.setString(5, email);
                 stmt.setString(6, I_CmsPrincipal.PRINCIPAL_USER);
             } else {
                 stmt.setString(5, "-");
@@ -1303,7 +1307,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                             resource.getResourceId(),
                             ((CmsFile)resource).getContents(),
                             publishTag,
-                            false, 
+                            false,
                             true);
                     }
                 }
