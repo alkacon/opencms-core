@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2006/11/08 09:28:46 $
- * Version: $Revision: 1.10.4.3 $
+ * Date   : $Date: 2007/05/31 10:37:41 $
+ * Version: $Revision: 1.10.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10.4.3 $
+ * @version $Revision: 1.10.4.4 $
  * 
  * @since 6.0.0
  */
@@ -66,6 +66,18 @@ public class CmsSqlManager {
     protected CmsSqlManager(CmsDriverManager driverManager) {
 
         m_driverManager = driverManager;
+    }
+
+    /** 
+     * Returns the number of active connections managed by a pool.<p> 
+     * 
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of active connections 
+     * @throws CmsDbException if something goes wrong 
+     */
+    public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
+
+        return m_driverManager.getActiveConnections(dbPoolUrl);
     }
 
     /**
@@ -110,18 +122,6 @@ public class CmsSqlManager {
     public String getDefaultDbPoolName() {
 
         return CmsDbPool.getDefaultDbPoolName();
-    }
-
-    /** 
-     * Returns the number of active connections managed by a pool.<p> 
-     * 
-     * @param dbPoolUrl the url of a pool 
-     * @return the number of active connections 
-     * @throws CmsDbException if something goes wrong 
-     */
-    public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
-
-        return m_driverManager.getActiveConnections(dbPoolUrl);
     }
 
     /** 

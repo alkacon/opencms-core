@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:12 $
- * Version: $Revision: 1.36.8.10 $
+ * Date   : $Date: 2007/05/31 10:37:41 $
+ * Version: $Revision: 1.36.8.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.10 $
+ * @version $Revision: 1.36.8.11 $
  * 
  * @since 6.0.0 
  */
@@ -118,35 +118,29 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
                 // create new empty online content entry
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_ONLINE_CONTENTS_WRITE");
-
                 stmt.setString(1, resourceId.toString());
                 stmt.setInt(2, publishTag);
                 stmt.setInt(3, publishTag);
                 stmt.setInt(4, keepOnline ? 1 : 0);
                 stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
 
                 // now update the file content
                 internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);
             } else {
-                int lastPublishTag = m_driverManager.getHistoryDriver().readMaxPublishTag(dbc, resourceId);
-                // if no new content entry has been written to db
-                if (lastPublishTag != publishTag) {
-                    // update old content entry                        
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
-                    stmt.setInt(1, publishTag);
-                    stmt.setString(2, resourceId.toString());
-                    stmt.setInt(3, lastPublishTag);
-
-                    stmt.executeUpdate();
-                    m_sqlManager.closeAll(dbc, null, stmt, null);
-                }
+                // update old content entry                        
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
+                stmt.setInt(1, publishTag);
+                stmt.setString(2, resourceId.toString());
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 
@@ -188,7 +182,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
-        PreparedStatement rollback = null;
         Connection conn = null;
         ResultSet res = null;
 
@@ -231,6 +224,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
+            // this is needed so the finally block works correctly
             commit = null;
             stmt = null;
             res = null;
@@ -245,46 +239,13 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-
-            if (commit != null) {
-                try {
-                    commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-
-            if (!wasInTransaction) {
-                if (stmt != null) {
-                    try {
-                        rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                        rollback.execute();
-                        rollback.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                    try {
-                        stmt.close();
-                    } catch (SQLException exc) {
-                        // ignore
-                    }
-                }
-                if (conn != null) {
-                    try {
-                        conn.setAutoCommit(true);
-                        conn.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                }
-            }
+            ((org.opencms.db.oracle.CmsSqlManager)m_sqlManager).closeAllInTransaction(
+                dbc,
+                conn,
+                stmt,
+                res,
+                commit,
+                wasInTransaction);
         }
 
         // update the content modification date

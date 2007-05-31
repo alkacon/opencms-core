@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:07 $
- * Version: $Revision: 1.38.8.6 $
+ * Date   : $Date: 2007/05/31 10:37:41 $
+ * Version: $Revision: 1.38.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.38.8.6 $
+ * @version $Revision: 1.38.8.7 $
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,6 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null; 
         PreparedStatement commit = null;
-        PreparedStatement rollback = null;
         ResultSet res = null;
         boolean wasInTransaction = false;
         
@@ -172,6 +171,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     
             m_sqlManager.closeAll(dbc, null, stmt, res);
     
+            // this is needed so the finally block works correctly
             commit = null;
             stmt = null;
             res = null;
@@ -179,7 +179,6 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
-    
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, publishJobHistoryId), e);
         } catch (SQLException e) {
@@ -187,47 +186,13 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-    
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-    
-            if (commit != null) {
-                try {
-                    commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-    
-            if (!wasInTransaction) {
-                if (stmt != null) {
-                    try {
-                        rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                        rollback.execute();
-                        rollback.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                    try {
-                        stmt.close();
-                    } catch (SQLException exc) {
-                        // ignore
-                    }
-                }
-                if (conn != null) {
-                    try {
-                        conn.setAutoCommit(true);
-                        conn.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                }
-            }
+            ((org.opencms.db.oracle.CmsSqlManager)m_sqlManager).closeAllInTransaction(
+                dbc,
+                conn,
+                stmt,
+                res,
+                commit,
+                wasInTransaction);
         }
     }
     

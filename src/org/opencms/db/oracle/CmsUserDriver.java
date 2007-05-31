@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/16 15:33:07 $
- * Version: $Revision: 1.55.4.13 $
+ * Date   : $Date: 2007/05/31 10:37:41 $
+ * Version: $Revision: 1.55.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsUUID;
 
@@ -50,6 +51,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
+import org.apache.commons.logging.Log;
 
 /**
  * Oracle implementation of the user driver methods.<p>
@@ -57,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.13 $
+ * @version $Revision: 1.55.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -77,7 +79,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         // TODO: perform blob check only once and store Oracle version in a static private member 
         // TODO: best do this during system startup / db init phase once
-
         Blob blob = res.getBlob(name);
         try {
             // jdbc standard
@@ -142,7 +143,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
-        PreparedStatement rollback = null;
         ResultSet res = null;
         Connection conn = null;
 
@@ -176,6 +176,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 m_sqlManager.closeAll(dbc, null, commit, null);
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
+
+            // this is needed so the finally block works correctly
+            commit = null;
+            stmt = null;
+            res = null;
+
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
@@ -186,44 +192,13 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-            if (commit != null) {
-                try {
-                    commit.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }
-            }
-            if (!wasInTransaction) {
-                if (stmt != null) {
-                    try {
-                        rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                        rollback.execute();
-                        rollback.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                    try {
-                        stmt.close();
-                    } catch (SQLException exc) {
-                        // ignore
-                    }
-                }
-                if (conn != null) {
-                    try {
-                        conn.setAutoCommit(true);
-                        conn.close();
-                    } catch (SQLException se) {
-                        // ignore
-                    }
-                }
-            }
+            ((org.opencms.db.oracle.CmsSqlManager)m_sqlManager).closeAllInTransaction(
+                dbc,
+                conn,
+                stmt,
+                res,
+                commit,
+                wasInTransaction);
         }
     }
 }
