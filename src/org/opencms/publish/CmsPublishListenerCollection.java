@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/05/31 11:23:18 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.5
  */
@@ -106,7 +106,7 @@ public final class CmsPublishListenerCollection extends Vector {
         String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
             Messages.GUI_PUBLISH_JOB_ABORTED_2,
             new Long(publishJob.getEnqueueTime()),
-            userId);
+            m_publishEngine.getUser(userId).getName());
         m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
     }
 
