@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/05/25 14:46:53 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_content_table_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_content_table_queries.properties";
 
     /** Constant for the sql query to transfer the backup contents.<p> */
     private static final String QUERY_TRANSFER_BACKUP_CONTENTS = "Q_TRANSFER_BACKUP_CONTENTS";
@@ -84,14 +84,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**

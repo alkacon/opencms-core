@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,28 +44,27 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2 
  */
 public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
     /** The filename/path of the SQL query properties. */
-    private static final String QUERY_PROPERTIES_PREFIX = "org/opencms/setup/update6to7/generic/";
+    protected static final String QUERY_PROPERTIES_PREFIX = "org/opencms/setup/update6to7/";
 
     /** A map holding all SQL queries. */
     protected Map m_queries;
 
+    /** The connection data to use. */
+    protected Map m_poolData;
+
     /**
      * Default constructor.<p>
-     * 
-     * @throws IOException if the default sql queries property file could not be read 
      */
-    public A_CmsUpdateDBPart()
-    throws IOException {
+    public A_CmsUpdateDBPart() {
 
         m_queries = new HashMap();
-        loadQueryProperties(QUERY_PROPERTIES_PREFIX + getSqlQueriesFile());
     }
 
     /**
@@ -84,6 +83,8 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
                 (String)dbPoolData.get("params"),
                 (String)dbPoolData.get("user"),
                 (String)dbPoolData.get("pwd"));
+
+            m_poolData = new HashMap(dbPoolData);
 
             internalExecute(setupDb);
         } catch (SQLException e) {

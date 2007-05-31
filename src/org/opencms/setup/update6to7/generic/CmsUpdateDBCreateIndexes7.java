@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/05/29 12:58:48 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
     private static final String PRIMARY_KEY = "PRIMARY";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_add_new_indexes_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_add_new_indexes_queries.properties";
 
     /** Constant for the sql query to read the indexes.<p> */
     private static final String QUERY_SHOW_INDEX = "QUERY_SHOW_INDEX";
@@ -76,14 +76,7 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**

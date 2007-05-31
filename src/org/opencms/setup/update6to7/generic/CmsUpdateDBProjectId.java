@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/05/29 14:52:12 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     private static final String QUERY_INSERT_UUIDS = "Q_INSERT_UUIDS_TEMP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_projectid_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_projectid_queries.properties";
 
     private static final String QUERY_READ_ADMIN_GROUP = "Q_READ_ADMIN_GROUP";
 
@@ -179,14 +179,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**

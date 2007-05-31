@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropUnusedTables.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ public class CmsUpdateDBDropUnusedTables extends A_CmsUpdateDBPart {
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_drop_unused_tables_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_drop_unused_tables_queries.properties";
 
     /** Constant for the replacement of the tablename in the sql query.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
@@ -87,14 +87,7 @@ public class CmsUpdateDBDropUnusedTables extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**

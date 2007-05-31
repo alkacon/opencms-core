@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/I_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2 
  */
@@ -50,11 +50,4 @@ public interface I_CmsUpdateDBPart {
      * @param dbPoolData the connection data to use
      */
     void execute(Map dbPoolData);
-    
-    /**
-     * Returns the name of the properties file with the sql queries.<p>
-     * 
-     * @return the property file name
-     */
-    String getSqlQueriesFile();
 }

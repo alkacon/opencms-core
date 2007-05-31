@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2007/05/29 12:58:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
 public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_new_tables_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_new_tables_queries.properties";
 
     /**
      * Constructor.<p>
@@ -66,14 +66,7 @@ public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**

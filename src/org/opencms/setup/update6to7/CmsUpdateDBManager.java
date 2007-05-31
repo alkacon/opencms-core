@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/25 11:54:08 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.setup.update6to7;
 
 import org.opencms.setup.CmsSetupBean;
+import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.generic.CmsUpdateDBAlterTables;
 import org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers;
 import org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables;
@@ -148,6 +149,36 @@ public class CmsUpdateDBManager {
     }
 
     /**
+     * Generates html code for the given db pool.<p>
+     * 
+     * @param pool the db pool to generate html for
+     * 
+     * @return html code
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String htmlPool(String pool) throws Exception {
+
+        StringBuffer html = new StringBuffer(256);
+
+        html.append("\t<tr>\n");
+        html.append("\t\t<td style='vertical-align: top; width: 100%; padding-top: 4px;'>\n\t\t\t");
+        html.append("<a href=\"javascript:switchview('").append(pool).append("');\">");
+        html.append(pool).append("</a><br>\n");
+        html.append("\t<div id='").append(pool).append("' style='display: none;'>\n");
+        html.append("\t\t<table border='0'>\n");
+        html.append("\t\t\t<tr><td>JDBC Driver:</td><td>" + getDbDriver(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>JDBC Connection Url:</td><td>" + getDbUrl(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>JDBC Connection Url Params:</td><td>" + getDbParams(pool) + "</td></tr>\n");
+        html.append("\t\t\t<tr><td>Database User:</td><td>" + getDbUser(pool) + "</td></tr>\n");
+        html.append("\t\t</table>\n");
+        html.append("\t</div>\n");
+        html.append("\n\t\t</td>\n");
+        html.append("\t</tr>\n");
+        return html.toString();
+    }
+
+    /**
      * Initializes the Update Manager object with the updateBean to get the database connection.<p>
      * 
      * @param updateBean the update bean with the database connection
@@ -178,6 +209,38 @@ public class CmsUpdateDBManager {
         } else {
             throw new Exception("setup bean not initialized");
         }
+    }
+
+    /**
+     * Checks if an update is needed.<p>
+     * 
+     * @return if an update is needed
+     */
+    public boolean needUpdate() {
+
+        String pool = "default";
+
+        int currentVersion = 7;
+        int detectedVersion = 7;
+
+        CmsSetupDb setupDb = new CmsSetupDb(null);
+
+        try {
+            setupDb.setConnection(
+                getDbDriver(pool),
+                getDbUrl(pool),
+                getDbParams(pool),
+                getDbUser(pool),
+                (String)((Map)m_dbPools.get(pool)).get("pwd"));
+
+            if (!setupDb.hasTableOrColumn("CMS_USERS", "USER_OU")) {
+                detectedVersion = 6;
+            }
+        } finally {
+            setupDb.closeConnection();
+        }
+
+        return (currentVersion > detectedVersion);
     }
 
     /**

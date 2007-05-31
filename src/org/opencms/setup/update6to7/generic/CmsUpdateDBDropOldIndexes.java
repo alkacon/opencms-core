@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/05/25 15:05:58 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/05/31 14:37:09 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     private static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "cms_drop_all_indexes_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_drop_all_indexes_queries.properties";
 
     /** Constant for the sql query to show the indexes of a table.<p> */
     private static final String QUERY_SHOW_INDEX = "Q_SHOW_INDEXES";
@@ -122,14 +122,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     throws IOException {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getSqlQueriesFile()
-     */
-    public String getSqlQueriesFile() {
-
-        return QUERY_PROPERTY_FILE;
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**
