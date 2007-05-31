@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/05/31 10:03:15 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 6.9.1
  */
@@ -147,6 +147,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 maxVersion = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 // nothing to delete
                 internalCleanup(dbc, resource);
@@ -163,6 +166,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 res = stmt.executeQuery();
                 if (res.next()) {
                     maxVersionByTime = res.getInt(1);
+                    while (res.next()) {
+                        // do nothing only move through all rows because of mssql odbc driver
+                    }
                 }
                 m_sqlManager.closeAll(dbc, null, stmt, res);
                 if (maxVersionByTime > 0) {
@@ -188,6 +194,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 minStrPublishTagToKeep = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 // nothing to delete
                 internalCleanup(dbc, resource);
@@ -223,6 +232,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 minResPublishTagToKeep = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 // nothing to delete
                 internalCleanup(dbc, resource);
@@ -546,6 +558,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -659,6 +674,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 lastVersion = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 lastVersion = 0;
             }
@@ -691,6 +709,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 result = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -722,6 +743,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 projectPublishTag = res.getInt(1) + 1;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
 
             m_sqlManager.closeAll(dbc, null, stmt, res);
@@ -731,6 +755,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 resourcePublishTag = res.getInt(1) + 1;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
 
             if (resourcePublishTag > projectPublishTag) {
@@ -771,6 +798,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_TYPE")),
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_USERDELETED"))),
                     res.getLong(m_sqlManager.readQuery("C_PRINCIPALS_HISTORY_DATEDELETED")));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_HISTORY_PRINCIPAL_NOT_FOUND_1,
@@ -805,6 +835,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             if (res.next()) {
                 List projectresources = readProjectResources(dbc, publishTag);
                 project = internalCreateProject(res, projectresources);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1,
@@ -907,6 +940,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 pubTag = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
@@ -975,6 +1011,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))),
                     res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")),
                     CmsPropertyDefinition.CmsPropertyType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_TYPE"))));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
@@ -1008,6 +1047,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 maxVersion = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1225,6 +1267,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             if (res.next()) {
                 resourceVersion = res.getInt(1);
                 structureVersion = res.getInt(2);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
@@ -1438,6 +1483,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (res.next()) {
                 returnValue = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbConsistencyException(Messages.get().container(
                     Messages.ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1,
@@ -1628,6 +1676,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 result = internalCreateResource(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

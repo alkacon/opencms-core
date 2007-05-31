@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:12 $
- * Version: $Revision: 1.110.2.32 $
+ * Date   : $Date: 2007/05/31 10:03:15 $
+ * Version: $Revision: 1.110.2.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.32 $
+ * @version $Revision: 1.110.2.33 $
  * 
  * @since 6.0.0 
  */
@@ -707,6 +707,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new Cms group object
             if (res.next()) {
                 result = true;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 result = false;
             }
@@ -742,6 +745,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             if (res.next()) {
                 result = true;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 result = false;
             }
@@ -1124,6 +1130,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new CmsAccessControlEntry
             if (res.next()) {
                 ace = internalCreateAce(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 res.close();
                 res = null;
@@ -1199,6 +1208,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new Cms group object
             if (res.next()) {
                 group = internalCreateGroup(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_ID_1, groupId);
                 if (LOG.isDebugEnabled()) {
@@ -1240,6 +1252,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new Cms group object
             if (res.next()) {
                 group = internalCreateGroup(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
@@ -1348,6 +1363,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new Cms user object
             if (res.next()) {
                 user = internalCreateUser(dbc, res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, id);
                 if (LOG.isDebugEnabled()) {
@@ -1386,6 +1404,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             if (res.next()) {
                 user = internalCreateUser(dbc, res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
@@ -1427,6 +1448,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new Cms user object
             if (res.next()) {
                 user = internalCreateUser(dbc, res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 res.close();
                 res = null;
@@ -2527,6 +2551,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 userInGroup = true;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

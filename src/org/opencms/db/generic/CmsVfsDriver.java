@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.258.4.26 $
+ * Date   : $Date: 2007/05/31 10:03:14 $
+ * Version: $Revision: 1.258.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.26 $
+ * @version $Revision: 1.258.4.27 $
  * 
  * @since 6.0.0 
  */
@@ -1460,6 +1460,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))),
                     res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")),
                     CmsPropertyDefinition.CmsPropertyType.valueOf(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_TYPE"))));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
@@ -2322,6 +2325,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (res.next()) {
                 count = res.getInt(1);
                 found = (count == 1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 found = false;
             }
@@ -2807,6 +2813,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             if (res.next()) {
                 count = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbConsistencyException(Messages.get().container(
                     Messages.ERR_COUNTING_PROPERTIES_1,
@@ -2850,6 +2859,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             if (res.next()) {
                 count = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2894,6 +2906,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (res.next()) {
                 offlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
                 offlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -2964,6 +2979,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             if (res.next()) {
                 parentId = res.getString(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_READ_PARENT_ID_1,
@@ -3034,6 +3052,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 state = CmsResourceState.valueOf(res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE")));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -3071,6 +3092,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 state = CmsResourceState.valueOf(res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_STATE")));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -3171,6 +3195,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (res.next()) {
                 onlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
                 onlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 // resource is new, do not change the version numbers
                 return;
@@ -3186,6 +3213,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (res.next()) {
                 offlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
                 offlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.ERR_READ_RESOURCE_VERSIONS_1,

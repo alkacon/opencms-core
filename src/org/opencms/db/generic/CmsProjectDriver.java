@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.241.4.37 $
+ * Date   : $Date: 2007/05/31 10:03:13 $
+ * Version: $Revision: 1.241.4.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.37 $
+ * @version $Revision: 1.241.4.38 $
  * 
  * @since 6.0.0 
  */
@@ -1549,6 +1549,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (res.next()) {
                 project = internalCreateProject(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROJECT_WITH_ID_1,
@@ -1584,7 +1587,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                project = internalCreateProject(res);
+                project = internalCreateProject(res);   
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROJECT_WITH_NAME_1,
@@ -1623,6 +1629,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (res.next()) {
                 resName = res.getString("RESOURCE_PATH");
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROJECTRESOURCE_1,
@@ -1869,6 +1878,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (res.next()) {
                 result = createPublishJobInfoBean(res);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_READ_PUBLISH_JOB_1,
@@ -1936,6 +1948,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (res.next()) {
                 byte[] bytes = m_sqlManager.getBytes(res, "PUBLISH_LIST");
                 publishList = internalDeserializePublishList(bytes);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             } else {
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_READ_PUBLISH_JOB_1,
@@ -2013,6 +2028,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // add all resourcenames to the list of return values
             if (res.next()) {
                 returnValue = res.getString(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -2284,6 +2302,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res = stmt.executeQuery();
             if (res.next()) {
                 returnValue = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
