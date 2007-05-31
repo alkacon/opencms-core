@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/16 15:57:30 $
- * Version: $Revision: 1.65.4.12 $
+ * Date   : $Date: 2007/05/31 10:40:18 $
+ * Version: $Revision: 1.65.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.12 $
+ * @version $Revision: 1.65.4.13 $
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
                 con.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             con = null;
         }
@@ -176,7 +176,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
                 stmnt.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             stmnt = null;
         }
@@ -187,11 +187,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
                 res.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             res = null;
         }
-
     }
 
     /**

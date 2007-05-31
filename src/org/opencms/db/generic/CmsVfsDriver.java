@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/31 10:03:14 $
- * Version: $Revision: 1.258.4.27 $
+ * Date   : $Date: 2007/05/31 10:40:18 $
+ * Version: $Revision: 1.258.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.27 $
+ * @version $Revision: 1.258.4.28 $
  * 
  * @since 6.0.0 
  */
@@ -381,19 +381,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setLong(1, System.currentTimeMillis());
                 stmt.setString(2, resourceId.toString());
                 stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
             } else {
-                int lastPublishTag = m_driverManager.getHistoryDriver().readMaxPublishTag(dbc, resourceId);
-                // if no new content entry has been written to db
-                if (lastPublishTag != publishTag) {
-                    // update old content entry                        
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
-                    stmt.setInt(1, publishTag);
-                    stmt.setString(2, resourceId.toString());
-                    stmt.setInt(3, lastPublishTag);
+                // update old content entry                        
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
+                stmt.setInt(1, publishTag);
+                stmt.setString(2, resourceId.toString());
 
-                    stmt.executeUpdate();
-                    m_sqlManager.closeAll(dbc, null, stmt, null);
-                }
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
