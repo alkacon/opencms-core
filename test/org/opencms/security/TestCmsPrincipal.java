@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/05/03 13:48:48 $
- * Version: $Revision: 1.2.4.7 $
+ * Date   : $Date: 2007/06/01 12:15:35 $
+ * Version: $Revision: 1.2.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -198,6 +198,8 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         echo("Testing user history");
 
         CmsUser user = cms.createUser("userDelete", "userDelete", "my description", null);
+        user.setEmail("aa@bb.cc");
+        cms.writeUser(user);
         long before = System.currentTimeMillis();
         cms.deleteUser(user.getId());
         long after = System.currentTimeMillis();
