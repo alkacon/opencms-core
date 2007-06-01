@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/05/30 15:37:21 $
- * Version: $Revision: 1.570.2.93 $
+ * Date   : $Date: 2007/06/01 12:11:56 $
+ * Version: $Revision: 1.570.2.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4539,39 +4539,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return null;
-    }
-
-    /**
-     * Returns a new publish list that contains all resources of both given publish lists.<p>
-     * 
-     * @param dbc the current database context
-     * @param pubList1 the first publish list
-     * @param pubList2 the second publish list
-     * 
-     * @return a new publish list that contains all resources of both given publish lists
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see org.opencms.publish.CmsPublishManager#mergePublishLists(CmsObject, CmsPublishList, CmsPublishList)
-     */
-    public CmsPublishList mergePublishLists(CmsDbContext dbc, CmsPublishList pubList1, CmsPublishList pubList2)
-    throws CmsException {
-
-        // get all resources from the first list
-        Set publishResources = new HashSet(pubList1.getDeletedFolderList());
-        publishResources.addAll(pubList1.getFileList());
-        publishResources.addAll(pubList1.getFolderList());
-
-        // get all resources from the second list
-        publishResources.addAll(pubList2.getDeletedFolderList());
-        publishResources.addAll(pubList2.getFileList());
-        publishResources.addAll(pubList2.getFolderList());
-
-        // create merged publish list
-        CmsPublishList ret = new CmsPublishList(readResource(dbc, "/", CmsResourceFilter.ALL), false);
-        ret.addAll(new ArrayList(publishResources));
-        ret.initialize(); // ensure consistency
-        return ret;
     }
 
     /**
