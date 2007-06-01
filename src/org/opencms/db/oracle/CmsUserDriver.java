@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/31 10:37:41 $
- * Version: $Revision: 1.55.4.14 $
+ * Date   : $Date: 2007/06/01 08:39:34 $
+ * Version: $Revision: 1.55.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
-import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsUUID;
 
@@ -51,7 +50,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
-import org.apache.commons.logging.Log;
 
 /**
  * Oracle implementation of the user driver methods.<p>
@@ -59,7 +57,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55.4.14 $
+ * @version $Revision: 1.55.4.15 $
  * 
  * @since 6.0.0 
  */
