@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProjectResourcesDisplayMode.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectResourcesDisplayMode.java,v $
+ * Date   : $Date: 2007/06/01 12:16:03 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db;
+package org.opencms.workplace.tools.projects;
 
 import org.opencms.main.CmsIllegalArgumentException;
 
@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.0.0
  */
@@ -117,8 +117,8 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(Messages.get().container(
-            Messages.ERR_MODE_ENUM_PARSE_2,
+        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
             value,
             CmsProjectResourcesDisplayMode.class.getName()));
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.17.4.13 $
+ * Date   : $Date: 2007/06/01 12:16:03 $
+ * Version: $Revision: 1.17.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.projects;
 
-import org.opencms.db.CmsProjectResourcesDisplayMode;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17.4.13 $ 
+ * @version $Revision: 1.17.4.14 $ 
  * 
  * @since 6.0.0 
  */
