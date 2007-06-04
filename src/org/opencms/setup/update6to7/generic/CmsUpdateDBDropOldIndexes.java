@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/04 12:00:33 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
 public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
     /** Constant array of the base tables of the OpenCms 6.2.3 installation.<p> */
-    private static final String[] CMS_TABLES = {
+    protected static final String[] CMS_TABLES = {
         "CMS_BACKUP_CONTENTS",
         "CMS_BACKUP_PROJECTRESOURCES",
         "CMS_BACKUP_PROJECTS",
@@ -90,7 +90,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     };
 
     /** Constant ArrayList of the tables of the base OpenCms 6.2.3 installation.<p> */
-    private static final List CMS_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_TABLES));
+    protected static final List CMS_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_TABLES));
 
     /** Constant for the field of the index name.<p> */
     private static final String FIELD_INDEX = "KEY_NAME";
@@ -111,7 +111,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     private static final String REPLACEMENT_INDEX = "${dropindexes}";
 
     /** Constant for the sql query replacement of the tablename.<p> */
-    private static final String REPLACEMENT_TABLENAME = "${tablename}";
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /**
      * Constructor.<p>

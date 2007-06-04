@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/04 12:00:33 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
     private static final String REPLACEMENT_INDEXES = "${dropindexes}";
 
     /** Constant for the replacement of the tablename in the sql query.<p> */
-    private static final String REPLACEMENT_TABLENAME = "${tablename}";
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /**
      * Constructor.<p>

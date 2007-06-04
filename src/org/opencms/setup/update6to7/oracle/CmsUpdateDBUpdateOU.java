@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBUpdateOU.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBUpdateOU.java,v $
  * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,65 +29,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7.generic;
-
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+package org.opencms.setup.update6to7.oracle;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opencms.setup.CmsSetupDb;
+
 /**
- * This class upgrades the database tables containing new OU columns.<p>
+ * Oracle implementation to update the OUs of of the database.<p>
  * 
- * These tables are
- * cms_groups
- * cms_history_principals
- * cms_history_projects
- * cms_projects
- * cms_users
- * 
- * @author metzler
+ * @author Roland Metzler
+ *
  */
-public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
-
-    /** Constant for the GROUP_OU column.<p> */
-    protected static final String GROUP_OU_COLUMN = "GROUP_OU";
-
-    /** Constant for the PROJECT_OU column.<p> */
-    protected static final String PROJECT_OU_COLUMN = "PROJECT_OU";
+public class CmsUpdateDBUpdateOU extends org.opencms.setup.update6to7.generic.CmsUpdateDBUpdateOU {
 
     /** Constant for the query that adds the ous to the table.<p> */
-    private static final String QUERY_ADD_OUS_TO_TABLE = "Q_ADD_OUS_TO_TABLE";
+    private static final String QUERY_ADD_OUS_TO_TABLE_ORACLE = "Q_ADD_OUS_TO_TABLE_ORACLE";
 
     /** Constant for the alteration of the table.<p> */
-    private static final String QUERY_KEY_ALTER_TABLE = "Q_ALTER_TABLE_ADD_OU_COLUMN";
-
+    private static final String QUERY_KEY_ALTER_TABLE_ORACLE = "Q_ALTER_TABLE_ADD_OU_COLUMN_ORACLE";
+    
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "generic/cms_ou_query.properties";
-
-    /** Constant for the replacement in the SQL query for the columnname.<p> */
-    protected static final String REPLACEMENT_COLUMNNAME = "${columnname}";
-
-    /** Constant for the replacement in the SQL query for the tablename.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
-
-    /** Constant for the CMS_BACKUP_PROJECTS table.<p> */
-    protected static final String TABLE_BACKUP_PROJECTS = "CMS_BACKUP_PROJECTS";
-
-    /** Constant for the CMS_GROUPS table.<p> */
-    protected static final String TABLE_CMS_GROUPS = "CMS_GROUPS";
-
-    /** Constant for the CMS_USERS table.<p> */
-    protected static final String TABLE_CMS_USERS = "CMS_USERS";
-
-    /** Constant for the CMS_PROJECTS table.<p> */
-    protected static final String TABLE_PROJECTS = "CMS_PROJECTS";
-
-    /** Constant for the USER_OU column.<p> */
-    protected static final String USER_OU_COLUMN = "USER_OU";
+    private static final String QUERY_PROPERTY_FILE = "oracle/cms_ou_query.properties";
+    
 
     /**
      * Constructor.<p>
@@ -102,7 +69,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
     }
 
     /**
-     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
+     * @see org.opencms.setup.update6to7.generic.CmsUpdateDBUpdateOU#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     protected void internalExecute(CmsSetupDb dbCon) {
 
@@ -114,6 +81,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
         updateOUs(dbCon, TABLE_BACKUP_PROJECTS, PROJECT_OU_COLUMN);
     }
 
+    
     /**
      * Checks if the column USER_OU is found in the resultset.<p>
      * 
@@ -128,7 +96,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         return dbCon.hasTableOrColumn(table, ouColumn);
     }
-
+    
     /**
      * Updates the database tables with the new OUs if necessary for the given table.<p>
      * 
@@ -149,13 +117,13 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
                 Map replacements = new HashMap();
                 replacements.put(REPLACEMENT_TABLENAME, table);
                 replacements.put(REPLACEMENT_COLUMNNAME, ouColumn);
-                String alterQuery = readQuery(QUERY_KEY_ALTER_TABLE);
+                String alterQuery = readQuery(QUERY_KEY_ALTER_TABLE_ORACLE);
 
                 // Update the database and alter the table to add the OUs
                 dbCon.updateSqlStatement(alterQuery, replacements, null);
 
                 // Insert the value '/' into the OUs
-                String insertQuery = readQuery(QUERY_ADD_OUS_TO_TABLE);
+                String insertQuery = readQuery(QUERY_ADD_OUS_TO_TABLE_ORACLE);
                 dbCon.updateSqlStatement(insertQuery, replacements, null);
                 result = 0;
             } else {
@@ -170,5 +138,4 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
         return result;
     }
-
 }

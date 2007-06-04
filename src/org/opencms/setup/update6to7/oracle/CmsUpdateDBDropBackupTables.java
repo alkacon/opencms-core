@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropBackupTables.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBDropBackupTables.java,v $
  * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,61 +29,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7.generic;
-
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+package org.opencms.setup.update6to7.oracle;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
-/** 
- * This class drops the CMS_BACKUP tables that are no longer used after all the transfers are finished.<p> 
+import org.opencms.setup.CmsSetupDb;
+
+/**
+ * Oracle implementation of the generic class to drop the backup tables from the database.<p>
  * 
- * The tables to drop are
- * <ul>
- * <li>CMS_BACKUP_PROJECTRESOURCES</li>
- * <li>CMS_BACKUP_PROJECTS</li>
- * <li>CMS_BACKUP_PROPERTIES</li>
- * <li>CMS_BACKUP_PROPERTYDEF</li>
- * <li>CMS_BACKUP_RESOURCES</li>
- * <li>CMS_BACKUP_STRUCTURE</li>
- * </ul>
- * 
- * @author metzler
+ * @author Roland Metzler
+ *
  */
-public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
-
-    /** Array of the BACKUP tables that are to be dropped.<p> */
-    protected static final String[] BACKUP_TABLES = {
-        "CMS_BACKUP_PROJECTRESOURCES",
-        "CMS_BACKUP_PROJECTS",
-        "CMS_BACKUP_PROPERTIES",
-        "CMS_BACKUP_PROPERTYDEF",
-        "CMS_BACKUP_RESOURCES",
-        "CMS_BACKUP_STRUCTURE"};
-
-    /** Constant ArrayList of the BACKUP_TABLES that are to be dropped.<p> */
-    protected static final List BACKUP_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(BACKUP_TABLES));
+public class CmsUpdateDBDropBackupTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBDropBackupTables {
 
     /** Constant for the sql query to drop a table.<p> */
-    private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
+    private static final String QUERY_DROP_TABLE_ORACLE = "Q_DROP_TABLE_ORACLE";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "generic/cms_drop_backup_tables_queries.properties";
-
-    /** Constant for the replacement of the tablename in the sql query.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
+    private static final String QUERY_PROPERTY_FILE = "oracle/cms_drop_backup_tables_queries.properties";
 
     /**
      * Constructor.<p>
      * 
-     * @throws IOException if the query properties cannot be read
+     * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBDropBackupTables()
     throws IOException {
@@ -98,13 +70,15 @@ public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
     protected void internalExecute(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        String dropQuery = readQuery(QUERY_DROP_TABLE);
+        String dropQuery = readQuery(QUERY_DROP_TABLE_ORACLE);
         for (Iterator it = BACKUP_TABLES_LIST.iterator(); it.hasNext();) {
             String table = (String)it.next();
             HashMap replacer = new HashMap();
             replacer.put(REPLACEMENT_TABLENAME, table);
             try {
-                dbCon.updateSqlStatement(dropQuery, replacer, null);
+                if (dbCon.hasTableOrColumn(table, null)) {
+                    dbCon.updateSqlStatement(dropQuery, replacer, null);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBHistoryPrincipals.java,v $
  * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,10 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7.generic;
-
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
+package org.opencms.setup.update6to7.oracle;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -40,49 +37,44 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencms.setup.CmsSetupDb;
+
 /**
- * This class inserts formerly deleted users/groups in the CMS_HISTORY_PRINCIPALS table.<p>
+ * Oracle implementation to create the history principals table and contents.<p>
  * 
- * These users/groups are read out of the following tables:
- * <ul>
- * <li>CMS_BACKUP_RESOURCES</li>
- * <li>CMS_BACKUP_PROJECTS</li>
- * </ul>
+ * @author Roland Metzler
  *
- * @author Raphael Schnuck
  */
-public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
+public class CmsUpdateDBHistoryPrincipals extends org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryPrincipals {
 
     /** Constant for sql query to create the history principals table.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_CREATE_TABLE = "Q_HISTORY_PRINCIPALS_CREATE_TABLE";
+    private static final String QUERY_HISTORY_PRINCIPALS_CREATE_TABLE_ORACLE = "Q_HISTORY_PRINCIPALS_CREATE_TABLE_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS = "Q_HISTORY_PRINCIPALS_PROJECTS_GROUPS";
+    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS_ORACLE = "Q_HISTORY_PRINCIPALS_PROJECTS_GROUPS_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS = "Q_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS";
+    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS_ORACLE = "Q_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED = "Q_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED";
+    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED_ORACLE = "Q_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_USERS = "Q_HISTORY_PRINCIPALS_PROJECTS_USERS";
+    private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_USERS_ORACLE = "Q_HISTORY_PRINCIPALS_PROJECTS_USERS_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_RESOURCES = "Q_HISTORY_PRINCIPALS_RESOURCES";
-
-    /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "generic/cms_history_principals_queries.properties";
+    private static final String QUERY_HISTORY_PRINCIPALS_RESOURCES_ORACLE = "Q_HISTORY_PRINCIPALS_RESOURCES_ORACLE";
 
     /** Constant for the sql query to select the count of history principals.<p> */
-    private static final String QUERY_SELECT_COUNT_HISTORY_PRINCIPALS = "Q_SELECT_COUNT_HISTORY_PRINICPALS";
+    private static final String QUERY_SELECT_COUNT_HISTORY_PRINCIPALS_ORACLE = "Q_SELECT_COUNT_HISTORY_PRINICPALS_ORACLE";
 
     /** Constant for sql query.<p> */
-    private static final String QUERY_UPDATE_DATEDELETED = "Q_UPDATE_DATEDELETED";
-
-    /** Constant for the CMS_HISTORY_PRINICIPALS table.<p> */
-    protected static final String TABLE_CMS_HISTORY_PRINCIPALS = "CMS_HISTORY_PRINCIPALS";
-
+    private static final String QUERY_UPDATE_DATEDELETED_ORACLE = "Q_UPDATE_DATEDELETED_ORACLE";
+    
+    
+    /** Constant for the SQL query properties.<p> */
+    private static final String QUERY_PROPERTY_FILE = "oracle/cms_history_principals_queries.properties";
+    
     /**
      * Constructor.<p>
      * 
@@ -94,7 +86,8 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         super();
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
-
+    // Implement me
+    
     /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
@@ -105,7 +98,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
             List params = new ArrayList();
             params.add(new Long(System.currentTimeMillis()));
 
-            dbCon.updateSqlStatement(readQuery(QUERY_UPDATE_DATEDELETED), null, params);
+            dbCon.updateSqlStatement(readQuery(QUERY_UPDATE_DATEDELETED_ORACLE), null, params);
         }
     }
 
@@ -121,7 +114,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         boolean result = false;
-        String query = readQuery(QUERY_SELECT_COUNT_HISTORY_PRINCIPALS);
+        String query = readQuery(QUERY_SELECT_COUNT_HISTORY_PRINCIPALS_ORACLE);
         ResultSet set = dbCon.executeSqlStatement(query, null);
         if (set.next()) {
             if (set.getInt("COUNT") > 0) {
@@ -146,18 +139,18 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         boolean updateUserDateDeleted = false;
         // Check if the table exists. If not, create it
         if (!dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
-            String query = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE);
+            String query = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE_ORACLE);
             dbCon.updateSqlStatement(query, null, null);
         } else {
             System.out.println(" table " + TABLE_CMS_HISTORY_PRINCIPALS + " already exists");
         }
 
         if (!hasData(dbCon)) {
-            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_RESOURCES), null, null);
-            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS), null, null);
-            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS), null, null);
-            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED), null, null);
-            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_USERS), null, null);
+            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_RESOURCES_ORACLE), null, null);
+            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS_ORACLE), null, null);
+            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS_ORACLE), null, null);
+            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_PUBLISHED_ORACLE), null, null);
+            dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_USERS_ORACLE), null, null);
             updateUserDateDeleted = true; // update the colum USER_DATETELETED
         }
 

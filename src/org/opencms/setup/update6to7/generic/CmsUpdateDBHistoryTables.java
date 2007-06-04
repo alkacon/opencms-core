@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryTables.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/04 12:00:33 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,7 @@ public class CmsUpdateDBHistoryTables extends A_CmsUpdateDBPart {
     /** Constant for the sql query to count the contents of a table.<p> */
     private static final String QUERY_SELECT_COUNT_HISTORY_TABLE = "Q_SELECT_COUNT_HISTORY_TABLE";
 
+    /** Constant for the replacement of the tablename in the sql query. */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /**
