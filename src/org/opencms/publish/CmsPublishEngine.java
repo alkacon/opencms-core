@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2007/06/04 16:08:14 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.16 $
+ * @version $Revision: 1.1.2.17 $
  * 
  * @since 6.5.5
  */
@@ -154,10 +154,12 @@ public final class CmsPublishEngine implements Runnable {
 
         // check the driver manager
         if (m_driverManager == null || m_dbContextFactory == null) {
+            unlockPublishList(new CmsPublishJobInfoBean(cms, publishList, report));
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
         }
         // prevent new jobs if the engine is disabled
         if (m_shuttingDown || (!isEnabled() && !OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN))) {
+            unlockPublishList(new CmsPublishJobInfoBean(cms, publishList, report));
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_DISABLED_0));
         }
 
@@ -372,7 +374,7 @@ public final class CmsPublishEngine implements Runnable {
             // engine is currently publishing the job to abort
             m_currentPublishThread.abort();
         }
-        // collect all resources
+        // unlock all resources
         if (publishJob.getPublishList() != null) {
             unlockPublishList(publishJob.m_publishJob);
         }
