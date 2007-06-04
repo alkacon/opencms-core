@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/05/10 13:26:10 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/04 15:36:08 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,22 +39,31 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides several simplified methods for manipulating category relations.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.2
  */
 public class CmsCategoryService {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCategoryService.class);
 
     /** The default base path for categories. */
     private static final String BASE_PATH = "/system/categories/";
@@ -161,6 +170,90 @@ public class CmsCategoryService {
     public void deleteCategory(CmsObject cms, String categoryPath) throws CmsException {
 
         cms.deleteResource(getCategoryFolderPath(categoryPath), CmsResource.DELETE_PRESERVE_SIBLINGS);
+    }
+
+    /**
+     * Returns an OpenCms VFS root path for the given category path.<p>
+     * 
+     * @param categoryPath the category path to compute the root path for
+     * 
+     * @return an OpenCms VFS root path for the given category path
+     */
+    private String getCategoryFolderPath(String categoryPath) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(categoryPath)) {
+            return null;
+        }
+        String path = categoryPath;
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        return BASE_PATH + path;
+    }
+
+    /**
+     * Returns a category path from the given OpenCms VFS root path.<p>
+     * 
+     * @param rootPath the OpenCms VFS root path to compute the category path for
+     * 
+     * @return a category path
+     */
+    private String getCategoryPath(String rootPath) {
+
+        if (rootPath.startsWith(BASE_PATH)) {
+            return rootPath.substring(BASE_PATH.length());
+        }
+        return null;
+    }
+
+    /**
+     * Returns all sub categories of the given one, including sub categories if needed.<p>
+     * 
+     * @param cms the current cms context
+     * @param baseCategory the path of the base category (this category is not part of the result)
+     * @param includeSubCats flag to indicate if sub categories should also be read
+     * 
+     * @return a list of {@link CmsCategory} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private List internalReadCategories(CmsObject cms, String baseCategory, boolean includeSubCats) throws CmsException {
+
+        List resources = Collections.EMPTY_LIST;
+        try {
+            resources = cms.readResources(
+                BASE_PATH + baseCategory,
+                CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.RESOURCE_TYPE_ID),
+                includeSubCats);
+        } catch (CmsVfsResourceNotFoundException cvrnfe) {
+            // create the category folder, only if the base category folder is missing: 
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(baseCategory)) {
+                Locale wpLocale = OpenCms.getWorkplaceManager().getDefaultLocale();
+                try {
+                    cms.createResource(BASE_PATH, CmsResourceTypeFolder.getStaticTypeId());
+                } catch (Exception ex) {
+                    LOG.error(Messages.get().getBundle(wpLocale).key(
+                        "LOG_ERR_CREATE_CATEGORY_FOLDER_1",
+                        new String[] {BASE_PATH}));
+                }
+            }
+        }
+        List categories = new ArrayList();
+        Iterator it = resources.iterator();
+        while (it.hasNext()) {
+            CmsResource resource = (CmsResource)it.next();
+            CmsProperty title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            CmsProperty description = cms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                false);
+            categories.add(new CmsCategory(
+                resource.getStructureId(),
+                getCategoryPath(resource.getRootPath()),
+                title.getValue(),
+                description.getValue()));
+        }
+        return categories;
     }
 
     /**
@@ -289,74 +382,5 @@ public class CmsCategoryService {
             filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
             cms.deleteRelationsFromResource(resourceName, filter);
         }
-    }
-
-    /**
-     * Returns an OpenCms VFS root path for the given category path.<p>
-     * 
-     * @param categoryPath the category path to compute the root path for
-     * 
-     * @return an OpenCms VFS root path for the given category path
-     */
-    private String getCategoryFolderPath(String categoryPath) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(categoryPath)) {
-            return null;
-        }
-        String path = categoryPath;
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        return BASE_PATH + path;
-    }
-
-    /**
-     * Returns a category path from the given OpenCms VFS root path.<p>
-     * 
-     * @param rootPath the OpenCms VFS root path to compute the category path for
-     * 
-     * @return a category path
-     */
-    private String getCategoryPath(String rootPath) {
-
-        if (rootPath.startsWith(BASE_PATH)) {
-            return rootPath.substring(BASE_PATH.length());
-        }
-        return null;
-    }
-
-    /**
-     * Returns all sub categories of the given one, including sub categories if needed.<p>
-     * 
-     * @param cms the current cms context
-     * @param baseCategory the path of the base category (this category is not part of the result)
-     * @param includeSubCats flag to indicate if sub categories should also be read
-     * 
-     * @return a list of {@link CmsCategory} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private List internalReadCategories(CmsObject cms, String baseCategory, boolean includeSubCats) throws CmsException {
-
-        List resources = cms.readResources(
-            BASE_PATH + baseCategory,
-            CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.RESOURCE_TYPE_ID),
-            includeSubCats);
-        List categories = new ArrayList();
-        Iterator it = resources.iterator();
-        while (it.hasNext()) {
-            CmsResource resource = (CmsResource)it.next();
-            CmsProperty title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-            CmsProperty description = cms.readPropertyObject(
-                resource,
-                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                false);
-            categories.add(new CmsCategory(
-                resource.getStructureId(),
-                getCategoryPath(resource.getRootPath()),
-                title.getValue(),
-                description.getValue()));
-        }
-        return categories;
     }
 }

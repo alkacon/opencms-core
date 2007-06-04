@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.3.11</version>
+		<version>1.3.12</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -113,6 +113,7 @@
 			<resource uri="/system/workplace/explorer/sibling/"/>
 			<resource uri="/system/workplace/explorer/readme.txt"/>
 			<resource uri="/system/workplace/resources/tools/ex_history/"/>
+			<resource uri="/system/categories/"/>			
 		</resources>
 		<parameters/>
 	</module>
@@ -138,6 +139,19 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
+		</file>
+	    <file>
+			<destination>system/categories</destination>
+			<type>folder</type>
+			<uuidstructure>41563817-12a7-11dc-a287-2b20cd96941e</uuidstructure>
+			<datelastmodified>Mon, 04 Jun 2007 14:24:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jun 2007 14:24:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
