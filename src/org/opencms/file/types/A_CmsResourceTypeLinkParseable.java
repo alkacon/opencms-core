@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/04 16:06:57 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,10 @@
 package org.opencms.file.types;
 
 import org.opencms.db.CmsSecurityManager;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
 
 import java.util.List;
@@ -47,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.0 
  */
@@ -72,6 +70,7 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
         CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
 
         super.copyResource(cms, securityManager, source, destination, siblingMode);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
         createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
     }
 
@@ -86,7 +85,9 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
         List properties) throws CmsException {
 
         CmsResource resource = super.createResource(cms, securityManager, resourcename, content, properties);
+        // create the relations for the new resource
         createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename));
+
         return resource;
     }
 
@@ -101,23 +102,10 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
         List properties) throws CmsException {
 
         CmsResource sibling = super.createSibling(cms, securityManager, source, destination, properties);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
         createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
+
         return sibling;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
-     */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResource.CmsResourceDeleteMode siblingMode)
-    throws CmsException {
-
-        // delete relation of sibling too if needed
-        if (siblingMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
-            securityManager.deleteRelationsForResource(cms.getRequestContext(), resource, CmsRelationFilter.TARGETS);
-        } else {
-            deleteRelationsWithSiblings(cms, securityManager, resource);
-        }
-        super.deleteResource(cms, securityManager, resource, siblingMode);
     }
 
     /**
@@ -135,18 +123,7 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     throws CmsException, CmsIllegalArgumentException {
 
         super.moveResource(cms, securityManager, resource, destination);
-        updateRelations(cms, securityManager, resource, cms.getRequestContext().addSiteRoot(destination));
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
-     */
-    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
-
-        CmsFile file = super.writeFile(cms, securityManager, resource);
-        // update the relations after writing!!
-        securityManager.updateRelationsForResource(cms.getRequestContext(), file, parseLinks(cms, file));
-
-        return file;
+        // create the relations for the new resource, this could be improved by an sql query for moving relations
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
     }
 }

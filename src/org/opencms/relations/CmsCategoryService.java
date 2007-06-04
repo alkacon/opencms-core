@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/06/04 15:36:08 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/04 16:08:34 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.9.2
  */
@@ -100,7 +100,6 @@ public class CmsCategoryService {
         if (!readResourceCategories(cms, resourceName).contains(category)) {
             cms.addRelationToResource(
                 resourceName,
-                category.getId(),
                 getCategoryFolderPath(categoryPath),
                 CmsRelationType.CATEGORY.getName());
 

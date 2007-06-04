@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2006/11/29 15:04:10 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/04 16:08:34 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,25 +38,44 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
+import java.util.Comparator;
+
 /**
  * A relation between two opencms resources.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsRelation {
 
+    /**
+     * A comparator for the source & target path plus the relation type of 2 relations.<p>
+     */
+    public static final Comparator COMPARATOR = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if ((o1 == o2) || !(o1 instanceof CmsRelation) || !(o2 instanceof CmsRelation)) {
+                return 0;
+            }
+
+            CmsRelation r1 = (CmsRelation)o1;
+            String p1 = r1.getSourcePath() + r1.getTargetPath() + r1.getType().getId();
+            CmsRelation r2 = (CmsRelation)o2;
+            String p2 = r2.getSourcePath() + r2.getTargetPath() + r2.getType().getId();
+
+            return p1.compareTo(p2);
+        }
+    };
+
     /** Default value for undefined Strings. */
     private static final String UNDEF = "";
-
-    /** The start date of the relation. */
-    private final long m_dateBegin;
-
-    /** The end date of the relation. */
-    private final long m_dateEnd;
 
     /** Precalculated hashcode. */
     private int m_hashCode;
@@ -85,14 +104,7 @@ public class CmsRelation {
      */
     public CmsRelation(CmsResource source, CmsResource target, CmsRelationType type) {
 
-        this(
-            source.getStructureId(),
-            source.getRootPath(),
-            target.getStructureId(),
-            target.getRootPath(),
-            target.getDateReleased(),
-            target.getDateExpired(),
-            type);
+        this(source.getStructureId(), source.getRootPath(), target.getStructureId(), target.getRootPath(), type);
     }
 
     /**
@@ -102,27 +114,16 @@ public class CmsRelation {
      * @param sourcePath the source path
      * @param targetId the target structure id
      * @param targetPath the target path
-     * @param dateBegin the start end of the relation
-     * @param dateEnd the end date of the relation
      * @param type the relation type
      */
-    public CmsRelation(
-        CmsUUID sourceId,
-        String sourcePath,
-        CmsUUID targetId,
-        String targetPath,
-        long dateBegin,
-        long dateEnd,
-        CmsRelationType type) {
+    public CmsRelation(CmsUUID sourceId, String sourcePath, CmsUUID targetId, String targetPath, CmsRelationType type) {
 
         // make sure no value can ever be null
-        m_sourceId = sourceId != null ? sourceId : CmsUUID.getNullUUID();
-        m_sourcePath = sourcePath != null ? sourcePath : UNDEF;
-        m_targetId = targetId != null ? targetId : CmsUUID.getNullUUID();
-        m_targetPath = targetPath != null ? targetPath : UNDEF;
-        m_dateBegin = dateBegin;
-        m_dateEnd = dateEnd;
-        m_type = type != null ? type : CmsRelationType.XML_WEAK;
+        m_sourceId = ((sourceId != null) ? sourceId : CmsUUID.getNullUUID());
+        m_sourcePath = ((sourcePath != null) ? sourcePath : UNDEF);
+        m_targetId = ((targetId != null) ? targetId : CmsUUID.getNullUUID());
+        m_targetPath = ((targetPath != null) ? targetPath : UNDEF);
+        m_type = ((type != null) ? type : CmsRelationType.XML_WEAK);
     }
 
     /**
@@ -136,7 +137,7 @@ public class CmsRelation {
         if (obj instanceof CmsRelation) {
             CmsRelation other = (CmsRelation)obj;
             return (m_type == other.m_type)
-                // && (m_dateBegin == other.m_dateBegin)
+            // && (m_dateBegin == other.m_dateBegin)
                 // && (m_dateEnd == other.m_dateEnd)
                 && (m_sourcePath.equals(other.m_sourcePath) || m_sourceId.equals(other.m_sourceId))
                 && (m_targetPath.equals(other.m_targetPath) || m_targetId.equals(other.m_targetId));
@@ -145,23 +146,30 @@ public class CmsRelation {
     }
 
     /**
-     * Returns the start date of the relation.<p>
-     *
-     * @return the start date of the relation
+     * Returns the source resource wenn possible to read with the given filter.<p>
+     * 
+     * @param cms the current user context
+     * @param filter the filter to use
+     * 
+     * @return the source resource
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public long getDateBegin() {
+    public CmsResource getSource(CmsObject cms, CmsResourceFilter filter) throws CmsException {
 
-        return m_dateBegin;
-    }
-
-    /**
-     * Returns the end date of the relation.<p>
-     *
-     * @return the end date of the relation
-     */
-    public long getDateEnd() {
-
-        return m_dateEnd;
+        try {
+            // first look up by id
+            return cms.readResource(getSourceId(), filter);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // then look up by name, but from the root site
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                return cms.readResource(getSourcePath(), filter);
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
     }
 
     /**
@@ -212,33 +220,6 @@ public class CmsRelation {
     }
 
     /**
-     * Returns the source resource wenn possible to read with the given filter.<p>
-     * 
-     * @param cms the current user context
-     * @param filter the filter to use
-     * 
-     * @return the source resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource getSource(CmsObject cms, CmsResourceFilter filter) throws CmsException {
-
-        try {
-            // first look up by id
-            return cms.readResource(getSourceId(), filter);
-        } catch (CmsVfsResourceNotFoundException e) {
-            // then look up by name, but from the root site
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            try {
-                cms.getRequestContext().setSiteRoot("");
-                return cms.readResource(getSourcePath(), filter);
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-    }
-
-    /**
      * Returns the tructure id of the target resource.<p>
      *
      * @return the tructure id of the target resource
@@ -277,8 +258,6 @@ public class CmsRelation {
             // calculate hashcode only once
             final int PRIME = 31;
             int result = 1;
-            result = PRIME * result + (int)(m_dateBegin ^ (m_dateBegin >>> 32));
-            result = PRIME * result + (int)(m_dateEnd ^ (m_dateEnd >>> 32));
             result = PRIME * result + ((m_sourceId == null) ? 0 : m_sourceId.hashCode());
             result = PRIME * result + ((m_sourcePath == null) ? 0 : m_sourcePath.hashCode());
             result = PRIME * result + ((m_targetId == null) ? 0 : m_targetId.hashCode());
@@ -300,8 +279,6 @@ public class CmsRelation {
         str.append("source path: ").append(m_sourcePath).append(", ");
         str.append("target id: ").append(m_targetId).append(", ");
         str.append("target path: ").append(m_targetPath).append(", ");
-        str.append("date begin: ").append(m_dateBegin).append(", ");
-        str.append("date end: ").append(m_dateEnd).append(", ");
         str.append("type: ").append(m_type);
         str.append("]");
         return str.toString();

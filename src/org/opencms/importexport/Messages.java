@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2007/05/04 16:03:16 $
- * Version: $Revision: 1.13.8.3 $
+ * Date   : $Date: 2007/06/04 16:07:08 $
+ * Version: $Revision: 1.13.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.8.3 $ 
+ * @version $Revision: 1.13.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -275,6 +275,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELFOLDER_START_0 = "RPT_DELFOLDER_START_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_IMPORT_RELATIONS_0 = "RPT_END_IMPORT_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_PARSE_LINKS_0 = "RPT_END_PARSE_LINKS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_0 = "RPT_EXPORT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -314,6 +320,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_IMPORTING_0 = "RPT_IMPORTING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORTING_RELATIONS_FOR_2 = "RPT_IMPORTING_RELATIONS_FOR_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_MERGE_0 = "RPT_MERGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -326,7 +335,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_NOT_CREATED_0 = "RPT_NOT_CREATED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_PARSE_LINKS_FOR_1 = "RPT_PARSE_LINKS_FOR_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SKIPPING_0 = "RPT_SKIPPING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_IMPORT_RELATIONS_0 = "RPT_START_IMPORT_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_PARSE_LINKS_0 = "RPT_START_PARSE_LINKS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STORING_LINK_0 = "RPT_STORING_LINK_0";

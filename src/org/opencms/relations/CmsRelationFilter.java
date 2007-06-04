@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/04 16:08:34 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -43,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,9 +58,6 @@ public final class CmsRelationFilter implements Cloneable {
 
     /** To filter all targets. */
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
-
-    /** To filter relations for a given date. */
-    private long m_date;
 
     /** If set the filter extends the result to the given path and all its childs. */
     private boolean m_includeChilds = false;
@@ -99,23 +97,8 @@ public final class CmsRelationFilter implements Cloneable {
         CmsRelationFilter filter = new CmsRelationFilter(m_source, m_target);
         filter.m_structureId = m_structureId;
         filter.m_types = new HashSet(m_types);
-        filter.m_date = m_date;
         filter.m_path = m_path;
         filter.m_includeChilds = m_includeChilds;
-        return filter;
-    }
-
-    /**
-     * Returns an extended filter with the given relation date restriction.<p>
-     * 
-     * @param date the relation date to filter
-     *  
-     * @return an extended filter with the given relation date restriction
-     */
-    public CmsRelationFilter filterDate(long date) {
-
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
-        filter.m_date = date;
         return filter;
     }
 
@@ -284,16 +267,6 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
-     * Returns the relation date restriction.<p>
-     *
-     * @return the relation date restriction
-     */
-    public long getDate() {
-
-        return m_date;
-    }
-
-    /**
      * Returns the source relation path restriction.<p>
      *
      * @return the source relation path restriction
@@ -321,6 +294,26 @@ public final class CmsRelationFilter implements Cloneable {
     public Set getTypes() {
 
         return Collections.unmodifiableSet(m_types);
+    }
+
+    /**
+     * Checks if this filter includes relations defined in the content.<p> 
+     * 
+     * @return <code>true</code> if this filter includes relations defined in the content
+     */
+    public boolean includesDefinedInContent() {
+
+        if ((m_types == null) || m_types.isEmpty()) {
+            return true;
+        }
+        Iterator itTypes = m_types.iterator();
+        while (itTypes.hasNext()) {
+            CmsRelationType type = (CmsRelationType)itTypes.next();
+            if (type.isDefinedInContent()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -391,7 +384,6 @@ public final class CmsRelationFilter implements Cloneable {
         }
         str.append(mode).append("=").append(m_structureId).append(", ");
         str.append("path").append("=").append(m_path).append(", ");
-        str.append("date").append("=").append(m_date).append(", ");
         str.append("types").append("=").append(m_types).append(", ");
         str.append("childs").append("=").append(m_includeChilds);
         str.append("]");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.84.4.15 $
+ * Date   : $Date: 2007/06/04 16:07:08 $
+ * Version: $Revision: 1.84.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,25 @@
 
 package org.opencms.importexport;
 
+import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,28 +69,10 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
+
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.i18n.I_CmsMessageBundle;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsRole;
-import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
@@ -82,7 +83,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.15 $ 
+ * @version $Revision: 1.84.4.16 $ 
  * 
  * @since 6.0.0 
  * 
@@ -160,54 +161,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
 
         return new String(Base64.encodeBase64(data));
-    }
-
-    /**
-     * Reads all the relations of the resource from the <code>manifest.xml</code> file
-     * and adds them to the according resource.<p>
-     * 
-     * @param resourceName the site path of the resource to add the relations for 
-     * @param parentElement the current element
-     */
-    protected void addRelationsFromManifest(String resourceName, Element parentElement) {
-
-        try {
-            // Delete the already existing relations.
-            m_cms.deleteRelationsFromResource(resourceName, CmsRelationFilter.TARGETS.filterNotDefinedInContent());
-        } catch (CmsException e1) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e1.getLocalizedMessage(), e1);
-            }
-        }
-
-        // Get the nodes for the relations        
-        List relationElements = parentElement.selectNodes("./"
-            + CmsImportExportManager.N_RELATIONS
-            + "/"
-            + CmsImportExportManager.N_RELATION);
-
-        // iterate over the nodes
-        for (Iterator iter = relationElements.iterator(); iter.hasNext();) {
-            Element relationElement = (Element)iter.next();
-            String structureID = CmsImport.getChildElementTextValue(
-                relationElement,
-                CmsImportExportManager.N_RELATION_ATTRIBUTE_ID);
-            String sitePath = CmsImport.getChildElementTextValue(
-                relationElement,
-                CmsImportExportManager.N_RELATION_ATTRIBUTE_PATH);
-            String relationType = CmsImport.getChildElementTextValue(
-                relationElement,
-                CmsImportExportManager.N_RELATION_ATTRIBUTE_TYPE);
-            CmsUUID id = new CmsUUID(structureID);
-            try {
-                // Add the relation to the resource
-                m_cms.addRelationToResource(resourceName, id, sitePath, relationType);
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
     }
 
     /**

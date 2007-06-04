@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/01 14:35:58 $
- * Version: $Revision: 1.258.4.29 $
+ * Date   : $Date: 2007/06/04 16:05:42 $
+ * Version: $Revision: 1.258.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.29 $
+ * @version $Revision: 1.258.4.30 $
  * 
  * @since 6.0.0 
  */
@@ -446,9 +446,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(2, relation.getSourcePath());
             stmt.setString(3, relation.getTargetId().toString());
             stmt.setString(4, relation.getTargetPath());
-            stmt.setLong(5, relation.getDateBegin());
-            stmt.setLong(6, relation.getDateEnd());
-            stmt.setInt(7, relation.getType().getId());
+            stmt.setInt(5, relation.getType().getId());
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -1714,7 +1712,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        return new ArrayList(relations);
+
+        List result = new ArrayList(relations);
+        Collections.sort(result, CmsRelation.COMPARATOR);
+        return result;
     }
 
     /**
@@ -3051,17 +3052,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String sourcePath = res.getString(m_sqlManager.readQuery("C_RELATION_SOURCE_PATH"));
         CmsUUID targetId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RELATION_TARGET_ID")));
         String targetPath = res.getString(m_sqlManager.readQuery("C_RELATION_TARGET_PATH"));
-        long dateBegin = res.getLong(m_sqlManager.readQuery("C_RELATION_DATE_BEGIN"));
-        long dateEnd = res.getLong(m_sqlManager.readQuery("C_RELATION_DATE_END"));
         int type = res.getInt(m_sqlManager.readQuery("C_RELATION_TYPE"));
-        return new CmsRelation(
-            sourceId,
-            sourcePath,
-            targetId,
-            targetPath,
-            dateBegin,
-            dateEnd,
-            CmsRelationType.valueOf(type));
+        return new CmsRelation(sourceId, sourcePath, targetId, targetPath, CmsRelationType.valueOf(type));
     }
 
     /**
@@ -3500,21 +3492,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
                 conditions.append(END_CONDITION);
             }
-        }
-
-        // date filter
-        if (filter.getDate() > 0) {
-            if (conditions.length() == 0) {
-                conditions.append(BEGIN_CONDITION);
-            } else {
-                conditions.append(BEGIN_INCLUDE_CONDITION);
-            }
-            conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_DATE"));
-            conditions.append(END_CONDITION);
-            // once for the begin
-            params.add(String.valueOf(filter.getDate()));
-            // once for the end
-            params.add(String.valueOf(filter.getDate()));
         }
 
         // relation type filter

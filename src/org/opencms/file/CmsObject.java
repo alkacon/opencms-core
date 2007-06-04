@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.146.4.48 $
+ * Date   : $Date: 2007/06/04 16:06:43 $
+ * Version: $Revision: 1.146.4.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.48 $
+ * @version $Revision: 1.146.4.49 $
  * 
  * @since 6.0.0 
  */
@@ -124,16 +124,14 @@ public final class CmsObject {
      * Adds a new relation to the given resource.<p>
      * 
      * @param resourceName the name of the source resource
-     * @param id the structure id of the target resource
-     * @param target the target of the relation
+     * @param targetPath the path of the target resource
      * @param type the type of the relation
      * 
      * @throws CmsException if something goes wrong
      */
-    public void addRelationToResource(String resourceName, CmsUUID id, String target, String type) throws CmsException {
+    public void addRelationToResource(String resourceName, String targetPath, String type) throws CmsException {
 
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        m_securityManager.addRelationToResource(m_context, resource, id, target, CmsRelationType.valueOf(type));
+        createRelation(resourceName, targetPath, type, false);
     }
 
     /**
@@ -1937,6 +1935,20 @@ public final class CmsObject {
     public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
 
         m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
+    }
+
+    /**
+     * Imports a new relation to the given resource.<p>
+     * 
+     * @param resourceName the name of the source resource
+     * @param targetPath the path of the target resource
+     * @param relationType the type of the relation
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void importRelation(String resourceName, String targetPath, String relationType) throws CmsException {
+
+        createRelation(resourceName, targetPath, relationType, true);
     }
 
     /**
@@ -4402,6 +4414,25 @@ public final class CmsObject {
     private String addSiteRoot(String resourcename) {
 
         return m_context.addSiteRoot(resourcename);
+    }
+
+    /**
+     * Adds a new relation to the given resource.<p>
+     * 
+     * @param resourceName the name of the source resource
+     * @param targetPath the path of the target resource
+     * @param relationType the type of the relation
+     * @param importCase if importing relations
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void createRelation(String resourceName, String targetPath, String relationType, boolean importCase)
+    throws CmsException {
+
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource target = readResource(targetPath, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsRelationType type = CmsRelationType.valueOf(relationType);
+        m_securityManager.addRelationToResource(m_context, resource, target, type, importCase);
     }
 
     /**

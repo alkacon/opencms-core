@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/05/03 16:00:19 $
- * Version: $Revision: 1.42.4.19 $
+ * Date   : $Date: 2007/06/04 16:06:57 $
+ * Version: $Revision: 1.42.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.19 $ 
+ * @version $Revision: 1.42.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +238,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.chtype(cms.getRequestContext(), resource, type);
         // type may have changed from non link parseable to link parseable
-        updateRelations(cms, securityManager, resource, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath());
     }
 
     /**
@@ -602,7 +601,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
         // type may have changed from non link parseable to link parseable
-        updateRelations(cms, securityManager, resource, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath());
     }
 
     /**
@@ -613,7 +612,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.restoreResource(cms.getRequestContext(), resource, version);
         // type may have changed from non link parseable to link parseable
-        updateRelations(cms, securityManager, resource, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath());
     }
 
     /**
@@ -732,9 +731,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (resource.isFile()) {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
-            // remove relation entries
-            if (!(this instanceof I_CmsLinkParseable)) {
-                deleteRelationsWithSiblings(cms, securityManager, resource);
+            I_CmsResourceType type = getResourceType(file.getTypeId());
+            // update the relations after writing!!
+            if (type instanceof I_CmsLinkParseable) {
+                // if the new type is link parseable
+                securityManager.updateRelationsForResource(
+                    cms.getRequestContext(),
+                    file,
+                    ((I_CmsLinkParseable)type).parseLinks(cms, file));
             }
             return file;
         }
@@ -794,35 +798,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 CmsFile.upgrade(resource, cms)));
         }
         return resource;
-    }
-
-    /**
-     * Deletes all relations for the given resource and all its siblings.<p>
-     * 
-     * @param cms the cms context
-     * @param securityManager the security manager object
-     * @param resource the resource to delete the resource for
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    protected void deleteRelationsWithSiblings(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException {
-
-        List siblings;
-        if (resource.getSiblingCount() > 1) {
-            siblings = securityManager.readSiblings(
-                cms.getRequestContext(),
-                resource,
-                CmsResourceFilter.IGNORE_EXPIRATION);
-        } else {
-            siblings = new ArrayList();
-            siblings.add(resource);
-        }
-        Iterator it = siblings.iterator();
-        while (it.hasNext()) {
-            CmsResource sibling = (CmsResource)it.next();
-            securityManager.deleteRelationsForResource(cms.getRequestContext(), sibling, CmsRelationFilter.TARGETS);
-        }
     }
 
     /**
@@ -1003,33 +978,5 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
             }
         }
-    }
-
-    /**
-     * Updates the relation information by removing the relations for the given resource, and then 
-     * parsing the links of a fresh read version of the resource with the given resource name.<p>
-     * 
-     * This code is here instead of being in the {@link A_CmsResourceTypeLinkParseable} class 
-     * because after some operations the type may be change from non link parseable to link parseable.<p>
-     *   
-     * It should always called after an operation that may change the type of a resource.<p>
-     * 
-     * @param cms the cms context
-     * @param securityManager the security manager
-     * @param oldResource the original resource to delete the relation information for
-     * @param newResourceName the name of the new resource to create the relations for 
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected void updateRelations(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource oldResource,
-        String newResourceName) throws CmsException {
-
-        // delete the links for the original resource
-        deleteRelationsWithSiblings(cms, securityManager, oldResource);
-        // create the relations for the new resource, only if type is link parseable!!
-        createRelations(cms, securityManager, newResourceName);
     }
 }
