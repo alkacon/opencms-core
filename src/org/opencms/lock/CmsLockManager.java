@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.37.4.24 $
+ * Date   : $Date: 2007/06/04 16:07:36 $
+ * Version: $Revision: 1.37.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.List;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.24 $ 
+ * @version $Revision: 1.37.4.25 $ 
  * 
  * @since 6.0.0 
  * 
@@ -342,12 +342,15 @@ public final class CmsLockManager {
      */
     public void readLocks(CmsDbContext dbc) throws CmsException {
 
-        OpenCms.getMemoryMonitor().flushLocks();
-        List locks = m_driverManager.getProjectDriver().readLocks(dbc);
-        Iterator itLocks = locks.iterator();
-        while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
-            internalLockResource(lock);
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            // read the locks only if the wizard is not enabled
+            OpenCms.getMemoryMonitor().flushLocks();
+            List locks = m_driverManager.getProjectDriver().readLocks(dbc);
+            Iterator itLocks = locks.iterator();
+            while (itLocks.hasNext()) {
+                CmsLock lock = (CmsLock)itLocks.next();
+                internalLockResource(lock);
+            }
         }
     }
 
@@ -550,8 +553,8 @@ public final class CmsLockManager {
      */
     public void writeLocks(CmsDbContext dbc) throws CmsException {
 
-        if (m_isDirty) {
-            // write the locks only if really needed
+        if (m_isDirty && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
+            // write the locks only if wizard is not enabled
             List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
             m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
