@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/04 15:08:50 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.9.1 
  */
@@ -463,8 +463,8 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
         Map colVisibilities = new HashMap(16);
         // set explorer configurable column visibilities
         colVisibilities.put(new Integer(CmsUserSettings.FILELIST_TITLE), Boolean.TRUE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_TYPE), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_SIZE), Boolean.FALSE);
+        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_TYPE), Boolean.TRUE);
+        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_SIZE), Boolean.TRUE);
         colVisibilities.put(new Integer(CmsUserSettings.FILELIST_PERMISSIONS), Boolean.FALSE);
         colVisibilities.put(new Integer(CmsUserSettings.FILELIST_DATE_LASTMODIFIED), Boolean.FALSE);
         colVisibilities.put(new Integer(CmsUserSettings.FILELIST_USER_LASTMODIFIED), Boolean.FALSE);
