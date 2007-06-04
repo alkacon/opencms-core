@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/06/04 15:09:54 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.5 
  */
@@ -179,7 +179,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     allResources.addAll(getSettings().getPublishList().getFileList());
                     allResources.addAll(getSettings().getPublishList().getDeletedFolderList());
                     allResources.addAll(getSettings().getPublishList().getFolderList());
-                    if (m_publishRelated) {
+                    if (m_publishRelated && getSettings().getPublishList().isDirectPublish()) {
                         try {
                             CmsPublishList pubList = OpenCms.getPublishManager().getRelatedResourcesToPublish(
                                 cms,

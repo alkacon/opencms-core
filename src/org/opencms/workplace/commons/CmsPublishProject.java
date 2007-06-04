@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/04/04 13:07:22 $
- * Version: $Revision: 1.27.4.18 $
+ * Date   : $Date: 2007/06/04 15:09:54 $
+ * Version: $Revision: 1.27.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.18 $ 
+ * @version $Revision: 1.27.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -752,7 +752,7 @@ public class CmsPublishProject extends CmsMultiDialog {
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
         }
-        if (Boolean.valueOf(getParamRelatedresources()).booleanValue()) {
+        if (Boolean.valueOf(getParamRelatedresources()).booleanValue() && publishList.isDirectPublish()) {
             CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
                 getCms(),
                 publishList);

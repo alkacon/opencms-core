@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.43.4.30 $
+ * Date   : $Date: 2007/06/04 15:09:54 $
+ * Version: $Revision: 1.43.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.30 $
+ * @version $Revision: 1.43.4.31 $
  * 
  * @since 6.0.0 
  */
@@ -253,7 +253,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1 = "ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1 = "ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1";
+    public static final String ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_0 = "ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";

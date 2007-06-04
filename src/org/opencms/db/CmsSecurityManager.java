@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/01 12:11:56 $
- * Version: $Revision: 1.97.4.55 $
+ * Date   : $Date: 2007/06/04 15:09:54 $
+ * Version: $Revision: 1.97.4.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
@@ -2093,21 +2094,20 @@ public final class CmsSecurityManager {
         CmsPublishList publishList,
         CmsRelationFilter filter) throws CmsException {
 
+        if (!publishList.isDirectPublish()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_0));
+        }
+
         CmsPublishList ret = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             ret = m_driverManager.getRelatedResourcesToPublish(dbc, publishList, filter);
             checkPublishPermissions(dbc, ret);
         } catch (Exception e) {
-            if (publishList.isDirectPublish()) {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
-                    CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
-            } else {
-                dbc.report(null, Messages.get().container(
-                    Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_1,
-                    context.currentProject().getName()), e);
-            }
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_DIRECT_1,
+                CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
         } finally {
             dbc.clear();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/05/10 09:45:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 15:09:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2
  */
@@ -180,10 +180,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
                     + getJsp().link("/system/workplace/resources/tree/empty.gif")
                     + "\" width=\"30px\" height=\"11px\"/>";
             }
-            String name = category.getTitle();
-            if (name == null) {
-                name = categoryPath;
-            }
+            String name = category.getName();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(htmlName)) {
                 name = htmlName + name;
             }
