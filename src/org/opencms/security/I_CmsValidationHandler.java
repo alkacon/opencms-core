@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2007/01/08 14:02:58 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/04 16:09:23 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsIllegalArgumentException;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -79,15 +79,6 @@ public interface I_CmsValidationHandler {
      * @throws CmsIllegalArgumentException if the given email address is not valid
      */
     void checkLastname(String lastname) throws CmsIllegalArgumentException;
-
-    /**
-     * Checks if the provided organizational unit name is a valid organizational unit name.<p>
-     *
-     * @param organizationalUnitName the organizational unit name to check
-     * 
-     * @throws CmsIllegalArgumentException if the given organizational unit name is not valid
-     */
-    void checkOrganizationalUnitName(String organizationalUnitName) throws CmsIllegalArgumentException;
 
     /**
      * Checks if the provided user name is a valid user name.<p>

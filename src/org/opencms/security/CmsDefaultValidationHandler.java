@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultValidationHandler.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/04 16:09:23 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.3.0 
  */
@@ -94,18 +94,6 @@ public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
-        }
-    }
-
-    /**
-     * @see org.opencms.security.I_CmsValidationHandler#checkOrganizationalUnitName(java.lang.String)
-     */
-    public void checkOrganizationalUnitName(String ouName) throws CmsIllegalArgumentException {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(ouName)
-            || ouName.endsWith(CmsOrganizationalUnit.SEPARATOR)
-            || ouName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_ORGUNITNAME_EMPTY_0));
         }
     }
 

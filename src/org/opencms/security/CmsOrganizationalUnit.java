@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/06/04 16:09:23 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.security;
 
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -43,7 +42,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  * 
  * @since 6.5.6 
  */
@@ -143,20 +142,6 @@ public class CmsOrganizationalUnit {
             return fqn.substring(1);
         }
         return fqn;
-    }
-
-    /**
-     * Checks if the provided organizational unit name is valid and can be used as a name.<p> 
-     * 
-     * An organizational unit name must not be empty or whitespace only.<p>
-     * 
-     * @param name the organizational unit name to check
-     * 
-     * @see org.opencms.security.I_CmsValidationHandler#checkOrganizationalUnitName(String)
-     */
-    public void checkName(String name) {
-
-        OpenCms.getValidationHandler().checkOrganizationalUnitName(name);
     }
 
     /**

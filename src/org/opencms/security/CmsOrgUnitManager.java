@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2007/01/19 16:53:52 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 16:09:23 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.security;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 
@@ -44,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.5.6
  */
@@ -222,11 +223,12 @@ public class CmsOrgUnitManager {
     public void removeResourceFromOrgUnit(CmsObject cms, String ouFqn, String resourceName) throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
-        // do not read the resource to allow to remove deleted resources
+        CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        
         m_securityManager.removeResourceFromOrgUnit(
             cms.getRequestContext(),
             orgUnit,
-            cms.getRequestContext().addSiteRoot(resourceName));
+            resource);
     }
 
     /**
