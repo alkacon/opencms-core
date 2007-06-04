@@ -115,7 +115,11 @@
 .oddrowbg {
 	background-color: Window;
 }
- 
+
+.evenrowbgnew {
+	background-color: InfoBackground;
+}
+
 .misc {
   text-align: right;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2007/05/02 16:55:31 $
- * Version: $Revision: 1.22.4.9 $
+ * Date   : $Date: 2007/06/04 15:06:42 $
+ * Version: $Revision: 1.22.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22.4.9 $ 
+ * @version $Revision: 1.22.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,7 +527,7 @@ public class CmsListMetadata {
         html.append("<tr ");
         if (!isPrintable) {
             html.append("class='");
-            html.append(odd ? "oddrowbg" : "evenrowbg");
+            html.append(odd ? "oddrowbg" : (getWp().useNewStyle() ? "evenrowbg" : "evenrowbgnew"));
             html.append("'");
         }
         html.append(">\n");

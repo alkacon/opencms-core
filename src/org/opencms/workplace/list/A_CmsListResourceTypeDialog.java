@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceTypeDialog.java,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 15:06:42 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.7.2
  */
@@ -329,12 +329,12 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
         result.append(CmsWorkplace.getSkinUri());
         result.append("editors/xmlcontent/help.js'></script>\n");
 
-        result.append("<style type='text/css'>\n");
-        result.append(".evenrowbg {\n");
-        result.append("\tbackground-color: InfoBackground;\n");
-        result.append("\tcolor: InfoText;\n");
-        result.append("}\n");
-        result.append("</style>");
+//        result.append("<style type='text/css'>\n");
+//        result.append(".evenrowbg {\n");
+//        result.append("\tbackground-color: InfoBackground;\n");
+//        result.append("\tcolor: InfoText;\n");
+//        result.append("}\n");
+//        result.append("</style>");
 
         result.append("<form name='");
         result.append(getList().getId());
