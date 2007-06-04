@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceCustomFoot.java,v $
- * Date   : $Date: 2007/05/15 14:18:14 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 16:04:54 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
@@ -39,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2 
  */
@@ -56,7 +58,7 @@ public class CmsWorkplaceCustomFoot {
         + CmsMacroResolver.KEY_LOCALIZED_PREFIX
         + Messages.GUI_LABEL_USER_0
         + ") %("
-        + CmsMacroResolver.KEY_CURRENT_USER_DISPLAYNAME
+        + CmsMacroResolver.KEY_CURRENT_USER_FULLNAME
         + ") %("
         + CmsMacroResolver.KEY_LOCALIZED_PREFIX
         + Messages.GUI_LABEL_LOGINTIME_0
@@ -67,7 +69,13 @@ public class CmsWorkplaceCustomFoot {
         + Messages.GUI_LABEL_LOGINADDRESS_0
         + ") %("
         + CmsMacroResolver.KEY_OPENCMS
-        + "remoteaddress)";
+        + "remoteaddress) ";
+
+    /** The default workplace foot text to display. */
+    public static final String DEFAULT_TEXT_WITH_OU = DEFAULT_TEXT
+        + "[%("
+        + CmsMacroResolver.KEY_CURRENT_ORGUNIT_DESCRIPTION
+        + ")] ";
 
     /** The background color of the foot frame. */
     private String m_backgroundColor;
@@ -142,7 +150,15 @@ public class CmsWorkplaceCustomFoot {
             StringBuffer text = new StringBuffer(512);
             if (!isReplaceDefault()) {
                 // the default text should be shown
-                text.append(DEFAULT_TEXT).append(" ");
+                try {
+                    if (OpenCms.getOrgUnitManager().getOrganizationalUnits(wp.getCms(), "", true).isEmpty()) {
+                        text.append(DEFAULT_TEXT).append(" ");
+                    } else {
+                        text.append(DEFAULT_TEXT_WITH_OU).append(" ");
+                    }
+                } catch (CmsException e) {
+                    text.append(DEFAULT_TEXT).append(" ");
+                }
             }
             text.append(m_text);
             m_textShown = text.toString();

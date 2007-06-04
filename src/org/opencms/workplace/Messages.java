@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2007/05/15 10:36:08 $
- * Version: $Revision: 1.23.4.17 $
+ * Date   : $Date: 2007/06/04 16:04:54 $
+ * Version: $Revision: 1.23.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.4.17 $ 
+ * @version $Revision: 1.23.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_VIEW_0 = "GUI_LABEL_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_WPTITLE_2 = "GUI_LABEL_WPTITLE_2";
+    public static final String GUI_LABEL_WPTITLE_1 = "GUI_LABEL_WPTITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_BUTTON_0 = "GUI_LOGIN_BUTTON_0";
