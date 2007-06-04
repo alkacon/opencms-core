@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2007/05/15 14:18:14 $
- * Version: $Revision: 1.18.4.9 $
+ * Date   : $Date: 2007/06/04 16:09:47 $
+ * Version: $Revision: 1.18.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18.4.9 $ 
+ * @version $Revision: 1.18.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +72,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The prefix indicating that the key represents an OpenCms runtime attribute. */
     public static final String KEY_ATTRIBUTE = "attribute.";
+
+    /** Key used to specify the description of the current organizational unit as macro value. */
+    public static final String KEY_CURRENT_ORGUNIT_DESCRIPTION = "currentou.description";
+
+    /** Key used to specify the full qualified name of the current organizational unit as macro value. */
+    public static final String KEY_CURRENT_ORGUNIT_FQN = "currentou.fqn";
 
     /** Key used to specify the current time as macro value. */
     public static final String KEY_CURRENT_TIME = "currenttime";
@@ -603,6 +610,27 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         return m_cms.getRequestContext().currentUser().getDisplayName(
                             m_cms,
                             m_cms.getRequestContext().getLocale());
+                    }
+                } catch (CmsException e) {
+                    // ignore, macro can not be resolved
+                }
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_ORGUNIT_FQN.equals(macro)) {
+                // the key is the current organizational unit fully qualified name
+                return m_cms.getRequestContext().getOuFqn();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_ORGUNIT_DESCRIPTION.equals(macro)) {
+                // the key is the current organizational unit description
+                try {
+                    CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                        m_cms,
+                        m_cms.getRequestContext().getOuFqn());
+                    if (m_messages != null) {
+                        return ou.getDescription(m_messages.getLocale());
+                    } else {
+                        return ou.getDescription(m_cms.getRequestContext().getLocale());
                     }
                 } catch (CmsException e) {
                     // ignore, macro can not be resolved
