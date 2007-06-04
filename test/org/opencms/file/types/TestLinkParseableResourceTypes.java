@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/05/09 07:59:16 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $
+ * @version $Revision: 1.1.2.12 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -74,24 +74,6 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
     public TestLinkParseableResourceTypes(String arg0) {
 
         super(arg0);
-    }
-
-    /**
-     * Asserts the equality of the two given relations.<p>
-     * 
-     * @param expected the expected relation
-     * @param actual the actual result
-     */
-    public static void assertRelation(CmsRelation expected, CmsRelation actual) {
-
-        assertEquals(expected.getSourceId(), actual.getSourceId());
-        assertEquals(expected.getSourcePath(), actual.getSourcePath());
-        assertEquals(expected.getTargetId(), actual.getTargetId());
-        assertEquals(expected.getTargetPath(), actual.getTargetPath());
-        assertEquals(expected.getDateBegin(), actual.getDateBegin());
-        assertEquals(expected.getDateEnd(), actual.getDateEnd());
-        assertEquals(expected.getType(), actual.getType());
-
     }
 
     /**
@@ -135,43 +117,6 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    private static void assertRelationOperation(
-        CmsObject cms,
-        CmsResource source,
-        CmsResource target,
-        int sources,
-        int sourceRelations) throws CmsException {
-
-        List relations = cms.getRelationsForResource(
-            cms.getRequestContext().removeSiteRoot(source.getRootPath()),
-            CmsRelationFilter.TARGETS);
-        assertEquals(relations.size(), sourceRelations);
-        if (relations.size() == 1) {
-            CmsRelation expected = new CmsRelation(
-                source.getStructureId(),
-                source.getRootPath(),
-                target.getStructureId(),
-                target.getRootPath(),
-                CmsResource.DATE_RELEASED_DEFAULT,
-                CmsResource.DATE_EXPIRED_DEFAULT,
-                CmsRelationType.EMBEDDED_IMAGE);
-            assertRelation(expected, (CmsRelation)relations.get(0));
-        }
-        relations = cms.getRelationsForResource(
-            cms.getRequestContext().removeSiteRoot(source.getRootPath()),
-            CmsRelationFilter.SOURCES);
-        assertTrue(relations.isEmpty());
-
-        relations = cms.getRelationsForResource(
-            cms.getRequestContext().removeSiteRoot(target.getRootPath()),
-            CmsRelationFilter.TARGETS);
-        assertTrue(relations.isEmpty());
-        relations = cms.getRelationsForResource(
-            cms.getRequestContext().removeSiteRoot(target.getRootPath()),
-            CmsRelationFilter.SOURCES);
-        assertEquals(relations.size(), sources);
     }
 
     /**
@@ -403,6 +348,47 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
     }
 
     /**
+     * Test deleteResource method for a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDeleteFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing 'deleteResource' method for a folder");
+
+        String folderName = "/testFolder";
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+
+        String targetName = "/folder2/image2.gif";
+        CmsResource target = cms.readResource(targetName);
+
+        String sourceName = folderName + "/index.html";
+        CmsResource source = cms.createResource(sourceName, CmsResourceTypeXmlPage.getStaticTypeId());
+        TestLinkValidation.setContent(cms, sourceName, "<img src='" + targetName + "'>");
+
+        List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        CmsRelation expected = new CmsRelation(source, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.SOURCES);
+        assertTrue(relations.isEmpty());
+
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
+        assertEquals(1, relations.size());
+
+        cms.lockResource(folderName);
+        cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
+        assertTrue(relations.isEmpty());
+    }
+
+    /**
      * Test deleteResource method.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -420,14 +406,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
         assertEquals(relations.size(), 1);
-        CmsRelation expected = new CmsRelation(
-            source.getStructureId(),
-            source.getRootPath(),
-            target.getStructureId(),
-            target.getRootPath(),
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            CmsRelationType.EMBEDDED_IMAGE);
+        CmsRelation expected = new CmsRelation(source, target, CmsRelationType.EMBEDDED_IMAGE);
         assertRelation(expected, (CmsRelation)relations.get(0));
         relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.SOURCES);
         assertTrue(relations.isEmpty());
@@ -465,14 +444,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         source = cms.readResource(sourceName);
         relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
         assertEquals(1, relations.size());
-        expected = new CmsRelation(
-            source.getStructureId(),
-            source.getRootPath(),
-            target.getStructureId(),
-            target.getRootPath(),
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            CmsRelationType.EMBEDDED_IMAGE);
+        expected = new CmsRelation(source, target, CmsRelationType.EMBEDDED_IMAGE);
         assertRelation(expected, (CmsRelation)relations.get(0));
         relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.SOURCES);
         assertTrue(relations.isEmpty());
@@ -485,113 +457,6 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
          + target.getRootPath()
          + "%';";
          */
-    }
-
-    /**
-     * Test deleteResource method for a folder.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testDeleteFolder() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing 'deleteResource' method for a folder");
-
-        String folderName = "/testFolder";
-        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-
-        String targetName = "/folder2/image2.gif";
-        CmsResource target = cms.readResource(targetName);
-
-        String sourceName = folderName + "/index.html";
-        CmsResource source = cms.createResource(sourceName, CmsResourceTypeXmlPage.getStaticTypeId());
-        TestLinkValidation.setContent(cms, sourceName, "<img src='" + targetName + "'>");
-
-        List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-        assertEquals(1, relations.size());
-        CmsRelation expected = new CmsRelation(
-            source.getStructureId(),
-            source.getRootPath(),
-            target.getStructureId(),
-            target.getRootPath(),
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            CmsRelationType.EMBEDDED_IMAGE);
-        assertRelation(expected, (CmsRelation)relations.get(0));
-        relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.SOURCES);
-        assertTrue(relations.isEmpty());
-
-        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
-        assertTrue(relations.isEmpty());
-        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
-        assertEquals(1, relations.size());
-
-        cms.lockResource(folderName);
-        cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
-        assertTrue(relations.isEmpty());
-        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
-        assertTrue(relations.isEmpty());
-    }
-
-    /**
-     * Test importResource method for non link parseable resources.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testImportResourceNonLinkParseable() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing 'importResource' method for non link parseable resources");
-
-        String sourceName = "/index_created.html";
-        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            "packages/testImportChangeType.zip");
-        try {
-
-            List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-            assertEquals(relations.size(), 1);
-
-            // change the type of the resource
-            cms.lockResource(sourceName);
-            cms.chtype(sourceName, CmsResourceTypeBinary.getStaticTypeId());
-
-            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-            assertTrue(relations.isEmpty());
-
-            // export the file
-            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
-            List exportPaths = new ArrayList(1);
-            exportPaths.add(sourceName);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
-            OpenCms.getImportExportManager().exportData(
-                cms,
-                vfsExportHandler,
-                new CmsShellReport(cms.getRequestContext().getLocale()));
-
-            // change the type back
-            cms.undoChanges(sourceName, CmsResource.UNDO_CONTENT);
-
-            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-            assertEquals(relations.size(), 1);
-
-            // re-import the exported file
-            OpenCms.getImportExportManager().importData(
-                cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
-
-            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
-            assertTrue(relations.isEmpty());
-        } finally {
-            deleteFile(zipExportFilename);
-        }
     }
 
     /**
@@ -665,6 +530,65 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
     }
 
     /**
+     * Test importResource method for non link parseable resources.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportResourceNonLinkParseable() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing 'importResource' method for non link parseable resources");
+
+        String sourceName = "/index_created.html";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportChangeType.zip");
+        try {
+
+            List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+            assertEquals(relations.size(), 1);
+
+            // change the type of the resource
+            cms.lockResource(sourceName);
+            cms.chtype(sourceName, CmsResourceTypeBinary.getStaticTypeId());
+
+            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+            assertTrue(relations.isEmpty());
+
+            // export the file
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(sourceName);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // change the type back
+            cms.undoChanges(sourceName, CmsResource.UNDO_CONTENT);
+
+            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+            assertEquals(relations.size(), 1);
+
+            // re-import the exported file
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+            assertTrue(relations.isEmpty());
+        } finally {
+            deleteFile(zipExportFilename);
+        }
+    }
+
+    /**
      * Test the links after the setup.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -680,14 +604,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         CmsResource target = cms.readResource(targetName);
         List relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
         assertEquals(1, relations.size());
-        CmsRelation expected = new CmsRelation(
-            source.getStructureId(),
-            source.getRootPath(),
-            target.getStructureId(),
-            target.getRootPath(),
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT,
-            CmsRelationType.EMBEDDED_IMAGE);
+        CmsRelation expected = new CmsRelation(source, target, CmsRelationType.EMBEDDED_IMAGE);
         assertRelation(expected, (CmsRelation)relations.get(0));
         relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.SOURCES);
         assertTrue(relations.isEmpty());
@@ -990,5 +907,35 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertEquals(relations.size(), 1);
         relations = cms.getRelationsForResource(newLinkName, CmsRelationFilter.SOURCES);
         assertTrue(relations.isEmpty());
+    }
+
+    private void assertRelationOperation(
+        CmsObject cms,
+        CmsResource source,
+        CmsResource target,
+        int sources,
+        int sourceRelations) throws CmsException {
+
+        List relations = cms.getRelationsForResource(
+            cms.getRequestContext().removeSiteRoot(source.getRootPath()),
+            CmsRelationFilter.TARGETS);
+        assertEquals(relations.size(), sourceRelations);
+        if (relations.size() == 1) {
+            CmsRelation expected = new CmsRelation(source, target, CmsRelationType.EMBEDDED_IMAGE);
+            assertRelation(expected, (CmsRelation)relations.get(0));
+        }
+        relations = cms.getRelationsForResource(
+            cms.getRequestContext().removeSiteRoot(source.getRootPath()),
+            CmsRelationFilter.SOURCES);
+        assertTrue(relations.isEmpty());
+
+        relations = cms.getRelationsForResource(
+            cms.getRequestContext().removeSiteRoot(target.getRootPath()),
+            CmsRelationFilter.TARGETS);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(
+            cms.getRequestContext().removeSiteRoot(target.getRootPath()),
+            CmsRelationFilter.SOURCES);
+        assertEquals(relations.size(), sources);
     }
 }

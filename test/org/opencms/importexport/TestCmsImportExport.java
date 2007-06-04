@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/05/03 13:48:55 $
- * Version: $Revision: 1.16.4.8 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.16.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsDefaultPasswordHandler;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -112,6 +117,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
         suite.addTest(new TestCmsImportExport("testImportMovedResource"));
         suite.addTest(new TestCmsImportExport("testImportChangedContent"));
+        suite.addTest(new TestCmsImportExport("testImportRelations"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -848,6 +854,97 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 // intentionally left blank
             }
         }
+    }
+
+    /**
+     * Tests the import of a resource that has been edited.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportRelations() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a resource with relations.");
+
+        String filename = "/index.html";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportRelations.zip");
+
+        try {
+            // first there are no relations
+            assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
+
+            // add relation
+            cms.lockResource(filename);
+            CmsCategoryService catService = CmsCategoryService.getInstance();
+            CmsCategory cat = catService.createCategory(cms, null, "abc", "title", "description");
+            catService.addResourceToCategory(cms, filename, cat.getPath());
+
+            // now check the new relation
+            List relations = cms.getRelationsForResource(
+                filename,
+                CmsRelationFilter.TARGETS.filterNotDefinedInContent());
+            assertEquals(1, relations.size());
+            assertRelation(new CmsRelation(
+                cms.readResource(filename),
+                cms.readResource(cat.getId()),
+                CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
+
+            // export the file
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(filename);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // delete resource
+            cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+            // publish
+            OpenCms.getPublishManager().publishResource(cms, filename);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // create new res
+            cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
+
+            // recheck that there are no relations
+            assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
+
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // now check the imported relation
+            relations = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent());
+            assertEquals(1, relations.size());
+            assertRelation(new CmsRelation(
+                cms.readResource(filename),
+                cms.readResource(cat.getId()),
+                CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+
     }
 
     /**

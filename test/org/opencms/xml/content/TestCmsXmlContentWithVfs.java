@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/04/17 14:20:42 $
- * Version: $Revision: 1.43.4.13 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.43.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
@@ -75,7 +74,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.13 $
+ * @version $Revision: 1.43.4.14 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -154,22 +153,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         return wrapper;
     }
 
-    /**
-     * Tests creation of the automatic XML schema XSD.
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testAutoXsd() throws Exception {
-
-        org.opencms.xml.CmsXmlEntityResolver resolver = new org.opencms.xml.CmsXmlEntityResolver(null);
-        org.xml.sax.InputSource source = resolver.resolveEntity(
-            null,
-            org.opencms.xml.CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS);
-        byte[] bytes = org.opencms.util.CmsFileUtil.readFully(source.getByteStream());
-        String string = org.opencms.i18n.CmsEncoder.createString(bytes, "UTF-8");
-        System.out.println(string);
-    }
-    
     /**
      * Test accessing elements in nested schemas.<p>
      * 
@@ -349,9 +332,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsResource res2 = cms.readResource(filename2);
         List links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
         assertEquals(links.size(), 1);
-        TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
-            (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
 
         file.setContents(xmlcontent.toString().getBytes());
         cms.lockResource(filename);
@@ -359,24 +340,16 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
         assertEquals(links.size(), 2);
-        TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
-            (CmsRelation)links.get(0));
-        TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, file, CmsRelationType.XML_WEAK),
-            (CmsRelation)links.get(1));
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(1));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_WEAK));
         assertEquals(links.size(), 1);
-        TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, file, CmsRelationType.XML_WEAK),
-            (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
 
         links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));
         assertEquals(links.size(), 1);
-        TestLinkParseableResourceTypes.assertRelation(
-            new CmsRelation(file, res2, CmsRelationType.HYPERLINK),
-            (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
 
         file = cms.readFile(filename);
         content = new String(file.getContents());
@@ -611,6 +584,22 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         nestedSequence = xmlcontent.getValueSequence("Cascade", Locale.ENGLISH);
         assertEquals(1, nestedSequence.getElementCount());
+    }
+
+    /**
+     * Tests creation of the automatic XML schema XSD.
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testAutoXsd() throws Exception {
+
+        org.opencms.xml.CmsXmlEntityResolver resolver = new org.opencms.xml.CmsXmlEntityResolver(null);
+        org.xml.sax.InputSource source = resolver.resolveEntity(
+            null,
+            org.opencms.xml.CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS);
+        byte[] bytes = org.opencms.util.CmsFileUtil.readFully(source.getByteStream());
+        String string = org.opencms.i18n.CmsEncoder.createString(bytes, "UTF-8");
+        System.out.println(string);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2007/03/05 16:04:43 $
- * Version: $Revision: 1.17.8.6 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.17.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.file.types.TestLinkParseableResourceTypes;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -65,7 +64,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.8.6 $
+ * @version $Revision: 1.17.8.7 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -270,7 +269,7 @@ public class TestSiblings extends OpenCmsTestCase {
         List links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         CmsRelation relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
 
         cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
         CmsResource sib2 = cms.readResource(sib2Name);
@@ -279,7 +278,7 @@ public class TestSiblings extends OpenCmsTestCase {
         links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
 
         cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
         CmsResource sib3 = cms.readResource(sib3Name);
@@ -288,7 +287,7 @@ public class TestSiblings extends OpenCmsTestCase {
         links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
 
         // remove the link
         TestLinkValidation.setContent(cms, sib1Name, "<h1>hello world!</h1>");
@@ -305,15 +304,15 @@ public class TestSiblings extends OpenCmsTestCase {
         links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
         links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
         links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
         assertEquals(1, links.size());
         relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
-        TestLinkParseableResourceTypes.assertRelation(relation, (CmsRelation)links.get(0));
+        assertRelation(relation, (CmsRelation)links.get(0));
 
         cms.deleteResource(sib3Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
         assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
@@ -569,7 +568,7 @@ public class TestSiblings extends OpenCmsTestCase {
         echo("Creating a new sibling " + target + " from " + source);
         createSibling(this, cms, source, target);
     }
-    
+
     /**
      * Tests creating 2 new siblings and publishing just one of them.<p>
      * 
@@ -584,17 +583,17 @@ public class TestSiblings extends OpenCmsTestCase {
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         String target = "/folder1/newsibling.txt";
         cms.createSibling(source, target, null);
-        
+
         assertState(cms, source, CmsResourceState.STATE_NEW);
         assertState(cms, target, CmsResourceState.STATE_NEW);
-        
+
         OpenCms.getPublishManager().publishResource(cms, source);
         OpenCms.getPublishManager().waitWhileRunning();
-        
+
         assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
         assertState(cms, target, CmsResourceState.STATE_NEW);
     }
-    
+
     /**
      * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
      * 

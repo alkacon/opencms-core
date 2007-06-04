@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/05/16 15:33:08 $
- * Version: $Revision: 1.90.4.27 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.90.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobBase;
 import org.opencms.publish.CmsPublishJobInfoBean;
+import org.opencms.relations.CmsRelation;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -96,7 +97,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.27 $
+ * @version $Revision: 1.90.4.28 $
  * 
  * @since 6.0.0
  */
@@ -485,16 +486,6 @@ public class OpenCmsTestCase extends TestCase {
             cms.createUser(name, "pwd" + i, "test user " + i, null);
             cms.addUserToGroup(name, groupName);
         }
-    }
-
-    /**
-     * Should return the additional connection name.<p>
-     * 
-     * @return the name of the additional connection
-     */
-    public String getConnectionName() {
-
-        return "additional";
     }
 
     /**
@@ -2527,6 +2518,21 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Asserts the equality of the two given relations.<p>
+     * 
+     * @param expected the expected relation
+     * @param actual the actual result
+     */
+    public void assertRelation(CmsRelation expected, CmsRelation actual) {
+
+        assertEquals(expected.getSourceId(), actual.getSourceId());
+        assertEquals(expected.getSourcePath(), actual.getSourcePath());
+        assertEquals(expected.getTargetId(), actual.getTargetId());
+        assertEquals(expected.getTargetPath(), actual.getTargetPath());
+        assertEquals(expected.getType(), actual.getType());
+    }
+
+    /**
      * Compares the current resource id of a resource with a given id.<p>
      * 
      * @param cms the CmsObject
@@ -2760,6 +2766,16 @@ public class OpenCmsTestCase extends TestCase {
 
         OpenCmsTestResourceStorage storage = new OpenCmsTestResourceStorage(name);
         m_resourceStorages.put(name, storage);
+    }
+
+    /**
+     * Should return the additional connection name.<p>
+     * 
+     * @return the name of the additional connection
+     */
+    public String getConnectionName() {
+
+        return "additional";
     }
 
     /**

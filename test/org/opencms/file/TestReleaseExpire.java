@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpire.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.3.4.3 $
+ * Date   : $Date: 2007/06/04 16:11:24 $
+ * Version: $Revision: 1.3.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,9 @@
 
 package org.opencms.file;
 
-import org.opencms.file.types.CmsResourceTypeImage;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-
-import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -49,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  * 
  * @author Jan Baudisch
- * @version $Revision: 1.3.4.3 $
+ * @version $Revision: 1.3.4.4 $
  */
 public class TestReleaseExpire extends OpenCmsTestCase {
 
@@ -81,7 +75,6 @@ public class TestReleaseExpire extends OpenCmsTestCase {
 
         suite.addTest(new TestReleaseExpire("testSetDateReleased"));
         suite.addTest(new TestReleaseExpire("testSetDateExpired"));
-        suite.addTest(new TestReleaseExpire("testRelation"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -97,52 +90,6 @@ public class TestReleaseExpire extends OpenCmsTestCase {
         };
 
         return wrapper;
-    }
-
-    /**
-     * Test a relation after setting the time window on a resource.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testRelation() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing a relation after setting the time window");
-
-        // the new test files
-        String source = "/test_page.html";
-        String target = "/test_image.gif";
-
-        // create the test files
-        cms.createResource(source, CmsResourceTypeXmlPage.getStaticTypeId());
-        cms.createResource(target, CmsResourceTypeImage.getStaticTypeId());
-        TestLinkValidation.setContent(cms, source, "<img src='" + target + "'/>");
-
-        // check the link before setting the time window
-        List links = cms.getRelationsForResource(source, CmsRelationFilter.TARGETS);
-        assertEquals(1, links.size());
-        CmsRelation rel = (CmsRelation)links.get(0);
-        assertEquals(source, cms.getRequestContext().removeSiteRoot(rel.getSourcePath()));
-        assertEquals(target, cms.getRequestContext().removeSiteRoot(rel.getTargetPath()));
-        assertEquals(CmsResource.DATE_RELEASED_DEFAULT, rel.getDateBegin());
-        assertEquals(CmsResource.DATE_EXPIRED_DEFAULT, rel.getDateEnd());
-
-        // change the time window
-        long yesterday = System.currentTimeMillis() - m_msecPerDay;
-        long tomorrow = System.currentTimeMillis() + m_msecPerDay;
-        cms.lockResource(target);
-        cms.setDateReleased(target, yesterday, false);
-        cms.setDateExpired(target, tomorrow, false);
-        cms.unlockResource(target);
-
-        // check the link after changing the time window
-        List links2 = cms.getRelationsForResource(source, CmsRelationFilter.TARGETS);
-        assertEquals(1, links2.size());
-        CmsRelation rel2 = (CmsRelation)links2.get(0);
-        assertEquals(source, cms.getRequestContext().removeSiteRoot(rel2.getSourcePath()));
-        assertEquals(target, cms.getRequestContext().removeSiteRoot(rel2.getTargetPath()));
-        assertEquals(yesterday, rel.getDateBegin());
-        assertEquals(tomorrow, rel.getDateEnd());
     }
 
     /**
