@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDocumentTypeAddList.java,v $
- * Date   : $Date: 2007/03/15 16:36:36 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/06/04 16:11:40 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2.4.3 $
+ * @version $Revision: 1.2.4.4 $
  * 
  * @since 6.0.0
  */
@@ -447,7 +447,7 @@ public class CmsDocumentTypeAddList extends A_CmsEmbeddedListDialog {
         List result;
         if (indexsource != null) {
             // indexsource returns only unmodifyable set
-            List systemDoctypeNames = manager.getDocumentTypeConfigs();
+            List systemDoctypeNames = new ArrayList(manager.getDocumentTypeConfigs());
             List doctypeNames = new ArrayList(indexsource.getDocumentTypes());
             // accept only the complement of system doctypes to the indexsources doctypes:
             systemDoctypeNames.removeAll(doctypeNames);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/05/29 13:50:43 $
- * Version: $Revision: 1.717.2.179 $
+ * Date   : $Date: 2007/06/04 16:11:54 $
+ * Version: $Revision: 1.717.2.180 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@ OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 - Improved check for the availability of a VFS resource in the full text search component
 - Changed internal message bufffer
 * A number of potential problems reported by the "Findbugs" tool have been removed
+* Fixed issue #1367: Index source - assign document types error
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Historical publish reports are now stored in the publish job record, not in the file system
