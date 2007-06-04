@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResources.java,v $
- * Date   : $Date: 2007/05/02 16:55:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 16:10:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.1
  */
@@ -71,6 +71,9 @@ public class CmsDeletedResources extends CmsDialog {
 
     /** Request parameter name for the relatedresources parameter. */
     public static final String PARAM_READTREE = "readtree";
+
+    /** Constant for the restore action. */
+    private static final String ACTION_RESTORE = "ar";
 
     /** The list action. */
     private String m_paramListAction;
@@ -276,7 +279,7 @@ public class CmsDeletedResources extends CmsDialog {
         return dialogButtonsOkCancel(" onclick=\"listMAction('"
             + CmsDeletedResourcesList.LIST_ID
             + "','"
-            + CmsDeletedResourcesList.LIST_MACTION_RESTORE
+            + ACTION_RESTORE
             + "', '', noSelHelp);\"", null);
     }
 
@@ -289,14 +292,14 @@ public class CmsDeletedResources extends CmsDialog {
      */
     public void executeListMultiActions() throws JspException {
 
-        if (getParamListAction().equals(CmsDeletedResourcesList.LIST_MACTION_RESTORE)) {
+        if (getParamListAction().equals(ACTION_RESTORE)) {
 
             StringBuffer errors = new StringBuffer();
 
             Iterator iter = getSelectedItems().iterator();
             while (iter.hasNext()) {
-                 CmsUUID id = new CmsUUID((String)iter.next());
-                 try {
+                CmsUUID id = new CmsUUID((String)iter.next());
+                try {
                     getCms().restoreDeletedResource(id);
                 } catch (Exception e) {
                     errors.append(e.getLocalizedMessage());

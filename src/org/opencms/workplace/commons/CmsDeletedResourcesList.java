@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/04 16:10:05 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListPrintIAction;
 import org.opencms.workplace.list.CmsListResourceIconAction;
@@ -59,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.1
  */
@@ -97,9 +96,6 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
 
     /** List id constant. */
     public static final String LIST_ID = "drl";
-
-    /** List action id constant. */
-    public static final String LIST_MACTION_RESTORE = "mr";
 
     /** Should deleted resources be displayed for the current folder or the subtree. */
     private boolean m_readTree;
@@ -325,13 +321,6 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // add restore multi action
-        CmsListMultiAction restoreMultiAction = new CmsListMultiAction(LIST_MACTION_RESTORE);
-        restoreMultiAction.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_NAME_0));
-        restoreMultiAction.setIconPath(ICON_MULTI_RESTORE);
-        restoreMultiAction.setHelpText(Messages.get().container(
-            Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_HELP_0));
-        metadata.addMultiAction(restoreMultiAction);
+        // no multi action
     }
-
 }
