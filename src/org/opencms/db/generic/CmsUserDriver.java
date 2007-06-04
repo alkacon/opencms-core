@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/05/31 10:03:15 $
- * Version: $Revision: 1.110.2.33 $
+ * Date   : $Date: 2007/06/04 16:06:07 $
+ * Version: $Revision: 1.110.2.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.33 $
+ * @version $Revision: 1.110.2.34 $
  * 
  * @since 6.0.0 
  */
@@ -840,35 +840,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
-        }
-        return orgUnits;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnitsForFolder(CmsDbContext, CmsFolder)
-     */
-    public List getOrganizationalUnitsForFolder(CmsDbContext dbc, CmsFolder folder) throws CmsDataAccessException {
-
-        List orgUnits = new ArrayList();
-        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.OU_RESOURCE);
-
-        // get the starting folder
-        CmsFolder parent = folder;
-        while (parent != null) {
-            Iterator itRelations = m_driverManager.getVfsDriver().readRelations(
-                dbc,
-                dbc.currentProject().getUuid(),
-                parent,
-                filter).iterator();
-            while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
-                String ouFqn = relation.getSourcePath().substring(ORGUNIT_BASE_FOLDER.length());
-                orgUnits.add(ouFqn);
-            }
-            parent = m_driverManager.getVfsDriver().readParentFolder(
-                dbc,
-                dbc.currentProject().getUuid(),
-                parent.getStructureId());
         }
         return orgUnits;
     }
@@ -1657,12 +1628,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeResourceFromOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, String)
+     * @see org.opencms.db.I_CmsUserDriver#removeResourceFromOrganizationalUnit(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, CmsResource)
      */
     public void removeResourceFromOrganizationalUnit(
         CmsDbContext dbc,
         CmsOrganizationalUnit orgUnit,
-        String resourceName) throws CmsDataAccessException {
+        CmsResource resource) throws CmsDataAccessException {
 
         // check for root ou
         if (orgUnit.getParentFqn() == null) {
@@ -1676,26 +1647,23 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             // get the associated resources
             List vfsPaths = new ArrayList(internalResourcesForOrgUnit(dbc, ouResource));
-            if (!resourceName.endsWith("/")) {
-                resourceName += "/";
-            }
 
             // check if associated
-            if (!vfsPaths.contains(resourceName)) {
+            if (!vfsPaths.contains(resource.getRootPath())) {
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_ORGUNIT_DOESNOT_CONTAINS_RESOURCE_2,
                     orgUnit.getName(),
-                    dbc.removeSiteRoot(resourceName)));
+                    dbc.removeSiteRoot(resource.getRootPath())));
             }
             if (vfsPaths.size() == 1) {
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2,
                     orgUnit.getName(),
-                    dbc.removeSiteRoot(resourceName)));
+                    dbc.removeSiteRoot(resource.getRootPath())));
             }
 
             // remove the resource
-            CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterPath(resourceName);
+            CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterPath(resource.getRootPath());
             m_driverManager.getVfsDriver().deleteRelations(dbc, dbc.currentProject().getUuid(), ouResource, filter);
             m_driverManager.getVfsDriver().deleteRelations(dbc, CmsProject.ONLINE_PROJECT_ID, ouResource, filter);
 
@@ -1703,7 +1671,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 // be sure the project was not deleted
                 CmsProject project = m_driverManager.readProject(dbc, orgUnit.getProjectId());
                 // maintain the default project synchronized
-                m_driverManager.getProjectDriver().deleteProjectResource(dbc, orgUnit.getProjectId(), resourceName);
+                m_driverManager.getProjectDriver().deleteProjectResource(
+                    dbc,
+                    orgUnit.getProjectId(),
+                    resource.getRootPath());
 
                 OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
                     "project",
@@ -2300,12 +2271,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0);
 
         CmsUUID projectId = dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId();
-        
-        m_driverManager.getVfsDriver().createResource(
-            dbc,
-            projectId,
-            resource,
-            null);
+
+        m_driverManager.getVfsDriver().createResource(dbc, projectId, resource, null);
         resource.setState(CmsResource.STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeResource(dbc, projectId, resource, CmsDriverManager.NOTHING_CHANGED);
 
@@ -2314,7 +2281,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
             m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), resource, null);
             resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(dbc, onlineProject.getUuid(), resource, CmsDriverManager.NOTHING_CHANGED);
+            m_driverManager.getVfsDriver().writeResource(
+                dbc,
+                onlineProject.getUuid(),
+                resource,
+                CmsDriverManager.NOTHING_CHANGED);
         }
         return resource;
     }
