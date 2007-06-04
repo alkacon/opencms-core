@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/05/14 15:58:14 $
- * Version: $Revision: 1.13.4.30 $
+ * Date   : $Date: 2007/06/04 15:04:50 $
+ * Version: $Revision: 1.13.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -898,8 +898,11 @@ function simpleEscape(text) {
 }
 
 
-function openwinfull(url) {
-	if (cancelNextOpen) {
+function openwinfull(url, ignoreCancel) {
+	if (ignoreCancel == null) {
+		ignoreCancel = false;
+	}
+	if (cancelNextOpen && !ignoreCancel) {
 		return;
 	}
 	if (url != '#') {

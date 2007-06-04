@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOpenResourceAction.java,v $
- * Date   : $Date: 2006/06/09 15:16:15 $
- * Version: $Revision: 1.3.4.2 $
+ * Date   : $Date: 2007/06/04 15:04:50 $
+ * Version: $Revision: 1.3.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3.4.2 $ 
+ * @version $Revision: 1.3.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
         StringBuffer jsCode = new StringBuffer(256);
         jsCode.append("javascript:top.openwinfull('");
         jsCode.append(getResourceName());
-        jsCode.append("')");
+        jsCode.append("', true)");
         return jsCode.toString();
     }
 
