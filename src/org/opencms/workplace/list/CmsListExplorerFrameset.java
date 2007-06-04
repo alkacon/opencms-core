@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.4.4.8 $
+ * Date   : $Date: 2007/06/04 16:10:24 $
+ * Version: $Revision: 1.4.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.8 $ 
+ * @version $Revision: 1.4.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,9 +129,8 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "\">\n");
         html.append("\t\t<title>\n");
         html.append("\t\t\t").append(
-            key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, new Object[] {
-                getSettings().getUser().getName(),
-                getJsp().getRequest().getServerName()})).append("\n");
+            key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1, new Object[] {getSettings().getUser().getFullName()})).append(
+            "\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
