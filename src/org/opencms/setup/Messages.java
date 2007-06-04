@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2007/05/30 13:57:29 $
- * Version: $Revision: 1.12.4.3 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.12.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12.4.3 $ 
+ * @version $Revision: 1.12.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,9 +54,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_DB_SETUP_SCRIPT_1 = "ERR_MISSING_DB_SETUP_SCRIPT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNLOCK_PROJECT_NAME_0 = "GUI_UNLOCK_PROJECT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WARNING_ALL_MODULES_UPTODATE_0 = "GUI_WARNING_ALL_MODULES_UPTODATE_0";
@@ -128,16 +125,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_END_UPDATE_MODULE_1 = "RPT_END_UPDATE_MODULE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_LOCKED_RESOURCE_1 = "RPT_LOCKED_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_LOCKED_RESOURCES_0 = "RPT_LOCKED_RESOURCES_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_MODULE_UPTODATE_1 = "RPT_MODULE_UPTODATE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1 = "RPT_SUCCESSFUL_UNLOCKED_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JAR_FILE_3 = "RPT_UPDATE_JAR_FILE_3";

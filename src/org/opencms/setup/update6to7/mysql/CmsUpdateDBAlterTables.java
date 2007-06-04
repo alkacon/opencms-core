@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/I_CmsUpdateDBPart.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBAlterTables.java,v $
  * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,40 +29,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.mysql;
 
-import java.util.Map;
+import java.io.IOException;
 
 /**
- * Represent a part of the database update process.<p>
+ * This class makes the remaining changes to some tables in order to update them.<p>
  * 
- * @author Michael Moossen
+ * The following tables will be altered
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * CMS_ONLINE/OFFLINE_PROPERTYDEF   Add the TYPE column
+ * CMS_ONLINE/OFFLINE_RESOURCES     Add the columns DATE_CONTENT and RESOURCE_VERSION
+ * CMS_ONLINE/OFFLINE_STRUCTURE     Add the column STRUCTURE_VERSION
+ * CMS_PROJECTS                     Drop the column TASK_ID and change the size for the project name
  * 
- * @since 6.9.2 
+ * @author metzler
  */
-public interface I_CmsUpdateDBPart {
+public class CmsUpdateDBAlterTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBAlterTables {
 
     /**
-     * Executes the update part.<p>
-     */
-    void execute();
-
-    /**
-     * Returns the right instance based on the database name.<p>
+     * Default constructor.<p>
      * 
-     * @param dbName the database name
-     * @param dbPoolData the database pool data
-     * 
-     * @return the right instance
+     * @throws IOException if the default sql queries property file could not be read 
      */
-    I_CmsUpdateDBPart getDbInstance(String dbName, Map dbPoolData);
+    public CmsUpdateDBAlterTables()
+    throws IOException {
 
-    /**
-     * Sets the database pool Data.<p>
-     *
-     * @param poolData the database pool Data to set
-     */
-    void setPoolData(Map poolData);
+        super();
+    }
 }

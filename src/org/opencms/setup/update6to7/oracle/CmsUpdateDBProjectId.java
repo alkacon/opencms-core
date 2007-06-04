@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,13 +109,10 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
 
     /** Constant for the sql query to repair lost project ids.<p> */
     private static final String QUERY_UPDATE_NULL_PROJECTID_ORACLE = "Q_UPDATE_NULL_PROJECTID_ORACLE";
-    
+
     /** Constant for the replacement in the sql query. */
     private static final String REPLACEMENT_TABLEINDEX_SPACE = "${indexTablespace}";
-    
-    
-    
-    
+
     /**
      * Constructor.<p>
      * 
@@ -128,14 +125,10 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
-
-
-
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBProjectId#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
-
 
         System.out.println(new Exception().getStackTrace()[0].toString());
 
@@ -266,7 +259,45 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
             System.out.println("table " + HISTORY_PROJECTS_TABLE + " has content");
         }
     }
-   
+
+    /**
+     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
+     * 
+     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
+     * 
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        // Get the data from the CMS_BACKUP table
+        String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS_ORACLE);
+        ResultSet set = dbCon.executeSqlStatement(query, null);
+
+        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE_ORACLE);
+        while (set.next()) {
+            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
+            List params = new ArrayList();
+            params.add(set.getString("PROJECT_UUID"));
+            params.add(set.getString("PROJECT_NAME"));
+            params.add(set.getString("PROJECT_DESCRIPTION"));
+            params.add(new Integer(set.getInt("PROJECT_TYPE")));
+            params.add(set.getString("USER_ID"));
+            params.add(set.getString("GROUP_ID"));
+            params.add(set.getString("MANAGERGROUP_ID"));
+            params.add(new Long(set.getLong("DATE_CREATED")));
+            params.add(new Integer(set.getInt("PUBLISH_TAG")));
+            Date date = set.getDate("PROJECT_PUBLISHDATE");
+            params.add(new Long(date.getTime()));
+            params.add(set.getString("PROJECT_PUBLISHED_BY"));
+            params.add(set.getString("PROJECT_OU"));
+
+            dbCon.updateSqlStatement(insertQuery, null, params);
+        }
+    }
+
     /**
      * Adds a new primary key to the given table.<p>
      * 
@@ -289,7 +320,7 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
             System.out.println("table " + tablename + " does not exists");
         }
     }
-    
+
     /**
      * Adds the new column for the uuids to a table.<p>
      * 
@@ -316,7 +347,23 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
             System.out.println("column " + column + " in table " + tablename + " already exists");
         }
     }
-    
+
+    /**
+     * Creates the temporary table to store the project ids and uuids.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param toCreate the constant of the table name to create
+     * @param replacer replacements for the sql query
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    private void createNewTable(CmsSetupDb dbCon, String toCreate, HashMap replacer) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        String query = readQuery(toCreate);
+        dbCon.updateSqlStatement(query, replacer, null);
+    }
+
     /**
      * Drops the column of the given table.<p>
      * 
@@ -340,8 +387,7 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
         }
 
     }
-    
-    
+
     /**
      * Updates the given table with the new UUID value.<p>
      * 
@@ -524,61 +570,5 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
         } else {
             System.out.println("column " + oldname + " in table " + tablename + " not found exists");
         }
-    }
-
-    /**
-     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
-     * 
-     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
-     * 
-     * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        // Get the data from the CMS_BACKUP table
-        String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS_ORACLE);
-        ResultSet set = dbCon.executeSqlStatement(query, null);
-
-        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE_ORACLE);
-        while (set.next()) {
-            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
-            List params = new ArrayList();
-            params.add(set.getString("PROJECT_UUID"));
-            params.add(set.getString("PROJECT_NAME"));
-            params.add(set.getString("PROJECT_DESCRIPTION"));
-            params.add(new Integer(set.getInt("PROJECT_TYPE")));
-            params.add(set.getString("USER_ID"));
-            params.add(set.getString("GROUP_ID"));
-            params.add(set.getString("MANAGERGROUP_ID"));
-            params.add(new Long(set.getLong("DATE_CREATED")));
-            params.add(new Integer(set.getInt("PUBLISH_TAG")));
-            Date date = set.getDate("PROJECT_PUBLISHDATE");
-            params.add(new Long(date.getTime()));
-            params.add(set.getString("PROJECT_PUBLISHED_BY"));
-            params.add(set.getString("PROJECT_OU"));
-
-            dbCon.updateSqlStatement(insertQuery, null, params);
-        }
-    }
-    
-    
-    
-    /**
-     * Creates the temporary table to store the project ids and uuids.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param toCreate the constant of the table name to create
-     * @param replacer replacements for the sql query
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void createNewTable(CmsSetupDb dbCon, String toCreate, HashMap replacer) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = readQuery(toCreate);
-        dbCon.updateSqlStatement(query, replacer, null);
     }
 }

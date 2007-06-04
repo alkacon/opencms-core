@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,12 @@ import java.util.Map;
  */
 public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
+    /** Constant for the table name of the CMS_HISTORY_PROJECTS table.<p> */
+    protected static final String HISTORY_PROJECTS_TABLE = "CMS_HISTORY_PROJECTS";
+
+    /** Constant for the name of temporary table containing the project ids and uuids.<p> */
+    protected static final String TEMPORARY_TABLE_NAME = "TEMP_PROJECT_UUIDS";
+
     /** Constant for the sql column PROJECT_ID.<p> */
     protected static final String COLUMN_PROJECT_ID = "PROJECT_ID";
 
@@ -77,9 +83,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /** Constant for the sql column TEMP_PROJECT_UUID.<p> */
     protected static final String COLUMN_TEMP_PROJECT_UUID = "TEMP_PROJECT_UUID";
-
-    /** Constant for the table name of the CMS_HISTORY_PROJECTS table.<p> */
-    protected static final String HISTORY_PROJECTS_TABLE = "CMS_HISTORY_PROJECTS";
 
     /** Constant for the sql query to add a new primary key.<p> */
     private static final String QUERY_ADD_PRIMARY_KEY = "Q_ADD_PRIMARY_KEY";
@@ -114,8 +117,10 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "generic/cms_projectid_queries.properties";
 
+    /** Constant for the sql query to read the id of the administrators group.<p> */
     private static final String QUERY_READ_ADMIN_GROUP = "Q_READ_ADMIN_GROUP";
 
+    /** Constant for the sql query to read the id of the admin user.<p> */
     private static final String QUERY_READ_ADMIN_USER = "Q_READ_ADMIN_USER";
 
     /** Constant for the sql query to add a rename a column in the table.<p> */
@@ -167,9 +172,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /** Constant for the temporary UUID column in the tables.<p> */
     protected static final String TEMP_UUID_COLUMN = "TEMP_PROJECT_UUID";
 
-    /** Constant for the name of temporary table containing the project ids and uuids.<p> */
-    protected static final String TEMPORARY_TABLE_NAME = "TEMP_PROJECT_UUIDS";
-
     /**
      * Constructor.<p>
      * 
@@ -183,6 +185,43 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     }
 
     /**
+     * Creates the CMS_HISTORY_PROJECTS table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createHistProjectsTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
+            String createStatement = readQuery(QUERY_CREATE_HISTORY_PROJECTS_TABLE);
+            dbCon.updateSqlStatement(createStatement, null, null);
+            transferDataToHistoryTable(dbCon);
+        } else {
+            System.out.println("table " + HISTORY_PROJECTS_TABLE + " already exists");
+        }
+    }
+
+    /**
+     * Creates the temp table for project ids if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createTempTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
+            String createStatement = readQuery(QUERY_CREATE_TEMP_TABLE_UUIDS);
+            dbCon.updateSqlStatement(createStatement, null, null);
+        } else {
+            System.out.println("table " + TEMPORARY_TABLE_NAME + " already exists");
+        }
+    }
+
+    /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
@@ -191,13 +230,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
         generateUUIDs(dbCon);
 
-        // Check for the CMS_HISTORY_PROJECTS table and transfer the data to it
-        if (!dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
-            createNewTable(dbCon, QUERY_CREATE_HISTORY_PROJECTS_TABLE);
-            transferDataToHistoryTable(dbCon);
-        } else {
-            System.out.println("table " + HISTORY_PROJECTS_TABLE + " already exists");
-        }
+        createHistProjectsTable(dbCon);
 
         Map uuids = getUUIDs(dbCon); // Get the UUIDS
 
@@ -315,6 +348,44 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     }
 
     /**
+     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
+     * 
+     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
+     * 
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        // Get the data from the CMS_BACKUP table
+        String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
+        ResultSet set = dbCon.executeSqlStatement(query, null);
+
+        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
+        while (set.next()) {
+            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
+            List params = new ArrayList();
+            params.add(set.getString("PROJECT_UUID"));
+            params.add(set.getString("PROJECT_NAME"));
+            params.add(set.getString("PROJECT_DESCRIPTION"));
+            params.add(new Integer(set.getInt("PROJECT_TYPE")));
+            params.add(set.getString("USER_ID"));
+            params.add(set.getString("GROUP_ID"));
+            params.add(set.getString("MANAGERGROUP_ID"));
+            params.add(new Long(set.getLong("DATE_CREATED")));
+            params.add(new Integer(set.getInt("PUBLISH_TAG")));
+            Date date = set.getDate("PROJECT_PUBLISHDATE");
+            params.add(new Long(date.getTime()));
+            params.add(set.getString("PROJECT_PUBLISHED_BY"));
+            params.add(set.getString("PROJECT_OU"));
+
+            dbCon.updateSqlStatement(insertQuery, null, params);
+        }
+    }
+
+    /**
      * Adds a new primary key to the given table.<p>
      * 
      * @param dbCon the db connection interface
@@ -362,21 +433,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         } else {
             System.out.println("column " + column + " in table " + tablename + " already exists");
         }
-    }
-
-    /**
-     * Creates the temporary table to store the project ids and uuids.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param toCreate the constant of the table name to create
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void createNewTable(CmsSetupDb dbCon, String toCreate) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String query = readQuery(toCreate);
-        dbCon.updateSqlStatement(query, null, null);
     }
 
     /**
@@ -459,7 +515,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         int columnType = metaData.getColumnType(1);
         if (columnType == java.sql.Types.INTEGER) {
             if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
-                createNewTable(dbCon, QUERY_CREATE_TEMP_TABLE_UUIDS);
+                createTempTable(dbCon);
 
                 String updateQuery = readQuery(QUERY_INSERT_UUIDS);
                 List params = new ArrayList();
@@ -584,44 +640,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             dbCon.updateSqlStatement(query, replacer, null);
         } else {
             System.out.println("column " + oldname + " in table " + tablename + " not found exists");
-        }
-    }
-
-    /**
-     * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
-     * 
-     * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
-     * 
-     * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        // Get the data from the CMS_BACKUP table
-        String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
-        ResultSet set = dbCon.executeSqlStatement(query, null);
-
-        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
-        while (set.next()) {
-            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
-            List params = new ArrayList();
-            params.add(set.getString("PROJECT_UUID"));
-            params.add(set.getString("PROJECT_NAME"));
-            params.add(set.getString("PROJECT_DESCRIPTION"));
-            params.add(new Integer(set.getInt("PROJECT_TYPE")));
-            params.add(set.getString("USER_ID"));
-            params.add(set.getString("GROUP_ID"));
-            params.add(set.getString("MANAGERGROUP_ID"));
-            params.add(new Long(set.getLong("DATE_CREATED")));
-            params.add(new Integer(set.getInt("PUBLISH_TAG")));
-            Date date = set.getDate("PROJECT_PUBLISHDATE");
-            params.add(new Long(date.getTime()));
-            params.add(set.getString("PROJECT_PUBLISHED_BY"));
-            params.add(set.getString("PROJECT_OU"));
-
-            dbCon.updateSqlStatement(insertQuery, null, params);
         }
     }
 }

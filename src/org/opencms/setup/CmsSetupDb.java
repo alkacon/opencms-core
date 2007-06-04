@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/05/29 12:58:48 $
- * Version: $Revision: 1.25.4.6 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.25.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.6 $ 
+ * @version $Revision: 1.25.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -374,9 +374,7 @@ public class CmsSetupDb extends Object {
                 set.close();
                 set = null;
             }
-
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             result = false;
         } finally {
@@ -385,7 +383,6 @@ public class CmsSetupDb extends Object {
                     set.close();
                 }
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

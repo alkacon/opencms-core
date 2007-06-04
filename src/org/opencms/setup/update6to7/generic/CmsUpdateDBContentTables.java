@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,15 +65,18 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to read the max publish tag.<p> */
     private static final String QUERY_READ_MAX_PUBTAG = "Q_READ_MAX_PUBTAG";
-    
+
     /** Constant for the replacement in the SQL query for the tablename.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /** Constant for the table CMS_BACKUP_CONTENTS.<p> */
     private static final String TABLE_CMS_BACKUP_CONTENTS = "CMS_BACKUP_CONTENTS";
 
-    /** Constant for the tbale CMS_ONLINE_CONTENTS.<p> */
+    /** Constant for the table CMS_ONLINE_CONTENTS.<p> */
     private static final String TABLE_CMS_ONLINE_CONTENTS = "CMS_ONLINE_CONTENTS";
+
+    /** Constant for the table CMS_CONTENTS.<p> */
+    protected static final String TABLE_CMS_CONTENTS = "CMS_CONTENTS";
 
     /**
      * Constructor.<p>
@@ -88,20 +91,35 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
     }
 
     /**
+     * Creates the CMS_CONTENTS table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createContentsTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(TABLE_CMS_CONTENTS, null)) {
+            String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE);
+            dbCon.updateSqlStatement(query, null, null);
+        } else {
+            System.out.println("table " + TABLE_CMS_CONTENTS + " already exists");
+        }
+    }
+
+    /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        // Create the CMS_CONTENTS table if it does not exist yet. 
-        // The database checks if the table exists before creating it.
-        String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE);
-        dbCon.updateSqlStatement(query, null, null);
+        createContentsTable(dbCon);
 
         // Transfer the online contents if the table exists
         if (dbCon.hasTableOrColumn(TABLE_CMS_ONLINE_CONTENTS, null)) {
             int pubTag = 1;
-            query = readQuery(QUERY_READ_MAX_PUBTAG);
+            String query = readQuery(QUERY_READ_MAX_PUBTAG);
             ResultSet res = dbCon.executeSqlStatement(query, null);
             if (res.next()) {
                 pubTag = res.getInt(1);
@@ -116,7 +134,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
         // Transfer the backup contents if the table exists
         if (dbCon.hasTableOrColumn(TABLE_CMS_BACKUP_CONTENTS, null)) {
-            query = readQuery(QUERY_TRANSFER_BACKUP_CONTENTS);
+            String query = readQuery(QUERY_TRANSFER_BACKUP_CONTENTS);
             dbCon.updateSqlStatement(query, null, null);
         } else {
             System.out.println("no table " + TABLE_CMS_BACKUP_CONTENTS + " found");

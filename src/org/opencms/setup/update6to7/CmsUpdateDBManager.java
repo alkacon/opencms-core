@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,18 +33,6 @@ package org.opencms.setup.update6to7;
 
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.CmsSetupDb;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBAlterTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBCreateIndexes7;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBDropBackupTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBDropOldIndexes;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBDropUnusedTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryPrincipals;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBNewTables;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBProjectId;
-import org.opencms.setup.update6to7.generic.CmsUpdateDBUpdateOU;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -161,8 +149,6 @@ public class CmsUpdateDBManager {
 
         StringBuffer html = new StringBuffer(256);
 
-        html.append("\t<tr>\n");
-        html.append("\t\t<td style='vertical-align: top; width: 100%; padding-top: 4px;'>\n\t\t\t");
         html.append("<a href=\"javascript:switchview('").append(pool).append("');\">");
         html.append(pool).append("</a><br>\n");
         html.append("\t<div id='").append(pool).append("' style='display: none;'>\n");
@@ -173,8 +159,7 @@ public class CmsUpdateDBManager {
         html.append("\t\t\t<tr><td>Database User:</td><td>" + getDbUser(pool) + "</td></tr>\n");
         html.append("\t\t</table>\n");
         html.append("\t</div>\n");
-        html.append("\n\t\t</td>\n");
-        html.append("\t</tr>\n");
+
         return html.toString();
     }
 
@@ -253,20 +238,21 @@ public class CmsUpdateDBManager {
             // be sure to use the right order 
             m_plugins = new ArrayList();
 
-            m_plugins.add(new CmsUpdateDBDropOldIndexes());
-            m_plugins.add(new CmsUpdateDBUpdateOU());
-            m_plugins.add(new CmsUpdateDBCmsUsers());
-            m_plugins.add(new CmsUpdateDBProjectId());
-            m_plugins.add(new CmsUpdateDBNewTables());
-            m_plugins.add(new CmsUpdateDBHistoryTables());
-            m_plugins.add(new CmsUpdateDBHistoryPrincipals());
-            m_plugins.add(new CmsUpdateDBDropUnusedTables());
-            m_plugins.add(new CmsUpdateDBContentTables());
-            m_plugins.add(new CmsUpdateDBAlterTables());
-            m_plugins.add(new CmsUpdateDBDropBackupTables());
-            m_plugins.add(new CmsUpdateDBCreateIndexes7());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBDropOldIndexes());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBUpdateOU());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBProjectId());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBNewTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryPrincipals());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBDropUnusedTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBAlterTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBDropBackupTables());
+            m_plugins.add(new org.opencms.setup.update6to7.generic.CmsUpdateDBCreateIndexes7());
         } catch (Throwable t) {
             t.printStackTrace();
+            throw new RuntimeException(t);
         }
 
         Iterator it = getPools().iterator();
@@ -291,6 +277,8 @@ public class CmsUpdateDBManager {
      */
     public void updateDatabase(String pool) {
 
+        Map dbPoolData = new HashMap((Map)m_dbPools.get(pool));
+
         System.out.println("JDBC Driver:                " + getDbDriver(pool));
         System.out.println("JDBC Connection Url:        " + getDbUrl(pool));
         System.out.println("JDBC Connection Url Params: " + getDbParams(pool));
@@ -299,7 +287,10 @@ public class CmsUpdateDBManager {
         Iterator it = m_plugins.iterator();
         while (it.hasNext()) {
             I_CmsUpdateDBPart updatePart = (I_CmsUpdateDBPart)it.next();
-            updatePart.execute((Map)m_dbPools.get(pool));
+            I_CmsUpdateDBPart dbUpdatePart = updatePart.getDbInstance(getDbName(), dbPoolData);
+            if (dbUpdatePart != null) {
+                dbUpdatePart.execute();
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,12 @@
 package org.opencms.setup.update6to7;
 
 import org.opencms.setup.CmsSetupDb;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,7 +47,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.2 
  */
@@ -53,11 +56,11 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
     /** The filename/path of the SQL query properties. */
     protected static final String QUERY_PROPERTIES_PREFIX = "org/opencms/setup/update6to7/";
 
-    /** A map holding all SQL queries. */
-    protected Map m_queries;
-
     /** The connection data to use. */
     protected Map m_poolData;
+
+    /** A map holding all SQL queries. */
+    protected Map m_queries;
 
     /**
      * Default constructor.<p>
@@ -68,23 +71,19 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
     }
 
     /**
-     * Executes the update part.<p>
-     * 
-     * @param dbPoolData the connection data to use
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#execute()
      */
-    public void execute(Map dbPoolData) {
+    public void execute() {
 
         CmsSetupDb setupDb = new CmsSetupDb(null);
 
         try {
             setupDb.setConnection(
-                (String)dbPoolData.get("driver"),
-                (String)dbPoolData.get("url"),
-                (String)dbPoolData.get("params"),
-                (String)dbPoolData.get("user"),
-                (String)dbPoolData.get("pwd"));
-
-            m_poolData = new HashMap(dbPoolData);
+                (String)m_poolData.get("driver"),
+                (String)m_poolData.get("url"),
+                (String)m_poolData.get("params"),
+                (String)m_poolData.get("user"),
+                (String)m_poolData.get("pwd"));
 
             internalExecute(setupDb);
         } catch (SQLException e) {
@@ -92,6 +91,66 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
         } finally {
             setupDb.closeConnection();
         }
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#getDbInstance(String, Map)
+     */
+    public I_CmsUpdateDBPart getDbInstance(String dbName, Map dbPoolData) {
+
+        m_poolData = new HashMap(dbPoolData);
+        if (dbName.indexOf("mysql") > -1) {
+            String engine = "myisam";
+            CmsSetupDb setupDb = new CmsSetupDb(null);
+
+            try {
+                setupDb.setConnection(
+                    (String)m_poolData.get("driver"),
+                    (String)m_poolData.get("url"),
+                    (String)m_poolData.get("params"),
+                    (String)m_poolData.get("user"),
+                    (String)m_poolData.get("pwd"));
+
+                ResultSet res = setupDb.executeSqlStatement("SHOW TABLE STATUS LIKE 'CMS_GROUPS';", null);
+                if (res.next()) {
+                    engine = res.getString("Engine").toUpperCase();
+                }
+                res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                setupDb.closeConnection();
+            }
+            m_poolData.put("engine", engine);
+            System.out.println("Table engine:               " + engine);
+
+            return getInstanceForDb("mysql");
+        } else if (dbName.indexOf("oracle") > -1) {
+            int todo; // recognize these params from the db
+
+            String indexTablespace = "users";
+            m_poolData.put("indexTablespace", indexTablespace);
+            System.out.println("Index Tablespace:           " + indexTablespace);
+
+            String dataTablespace = "users";
+            m_poolData.put("dataTablespace", dataTablespace);
+            System.out.println("Data Tablespace:            " + dataTablespace);
+
+            return getInstanceForDb("oracle");
+        } else {
+            System.out.println("db " + dbName + " not supported");
+            return null;
+        }
+    }
+
+    /**
+     * Returns the database pool Data.<p>
+     *
+     * @return the database pool Data
+     */
+    public Map getPoolData() {
+
+        return Collections.unmodifiableMap(m_poolData);
     }
 
     /**
@@ -103,6 +162,14 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
     public String readQuery(String queryKey) {
 
         return (String)m_queries.get(queryKey);
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.I_CmsUpdateDBPart#setPoolData(java.util.Map)
+     */
+    public void setPoolData(Map poolData) {
+
+        m_poolData = new HashMap(poolData);
     }
 
     /**
@@ -127,5 +194,26 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
         properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
         m_queries.putAll(properties);
+    }
+
+    /**
+     * Creates a new instance for the given database and setting the db pool data.<p>
+     * 
+     * @param dbName the database to get a new instance for
+     * 
+     * @return a new instance for the given database
+     */
+    private I_CmsUpdateDBPart getInstanceForDb(String dbName) {
+
+        String clazz = getClass().getName();
+        clazz = CmsStringUtil.substitute(clazz, ".generic.", "." + dbName + ".");
+        I_CmsUpdateDBPart updatePart = null;
+        try {
+            updatePart = (I_CmsUpdateDBPart)Class.forName(clazz).newInstance();
+            updatePart.setPoolData(getPoolData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return updatePart;
     }
 }

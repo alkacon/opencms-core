@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class inserts formerly deleted users/groups in the CMS_HISTORY_PRINCIPALS table.<p>
@@ -52,6 +54,9 @@ import java.util.List;
  * @author Raphael Schnuck
  */
 public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
+
+    /** Constant for the CMS_HISTORY_PRINICIPALS table.<p> */
+    protected static final String TABLE_CMS_HISTORY_PRINCIPALS = "CMS_HISTORY_PRINCIPALS";
 
     /** Constant for sql query to create the history principals table.<p> */
     private static final String QUERY_HISTORY_PRINCIPALS_CREATE_TABLE = "Q_HISTORY_PRINCIPALS_CREATE_TABLE";
@@ -80,9 +85,6 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
     /** Constant for sql query.<p> */
     private static final String QUERY_UPDATE_DATEDELETED = "Q_UPDATE_DATEDELETED";
 
-    /** Constant for the CMS_HISTORY_PRINICIPALS table.<p> */
-    protected static final String TABLE_CMS_HISTORY_PRINCIPALS = "CMS_HISTORY_PRINCIPALS";
-
     /**
      * Constructor.<p>
      * 
@@ -93,6 +95,25 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
         super();
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
+    }
+
+    /**
+     * Creates the CMS_HISTORY_PRINCIPALS table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createHistPrincipalsTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
+            String createStatement = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE);
+            Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
+            dbCon.updateSqlStatement(createStatement, replacer, null);
+        } else {
+            System.out.println("table " + TABLE_CMS_HISTORY_PRINCIPALS + " already exists");
+        }
     }
 
     /**
@@ -143,15 +164,10 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
     private boolean insertHistoryPrincipals(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        boolean updateUserDateDeleted = false;
-        // Check if the table exists. If not, create it
-        if (!dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
-            String query = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE);
-            dbCon.updateSqlStatement(query, null, null);
-        } else {
-            System.out.println(" table " + TABLE_CMS_HISTORY_PRINCIPALS + " already exists");
-        }
 
+        createHistPrincipalsTable(dbCon);
+
+        boolean updateUserDateDeleted = false;
         if (!hasData(dbCon)) {
             dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_RESOURCES), null, null);
             dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS), null, null);
@@ -162,6 +178,5 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         }
 
         return updateUserDateDeleted;
-
     }
 }

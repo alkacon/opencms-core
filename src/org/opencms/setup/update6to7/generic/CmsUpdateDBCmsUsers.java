@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/04 16:01:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -202,6 +202,20 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
     }
 
     /**
+     * Creates the CMS_USERDATA table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
+        dbCon.updateSqlStatement(createStatement, null, null);
+    }
+
+    /**
      * Adds the new column USER_DATECREATED to the CMS_USERS table.<p> 
      * 
      * @param dbCon the db connection interface
@@ -254,20 +268,6 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         return dbCon.hasTableOrColumn(CHECK_CMS_USERDATA, null);
-    }
-
-    /**
-     * Creates the CMS_USERDATA table if it does not exist yet.<p>
-     *  
-     * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if soemthing goes wrong
-     */
-    private void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
-        dbCon.updateSqlStatement(createStatement, null, null);
     }
 
     /**

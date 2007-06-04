@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/I_CmsUpdateDBPart.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBCreateIndexes7.java,v $
  * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,40 +29,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup.update6to7;
+package org.opencms.setup.update6to7.mysql;
 
-import java.util.Map;
+import java.io.IOException;
 
 /**
- * Represent a part of the database update process.<p>
+ * This class creates all the indexes that are used in the database version 7.<p>
  * 
- * @author Michael Moossen
- * 
- * @version $Revision: 1.1.2.3 $ 
- * 
- * @since 6.9.2 
+ * @author metzler
  */
-public interface I_CmsUpdateDBPart {
+public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.generic.CmsUpdateDBCreateIndexes7 {
 
     /**
-     * Executes the update part.<p>
-     */
-    void execute();
-
-    /**
-     * Returns the right instance based on the database name.<p>
+     * Constructor.<p>
      * 
-     * @param dbName the database name
-     * @param dbPoolData the database pool data
-     * 
-     * @return the right instance
+     * @throws IOException if the query properties cannot be read
      */
-    I_CmsUpdateDBPart getDbInstance(String dbName, Map dbPoolData);
+    public CmsUpdateDBCreateIndexes7()
+    throws IOException {
 
-    /**
-     * Sets the database pool Data.<p>
-     *
-     * @param poolData the database pool Data to set
-     */
-    void setPoolData(Map poolData);
+        super();
+    }
 }
