@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/04 15:09:54 $
- * Version: $Revision: 1.97.4.56 $
+ * Date   : $Date: 2007/06/04 16:03:58 $
+ * Version: $Revision: 1.97.4.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,6 +83,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -173,29 +174,32 @@ public final class CmsSecurityManager {
      * 
      * @param context the request context
      * @param resource the resource to add the relation to
-     * @param id the structure id of the target relation
      * @param target the target of the relation
      * @param type the type of the relation
+     * @param importCase if importing relations
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #deleteRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     * @see CmsObject#addRelationToResource(String, String, String)
      */
     public void addRelationToResource(
         CmsRequestContext context,
         CmsResource resource,
-        CmsUUID id,
-        String target,
-        CmsRelationType type) throws CmsException {
+        CmsResource target,
+        CmsRelationType type,
+        boolean importCase) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            //            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
-            m_driverManager.addRelationToResource(dbc, resource, id, target, type);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            m_driverManager.addRelationToResource(dbc, resource, target, type, importCase);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_ADD_RELATION_TO_RESOURCE_3,
-                target,
                 context.getSitePath(resource),
+                context.getSitePath(target),
                 type), e);
 
         } finally {
@@ -1341,6 +1345,9 @@ public final class CmsSecurityManager {
      * @param filter the filter to use for deletion
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see #addRelationToResource(CmsRequestContext, CmsResource, CmsResource, CmsRelationType, boolean)
+     * @see CmsObject#deleteRelationsFromResource(String, CmsRelationFilter)
      */
     public void deleteRelationsForResource(CmsRequestContext context, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
@@ -1348,7 +1355,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            //            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.deleteRelationsForResource(dbc, resource, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -2353,6 +2360,15 @@ public final class CmsSecurityManager {
      */
     public boolean hasRole(CmsDbContext dbc, CmsUser user, CmsRole role) {
 
+        // try to read from cache
+        String key = user.getId().toString()
+            + (dbc.currentProject().isOnlineProject() ? "+" : "-")
+            + role.getGroupName();
+        Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
+        if (result != null) {
+            return result.booleanValue();
+        }
+
         // read all roles of the current user
         List roles;
         try {
@@ -2371,7 +2387,10 @@ public final class CmsSecurityManager {
             // any exception: return false
             return false;
         }
-        return hasRole(role, roles);
+
+        result = Boolean.valueOf(hasRole(role, roles));
+        OpenCms.getMemoryMonitor().cacheRole(key, result.booleanValue());
+        return result.booleanValue();
     }
 
     /**
@@ -2410,10 +2429,27 @@ public final class CmsSecurityManager {
      */
     public boolean hasRoleForResource(CmsDbContext dbc, CmsUser user, CmsRole role, CmsResource resource) {
 
-        // read all roles of the current user in the given organizational unit
-        List orgUnits;
+        // try to read from cache
+        String key = user.getId().toString()
+            + (dbc.currentProject().isOnlineProject() ? "+" : "-")
+            + role.getGroupName()
+            + resource.getRootPath();
+        Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
+        if (result != null) {
+            return result.booleanValue();
+        }
+
+        // read all roles of the current user
+        List roles;
         try {
-            orgUnits = m_driverManager.getOrganizationalUnitsForResource(dbc, resource);
+            roles = new ArrayList(m_driverManager.getGroupsOfUser(
+                dbc,
+                user.getName(),
+                "",
+                true,
+                true,
+                true,
+                dbc.getRequestContext().getRemoteAddress()));
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -2421,14 +2457,49 @@ public final class CmsSecurityManager {
             // any exception: return false
             return false;
         }
-        Iterator it = orgUnits.iterator();
-        while (it.hasNext()) {
-            String orgUnitFqn = (String)it.next();
-            if (hasRole(dbc, user, role.forOrgUnit(orgUnitFqn))) {
-                return true;
+
+        // first check the user has the role at all
+        if (!hasRole(role.forOrgUnit(null), roles)) {
+            result = Boolean.FALSE;
+        }
+
+        // then check if one applies to the given resource
+        Iterator it = roles.iterator();
+        while ((result == null) && it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            CmsRole givenRole = CmsRole.valueOf(group);
+            if (hasRole(role.forOrgUnit(null), Collections.singletonList(group))) {
+                // we have the same role, now check the resource if needed
+                if (givenRole.getOuFqn() != null) {
+                    try {
+                        CmsOrganizationalUnit orgUnit = m_driverManager.readOrganizationalUnit(
+                            dbc,
+                            givenRole.getOuFqn());
+                        Iterator itResources = m_driverManager.getResourcesForOrganizationalUnit(dbc, orgUnit).iterator();
+                        while (itResources.hasNext()) {
+                            CmsResource givenResource = (CmsResource)itResources.next();
+                            if (resource.getRootPath().startsWith(givenResource.getRootPath())) {
+                                result = Boolean.TRUE;
+                                break;
+                            }
+                        }
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        // ignore
+                    }
+                } else {
+                    result = Boolean.TRUE;
+                }
             }
         }
-        return false;
+
+        if (result == null) {
+            result = Boolean.FALSE;
+        }
+        OpenCms.getMemoryMonitor().cacheRole(key, result.booleanValue());
+        return result.booleanValue();
     }
 
     /**
@@ -4252,26 +4323,26 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param orgUnit the organizational unit to remove the resource from
-     * @param resourceName the root path of the resource that is to be removed from the organizational unit
+     * @param resource the resource that is to be removed from the organizational unit
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      */
-    public void removeResourceFromOrgUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit, String resourceName)
+    public void removeResourceFromOrgUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(orgUnit.getName()));
             checkOfflineProject(dbc);
-            m_driverManager.removeResourceFromOrgUnit(dbc, orgUnit, resourceName);
+            m_driverManager.removeResourceFromOrgUnit(dbc, orgUnit, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_REMOVE_RESOURCE_FROM_ORGUNIT_2,
                 orgUnit.getName(),
-                dbc.removeSiteRoot(resourceName)), e);
+                dbc.removeSiteRoot(resource.getRootPath())), e);
         } finally {
             dbc.clear();
         }

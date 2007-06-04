@@ -390,7 +390,8 @@ Each job can have an optional list of parameters.
 	size-properties,
 	size-propertylists?,
 	size-accesscontrollists,
-	size-permissions)>
+	size-permissions,
+	size-roles?)>
 
 <!--
 # The name of the class to generate cache keys.
@@ -459,6 +460,11 @@ Each job can have an optional list of parameters.
 # The size of the security manager's cache for permission checks.
 -->
 <!ELEMENT size-permissions (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for roles.
+-->
+<!ELEMENT size-roles (#PCDATA)>
 
 <!--
 # Content notification settings.

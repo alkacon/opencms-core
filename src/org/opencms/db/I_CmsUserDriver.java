@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/04/26 14:31:05 $
- * Version: $Revision: 1.58.8.8 $
+ * Date   : $Date: 2007/06/04 16:03:58 $
+ * Version: $Revision: 1.58.8.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -53,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.8 $
+ * @version $Revision: 1.58.8.9 $
  * 
  * @since 6.0.0 
  */
@@ -326,18 +325,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
     throws CmsDataAccessException;
-
-    /**
-     * Returns all deepest organizational units that contains the given folder.<p>
-     * 
-     * @param dbc the current database context
-     * @param folder the folder to look for
-     * 
-     * @return a list of organizational units fully qualified names that contains the given folder
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    List getOrganizationalUnitsForFolder(CmsDbContext dbc, CmsFolder folder) throws CmsDataAccessException;
 
     /**
      * Returns all resources of the given organizational unit.<p>
@@ -619,11 +606,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @param dbc the current db context
      * @param orgUnit the organizational unit to remove the resource from
-     * @param resourceName the root path of the resource that is to be removed from the organizational unit
+     * @param resource the resource that is to be removed from the organizational unit
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String resourceName)
+    void removeResourceFromOrganizationalUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsDataAccessException;
 
     /**

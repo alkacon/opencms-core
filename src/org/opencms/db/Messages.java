@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/06/04 15:09:54 $
- * Version: $Revision: 1.43.4.31 $
+ * Date   : $Date: 2007/06/04 16:03:58 $
+ * Version: $Revision: 1.43.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.31 $
+ * @version $Revision: 1.43.4.32 $
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESSING_POOL_1 = "ERR_ACCESSING_POOL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_RELATION_IN_CONTENT_3 = "ERR_ADD_RELATION_IN_CONTENT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_RELATION_TO_RESOURCE_3 = "ERR_ADD_RELATION_TO_RESOURCE_3";
@@ -176,6 +179,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_PROPERTY_1 = "ERR_DELETE_PROPERTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_RELATION_IN_CONTENT_2 = "ERR_DELETE_RELATION_IN_CONTENT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_RELATIONS_1 = "ERR_DELETE_RELATIONS_1";
@@ -671,6 +677,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_CLOSE_CONN_POOL_1 = "INIT_CLOSE_CONN_POOL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DRIVER_FAILED_1 = "INIT_DRIVER_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_INIT_FINISHED_0 = "INIT_DRIVER_INIT_FINISHED_0";

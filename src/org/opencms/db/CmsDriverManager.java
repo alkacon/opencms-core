@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/01 12:11:56 $
- * Version: $Revision: 1.570.2.94 $
+ * Date   : $Date: 2007/06/04 16:03:58 $
+ * Version: $Revision: 1.570.2.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,6 +81,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationSystemValidator;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -419,35 +420,55 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // read the vfs driver class properties and initialize a new instance 
         drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_VFS));
-        driverName = config.getString((String)drivers.get(0) + ".vfs.driver");
+        String driverKey = (String)drivers.get(0) + ".vfs.driver";
+        driverName = config.getString(driverKey);
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        if (driverName == null) {
+            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+        }
         vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
         drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_USER));
-        driverName = config.getString((String)drivers.get(0) + ".user.driver");
+        driverKey = (String)drivers.get(0) + ".user.driver";
+        driverName = config.getString(driverKey);
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        if (driverName == null) {
+            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+        }
         userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
         drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_PROJECT));
-        driverName = config.getString((String)drivers.get(0) + ".project.driver");
+        driverKey = (String)drivers.get(0) + ".project.driver";
+        driverName = config.getString(driverKey);
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        if (driverName == null) {
+            CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+        }
         projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the history driver class properties and initialize a new instance 
         if (config.get(CmsDriverManager.CONFIGURATION_HISTORY) != null) {
             drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_HISTORY));
-            driverName = config.getString((String)drivers.get(0) + ".history.driver");
+            driverKey = (String)drivers.get(0) + ".history.driver";
+            driverName = config.getString(driverKey);
             drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+            if (driverName == null) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+            }
             historyDriver = (I_CmsHistoryDriver)driverManager.newDriverInstance(
                 configurationManager,
                 driverName,
                 drivers);
         } else {
             drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_BACKUP));
-            driverName = config.getString((String)drivers.get(0) + ".backup.driver");
+            driverKey = (String)drivers.get(0) + ".backup.driver";
+            driverName = config.getString(driverKey);
             drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+            if (driverName == null) {
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DRIVER_FAILED_1, driverKey));
+            }
             historyDriver = (I_CmsHistoryDriver)driverManager.newDriverInstance(
                 configurationManager,
                 driverName,
@@ -479,29 +500,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the database context
      * @param resource the resource to add the relation to
-     * @param id the structure id of the target relation
      * @param target the target of the relation
      * @param type the type of the relation
+     * @param importCase if importing relations
      * 
      * @throws CmsException if something goes wrong
      */
     public void addRelationToResource(
         CmsDbContext dbc,
         CmsResource resource,
-        CmsUUID id,
-        String target,
-        CmsRelationType type) throws CmsException {
+        CmsResource target,
+        CmsRelationType type,
+        boolean importCase) throws CmsException {
 
-        CmsRelation relation = new CmsRelation(
-            resource.getStructureId(),
-            resource.getRootPath(),
-            id,
-            target,
-            0,
-            0,
-            type);
+        if (type.isDefinedInContent()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_ADD_RELATION_IN_CONTENT_3,
+                dbc.removeSiteRoot(resource.getRootPath()),
+                dbc.removeSiteRoot(target.getRootPath()),
+                type.getLocalizedName(dbc.getRequestContext().getLocale())));
+        }
+        CmsRelation relation = new CmsRelation(resource, target, type);
         m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
-        //        setDateLastModified(dbc, resource, System.currentTimeMillis());
+        if (!importCase) {
+            setDateLastModified(dbc, resource, System.currentTimeMillis());
+        }
     }
 
     /**
@@ -519,6 +542,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void addResourceToOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
 
+        OpenCms.getMemoryMonitor().flushRoles();
         m_userDriver.addResourceToOrganizationalUnit(dbc, orgUnit, resource);
     }
 
@@ -550,7 +574,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return;
         }
         if (group.isVirtual()) {
-            // this is an hack so to prevent a unlimited recursive calls
+            // this is an hack to prevent unlimited recursive calls
             readRoles = false;
         }
         if ((readRoles && !group.isRole()) || (!readRoles && group.isRole())) {
@@ -613,7 +637,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         //add this user to the group
         m_userDriver.createUserInGroup(dbc, user.getId(), group.getId());
+
         // flush the cache
+        if (readRoles) {
+            OpenCms.getMemoryMonitor().flushRoles();
+        }
         OpenCms.getMemoryMonitor().flushUserGroups();
     }
 
@@ -1208,8 +1236,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (name.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
             name = name.substring(0, name.length() - 1);
         }
+
         // check the name
-        OpenCms.getValidationHandler().checkOrganizationalUnitName(name);
+        CmsResource.checkResourceName(name);
 
         // trim the name
         name = name.trim();
@@ -1698,7 +1727,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
                 }
             }
-            // delete all relations for the resource, the content relations will be rebuild as soon as needed
+            // delete all relations for the resource
             m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
         } finally {
             // clear the internal caches
@@ -2315,7 +2344,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
 
         // flush relevant caches
+        OpenCms.getMemoryMonitor().flushRoles();
         clearAccessControlListCache();
+
         OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
@@ -2517,8 +2548,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void deleteRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
+        if (filter.includesDefinedInContent()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_DELETE_RELATION_IN_CONTENT_2,
+                dbc.removeSiteRoot(resource.getRootPath()),
+                filter.getTypes()));
+        }
         m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), resource, filter);
-        //        setDateLastModified(dbc, resource, System.currentTimeMillis());
+        setDateLastModified(dbc, resource, System.currentTimeMillis());
     }
 
     /**
@@ -2710,6 +2747,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResource);
                 }
             }
+            // delete relations
             m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), currentResource, CmsRelationFilter.TARGETS);
         }
 
@@ -3642,34 +3680,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns all deepest organizational units that contains the given resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to look for
-     * 
-     * @return a list of organizational units that contains the given resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    public List getOrganizationalUnitsForResource(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
-
-        CmsFolder folder;
-        // get the folder since ou can only be associated to folders
-        if (resource.isFile()) {
-            folder = getVfsDriver().readParentFolder(dbc, dbc.currentProject().getUuid(), resource.getStructureId());
-        } else {
-            folder = new CmsFolder(resource);
-        }
-        List orgUnits = new ArrayList();
-        Iterator itOuFqns = m_userDriver.getOrganizationalUnitsForFolder(dbc, folder).iterator();
-        while (itOuFqns.hasNext()) {
-            String ouFqn = (String)itOuFqns.next();
-            orgUnits.add(ouFqn);
-        }
-        return orgUnits;
-    }
-
-    /**
      * Returns all the organizational units for which the current user has the given role.<p>
      * 
      * @param dbc the current database context
@@ -4576,6 +4586,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             false,
             CmsResourceFilter.IGNORE_EXPIRATION);
 
+        if (source.isFolder()) {
+            OpenCms.getMemoryMonitor().flushRoles();
+        }
         m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
         // move lock 
         m_lockManager.moveResource(source.getRootPath(), destination);
@@ -6451,17 +6464,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current db context
      * @param orgUnit the organizational unit to remove the resource from
-     * @param resourceName the root path of the resource that is to be removed from the organizational unit
+     * @param resource the resource that is to be removed from the organizational unit
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      */
-    public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, String resourceName)
+    public void removeResourceFromOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, CmsResource resource)
     throws CmsException {
 
-        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resourceName);
+        OpenCms.getMemoryMonitor().flushRoles();
+        m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
     }
 
     /**
@@ -6587,6 +6601,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         m_userDriver.deleteUserInGroup(dbc, user.getId(), group.getId());
+
+        // flush relevant caches
+        if (readRoles) {
+            OpenCms.getMemoryMonitor().flushRoles();
+        }
         OpenCms.getMemoryMonitor().flushUserGroups();
     }
 
@@ -6626,6 +6645,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         setDateLastModified(dbc, resource, System.currentTimeMillis());
 
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
+
+        deleteRelationsWithSiblings(dbc, resource);
 
         // clear the cache
         clearResourceCache();
@@ -7314,84 +7335,51 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
-        // get all siblings
-        List siblings;
-        if (resource.getSiblingCount() > 1) {
-            siblings = readSiblings(dbc, resource, CmsResourceFilter.IGNORE_EXPIRATION);
-        } else {
-            siblings = new ArrayList();
-            siblings.add(resource);
-        }
-        // clean the relations in content for all siblings 
-        Iterator it = siblings.iterator();
-        while (it.hasNext()) {
-            CmsResource sibling = (CmsResource)it.next();
-            // clean the relation information for this sibling
-            m_vfsDriver.deleteRelations(
-                dbc,
-                dbc.currentProject().getUuid(),
-                sibling,
-                CmsRelationFilter.TARGETS.filterDefinedInContent());
-        }
+        deleteRelationsWithSiblings(dbc, resource);
 
         // build the links again only if needed
-        if (links != null && !links.isEmpty()) {
-            // the set of written relations
-            Set writtenRelations = new HashSet();
+        if ((links == null) || links.isEmpty()) {
+            return;
+        }
+        // the set of written relations
+        Set writtenRelations = new HashSet();
 
-            // create new relation information
-            Iterator itLinks = links.iterator();
-            while (itLinks.hasNext()) {
-                CmsLink link = (CmsLink)itLinks.next();
-                if (link.isInternal()) { // only update internal links
-
+        // create new relation information
+        Iterator itLinks = links.iterator();
+        while (itLinks.hasNext()) {
+            CmsLink link = (CmsLink)itLinks.next();
+            if (link.isInternal()) { // only update internal links
+                CmsRelation originalRelation;
+                try {
                     // get the target resource
-                    CmsResource target = null;
-                    try {
-                        target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                    CmsRelation originalRelation;
-                    if (target == null) {
-                        // if link is broken maintain name and default time window
-                        originalRelation = new CmsRelation(
-                            resource.getStructureId(),
-                            resource.getRootPath(),
-                            CmsUUID.getNullUUID(),
-                            link.getTarget(),
-                            CmsResource.DATE_RELEASED_DEFAULT,
-                            CmsResource.DATE_EXPIRED_DEFAULT,
-                            link.getType());
-                    } else {
-                        originalRelation = new CmsRelation(resource, target, link.getType());
-                    }
-                    // do not write twice the same relation
-                    if (writtenRelations.contains(originalRelation)) {
-                        continue;
-                    }
-                    writtenRelations.add(originalRelation);
+                    CmsResource target = readResource(dbc, link.getTarget(), CmsResourceFilter.ALL);
+                    originalRelation = new CmsRelation(resource, target, link.getType());
+                } catch (Exception e) {
+                    // if link is broken maintain name and default time window
+                    originalRelation = new CmsRelation(
+                        resource.getStructureId(),
+                        resource.getRootPath(),
+                        CmsUUID.getNullUUID(),
+                        link.getTarget(),
+                        link.getType());
+                }
+                // do not write twice the same relation
+                if (writtenRelations.contains(originalRelation)) {
+                    continue;
+                }
+                writtenRelations.add(originalRelation);
 
-                    // create the relations in content for all siblings 
-                    Iterator itSiblings = siblings.iterator();
-                    while (itSiblings.hasNext()) {
-                        CmsResource sibling = (CmsResource)itSiblings.next();
-                        CmsRelation relation;
-                        if (target == null) {
-                            // if link is broken maintain name and default time window
-                            relation = new CmsRelation(
-                                sibling.getStructureId(),
-                                sibling.getRootPath(),
-                                CmsUUID.getNullUUID(),
-                                link.getTarget(),
-                                CmsResource.DATE_RELEASED_DEFAULT,
-                                CmsResource.DATE_EXPIRED_DEFAULT,
-                                link.getType());
-                        } else {
-                            relation = new CmsRelation(sibling, target, link.getType());
-                        }
-                        m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
-                    }
+                // create the relations in content for all siblings 
+                Iterator itSiblings = readSiblings(dbc, resource, CmsResourceFilter.ALL).iterator();
+                while (itSiblings.hasNext()) {
+                    CmsResource sibling = (CmsResource)itSiblings.next();
+                    CmsRelation relation = new CmsRelation(
+                        sibling.getStructureId(),
+                        sibling.getRootPath(),
+                        originalRelation.getTargetId(),
+                        originalRelation.getTargetPath(),
+                        link.getType());
+                    m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
                 }
             }
         }
@@ -7570,6 +7558,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     } else {
                         exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
                     }
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
                 } else {
                     // export the file            
                     try {
@@ -7641,6 +7632,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // read the file back from db
         resource = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
         resource.setContents(contents);
+
+        deleteRelationsWithSiblings(dbc, resource);
 
         // update the cache
         clearResourceCache();
@@ -7906,6 +7899,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resource.setState(CmsResource.STATE_CHANGED);
         }
 
+        // delete in content relations if the new type is not parseable
+        if (!(OpenCms.getResourceManager().getResourceType(resource.getTypeId()) instanceof I_CmsLinkParseable)) {
+            deleteRelationsWithSiblings(dbc, resource);
+        }
+
         // update the cache
         clearResourceCache();
         HashMap data = new HashMap(2);
@@ -7973,6 +7971,37 @@ public final class CmsDriverManager implements I_CmsEventListener {
         throw new CmsVfsResourceNotFoundException(Messages.get().container(
             Messages.ERR_ACCESS_FILE_AS_FOLDER_1,
             resource.getRootPath()));
+    }
+
+    /**
+     * Deletes all relations for the given resource and all its siblings.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to delete the resource for
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void deleteRelationsWithSiblings(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        // get all siblings
+        List siblings;
+        if (resource.getSiblingCount() > 1) {
+            siblings = readSiblings(dbc, resource, CmsResourceFilter.ALL);
+        } else {
+            siblings = new ArrayList();
+            siblings.add(resource);
+        }
+        // clean the relations in content for all siblings 
+        Iterator it = siblings.iterator();
+        while (it.hasNext()) {
+            CmsResource sibling = (CmsResource)it.next();
+            // clean the relation information for this sibling
+            m_vfsDriver.deleteRelations(
+                dbc,
+                dbc.currentProject().getUuid(),
+                sibling,
+                CmsRelationFilter.TARGETS.filterDefinedInContent());
+        }
     }
 
     /**
@@ -8133,6 +8162,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getMemoryMonitor().flushUserGroups();
         OpenCms.getMemoryMonitor().flushACLs();
         OpenCms.getMemoryMonitor().flushPermissions();
+        OpenCms.getMemoryMonitor().flushRoles();
 
         if (!principalsOnly) {
             OpenCms.getMemoryMonitor().flushProjects();
@@ -8150,6 +8180,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private void clearResourceCache() {
 
         OpenCms.getMemoryMonitor().flushResources();
+        OpenCms.getMemoryMonitor().flushRoles();
         OpenCms.getMemoryMonitor().flushResourceLists();
     }
 

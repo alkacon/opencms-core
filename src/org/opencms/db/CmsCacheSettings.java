@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2007/03/21 13:14:00 $
- * Version: $Revision: 1.4.8.2 $
+ * Date   : $Date: 2007/06/04 16:03:58 $
+ * Version: $Revision: 1.4.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.db;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.4.8.2 $
+ * @version $Revision: 1.4.8.3 $
  * 
  * @since 6.0.0
  */
@@ -75,6 +75,9 @@ public class CmsCacheSettings {
     /** The size of the driver manager's cache for lists of resources. */
     private int m_resourcelistCacheSize;
 
+    /** The size of the driver manager's cache for roles. */
+    private int m_rolesCacheSize = -1;
+
     /** The size of the driver manager's cache for users. */
     private int m_userCacheSize;
 
@@ -112,7 +115,7 @@ public class CmsCacheSettings {
     /**
      * Returns the size of the driver manager's cache for organizational units.<p>
      *
-     * May be <code>-1</code> if configuration entry is missing.<p>
+     * Might be <code>-1</code> if configuration entry is missing.<p>
      *
      * @return the size of the driver manager's cache for organizational units
      */
@@ -124,7 +127,7 @@ public class CmsCacheSettings {
     /**
      * Returns the size of the driver manager's cache for project resources.<p>
      *
-     * May be <code>-1</code> if configuration entry is missing.<p>
+     * Might be <code>-1</code> if configuration entry is missing.<p>
      *
      * @return the size of the driver manager's cache for project resources
      */
@@ -136,13 +139,25 @@ public class CmsCacheSettings {
     /**
      * Returns the size of the driver manager's cache for property lists.<p>
      *
-     * May be <code>-1</code> if configuration entry is missing.<p>
+     * Might be <code>-1</code> if configuration entry is missing.<p>
      *
      * @return the size of the driver manager's cache for property lists
      */
     public int getConfiguredPropertyListsCacheSize() {
 
         return m_propertyListsCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for roles.<p>
+     *
+     * Might be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the driver manager's cache for roles
+     */
+    public int getConfiguredRolesCacheSize() {
+
+        return m_rolesCacheSize;
     }
 
     /**
@@ -242,6 +257,19 @@ public class CmsCacheSettings {
     public int getResourcelistCacheSize() {
 
         return m_resourcelistCacheSize;
+    }
+
+    /**
+     * Returns the size of the driver manager's cache for roles.<p>
+     * 
+     * @return the size of the driver manager's cache for roles
+     */
+    public int getRolesCacheSize() {
+
+        if (m_rolesCacheSize < 0) {
+            return getPermissionCacheSize();
+        }
+        return m_rolesCacheSize;
     }
 
     /**
@@ -372,6 +400,16 @@ public class CmsCacheSettings {
     public void setResourcelistCacheSize(String size) {
 
         m_resourcelistCacheSize = getIntValue(size, 256);
+    }
+
+    /**
+     * Sets the size of the driver manager's cache for roles.<p>
+     *
+     * @param size the size of the driver manager's cache for roles
+     */
+    public void setRolesCacheSize(String size) {
+
+        m_rolesCacheSize = getIntValue(size, 8192);
     }
 
     /**

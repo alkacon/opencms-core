@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.36.4.19 $
+ * Date   : $Date: 2007/06/04 16:03:59 $
+ * Version: $Revision: 1.36.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.19 $
+ * @version $Revision: 1.36.4.20 $
  * 
  * @since 6.0.0
  */
@@ -367,6 +367,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The size of the driver manager's cache for resources. */
     public static final String N_SIZE_RESOURCES = "size-resources";
+
+    /** The size of the driver manager's cache for roles. */
+    public static final String N_SIZE_ROLES = "size-roles";
 
     /** The size of the driver manager's cache for user/group relations. */
     public static final String N_SIZE_USERGROUPS = "size-usergroups";
@@ -933,6 +936,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             "setProjectResourcesCacheSize",
             0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ROLES, "setRolesCacheSize", 0);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCELISTS,
             "setResourcelistCacheSize",
@@ -1296,6 +1300,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 Integer.toString(m_cacheSettings.getConfiguredProjectResourcesCacheSize()));
         }
         cacheElement.addElement(N_SIZE_RESOURCES).setText(Integer.toString(m_cacheSettings.getResourceCacheSize()));
+        if (m_cacheSettings.getConfiguredRolesCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_ROLES).setText(
+                Integer.toString(m_cacheSettings.getConfiguredRolesCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_RESOURCELISTS).setText(
             Integer.toString(m_cacheSettings.getResourcelistCacheSize()));
         cacheElement.addElement(N_SIZE_PROPERTIES).setText(Integer.toString(m_cacheSettings.getPropertyCacheSize()));
