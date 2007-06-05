@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.31.4.13 $
+ * Date   : $Date: 2007/06/05 13:14:42 $
+ * Version: $Revision: 1.31.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.13 $
+ * @version $Revision: 1.31.4.14 $
  * 
  * @since 6.0.0
  */
@@ -722,6 +722,10 @@ public class CmsPreferences extends CmsTabDialog {
         int selectedIndex = 0;
 
         List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+        String wpSite =  getParamTabWpSite();
+        if (!wpSite.endsWith("/")) {
+            wpSite += "/";
+        }
 
         Iterator i = sites.iterator();
         int pos = 0;

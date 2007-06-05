@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsNotResourceCategoriesList.java,v $
- * Date   : $Date: 2007/05/10 09:45:51 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/05 13:14:42 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2
  */
@@ -110,11 +110,14 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_ADD)) {
-            CmsListItem listItem = getSelectedItem();
             try {
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
+
+                CmsListItem listItem = getSelectedItem();
                 getCategoryService().addResourceToCategory(getCms(), getParamResource(), listItem.getId());
             } catch (CmsException e) {
-                // noop
+                throw new CmsRuntimeException(e.getMessageContainer(), e);
             }
         } else {
             throwListUnsupportedActionException();

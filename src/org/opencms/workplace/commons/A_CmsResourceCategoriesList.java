@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/06/04 15:09:54 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/05 13:14:42 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.2
  */
@@ -196,14 +196,12 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
      * Returns a list of a categories related to the current request resource.<p>
      * 
      * @return a list of a categories related to the current request resource
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    protected List getResourceCategories() {
+    protected List getResourceCategories() throws CmsException {
 
-        try {
-            return m_categoryService.readResourceCategories(getJsp().getCmsObject(), getParamResource());
-        } catch (CmsException e) {
-            return null;
-        }
+        return m_categoryService.readResourceCategories(getJsp().getCmsObject(), getParamResource());
     }
 
     /**
