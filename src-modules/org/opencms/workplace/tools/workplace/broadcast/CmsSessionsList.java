@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2007/02/23 13:13:20 $
- * Version: $Revision: 1.14.4.3 $
+ * Date   : $Date: 2007/06/05 09:53:44 $
+ * Version: $Revision: 1.14.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14.4.3 $ 
+ * @version $Revision: 1.14.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,6 +256,19 @@ public class CmsSessionsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_SITE, sessionInfo.getSiteRoot());
             ret.add(item);
         }
+        
+        // hide ou column if only one ou exists
+        try {
+            if (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).isEmpty()) {
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(false);
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_USER).setWidth("40%");
+            } else {
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(true);
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_USER).setWidth("20%");
+            }
+        } catch (CmsException e) {
+            // noop
+        }
 
         return ret;
     }
@@ -345,7 +358,8 @@ public class CmsSessionsList extends A_CmsListDialog {
         // create column for user name
         CmsListColumnDefinition userCol = new CmsListColumnDefinition(LIST_COLUMN_USER);
         userCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_USER_0));
-        userCol.setWidth("20%");
+        //userCol.setWidth("20%");
+
         // create default edit message action
         CmsListDefaultAction messageEditAction = new CmsListDefaultAction(LIST_DEFACTION_MESSAGE);
         messageEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_NAME_0));
