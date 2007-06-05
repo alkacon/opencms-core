@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/06/05 13:04:01 $
- * Version: $Revision: 1.4.4.13 $
+ * Date   : $Date: 2007/06/05 14:01:22 $
+ * Version: $Revision: 1.4.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.13 $ 
+ * @version $Revision: 1.4.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -669,10 +669,19 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     private List getLanguages() {
 
         List locales = new ArrayList();
+
+        Locale defLocale = null;
+        if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
+            defLocale = new CmsUserSettings(m_user).getLocale();
+        }
+        if (defLocale == null) {
+            defLocale = getCms().getRequestContext().getLocale();
+        }
+
         Iterator itLocales = OpenCms.getLocaleManager().getAvailableLocales().iterator();
         while (itLocales.hasNext()) {
             Locale locale = (Locale)itLocales.next();
-            boolean selected = false;
+            boolean selected = locale.equals(defLocale);
             locales.add(new CmsSelectWidgetOption(locale.toString(), selected, locale.getDisplayName(getLocale()), null));
         }
         return locales;
@@ -687,10 +696,23 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
         List sites = new ArrayList();
         List sitesList = CmsSiteManager.getAvailableSites(getCms(), true, getParamOufqn());
+
+        String defSite = null;
+        if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
+            defSite = new CmsUserSettings(m_user).getStartSite();
+        }
+        if (defSite == null) {
+            defSite = getCms().getRequestContext().getSiteRoot();
+        }
+        if (!defSite.endsWith("/")) {
+            defSite += "/";
+        }
+
         Iterator itSites = sitesList.iterator();
         while (itSites.hasNext()) {
             CmsSite site = (CmsSite)itSites.next();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getSiteRoot())) {
+            String siteRoot = site.getSiteRoot();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)) {
                 if (sitesList.size() > 1) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
                         if (!OpenCms.getRoleManager().hasRole(getCms(), m_user.getName(), CmsRole.DEVELOPER)) {
@@ -700,7 +722,11 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                     }
                 }
             }
-            sites.add(new CmsSelectWidgetOption(site.getSiteRoot(), false, site.getTitle(), null));
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            boolean selected = defSite.equals(siteRoot);
+            sites.add(new CmsSelectWidgetOption(siteRoot, selected, site.getTitle(), null));
         }
         return sites;
     }
