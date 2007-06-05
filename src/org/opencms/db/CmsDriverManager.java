@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/05 09:59:41 $
- * Version: $Revision: 1.570.2.97 $
+ * Date   : $Date: 2007/06/05 13:18:33 $
+ * Version: $Revision: 1.570.2.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
