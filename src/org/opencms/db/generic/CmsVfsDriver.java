@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/04 16:05:42 $
- * Version: $Revision: 1.258.4.30 $
+ * Date   : $Date: 2007/06/05 19:16:09 $
+ * Version: $Revision: 1.258.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.30 $
+ * @version $Revision: 1.258.4.31 $
  * 
  * @since 6.0.0 
  */
@@ -565,6 +566,22 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             String parentId = internalReadParentId(dbc, projectId, resourcePath);
 
             boolean existsResource = validateResourceIdExists(dbc, projectId, resource.getResourceId());
+
+            // use consistent version numbers if the file is being restored
+            int lastVersion = m_driverManager.getHistoryDriver().readLastVersion(dbc, newStructureId);
+            int histStrVersion = 0;
+            int histResVersion = 0;
+            if (lastVersion > 0) {
+                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver().readResource(
+                    dbc,
+                    newStructureId,
+                    lastVersion);
+                histResVersion = histRes.getResourceVersion();
+                histStrVersion = histRes.getStructureVersion();
+            }
+            int newStrVersion = (!existsResource ? 0 : 1) + histStrVersion;
+            int newResVersion = 1 + histResVersion;
+            
             conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_STRUCTURE_WRITE");
@@ -575,7 +592,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
             stmt.setString(7, parentId);
-            stmt.setInt(8, (!existsResource ? 0 : 1)); // starting version number
+            stmt.setInt(8, newStrVersion); // starting version number
             stmt.executeUpdate();
             m_sqlManager.closeAll(dbc, null, stmt, null);
 
@@ -595,7 +612,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     stmt.setLong(10, dateContent);
                     stmt.setString(11, projectId.toString());
                     stmt.setInt(12, 1); // sibling count
-                    stmt.setInt(13, 1); // version number
+                    stmt.setInt(13, newResVersion); // version number
                     stmt.executeUpdate();
                 } finally {
                     m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -783,6 +800,18 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
 
+            // use consistent version numbers if the file is being restored
+            int lastVersion = m_driverManager.getHistoryDriver().readLastVersion(dbc, newStructureId);
+            int histStrVersion = 0;
+            if (lastVersion > 0) {
+                I_CmsHistoryResource histRes = m_driverManager.getHistoryDriver().readResource(
+                    dbc,
+                    newStructureId,
+                    lastVersion);
+                histStrVersion = histRes.getStructureVersion();
+            }
+            int newStrVersion = 1 + histStrVersion;
+
             // read the parent id
             String parentId = internalReadParentId(dbc, project.getUuid(), resource.getRootPath());
 
@@ -795,7 +824,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
             stmt.setString(7, parentId);
-            stmt.setInt(8, 1); // initial structure version number
+            stmt.setInt(8, newStrVersion); // initial structure version number
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(dbc, null, stmt, null);
