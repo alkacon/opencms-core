@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/06/05 13:14:42 $
- * Version: $Revision: 1.31.4.14 $
+ * Date   : $Date: 2007/06/05 13:24:40 $
+ * Version: $Revision: 1.31.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.31.4.14 $
+ * @version $Revision: 1.31.4.15 $
  * 
  * @since 6.0.0
  */
@@ -737,7 +737,7 @@ public class CmsPreferences extends CmsTabDialog {
             }
             values.add(siteRoot);
             options.add(site.getTitle());
-            if (siteRoot.equals(getParamTabWpSite())) {
+            if (siteRoot.equals(wpSite)) {
                 // this is the user's currently chosen site
                 selectedIndex = pos;
             }
