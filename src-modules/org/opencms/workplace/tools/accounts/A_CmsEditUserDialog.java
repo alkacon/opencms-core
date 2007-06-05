@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/05/16 08:33:32 $
- * Version: $Revision: 1.4.4.12 $
+ * Date   : $Date: 2007/06/05 13:04:01 $
+ * Version: $Revision: 1.4.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.12 $ 
+ * @version $Revision: 1.4.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,12 +160,18 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             }
             // write the edited user
             writeUser(m_user);
+            // set starting membership
             if (isNewUser()) {
-                // set starting settings
-                getCms().addUserToGroup(m_user.getName(), getGroup());
-                CmsUserSettings settings = new CmsUserSettings(m_user);
-                settings.setLocale(CmsLocaleManager.getLocale(getLanguage()));
-                settings.setStartSite(getSite());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
+                    getCms().addUserToGroup(m_user.getName(), getGroup());
+                }
+            }
+            // set starting settings
+            CmsUserSettings settings = new CmsUserSettings(m_user);
+            settings.setLocale(CmsLocaleManager.getLocale(getLanguage()));
+            settings.setStartSite(getSite());
+            // set starting project
+            if (isNewUser()) {
                 try {
                     String prj = getCms().readProject(
                         getParamOufqn() + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject()).getName();
@@ -174,8 +180,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                     // use root ou project, if project not found
                     settings.setStartProject(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
                 }
-                settings.save(getCms());
             }
+            settings.save(getCms());
+
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
             if (objects != null) {
