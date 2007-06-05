@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/06/04 16:07:48 $
- * Version: $Revision: 1.58.4.11 $
+ * Date   : $Date: 2007/06/05 12:18:33 $
+ * Version: $Revision: 1.58.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.11 $ 
+ * @version $Revision: 1.58.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -618,10 +618,25 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the locks cache.<p>
+     * 
+     * @param newLocks if not <code>null</code> the lock cache is replaced by the given map 
      */
-    public void flushLocks() {
+    public void flushLocks(Map newLocks) {
 
-        m_lockCache.clear();
+        if ((newLocks == null) || newLocks.isEmpty()) {
+            m_lockCache.clear();
+            return;
+        }
+        // initialize new lock cache
+        Map newLockCache = Collections.synchronizedMap(newLocks);
+        // register it
+        register(CmsLockManager.class.getName(), newLockCache);
+        // save the old cache
+        Map oldCache = m_lockCache;
+        // replace the old by the new cache
+        m_lockCache = newLockCache;
+        // clean up the old cache
+        oldCache.clear();
     }
 
     /**
@@ -1420,10 +1435,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushUserGroups();
         flushUsers();
         flushVfsObjects();
-        flushLocks();
+        flushLocks(null);
         flushContentDefinitions();
         flushXmlPermanentEntities();
         flushXmlTemporaryEntities();
+        flushRoles();
     }
 
     /**

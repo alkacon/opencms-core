@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/06/04 16:07:36 $
- * Version: $Revision: 1.37.4.25 $
+ * Date   : $Date: 2007/06/05 12:18:33 $
+ * Version: $Revision: 1.37.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,10 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The CmsLockManager is used by the Cms application to detect 
@@ -61,7 +63,7 @@ import java.util.List;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.25 $ 
+ * @version $Revision: 1.37.4.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -344,13 +346,14 @@ public final class CmsLockManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // read the locks only if the wizard is not enabled
-            OpenCms.getMemoryMonitor().flushLocks();
+            Map lockCache = new HashMap();
             List locks = m_driverManager.getProjectDriver().readLocks(dbc);
             Iterator itLocks = locks.iterator();
             while (itLocks.hasNext()) {
                 CmsLock lock = (CmsLock)itLocks.next();
-                internalLockResource(lock);
+                internalLockResource(lock, lockCache);
             }
+            OpenCms.getMemoryMonitor().flushLocks(lockCache);
         }
     }
 
@@ -553,8 +556,10 @@ public final class CmsLockManager {
      */
     public void writeLocks(CmsDbContext dbc) throws CmsException {
 
-        if (m_isDirty && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
-            // write the locks only if wizard is not enabled
+        if (m_isDirty // only if something changed
+            && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) // only if wizard is not enabled 
+            && OpenCms.getMemoryMonitor().requiresPersistency()) { // only if persistency is required
+
             List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
             m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
@@ -568,7 +573,7 @@ public final class CmsLockManager {
 
         try {
             if (OpenCms.getMemoryMonitor() != null) {
-                OpenCms.getMemoryMonitor().flushLocks();
+                OpenCms.getMemoryMonitor().flushLocks(null);
             }
         } catch (Throwable t) {
             // ignore
@@ -706,19 +711,29 @@ public final class CmsLockManager {
      * Finally set the given lock.<p>
      * 
      * @param lock the lock to set
+     * @param locks during reading the locks from db we need to operate on an extra map
      * 
      * @throws CmsLockException if the lock is not compatible with the current lock 
      */
-    private void internalLockResource(CmsLock lock) throws CmsLockException {
+    private void internalLockResource(CmsLock lock, Map locks) throws CmsLockException {
 
-        CmsLock currentLock = OpenCms.getMemoryMonitor().getCachedLock(lock.getResourceName());
+        CmsLock currentLock = null;
+        if (locks == null) {
+            currentLock = OpenCms.getMemoryMonitor().getCachedLock(lock.getResourceName());
+        } else {
+            currentLock = (CmsLock)locks.get(lock.getResourceName());
+        }
         if (currentLock != null) {
             if (currentLock.getSystemLock().equals(lock) || currentLock.getEditionLock().equals(lock)) {
                 return;
             }
             if (!currentLock.getSystemLock().isUnlocked() && lock.getSystemLock().isUnlocked()) {
                 lock.setRelatedLock(currentLock);
-                OpenCms.getMemoryMonitor().cacheLock(lock);
+                if (locks == null) {
+                    OpenCms.getMemoryMonitor().cacheLock(lock);
+                } else {
+                    locks.put(lock.getResourceName(), lock);
+                }
             } else if (currentLock.getSystemLock().isUnlocked() && !lock.getSystemLock().isUnlocked()) {
                 currentLock.setRelatedLock(lock);
             } else {
@@ -728,7 +743,11 @@ public final class CmsLockManager {
                     lock));
             }
         } else {
-            OpenCms.getMemoryMonitor().cacheLock(lock);
+            if (locks == null) {
+                OpenCms.getMemoryMonitor().cacheLock(lock);
+            } else {
+                locks.put(lock.getResourceName(), lock);
+            }
         }
     }
 
@@ -802,17 +821,8 @@ public final class CmsLockManager {
      */
     private void lockResource(CmsLock lock) throws CmsLockException {
 
-        if (!m_isDirty) {
-            // read the locks again fresh from DB before changing the state
-            try {
-                readLocks(new CmsDbContext());
-            } catch (CmsException e) {
-                // should never happen
-                e.printStackTrace();
-            }
-        }
         m_isDirty = true;
-        internalLockResource(lock);
+        internalLockResource(lock, null);
     }
 
     /**
@@ -826,15 +836,6 @@ public final class CmsLockManager {
      */
     private CmsLock unlockResource(String resourceName, boolean systemLocks) {
 
-        if (!m_isDirty) {
-            // read the locks again fresh from DB before changing the state
-            try {
-                readLocks(new CmsDbContext());
-            } catch (CmsException e) {
-                // should never happen
-                e.printStackTrace();
-            }
-        }
         m_isDirty = true;
 
         // get the current lock
