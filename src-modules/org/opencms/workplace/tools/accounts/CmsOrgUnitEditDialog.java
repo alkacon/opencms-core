@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/05/16 08:33:32 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/06/05 13:35:13 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.15 $ 
+ * @version $Revision: 1.1.2.16 $ 
  * 
  * @since 6.5.6
  */
@@ -229,7 +229,8 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             CmsRole.ADMINISTRATOR)));
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "resources", PAGES[0], new CmsVfsFileWidget(
             false,
-            getCms().getRequestContext().getSiteRoot())));
+            getCms().getRequestContext().getSiteRoot(),
+            false)));
     }
 
     /**

@@ -41,8 +41,13 @@ var treeForm = null;
 var treeField = null;
 var treeDoc = null;
 
-function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite) {
-	var paramString = "?type=vfswidget&includefiles=true&showsiteselector=";
+function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite, includeFiles) {
+
+	if (includeFiles == null) {
+		includeFiles = true;
+	}
+
+	var paramString = "?type=vfswidget&includefiles=" + includeFiles + "&showsiteselector=";
 	
 	if (showSiteSelector) {
 		paramString += "true";	
