@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceCustomFoot.java,v $
- * Date   : $Date: 2007/06/05 07:37:49 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/05 09:38:05 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.2 
  */
@@ -151,7 +151,7 @@ public class CmsWorkplaceCustomFoot {
             if (!isReplaceDefault()) {
                 // the default text should be shown
                 try {
-                    if (OpenCms.getOrgUnitManager().getOrganizationalUnits(wp.getCms(), "", true).size() < 2) {
+                    if (!OpenCms.getOrgUnitManager().getOrganizationalUnits(wp.getCms(), "", true).isEmpty()) {
                         text.append(DEFAULT_TEXT).append(" ");
                     } else {
                         text.append(DEFAULT_TEXT_WITH_OU).append(" ");
