@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/06/04 16:09:23 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/06/05 09:52:34 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.security;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -42,7 +43,7 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 6.5.6 
  */
@@ -297,6 +298,11 @@ public class CmsOrganizationalUnit {
      * @param description the principal organizational unit to set
      */
     public void setDescription(String description) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_BAD_OU_DESCRIPTION_EMPTY_0));
+        }
 
         m_description = description;
     }

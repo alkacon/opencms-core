@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/04 16:03:58 $
- * Version: $Revision: 1.570.2.95 $
+ * Date   : $Date: 2007/06/05 09:52:33 $
+ * Version: $Revision: 1.570.2.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1242,6 +1242,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // trim the name
         name = name.trim();
+        
+        // check the description
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_OU_DESCRIPTION_EMPTY_0));
+        }
+        
         // create the organizational unit
         CmsOrganizationalUnit orgUnit = m_userDriver.createOrganizationalUnit(
             dbc,
