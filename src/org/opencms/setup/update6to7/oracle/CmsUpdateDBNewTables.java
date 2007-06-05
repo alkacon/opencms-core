@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/05 12:25:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,12 +82,14 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.update6to7.generic.C
         elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_02_ORACLE");
         elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_03_ORACLE");
         elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_04_ORACLE");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_05_ORACLE");
         
         elements.add("CMS_ONLINE_RESOURCE_RELATIONS_ORACLE");
         elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_01_ORACLE");
         elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_02_ORACLE");
         elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_03_ORACLE");
         elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_04_ORACLE");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_05_ORACLE");
         
         elements.add("CMS_PUBLISH_JOBS_ORACLE");       
         elements.add("CMS_RESOURCE_LOCKS_ORACLE");

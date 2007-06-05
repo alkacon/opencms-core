@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/05 12:25:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -174,7 +174,8 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
         indexElements.add("CMS_GROUPUSERS_01_IDX_INDEX");
         indexElements.add("CMS_GROUPUSERS_02_IDX_INDEX");
         indexElements.add("CMS_OFFLINE_ACCESSCONTROL_PRIMARY_KEY");
-        indexElements.add("OFFLINE_ACCESSCONTROL_01_IDX_INDEX");
+        indexElements.add("CMS_OFFLINE_ACCESSCONTROL_01_IDX_INDEX");
+        indexElements.add("CMS_OFFLINE_ACCESSCONTROL_02_IDX_INDEX");
         indexElements.add("CMS_OFFLINE_CONTENTS_PRIMARY_KEY");
         indexElements.add("CMS_OFFLINE_PROPERTIES_PRIMARY_KEY");
         indexElements.add("CMS_OFFLINE_PROPERTIES_UNIQUE_KEY_PROPERTIES");
@@ -197,7 +198,8 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
         indexElements.add("CMS_OFFLINE_STRUCTURE_06_IDX_INDEX");
         indexElements.add("CMS_OFFLINE_STRUCTURE_07_IDX_INDEX");
         indexElements.add("CMS_ONLINE_ACCESSCONTROL_PRIMARY_KEY");
-        indexElements.add("ONLINE_ACCESSCONTROL_01_IDX_INDEX");
+        indexElements.add("CMS_ONLINE_ACCESSCONTROL_01_IDX_INDEX");
+        indexElements.add("CMS_ONLINE_ACCESSCONTROL_02_IDX_INDEX");
         indexElements.add("CMS_ONLINE_PROPERTIES_PRIMARY_KEY");
         indexElements.add("CMS_ONLINE_PROPERTIES_UNIQUE_KEY_PROPERTIES");
         indexElements.add("CMS_ONLINE_PROPERTIES_01_IDX_INDEX");
