@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/04 16:03:58 $
- * Version: $Revision: 1.97.4.57 $
+ * Date   : $Date: 2007/06/05 19:15:17 $
+ * Version: $Revision: 1.97.4.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2429,6 +2429,11 @@ public final class CmsSecurityManager {
      */
     public boolean hasRoleForResource(CmsDbContext dbc, CmsUser user, CmsRole role, CmsResource resource) {
 
+        // guest user has no role
+        if (user.isGuestUser()) {
+            return false;
+        }
+
         // try to read from cache
         String key = user.getId().toString()
             + (dbc.currentProject().isOnlineProject() ? "+" : "-")
@@ -2438,7 +2443,7 @@ public final class CmsSecurityManager {
         if (result != null) {
             return result.booleanValue();
         }
-
+        
         // read all roles of the current user
         List roles;
         try {
