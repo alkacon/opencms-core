@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/05/31 12:43:43 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/06/05 09:27:59 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.14 $
+ * @version $Revision: 1.1.2.15 $
  * 
  * @since 6.9.1
  */
@@ -1101,11 +1101,18 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#writePrincipal(CmsDbContext, org.opencms.security.I_CmsPrincipal)
      */
-    public void writePrincipal(CmsDbContext dbc, I_CmsPrincipal principal) throws CmsDbSqlException {
+    public void writePrincipal(CmsDbContext dbc, I_CmsPrincipal principal) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        try {
+            // check if the principal was already saved
+            readPrincipal(dbc, principal.getId());
+            return;
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok
+        }
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_PRINCIPAL_CREATE");
