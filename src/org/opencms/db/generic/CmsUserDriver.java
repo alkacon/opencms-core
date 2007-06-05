@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/04 16:06:07 $
- * Version: $Revision: 1.110.2.34 $
+ * Date   : $Date: 2007/06/05 09:46:28 $
+ * Version: $Revision: 1.110.2.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.34 $
+ * @version $Revision: 1.110.2.35 $
  * 
  * @since 6.0.0 
  */
@@ -2287,6 +2287,17 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 resource,
                 CmsDriverManager.NOTHING_CHANGED);
         }
+
+        // clear the internal caches
+        m_driverManager.clearAccessControlListCache();
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
+
+        // fire an event that a new resource has been created
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap(
+            "resource",
+            resource)));
+
         return resource;
     }
 
@@ -2384,6 +2395,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             dbc.getRequestContext().currentProject().getUuid(),
             resource,
             filter);
+
+        m_driverManager.getSecurityManager().getLockManager().removeDeletedResource(dbc, resource.getRootPath());
+        // flush all caches
+        m_driverManager.clearAccessControlListCache();
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
+        OpenCms.getMemoryMonitor().flushProjectResources();
 
         // fire event
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
