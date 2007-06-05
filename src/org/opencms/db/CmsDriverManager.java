@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/05 09:52:33 $
- * Version: $Revision: 1.570.2.96 $
+ * Date   : $Date: 2007/06/05 09:59:41 $
+ * Version: $Revision: 1.570.2.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -851,6 +851,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         I_CmsResourceType newType = OpenCms.getResourceManager().getResourceType(type);
         clone.setType(newType.getTypeId());
         writeResource(dbc, clone);
+    }
+
+    /**
+     * Clears the access control list cache when access control entries are changed.<p>
+     */
+    public void clearAccessControlListCache() {
+
+        OpenCms.getMemoryMonitor().flushACLs();
+        OpenCms.getMemoryMonitor().flushPermissions();
+        clearResourceCache();
     }
 
     /**
@@ -8143,16 +8153,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // parent is new, but it will not get published
         return false;
-    }
-
-    /**
-     * Clears the access control list cache when access control entries are changed.<p>
-     */
-    private void clearAccessControlListCache() {
-
-        OpenCms.getMemoryMonitor().flushACLs();
-        OpenCms.getMemoryMonitor().flushPermissions();
-        clearResourceCache();
     }
 
     /**
