@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceCustomFoot.java,v $
- * Date   : $Date: 2007/06/05 09:38:05 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/05 12:17:23 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.9.2 
  */
@@ -74,6 +74,9 @@ public class CmsWorkplaceCustomFoot {
     /** The default workplace foot text to display. */
     public static final String DEFAULT_TEXT_WITH_OU = DEFAULT_TEXT
         + "[%("
+        + CmsMacroResolver.KEY_LOCALIZED_PREFIX
+        + Messages.GUI_LABEL_OU_0
+        + ") %("
         + CmsMacroResolver.KEY_CURRENT_ORGUNIT_DESCRIPTION
         + ")] ";
 
