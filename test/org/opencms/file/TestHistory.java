@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/05 19:17:27 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.9.1
  */
@@ -80,7 +81,10 @@ public class TestHistory extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestHistory.class.getName());
 
+        suite.addTest(new TestHistory("testSiblingVersions"));
         suite.addTest(new TestHistory("testFileRestore"));
+        suite.addTest(new TestHistory("testFileRestoreIteration"));
+        suite.addTest(new TestHistory("testSiblingRestoreIteration"));
         suite.addTest(new TestHistory("testCreateAndDeleteFile"));
         suite.addTest(new TestHistory("testCreateAndDeleteFolder"));
         suite.addTest(new TestHistory("testMoveFile"));
@@ -551,6 +555,62 @@ public class TestHistory extends OpenCmsTestCase {
     }
 
     /**
+     * Test restoring and deleting a file several times.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFileRestoreIteration() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing restoring and deleting a file several times");
+
+        String resName = "fileRestoreIteration.txt";
+
+        int vers = OpenCms.getSystemInfo().getHistoryVersions();
+        int delVers = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
+        try {
+            OpenCms.getSystemInfo().setVersionHistorySettings(true, 10, 10);
+
+            // 1. create new resource
+            CmsResource res = cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId());
+            // check offline
+            assertVersion(cms, resName, 1);
+            assertTrue(cms.readAllAvailableVersions(resName).isEmpty());
+
+            // publish
+            OpenCms.getPublishManager().publishResource(cms, resName);
+            OpenCms.getPublishManager().waitWhileRunning();
+            // check after publish
+            assertVersion(cms, resName, 1);
+            assertEquals(cms.readAllAvailableVersions(resName).size(), 1);
+
+            for (int i = 0; i < 3; i++) {
+                cms.lockResource(resName);
+                cms.deleteResource(resName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                // check offline
+                assertVersion(cms, resName, 2 + (i * 2));
+                assertEquals(cms.readAllAvailableVersions(resName).size(), 1 + (i * 2));
+                // publish
+                OpenCms.getPublishManager().publishResource(cms, resName);
+                OpenCms.getPublishManager().waitWhileRunning();
+                // restore
+                cms.restoreDeletedResource(res.getStructureId());
+                // check offline
+                assertVersion(cms, resName, 3 + (i * 2));
+                assertEquals(cms.readAllAvailableVersions(resName).size(), 2 + (i * 2));
+                // publish
+                OpenCms.getPublishManager().publishResource(cms, resName);
+                OpenCms.getPublishManager().waitWhileRunning();
+                // check after publish
+                assertVersion(cms, resName, 3 + (i * 2));
+                assertEquals(cms.readAllAvailableVersions(resName).size(), 3 + (i * 2));
+            }
+        } finally {
+            OpenCms.getSystemInfo().setVersionHistorySettings(true, vers, delVers);
+        }
+    }
+
+    /**
      * Test the version numbers of a file after several modifications.<p>
      *  
      * @throws Throwable if something goes wrong
@@ -574,7 +634,7 @@ public class TestHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check online
+        // check after publish
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 1);
 
@@ -941,8 +1001,6 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
 
-        cms.lockResource(importFile); // TODO: check this
-
         for (int i = 0; i < counter + 2; i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
@@ -963,6 +1021,157 @@ public class TestHistory extends OpenCmsTestCase {
             String restoredContent = getContentString(cms, file.getContents());
             assertEquals(contentStr, restoredContent);
         }
+    }
+
+    /**
+     * Test restoring and deleting a sibling several times.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingRestoreIteration() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing restoring and deleting a sibling several times");
+
+        String resName = "siblingRestoreIteration.txt";
+        String sibName = "sibling2RestoreIteration.txt";
+
+        int vers = OpenCms.getSystemInfo().getHistoryVersions();
+        int delVers = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
+        try {
+            OpenCms.getSystemInfo().setVersionHistorySettings(true, 10, 10);
+
+            // create new resource
+            cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId());
+            // check offline
+            assertVersion(cms, resName, 1);
+            assertTrue(cms.readAllAvailableVersions(resName).isEmpty());
+
+            // publish
+            OpenCms.getPublishManager().publishResource(cms, resName);
+            OpenCms.getPublishManager().waitWhileRunning();
+            // check after publish
+            assertVersion(cms, resName, 1);
+            assertEquals(1, cms.readAllAvailableVersions(resName).size());
+
+            // create sibling
+            cms.copyResource(resName, sibName, CmsResource.COPY_AS_SIBLING);
+            CmsResource sib = cms.readResource(sibName);
+            // check offline
+            assertVersion(cms, resName, 1);
+            assertEquals(1, cms.readAllAvailableVersions(resName).size());
+            assertVersion(cms, sibName, 2);
+            // new siblings have no history until they get first published
+            assertTrue(cms.readAllAvailableVersions(sibName).isEmpty());
+
+            // publish
+            OpenCms.getPublishManager().publishResource(cms, sibName);
+            OpenCms.getPublishManager().waitWhileRunning();
+            // check after publish
+            assertVersion(cms, resName, 1);
+            assertEquals(1, cms.readAllAvailableVersions(resName).size());
+            assertVersion(cms, sibName, 2);
+            // after publishing the sibling gets the history of the resource
+            assertEquals(2, cms.readAllAvailableVersions(sibName).size());
+
+            for (int i = 0; i < 3; i++) {
+                cms.lockResource(sibName);
+                cms.deleteResource(sibName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                // check offline
+                assertVersion(cms, resName, 1);
+                assertEquals(1, cms.readAllAvailableVersions(resName).size());
+                assertVersion(cms, sibName, 3 + (i * 2));
+                assertEquals(2 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                // publish
+                OpenCms.getPublishManager().publishResource(cms, sibName);
+                OpenCms.getPublishManager().waitWhileRunning();
+                // check after publish
+                assertVersion(cms, resName, 1);
+                assertEquals(1, cms.readAllAvailableVersions(resName).size());
+                // restore
+                cms.restoreDeletedResource(sib.getStructureId());
+                // check offline
+                assertVersion(cms, resName, 1);
+                assertEquals(1, cms.readAllAvailableVersions(resName).size());
+                assertVersion(cms, sibName, 4 + (i * 2));
+                assertEquals(3 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                // publish
+                OpenCms.getPublishManager().publishResource(cms, sibName);
+                OpenCms.getPublishManager().waitWhileRunning();
+                // check after publish
+                assertVersion(cms, resName, 1);
+                assertEquals(1, cms.readAllAvailableVersions(resName).size());
+                assertVersion(cms, sibName, 4 + (i * 2));
+                assertEquals(4 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+            }
+        } finally {
+            OpenCms.getSystemInfo().setVersionHistorySettings(true, vers, delVers);
+        }
+    }
+
+    /**
+     * Test the version number of siblings after different operations.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingVersions() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing sibling version numbers");
+
+        String sib1 = "/sibVer1.txt";
+        String sib2 = "/sibVer2.txt";
+
+        cms.createResource(sib1, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sib1, sib2, null);
+
+        // check offline
+        assertVersion(cms, sib1, 1);
+        assertTrue(cms.readAllAvailableVersions(sib1).isEmpty());
+        assertVersion(cms, sib2, 2);
+        assertTrue(cms.readAllAvailableVersions(sib2).isEmpty());
+
+        OpenCms.getPublishManager().publishResource(cms, sib1, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check after publish
+        assertVersion(cms, sib1, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib1).size());
+        // here the second published sibling get the history from the first one
+        assertVersion(cms, sib2, 2);
+        assertEquals(2, cms.readAllAvailableVersions(sib2).size());
+
+        String sib3 = "/sibVer3.txt";
+        String sib4 = "/sibVer4.txt";
+
+        cms.createResource(sib3, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sib3, sib4, null);
+
+        // check offline
+        assertVersion(cms, sib3, 1);
+        assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
+        assertVersion(cms, sib4, 2);
+        assertTrue(cms.readAllAvailableVersions(sib4).isEmpty());
+
+        OpenCms.getPublishManager().publishResource(cms, sib4);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check after publish
+        assertVersion(cms, sib4, 2);
+        assertEquals(2, cms.readAllAvailableVersions(sib4).size());
+        assertVersion(cms, sib3, 1);
+        assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
+
+        OpenCms.getPublishManager().publishResource(cms, sib3);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check after publish
+        assertVersion(cms, sib4, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib3).size());
+        // here the second published sibling get the history from the first one
+        assertVersion(cms, sib3, 2);
+        assertEquals(2, cms.readAllAvailableVersions(sib4).size());
+
     }
 
     /**
