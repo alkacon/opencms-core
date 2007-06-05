@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/05 13:18:33 $
- * Version: $Revision: 1.570.2.98 $
+ * Date   : $Date: 2007/06/05 19:15:43 $
+ * Version: $Revision: 1.570.2.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -683,14 +683,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // if another user has locked the file, the current user can never get WRITE permissions with the default check
         int denied = 0;
 
-        // check if the current user is admin
+        // check if the current user is vfs manager
         boolean canIgnorePermissions = m_securityManager.hasRoleForResource(
             dbc,
             dbc.currentUser(),
             CmsRole.VFS_MANAGER,
             resource);
         // if the resource type is jsp
-        // write is only allowed for administrators
+        // write is only allowed for developers
         if (!canIgnorePermissions && (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())) {
             if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
@@ -1252,12 +1252,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // trim the name
         name = name.trim();
-        
+
         // check the description
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_OU_DESCRIPTION_EMPTY_0));
         }
-        
+
         // create the organizational unit
         CmsOrganizationalUnit orgUnit = m_userDriver.createOrganizationalUnit(
             dbc,
@@ -6734,7 +6734,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource parent;
         try {
             // try to read the parent resource by id
-            parent = m_vfsDriver.readResource(dbc, dbc.currentProject().getUuid(), histRes.getParentId(), false);
+            parent = m_vfsDriver.readResource(dbc, dbc.currentProject().getUuid(), histRes.getParentId(), true);
         } catch (CmsVfsResourceNotFoundException e) {
             // if not found try to read the parent resource by name
             try {
@@ -6743,7 +6743,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc,
                     dbc.currentProject().getUuid(),
                     CmsResource.getParentFolder(histRes.getRootPath()),
-                    false);
+                    true);
             } catch (CmsVfsResourceNotFoundException e1) {
                 // if not found try to restore the parent resource
                 restoreDeletedResource(dbc, histRes.getParentId());
