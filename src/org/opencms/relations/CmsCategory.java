@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2007/06/04 15:36:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/05 07:28:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.relations;
 
-import org.opencms.util.CmsStringUtil;
+import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -39,12 +39,12 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.2
  */
 public class CmsCategory {
-    
+
     /** The description of the category. */
     private String m_description;
 
@@ -54,6 +54,7 @@ public class CmsCategory {
     private CmsUUID m_structureId;
     /** The title of the category. */
     private String m_title;
+
     /**
      * Deafult constructor.<p>
      * 
@@ -106,16 +107,16 @@ public class CmsCategory {
     }
 
     /** 
-     * Returns the mere category name without it's complete path.<p>
+     * Returns the mere category name without it's complete path and without the trailing folder - slash.<p>
      * 
-     * @return the mere category name without it's complete path
+     * @return the mere category name without it's complete path and without the trailing folder - slash
      */
     public String getName() {
 
-        String result = m_path;
-        String[] pathTokens = CmsStringUtil.splitAsArray(m_path, '/');
-        if (pathTokens.length > 0) {
-            result = pathTokens[pathTokens.length - 1];
+        String result = CmsResource.getName(m_path);
+        // Kill trailing slash as categories are not displayed like folders
+        if (CmsResource.isFolder(result)) {
+            result = result.substring(0, result.length() - 1);
         }
         return result;
     }
