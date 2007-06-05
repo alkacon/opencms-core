@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/06/05 09:27:59 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/06/05 19:16:29 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  * 
  * @since 6.9.1
  */
@@ -1272,7 +1272,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
 
-            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_RESOURCES_READ_VERSIONS");
+            stmt = m_sqlManager.getPreparedStatement(
+                conn,
+                resource.getState().isDeleted() ? dbc.currentProject().getUuid() : CmsProject.ONLINE_PROJECT_ID,
+                "C_RESOURCES_READ_VERSIONS");
             stmt.setString(1, resource.getStructureId().toString());
             res = stmt.executeQuery();
             if (res.next()) {
