@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirEditControlcode.java,v $
- * Date   : $Date: 2007/06/06 09:49:44 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/06 10:38:23 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.2
  */
@@ -54,15 +54,15 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (resourceUtil[0].isInsideProject()
-            && !cms.getRequestContext().currentProject().isOnlineProject()
-            && !resourceUtil[0].getResource().getState().isDeleted()) {
+        if (resourceUtil[0].isInsideProject() && !cms.getRequestContext().currentProject().isOnlineProject()) {
             // we are in the correct offline project and resource is not deleted
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
             if (lock.isNullLock()) {
                 // resource is not locked, check autolock
-                if (!lockedForPublish && OpenCms.getWorkplaceManager().autoLockResources()) {
+                if (!lockedForPublish
+                    && OpenCms.getWorkplaceManager().autoLockResources()
+                    && !resourceUtil[0].getResource().getState().isDeleted()) {
                     if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                     }
@@ -77,7 +77,11 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
                     cms.getRequestContext().currentProject())) {
                 // resource is exclusively locked by the current user
                 if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
-                    return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                    if (!resourceUtil[0].getResource().getState().isDeleted()) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                    } else {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                    }
                 }
             }
 
