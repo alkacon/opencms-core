@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/05 19:16:09 $
- * Version: $Revision: 1.258.4.31 $
+ * Date   : $Date: 2007/06/06 09:03:30 $
+ * Version: $Revision: 1.258.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.31 $
+ * @version $Revision: 1.258.4.32 $
  * 
  * @since 6.0.0 
  */
@@ -579,9 +579,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 histResVersion = histRes.getResourceVersion();
                 histStrVersion = histRes.getStructureVersion();
             }
-            int newStrVersion = (!existsResource ? 0 : 1) + histStrVersion;
-            int newResVersion = 1 + histResVersion;
-            
+            int newStrVersion = 1 + histStrVersion;
+            int newResVersion = histResVersion;
+
             conn = m_sqlManager.getConnection(dbc);
 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_STRUCTURE_WRITE");
@@ -962,7 +962,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(filter, resource, params, true));
+                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, true));
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
@@ -976,7 +976,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(filter, resource, params, false));
+                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, false));
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
@@ -1698,7 +1698,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(filter, resource, params, true));
+                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, true));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(queryBuf.toString());
                 }
@@ -1719,7 +1719,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(filter, resource, params, false));
+                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, false));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(queryBuf.toString());
                 }
@@ -3451,6 +3451,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * Build the whole WHERE sql statement part for the given relation filter.<p>
      * 
+     * @param projectId the current project id
      * @param filter the filter
      * @param resource the resource (may be null, if you want to delete all relations for the resource in the filter)
      * @param params the parameter values (return parameter)
@@ -3459,6 +3460,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @return the WHERE sql statement part string
      */
     protected String prepareRelationConditions(
+        CmsUUID projectId,
         CmsRelationFilter filter,
         CmsResource resource,
         List params,
@@ -3473,10 +3475,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (resource != null) {
                 conditions.append(BEGIN_CONDITION);
                 if (filter.isSource() && checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_ID"));
                     params.add(resource.getStructureId().toString());
                 } else if (filter.isTarget() && !checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_ID"));
                     params.add(resource.getStructureId().toString());
                 }
                 conditions.append(END_CONDITION);
@@ -3491,10 +3493,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
 
                 if (filter.isSource() && checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_ID"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_ID"));
                     params.add(filter.getStructureId().toString());
                 } else if (filter.isTarget() && !checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_ID"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_ID"));
                     params.add(filter.getStructureId().toString());
                 }
                 conditions.append(END_CONDITION);
@@ -3513,10 +3515,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     queryPath += '%';
                 }
                 if (filter.isSource() && checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_SOURCE_PATH"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_PATH"));
                     params.add(queryPath);
                 } else if (filter.isTarget() && !checkSource) {
-                    conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TARGET_PATH"));
+                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_PATH"));
                     params.add(queryPath);
                 }
                 conditions.append(END_CONDITION);
@@ -3531,7 +3533,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             } else {
                 conditions.append(BEGIN_INCLUDE_CONDITION);
             }
-            conditions.append(m_sqlManager.readQuery("C_RELATION_FILTER_TYPE"));
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TYPE"));
             conditions.append(BEGIN_CONDITION);
             Iterator it = types.iterator();
             while (it.hasNext()) {

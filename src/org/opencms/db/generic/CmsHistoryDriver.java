@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/06/05 19:16:29 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2007/06/06 09:03:30 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.16 $
+ * @version $Revision: 1.1.2.17 $
  * 
  * @since 6.9.1
  */
@@ -509,23 +509,25 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 // look for older versions
                 I_CmsHistoryResource histRes = (I_CmsHistoryResource)result.get(result.size() - 1);
 
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_OLD_VERSIONS");
-                stmt.setString(1, histRes.getResourceId().toString());
-                stmt.setInt(2, histRes.getPublishTag());
-                res = stmt.executeQuery();
+                if (histRes.getVersion() > 1) {
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_OLD_VERSIONS");
+                    stmt.setString(1, histRes.getResourceId().toString());
+                    stmt.setInt(2, histRes.getPublishTag());
+                    res = stmt.executeQuery();
 
-                I_CmsHistoryResource lastHistRes = histRes;
-                while (res.next()) {
-                    int pubTag = res.getInt(1);
-                    I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag);
-                    if (newHistRes.getVersion() == lastHistRes.getVersion()) {
+                    I_CmsHistoryResource lastHistRes = histRes;
+                    while (res.next()) {
+                        int pubTag = res.getInt(1);
+                        I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag);
+                        if (newHistRes.getVersion() == lastHistRes.getVersion()) {
+                            lastHistRes = newHistRes;
+                            continue;
+                        }
                         lastHistRes = newHistRes;
-                        continue;
+                        result.add(lastHistRes);
                     }
-                    lastHistRes = newHistRes;
-                    result.add(lastHistRes);
+                    m_sqlManager.closeAll(dbc, null, stmt, res);
                 }
-                m_sqlManager.closeAll(dbc, null, stmt, res);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
