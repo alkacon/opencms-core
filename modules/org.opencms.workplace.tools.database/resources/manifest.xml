@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:20:31 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Wed, 06 Jun 2007 12:46:06 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.database</name>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.</p>
 <p>Install this module if you want to import/export data, it also contains a static export tool.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.5</version>
+		<version>1.2.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -39,13 +39,14 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -67,6 +68,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -79,6 +81,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -91,6 +94,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -105,6 +109,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -130,6 +135,7 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
@@ -152,14 +158,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -173,24 +180,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[30.0]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_DATABASE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_DATABASE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/database_manage.png:tools/database/icons/small/database_manage.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_DATABASE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[30.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -200,7 +203,12 @@
 					<name>Title</name>
 					<value><![CDATA[Database Management]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -216,28 +224,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_EXPORTSERVER_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/data_export.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -247,7 +247,16 @@
 					<name>Title</name>
 					<value><![CDATA[Export to server]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -263,28 +272,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[11]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/htmlimport.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[11]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -294,7 +295,16 @@
 					<name>Title</name>
 					<value><![CDATA[Extended Htmlimport]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -310,28 +320,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_IMPORTHTTP_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/data_import_http.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -341,7 +343,16 @@
 					<name>Title</name>
 					<value><![CDATA[Import from local computer]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -357,28 +368,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_IMPORTSERVER_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/data_import_server.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -388,7 +391,16 @@
 					<name>Title</name>
 					<value><![CDATA[Import from server]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -404,24 +416,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsStaticExportToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[12]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_STATEXP_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/database/icons/big/staticexport.png:tools/database/icons/small/staticexport.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[12]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -431,7 +439,12 @@
 					<name>Title</name>
 					<value><![CDATA[Static export]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsStaticExportToolHandler]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -449,6 +462,7 @@
 					<value><![CDATA[Reports]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -464,37 +478,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Report for export files]]></value>
 				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/database/reports/import.jsp</source>
-			<destination>system/workplace/admin/database/reports/import.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>e141ba37-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>74972b17-d75b-11d9-be76-0d179596440c</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Report for import files]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -510,14 +502,39 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Report for extended html import]]></value>
 				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/database/reports/import.jsp</source>
+			<destination>system/workplace/admin/database/reports/import.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>e141ba37-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>74972b17-d75b-11d9-be76-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Report for import files]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -530,6 +547,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -542,6 +560,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -554,6 +573,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -566,6 +586,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -578,6 +599,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -597,6 +619,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -616,6 +639,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -635,6 +659,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -654,6 +679,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -673,6 +699,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -692,6 +719,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -711,6 +739,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -730,6 +759,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -749,6 +779,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -761,6 +792,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -780,6 +812,7 @@
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -799,6 +832,7 @@
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

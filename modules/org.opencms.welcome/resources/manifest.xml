@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
-		<createdate>Thu, 03 May 2007 09:54:32 GMT</createdate>
+		<createdate>Wed, 06 Jun 2007 12:43:35 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -18,7 +18,7 @@
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>4.2.5</version>
+		<version>4.2.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,23 +38,15 @@ It will also remove the "default" template.</p>
 			<destination>release</destination>
 			<type>folder</type>
 			<uuidstructure>f0d1ccb2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Jun 2007 10:45:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[6.5]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_7rc2.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -64,7 +56,16 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
 				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[notes_7rc2.html]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -88,14 +89,15 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[Installation]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Installation]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -115,10 +117,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[102.0]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[Mailing list]]></value>
 				</property>
@@ -126,7 +124,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -150,14 +153,15 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[OpenCms 6.0.2 Release Notes]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.0.2 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -177,10 +181,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[0.0025]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.0.3 Release Notes]]></value>
 				</property>
@@ -188,7 +188,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.0.3 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -208,10 +213,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[0.002]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.0.4 Release Notes]]></value>
 				</property>
@@ -219,7 +220,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.0.4 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -239,10 +245,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[0.01]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.0 Release Notes]]></value>
 				</property>
@@ -250,7 +252,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.0 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -274,14 +281,15 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[OpenCms 6.2.1 Release Notes]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.2.1 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -301,10 +309,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[1.25E-4]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.2.2 Release Notes]]></value>
 				</property>
@@ -312,7 +316,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.2.2 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -332,10 +341,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[6.25E-5]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.2.3 Release Notes]]></value>
 				</property>
@@ -343,7 +348,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.2.3 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -363,10 +373,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[5.0E-4]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[OpenCms 6.2 Release Notes]]></value>
 				</property>
@@ -374,7 +380,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.2 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -390,10 +401,6 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[5.25E-5]]></value>
 				</property>
@@ -405,7 +412,12 @@ It will also remove the "default" template.</p>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 7 RC 1 Release Notes]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -437,6 +449,7 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -452,14 +465,6 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[500]]></value>
 				</property>
@@ -468,26 +473,36 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[Welcome to OpenCms]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Welcome to OpenCms]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -509,6 +524,7 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -526,6 +542,7 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -538,6 +555,7 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -557,6 +575,7 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[Default body]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -569,6 +588,7 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -583,15 +603,16 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Checks for required libraries]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -607,6 +628,10 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>Title</name>
+					<value><![CDATA[Simple user login element]]></value>
+				</property>
+				<property>
 					<name>cache</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -614,11 +639,8 @@ It will also remove the "default" template.</p>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Simple user login element]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -634,6 +656,10 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>Title</name>
+					<value><![CDATA[Default template navigation]]></value>
+				</property>
+				<property>
 					<name>cache</name>
 					<value><![CDATA[uri]]></value>
 				</property>
@@ -641,11 +667,8 @@ It will also remove the "default" template.</p>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Default template navigation]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -658,6 +681,7 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -681,6 +705,7 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[w:118,h:40]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -704,6 +729,7 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[w:250,h:63]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -719,14 +745,15 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Welcome template style sheet]]></value>
 				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -739,6 +766,7 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -754,22 +782,23 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri]]></value>
+					<name>Title</name>
+					<value><![CDATA[Empty template]]></value>
 				</property>
 				<property>
-					<name>template-elements</name>
-					<value><![CDATA[body*|Body]]></value>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.welcome/resources/welcome.css]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Empty template]]></value>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -785,22 +814,23 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;params=(__element)]]></value>
+					<name>Title</name>
+					<value><![CDATA[Welcome / Release notes template]]></value>
 				</property>
 				<property>
-					<name>template-elements</name>
-					<value><![CDATA[body*|Body]]></value>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(__element)]]></value>
 				</property>
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.welcome/resources/welcome.css]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome / Release notes template]]></value>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -815,14 +845,6 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
 				</property>
@@ -831,14 +853,23 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[Welcome to OpenCms]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Welcome to OpenCms]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

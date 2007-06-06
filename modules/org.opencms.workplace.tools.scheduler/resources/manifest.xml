@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.4</opencms_version>
-		<createdate>Mon, 23 Oct 2006 09:21:44 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Wed, 06 Jun 2007 12:51:41 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.scheduler</name>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for managing scheduled jobs.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.6</version>
+		<version>1.2.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,13 +38,14 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>80f93a24-5f54-11db-962d-d3ee01eaa4cf</uuidstructure>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 19 Oct 2006 09:30:48 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -66,6 +67,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -78,6 +80,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -90,6 +93,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -104,6 +108,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -129,6 +134,7 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
@@ -151,14 +157,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -172,28 +179,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.scheduler.CmsSchedulerToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[90.0]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_JOBS_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_JOBS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/scheduler/icons/big/scheduler.png:tools/scheduler/icons/small/scheduler.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_JOBS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[90.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -203,7 +202,16 @@
 					<name>Title</name>
 					<value><![CDATA[Scheduler Management]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.scheduler.CmsSchedulerToolHandler]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.jsp]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -219,24 +227,16 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
 					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_HELP_0}]]></value>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -246,7 +246,16 @@
 					<name>Title</name>
 					<value><![CDATA[Edit job]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -266,6 +275,7 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -280,28 +290,20 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.scheduler.CmsSchedulerToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_NEWJOB_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_NEWJOB_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
 					<value><![CDATA[tools/scheduler/icons/big/scheduler_new.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_NEWJOB_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -311,7 +313,16 @@
 					<name>Title</name>
 					<value><![CDATA[New job]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.scheduler.CmsSchedulerToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -324,6 +335,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -336,6 +348,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -348,6 +361,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -360,6 +374,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -379,6 +394,7 @@
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -398,6 +414,7 @@
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -410,6 +427,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -422,6 +440,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -441,6 +460,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -460,6 +480,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -472,6 +493,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -491,6 +513,7 @@
 					<value><![CDATA[w:20,h:20]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

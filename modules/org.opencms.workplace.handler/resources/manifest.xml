@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Mon, 28 Aug 2006 12:50:52 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Wed, 06 Jun 2007 12:44:30 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.handler</name>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace handler files.</p>
 <p>It includes the 404 and 500 error handlers that are showed in case of an error of a frontend application.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -33,13 +33,14 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>e57c54b5-3691-11db-881c-b76e0b982ad3</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 28 Aug 2006 12:36:58 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -70,6 +71,7 @@
 					<value><![CDATA[/system/handler/template/handlertemplate]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -84,15 +86,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[404 error handler page]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -106,15 +109,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[500 error handler page]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -127,6 +131,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -141,6 +146,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -155,6 +161,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -169,6 +176,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -181,6 +189,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -196,22 +205,23 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;element]]></value>
+					<name>Title</name>
+					<value><![CDATA[Template for error handlers]]></value>
 				</property>
 				<property>
-					<name>template-elements</name>
-					<value><![CDATA[foot*|Foot,head*|Head]]></value>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
 				</property>
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/handler/template/style.css]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Template for error handlers]]></value>
+					<name>template-elements</name>
+					<value><![CDATA[foot*|Foot,head*|Head]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -231,6 +241,7 @@
 					<value><![CDATA[CSS for error handler template]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -250,6 +261,7 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

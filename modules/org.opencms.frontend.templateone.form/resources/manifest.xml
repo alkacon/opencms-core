@@ -3,10 +3,10 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.0</opencms_version>
-		<createdate>Wed, 12 Jul 2006 15:16:29 GMT</createdate>
+		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
+		<createdate>Wed, 06 Jun 2007 12:42:54 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.form</name>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>2.0.4</version>
+		<version>2.0.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -47,9 +47,9 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-                     <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
@@ -58,13 +58,14 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>810865d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Wed, 12 Jul 2006 15:02:57 GMT</datelastmodified>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jul 2006 15:02:57 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -86,6 +87,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -103,6 +105,7 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -115,6 +118,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -138,6 +142,7 @@
 					<value><![CDATA[w:200,h:35]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -161,6 +166,7 @@
 					<value><![CDATA[w:200,h:35]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -184,6 +190,7 @@
 					<value><![CDATA[w:200,h:35]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -207,6 +214,7 @@
 					<value><![CDATA[w:200,h:35]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -230,6 +238,7 @@
 					<value><![CDATA[w:200,h:35]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -253,6 +262,7 @@
 					<value><![CDATA[w:149,h:271]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -276,6 +286,7 @@
 					<value><![CDATA[w:180,h:209]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -299,6 +310,7 @@
 					<value><![CDATA[w:328,h:499]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -311,6 +323,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -323,6 +336,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -335,6 +349,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -347,6 +362,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -359,6 +375,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -371,6 +388,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -390,6 +408,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -409,6 +428,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -427,6 +447,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -446,6 +467,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -465,6 +487,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -477,6 +500,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -496,6 +520,7 @@
 					<value><![CDATA[Form check page (optional)]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -510,15 +535,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Form confirmation end page]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -531,6 +557,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -545,6 +572,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -559,6 +587,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -571,6 +600,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -586,6 +616,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>Title</name>
+					<value><![CDATA[Renders captcha images]]></value>
+				</property>
+				<property>
 					<name>cache</name>
 					<value><![CDATA[never;]]></value>
 				</property>
@@ -597,11 +631,8 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Renders captcha images]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -616,19 +647,20 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Input form page]]></value>
 				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[never]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Input form page]]></value>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -641,6 +673,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -660,6 +693,7 @@
 					<value><![CDATA[Nested XSD for optional captcha images]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -679,6 +713,7 @@
 					<value><![CDATA[XSD for online forms]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -698,6 +733,7 @@
 					<value><![CDATA[Nested XSD for a form input field]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -717,6 +753,7 @@
 					<value><![CDATA[Nested XSD for optional configurations]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -736,6 +773,7 @@
 					<value><![CDATA[Nested XSD for optional confirmation email]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -755,6 +793,7 @@
 					<value><![CDATA[Nested XSD for optional captcha images]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -780,6 +819,7 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
@@ -802,14 +842,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -823,14 +864,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>locale-available</name>
-					<value><![CDATA[en]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Configuration for captcha fields of module org.opencms.frontend.templateone.form]]></value>
 				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -846,14 +888,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Light]]></value>
 				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[2]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -869,14 +912,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[3]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Medium]]></value>
 				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[3]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -900,6 +944,7 @@
 					<value><![CDATA[4]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -915,14 +960,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Ultralight]]></value>
 				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[1]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -946,6 +992,7 @@
 					<value><![CDATA[6]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -958,6 +1005,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -970,6 +1018,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -989,6 +1038,7 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

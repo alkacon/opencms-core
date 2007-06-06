@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7 RC 1 (6.9.1)</opencms_version>
-		<createdate>Thu, 03 May 2007 12:28:27 GMT</createdate>
+		<createdate>Wed, 06 Jun 2007 12:43:14 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains demo resources for OpenCms 7.0 XML content.</p>
 <p>Install this module if you want to see the structured content capabilities of OpenCms.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>2.0.5</version>
+		<version>2.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -70,13 +70,14 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>23d13ae7-f961-11db-a076-355a5e39b644</uuidstructure>
+			<uuidstructure>a84e3ab4-1415-11dc-8629-5d53a1dc0d30</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 May 2007 10:29:14 GMT</datecreated>
+			<datecreated>Wed, 06 Jun 2007 10:06:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Users</uuidprincipal>
@@ -98,6 +99,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -115,6 +117,7 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -134,6 +137,7 @@
 					<value><![CDATA[Style Definitions for HTML Tables]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -149,10 +153,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template-elements</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[XSLT for Uploading CSV Files]]></value>
 				</property>
@@ -164,7 +164,12 @@
 					<name>stylesheet</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css]]></value>
 				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[true]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -177,6 +182,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -189,6 +195,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -201,6 +208,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -213,6 +221,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -225,6 +234,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -237,6 +247,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -256,6 +267,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -275,6 +287,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -293,6 +306,7 @@
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -305,6 +319,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -324,6 +339,7 @@
 					<value><![CDATA[XML content article list element]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -337,58 +353,59 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>default-file</name>
-					<value><![CDATA[list.jsp]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[/xmlcontentdemo/detail.jsp]]></value>
-				</property>
-				<property>
-					<name>style_head_img_uri</name>
-					<value><![CDATA[/system/galleries/pics/alkacon-templateone/head_xmlcontent.gif]]></value>
-				</property>
-				<property>
-					<name>style_show_head_img</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property>
-					<name>style_head_img_link</name>
-					<value><![CDATA[/]]></value>
+					<name>NavPos</name>
+					<value><![CDATA[5.5]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
 					<value><![CDATA[XML content Demo]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+					<name>Title</name>
+					<value><![CDATA[XML content Demo Pages]]></value>
 				</property>
 				<property>
-					<name>style_main_configpath</name>
-					<value><![CDATA[/xmlcontentdemo/_configuration/]]></value>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
+					<name>properties_imprint</name>
+					<value><![CDATA[/demopages/_configuration/imprint]]></value>
 				</property>
 				<property>
 					<name>style_head_img_height</name>
 					<value><![CDATA[100]]></value>
 				</property>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.5]]></value>
+					<name>style_head_img_link</name>
+					<value><![CDATA[/]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[XML content Demo Pages]]></value>
+					<name>style_head_img_uri</name>
+					<value><![CDATA[/system/galleries/pics/alkacon-templateone/head_xmlcontent.gif]]></value>
+				</property>
+				<property>
+					<name>style_main_configpath</name>
+					<value><![CDATA[/xmlcontentdemo/_configuration/]]></value>
+				</property>
+				<property>
+					<name>style_show_head_img</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/xmlcontentdemo/detail.jsp]]></value>
 				</property>
 				<property>
 					<name>xmlcontent-demo</name>
 					<value><![CDATA[/xmlcontentdemo/]]></value>
 				</property>
-				<property>
-					<name>properties_imprint</name>
-					<value><![CDATA[/demopages/_configuration/imprint]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -408,6 +425,7 @@
 					<value><![CDATA[XSD for articles]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -428,6 +446,7 @@
 					<value><![CDATA[Sample article 1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -448,6 +467,7 @@
 					<value><![CDATA[This is the article 2 sample]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -468,6 +488,7 @@
 					<value><![CDATA[Nice sample article 3]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -488,6 +509,7 @@
 					<value><![CDATA[This is article number 4]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -502,10 +524,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content article detail view]]></value>
@@ -514,7 +532,12 @@
 					<name>collector</name>
 					<value><![CDATA[singleFile]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -530,14 +553,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Contents for detail view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -552,10 +576,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content article detail view using scriptlet code]]></value>
@@ -564,7 +584,12 @@
 					<name>collector</name>
 					<value><![CDATA[singleFile]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -579,10 +604,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[5]]></value>
@@ -595,7 +616,12 @@
 					<name>Title</name>
 					<value><![CDATA[Test for use of <cms:include> with XML contnet]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -610,10 +636,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1]]></value>
@@ -627,14 +649,19 @@
 					<value><![CDATA[XML content article demo page]]></value>
 				</property>
 				<property>
-					<name>style_side_uri</name>
-					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
-				</property>
-				<property>
 					<name>collector</name>
 					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -649,15 +676,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Contents for list view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -672,15 +700,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Contents for list view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -695,10 +724,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[2]]></value>
@@ -712,14 +737,19 @@
 					<value><![CDATA[XML content article demo page using scriptlet code]]></value>
 				</property>
 				<property>
-					<name>style_side_uri</name>
-					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
-				</property>
-				<property>
 					<name>collector</name>
 					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -734,17 +764,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[3]]></value>
-				</property>
-				<property>
-					<name>xmlcontent-side-uri</name>
-					<value><![CDATA[/xmlcontent]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -754,11 +776,20 @@
 					<name>Title</name>
 					<value><![CDATA[XML content Tree Read demo]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[/xmlcontentdemo/side-elements/list_tree_side.html]]></value>
 				</property>
+				<property>
+					<name>xmlcontent-side-uri</name>
+					<value><![CDATA[/xmlcontent]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -778,18 +809,6 @@
 					<value><![CDATA[7]]></value>
 				</property>
 				<property>
-					<name>xmlcontent-side-uri</name>
-					<value><![CDATA[/xmlcontent]]></value>
-				</property>
-				<property>
-					<name>style_show_side</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[Side Element Demo]]></value>
 				</property>
@@ -798,10 +817,23 @@
 					<value><![CDATA[Page using a sample side element]]></value>
 				</property>
 				<property>
+					<name>style_show_side</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[none]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-side-uri</name>
+					<value><![CDATA[/xmlcontent]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -819,6 +851,7 @@
 					<value><![CDATA[Template configuration]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -838,6 +871,7 @@
 					<value><![CDATA[Common configuration]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -857,6 +891,7 @@
 					<value><![CDATA[CSS style sheet]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -876,6 +911,7 @@
 					<value><![CDATA[Head links]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -891,14 +927,15 @@
 			<flags>512</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Imprint]]></value>
 				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -916,6 +953,14 @@
 					<value><![CDATA[5.890625]]></value>
 				</property>
 				<property>
+					<name>NavText</name>
+					<value><![CDATA[Nested XML Content]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo of nested XML contents]]></value>
+				</property>
+				<property>
 					<name>default-file</name>
 					<value><![CDATA[list.jsp]]></value>
 				</property>
@@ -924,18 +969,11 @@
 					<value><![CDATA[/xmlcontentdemo/nestedcontent/detail.jsp]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Nested XML Content]]></value>
-				</property>
-				<property>
 					<name>xmlcontent-demo</name>
 					<value><![CDATA[/xmlcontentdemo/nestedcontent/]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Demo of nested XML contents]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -955,6 +993,7 @@
 					<value><![CDATA[XML content address schema]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -974,6 +1013,7 @@
 					<value><![CDATA[XML content bookmark schema]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -993,6 +1033,7 @@
 					<value><![CDATA[Alkacon Software GmbH - The OpenCms experts]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1012,6 +1053,7 @@
 					<value><![CDATA[The Free Software Foundation]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1026,15 +1068,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content bookmark detail view]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1058,6 +1101,7 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1072,15 +1116,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content bookmark list view]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1095,15 +1140,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Contents for list view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1121,6 +1167,7 @@
 					<value><![CDATA[Side elements]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1136,14 +1183,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Tree side information element]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1159,14 +1207,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[New features of this release]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1182,14 +1231,15 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Tree side information element]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1207,26 +1257,27 @@
 					<value><![CDATA[4]]></value>
 				</property>
 				<property>
-					<name>default-file</name>
-					<value><![CDATA[list.jsp]]></value>
-				</property>
-				<property>
 					<name>NavText</name>
 					<value><![CDATA[Sub tree folder]]></value>
-				</property>
-				<property>
-					<name>xmlcontent-demo</name>
-					<value><![CDATA[/xmlcontentdemo/subfolder/]]></value>
 				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Demo articles for "tree" functions]]></value>
 				</property>
 				<property>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[/xmlcontentdemo/subfolder/subtree_side.html]]></value>
 				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontentdemo/subfolder/]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1239,7 +1290,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<datereleased>Tue, 01 Feb 2005 15:00:00 GMT</datereleased>
+			<datereleased>Thu, 01 Feb 2007 15:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1247,6 +1298,7 @@
 					<value><![CDATA[Sample article in SUBFOLDER]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1259,7 +1311,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<datereleased>Tue, 01 Feb 2005 14:00:00 GMT</datereleased>
+			<datereleased>Thu, 01 Feb 2007 14:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1267,6 +1319,7 @@
 					<value><![CDATA[Another sample article in the SUBFOLDER]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1281,10 +1334,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content article demo page]]></value>
@@ -1293,11 +1342,16 @@
 					<name>collector</name>
 					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[/xmlcontentdemo/side-elements/subtree_side.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1311,15 +1365,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Contents for list view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1337,6 +1392,14 @@
 					<value><![CDATA[6]]></value>
 				</property>
 				<property>
+					<name>NavText</name>
+					<value><![CDATA[Widget Demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo of widgets for content editing]]></value>
+				</property>
+				<property>
 					<name>default-file</name>
 					<value><![CDATA[list.jsp]]></value>
 				</property>
@@ -1345,18 +1408,11 @@
 					<value><![CDATA[/xmlcontentdemo/widgetdemo/detail.jsp]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Widget Demo]]></value>
-				</property>
-				<property>
 					<name>xmlcontent-demo</name>
 					<value><![CDATA[/xmlcontentdemo/widgetdemo/]]></value>
 				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Demo of widgets for content editing]]></value>
-				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1371,15 +1427,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content article detail view]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1394,6 +1451,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1408,15 +1466,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content widget demo page]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1431,15 +1490,16 @@
 			<usercreated>Admin</usercreated>
 			<flags>512</flags>
 			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Contents for list view]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1459,6 +1519,7 @@
 					<value><![CDATA[XML content widgetdemo schema]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1478,6 +1539,7 @@
 					<value><![CDATA[Demonstrates all available widgets]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1495,6 +1557,7 @@
 					<value><![CDATA[Sample Gallery for Downloads]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1514,6 +1577,7 @@
 					<value><![CDATA[Download file for demonstration purposes]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1533,6 +1597,7 @@
 					<value><![CDATA[Wikipedia Article about Open Source]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1550,6 +1615,7 @@
 					<value><![CDATA[Sample Gallery for Html snippets]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1569,6 +1635,7 @@
 					<value><![CDATA[A Sample List in HTML]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1588,6 +1655,7 @@
 					<value><![CDATA[HTML Text in Different Fonts and Sizes]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1605,6 +1673,7 @@
 					<value><![CDATA[Links to Alkacon Software]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1624,6 +1693,7 @@
 					<value><![CDATA[Alkacon Service Overview]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1643,6 +1713,7 @@
 					<value><![CDATA[Alkacon, the OpenCms experts]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1660,6 +1731,7 @@
 					<value><![CDATA[Links about OpenCms]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1679,6 +1751,7 @@
 					<value><![CDATA[OpenCms FAQ]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1698,6 +1771,7 @@
 					<value><![CDATA[Link to OpenCms Website]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1717,6 +1791,7 @@
 					<value><![CDATA[OpenCms Solution Providers]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1734,6 +1809,7 @@
 					<value><![CDATA[Sample gallery for tables]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1757,6 +1833,7 @@
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1776,6 +1853,7 @@
 					<value><![CDATA[Member list example]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1795,6 +1873,7 @@
 					<value><![CDATA[Travel Expenses]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1820,6 +1899,7 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
@@ -1841,6 +1921,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1853,6 +1934,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1872,6 +1954,7 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>
