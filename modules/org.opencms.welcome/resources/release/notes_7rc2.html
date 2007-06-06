@@ -13,12 +13,15 @@
         </link>
       </links>
       <content><![CDATA[<h1>Release Notes for OpenCms 7 RC 2</h1>
-<p>June 6, 2007: This is the public release of OpenCms 7 RC&nbsp;2 (aka 6.9.2). OpenCms 7 is a
-major upgrade, and it vastly expands the features of OpenCms 6.</p>
+<p>June 6, 2007: This is the release of OpenCms 7 RC&nbsp;2 (aka 6.9.2). OpenCms 7 is a major
+upgrade, and it vastly expands the features of OpenCms 6.</p>
 <h2>
 <strong>Features of the OpenCms 7 RC&nbsp;2 release</strong>
 </h2>
 <ul>
+<li>An upgrade Wizard for MySQL installations is available [new in RC 2].</li>
+<li>Support for the PostgreSQL database now included [new in RC 2].</li>
+<li>Improved backward compatibility with OpenCms version 6 [new in RC 2].</li>
 <li>The internal link management has been greatly improved.</li>
 <li>If files (or folders) are moved / renamed, all links to these files are now kept intact.</li>
 <li>Deleting a resource that is linked by other resources does now display a warning / confirmation
@@ -55,12 +58,18 @@ moved or renamed.</li>
 <li>The core database structure has been optimized.</li>
 <li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
 </ul>
-<h2>Backward compatibility with version 6</h2>
-<p>OpenCms 7 RC&nbsp;2 has not been optimized for backward compatibility with version 6 yet. We are
-most interested in feedback regarding backwards compatibility to OpenCms 6.2, since we want to
-improve the 7 API to be as compatible as possible. In the development process of OpenCms 7, several
-API methods were refactored - please let us know what methods from version 6.2 we should put back
-in the API, these will then be marked as deprecated.</p>
+<h2>Improved backward compatibility with version 6</h2>
+<p>OpenCms 7 RC 2 features much improved backward compatibility with version 6 compared to the
+7 RC 1 release. Most templates and other OpenCms developed code from version 6 should work "out of
+the box" with version 7. A number of API methods from OpenCms 6 have been marked as "deprecated".
+In case you have made extensive use of OpenCms internal classes and APIs from version 6, there may
+be some changes required in your code. However, in most cases this should not take longer then a
+couple of hours.</p>
+<p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have
+to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates run without
+change. You must edit the "web-app" node in the OpenCms web.xml file to do that.</p>
+<p>We are still most interested in feedback regarding backwards compatibility to OpenCms 6.2, since
+we want to improve the 7 API to be as compatible as possible.</p>
 <h2>Compatibility with Java versions, Servlet containers and Databases</h2>
 <p>OpenCms 7 RC&nbsp;2 has been written and tested using Java 1.5 / 1.6. It works well with Java
 1.4 using the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have
@@ -71,7 +80,8 @@ box" with Tomcat 5.5, which we recommend. Testing for other servlet containers l
 Websphere has yet to be done for OpenCms 7. We appreciate any feedback regarding other servlet
 containers.</p>
 <p>On the database side, we have tested with MySQL 4.0, MySQL 4.1, MySQL 5.0, Oracle 9.x and Oracle
-10.x. Support for other DBs still needs to be updated for OpenCms 7.</p>
+10.x, as well as PostgeSQL 8.2.x and 7.4.x. Support for other DBs still needs to be updated for
+OpenCms 7. The automatic update wizard for OpenCms 7 RC 2 supports only MySQL.</p>
 <h2>Regarding version numbers and CVS build tags</h2>
 <p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
 tag for the 7 RC&nbsp;2 release is "build_7rc_2". Development of maintenance releases (like 6.2.3)
@@ -80,8 +90,8 @@ is currently done in CVS HEAD. Development of the next major OpenCms 7.0 release
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core
 development team on the 
-<a target="_self" href="%(link0)">opencms-dev</a> mailing list in case
-you are interested in supporting the development of OpenCms.</p>
+<a target="_self" href="%(link0)">opencms-dev</a> mailing list in
+case you are interested in supporting the development of OpenCms.</p>
 <p>Please use our Bugzilla to report bugs in this release: 
 <a target="extern" href="%(link1)">http://www.opencms.org/bugzilla/
 <br /></a></p>
