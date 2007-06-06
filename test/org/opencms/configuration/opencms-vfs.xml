@@ -20,7 +20,9 @@
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 			</resourceloaders>
 			<resourcetypes>
-				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
+					<param name="restypes.indexpage">none|xmlpage|layoutpage</param>
+				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
 					<mappings>
 						<mapping suffix=".txt" />
