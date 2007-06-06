@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/06/05 19:17:27 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/06 09:03:56 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.9.1
  */
@@ -688,7 +688,7 @@ public class TestHistory extends OpenCmsTestCase {
 
         // check offline
         assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 3);
+        assertVersion(cms, sibName, 2);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
@@ -702,7 +702,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 3);
+        assertVersion(cms, sibName, 2);
 
         // 5. modify sibling resource
         cms.getRequestContext().setCurrentProject(offline);
@@ -713,12 +713,12 @@ public class TestHistory extends OpenCmsTestCase {
             "test description"));
         // check offline
         assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 3);
+        assertVersion(cms, sibName, 2);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
@@ -728,7 +728,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // 6. modify structure
         cms.getRequestContext().setCurrentProject(offline);
@@ -736,12 +736,12 @@ public class TestHistory extends OpenCmsTestCase {
         cms.setDateExpired(resName, System.currentTimeMillis() + 100000, false);
         // check offline
         assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
@@ -751,7 +751,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // 7. modify resource
         cms.getRequestContext().setCurrentProject(offline);
@@ -759,12 +759,12 @@ public class TestHistory extends OpenCmsTestCase {
         cms.writePropertyObject(resName, new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, null, "1.5"));
         // check offline
         assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 5);
+        assertVersion(cms, sibName, 4);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 4);
+        assertVersion(cms, sibName, 3);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
@@ -774,7 +774,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 5);
+        assertVersion(cms, sibName, 4);
 
         // 8. modify sibling structure
         cms.getRequestContext().setCurrentProject(offline);
@@ -782,12 +782,12 @@ public class TestHistory extends OpenCmsTestCase {
         cms.setDateReleased(sibName, System.currentTimeMillis() - 1000, false);
         // check offline
         assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 6);
+        assertVersion(cms, sibName, 5);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 5);
+        assertVersion(cms, sibName, 4);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
@@ -797,7 +797,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check online
         cms.getRequestContext().setCurrentProject(online);
         assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 6);
+        assertVersion(cms, sibName, 5);
 
         /*
 
@@ -1001,6 +1001,8 @@ public class TestHistory extends OpenCmsTestCase {
         historyResources = cms.readAllAvailableVersions(importFile);
         assertEquals(counter + 2, historyResources.size()); // 1 (created) + counter (modified/moved) + 1 (deleted)
 
+        cms.lockResource(importFile);
+
         for (int i = 0; i < counter + 2; i++) {
             // the list of historical resources contains at index 0 the 
             // resource with the highest version and tag ID
@@ -1060,7 +1062,7 @@ public class TestHistory extends OpenCmsTestCase {
             // check offline
             assertVersion(cms, resName, 1);
             assertEquals(1, cms.readAllAvailableVersions(resName).size());
-            assertVersion(cms, sibName, 2);
+            assertVersion(cms, sibName, 1);
             // new siblings have no history until they get first published
             assertTrue(cms.readAllAvailableVersions(sibName).isEmpty());
 
@@ -1070,9 +1072,9 @@ public class TestHistory extends OpenCmsTestCase {
             // check after publish
             assertVersion(cms, resName, 1);
             assertEquals(1, cms.readAllAvailableVersions(resName).size());
-            assertVersion(cms, sibName, 2);
+            assertVersion(cms, sibName, 1);
             // after publishing the sibling gets the history of the resource
-            assertEquals(2, cms.readAllAvailableVersions(sibName).size());
+            assertEquals(1, cms.readAllAvailableVersions(sibName).size());
 
             for (int i = 0; i < 3; i++) {
                 cms.lockResource(sibName);
@@ -1080,8 +1082,8 @@ public class TestHistory extends OpenCmsTestCase {
                 // check offline
                 assertVersion(cms, resName, 1);
                 assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 3 + (i * 2));
-                assertEquals(2 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertVersion(cms, sibName, 2 + (i * 2));
+                assertEquals(1 + (i * 2), cms.readAllAvailableVersions(sibName).size());
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, sibName);
                 OpenCms.getPublishManager().waitWhileRunning();
@@ -1093,16 +1095,16 @@ public class TestHistory extends OpenCmsTestCase {
                 // check offline
                 assertVersion(cms, resName, 1);
                 assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 4 + (i * 2));
-                assertEquals(3 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertVersion(cms, sibName, 3 + (i * 2));
+                assertEquals(2 + (i * 2), cms.readAllAvailableVersions(sibName).size());
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, sibName);
                 OpenCms.getPublishManager().waitWhileRunning();
                 // check after publish
                 assertVersion(cms, resName, 1);
                 assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 4 + (i * 2));
-                assertEquals(4 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertVersion(cms, sibName, 3 + (i * 2));
+                assertEquals(3 + (i * 2), cms.readAllAvailableVersions(sibName).size());
             }
         } finally {
             OpenCms.getSystemInfo().setVersionHistorySettings(true, vers, delVers);
@@ -1128,7 +1130,7 @@ public class TestHistory extends OpenCmsTestCase {
         // check offline
         assertVersion(cms, sib1, 1);
         assertTrue(cms.readAllAvailableVersions(sib1).isEmpty());
-        assertVersion(cms, sib2, 2);
+        assertVersion(cms, sib2, 1);
         assertTrue(cms.readAllAvailableVersions(sib2).isEmpty());
 
         OpenCms.getPublishManager().publishResource(cms, sib1, true, new CmsShellReport(Locale.ENGLISH));
@@ -1138,8 +1140,8 @@ public class TestHistory extends OpenCmsTestCase {
         assertVersion(cms, sib1, 1);
         assertEquals(1, cms.readAllAvailableVersions(sib1).size());
         // here the second published sibling get the history from the first one
-        assertVersion(cms, sib2, 2);
-        assertEquals(2, cms.readAllAvailableVersions(sib2).size());
+        assertVersion(cms, sib2, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib2).size());
 
         String sib3 = "/sibVer3.txt";
         String sib4 = "/sibVer4.txt";
@@ -1150,15 +1152,15 @@ public class TestHistory extends OpenCmsTestCase {
         // check offline
         assertVersion(cms, sib3, 1);
         assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
-        assertVersion(cms, sib4, 2);
+        assertVersion(cms, sib4, 1);
         assertTrue(cms.readAllAvailableVersions(sib4).isEmpty());
 
         OpenCms.getPublishManager().publishResource(cms, sib4);
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check after publish
-        assertVersion(cms, sib4, 2);
-        assertEquals(2, cms.readAllAvailableVersions(sib4).size());
+        assertVersion(cms, sib4, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib4).size());
         assertVersion(cms, sib3, 1);
         assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
 
@@ -1169,9 +1171,8 @@ public class TestHistory extends OpenCmsTestCase {
         assertVersion(cms, sib4, 1);
         assertEquals(1, cms.readAllAvailableVersions(sib3).size());
         // here the second published sibling get the history from the first one
-        assertVersion(cms, sib3, 2);
-        assertEquals(2, cms.readAllAvailableVersions(sib4).size());
-
+        assertVersion(cms, sib3, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib4).size());
     }
 
     /**
