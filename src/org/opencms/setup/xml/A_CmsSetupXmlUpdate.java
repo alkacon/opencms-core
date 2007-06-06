@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2006/08/19 13:40:54 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/06/06 16:04:09 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -87,9 +87,12 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         Iterator itRemove = getXPathsToRemove().iterator();
         while (itRemove.hasNext()) {
             String xpath = (String)itRemove.next();
-            Node node = doc.selectSingleNode(xpath);
-            if (node != null) {
-                ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
+            Iterator it = doc.selectNodes(xpath).iterator();
+            while (it.hasNext()) {
+                Node node = (Node)it.next();
+                if (node != null) {
+                    ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
+                }
             }
         }
 

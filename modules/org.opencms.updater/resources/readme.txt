@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.0.x (or 6.2 beta) to OpenCms 6.2
+            Instructions for updating OpenCms 6.x to OpenCms 7 RC2
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.0.x (or 6.2 beta) to OpenCms 6.0.4:
+Follow the following steps to update from OpenCms 6.x to OpenCms 7 RC2:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_6.2.x.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7RC2.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -44,6 +44,28 @@ wizard.enabled=true
 in the config file WEB-INF/config/opencms.properties.
 
 
+3.a. Manual configuration files update
+
+The automatic configuration files update from OpenCms 6.x to OpenCms 7 is working, 
+but just for the essentials.
+To get the full power of OpenCms 7 you need to use an OpenCms 7 
+opencms-workplace.xml configuration file. One is provided under update/config.
+
+3.b. Disable search index update
+
+By default, during the update before installing the new modules, all your search
+indexes will be rebuild, this is needed because we updated to the latest Lucene
+search engine version which has a different index format.
+Depending on your system, this may take too long. So you can disable it and then
+later after the Update you can rebuild your indexes one by one from the 
+Administration view. To disable it, edit the /update/cmsupdate.ori file, find
+lines 10-11:
+
+# Rebuild search indexes
+rebuildAllIndexes
+
+and delete them or comment it out.
+
 4. Restart your OpenCms servlet container
 
 OpenCms will not start because the wizard in enabled. 
@@ -59,7 +81,23 @@ The update wizard should appear which looks very similar to the OpenCms setup
 wizard. Make sure to read the instructions and the disclaimer on the start 
 page. Then execute the wizard which guides you through the update process.
 
-You need the Admin password to continue with upgrade. 
+The first step is a database update, please notice that until now this is working
+only for MySQL and not for Oracle nor other databases.
+
+This process is very time and space consuming, for instance, for a system with 
+3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
+resources takes about 2 hours.
+
+By default, this process deletes all historical versions. But you can decide to
+keep them, but this is not recommended since it is not really possible to convert 
+the data to the new schema, so that the convert data might be unusuable any how, 
+and second, the process might be more than 10 times slower if this option is 
+activated.
+
+The database update process writes a log file under /WEB-INF/logs/db-update.log.
+
+After the database update is finished, you need the Admin password to continue 
+with the upgrade. 
 
 When asked to select the modules to update you should definitely select all
 org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
@@ -72,8 +110,8 @@ file for errors and exceptions after installation. There should be no exceptions
 caused by the upgrade if everything went as expected. Some exceptions may occur 
 in case you have an advanced OpenCms installation with many customized classes.
 
-The update wizard will also do a full rebuild of all your search indices, and purge 
-the JSP repository.
+The update wizard will also do a full rebuild of all your search indices, and 
+purge the JSP repository.
 
 The wizard will finish similar to the setup wizard. After the final confirmation,
 the wizard will be locked again (in the opencms.properties file).
@@ -84,23 +122,10 @@ the wizard will be locked again (in the opencms.properties file).
 You should now be able to log into the OpenCms workplace as before.
 
 
-7. Finally, do a quick test if everything works
+7. After restarting
 
-* Enter the 'Account Management' in the 'Administration' view. Try to delete a user. 
-  Before the user is really deleted you should see a list of resources which are 
-  somehow referenced by the user. 
-
-* Open the 'Module Management' also in the 'Administration' view. Create a new module.
-  On the first module data screen you should be able to select folders and export 
-  points to be created with the module. 
-
-* Now switch to the 'Explorer' view. Open the WYSIWYG editor for any page, and then
-  open some of the galleries, e.g. the image gallery. Also open the editor for some 
-  XML contents in your site.
-
-* Open the XMLContent editor for any xmlcontent mapping values to a file property
-  (e.g. /modulesdemo/modules/news/news_0001.html), and then edit the news title.
-  Save, exit and check the title property value of the edited file.
+Yyou might need to uninstall no longer supported legacy (OpenCms5) modules, 
+like, org.opencms.legacy (which including the old workflow engine) 
 
 
 IMPORTANT: PLEASE READ THIS

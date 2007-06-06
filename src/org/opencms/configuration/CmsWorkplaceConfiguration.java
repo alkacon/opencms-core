@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/05/15 14:18:14 $
- * Version: $Revision: 1.40.4.25 $
+ * Date   : $Date: 2007/06/06 16:04:09 $
+ * Version: $Revision: 1.40.4.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.25 $
+ * @version $Revision: 1.40.4.26 $
  * 
  * @since 6.0.0
  */
@@ -481,6 +481,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      * @param digester the digester to add the rules to
      */
     public static void addExplorerTypeXmlRules(Digester digester) {
+
+        // remove workflow nodes from the dtd, there are just there for compatibility reasons
+        int todo;
 
         // add explorer type settings
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
@@ -1250,16 +1253,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             editor.addAttribute(A_TYPE, type);
             editor.addAttribute(A_VALUE, value);
         }
-        
+
         if (m_workplaceManager.getCustomFoot() != null) {
             // add the <workplace-footcustom> node
             Element workplaceFootCustom = workplaceElement.addElement(N_WORKPLACECUSTOMFOOT);
             workplaceFootCustom.addElement(N_COLOR).setText(m_workplaceManager.getCustomFoot().getColor());
-            workplaceFootCustom.addElement(N_BACKGROUNDCOLOR).setText(m_workplaceManager.getCustomFoot().getBackgroundColor());
+            workplaceFootCustom.addElement(N_BACKGROUNDCOLOR).setText(
+                m_workplaceManager.getCustomFoot().getBackgroundColor());
             Element textElement = workplaceFootCustom.addElement(N_TEXT);
             textElement.addAttribute(A_REPLACE, Boolean.toString(m_workplaceManager.getCustomFoot().isReplaceDefault()));
             textElement.setText(m_workplaceManager.getCustomFoot().getText());
-        }        
+        }
 
         // add the tool-manager node
         Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);

@@ -1,0 +1,230 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateDefaultProperties.java,v $
+ * Date   : $Date: 2007/06/06 16:04:09 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.setup.xml;
+
+import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.util.CmsStringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.dom4j.Document;
+import org.dom4j.Node;
+
+/**
+ * Update the default properties, from 6.2.3 to 7.<p>
+ * 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.9.2
+ */
+public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
+
+    /** List of xpaths to update. */
+    private List m_xpaths;
+    
+    /** List of xpaths to remove. */
+    private List m_xpathsRemove;
+
+    /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
+     */
+    public String getName() {
+
+        return "Update default properties";
+    }
+
+    /**
+     * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getXmlFilename()
+     */
+    public String getXmlFilename() {
+
+        return CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
+     */
+    protected boolean executeUpdate(Document document, String xpath) {
+
+        Node node = document.selectSingleNode(xpath);
+        if (node == null) {
+            int index = getXPathsToUpdate().indexOf(xpath);
+            if (index > -1) {
+                String newPath = xpath.substring(0, xpath.lastIndexOf("[@"));
+                CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_NAME, ((Pair)getKeys().get(
+                    index)).m_b);
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        return null;
+        /*
+        // /opencms/workplace/explorertypes/
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+        return xp.toString();
+        */
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
+     */
+    protected List getXPathsToRemove() {
+
+        if (m_xpathsRemove == null) {
+            // /opencms/workplace/explorertypes/explorertype/editoptions/defaultproperties/property
+            StringBuffer xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES);
+            xp.append("/").append(I_CmsXmlConfiguration.N_PROPERTY);
+            m_xpathsRemove = Collections.singletonList(xp.toString());
+        }
+        return m_xpathsRemove;
+    }
+
+    private static class Pair {
+
+        public String m_a, m_b;
+
+        protected Pair(String a, String b) {
+
+            m_a = a;
+            m_b = b;
+        }
+    };
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     */
+    protected List getXPathsToUpdate() {
+
+        if (m_xpaths == null) {
+            // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/defaultproperties/defaultproperty[@name='${pname}']
+            StringBuffer xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='${etype}']/");
+            xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTPROPERTY);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
+            xp.append("='${pname}']");
+
+            /*
+             folder          Title
+             binary          Title
+             pointer         Title
+             imagegallery    Title
+             downloadgallery Title
+             image           Title Description
+             xmlpage         Title Keywords Description
+             xmlcontent      Title Keywords Description
+             plain           Title export
+             jsp             Title cache content-encoding export
+             */
+
+            m_xpaths = new ArrayList();
+            Iterator it = getKeys().iterator();
+            while (it.hasNext()) {
+                Pair entry = (Pair)it.next();
+                String eType = entry.m_a;
+                String prop = entry.m_b;
+
+                Map subs = new HashMap();
+                subs.put("${etype}", eType);
+                subs.put("${pname}", prop);
+                m_xpaths.add(CmsStringUtil.substitute(xp.toString(), subs));
+            }
+        }
+        return m_xpaths;
+    }
+
+    protected List getKeys() {
+
+        List keys = new ArrayList();
+        keys.add(new Pair(CmsResourceTypeFolder.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeBinary.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypePointer.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("imagegallery", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("downloadgallery", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CACHE));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING));
+        return keys;
+    }
+
+}
