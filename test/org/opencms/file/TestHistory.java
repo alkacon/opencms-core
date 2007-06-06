@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/06/06 09:03:56 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/06 10:44:27 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.9.1
  */
@@ -476,11 +476,13 @@ public class TestHistory extends OpenCmsTestCase {
 
         // create a new folder and resource
         CmsResource folder = cms.createResource("testFolder", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.writePropertyObject("testFolder", new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "strFolder", "resFolder"));
         CmsResource res = cms.createResource(
             "testFolder/test.txt",
             CmsResourceTypePlain.getStaticTypeId(),
             "test".getBytes(),
             null);
+        cms.writePropertyObject("testFolder/test.txt", new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "strFile", "resFile"));
 
         storeResources(cms, "testFolder", true);
 
