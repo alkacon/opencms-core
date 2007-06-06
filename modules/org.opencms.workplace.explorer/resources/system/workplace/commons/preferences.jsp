@@ -297,7 +297,7 @@ case 5:
 		<%= wp.buildUserInformation() %>
 		<%= wp.dialogBlockEnd() %>
 		<%= wp.dialogSpacer() %>
-		<input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key(Messages.GUI_PREF_CHPWD_0) %>" onclick="togglePassword();">
+		<input type="button" class="dialogbutton" style="margin-left: 0px; width: 120px;" value="<%= wp.key(Messages.GUI_PREF_CHPWD_0) %>" onclick="togglePassword();">
 		<%= wp.dialogSpacer() %>
 		<div class="hide" id="changepwd">
 			<%= wp.dialogBlockStart("") %>
