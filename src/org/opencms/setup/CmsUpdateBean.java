@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.6.4.17 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.6.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.17 $ 
+ * @version $Revision: 1.6.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The update database thread. */
     private CmsUpdateDBThread m_dbUpdateThread;
+
+    /** Parameter for keeping the history. */
+    private boolean m_keepHistory;
 
     /** List of module to be updated. */
     private List m_modulesToUpdate;
@@ -395,6 +398,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns the keep History parameter value.<p>
+     *
+     * @return the keep History parameter value
+     */
+    public boolean isKeepHistory() {
+
+        return m_keepHistory;
+    }
+
+    /**
      * Prepares step 1 of the update wizard.<p>
      */
     public void prepareUpdateStep1() {
@@ -592,6 +605,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     public void setAdminUser(String adminUser) {
 
         m_adminUser = adminUser;
+    }
+
+    /**
+     * Sets the keep History parameter value.<p>
+     *
+     * @param keepHistory the keep History parameter value to set
+     */
+    public void setKeepHistory(boolean keepHistory) {
+
+        m_keepHistory = keepHistory;
     }
 
     /**

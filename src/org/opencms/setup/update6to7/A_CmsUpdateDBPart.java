@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.2 
  */
@@ -100,7 +100,7 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
         m_poolData = new HashMap(dbPoolData);
         if (dbName.indexOf("mysql") > -1) {
-            String engine = "myisam";
+            String engine = "MYISAM";
             CmsSetupDb setupDb = new CmsSetupDb(null);
 
             try {
@@ -180,6 +180,20 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
      * @throws SQLException if somethign goes wrong
      */
     protected abstract void internalExecute(CmsSetupDb setupDb) throws SQLException;
+
+    /**
+     * Returns the keep History parameter value.<p>
+     *
+     * @return the keep History parameter value
+     */
+    protected boolean isKeepHistory() {
+
+        Boolean keepHistory = (Boolean)m_poolData.get("keepHistory");
+        if ((keepHistory != null) && keepHistory.booleanValue()) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Loads a Java properties hash containing SQL queries.<p>

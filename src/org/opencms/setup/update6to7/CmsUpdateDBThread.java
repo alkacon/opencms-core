@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBThread.java,v $
- * Date   : $Date: 2007/05/24 19:15:39 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.setup.update6to7;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
-import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.CmsSetupLoggingThread;
+import org.opencms.setup.CmsUpdateBean;
 
 import java.io.IOException;
 import java.io.PipedOutputStream;
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,8 +60,8 @@ public class CmsUpdateDBThread extends Thread {
     /** System.out and System.err are redirected to this stream. */
     private PipedOutputStream m_pipedOut;
 
-    /** The additional shell commands, i.e. the setup bean. */
-    private CmsSetupBean m_setupBean;
+    /** The additional shell commands, i.e. the update bean. */
+    private CmsUpdateBean m_updateBean;
 
     /** Saves the System.out stream so it can be restored. */
     private PrintStream m_tempOut;
@@ -69,17 +69,17 @@ public class CmsUpdateDBThread extends Thread {
     /** 
      * Constructor.<p>
      * 
-     * @param setupBean the initialized setup bean
+     * @param updateBean the initialized update bean
      */
-    public CmsUpdateDBThread(CmsSetupBean setupBean) {
+    public CmsUpdateDBThread(CmsUpdateBean updateBean) {
 
         super("OpenCms: Database Update");
 
         // store setup bean
-        m_setupBean = setupBean;
+        m_updateBean = updateBean;
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_setupBean.getWebAppRfsPath()
+        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getWebAppRfsPath()
             + CmsSystemInfo.FOLDER_WEBINF
             + CmsLog.FOLDER_LOGS
             + "db-update.log");
@@ -113,7 +113,7 @@ public class CmsUpdateDBThread extends Thread {
         if (m_loggingThread != null) {
             m_loggingThread.stopThread();
         }
-        m_setupBean = null;
+        m_updateBean = null;
     }
 
     /**
@@ -136,7 +136,7 @@ public class CmsUpdateDBThread extends Thread {
 
             CmsUpdateDBManager dbMan = new CmsUpdateDBManager();
             try {
-                dbMan.initialize(m_setupBean);
+                dbMan.initialize(m_updateBean);
                 dbMan.run();
             } catch (Exception e) {
                 e.printStackTrace();

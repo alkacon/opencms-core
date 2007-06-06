@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,12 +132,14 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
             System.out.println("no table " + TABLE_CMS_ONLINE_CONTENTS + " found");
         }
 
-        // Transfer the backup contents if the table exists
-        if (dbCon.hasTableOrColumn(TABLE_CMS_BACKUP_CONTENTS, null)) {
-            String query = readQuery(QUERY_TRANSFER_BACKUP_CONTENTS);
-            dbCon.updateSqlStatement(query, null, null);
-        } else {
-            System.out.println("no table " + TABLE_CMS_BACKUP_CONTENTS + " found");
+        if (isKeepHistory()) {
+            // Transfer the backup contents if the table exists
+            if (dbCon.hasTableOrColumn(TABLE_CMS_BACKUP_CONTENTS, null)) {
+                String query = readQuery(QUERY_TRANSFER_BACKUP_CONTENTS);
+                dbCon.updateSqlStatement(query, null, null);
+            } else {
+                System.out.println("no table " + TABLE_CMS_BACKUP_CONTENTS + " found");
+            }
         }
 
         // Drop the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS

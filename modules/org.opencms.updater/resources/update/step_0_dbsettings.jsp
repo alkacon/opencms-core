@@ -1,7 +1,7 @@
 d<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:useBean id="dbBean" class="org.opencms.setup.update6to7.CmsUpdateDBManager" scope="page" /><%--
---%><jsp:setProperty name="dbBean" property="*" /><%
+--%><jsp:setProperty name="Bean" property="*" /><%
 	
 	// previous page
 	String prevPage = "index.jsp";	
@@ -10,6 +10,11 @@ d<%@ page session="true" %><%--
 	
 	dbBean.initialize(Bean);
 		
+    boolean isFormSubmitted = (request.getParameter("submit") != null);
+	if (isFormSubmitted)	{
+		response.sendRedirect(nextPage);
+		return;
+	}
 	if (!dbBean.needUpdate()) {
 		response.sendRedirect("step_2_settings.jsp");
 		return;
@@ -53,6 +58,7 @@ OpenCms Update Wizard - Database upgrade
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
+<form method="post" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td valign="top">
@@ -67,18 +73,21 @@ OpenCms Update Wizard - Database upgrade
 		<b>Please be sure to have created a backup and exactly check all information stated below before continuing, and be also aware that this process may take several hours depending on your data.</b><br>
 		<hr>
 		<table border=0>
-		<tr><td><input type="checkbox" name="" value=""> </td><td>Keep and convert historical versions of resources? </td></tr>
-		<tr><td>&nbsp;</td><td><b>doing so is not recommended and may prolong the update process for several hours.</b></td></tr>
-		<hr>
-		Following db pool(s) will be upgraded:<br>
+		<tr><td><input type="checkbox" name="keepHistory" value="true"> </td><td>Keep and convert historical versions of resources? </td></tr>
+		<tr><td>&nbsp;</td><td><b>doing so is not recommended since the converted data will not work 100% and may prolong the update process for several hours.</b></td></tr>
+		<tr><td colspan='2'><hr></td></tr>
+		<tr><td colspan='2'>Following db pool(s) will be upgraded:</td></tr>		
 <% 
 	java.util.Iterator it = dbBean.getPools().iterator(); 
     while (it.hasNext()) {
-        String pool = (String)it.next();
-		out.println(dbBean.htmlPool(pool));
+        String pool = (String)it.next(); %>
+        <tr><td></td><td>
+<%		out.println(dbBean.htmlPool(pool)); %>
+        </td></tr>
+<%
     }
 %>
-	</table>
+		</table>
 	</div>
 
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -91,7 +100,7 @@ OpenCms Update Wizard - Database upgrade
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
-<input name="continue" type="button" value="Continue &#062;&#062;" class="dialogbutton" onclick="location.href='<%= nextPage %>';">
+<input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else { %>

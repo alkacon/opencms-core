@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.setup.update6to7;
 
-import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.CmsSetupDb;
+import org.opencms.setup.CmsUpdateBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -170,7 +170,7 @@ public class CmsUpdateDBManager {
      * 
      * @throws Exception if the setup bean is not initialized 
      */
-    public void initialize(CmsSetupBean updateBean) throws Exception {
+    public void initialize(CmsUpdateBean updateBean) throws Exception {
 
         if (updateBean.isInitialized()) {
             ExtendedProperties props = updateBean.getProperties();
@@ -189,6 +189,7 @@ public class CmsUpdateDBManager {
                 data.put("params", props.getString("db.pool." + pool + ".jdbcUrl.params"));
                 data.put("user", props.getString("db.pool." + pool + ".user"));
                 data.put("pwd", props.getString("db.pool." + pool + ".password"));
+                data.put("keepHistory", Boolean.valueOf(updateBean.isKeepHistory()));
                 m_dbPools.put(pool, data);
             }
         } else {

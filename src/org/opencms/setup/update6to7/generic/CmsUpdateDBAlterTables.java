@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the column TASK_ID of the CMS_PROJECTS table.<p> */
     protected static final String COLUMN_PROJECTS_TASK_ID = "TASK_ID";
-    
+
     /** Constant for the column PROJECT_NAME of the CMS_PROJECTS table.<p> */
     protected static final String COLUMN_PROJECTS_PROJECT_NAME = "PROJECT_NAME";
 
@@ -105,9 +105,12 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to drop the TASK_ID from the CMS_PROJECTS table.<p> */
     private static final String QUERY_CMS_PROJECTS_DROP_TASK_ID = "Q_CMS_PROJECTS_DROP_TASK_ID";
-    
+
     /** Constant for the sql query to change the colum PROJECT_NAME.<p> */
     private static final String QUERY_CMS_PROJECTS_CHANGE_PROJECT_NAME = "Q_CMS_PROJECTS_CHANGE_PROJECT_NAME_SIZE";
+
+    /** Constant for the sql query to change the colum PROJECT_NAME.<p> */
+    private static final String QUERY_CMS_PROJECTS_UPDATE_PROJECT_FLAGS = "Q_CMS_PROJECTS_UPDATE_PROJECT_FLAGS";
 
     /** Constant for the sql query to add the STRUCTURE_VERSION column to the STRUCTURE tables.<p> */
     private static final String QUERY_CMS_STRUCTURE_ADD_STRUCTURE_VERSION = "Q_CMS_STRUCTURE_ADD_STRUCTURE_VERSION";
@@ -235,7 +238,15 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
         } else {
             System.out.println("no column " + COLUMN_PROJECTS_PROJECT_NAME + " in table " + TABLE_CMS_PROJECTS);
         }
-        
+
+        // Update project flags for temporary projects
+        if (dbCon.hasTableOrColumn(TABLE_CMS_PROJECTS, null)) {
+            String updateProjectFlags = readQuery(QUERY_CMS_PROJECTS_UPDATE_PROJECT_FLAGS);
+            dbCon.updateSqlStatement(updateProjectFlags, null, null);
+        } else {
+            System.out.println("table " + TABLE_CMS_PROJECTS + " does not exists");
+        }
+
         // Update CMS_GROUPS and add the system roles
 
         // Update CMS_RESOURCES tables

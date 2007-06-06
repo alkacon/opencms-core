@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -358,6 +358,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
      */
     protected void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
 
+        if (!isKeepHistory()) {
+            return;
+        }
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Get the data from the CMS_BACKUP table
         String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
@@ -456,7 +459,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         } else {
             System.out.println("column " + column + " in table " + tablename + " does not exist");
         }
-
     }
 
     /**

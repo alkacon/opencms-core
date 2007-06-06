@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,6 @@ import java.util.List;
  * also handled by a special class.
  * 
  * @author metzler
- *
  */
 public class CmsUpdateDBHistoryTables extends A_CmsUpdateDBPart {
 
@@ -93,12 +92,13 @@ public class CmsUpdateDBHistoryTables extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
 
         List elements = new ArrayList();
-        elements.add("CMS_HISTORY_PROJECTRESOURCES");
-        elements.add("CMS_HISTORY_PROPERTIES");
         elements.add("CMS_HISTORY_PROPERTYDEF");
-        elements.add("CMS_HISTORY_RESOURCES");
-        elements.add("CMS_HISTORY_STRUCTURE");
-
+        if (isKeepHistory()) {
+            elements.add("CMS_HISTORY_PROJECTRESOURCES");
+            elements.add("CMS_HISTORY_PROPERTIES");
+            elements.add("CMS_HISTORY_RESOURCES");
+            elements.add("CMS_HISTORY_STRUCTURE");
+        }
         for (Iterator it = elements.iterator(); it.hasNext();) {
             String table = (String)it.next();
             System.out.println("Updating table " + table);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/06 10:43:58 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class inserts formerly deleted users/groups in the CMS_HISTORY_PRINCIPALS table.<p>
@@ -109,8 +107,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         if (dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
             String createStatement = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE);
-            Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
-            dbCon.updateSqlStatement(createStatement, replacer, null);
+            dbCon.updateSqlStatement(createStatement, null, null);
         } else {
             System.out.println("table " + TABLE_CMS_HISTORY_PRINCIPALS + " already exists");
         }
@@ -168,7 +165,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         createHistPrincipalsTable(dbCon);
 
         boolean updateUserDateDeleted = false;
-        if (!hasData(dbCon)) {
+        if (isKeepHistory() && !hasData(dbCon)) {
             dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_RESOURCES), null, null);
             dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS), null, null);
             dbCon.updateSqlStatement(readQuery(QUERY_HISTORY_PRINCIPALS_PROJECTS_MANAGERGROUPS), null, null);
