@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/06 11:06:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ public class CmsUpdateDBHistoryPrincipals extends org.opencms.setup.update6to7.g
     protected void createHistPrincipalsTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
+        if (!dbCon.hasTableOrColumn(TABLE_CMS_HISTORY_PRINCIPALS, null)) {
             String createStatement = readQuery(QUERY_HISTORY_PRINCIPALS_CREATE_TABLE_MYSQL);
             Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
             dbCon.updateSqlStatement(createStatement, replacer, null);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/06 11:06:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
     protected void createHistProjectsTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
+        if (!dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
             String createStatement = readQuery(QUERY_CREATE_HISTORY_PROJECTS_TABLE_MYSQL);
             Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
             dbCon.updateSqlStatement(createStatement, replacer, null);
@@ -102,7 +102,7 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
     protected void createTempTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
+        if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
             String createStatement = readQuery(QUERY_CREATE_TEMP_TABLE_UUIDS_MYSQL);
             Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
             dbCon.updateSqlStatement(createStatement, replacer, null);

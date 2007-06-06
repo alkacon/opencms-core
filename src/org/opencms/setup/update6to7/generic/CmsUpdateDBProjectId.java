@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/06 10:43:58 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/06 11:06:49 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -194,7 +194,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     protected void createHistProjectsTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
+        if (!dbCon.hasTableOrColumn(HISTORY_PROJECTS_TABLE, null)) {
             String createStatement = readQuery(QUERY_CREATE_HISTORY_PROJECTS_TABLE);
             dbCon.updateSqlStatement(createStatement, null, null);
             transferDataToHistoryTable(dbCon);
@@ -213,7 +213,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     protected void createTempTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
+        if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
             String createStatement = readQuery(QUERY_CREATE_TEMP_TABLE_UUIDS);
             dbCon.updateSqlStatement(createStatement, null, null);
         } else {

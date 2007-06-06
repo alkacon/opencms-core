@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/06 11:06:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
     protected void createContentsTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(TABLE_CMS_CONTENTS, null)) {
+        if (!dbCon.hasTableOrColumn(TABLE_CMS_CONTENTS, null)) {
             String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE);
             Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
             dbCon.updateSqlStatement(query, replacer, null);
