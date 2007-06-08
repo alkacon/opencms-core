@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2007/06/06 13:55:36 $
- * Version: $Revision: 1.22.4.4 $
+ * Date   : $Date: 2007/06/08 13:43:53 $
+ * Version: $Revision: 1.22.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.4 $
+ * @version $Revision: 1.22.4.5 $
  * 
  * @since 6.0.0
  */
@@ -231,43 +231,6 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
             "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;product=somthing\">link</a>",
             text);
     }
-    
-    public void testLinksWithSpecialChars() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing pages with international chars in link parameters:\n");
-
-        String filename = "xmlpageint.html";
-
-        String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
-        List properties = new ArrayList();
-        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
-        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
-        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
-        CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
-        CmsFile file = CmsFile.upgrade(res, cms);
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
-        assertTrue(page.hasLocale(Locale.ENGLISH));
-        
-        String element = "test";
-        page.addValue(element, Locale.ENGLISH);
-        String text;
-
-        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?bad=äöüÄÖÜß&good=aouAOUS\">link</a>");
-        text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);
-
-        file.setContents(page.marshal());
-        cms.writeFile(file);
-        
-        file = cms.readFile(file);
-        page = CmsXmlPageFactory.unmarshal(cms, file, true);
-        
-        text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);        
-    }
-    
-    
 
     /**
      * Tests XML link replacement.<p>
@@ -340,6 +303,50 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html\">link</a>", text);
+    }
+
+    /**
+     * Testing pages with international chars in link parameters.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testLinksWithSpecialChars() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing pages with international chars in link parameters:\n");
+
+        String filename = "xmlpageint.html";
+
+        String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
+        List properties = new ArrayList();
+        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
+        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
+        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
+        CmsResource res = cms.createResource(
+            filename,
+            CmsResourceTypeXmlPage.getStaticTypeId(),
+            content.getBytes(UTF8),
+            properties);
+        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+
+        String element = "test";
+        page.addValue(element, Locale.ENGLISH);
+        String text;
+
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?bad=äöüÄÖÜß&good=aouAOUS\">link</a>");
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);
+
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+
+        file = cms.readFile(file);
+        page = CmsXmlPageFactory.unmarshal(cms, file, true);
+
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/index.html?bad=äöüÄÖÜß&amp;good=aouAOUS\">link</a>", text);
     }
 
     /**
