@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateDefaultProperties.java,v $
- * Date   : $Date: 2007/06/06 16:04:09 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/08 13:38:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,15 +59,56 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.2
  */
 public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
 
+    /**
+     * A simple class for keeping to related strings.<p>
+     */
+    private static class Pair {
+
+        private String m_first;
+        private String m_second;
+
+        /**
+         * The constructor.<p>
+         * 
+         * @param first the first member
+         * @param second the second member
+         */
+        protected Pair(String first, String second) {
+
+            m_first = first;
+            m_second = second;
+        }
+
+        /**
+         * Returns the first member.<p>
+         *
+         * @return the first member
+         */
+        public String getFirst() {
+
+            return m_first;
+        }
+
+        /**
+         * Returns the second member.<p>
+         *
+         * @return the second member
+         */
+        public String getSecond() {
+
+            return m_second;
+        }
+    }
+
     /** List of xpaths to update. */
     private List m_xpaths;
-    
+
     /** List of xpaths to remove. */
     private List m_xpathsRemove;
 
@@ -96,9 +137,8 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
         if (node == null) {
             int index = getXPathsToUpdate().indexOf(xpath);
             if (index > -1) {
-                String newPath = xpath.substring(0, xpath.lastIndexOf("[@"));
                 CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_NAME, ((Pair)getKeys().get(
-                    index)).m_b);
+                    index)).getSecond());
                 return true;
             }
             return false;
@@ -113,13 +153,43 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
 
         return null;
         /*
-        // /opencms/workplace/explorertypes/
-        StringBuffer xp = new StringBuffer(256);
-        xp.append("/").append(CmsConfigurationManager.N_ROOT);
-        xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
-        xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-        return xp.toString();
-        */
+         // /opencms/workplace/explorertypes/
+         StringBuffer xp = new StringBuffer(256);
+         xp.append("/").append(CmsConfigurationManager.N_ROOT);
+         xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+         xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+         return xp.toString();
+         */
+    }
+
+    /**
+     * Returns a list of keys for creating the new nodes.<p>
+     * 
+     * @return a list of pairs (resource type, property name)
+     */
+    protected List getKeys() {
+
+        List keys = new ArrayList();
+        keys.add(new Pair(CmsResourceTypeFolder.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeBinary.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypePointer.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("imagegallery", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("downloadgallery", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CACHE));
+        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING));
+        return keys;
     }
 
     /**
@@ -141,17 +211,6 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
         }
         return m_xpathsRemove;
     }
-
-    private static class Pair {
-
-        public String m_a, m_b;
-
-        protected Pair(String a, String b) {
-
-            m_a = a;
-            m_b = b;
-        }
-    };
 
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
@@ -190,8 +249,8 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
             Iterator it = getKeys().iterator();
             while (it.hasNext()) {
                 Pair entry = (Pair)it.next();
-                String eType = entry.m_a;
-                String prop = entry.m_b;
+                String eType = entry.getFirst();
+                String prop = entry.getSecond();
 
                 Map subs = new HashMap();
                 subs.put("${etype}", eType);
@@ -200,31 +259,6 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
             }
         }
         return m_xpaths;
-    }
-
-    protected List getKeys() {
-
-        List keys = new ArrayList();
-        keys.add(new Pair(CmsResourceTypeFolder.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeBinary.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypePointer.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair("imagegallery", CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair("downloadgallery", CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeImage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        keys.add(new Pair(CmsResourceTypeXmlPage.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_KEYWORDS));
-        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_DESCRIPTION));
-        keys.add(new Pair("xmlcontent", CmsPropertyDefinition.PROPERTY_KEYWORDS));
-        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypePlain.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
-        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_TITLE));
-        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_EXPORT));
-        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CACHE));
-        keys.add(new Pair(CmsResourceTypeJsp.getStaticTypeName(), CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING));
-        return keys;
     }
 
 }
