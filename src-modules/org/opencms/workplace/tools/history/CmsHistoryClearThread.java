@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.9.4.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearThread.java,v $
+ * Date   : $Date: 2007/06/11 10:06:32 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,44 +36,32 @@ import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import java.util.Map;
-
 /**
  * Clears the file history of the OpenCms database.<p>
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9.4.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsAdminHistoryClearThread extends A_CmsReportThread {
+public class CmsHistoryClearThread extends A_CmsReportThread {
 
-    private Throwable m_error;
-    private Map m_params;
+    private CmsHistoryClear m_historyClear;
 
     /**
      * Creates the history clear Thread.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param params the necessary parameters to delete the historical versions
+     * @param historyClear the settings to clear the history
      */
-    public CmsAdminHistoryClearThread(CmsObject cms, Map params) {
+    public CmsHistoryClearThread(CmsObject cms, CmsHistoryClear historyClear) {
 
         super(cms, Messages.get().getBundle().key(
-            Messages.GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1,
+            Messages.GUI_HISTORY_CLEAR_THREAD_NAME_1,
             cms.getRequestContext().currentProject().getName()));
-        m_params = params;
+        m_historyClear = historyClear;
         initHtmlReport(cms.getRequestContext().getLocale());
-        start();
-    }
-
-    /**
-     * @see org.opencms.report.A_CmsReportThread#getError()
-     */
-    public Throwable getError() {
-
-        return m_error;
     }
 
     /**
@@ -92,11 +80,15 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
         getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
         // get the necessary parameters from the map
-        int versions = Integer.parseInt((String)m_params.get("versions"));
-        int versionsDeleted = Integer.parseInt((String)m_params.get("versionsDeleted"));
-        long timeDeleted = Long.parseLong((String)m_params.get("timeDeleted"));
-        String folderName = (String)m_params.get("folderName");
+        int versions = m_historyClear.getKeepVersions();
+        int versionsDeleted = m_historyClear.getKeepVersions();
+        long timeDeleted = m_historyClear.getClearOlderThan();
+        String folderName = "/";
 
+        if (timeDeleted == 0) {
+            timeDeleted = -1;
+        }
+        
         // delete the historical files
         try {
             getCms().deleteHistoricalVersions(folderName, versions, versionsDeleted, timeDeleted, getReport());

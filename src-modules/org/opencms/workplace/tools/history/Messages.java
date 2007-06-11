@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2007/05/30 15:35:53 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2007/06/11 10:06:32 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,32 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_DATE_1 = "ERR_INVALID_DATE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MESSAGE_DATAMISSING_0 = "ERR_MESSAGE_DATAMISSING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0 = "ERR_MESSAGE_INVALIDCLEARHISTORYDATA_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_INT_ENTERED_0 = "ERR_NO_INT_ENTERED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_POSITIVE_INT_0 = "ERR_NO_POSITIVE_INT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1 = "GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CALENDAR_INPUT_CHOOSEDATE_0 = "GUI_CALENDAR_INPUT_CHOOSEDATE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0";
@@ -85,6 +64,42 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_HISTORY_ADMIN_TOOL_NAME_0 = "GUI_HISTORY_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_BLOCK_LABEL_0 = "GUI_HISTORY_CLEAR_BLOCK_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_INVALID_SETTINGS_0 = "GUI_HISTORY_CLEAR_INVALID_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_THREAD_NAME_1 = "GUI_HISTORY_CLEAR_THREAD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_VERSION_SELECT_0 = "GUI_HISTORY_CLEAR_VERSION_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_VERSIONINFO_1 = "GUI_HISTORY_CLEAR_VERSIONINFO_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_BLOCK_LABEL_0 = "GUI_HISTORY_SETTINGS_BLOCK_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_INVALID_0 = "GUI_HISTORY_SETTINGS_INVALID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_MODE_DISABLED_0 = "GUI_HISTORY_SETTINGS_MODE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0 = "GUI_HISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0 = "GUI_HISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_VERSIONS_DISABLED_0 = "GUI_HISTORY_SETTINGS_VERSIONS_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0 = "GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -92,54 +107,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_NAME_0 = "GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTENABLE_NO_0 = "GUI_INPUT_HISTENABLE_NO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTENABLE_YES_0 = "GUI_INPUT_HISTENABLE_YES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTENABLED_0 = "GUI_INPUT_HISTENABLED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTNUMBER_0 = "GUI_INPUT_HISTNUMBER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_DATE_0 = "GUI_INPUT_HISTORY_CLEAR_DATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0 = "GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_NUMBER_0 = "GUI_INPUT_HISTORY_CLEAR_NUMBER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_NUMBER_HISTORIC_0 = "GUI_INPUT_HISTORY_CLEAR_NUMBER_HISTORIC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_SELECT_0 = "GUI_INPUT_HISTORY_CLEAR_SELECT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_SELECTINFO_0 = "GUI_INPUT_HISTORY_CLEAR_SELECTINFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1 = "GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_KEEP_DELETED_RESOURCES_0 = "GUI_INPUT_HISTORY_KEEP_DELETED_RESOURCES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_RESTORE_DELETED_RESOURCES_0 = "GUI_INPUT_HISTORY_RESTORE_DELETED_RESOURCES_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_HISTORY_SELECT_VERSIONS_0 = "GUI_INPUT_HISTORY_SELECT_VERSIONS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_ADMIN_HISTORY_CLEAR_0 = "GUI_LABEL_ADMIN_HISTORY_CLEAR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0 = "GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_HISTORY_BEGIN_0 = "RPT_DELETE_HISTORY_BEGIN_0";

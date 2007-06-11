@@ -273,6 +273,39 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/admin/history/reports</destination>
+			<type>folder</type>
+			<uuidstructure>799909e7-143f-11dc-bce6-edd7343a1375</uuidstructure>
+			<datelastmodified>Wed, 06 Jun 2007 15:06:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jun 2007 15:06:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/history/reports/clearhistory.jsp</source>
+			<destination>system/workplace/admin/history/reports/clearhistory.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>83593959-143f-11dc-bce6-edd7343a1375</uuidstructure>
+			<uuidresource>8359395a-143f-11dc-bce6-edd7343a1375</uuidresource>
+			<datelastmodified>Wed, 06 Jun 2007 15:07:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jun 2007 15:06:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/admin/history/settings</destination>
 			<type>folder</type>
 			<uuidstructure>df2235da-11b7-11db-91cd-fdbae480bac9</uuidstructure>
