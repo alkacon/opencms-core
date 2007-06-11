@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearDialog.java,v $
- * Date   : $Date: 2007/06/11 10:06:32 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/11 13:50:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.9.1
  */
@@ -108,7 +108,7 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
         setDialogObject(m_historyClear);
 
-        if ((m_historyClear.getKeepVersions() < 0) && (m_historyClear.getClearOlderThan() < 1)) {
+        if (m_historyClear.getKeepVersions() < 0) {
             errors.add(new CmsIllegalArgumentException(Messages.get().container(
                 Messages.GUI_HISTORY_CLEAR_INVALID_SETTINGS_0)));
         } else {
