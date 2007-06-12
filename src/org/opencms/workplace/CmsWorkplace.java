@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/03/01 15:01:33 $
- * Version: $Revision: 1.156.4.18 $
+ * Date   : $Date: 2007/06/12 09:24:53 $
+ * Version: $Revision: 1.156.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,13 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
@@ -86,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.18 $ 
+ * @version $Revision: 1.156.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -1797,6 +1800,13 @@ public abstract class CmsWorkplace {
             m_cms = m_jsp.getCmsObject();
             m_session = m_jsp.getRequest().getSession();
 
+            // check role
+            try {
+                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
+            } catch (CmsRoleViolationException e) {
+                throw new CmsIllegalStateException(e.getMessageContainer(), e);
+            }
+            
             // get / create the workplace settings 
             m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 
