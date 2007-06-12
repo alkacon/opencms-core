@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/Messages.java,v $
- * Date   : $Date: 2006/04/20 11:31:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/12 07:40:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,11 +36,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.2.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_INVALID_1 = "ERR_INDEX_INVALID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATE_SEARCH_PARAMS_0 = "ERR_VALIDATE_SEARCH_PARAMS_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/05/15 10:36:08 $
- * Version: $Revision: 1.36.4.26 $
+ * Date   : $Date: 2007/06/12 07:40:16 $
+ * Version: $Revision: 1.36.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.36.4.26 $
+ * @version $Revision: 1.36.4.27 $
  * 
  * @since 6.0.0
  */
@@ -961,12 +961,8 @@ public class CmsUserSettings {
             m_restrictExplorerView = OpenCms.getWorkplaceManager().getDefaultUserSettings().getRestrictExplorerView();
         }
         // workplace search
-        m_workplaceSearchIndexName = (String)m_user.getAdditionalInfo(PREFERENCES
-            + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
-            + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME);
-        if (m_workplaceSearchIndexName == null) {
-            m_workplaceSearchIndexName = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchIndexName();
-        }
+        m_workplaceSearchIndexName = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchIndexName();
+        
         m_workplaceSearchViewStyle = CmsSearchResultStyle.valueOf((String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
             + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE));
@@ -1269,11 +1265,6 @@ public class CmsUserSettings {
             }
         }
         // workplace search
-        if (getWorkplaceSearchIndexName() != null) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
-                + CmsWorkplaceConfiguration.N_SEARCHINDEXNAME, getWorkplaceSearchIndexName());
-        }
         if (getWorkplaceSearchViewStyle() != null) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESEARCH

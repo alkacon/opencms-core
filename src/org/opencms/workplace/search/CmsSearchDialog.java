@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/12 07:40:16 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -30,6 +30,7 @@ package org.opencms.workplace.search;
 
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.2.0 
  */
@@ -173,6 +174,15 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
     protected String createDialogHtml(String dialog) {
+
+        // check if the configured search index exists
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(
+            getSettings().getUserSettings().getWorkplaceSearchIndexName());
+        if (index == null) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_INDEX_INVALID_1,
+                getSettings().getUserSettings().getWorkplaceSearchIndexName()));
+        }
 
         StringBuffer result = new StringBuffer(1024);
 
