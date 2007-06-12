@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/05/25 12:02:13 $
- * Version: $Revision: 1.16.4.7 $
+ * Date   : $Date: 2007/06/12 14:08:53 $
+ * Version: $Revision: 1.16.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.7 $ 
+ * @version $Revision: 1.16.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,10 +122,24 @@ public class CmsSessionInfo implements Comparable, Serializable {
         if (obj == this) {
             return 0;
         }
-        if (!(obj instanceof CmsSessionInfo)) {
+        if (obj instanceof CmsSessionInfo) {
             return m_userId.compareTo(((CmsSessionInfo)obj).getUserId());
         }
         return 0;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSessionInfo) {
+            return m_userId.equals(((CmsSessionInfo)obj).getUserId());
+        }
+        return false;
     }
 
     /**
@@ -238,6 +252,14 @@ public class CmsSessionInfo implements Comparable, Serializable {
     public CmsUUID getUserId() {
 
         return m_userId;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_userId.hashCode();
     }
 
     /**
