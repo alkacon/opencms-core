@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.43.4.6 $
+ * Date   : $Date: 2007/06/12 14:04:53 $
+ * Version: $Revision: 1.43.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43.4.6 $ 
+ * @version $Revision: 1.43.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,7 +249,9 @@ public class CmsImport {
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.size(); i++) {
             Element currentElement = (Element)fileNodes.get(i);
-            String destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
+            String destination = CmsImport.getChildElementTextValue(
+                currentElement,
+                CmsImportExportManager.N_DESTINATION);
 
             // get the resources for a project
             try {
@@ -423,7 +425,11 @@ public class CmsImport {
             m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + CmsImportExportManager.N_VERSION).get(
                 0)).getTextTrim());
         } catch (Exception e) {
-            //ignore the exception, the export file has no version nummber (version 0).
+            // ignore the exception, the export file has no version nummber (version 0)
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 }

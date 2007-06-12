@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/06/04 16:07:08 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2007/06/12 14:04:53 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.17 $ 
+ * @version $Revision: 1.1.2.18 $ 
  * 
  * @since 6.3.0 
  * 
@@ -780,6 +780,8 @@ public class CmsImportVersion5 extends A_CmsImport {
             }
         } catch (Exception e) {
             m_report.println(e);
+            m_report.addError(e);
+
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {

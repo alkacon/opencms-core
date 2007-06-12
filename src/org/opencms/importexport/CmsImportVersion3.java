@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.75.4.9 $
+ * Date   : $Date: 2007/06/12 14:04:53 $
+ * Version: $Revision: 1.75.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75.4.9 $ 
+ * @version $Revision: 1.75.4.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -347,6 +347,8 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         } catch (Exception e) {
             m_report.println(e);
+            m_report.addError(e);
+            
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
@@ -497,6 +499,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);
+            m_report.addError(exc);
+            
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
