@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/05/30 15:34:49 $
- * Version: $Revision: 1.5.4.17 $
+ * Date   : $Date: 2007/06/12 14:19:04 $
+ * Version: $Revision: 1.5.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.17 $ 
+ * @version $Revision: 1.5.4.18 $ 
  * 
  * @since 6.0.2 
  */
@@ -107,15 +107,35 @@ public class CmsHistoryList extends A_CmsListDialog {
          */
         public int compareTo(Object o) {
 
-            CmsVersionWrapper version = (CmsVersionWrapper)o;
-            if (String.class.equals(version.getVersion().getClass()) && Integer.class.equals(getVersion().getClass())) {
-                return -1;
-            } else if (Integer.class.equals(version.getVersion().getClass())
-                && String.class.equals(getVersion().getClass())) {
-                return 1;
-            } else {
-                return ((Comparable)m_version).compareTo(version.getVersion());
+            if (this == o) {
+                return 0;
             }
+            if (o instanceof CmsVersionWrapper) {
+                CmsVersionWrapper version = (CmsVersionWrapper)o;
+                if ((version.getVersion() instanceof String) && (getVersion() instanceof Integer)) {
+                    return -1;
+                } else if ((version.getVersion() instanceof Integer) && (getVersion() instanceof String)) {
+                    return 1;
+                } else {
+                    return ((Comparable)m_version).compareTo(version.getVersion());
+                }
+            }
+            return 0;
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj) {
+
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof CmsVersionWrapper) {
+                CmsVersionWrapper version = (CmsVersionWrapper)obj;
+                return getVersion().equals(version.getVersion());
+            }
+            return false;
         }
 
         /**
@@ -126,6 +146,14 @@ public class CmsHistoryList extends A_CmsListDialog {
         public Object getVersion() {
 
             return m_version;
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+
+            return getVersion().hashCode();
         }
 
         /**
@@ -149,9 +177,6 @@ public class CmsHistoryList extends A_CmsListDialog {
     public static final String LIST_ACTION_VIEW = "av";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_PUBLISH_TAG = "cbt";
-
-    /** list column id constant. */
     public static final String LIST_COLUMN_DATE_LAST_MODIFIED = "cm";
 
     /** list column id constant. */
@@ -162,6 +187,9 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_PUBLISH_TAG = "cbt";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_RESOURCE_PATH = "crp";
@@ -395,7 +423,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         }
 
         CmsResource offlineResource = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-        
+
         // hide the size for folders
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_SIZE).setVisible(offlineResource.isFile());
         // hide the preview button for folders
