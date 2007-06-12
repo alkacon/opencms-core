@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/06/05 12:18:33 $
- * Version: $Revision: 1.37.4.26 $
+ * Date   : $Date: 2007/06/12 14:07:53 $
+ * Version: $Revision: 1.37.4.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.26 $ 
+ * @version $Revision: 1.37.4.27 $ 
  * 
  * @since 6.0.0 
  * 
@@ -170,9 +170,6 @@ public final class CmsLockManager {
      * In case no lock is set, the <code>null lock</code> which can be obtained 
      * by {@link CmsLock#getNullLock()} is returned.<p>
      * 
-     * You should check the edition lock by calling{@link CmsLock#getEditionLock()},
-     * since you may get a system lock.<p>
-     * 
      * @param dbc the current database context
      * @param resource the resource
      * 
@@ -190,9 +187,6 @@ public final class CmsLockManager {
      * 
      * In case no lock is set, the <code>null lock</code> which can be obtained 
      * by {@link CmsLock#getNullLock()} is returned.<p>
-     * 
-     * You should check the edition lock by calling{@link CmsLock#getEditionLock()},
-     * since you may get a system lock.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource
