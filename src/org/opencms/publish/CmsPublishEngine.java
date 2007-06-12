@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/06/04 16:08:14 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2007/06/12 14:12:02 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.17 $
+ * @version $Revision: 1.1.2.18 $
  * 
  * @since 6.5.5
  */
@@ -154,12 +154,12 @@ public final class CmsPublishEngine implements Runnable {
 
         // check the driver manager
         if (m_driverManager == null || m_dbContextFactory == null) {
-            unlockPublishList(new CmsPublishJobInfoBean(cms, publishList, report));
+            // the resources are unlocked in the driver manager
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
         }
         // prevent new jobs if the engine is disabled
         if (m_shuttingDown || (!isEnabled() && !OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN))) {
-            unlockPublishList(new CmsPublishJobInfoBean(cms, publishList, report));
+            // the resources are unlocked in the driver manager
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_DISABLED_0));
         }
 
@@ -186,7 +186,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @return the publish job with the given publish history id, or <code>null</code>
      */
-    public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
+    public synchronized CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
 
         // try current running job
         if ((m_currentPublishThread != null)
@@ -217,15 +217,15 @@ public final class CmsPublishEngine implements Runnable {
      */
     public synchronized void run() {
 
-        // create a publish thread only if engine is started
-        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
-            return;
-        }
         try {
             // give the finishing publish thread enough time to clean up
             wait(200);
         } catch (InterruptedException e) {
             // ignore
+        }
+        // create a publish thread only if engine is started
+        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
+            return;
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_RUNNING_0));
@@ -357,7 +357,7 @@ public final class CmsPublishEngine implements Runnable {
      * @throws CmsException if there is some problem during unlocking the resources
      * @throws CmsPublishException if the publish job can not be aborted 
      */
-    protected void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
+    protected synchronized void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsPublishException {
 
         // abort event should be raised before the job is removed implicitly
@@ -439,7 +439,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @return the driver manager instance
      */
-    protected CmsDriverManager getDriverManager() {
+    protected synchronized CmsDriverManager getDriverManager() {
 
         return m_driverManager;
     }
@@ -553,7 +553,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
+    protected synchronized void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         // in order to avoid unremovable pub lish locks, unlock all assigned resources again
         unlockPublishList(publishJob);
@@ -696,7 +696,7 @@ public final class CmsPublishEngine implements Runnable {
     /**
      * Starts the publish engine, i.e. publish josb are accepted and processed.<p>
      */
-    protected void startEngine() {
+    protected synchronized void startEngine() {
 
         if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
             m_engineState = CmsPublishEngineState.ENGINE_STARTED;
