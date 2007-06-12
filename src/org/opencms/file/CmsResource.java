@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/04/26 14:31:00 $
- * Version: $Revision: 1.45.4.13 $
+ * Date   : $Date: 2007/06/12 13:58:28 $
+ * Version: $Revision: 1.45.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.13 $
+ * @version $Revision: 1.45.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -261,13 +261,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             long date1 = r1.getDateReleased();
             if (date1 == CmsResource.DATE_RELEASED_DEFAULT) {
-                // use creation date if release date is not set
+                // use last modification date if release date is not set
                 date1 = r1.getDateLastModified();
             }
 
             long date2 = r2.getDateReleased();
             if (date2 == CmsResource.DATE_RELEASED_DEFAULT) {
-                // use creation date if release date is not set
+                // use last modification date if release date is not set
                 date2 = r2.getDateLastModified();
             }
 
