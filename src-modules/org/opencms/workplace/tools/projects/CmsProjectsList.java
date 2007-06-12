@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2007/03/02 13:25:15 $
- * Version: $Revision: 1.15.4.5 $
+ * Date   : $Date: 2007/06/12 10:18:21 $
+ * Version: $Revision: 1.15.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.4.5 $ 
+ * @version $Revision: 1.15.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,6 +349,17 @@ public class CmsProjectsList extends A_CmsListDialog {
             }
             item.set(LIST_DETAIL_RESOURCES, html.toString());
             ret.add(item);
+        }
+        
+        // hide ou column if only one ou exists
+        try {
+            if (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).isEmpty()) {
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(false);
+            } else {
+                getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(true);
+            }
+        } catch (CmsException e) {
+            // noop
         }
 
         return ret;
