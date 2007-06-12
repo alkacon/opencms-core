@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/03/27 15:06:46 $
- * Version: $Revision: 1.60.4.9 $
+ * Date   : $Date: 2007/06/12 14:16:58 $
+ * Version: $Revision: 1.60.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.9 $ 
+ * @version $Revision: 1.60.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -399,16 +399,14 @@ public class CmsLinkManager {
 
         String permalink = "";
         try {
-            permalink = OpenCms.getLinkManager().substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            permalink = substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
             String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
             permalink += id;
             String ext = CmsFileUtil.getExtension(resourceName);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
                 permalink += "." + ext;
             }
-            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(
-                cms,
-                CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(cms, resourceName);
             if (!permalink.startsWith(serverPrefix)) {
                 permalink = serverPrefix + permalink;
             }
