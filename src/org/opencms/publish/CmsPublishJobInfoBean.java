@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/12 14:12:17 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,12 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
 
-
 /**
  * Publish job information bean.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.5
  */
@@ -79,7 +78,7 @@ public final class CmsPublishJobInfoBean {
 
     /** Name of the project used for publishing. */
     private String m_projectName;
-    
+
     /** Publish history id. */
     private CmsUUID m_publishHistoryId;
 
@@ -91,7 +90,7 @@ public final class CmsPublishJobInfoBean {
 
     /** Report to log the publish job to, will be set to <code>null</code> after publishing. */
     private I_CmsReport m_report;
-    
+
     /** Number of resources to publish. */
     private int m_size;
 
@@ -118,29 +117,29 @@ public final class CmsPublishJobInfoBean {
      * @param finishTime time when the job was finished
      */
     public CmsPublishJobInfoBean(
-        CmsUUID historyId, 
+        CmsUUID historyId,
         CmsUUID projectId,
         String projectName,
-        CmsUUID userId, 
+        CmsUUID userId,
         String localeName,
-        int flags, 
-        int resourceCount, 
-        long enqueueTime, 
-        long startTime, 
+        int flags,
+        int resourceCount,
+        long enqueueTime,
+        long startTime,
         long finishTime) {
-    
+
         m_publishHistoryId = historyId;
         m_projectId = projectId;
-        
+
         m_projectName = projectName;
         m_userId = userId;
         m_size = resourceCount;
         m_directPublish = (flags & C_PUBLISH_FLAG) == C_PUBLISH_FLAG;
-        
+
         m_enqueueTime = enqueueTime;
         m_startTime = startTime;
         m_finishTime = finishTime;
-        
+
         m_locale = CmsLocaleManager.getLocale(localeName);
     }
 
@@ -170,7 +169,7 @@ public final class CmsPublishJobInfoBean {
 
         m_report = report;
     }
-    
+
     /**
      * Returns the time this object has been created.<p>
      *
@@ -180,7 +179,7 @@ public final class CmsPublishJobInfoBean {
 
         return m_enqueueTime;
     }
-    
+
     /**
      * Returns the time the publish job ends.<p>
      *
@@ -197,9 +196,8 @@ public final class CmsPublishJobInfoBean {
      * @return the flags of this publish job
      */
     public int getFlags() {
-        
-        return
-            (m_directPublish) ? C_PUBLISH_FLAG : 0;
+
+        return (m_directPublish) ? C_PUBLISH_FLAG : 0;
     }
 
     /**
@@ -211,7 +209,7 @@ public final class CmsPublishJobInfoBean {
 
         return m_locale;
     }
-    
+
     /**
      * Returns the project id for this publish job.<p>
      * 
@@ -269,8 +267,7 @@ public final class CmsPublishJobInfoBean {
         if (m_publishReport == null && m_finishTime == 0 && m_startTime > 0) {
             m_publishReport = getReport();
             if (m_publishReport == null) {
-                m_publishReport = new CmsPublishReport(
-                    getCmsObject().getRequestContext().getLocale());
+                m_publishReport = new CmsPublishReport(getCmsObject().getRequestContext().getLocale());
             } else {
                 m_publishReport = CmsPublishReport.decorate(m_publishReport);
             }
@@ -334,12 +331,12 @@ public final class CmsPublishJobInfoBean {
      * @return the removed report
      */
     public I_CmsReport removePublishReport() {
-        
+
         I_CmsReport report = m_publishReport;
         m_publishReport = null;
         return report;
     }
-    
+
     /**
      * Revives this publish job.<p>
      * 
@@ -347,20 +344,53 @@ public final class CmsPublishJobInfoBean {
      * @param publishList a publish list
      * @throws CmsException if somethign goes wrong
      */
-    public void revive(CmsObject adminCms, CmsPublishList publishList)
-    throws CmsException {
-        
+    public void revive(CmsObject adminCms, CmsPublishList publishList) throws CmsException {
+
         CmsContextInfo context = new CmsContextInfo(adminCms.readUser(m_userId).getName());
         CmsProject project = adminCms.readProject(m_projectId);
         context.setLocale(m_locale);
-        
+
         m_cms = OpenCms.initCmsObject(adminCms, context);
         m_cms.getRequestContext().setCurrentProject(project);
 
         m_publishList = publishList;
         m_publishList.revive(m_cms);
-    }   
-      
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer();
+
+        result.append("[");
+        result.append(this.getClass().getName());
+        result.append(", history id: ");
+        result.append(getPublishHistoryId().toString());
+        result.append(", project id ");
+        result.append(getProjectId().toString());
+        result.append(", project name: ");
+        result.append(getProjectName());
+        result.append(", user id: ");
+        result.append(getUserId().toString());
+        result.append(", locale: ");
+        result.append(getLocale().toString());
+        result.append(", flags: ");
+        result.append(getFlags());
+        result.append(", size: ");
+        result.append(getSize());
+        result.append(", enqueue time: ");
+        result.append(getEnqueueTime());
+        result.append(", start time: ");
+        result.append(getStartTime());
+        result.append(", finish time: ");
+        result.append(getFinishTime());
+        result.append("]");
+
+        return result.toString();
+    }
+
     /**
      * Signalizes that the publish job has been enqueued.<p> 
      * Actually sets the enqueue time only if it is not set already (re-enqueue during startup).<p>
@@ -383,6 +413,7 @@ public final class CmsPublishJobInfoBean {
         }
         m_cms = null;
         m_report = null;
+        m_size = m_publishList.size();
         m_publishList = null;
         if (m_publishReport instanceof CmsPublishReport) {
             ((CmsPublishReport)m_publishReport).finish();
@@ -417,20 +448,20 @@ public final class CmsPublishJobInfoBean {
      * @return <code>true</code> if the publish job is already finished
      */
     protected boolean isFinished() {
-        
+
         return (m_finishTime != 0L);
     }
-    
+
     /**
      * Returns if the publish job is already started.<p>
      * 
      * @return <code>true</code> if the publish job is already started
      */
     protected boolean isStarted() {
-        
+
         return (m_startTime != 0L);
     }
-    
+
     /**
      * Signalizes the start of the publish job.<p> 
      * Actually sets the starting time, writes the report header and sets the running thread uuid.<p>

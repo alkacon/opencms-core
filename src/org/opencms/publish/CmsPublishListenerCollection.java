@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/05/31 11:23:18 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/12 14:12:17 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -59,7 +59,7 @@ public final class CmsPublishListenerCollection extends Vector {
     private static final long serialVersionUID = -4945973010986412449L;
 
     /** Publish engine. */
-    private CmsPublishEngine m_publishEngine;
+    private transient CmsPublishEngine m_publishEngine;
 
     /**
      * Default constructor.<p>

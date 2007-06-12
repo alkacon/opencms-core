@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/06/05 12:18:33 $
- * Version: $Revision: 1.58.4.12 $
+ * Date   : $Date: 2007/06/12 14:09:21 $
+ * Version: $Revision: 1.58.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.12 $ 
+ * @version $Revision: 1.58.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,9 +113,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
-
-    /** A cache for accelerated locale lookup. */
-    private static Map m_localeCache;
 
     /** Maximum depth for object size recursion. */
     private static final int MAX_DEPTH = 5;
@@ -155,6 +152,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** The time the last warning log was written. */
     private long m_lastLogWarning;
+
+    /** A cache for accelerated locale lookup. */
+    private Map m_localeCache;
 
     /** Cache for the resource locks. */
     private Map m_lockCache;
