@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestConcurrentOperations.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.4.3 $
+ * Date   : $Date: 2007/06/12 14:27:02 $
+ * Version: $Revision: 1.1.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobFinished;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsThreadedTestCase;
@@ -53,46 +57,52 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.4.3 $
+ * @version $Revision: 1.1.4.4 $
  */
 public class TestConcurrentOperations extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestConcurrentOperations(String arg0) {
-        
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestConcurrentOperations.class.getName());
-                
+
+        suite.addTest(new TestConcurrentOperations("testConcurrentPublishResource"));
+        suite.addTest(new TestConcurrentOperations("testConcurrentPublishResourceWithRelated"));
+        suite.addTest(new TestConcurrentOperations("testConcurrentPublishProject"));
         suite.addTest(new TestConcurrentOperations("testConcurrentCreationIssue"));
-               
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    } 
+    }
 
     /**
      * Concurrent creation test method.<p>
@@ -110,7 +120,86 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         String name = "/testfolder/sub1/sub2/sub3/subtestfolder" + val;
         CmsResource res = cms.createResource(name, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         value[0] = new Integer(++val);
-        System.out.println("++++++++++++++++++ Finished creation of folder " + res.getRootPath() + " - count: " + count.intValue());
+        System.out.println("++++++++++++++++++ Finished creation of folder "
+            + res.getRootPath()
+            + " - count: "
+            + count.intValue());
+    }
+
+    /**
+     * Concurrent publish project test method.<p>
+     * 
+     * @param cms the OpenCms user context to use
+     * @param count the count for this test
+     * @param value used to pass a counter value between the councurrent tests
+     * 
+     * @throws Exception if something goes wrong, unexpected
+     */
+    public void doConcurrentPublishProjectOperation(CmsObject cms, Integer count, Integer[] value) throws Exception {
+
+        System.out.println("Running doConcurrentPublishProjectOperation() method call - count: " + count.intValue());
+        int val = value[0].intValue();
+        OpenCms.getPublishManager().publishProject(cms);
+        value[0] = new Integer(++val);
+        System.out.println("++++++++++++++++++ Finished publish project - count: " + count.intValue());
+    }
+
+    /**
+     * Concurrent publish resource test method.<p>
+     * 
+     * @param cms the OpenCms user context to use
+     * @param count the count for this test
+     * @param value used to pass a counter value between the councurrent tests
+     * 
+     * @throws Exception if something goes wrong, unexpected
+     */
+    public void doConcurrentPublishResourceOperation(CmsObject cms, Integer count, Integer[] value) throws Exception {
+
+        System.out.println("Running doConcurrentPublishResourceOperation() method call - count: " + count.intValue());
+        int val = value[0].intValue();
+
+        OpenCms.getPublishManager().publishResource(cms, "index.html");
+
+        value[0] = new Integer(++val);
+        System.out.println("++++++++++++++++++ Finished publish resource - count: " + count.intValue());
+    }
+
+    /**
+     * Concurrent publish resource test method.<p>
+     * 
+     * @param cms the OpenCms user context to use
+     * @param count the count for this test
+     * @param value used to pass a counter value between the councurrent tests
+     * 
+     * @throws Exception if something goes wrong, unexpected
+     */
+    public void doConcurrentPublishResourceWithRelatedOperation(CmsObject cms, Integer count, Integer[] value)
+    throws Exception {
+
+        System.out.println("thread " + count + ": starting");
+        int val = value[0].intValue();
+
+        // create a new publish list
+        System.out.println("thread " + count + ": getting publish list");
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(
+            cms,
+            cms.readResource("index.html", CmsResourceFilter.ALL),
+            false);
+        // get the related resources
+        System.out.println("thread " + count + ": getting related resources");
+        CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, publishList);
+        // merge the two publish lists
+        System.out.println("thread " + count + ": merging publish lists");
+        publishList = OpenCms.getPublishManager().mergePublishLists(cms, publishList, relResources);
+        // publish
+        System.out.println("thread " + count + ": publishing");
+        OpenCms.getPublishManager().publishProject(
+            cms,
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            publishList);
+
+        value[0] = new Integer(++val);
+        System.out.println("thread " + count + ": finished");
     }
 
     /**
@@ -138,9 +227,9 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
             OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
             OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
             value};
-        OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);                
+        OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
         OpenCmsThreadedTestCase[] threads = suite.run();
-        
+
         if (suite.getThrowable() != null) {
             throw new Exception(suite.getThrowable());
         }
@@ -160,7 +249,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
                     ec++;
                 } else {
                     // also check the cause, may be nested
-                    e = e2.getCause();                
+                    e = e2.getCause();
                     if (e instanceof CmsVfsResourceAlreadyExistsException) {
                         e2 = (CmsVfsResourceAlreadyExistsException)e;
                         if (e2.getMessageContainer().getKey() == org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_CURRENTLY_CREATED_1) {
@@ -210,6 +299,178 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         echo("Concurrent folder creation test success: No duplicates created - "
             + ec
             + " concurrent modification exceptions caught");
+        echo("Total runtime of concurrent test suite: " + CmsStringUtil.formatRuntime(suite.getRuntime()));
+    }
+
+    /**
+     * Test concurrently publish same project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testConcurrentPublishProject() throws Throwable {
+
+        int count = 10;
+
+        CmsObject cms = getCmsObject();
+        echo("Testing concurrently publish same project with " + count + " threads");
+
+        String resName = "/";
+        cms.lockResource(resName);
+        cms.setDateLastModified(resName, System.currentTimeMillis(), true);
+
+        // publish directly with a single resource
+        String name = "doConcurrentPublishProjectOperation";
+        Integer[] value = new Integer[1];
+        value[0] = new Integer(0);
+
+        Object[] parameters = new Object[] {
+            OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
+            OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
+            value};
+        OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
+        suite.setAllowedRuntime(10000);
+        OpenCmsThreadedTestCase[] threads = suite.run();
+
+        if (suite.getThrowable() != null) {
+            throw new Exception(suite.getThrowable());
+        }
+
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 0; i < count; i++) {
+            Throwable e = threads[i].getThrowable();
+            if (e != null) {
+                throw new Exception(e);
+            }
+        }
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(13 + 51, pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
+
+        echo("Concurrent publish project test success");
+        echo("Total runtime of concurrent test suite: " + CmsStringUtil.formatRuntime(suite.getRuntime()));
+    }
+
+    /**
+     * Test concurrently publish same resource.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testConcurrentPublishResource() throws Throwable {
+
+        int count = 10;
+
+        CmsObject cms = getCmsObject();
+        echo("Testing concurrently publish same resource with " + count + " threads");
+
+        String resName = "index.html";
+        cms.lockResource(resName);
+        cms.setDateLastModified(resName, System.currentTimeMillis(), true);
+
+        // publish directly with a single resource
+        String name = "doConcurrentPublishResourceOperation";
+        Integer[] value = new Integer[1];
+        value[0] = new Integer(0);
+
+        Object[] parameters = new Object[] {
+            OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
+            OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
+            value};
+        OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
+        suite.setAllowedRuntime(10000);
+        OpenCmsThreadedTestCase[] threads = suite.run();
+
+        if (suite.getThrowable() != null) {
+            throw new Exception(suite.getThrowable());
+        }
+
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 0; i < count; i++) {
+            Throwable e = threads[i].getThrowable();
+            if (e != null) {
+                throw new Exception(e);
+            }
+        }
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(1, pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
+
+        echo("Concurrent publish resource test success");
+        echo("Total runtime of concurrent test suite: " + CmsStringUtil.formatRuntime(suite.getRuntime()));
+    }
+
+    /**
+     * Test concurrently publish same resource with related resources, this does the same than the GUI.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testConcurrentPublishResourceWithRelated() throws Throwable {
+
+        int count = 10;
+
+        CmsObject cms = getCmsObject();
+        echo("Testing concurrently publish same resource with related resources and with " + count + " threads");
+
+        String resName = "index.html";
+
+        // touch everything, so the involved resources can be published
+        cms.lockResource("/");
+        cms.setDateLastModified("/", System.currentTimeMillis(), true);
+
+        // get the list of involved files
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resName), false);
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, publishList);
+        publishList = OpenCms.getPublishManager().mergePublishLists(cms, publishList, relatedList);
+
+        // publish directly with a single resource
+        String name = "doConcurrentPublishResourceWithRelatedOperation";
+        Integer[] value = new Integer[1];
+        value[0] = new Integer(0);
+
+        Object[] parameters = new Object[] {
+            OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
+            OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
+            value};
+        OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
+        suite.setAllowedRuntime(10000);
+        OpenCmsThreadedTestCase[] threads = suite.run();
+
+        if (suite.getThrowable() != null) {
+            throw new Exception(suite.getThrowable());
+        }
+
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (int i = 0; i < count; i++) {
+            Throwable e = threads[i].getThrowable();
+            if (e != null) {
+                throw new Exception(e);
+            }
+        }
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(publishList.getFileList().size(), pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
+
+        echo("Concurrent publish resource test success");
         echo("Total runtime of concurrent test suite: " + CmsStringUtil.formatRuntime(suite.getRuntime()));
     }
 }

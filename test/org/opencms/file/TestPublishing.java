@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.21.4.11 $
+ * Date   : $Date: 2007/06/12 14:27:02 $
+ * Version: $Revision: 1.21.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
@@ -55,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.11 $
+ * @version $Revision: 1.21.4.12 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -81,6 +82,9 @@ public class TestPublishing extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPublishing.class.getName());
 
+        suite.addTest(new TestPublishing("testPublishResourceGalore"));
+        suite.addTest(new TestPublishing("testPublishResourceWithRelatedGalore"));
+        suite.addTest(new TestPublishing("testPublishProjectGalore"));
         suite.addTest(new TestPublishing("testPublishStructureProperty"));
         suite.addTest(new TestPublishing("testPublishResourceProperty"));
         suite.addTest(new TestPublishing("testPublishSiblings"));
@@ -880,6 +884,36 @@ public class TestPublishing extends OpenCmsTestCase {
     }
 
     /**
+     * Test publishing a project with an iteration.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishProjectGalore() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a project with an iteration");
+
+        // publish project with several resources
+        String resourcename = "/";
+        cms.lockResource(resourcename);
+        cms.setDateLastModified(resourcename, System.currentTimeMillis(), true);
+
+        for (int i = 0; i < 10; i++) {
+            OpenCms.getPublishManager().publishProject(cms);
+        }
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(13 + 51, pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
+    }
+
+    /**
      * Tests publishing resources within a distinct project.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -1131,6 +1165,37 @@ public class TestPublishing extends OpenCmsTestCase {
     }
 
     /**
+     * Test publishing a single resource with an iteration.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishResourceGalore() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a single resource with an iteration");
+
+        // publish directly with a single resource
+        String resourcename = "index.html";
+
+        cms.lockResource(resourcename);
+        cms.setDateLastModified(resourcename, System.currentTimeMillis(), true);
+
+        for (int i = 0; i < 10; i++) {
+            OpenCms.getPublishManager().publishResource(cms, resourcename);
+        }
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(1, pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
+    }
+
+    /**
      * Tests the publishing of resource property.<p>
      * 
      * take 2 siblings (s1 and s2):
@@ -1177,6 +1242,56 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, source);
 
         assertTrue(OpenCms.getPublishManager().getPublishList(cms).getFileList().isEmpty());
+    }
+
+    /**
+     * Test publishing a resource with related resources with an iteration.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishResourceWithRelatedGalore() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a resource with related resources with an iteration");
+
+        // publish directly with a single resource and related resource
+        String resourcename = "index.html";
+
+        // touch everything, so the involved resources can be published
+        cms.lockResource("/");
+        cms.setDateLastModified("/", System.currentTimeMillis(), true);
+
+        // get the list of involved files
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resourcename), false);
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
+        pubList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
+
+        for (int i = 0; i < 10; i++) {
+            // create a new publish list
+            CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(
+                cms,
+                cms.readResource(resourcename, CmsResourceFilter.ALL),
+                false);
+            // get the related resources
+            CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, publishList);
+            // merge the two publish lists
+            publishList = OpenCms.getPublishManager().mergePublishLists(cms, publishList, relResources);
+            // publish
+            OpenCms.getPublishManager().publishProject(
+                cms,
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                publishList);
+        }
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        List pubHistory = OpenCms.getPublishManager().getPublishHistory();
+        assertEquals(10, pubHistory.size());
+        CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
+        assertEquals(pubList.size(), pubJob.getSize());
+        for (int i = 1; i < 10; i++) {
+            pubJob = (CmsPublishJobFinished)pubHistory.get(i);
+            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+        }
     }
 
     /**
