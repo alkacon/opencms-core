@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositorySession.java,v $
- * Date   : $Date: 2007/03/07 16:12:09 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/12 07:58:27 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 6.5.6
  */
@@ -159,10 +159,12 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         }
 
         // create the folder
-        m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        CmsResource res = m_cms.createResource(path, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
 
-        // unlock new created folders
-        m_cms.unlockResource(path);
+        // unlock new created folders if lock is not inherited
+        if (!m_cms.getLock(res).isInherited()) {
+            m_cms.unlockResource(path);
+        }
     }
 
     /**
@@ -386,15 +388,17 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
                 file.setContents(content);
 
-                CmsRepositoryLockInfo lock = getLock(path);
+                CmsLock lock = m_cms.getLock(file);
 
                 // lock resource
-                m_cms.lockResource(path);
+                if (!lock.isInherited()) {
+                    m_cms.lockResource(path);
+                }
 
                 // write file
                 m_cms.writeFile(file);
 
-                if (lock == null) {
+                if (lock.isNullLock()) {
                     m_cms.unlockResource(path);
                 }
             } else {
@@ -414,11 +418,12 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             int type = OpenCms.getResourceManager().getDefaultTypeForName(path).getTypeId();
 
             // create the file
-            m_cms.createResource(path, type, content, null);
+            CmsResource res = m_cms.createResource(path, type, content, null);
 
-            // unlock file after creation
-            // TODO: what to do if a parent folder is locked? Dreamweaver isnt able to lock/unlock folders
-            m_cms.unlockResource(path);
+            // unlock file after creation if lock is not inherited
+            if (!m_cms.getLock(res).isInherited()) {
+                m_cms.unlockResource(path);
+            }
         }
 
     }
