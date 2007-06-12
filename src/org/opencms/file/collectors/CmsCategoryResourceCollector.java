@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/12 13:59:10 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.2
  */
@@ -86,7 +86,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * @author Raphael Schnuck
      *
-     * @version $Revision: 1.1.2.3 $
+     * @version $Revision: 1.1.2.4 $
      *
      * @since 6.9.2
      */
@@ -220,7 +220,6 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             String[] keyValueTokens = CmsStringUtil.splitAsArray(data, '|');
 
             for (int i = keyValueTokens.length - 1; i >= 0; i--) {
-
                 String relation = keyValueTokens[i];
                 String[] keyValuePair = CmsStringUtil.splitAsArray(relation, '=');
 
@@ -362,13 +361,15 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      * 
      * @param cms the cms object
      * @param param the param value to filtered the resources
+     * 
      * @return a list of resources filtered and sorted by the given collector param
+     * 
      * @throws CmsException if something goes wrong
      */
     protected List allKeyValuePairFiltered(CmsObject cms, String param) throws CmsException {
 
         CmsExtendedCollectorData data = new CmsExtendedCollectorData(param);
-        if (data.getCategoryTypes() != null && data.getCategoryTypes().size() > 0) {
+        if ((data.getCategoryTypes() != null) && (data.getCategoryTypes().size() > 0)) {
             List result = new ArrayList();
             Map sortCategories = new HashMap();
             String foldername = null;
@@ -397,7 +398,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 while (itCategories.hasNext()) {
                     CmsCategory category = (CmsCategory)itCategories.next();
                     if (categoryTypes.contains(category.getPath())) {
-                        if (data.getSortBy() != null && data.getSortBy().equals("category")) {
+                        if ((data.getSortBy() != null) && data.getSortBy().equals("category")) {
                             if (sortCategories.containsKey(category.getPath())) {
                                 ((List)sortCategories.get(category.getPath())).add(resource);
                             } else {
@@ -414,13 +415,13 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 }
             }
 
-            if (data.getSortBy() != null && data.getSortBy().equals("date")) {
+            if ((data.getSortBy() != null) && data.getSortBy().equals("date")) {
                 if (data.isSortAsc()) {
                     Collections.sort(result, COMPARE_DATE_RELEASED_ASC);
                 } else {
                     Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
                 }
-            } else if (data.getSortBy() != null && data.getSortBy().equals("category")) {
+            } else if ((data.getSortBy() != null) && data.getSortBy().equals("category")) {
                 // categories are sort by their paths
                 Iterator itCategoryTypes = categoryTypes.iterator();
                 while (itCategoryTypes.hasNext()) {

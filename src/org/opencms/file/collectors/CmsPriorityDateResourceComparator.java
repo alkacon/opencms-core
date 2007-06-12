@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.12.8.1 $
+ * Date   : $Date: 2007/06/12 13:59:10 $
+ * Version: $Revision: 1.12.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.8.1 $
+ * @version $Revision: 1.12.8.2 $
  * 
  * @since 6.0.0 
  */
@@ -67,7 +67,7 @@ public class CmsPriorityDateResourceComparator implements Serializable, Comparat
     private boolean m_asc;
 
     /** The current OpenCms user context. */
-    private CmsObject m_cms;
+    private transient CmsObject m_cms;
 
     /** The date of this comparator key. */
     private long m_date;

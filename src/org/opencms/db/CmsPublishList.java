@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/06/04 16:03:59 $
- * Version: $Revision: 1.25.4.10 $
+ * Date   : $Date: 2007/06/12 13:58:04 $
+ * Version: $Revision: 1.25.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.10 $
+ * @version $Revision: 1.25.4.11 $
  * 
  * @since 6.0.0
  * 
@@ -543,13 +543,18 @@ public class CmsPublishList implements Externalizable {
      * Removes a Cms resource from the publish list.<p>
      * 
      * @param resource a Cms resource
+     * 
      * @return true if this publish list contains the specified resource
+     * 
      * @see List#remove(java.lang.Object)
      */
     protected boolean remove(CmsResource resource) {
 
         // it is essential that this method is only visible within the db package!
-        return m_fileList.remove(resource);
+        boolean ret = m_fileList.remove(resource);
+        ret |= m_folderList.remove(resource);
+        ret |= m_deletedFolderList.remove(resource);
+        return ret;
     }
 
     /**
@@ -592,21 +597,20 @@ public class CmsPublishList implements Externalizable {
      * Reads a sequence of UUIDs from an objetc input and builds a list of <code>CmsResource</code> instances from it.<p>
      * 
      * @param in the object input
-     * @return a list of <code>CmsResource</code> instances
+     * @return a list of <code>{@link CmsResource}</code> instances
      * 
      * @throws IOException if something goes wrong 
      */
     private List internalReadUUIDList(ObjectInput in) throws IOException {
 
         List result = null;
-        byte[] bytes = new byte[UUID_LENGTH];
 
         int i = in.readInt();
         if (i >= 0) {
             result = new ArrayList();
-            while (i-- > 0) {
-                in.read(bytes, 0, UUID_LENGTH);
-                result.add(new CmsUUID(bytes));
+            while (i > 0) {
+                result.add(internalReadUUID(in));
+                i--;
             }
         }
 

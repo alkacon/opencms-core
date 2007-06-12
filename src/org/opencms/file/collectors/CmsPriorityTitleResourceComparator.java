@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.15.6.2 $
+ * Date   : $Date: 2007/06/12 13:59:10 $
+ * Version: $Revision: 1.15.6.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.6.2 $
+ * @version $Revision: 1.15.6.3 $
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
     private static final long serialVersionUID = -6815638350803584422L;
 
     /** The current OpenCms user context. */
-    private CmsObject m_cms;
+    private transient CmsObject m_cms;
 
     /** The interal map of comparator keys. */
     private Map m_keys;
