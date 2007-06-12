@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2007/05/07 10:45:13 $
- * Version: $Revision: 1.27.4.3 $
+ * Date   : $Date: 2007/06/12 14:25:55 $
+ * Version: $Revision: 1.27.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.27.4.3 $ 
+ * @version $Revision: 1.27.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,44 +182,43 @@ public class CmsSchedulerList extends A_CmsListDialog {
      */
     public void executeListMultiActions() throws CmsRuntimeException {
 
-        CmsListItem listItem = null;
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
             List removedItems = new ArrayList();
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                while (itItems.hasNext()) {
-                    listItem = (CmsListItem)itItems.next();
+            Iterator itItems = getSelectedItems().iterator();
+            while (itItems.hasNext()) {
+                CmsListItem listItem = (CmsListItem)itItems.next();
+                try {
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     removedItems.add(listItem.getId());
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_UNSCHEDULE_JOB_1,
+                        listItem.getId()), e);
                 }
-                // update the XML configuration
-                writeConfiguration(false);
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_UNSCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
+            // update the XML configuration
+            writeConfiguration(false);
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
             || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate or deactivate multiaction
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
-                while (itItems.hasNext()) {
-                    // toggle the active state of the selected item(s)
-                    listItem = (CmsListItem)itItems.next();
+            Iterator itItems = getSelectedItems().iterator();
+            boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
+            while (itItems.hasNext()) {
+                // toggle the active state of the selected item(s)
+                CmsListItem listItem = (CmsListItem)itItems.next();
+                try {
                     CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
                     job.setActive(activate);
                     OpenCms.getScheduleManager().scheduleJob(getCms(), job);
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_SCHEDULE_JOB_1,
+                        listItem.getId()), e);
                 }
-                // update the XML configuration
-                writeConfiguration(true);
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
+            // update the XML configuration
+            writeConfiguration(true);
         } else {
             throwListUnsupportedActionException();
         }

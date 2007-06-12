@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationList.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/12 14:25:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.3 
  */
@@ -70,9 +70,6 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
 
     /** list id constant. */
     public static final String LIST_ID = "lv";
-
-    /** The user selected resources. */
-    List m_resources;
 
     /** The internal collector instance. */
     private I_CmsListResourceCollector m_collector;

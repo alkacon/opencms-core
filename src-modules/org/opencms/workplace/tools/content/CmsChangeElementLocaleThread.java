@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsChangeElementLocaleThread.java,v $
- * Date   : $Date: 2006/08/21 15:59:20 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/06/12 14:24:42 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,12 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.1 
  */
 public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
-    private Throwable m_error;
-    
     private CmsElementChangeLocaleSettings m_settings;
 
     /**
@@ -76,14 +74,6 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
         super(cms, Messages.get().getBundle().key(Messages.GUI_CHANGEELEMENTLOCALE_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = settings;
-    }
-
-    /**
-     * @see org.opencms.report.A_CmsReportThread#getError()
-     */
-    public Throwable getError() {
-
-        return m_error;
     }
 
     /**

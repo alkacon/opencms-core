@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsPointerLinkValidatorReport.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.8.4.1 $
+ * Date   : $Date: 2007/06/12 14:25:25 $
+ * Version: $Revision: 1.8.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.8.4.1 $ 
+ * @version $Revision: 1.8.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +103,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
             case ACTION_CONFIRMED:
             default:
                 CmsExternalLinksValidatorThread thread = new CmsExternalLinksValidatorThread(getCms());
+                thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 Map params = new HashMap(1);

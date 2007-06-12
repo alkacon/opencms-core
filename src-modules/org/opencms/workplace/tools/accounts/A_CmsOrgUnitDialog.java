@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitDialog.java,v $
- * Date   : $Date: 2007/02/13 14:21:55 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/12 14:23:45 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.6
  */
@@ -107,6 +107,19 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
+    }
+
+    /**
      * Sets the resources for the given orgUnitBean.<p>
      * 
      * @param orgUnitBean the <code>CmsOrgUnitBean</code> object
@@ -124,19 +137,6 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the organizational unit fqn parameter value.<p>
-     * 
-     * @param ouFqn the organizational unit fqn parameter value
-     */
-    public void setParamOufqn(String ouFqn) {
-
-        if (ouFqn == null) {
-            ouFqn = "";
-        }
-        m_paramOufqn = ouFqn;
-    }
-
-    /**
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
@@ -144,6 +144,14 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
         initOrgUnitObject();
         setKeyPrefix(KEY_PREFIX);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
     }
 
     /**
@@ -160,13 +168,5 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
                 // noop
             }
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGES;
     }
 }

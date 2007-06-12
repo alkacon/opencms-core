@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/12 14:23:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.7.1
  */
@@ -75,9 +75,6 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "userdata.export";
-
-    /** The file to download. */
-    private File m_downloadFile;
 
     /** Stores the value of the request parameter for the export file. */
     private String m_paramExportfile;
@@ -123,11 +120,11 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_GET_EXPORT_USERS_0), e);
         }
 
-        FileWriter fileWriter;
         BufferedWriter bufferedWriter;
+        File downloadFile;
         try {
-            m_downloadFile = File.createTempFile("export_users", ".csv");
-            fileWriter = new FileWriter(m_downloadFile);
+            downloadFile = File.createTempFile("export_users", ".csv");
+            FileWriter fileWriter = new FileWriter(downloadFile);
             bufferedWriter = new BufferedWriter(fileWriter);
         } catch (IOException e) {
             throw e;
@@ -198,15 +195,15 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
                 }
             }
         }
-        
+
         try {
             bufferedWriter.close();
         } catch (IOException e) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
         }
-        
+
         Map params = new HashMap();
-        params.put("exportfile", m_downloadFile.getAbsolutePath().replace('\\', '/'));
+        params.put("exportfile", downloadFile.getAbsolutePath().replace('\\', '/'));
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
         params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
         getToolManager().jspForwardTool(this, getCurrentToolPath(), params);

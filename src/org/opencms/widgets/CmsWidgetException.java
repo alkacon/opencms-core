@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsWidgetException.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/06/12 14:17:41 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,7 +50,7 @@ public class CmsWidgetException extends CmsException {
     private static final long serialVersionUID = -7003923645953106868L;
 
     /** The widget that caused the error. */
-    CmsWidgetDialogParameter m_widget;
+    private transient CmsWidgetDialogParameter m_widget;
 
     /**
      * Creates a new localized Exception.<p>

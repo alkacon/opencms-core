@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2007/06/12 14:24:42 $
+ * Version: $Revision: 1.15.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15.2.4 $ 
+ * @version $Revision: 1.15.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,6 +238,7 @@ public class CmsElementRename extends CmsReport {
             case ACTION_CONFIRMED:
             default:
                 CmsElementRenameThread thread = new CmsElementRenameThread(getCms(), this);
+                thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);

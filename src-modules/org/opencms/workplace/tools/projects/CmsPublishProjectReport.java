@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2007/03/01 15:01:22 $
- * Version: $Revision: 1.9.4.5 $
+ * Date   : $Date: 2007/06/12 14:25:37 $
+ * Version: $Revision: 1.9.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9.4.5 $ 
+ * @version $Revision: 1.9.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,6 +216,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
         try {
             CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(getCms(), publishList, getSettings());
+            thread.start();
 
             setParamThread(thread.getUUID().toString());
             setParamThreadHasNext(CmsStringUtil.TRUE);

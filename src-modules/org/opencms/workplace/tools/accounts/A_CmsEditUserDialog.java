@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/06/05 14:01:22 $
- * Version: $Revision: 1.4.4.14 $
+ * Date   : $Date: 2007/06/12 14:23:45 $
+ * Version: $Revision: 1.4.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4.4.14 $ 
+ * @version $Revision: 1.4.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -637,7 +637,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      */
     protected boolean isPwdChangeAllowed(CmsUser user) {
 
-        return (user == user); // to avoid warning 
+        return user.isUser(); // always true, just to avoid warning 
     }
 
     /**

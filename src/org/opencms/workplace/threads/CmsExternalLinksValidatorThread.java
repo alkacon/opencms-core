@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,6 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_externLinkValidator = new CmsExternalLinksValidator();
         m_externLinkValidator.setReport(getReport());
-        start();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/06/12 14:19:34 $
+ * Version: $Revision: 1.13.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,7 @@ public class CmsSynchronizeReport extends CmsReport {
                 setParamRefreshWorkplace(CmsStringUtil.TRUE);
             default:
                 CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms());
+                thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);

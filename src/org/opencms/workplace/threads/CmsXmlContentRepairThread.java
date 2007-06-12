@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2007/05/30 13:57:29 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/12 14:20:45 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,15 +55,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentRepairThread.class);
-
-    private Throwable m_error;
 
     /** The dialog settings used to configure the repair thread. */
     private CmsXmlContentRepairSettings m_settings;
@@ -79,14 +77,6 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
         super(cms, Messages.get().getBundle().key(Messages.GUI_XMLCONTENTREPAIR_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = settings;
-    }
-
-    /**
-     * @see org.opencms.report.A_CmsReportThread#getError()
-     */
-    public Throwable getError() {
-
-        return m_error;
     }
 
     /**

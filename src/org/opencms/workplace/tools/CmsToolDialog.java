@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2007/02/01 09:45:52 $
- * Version: $Revision: 1.33.4.7 $
+ * Date   : $Date: 2007/06/12 14:21:02 $
+ * Version: $Revision: 1.33.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33.4.7 $ 
+ * @version $Revision: 1.33.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append(CmsEncoder.decode(CmsToolMacroResolver.resolveMacros(getAdminTool().getHandler().getName(), this)));
         html.append("\n\t\t\t</td>");
         // uplevel button only if needed
-        if (getParentPath() != toolPath) {
+        if (!getParentPath().equals(toolPath)) {
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,

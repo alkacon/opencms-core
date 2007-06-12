@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/05/16 08:33:32 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/12 14:23:45 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -143,19 +143,16 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     public void executeListMultiActions() {
 
         Iterator itItems = getSelectedItems().iterator();
-        CmsListItem item = null;
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
-            try {
-                while (itItems.hasNext()) {
-                    item = (CmsListItem)itItems.next();
-                    String ouFqn = item.get(LIST_COLUMN_NAME).toString();
+            while (itItems.hasNext()) {
+                CmsListItem item = (CmsListItem)itItems.next();
+                String ouFqn = item.get(LIST_COLUMN_NAME).toString();
+                try {
                     OpenCms.getOrgUnitManager().deleteOrganizationalUnit(getCms(), ouFqn.substring(1));
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_ORGUNIT_1, ouFqn), e);
                 }
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_DELETE_ORGUNIT_1,
-                    (item == null) ? (Object)"?" : item.get(LIST_COLUMN_NAME)), e);
             }
         } else {
             throwListUnsupportedActionException();

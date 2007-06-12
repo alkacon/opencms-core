@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/06/04 16:07:08 $
- * Version: $Revision: 1.84.4.16 $
+ * Date   : $Date: 2007/06/12 14:31:07 $
+ * Version: $Revision: 1.84.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.16 $ 
+ * @version $Revision: 1.84.4.17 $ 
  * 
  * @since 6.0.0 
  * 
@@ -226,40 +226,38 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void convertPointerToSiblings() {
 
-        Iterator keys = m_linkStorage.keySet().iterator();
-        int linksSize = m_linkStorage.size();
-        int i = 0;
-        CmsResource resource = null;
-        String link = null;
-        String key = null;
-
         try {
+            int linksSize = m_linkStorage.size();
+            int i = 0;
+            Iterator itEntries = m_linkStorage.entrySet().iterator();
             // loop through all links to convert
-            while (keys.hasNext()) {
+            while (itEntries.hasNext()) {
+                Map.Entry entry = (Map.Entry)itEntries.next();
+
+                String key = (String)entry.getKey();
+                String link = (String)entry.getValue();
+                List properties = (List)m_linkPropertyStorage.get(key);
+                CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
+
+                i++;
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i),
+                    String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
+                m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    key + " "));
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
-                    key = (String)keys.next();
-                    link = (String)m_linkStorage.get(key);
-                    List properties = (List)m_linkPropertyStorage.get(key);
-                    CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
-
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        String.valueOf(++i),
-                        String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        key + " "));
-                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
                     // check if this is an internal pointer
                     if (link.startsWith("/")) {
                         // check if the pointer target is existing
                         CmsResource target = m_cms.readResource(link);
 
                         // create a new sibling as CmsResource                         
-                        resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
+                        CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                             target.getResourceId(),
                             key,
                             target.getTypeId(),
@@ -289,9 +287,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                                 String.valueOf(linksSize),
                                 key));
                         }
-
                     } else {
-
                         m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
@@ -303,7 +299,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                                 String.valueOf(linksSize),
                                 key));
                         }
-
                     }
                 } catch (CmsException e) {
                     m_report.println();

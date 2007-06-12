@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2007/05/30 13:57:29 $
- * Version: $Revision: 1.9.4.3 $
+ * Date   : $Date: 2007/06/12 14:20:45 $
+ * Version: $Revision: 1.9.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.9.4.3 $ 
+ * @version $Revision: 1.9.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,15 +165,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SYNCHRONIZE_FOLDERS_2 = "RPT_SYNCHRONIZE_FOLDERS_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_TEST_REPORT_BEGIN_0 = "RPT_TEST_REPORT_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_TEST_REPORT_END_0 = "RPT_TEST_REPORT_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_TEST_REPORT_OUTPUT_0 = "RPT_TEST_REPORT_OUTPUT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_XMLCONTENTREPAIR_BEGIN_2 = "RPT_XMLCONTENTREPAIR_BEGIN_2";

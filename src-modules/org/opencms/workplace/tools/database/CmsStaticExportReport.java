@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportReport.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/06/12 14:24:56 $
+ * Version: $Revision: 1.7.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,7 @@ public class CmsStaticExportReport extends CmsReport {
             case ACTION_CONFIRMED:
             default:
                 CmsStaticExportThread thread = new CmsStaticExportThread(getCms());
+                thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);

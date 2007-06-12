@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsRelationsValidatorThread.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/12 14:20:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 /**
  * A report thread for the relations validator.<p>
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,6 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
         m_settings = null;
 
         initHtmlReport(cms.getRequestContext().getLocale());
-        start();
     }
 
     /**
@@ -113,7 +112,6 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
         m_settings = settings;
 
         initHtmlReport(cms.getRequestContext().getLocale());
-        start();
     }
 
     /**
