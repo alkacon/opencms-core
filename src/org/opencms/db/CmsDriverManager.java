@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/05 19:15:43 $
- * Version: $Revision: 1.570.2.99 $
+ * Date   : $Date: 2007/06/12 14:33:00 $
+ * Version: $Revision: 1.570.2.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2976,7 +2976,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public void fillPublishList(CmsDbContext dbc, CmsPublishList publishList) throws CmsException {
+    public synchronized void fillPublishList(CmsDbContext dbc, CmsPublishList publishList) throws CmsException {
 
         if (!publishList.isDirectPublish()) {
             // when publishing a project
@@ -4884,12 +4884,45 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void publishJob(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
+    public synchronized void publishJob(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
 
         try {
-            // check the parent folders
-            checkParentFolders(dbc, publishList);
+            // check state and lock
+            List allResources = new ArrayList(publishList.getFolderList());
+            allResources.addAll(publishList.getDeletedFolderList());
+            allResources.addAll(publishList.getFileList());
+            Iterator itResources = allResources.iterator();
+            while (itResources.hasNext()) {
+                CmsResource resource = (CmsResource)itResources.next();
+                try {
+                    resource = readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    continue;
+                }
+                if (resource.getState().isUnchanged()) {
+                    // remove files that were published by a concurrent job
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                            dbc.removeSiteRoot(resource.getRootPath())));
+                    }
+                    publishList.remove(resource);
+                    unlockResource(dbc, resource, true, true);
+                    continue;
+                }
+                CmsLock lock = m_lockManager.getLock(dbc, resource, false);
+                if (!lock.getSystemLock().isPublish()) {
+                    // remove files that are not locked for publishing
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                            dbc.removeSiteRoot(resource.getRootPath())));
+                    }
+                    publishList.remove(resource);
+                    continue;
+                }
+            }
 
             CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
 
@@ -4940,8 +4973,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see #fillPublishList(CmsDbContext, CmsPublishList)
      */
-    public void publishProject(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
-    throws CmsException {
+    public synchronized void publishProject(
+        CmsObject cms,
+        CmsDbContext dbc,
+        CmsPublishList publishList,
+        I_CmsReport report) throws CmsException {
 
         // check the parent folders
         checkParentFolders(dbc, publishList);
@@ -4953,25 +4989,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itResources = allResources.iterator();
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
-            CmsLock lock = getLock(dbc, resource);
+            CmsLock lock = m_lockManager.getLock(dbc, resource, false);
             if (lock.getSystemLock().isUnlocked() && lock.isLockableBy(dbc.currentUser())) {
-                if (lock.getEditionLock().isNullLock()) {
+                if (getLock(dbc, resource).getEditionLock().isNullLock()) {
                     lockResource(dbc, resource, CmsLockType.PUBLISH);
                 } else {
                     changeLock(dbc, resource, CmsLockType.PUBLISH);
                 }
-            } else if (lock.getSystemLock().isPublish()
-                && lock.getSystemLock().isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                // this is a 'shared' publish lock
-                // lock this sibling, so during publishing 
-                // the siblings will be unlock when all siblings get published
-                lockResource(dbc, resource, CmsLockType.PUBLISH);
+            } else if (lock.getSystemLock().isPublish()) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                        dbc.removeSiteRoot(resource.getRootPath())));
+                }
+                // remove files that are already waiting to be published
+                publishList.remove(resource);
+                continue;
             } else {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
             // now recheck the lock state
-            lock = getLock(dbc, resource);
+            lock = m_lockManager.getLock(dbc, resource, false);
             if (!lock.getSystemLock().isPublish()) {
                 if (report != null) {
                     report.println(Messages.get().container(
@@ -5323,6 +5362,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             } catch (Exception e) {
                 // resource does not exists
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
             }
         }
         Collections.sort(newResult, CmsResource.COMPARE_ROOT_PATH);
@@ -8259,6 +8301,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
                 CmsLock lock = getLock(dbc, res);
+                if (lock.isPublish()) {
+                    // if already enqueued
+                    continue;
+                }
                 if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
@@ -8315,12 +8361,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List result = new ArrayList();
 
-        // removed internal extendendable folder list, since iterated (sibling) resources are files in any case, never folders
+        // removed internal extendable folder list, since iterated (sibling) resources are files in any case, never folders
 
         for (Iterator i = resourceList.iterator(); i.hasNext();) {
             CmsResource res = (CmsResource)i.next();
             try {
                 CmsLock lock = getLock(dbc, res);
+                if (lock.isPublish()) {
+                    // if already enqueued
+                    continue;
+                }
                 if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
