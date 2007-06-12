@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/04 16:11:54 $
- * Version: $Revision: 1.717.2.180 $
+ * Date   : $Date: 2007/06/12 14:27:38 $
+ * Version: $Revision: 1.717.2.181 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,15 +20,32 @@ Legend:
 - General comment
 
 OpenCms 7.0.0 - July 4, 2007
+* Fixed bug during concurrent publishing
+* A number of potential problems reported by the "Findbugs" tool have been removed
+* Fixed bug if workplace search index was not defined
+* Fixed bug in WebDAV when creating resources in locked folders
+- Added Workplace User role check to the workplace dialog base class
+- In broadcast and project management lists are organizational unit columns only shown if more OUs are defined
+- Some additional db indexes added
+- New GUI for historical versions management
+- New scheduled job to clean up the historical versions
+- Selection for organizational units restricted to folders
+* Fixed problem deleting files for the 'on demand' static export handler
+* Fixed display rule in the context menu for the 'edit control code' entry
+* Fixed display and consistency problems in the categories dialog
+- Improved exception handling during import
+* Fixed permission check during permalink generation
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 
 ! Added new collector to retrieve a resource list for one or more given categories
 - Improved check for the availability of a VFS resource in the full text search component
-- Changed internal message bufffer
+- Changed internal message buffer
 * A number of potential problems reported by the "Findbugs" tool have been removed
 * Fixed issue #1367: Index source - assign document types error
+- Improved performance by caching role checks
+* To edit a relation the resource has to be locked and the last modification date is set
 
 OpenCms 6.9.1 (aka 7.0 RC1) - May 2, 2007
 ! Historical publish reports are now stored in the publish job record, not in the file system
