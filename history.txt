@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/13 08:03:12 $
- * Version: $Revision: 1.717.2.182 $
+ * Date   : $Date: 2007/06/13 09:56:13 $
+ * Version: $Revision: 1.717.2.183 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ OpenCms 7.0.0 - July 4, 2007
 - Improved exception handling during import
 * Fixed permission check during permalink generation
 * Fixed NPE in flex cache
+* Fixed synchronization problem while merging two publish lists
+* Fixed bug in the login dialog with temporary disabled users
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007

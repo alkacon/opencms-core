@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2007/01/15 18:48:36 $
- * Version: $Revision: 1.19.4.3 $
+ * Date   : $Date: 2007/06/13 09:56:13 $
+ * Version: $Revision: 1.19.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.4.3 $ 
+ * @version $Revision: 1.19.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -242,8 +242,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                             userName,
                             getRequestContext().addSiteRoot(getRequestContext().getUri()),
                             getRequestContext().getRemoteAddress(),
-                            m_loginException.getMessageContainer().getArgs()[3],
-                            m_loginException.getMessageContainer().getArgs()[4]}));
+                            m_loginException.getMessageContainer().getArgs()[2],
+                            m_loginException.getMessageContainer().getArgs()[3]}));
 
                 } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == m_loginException.getMessageContainer().getKey()) {
 
