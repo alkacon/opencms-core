@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.32.4.7 $
+ * Date   : $Date: 2007/06/13 08:20:17 $
+ * Version: $Revision: 1.32.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,11 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.32.4.7 $
+ * @version $Revision: 1.32.4.8 $
  * 
  * @since 6.0.0
  */
 public class CmsDefaultUsers {
-
-    /** Default name for the "Deleted Resource" user. */
-    public static final String DEFAULT_USER_DELETED_RESOURCE = "Admin";
 
     /** Default name for the "Administrators" group. */
     protected static final String DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
@@ -64,6 +61,9 @@ public class CmsDefaultUsers {
 
     /** Default name for the "Admin" user. */
     protected static final String DEFAULT_USER_ADMIN = "Admin";
+
+    /** Default name for the "Deleted Resource" user. */
+    protected static final String DEFAULT_USER_DELETED_RESOURCE = "Admin";
 
     /** Default name for the "Export" user. */
     protected static final String DEFAULT_USER_EXPORT = "Export";
