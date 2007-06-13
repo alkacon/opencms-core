@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2007/03/23 08:39:50 $
- * Version: $Revision: 1.24.4.1 $
+ * Date   : $Date: 2007/06/13 09:38:28 $
+ * Version: $Revision: 1.24.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,15 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsNewResourceFolder;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.1 $ 
+ * @version $Revision: 1.24.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +109,22 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
                 m_indexPageTypes = paramValue.trim();
             }
         }
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
+     */
+    public Map getConfiguration() {
+
+        Map result = new TreeMap();
+        if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
+            result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
+        }
+        Map additional = super.getConfiguration();
+        if ((additional != null) && (additional.size() > 0)) {
+            result.putAll(additional);
+        }
+        return result;
     }
 
     /**
