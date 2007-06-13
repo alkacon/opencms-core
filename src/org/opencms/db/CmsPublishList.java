@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/06/12 13:58:04 $
- * Version: $Revision: 1.25.4.11 $
+ * Date   : $Date: 2007/06/13 12:36:43 $
+ * Version: $Revision: 1.25.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.11 $
+ * @version $Revision: 1.25.4.12 $
  * 
  * @since 6.0.0
  * 
@@ -441,17 +442,21 @@ public class CmsPublishList implements Externalizable {
      * Adds a new/changed Cms folder resource to the publish list.<p>
      * 
      * @param resource a new/changed Cms folder resource
-     * @throws IllegalArgumentException if the specified resource is not a folder or unchanged
+     * @param check if set an exception is thrown if the specified resource is unchanged, 
+     *              if not set the resource is ignored
+     * 
+     * @throws IllegalArgumentException if the specified resource is unchanged
      */
-    protected void add(CmsResource resource) throws IllegalArgumentException {
+    protected void add(CmsResource resource, boolean check) throws IllegalArgumentException {
 
-        // it is essential that this method is only visible within the db package!
-        if (resource.getState().isUnchanged()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
-                resource.getRootPath()));
+        if (check) {
+            // it is essential that this method is only visible within the db package!
+            if (resource.getState().isUnchanged()) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
+                    resource.getRootPath()));
+            }
         }
-
         if (resource.isFolder()) {
             if (resource.getState().isDeleted()) {
                 if (!m_deletedFolderList.contains(resource)) {
@@ -474,19 +479,20 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Appends all of the new/changed Cms folder resources in the specified list to the end 
-     * of this publish list.<p>
+     * Appends all the given resources to this publish list.<p>
      * 
-     * @param list a list with new/changed Cms folder resources to be added to this publish list
+     * @param resources resources to be added to this publish list
+     * @param check if set an exception is thrown if the a resource is unchanged, 
+     *              if not set the resource is ignored
+     * 
      * @throws IllegalArgumentException if one of the resources is unchanged
      */
-    protected void addAll(List list) throws IllegalArgumentException {
+    protected void addAll(Collection resources, boolean check) throws IllegalArgumentException {
 
         // it is essential that this method is only visible within the db package!
-
-        Iterator i = list.iterator();
+        Iterator i = resources.iterator();
         while (i.hasNext()) {
-            add((CmsResource)i.next());
+            add((CmsResource)i.next(), check);
         }
     }
 

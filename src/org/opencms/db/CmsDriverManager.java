@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/12 14:33:00 $
- * Version: $Revision: 1.570.2.100 $
+ * Date   : $Date: 2007/06/13 12:36:43 $
+ * Version: $Revision: 1.570.2.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2998,7 +2998,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-            publishList.addAll(filterResources(dbc, null, folderList));
+            publishList.addAll(filterResources(dbc, null, folderList), true);
 
             List fileList = m_vfsDriver.readResourceTree(
                 dbc,
@@ -3017,7 +3017,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
                     | CmsDriverManager.READMODE_ONLY_FILES);
 
-            publishList.addAll(filterResources(dbc, publishList, fileList));
+            publishList.addAll(filterResources(dbc, publishList, fileList), true);
         } else {
             // this is a direct publish
             Iterator it = publishList.getDirectPublishResources().iterator();
@@ -3038,7 +3038,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL);
-                            publishList.add(directPublishResource);
+                            publishList.add(directPublishResource, true);
                         } catch (CmsException e) {
                             // skip if not enough permissions
                         }
@@ -3063,7 +3063,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-                        publishList.addAll(filterResources(dbc, publishList, folderList));
+                        publishList.addAll(filterResources(dbc, publishList, folderList), true);
 
                         List fileList = m_vfsDriver.readResourceTree(
                             dbc,
@@ -3082,7 +3082,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 | CmsDriverManager.READMODE_EXCLUDE_STATE
                                 | CmsDriverManager.READMODE_ONLY_FILES);
 
-                        publishList.addAll(filterResources(dbc, publishList, fileList));
+                        publishList.addAll(filterResources(dbc, publishList, fileList), true);
                     }
                 } else if (directPublishResource.isFile() && !directPublishResource.getState().isUnchanged()) {
 
@@ -3098,7 +3098,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL);
-                            publishList.add(directPublishResource);
+                            publishList.add(directPublishResource, true);
                         } catch (CmsException e) {
                             // skip if not enough permissions
                         }
@@ -3120,7 +3120,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     siblingsClosure.addAll(readSiblings(dbc, currentFile, CmsResourceFilter.ALL_MODIFIED));
                 }
             }
-            publishList.addAll(filterSiblings(dbc, publishList, siblingsClosure));
+            publishList.addAll(filterSiblings(dbc, publishList, siblingsClosure), true);
         }
         publishList.initialize();
     }
@@ -3785,8 +3785,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the uuid id for the given id, remove this method
-     * as soon as possible.<p>
+     * Returns the uuid id for the given id.<p>
+     * 
+     * TODO: remove this method as soon as possible
      * 
      * @param dbc the current database context
      * @param id the old project id
@@ -3869,13 +3870,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         }
                     }
                     // just add resources that may come in question
-                    if (!publishResources.contains(target)
-                        && !relations.containsKey(target.getRootPath())
-                        && !target.getState().isUnchanged()) {
+                    if (!publishResources.contains(target) // is not in the original list
+                        && !relations.containsKey(target.getRootPath()) // has not been already added by another relation
+                        && !target.getState().isUnchanged()) { // has been changed
                         relations.put(target.getRootPath(), target);
                     }
                 } catch (CmsVfsResourceNotFoundException e) {
                     // ignore broken links
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }

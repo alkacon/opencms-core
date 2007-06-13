@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/05 19:15:17 $
- * Version: $Revision: 1.97.4.58 $
+ * Date   : $Date: 2007/06/13 12:36:43 $
+ * Version: $Revision: 1.97.4.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2443,7 +2443,7 @@ public final class CmsSecurityManager {
         if (result != null) {
             return result.booleanValue();
         }
-        
+
         // read all roles of the current user
         List roles;
         try {
@@ -2936,8 +2936,8 @@ public final class CmsSecurityManager {
                 pubList1.getDirectPublishResources(),
                 pubList1.isPublishSiblings(),
                 pubList1.isPublishSubResources());
-            ret.addAll(new ArrayList(publishResources));
-            ret.initialize(); // ensure consistency
+            ret.addAll(publishResources, false);
+            ret.initialize(); // ensure sort order
 
             checkPublishPermissions(dbc, ret);
         } catch (Exception e) {
