@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2006/08/19 13:40:55 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2007/06/13 08:18:19 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,8 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
@@ -80,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.21.4.1 $ 
+ * @version $Revision: 1.21.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -713,6 +715,18 @@ public class CmsHelpTemplateBean extends CmsDialog {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
+     */
+    protected void checkRole() throws CmsRoleViolationException {
+
+        // needed since these pages are static exported
+        if (!OpenCms.getDefaultUsers().isUserExport(getCms().getRequestContext().currentUser().getName())) {
+            // only for users that are not the export user
+            OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_USER);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/06/13 08:18:19 $
- * Version: $Revision: 1.156.4.20 $
+ * Date   : $Date: 2007/06/13 08:19:43 $
+ * Version: $Revision: 1.156.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
-import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -90,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.20 $ 
+ * @version $Revision: 1.156.4.21 $ 
  * 
  * @since 6.0.0 
  */
