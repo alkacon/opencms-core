@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsRadioSelectWidget.java,v $
- * Date   : $Date: 2007/06/13 07:54:36 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/13 12:28:52 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Peter Bonrad 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.1
  */
@@ -113,7 +113,7 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
             result.append("' value='");
             result.append(option.getValue());
             result.append("'");
-            if (selected.indexOf(option.getValue()) < 0) {
+            if (selected.indexOf(option.getValue()) >= 0) {
                 result.append(" checked");
             }
             result.append(">");
