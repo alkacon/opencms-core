@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/06/12 09:24:53 $
- * Version: $Revision: 1.156.4.19 $
+ * Date   : $Date: 2007/06/13 08:18:19 $
+ * Version: $Revision: 1.156.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.19 $ 
+ * @version $Revision: 1.156.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -965,7 +966,7 @@ public abstract class CmsWorkplace {
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCms().getLock(res);
         boolean lockable = lock.isLockableBy(getCms().getRequestContext().currentUser());
-        
+
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource
             if (lockable) {
@@ -1738,6 +1739,16 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Checks that the current user is a workplace user.<p>
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role 
+     */
+    protected void checkRole() throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
+    }
+
+    /**
      * Decodes an individual parameter value.<p>
      * 
      * In special cases some parameters might require a different-from-default
@@ -1786,56 +1797,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Initializes this workplace class instance.<p>
-     * 
-     * This method can be used in case there a workplace class was generated using
-     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
-     * 
-     * @param jsp the initialized JSP context
-     */
-    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
-
-        if (jsp != null) {
-            m_jsp = jsp;
-            m_cms = m_jsp.getCmsObject();
-            m_session = m_jsp.getRequest().getSession();
-
-            // check role
-            try {
-                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
-            } catch (CmsRoleViolationException e) {
-                throw new CmsIllegalStateException(e.getMessageContainer(), e);
-            }
-            
-            // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-
-            if (m_settings == null) {
-                // create the settings object
-                m_settings = new CmsWorkplaceSettings();
-                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
-                storeSettings(m_session, m_settings);
-            }
-
-            // initialize messages            
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
-            // generate a new multi messages object and add the messages from the workplace
-            m_messages = new CmsMultiMessages(getLocale());
-            m_messages.addMessages(messages);
-            initMessages();
-
-            // check request for changes in the workplace settings
-            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
-
-            // set cms context accordingly
-            initWorkplaceCmsContext(m_settings, m_cms);
-
-            // timewarp reset logic
-            initTimeWarp(m_settings.getUserSettings(), m_session);
-        }
-    }
-
-    /**
      * Sets the users time warp if configured and if the current timewarp setting is different or
      * clears the current time warp setting if the user has no configured timewarp.<p>
      * 
@@ -1863,6 +1824,56 @@ public abstract class CmsWorkplace {
             if (timeWarpSet != timeWarpConf) {
                 session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
             }
+        }
+    }
+
+    /**
+     * Initializes this workplace class instance.<p>
+     * 
+     * This method can be used in case there a workplace class was generated using
+     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
+     * 
+     * @param jsp the initialized JSP context
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        if (jsp != null) {
+            m_jsp = jsp;
+            m_cms = m_jsp.getCmsObject();
+            m_session = m_jsp.getRequest().getSession();
+
+            // check role
+            try {
+                checkRole();
+            } catch (CmsRoleViolationException e) {
+                throw new CmsIllegalStateException(e.getMessageContainer(), e);
+            }
+
+            // get / create the workplace settings 
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+
+            if (m_settings == null) {
+                // create the settings object
+                m_settings = new CmsWorkplaceSettings();
+                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
+                storeSettings(m_session, m_settings);
+            }
+
+            // initialize messages            
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+            // generate a new multi messages object and add the messages from the workplace
+            m_messages = new CmsMultiMessages(getLocale());
+            m_messages.addMessages(messages);
+            initMessages();
+
+            // check request for changes in the workplace settings
+            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
+
+            // set cms context accordingly
+            initWorkplaceCmsContext(m_settings, m_cms);
+
+            // timewarp reset logic
+            initTimeWarp(m_settings.getUserSettings(), m_session);
         }
     }
 
