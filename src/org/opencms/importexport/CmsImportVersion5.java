@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/06/12 14:04:53 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2007/06/13 14:08:32 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.18 $ 
+ * @version $Revision: 1.1.2.19 $ 
  * 
  * @since 6.3.0 
  * 
@@ -328,7 +328,7 @@ public class CmsImportVersion5 extends A_CmsImport {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
-            } catch (CmsException e) {
+            } catch (Throwable e) {
                 m_report.addWarning(e);
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
