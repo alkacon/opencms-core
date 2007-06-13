@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2006/08/24 06:43:25 $
- * Version: $Revision: 1.30.4.2 $
+ * Date   : $Date: 2007/06/13 08:02:43 $
+ * Version: $Revision: 1.30.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.2 $ 
+ * @version $Revision: 1.30.4.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -316,7 +316,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                 Messages.LOG_FLEXCACHEENTRY_REMOVED_ENTRY_FOR_VARIATION_1,
                 m_variationKey));
         }
-        clear();
     }
 
     /** 
@@ -347,7 +346,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             // process cached headers first
             CmsFlexResponse.processHeaders(m_headers, res);
             // check if this cache entry is a "leaf" (i.e. no further includes)            
-            boolean hasNoSubElements = ((m_elements != null) && (m_elements.size() == 1));
+            boolean hasNoSubElements = (m_elements.size() == 1);
             // write output to stream and process all included elements
             for (int i = 0; i < m_elements.size(); i++) {
                 Object o = m_elements.get(i);
@@ -370,7 +369,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (IOException e) {
-
                         CmsMessageContainer message = Messages.get().container(
                             Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1,
                             getClass().getName());
@@ -483,7 +481,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public void setRedirect(String target) {
 
-        if (m_completed) {
+        if (m_completed || (target == null)) {
             return;
         }
         m_redirectTarget = target;
@@ -534,33 +532,5 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
             str = "CmsFlexCacheEntry [Redirect to target=" + m_redirectTarget + "]";
         }
         return str;
-    }
-
-    /**
-     * Finalize this instance.<p>
-     *
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            clear();
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
-    }
-
-    /**
-     * Clears the elements and headers HashMaps.<p>
-     */
-    private void clear() {
-
-        // the maps have been made immutable, so we just can set them to null
-        m_elements = null;
-        m_headers = null;
-        // also remove references to other objects
-        m_variationKey = null;
-        m_variationMap = null;
     }
 }
