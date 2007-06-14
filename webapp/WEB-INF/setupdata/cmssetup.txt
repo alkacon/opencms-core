@@ -21,7 +21,6 @@ createPropertyDefinition exportname
 createPropertyDefinition default-file
 createPropertyDefinition content-encoding
 createPropertyDefinition content-conversion
-createPropertyDefinition internal
 createPropertyDefinition cache
 createPropertyDefinition template
 createPropertyDefinition template-elements

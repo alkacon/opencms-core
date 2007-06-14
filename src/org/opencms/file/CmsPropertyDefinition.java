@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2007/04/17 14:20:42 $
- * Version: $Revision: 1.15.4.4 $
+ * Date   : $Date: 2007/06/14 15:51:41 $
+ * Version: $Revision: 1.15.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.4.4 $
+ * @version $Revision: 1.15.4.5 $
  * 
  * @since 6.0.0 
  */
@@ -138,9 +138,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
-
-    /** Property for internal use (e.g. delete). */
-    public static final String PROPERTY_INTERNAL = "internal";
 
     /** Property for the keywords. */
     public static final String PROPERTY_KEYWORDS = "Keywords";
