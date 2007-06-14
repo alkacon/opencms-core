@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/06/14 11:46:35 $
- * Version: $Revision: 1.241.4.39 $
+ * Date   : $Date: 2007/06/14 11:48:15 $
+ * Version: $Revision: 1.241.4.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.39 $
+ * @version $Revision: 1.241.4.40 $
  * 
  * @since 6.0.0 
  */
@@ -237,14 +237,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        try {
-            CmsPublishJobInfoBean currentJob = readPublishJob(dbc, publishJob.getPublishHistoryId());
-            LOG.error("wanted to write: " + publishJob);
-            LOG.error("already on db: " + currentJob);
-            return;
-        } catch (CmsDbEntryNotFoundException e) {
-            // ok, this is the expected behaviour
-        }
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_CREATE");
