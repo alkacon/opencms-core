@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPointerComparisonDialog.java,v $
- * Date   : $Date: 2007/04/26 14:31:06 $
- * Version: $Revision: 1.3.4.3 $
+ * Date   : $Date: 2007/06/14 11:37:59 $
+ * Version: $Revision: 1.3.4.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -32,6 +32,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.commons.CmsHistoryList;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -40,7 +41,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3.4.3 $ 
+ * @version $Revision: 1.3.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,9 +93,13 @@ public class CmsPointerComparisonDialog extends CmsDialog {
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
         out.println("<table cellpadding='0' cellspacing='0' border='0' class='maxwidth'><tr align='center'><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion1,
+            getLocale())}));
         out.println("</th><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion2,
+            getLocale())}));
         out.println("</th></tr>");
         out.print("<tr><td><a href=\"");
         out.print(linkTarget1);

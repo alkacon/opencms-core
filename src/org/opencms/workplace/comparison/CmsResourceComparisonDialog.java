@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.4.4.7 $
+ * Date   : $Date: 2007/06/14 11:37:58 $
+ * Version: $Revision: 1.4.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryFile;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.7 $ 
+ * @version $Revision: 1.4.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,26 +208,34 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      * Returns either the historical file or the offline file, depending on the version number.<p>
      * 
      * @param cms the CmsObject to use
-     * @param id the structure id of the file
+     * @param structureId the structure id of the file
      * @param version the historical version number
      * 
      * @return either the historical file or the offline file, depending on the version number
      * 
      * @throws CmsException if something goes wrong
      */
-    protected static CmsFile readFile(CmsObject cms, CmsUUID id, String version) throws CmsException {
+    protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
 
-        if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
-            CmsResource resource = cms.readResource(id);
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            try {
-                cms.getRequestContext().setSiteRoot("/");
-                return cms.readFile(resource.getRootPath(), CmsResourceFilter.ALL);
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
+        if (Integer.parseInt(version) == CmsHistoryList.PROJECT_OFFLINE) {
+            // offline
+            CmsResource resource = cms.readResource(structureId);
+            return CmsFile.upgrade(resource, cms);
         } else {
-            return CmsFile.upgrade((CmsHistoryFile)cms.readResource(id, Integer.parseInt(version)), cms);
+            int ver = Integer.parseInt(version);
+            if (ver < 0) {
+                // online
+                CmsProject project = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    CmsResource resource = cms.readResource(structureId);
+                    return CmsFile.upgrade(resource, cms);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(project);
+                }
+            }
+            // backup
+            return CmsFile.upgrade((CmsHistoryFile)cms.readResource(structureId, ver), cms);
         }
     }
 
@@ -243,10 +252,20 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
 
-        if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
+        if (Integer.parseInt(version) == CmsHistoryList.PROJECT_OFFLINE) {
             return cms.readResource(id);
         } else {
-            return (CmsResource)cms.readResource(id, Integer.parseInt(version));
+            int ver = Integer.parseInt(version);
+            if (ver < 0) {
+                CmsProject project = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    return cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(project);
+                }
+            }
+            return (CmsResource)cms.readResource(id, ver);
         }
     }
 

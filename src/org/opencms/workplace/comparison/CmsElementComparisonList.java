@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.5.4.7 $
+ * Date   : $Date: 2007/06/14 11:37:59 $
+ * Version: $Revision: 1.5.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5.4.7 $ 
+ * @version $Revision: 1.5.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -400,10 +400,15 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             item.set(LIST_COLUMN_VERSION_2, value2);
             result.add(item);
         }
+
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         return result;
     }
 
@@ -513,7 +518,9 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add column for first value
         CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
-        version1Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        version1Col.setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -521,7 +528,9 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add column for second value
         CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
-        version2Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+        version2Col.setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);

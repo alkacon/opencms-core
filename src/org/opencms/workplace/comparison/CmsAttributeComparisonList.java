@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2007/05/30 15:34:49 $
- * Version: $Revision: 1.3.4.5 $
+ * Date   : $Date: 2007/06/14 11:37:59 $
+ * Version: $Revision: 1.3.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.workplace.comparison;
 
-import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -64,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3.4.5 $ 
+ * @version $Revision: 1.3.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,23 +162,30 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             }
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+
         return ret;
     }
 
     /**
      * Returns the html code to display a file version.<p>
      * 
-     * @param path the path of the file to be displayed
+     * @param structureId the structure id of the file to be displayed
      * @param version the version of the file to be displayed
      * 
      * @return the html code to display a file version
      */
-    protected String getViewVersionButtonHtml(String path, String version) {
+    protected String getViewVersionButtonHtml(CmsUUID structureId, String version) {
 
-        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(getLocale());
+        String label = Messages.get().container(
+            Messages.GUI_COMPARE_VIEW_VERSION_1,
+            CmsHistoryList.getDisplayVersion(version, getLocale())).key(getLocale());
         String iconPath = null;
         try {
             String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
@@ -192,20 +197,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         StringBuffer result = new StringBuffer(1024);
         result.append("<span class='link' onClick=\"");
         result.append("window.open('");
-        StringBuffer link = new StringBuffer(1024);
-        if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
-            // offline version
-            link.append(getParamResource());
-        } else {
-            // historical version
-            link.append(CmsHistoryResourceHandler.HISTORY_HANDLER);
-            link.append(path);
-            link.append('?');
-            link.append(CmsHistoryResourceHandler.PARAM_VERSION);
-            link.append('=');
-            link.append(version);
-        }
-        result.append(getJsp().link(link.toString()));
+        result.append(getJsp().link(CmsHistoryList.getHistoryLink(getCms(), structureId, version)));
         result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
         result.append("<img style='width: 16px; height: 16px;' src='");
         result.append(CmsWorkplace.getSkinUri());
@@ -234,13 +226,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
-                try {
-                    return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
-                        wp.getCms().readResource(new CmsUUID(((CmsAttributeComparisonList)wp).getParamId1())).getRootPath(),
-                        ((CmsAttributeComparisonList)wp).getParamVersion1());
-                } catch (CmsException e) {
-                    throw new CmsRuntimeException(e.getMessageContainer(), e);
-                }
+                return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
+                    new CmsUUID(((CmsAttributeComparisonList)wp).getParamId1()),
+                    ((CmsAttributeComparisonList)wp).getParamVersion1());
             }
         };
         metadata.addIndependentAction(viewVersion1);
@@ -252,13 +240,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
-                try {
-                    return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
-                        wp.getCms().readResource(new CmsUUID(((CmsAttributeComparisonList)wp).getParamId2())).getRootPath(),
-                        ((CmsAttributeComparisonList)wp).getParamVersion2());
-                } catch (CmsException e) {
-                    throw new CmsRuntimeException(e.getMessageContainer(), e);
-                }
+                return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
+                    new CmsUUID(((CmsAttributeComparisonList)wp).getParamId2()),
+                    ((CmsAttributeComparisonList)wp).getParamVersion2());
             }
         };
         metadata.addIndependentAction(viewVersion2);
