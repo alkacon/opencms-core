@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2007/05/03 16:00:22 $
- * Version: $Revision: 1.34.4.5 $
+ * Date   : $Date: 2007/06/14 14:20:43 $
+ * Version: $Revision: 1.34.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.4.5 $
+ * @version $Revision: 1.34.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -136,6 +136,15 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /** The delimiter value for separating values in a list, per default this is the <code>|</code> char. */
     public static final char VALUE_LIST_DELIMITER = '|';
 
+    /** The list delimiter replacement String used if the delimiter itself is contained in a String value. */
+    public static final String VALUE_LIST_DELIMITER_REPLACEMENT = "%(ld)";
+
+    /** The delimiter value for separating values in a map, per default this is the <code>=</code> char. */
+    public static final char VALUE_MAP_DELIMITER = '=';
+
+    /** The map delimiter replacement String used if the delimiter itself is contained in a String value. */
+    public static final String VALUE_MAP_DELIMITER_REPLACEMENT = "%(md)";
+
     /** The null property object to be used in caches if a property is not found. */
     private static final CmsProperty NULL_PROPERTY = new CmsProperty();
 
@@ -154,17 +163,23 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /** The name of this property. */
     private String m_name;
 
-    /** The value of this property attached to the structure record. */
+    /** The value of this property attached to the resource record. */
     private String m_resourceValue;
 
-    /** The (optional) value list of this property attached to the structure record. */
+    /** The (optional) value list of this property attached to the resource record. */
     private List m_resourceValueList;
 
-    /** The value of this property attached to the resource record. */
+    /** The (optional) value map of this property attached to the resource record. */
+    private Map m_resourceValueMap;
+
+    /** The value of this property attached to the structure record. */
     private String m_structureValue;
 
-    /** The (optional) value list of this property attached to the resource record. */
+    /** The (optional) value list of this property attached to the structure record. */
     private List m_structureValueList;
+
+    /** The (optional) value map of this property attached to the structure record. */
+    private Map m_structureValueMap;
 
     /**
      * Creates a new CmsProperty object.<p>
@@ -592,6 +607,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Returns the value of this property attached to the resource record as a map.<p>
+     * 
+     * This map is build from the used value, which is split into separate key/value pairs
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the map will contain one entry.<p>
+     * 
+     * The key/value pairs are separated with the <code>=</code>.<p>
+     * 
+     * @return the value of this property attached to the resource record, as an (unmodifiable) map of Strings
+     */
+    public Map getResourceValueMap() {
+
+        if ((m_resourceValueMap == null) && (m_resourceValue != null)) {
+            // use lazy initializing of the map
+            m_resourceValueMap = createMapFromValue(m_resourceValue);
+            m_resourceValueMap = Collections.unmodifiableMap(m_resourceValueMap);
+        }
+        return m_resourceValueMap;
+    }
+
+    /**
      * Returns the value of this property attached to the structure record.<p>
      * 
      * @return the value of this property attached to the structure record
@@ -618,6 +654,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             m_structureValueList = Collections.unmodifiableList(m_structureValueList);
         }
         return m_structureValueList;
+    }
+
+    /**
+     * Returns the value of this property attached to the structure record as a map.<p>
+     * 
+     * This map is build from the used value, which is split into separate key/value pairs
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the map will contain one entry.<p>
+     * 
+     * The key/value pairs are separated with the <code>=</code>.<p>
+     * 
+     * @return the value of this property attached to the structure record, as an (unmodifiable) map of Strings
+     */
+    public Map getStructureValueMap() {
+
+        if ((m_structureValueMap == null) && (m_structureValue != null)) {
+            // use lazy initializing of the map
+            m_structureValueMap = createMapFromValue(m_structureValue);
+            m_structureValueMap = Collections.unmodifiableMap(m_structureValueMap);
+        }
+        return m_structureValueMap;
     }
 
     /**
@@ -665,7 +722,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * then the list will contain one entry.<p>
      * 
      * The value returned is the value of {@link #getStructureValueList()}, if it is not <code>null</code>.
-     * Otherwise the value if {@link #getResourceValueList()} is returned (which may also be <code>null</code>).<p>
+     * Otherwise the value of {@link #getResourceValueList()} is returned (which may also be <code>null</code>).<p>
      * 
      * @return the compound value of this property, split as a (unmodifiable) list of Strings
      */
@@ -696,6 +753,49 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         // on a property object different from the null property...
         return (m_structureValue != null) ? getStructureValueList()
         : ((m_resourceValue != null) ? getResourceValueList() : defaultValue);
+    }
+
+    /**
+     * Returns the compound value of this property as a map.<p>
+     * 
+     * This map is build from the used value, which is split into separate key/value pairs
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the map will contain one entry.<p>
+     * 
+     * The key/value pairs are separated with the <code>=</code>.<p>
+     * 
+     * The value returned is the value of {@link #getStructureValueMap()}, if it is not <code>null</code>.
+     * Otherwise the value of {@link #getResourceValueMap()} is returned (which may also be <code>null</code>).<p>
+     * 
+     * @return the compound value of this property as a (unmodifiable) map of Strings
+     */
+    public Map getValueMap() {
+
+        return (m_structureValue != null) ? getStructureValueMap() : getResourceValueMap();
+    }
+
+    /**
+     * Returns the compound value of this property as a map, or a specified default value map,
+     * if both the structure and resource values are null.<p>
+     * 
+     * In other words, this method returns the defaultValue if this property object 
+     * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
+     * 
+     * @param defaultValue a default value map which is returned if both the structure and resource values are <code>null</code>
+     * 
+     * @return the compound value of this property as a (unmodifiable) map of Strings
+     */
+    public Map getValueMap(Map defaultValue) {
+
+        if (this == CmsProperty.NULL_PROPERTY) {
+            // return the default value if this property is the null property
+            return defaultValue;
+        }
+
+        // somebody might have set both values to null manually
+        // on a property object different from the null property...
+        return (m_structureValue != null) ? getStructureValueMap() : ((m_resourceValue != null) ? getResourceValueMap()
+        : defaultValue);
     }
 
     /**
@@ -859,9 +959,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Sets the value of this property attached to the resource record form the given list of Strings.<p>
+     * Sets the value of this property attached to the resource record from the given list of Strings.<p>
      * 
-     * The value will be created form the individual values of the given list, which are appended
+     * The value will be created from the individual values of the given list, which are appended
      * using the <code>|</code> char as delimiter.<p>
      * 
      * @param valueList the list of value (Strings) to attach to the resource record
@@ -880,6 +980,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Sets the value of this property attached to the resource record from the given map of Strings.<p>
+     * 
+     * The value will be created from the individual values of the given map, which are appended
+     * using the <code>|</code> char as delimiter, the map keys and values are separated by a <code>=</code>.<p>
+     * 
+     * @param valueMap the map of key/value (Strings) to attach to the resource record
+     */
+    public void setResourceValueMap(Map valueMap) {
+
+        checkFrozen();
+        if (valueMap != null) {
+            m_resourceValueMap = new HashMap(valueMap);
+            m_resourceValueMap = Collections.unmodifiableMap(m_resourceValueMap);
+            m_resourceValue = createValueFromMap(m_resourceValueMap);
+        } else {
+            m_resourceValueMap = null;
+            m_resourceValue = null;
+        }
+    }
+
+    /**
      * Sets the value of this property attached to the structure record.<p>
      * 
      * @param structureValue the value of this property attached to the structure record
@@ -892,9 +1013,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Sets the value of this property attached to the structure record form the given list of Strings.<p>
+     * Sets the value of this property attached to the structure record from the given list of Strings.<p>
      * 
-     * The value will be created form the individual values of the given list, which are appended
+     * The value will be created from the individual values of the given list, which are appended
      * using the <code>|</code> char as delimiter.<p>
      * 
      * @param valueList the list of value (Strings) to attach to the structure record
@@ -908,6 +1029,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             m_structureValue = createValueFromList(m_structureValueList);
         } else {
             m_structureValueList = null;
+            m_structureValue = null;
+        }
+    }
+
+    /**
+     * Sets the value of this property attached to the structure record from the given map of Strings.<p>
+     * 
+     * The value will be created from the individual values of the given map, which are appended
+     * using the <code>|</code> char as delimiter, the map keys and values are separated by a <code>=</code>.<p>
+     * 
+     * @param valueMap the map of key/value (Strings) to attach to the structure record
+     */
+    public void setStructureValueMap(Map valueMap) {
+
+        checkFrozen();
+        if (valueMap != null) {
+            m_structureValueMap = new HashMap(valueMap);
+            m_structureValueMap = Collections.unmodifiableMap(m_structureValueMap);
+            m_structureValue = createValueFromMap(m_structureValueMap);
+        } else {
+            m_structureValueMap = null;
             m_structureValue = null;
         }
     }
@@ -971,7 +1113,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * The given value is split along the <code>|</code> char.<p>
      * 
-     * @param value the value list to create the list representation for
+     * @param value the value to create the list representation for
      * 
      * @return the list value representation for the given String
      */
@@ -980,7 +1122,60 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         if (value == null) {
             return null;
         }
-        return CmsStringUtil.splitAsList(value, VALUE_LIST_DELIMITER);
+        List result = CmsStringUtil.splitAsList(value, VALUE_LIST_DELIMITER);
+        if (value.indexOf(VALUE_LIST_DELIMITER_REPLACEMENT) != -1) {
+            List tempList = new ArrayList(result.size());
+            Iterator i = result.iterator();
+            while (i.hasNext()) {
+                String item = (String)i.next();
+                tempList.add(rebuildDelimiter(item, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
+            }
+            result = tempList;
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the map value representation for the given String.<p>
+     * 
+     * The given value is split along the <code>|</code> char, the map keys and values are separated by a <code>=</code>.<p>
+     * 
+     * @param value the value to create the map representation for
+     * 
+     * @return the map value representation for the given String
+     */
+    private Map createMapFromValue(String value) {
+
+        if (value == null) {
+            return null;
+        }
+        List entries = createListFromValue(value);
+        Iterator i = entries.iterator();
+        Map result = new HashMap(entries.size());
+        boolean rebuildDelimiters = false;
+        if (value.indexOf(VALUE_MAP_DELIMITER_REPLACEMENT) != -1) {
+            rebuildDelimiters = true;
+        }
+        while (i.hasNext()) {
+            String entry = (String)i.next();
+            int index = entry.indexOf(VALUE_MAP_DELIMITER);
+            if (index != -1) {
+                String key = entry.substring(0, index);
+                String val = "";
+                if (index + 1 < entry.length()) {
+                    val = entry.substring(index + 1);
+                }
+                if (CmsStringUtil.isNotEmpty(key)) {
+                    if (rebuildDelimiters) {
+                        key = rebuildDelimiter(key, VALUE_MAP_DELIMITER, VALUE_MAP_DELIMITER_REPLACEMENT);
+                        val = rebuildDelimiter(val, VALUE_MAP_DELIMITER, VALUE_MAP_DELIMITER_REPLACEMENT);
+                    }
+                    result.put(key, val);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -998,11 +1193,69 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         StringBuffer result = new StringBuffer(valueList.size() * 32);
         Iterator i = valueList.iterator();
         while (i.hasNext()) {
-            result.append(i.next().toString());
+            result.append(replaceDelimiter(i.next().toString(), VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
             if (i.hasNext()) {
                 result.append(VALUE_LIST_DELIMITER);
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the single String value representation for the given value map.<p>
+     * 
+     * @param valueMap the value map to create the single String value for
+     * 
+     * @return the single String value representation for the given value map
+     */
+    private String createValueFromMap(Map valueMap) {
+
+        if (valueMap == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(valueMap.size() * 32);
+        Iterator i = valueMap.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+            key = replaceDelimiter(key, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT);
+            key = replaceDelimiter(key, VALUE_MAP_DELIMITER, VALUE_MAP_DELIMITER_REPLACEMENT);
+            value = replaceDelimiter(value, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT);
+            value = replaceDelimiter(value, VALUE_MAP_DELIMITER, VALUE_MAP_DELIMITER_REPLACEMENT);
+            result.append(key);
+            result.append(VALUE_MAP_DELIMITER);
+            result.append(value);
+            if (i.hasNext()) {
+                result.append(VALUE_LIST_DELIMITER);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Rebuilds the given delimiter character from the replacement string.<p>
+     * 
+     * @param value the string that is scanned
+     * @param delimiter the delimiter character to rebuild
+     * @param delimiterReplacement the replacement string for the delimiter character
+     * @return the substituted string
+     */
+    private String rebuildDelimiter(String value, char delimiter, String delimiterReplacement) {
+
+        return CmsStringUtil.substitute(value, delimiterReplacement, String.valueOf(delimiter));
+    }
+
+    /**
+     * Replaces the given delimiter character with the replacement string.<p>
+     *  
+     * @param value the string that is scanned
+     * @param delimiter the delimiter character to replace
+     * @param delimiterReplacement the replacement string for the delimiter character
+     * @return the substituted string
+     */
+    private String replaceDelimiter(String value, char delimiter, String delimiterReplacement) {
+
+        return CmsStringUtil.substitute(value, String.valueOf(delimiter), delimiterReplacement);
     }
 }
