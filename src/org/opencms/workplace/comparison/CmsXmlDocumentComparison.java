@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2006/08/24 06:43:24 $
- * Version: $Revision: 1.4.4.3 $
+ * Date   : $Date: 2007/06/14 12:22:02 $
+ * Version: $Revision: 1.4.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -181,6 +182,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         m_elements = new ArrayList(removed);
         m_elements.addAll(added);
         m_elements.addAll(union);
+        Collections.sort(m_elements);
     }
 
     /**
@@ -190,7 +192,10 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
      */
     public List getElements() {
 
-        return m_elements;
+        if (m_elements == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(m_elements);
     }
 
     /** Returs a list of all element names of a xml page.<p>

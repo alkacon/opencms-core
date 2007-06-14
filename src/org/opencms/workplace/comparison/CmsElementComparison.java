@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparison.java,v $
- * Date   : $Date: 2006/06/09 12:14:28 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/06/14 12:22:02 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Jan Baudisch
  */
-public class CmsElementComparison extends CmsAttributeComparison {
+public class CmsElementComparison extends CmsAttributeComparison implements Comparable {
 
     /** The element locale.<p> */
     private Locale m_locale;
@@ -56,11 +56,34 @@ public class CmsElementComparison extends CmsAttributeComparison {
     }
 
     /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+
+        if (this == o) {
+            return 0;
+        }
+        if (!(o instanceof CmsElementComparison)) {
+            return 0;
+        }
+        CmsElementComparison diffItem = (CmsElementComparison)o;
+        // first compare by name
+        if (getName().compareTo(diffItem.getName()) != 0) {
+            return getName().compareTo(diffItem.getName());
+        }
+        // then by locale
+        return m_locale.toString().compareTo(diffItem.getLocale().toString());
+    }
+
+    /**
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
 
+        if (this == o) {
+            return true;
+        }
         if (!(o instanceof CmsElementComparison)) {
             return false;
         }
