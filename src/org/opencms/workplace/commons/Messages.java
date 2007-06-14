@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/05/11 13:38:47 $
- * Version: $Revision: 1.15.4.30 $
+ * Date   : $Date: 2007/06/14 11:45:22 $
+ * Version: $Revision: 1.15.4.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.30 $ 
+ * @version $Revision: 1.15.4.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -1514,6 +1514,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PROJECT_NAME_FAILED_0 = "LOG_SET_PROJECT_NAME_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    protected static final String GUI_PROJECT_OFFLINE_0 = "GUI_PROJECT_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    protected static final String GUI_PROJECT_ONLINE_1 = "GUI_PROJECT_ONLINE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.commons.messages";
