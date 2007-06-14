@@ -147,10 +147,10 @@ function reloadReport() {
 <%= wp.dialogBlockEnd() %>
 <%= wp.buildPublishOptions() %>
 <%= wp.buildConfirmation() %>
-<%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonsOkCancel("id='ok-button'", null) %>
+<%= wp.dialogButtonsOkCancel("id='ok-button' onclick=\"this.disabled=true; document.forms['main'].submit(); \"", null) %>
 </form>
 
+<%= wp.dialogContentEnd() %>
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <script type="text/javascript">
@@ -277,14 +277,15 @@ function doReportUpdate(msg, state) {
 <%= wp.dialogWhiteBoxEnd() %>
 <%= wp.dialogBlockEnd() %>
 <%= wp.buildConfirmation() %>
-<%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonsOkCancel("id='ok-button'", null) %>
+<%= wp.dialogButtonsOkCancel("id='ok-button' onclick=\"this.disabled=true; document.forms['main'].submit(); \"", null) %>
 </form>
 
+<%= wp.dialogContentEnd() %>
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <script type="text/javascript">
 <!--
+document.getElementById("ok-button").disabled = true;
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
 makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-potentialbrokenrelations.jsp") %>','<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=<%=wp.getParamRelatedresources()%>', 'doReportUpdate');
 // -->
