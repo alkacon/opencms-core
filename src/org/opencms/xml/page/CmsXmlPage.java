@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.32.4.5 $
+ * Date   : $Date: 2007/06/14 14:56:00 $
+ * Version: $Revision: 1.32.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.5 $ 
+ * @version $Revision: 1.32.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -536,37 +536,39 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         Map pages = new HashMap();
 
-        for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
-
-            Element elem = (Element)i.next();
-            try {
-                String elementName = elem.attributeValue(ATTRIBUTE_NAME);
-                String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
-                String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
-                boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
-
-                Element page = (Element)pages.get(elementLang);
-                if (page == null) {
-                    // no page available for the language, add one
-                    page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
-                    pages.put(elementLang, page);
+        if (m_document.getRootElement() != null && m_document.getRootElement().element(NODE_ELEMENTS) != null) {
+            for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
+    
+                Element elem = (Element)i.next();
+                try {
+                    String elementName = elem.attributeValue(ATTRIBUTE_NAME);
+                    String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
+                    String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
+                    boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
+    
+                    Element page = (Element)pages.get(elementLang);
+                    if (page == null) {
+                        // no page available for the language, add one
+                        page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
+                        pages.put(elementLang, page);
+                    }
+    
+                    Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
+                    if (!enabled) {
+                        newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
+                    }
+                    Element links = elem.element(NODE_LINKS);
+                    if (links != null) {
+                        newElement.add(links.createCopy());
+                    }
+                    Element content = elem.element(NODE_CONTENT);
+                    if (content != null) {
+                        newElement.add(content.createCopy());
+                    }
+    
+                } catch (NullPointerException e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
                 }
-
-                Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
-                if (!enabled) {
-                    newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
-                }
-                Element links = elem.element(NODE_LINKS);
-                if (links != null) {
-                    newElement.add(links.createCopy());
-                }
-                Element content = elem.element(NODE_CONTENT);
-                if (content != null) {
-                    newElement.add(content.createCopy());
-                }
-
-            } catch (NullPointerException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
             }
         }
 
