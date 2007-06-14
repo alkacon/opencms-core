@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/14 11:50:00 $
- * Version: $Revision: 1.717.2.184 $
+ * Date   : $Date: 2007/06/14 16:05:52 $
+ * Version: $Revision: 1.717.2.185 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ OpenCms 7.0.0 - July 4, 2007
 * Publish project dialog now correctly returns to the explorer
 - Improved history dialog
 - Improved column display in the restore deleted dialog
+* Fixed method to get the related resources to publish so that new parent folders are included
+* Fixed wrong parameter in history context menu entry definition in the opencms-workplace.xml
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
