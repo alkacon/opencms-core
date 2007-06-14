@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/04/02 12:31:36 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/14 11:46:36 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -62,7 +62,7 @@ public class CmsPublishQueue {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishHistory.class);
-    
+
     /** The publish engine. */
     protected final CmsPublishEngine m_publishEngine;
 
@@ -82,25 +82,25 @@ public class CmsPublishQueue {
      * @return the queue buffer
      */
     public static Buffer getQueue() {
-        
-        return BufferUtils.synchronizedBuffer(TypedBuffer.decorate(new UnboundedFifoBuffer() {
-                
-                /** The serialization version id constant. */
-                private static final long serialVersionUID = 606444342980861724L;
-                
-                /**
-                 * Called when the queue is full to remove the oldest element.<p>
-                 * 
-                 * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
-                 */
-                public Object remove() {
 
-                    CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)super.remove();
-                    return publishJob;
-                }
-            }, CmsPublishJobInfoBean.class));
+        return BufferUtils.synchronizedBuffer(TypedBuffer.decorate(new UnboundedFifoBuffer() {
+
+            /** The serialization version id constant. */
+            private static final long serialVersionUID = 606444342980861724L;
+
+            /**
+             * Called when the queue is full to remove the oldest element.<p>
+             * 
+             * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
+             */
+            public Object remove() {
+
+                CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)super.remove();
+                return publishJob;
+            }
+        }, CmsPublishJobInfoBean.class));
     }
-    
+
     /**
      * Aborts the given publish job.<p>
      * 
@@ -128,14 +128,13 @@ public class CmsPublishQueue {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void add(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
+    protected void add(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         publishJob.enqueue();
-        
+
         // add publish job to cache
         OpenCms.getMemoryMonitor().cachePublishJob(publishJob);
-        
+
         // add job to database if neccessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
@@ -144,9 +143,9 @@ public class CmsPublishQueue {
             } finally {
                 dbc.clear();
             }
-        }     
+        }
     }
-    
+
     /**
      * Returns an unmodifiable list representation of this queue.<p>
      * 
@@ -163,7 +162,7 @@ public class CmsPublishQueue {
         }
         return Collections.unmodifiableList(result);
     }
-    
+
     /**
      * Initializes the internal FIFO queue with publish jobs from the database.<p>
      * 
@@ -173,19 +172,18 @@ public class CmsPublishQueue {
     protected void initialize(CmsObject adminCms, boolean revive) {
 
         CmsDriverManager driverManager = m_publishEngine.getDriverManager();
-        List publishJobs;
-        CmsDbContext dbc;
-                
+
         try {
             OpenCms.getMemoryMonitor().flushPublishJobs();
             if (revive) {
                 // read all pending publish jobs from the database
-                dbc = m_publishEngine.getDbContextFactory().getDbContext();
+                CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
+                List publishJobs;
                 try {
                     publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
                 } finally {
                     dbc.clear();
-                }                
+                }
                 for (Iterator i = publishJobs.iterator(); i.hasNext();) {
                     CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
                     if (!job.isStarted()) {
@@ -199,8 +197,8 @@ public class CmsPublishQueue {
                             // skip job
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(Messages.get().getBundle().key(
-                                    Messages.ERR_PUBLISH_JOB_INVALID_1, job.getPublishHistoryId()), 
-                                    exc);
+                                    Messages.ERR_PUBLISH_JOB_INVALID_1,
+                                    job.getPublishHistoryId()), exc);
                             }
                             m_publishEngine.getDriverManager().deletePublishJob(dbc, job.getPublishHistoryId());
                         } finally {
@@ -224,8 +222,7 @@ public class CmsPublishQueue {
                 LOG.error(exc.getLocalizedMessage(), exc);
             }
         }
-    }    
-        
+    }
 
     /**
      * Checks if the queue is empty.<p>
@@ -251,7 +248,7 @@ public class CmsPublishQueue {
         }
         return publishJob;
     }
-    
+
     /**
      * Removes the given job from the list.<p>
      * 
@@ -259,15 +256,14 @@ public class CmsPublishQueue {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void remove(CmsPublishJobInfoBean publishJob) 
-    throws CmsException {
+    protected void remove(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         // signalize that job will be removed
         m_publishEngine.publishJobRemoved(publishJob);
-        
+
         // remove publish job from cache
         OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
-        
+
         // remove job from database if neccessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
@@ -286,9 +282,8 @@ public class CmsPublishQueue {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void update(CmsPublishJobInfoBean publishJob)
-    throws CmsException {
-        
+    protected void update(CmsPublishJobInfoBean publishJob) throws CmsException {
+
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {

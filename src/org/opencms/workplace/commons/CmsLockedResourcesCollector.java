@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesCollector.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/06/14 11:46:36 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.5.4 
  */
@@ -60,6 +60,9 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "lockedResources";
+
+    /** This constant is just a hack to mark related resources in the list. */
+    private static final int FLAG_RELATED_RESOURCE = 8192;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLockedResourcesCollector.class);
@@ -108,7 +111,7 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
                         resource.getRootPath(),
                         resource.getTypeId(),
                         resource.isFolder(),
-                        resource.getFlags() | CmsPublishResourcesList.FLAG_RELATED_RESOURCE,
+                        resource.getFlags() | FLAG_RELATED_RESOURCE,
                         resource.getProjectLastModified(),
                         resource.getState(),
                         resource.getDateCreated(),
@@ -137,6 +140,6 @@ public class CmsLockedResourcesCollector extends A_CmsListResourceCollector {
 
         item.set(
             CmsLockedResourcesList.LIST_COLUMN_IS_RELATED,
-            Boolean.valueOf((resUtil.getResource().getFlags() & CmsPublishResourcesList.FLAG_RELATED_RESOURCE) == CmsPublishResourcesList.FLAG_RELATED_RESOURCE));
+            Boolean.valueOf((resUtil.getResource().getFlags() & FLAG_RELATED_RESOURCE) == FLAG_RELATED_RESOURCE));
     }
 }

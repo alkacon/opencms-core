@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/06/12 14:12:02 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2007/06/14 11:46:36 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.18 $
+ * @version $Revision: 1.1.2.19 $
  * 
  * @since 6.5.5
  */
@@ -530,13 +529,10 @@ public final class CmsPublishEngine implements Runnable {
     protected void lockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         CmsPublishList publishList = publishJob.getPublishList();
-        List allResources = new ArrayList(publishList.getFolderList());
-        allResources.addAll(publishList.getDeletedFolderList());
-        allResources.addAll(publishList.getFileList());
         // lock them
         CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
-            Iterator itResources = allResources.iterator();
+            Iterator itResources = publishList.getAllResources().iterator();
             while (itResources.hasNext()) {
                 CmsResource resource = (CmsResource)itResources.next();
                 m_driverManager.lockResource(dbc, resource, CmsLockType.PUBLISH);
@@ -724,9 +720,7 @@ public final class CmsPublishEngine implements Runnable {
     protected void unlockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         CmsPublishList publishList = publishJob.getPublishList();
-        List allResources = new ArrayList(publishList.getFolderList());
-        allResources.addAll(publishList.getDeletedFolderList());
-        allResources.addAll(publishList.getFileList());
+        List allResources = publishList.getAllResources();
         // unlock them
         CmsDbContext dbc = getDbContextFactory().getDbContext(publishJob.getCmsObject().getRequestContext());
         try {

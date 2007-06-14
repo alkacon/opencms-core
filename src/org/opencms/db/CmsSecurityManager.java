@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/13 12:36:43 $
- * Version: $Revision: 1.97.4.59 $
+ * Date   : $Date: 2007/06/14 11:46:35 $
+ * Version: $Revision: 1.97.4.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2922,21 +2922,16 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // get all resources from the first list
-            Set publishResources = new HashSet(pubList1.getDeletedFolderList());
-            publishResources.addAll(pubList1.getFileList());
-            publishResources.addAll(pubList1.getFolderList());
-
+            Set publishResources = new HashSet(pubList1.getAllResources());
             // get all resources from the second list
-            publishResources.addAll(pubList2.getDeletedFolderList());
-            publishResources.addAll(pubList2.getFileList());
-            publishResources.addAll(pubList2.getFolderList());
+            publishResources.addAll(pubList2.getAllResources());
 
             // create merged publish list
             ret = new CmsPublishList(
                 pubList1.getDirectPublishResources(),
                 pubList1.isPublishSiblings(),
                 pubList1.isPublishSubResources());
-            ret.addAll(publishResources, false);
+            ret.addAll(publishResources, false); // ignore files that should not be published
             ret.initialize(); // ensure sort order
 
             checkPublishPermissions(dbc, ret);

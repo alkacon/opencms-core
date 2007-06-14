@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/06/04 15:09:54 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/06/14 11:46:36 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,14 +77,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
-
-    /** This constant is just a hack to mark related resources in the list. */
-    public static final int FLAG_RELATED_RESOURCE = 8192;
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS = "dr";
@@ -175,49 +172,23 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                  */
                 public List getResources(CmsObject cms, Map params) {
 
-                    List allResources = new ArrayList();
-                    allResources.addAll(getSettings().getPublishList().getFileList());
-                    allResources.addAll(getSettings().getPublishList().getDeletedFolderList());
-                    allResources.addAll(getSettings().getPublishList().getFolderList());
                     if (m_publishRelated && getSettings().getPublishList().isDirectPublish()) {
                         try {
-                            CmsPublishList pubList = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                            CmsPublishList relatedPL = OpenCms.getPublishManager().getRelatedResourcesToPublish(
                                 cms,
                                 getSettings().getPublishList());
-                            List relatedResources = new ArrayList(pubList.getFileList());
-                            relatedResources.addAll(pubList.getDeletedFolderList());
-                            relatedResources.addAll(pubList.getFolderList());
-                            Iterator it = relatedResources.iterator();
-                            while (it.hasNext()) {
-                                CmsResource resource = (CmsResource)it.next();
-                                CmsResource modRes = new CmsResource(
-                                    resource.getStructureId(),
-                                    resource.getResourceId(),
-                                    resource.getRootPath(),
-                                    resource.getTypeId(),
-                                    resource.isFolder(),
-                                    resource.getFlags() | FLAG_RELATED_RESOURCE,
-                                    resource.getProjectLastModified(),
-                                    resource.getState(),
-                                    resource.getDateCreated(),
-                                    resource.getUserCreated(),
-                                    resource.getDateLastModified(),
-                                    resource.getUserLastModified(),
-                                    resource.getDateReleased(),
-                                    resource.getDateExpired(),
-                                    resource.getSiblingCount(),
-                                    resource.getLength(),
-                                    resource.getDateContent(),
-                                    resource.getVersion());
-                                allResources.add(modRes);
-                            }
+                            CmsPublishList mergedPL = OpenCms.getPublishManager().mergePublishLists(
+                                cms,
+                                getSettings().getPublishList(),
+                                relatedPL);
+                            return mergedPL.getAllResources();
                         } catch (CmsException e) {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(e.getLocalizedMessage(getLocale()), e);
                             }
                         }
                     }
-                    return allResources;
+                    return getSettings().getPublishList().getAllResources();
                 }
 
                 /**
@@ -227,7 +198,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
                     item.set(
                         LIST_COLUMN_IS_RELATED,
-                        Boolean.valueOf((resUtil.getResource().getFlags() & FLAG_RELATED_RESOURCE) == FLAG_RELATED_RESOURCE));
+                        Boolean.valueOf(!getSettings().getPublishList().getAllResources().contains(
+                            resUtil.getResource())));
                 }
             };
         }
@@ -239,9 +211,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
      */
     protected void fillDetails(String detailId) {
 
-        List publishResources = new ArrayList(getSettings().getPublishList().getDeletedFolderList());
-        publishResources.addAll(getSettings().getPublishList().getFileList());
-        publishResources.addAll(getSettings().getPublishList().getFolderList());
+        List publishResources = getSettings().getPublishList().getAllResources();
 
         // get content
         List resourceNames = getList().getAllContent();
@@ -293,7 +263,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                             }
                         }
                     }
-                    if ((resource.getFlags() & FLAG_RELATED_RESOURCE) > 0) {
+
+                    if (((Boolean)item.get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
                         // mark the reverse references
                         itRelations = getCms().getRelationsForResource(
                             getCms().getSitePath(resource),

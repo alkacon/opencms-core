@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/06/12 14:27:02 $
- * Version: $Revision: 1.21.4.12 $
+ * Date   : $Date: 2007/06/14 11:46:35 $
+ * Version: $Revision: 1.21.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.12 $
+ * @version $Revision: 1.21.4.13 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -1033,9 +1033,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // the resource modified in the Offline project should not be there
         CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(path), false);
         assertTrue(pubList.isPublishSubResources());
-        assertTrue(pubList.getDeletedFolderList().isEmpty());
-        assertTrue(pubList.getFolderList().isEmpty());
-        assertTrue(pubList.getFileList().isEmpty());
+        assertTrue(pubList.getAllResources().isEmpty());
     }
 
     /**
@@ -1071,9 +1069,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(1, pubList.getFileList().size());
         assertTrue(pubList.getFileList().contains(resource));
         // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
+        assertTrue(relatedList.getAllResources().isEmpty());
 
         String relResName = "folder1/image2.gif";
 
@@ -1145,9 +1141,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFalse(pubList.getFolderList().isEmpty());
         assertFalse(pubList.getFileList().isEmpty());
         // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
+        assertTrue(relatedList.getAllResources().isEmpty());
 
         CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
         // check the publish list has not been touched
@@ -1155,9 +1149,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFalse(pubList.getFolderList().isEmpty());
         assertFalse(pubList.getFileList().isEmpty());
         // check the related publish list
-        assertTrue(relatedList.getDeletedFolderList().isEmpty());
-        assertTrue(relatedList.getFolderList().isEmpty());
-        assertTrue(relatedList.getFileList().isEmpty());
+        assertTrue(relatedList.getAllResources().isEmpty());
         // check the merged publish list
         assertEquals(pubList.getDeletedFolderList(), mergedList.getDeletedFolderList());
         assertEquals(pubList.getFolderList(), mergedList.getFolderList());

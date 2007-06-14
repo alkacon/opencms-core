@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/06/13 12:36:43 $
- * Version: $Revision: 1.25.4.12 $
+ * Date   : $Date: 2007/06/14 11:46:35 $
+ * Version: $Revision: 1.25.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.12 $
+ * @version $Revision: 1.25.4.13 $
  * 
  * @since 6.0.0
  * 
@@ -191,6 +191,23 @@ public class CmsPublishList implements Externalizable {
             // reduce list of folders to minimum
             m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
         }
+    }
+
+    /**
+     * Returns a list of all resources in the publish list, 
+     * including folders and files.<p>
+     * 
+     * @return a list of {@link CmsResource} objects
+     */
+    public List getAllResources() {
+
+        List all = new ArrayList();
+        all.addAll(m_folderList);
+        all.addAll(m_fileList);
+        all.addAll(m_deletedFolderList);
+
+        Collections.sort(all, CmsResource.COMPARE_ROOT_PATH);
+        return Collections.unmodifiableList(all);
     }
 
     /**

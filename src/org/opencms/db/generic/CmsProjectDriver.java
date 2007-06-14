@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/05/31 10:03:13 $
- * Version: $Revision: 1.241.4.38 $
+ * Date   : $Date: 2007/06/14 11:46:35 $
+ * Version: $Revision: 1.241.4.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.38 $
+ * @version $Revision: 1.241.4.39 $
  * 
  * @since 6.0.0 
  */
@@ -238,8 +238,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         PreparedStatement stmt = null;
 
         try {
+            CmsPublishJobInfoBean currentJob = readPublishJob(dbc, publishJob.getPublishHistoryId());
+            LOG.error("wanted to write: " + publishJob);
+            LOG.error("already on db: " + currentJob);
+            return;
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, this is the expected behaviour
+        }
+        try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_CREATE");
+
             stmt.setString(1, publishJob.getPublishHistoryId().toString());
             stmt.setString(2, publishJob.getProjectId().toString());
             stmt.setString(3, publishJob.getProjectName());
@@ -1587,7 +1596,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                project = internalCreateProject(res);   
+                project = internalCreateProject(res);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -1882,7 +1891,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsDataAccessException(Messages.get().container(
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_READ_PUBLISH_JOB_1,
                     publishHistoryId.toString()));
             }

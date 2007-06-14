@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/04/04 13:07:22 $
- * Version: $Revision: 1.16.4.15 $
+ * Date   : $Date: 2007/06/14 11:46:36 $
+ * Version: $Revision: 1.16.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.15 $ 
+ * @version $Revision: 1.16.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,8 +447,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             lockedResources = getLockedResources();
         } else {
             lockedResources = new ArrayList(getBlockingLockedResources());
-            Collections.sort(lockedResources);
         }
+        Collections.sort(lockedResources);
         Map lockParams = new HashMap();
         if (getParamResource() != null) {
             lockParams.put(PARAM_RESOURCE, getParamResource());

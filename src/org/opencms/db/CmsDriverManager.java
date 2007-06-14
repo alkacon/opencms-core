@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/13 12:36:43 $
- * Version: $Revision: 1.570.2.101 $
+ * Date   : $Date: 2007/06/14 11:46:35 $
+ * Version: $Revision: 1.570.2.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3841,10 +3841,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Map relations = new HashMap();
 
         // get all resources to publish
-        List publishResources = new ArrayList(publishList.getDeletedFolderList());
-        publishResources.addAll(publishList.getFileList());
-        publishResources.addAll(publishList.getFolderList());
-
+        List publishResources = publishList.getAllResources();
         Iterator itCheckList = publishResources.iterator();
         // iterate over them
         while (itCheckList.hasNext()) {
@@ -4987,10 +4984,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         checkParentFolders(dbc, publishList);
 
         // lock all resources with the special publish lock
-        List allResources = new ArrayList(publishList.getFolderList());
-        allResources.addAll(publishList.getDeletedFolderList());
-        allResources.addAll(publishList.getFileList());
-        Iterator itResources = allResources.iterator();
+        Iterator itResources = new ArrayList(publishList.getAllResources()).iterator();
         while (itResources.hasNext()) {
             CmsResource resource = (CmsResource)itResources.next();
             CmsLock lock = m_lockManager.getLock(dbc, resource, false);
@@ -5042,12 +5036,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // if an exception was raised, remove the publish locks
         // and throw the exception again
         if (enqueueException != null) {
-            itResources = allResources.iterator();
+            itResources = publishList.getAllResources().iterator();
             while (itResources.hasNext()) {
                 CmsResource resource = (CmsResource)itResources.next();
-                CmsLock lock = getLock(dbc, resource);
+                CmsLock lock = m_lockManager.getLock(dbc, resource, false);
                 if (lock.getSystemLock().isPublish()
-                    && lock.getSystemLock().isOwnedBy(cms.getRequestContext().currentUser())) {
+                    && lock.getSystemLock().isOwnedInProjectBy(
+                        cms.getRequestContext().currentUser(),
+                        cms.getRequestContext().currentProject())) {
                     unlockResource(dbc, resource, true, true);
                 }
             }
