@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/06/14 11:37:59 $
- * Version: $Revision: 1.5.4.19 $
+ * Date   : $Date: 2007/06/14 15:05:04 $
+ * Version: $Revision: 1.5.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.19 $ 
+ * @version $Revision: 1.5.4.20 $ 
  * 
  * @since 6.0.2 
  */
@@ -482,33 +483,38 @@ public class CmsHistoryList extends A_CmsListDialog {
         if (result.isEmpty()) {
             CmsResource onlineResource = null;
 
+            // this is to prevent problems after an update without keeping historical info
             CmsProject project = getCms().getRequestContext().currentProject();
             try {
                 getCms().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
                 onlineResource = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+
+                CmsListItem item = getList().newItem("" + onlineResource.getVersion());
+                //version
+                item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(-1 * onlineResource.getVersion()));
+                // filename
+                item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
+                // nicename
+                item.set(
+                    LIST_COLUMN_DATE_LAST_MODIFIED,
+                    getMessages().getDateTime(onlineResource.getDateLastModified()));
+                // group           
+                item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineResource.getTypeId()));
+                // user           
+                item.set(LIST_COLUMN_USER, getCms().readUser(onlineResource.getUserLastModified()).getName());
+                // size 
+                item.set(LIST_COLUMN_SIZE, new Integer(onlineResource.getLength()).toString());
+                // path
+                item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(onlineResource));
+                // invisible structure id           
+                item.set(LIST_COLUMN_STRUCTURE_ID, onlineResource.getStructureId().toString());
+
+                result.add(item);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore, most likely the file is new
             } finally {
                 getCms().getRequestContext().setCurrentProject(project);
             }
-
-            CmsListItem item = getList().newItem("" + onlineResource.getVersion());
-            //version
-            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(-1 * onlineResource.getVersion()));
-            // filename
-            item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
-            // nicename
-            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(onlineResource.getDateLastModified()));
-            // group           
-            item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineResource.getTypeId()));
-            // user           
-            item.set(LIST_COLUMN_USER, getCms().readUser(onlineResource.getUserLastModified()).getName());
-            // size 
-            item.set(LIST_COLUMN_SIZE, new Integer(onlineResource.getLength()).toString());
-            // path
-            item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(onlineResource));
-            // invisible structure id           
-            item.set(LIST_COLUMN_STRUCTURE_ID, onlineResource.getStructureId().toString());
-
-            result.add(item);
         }
         CmsResource offlineResource = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
 
