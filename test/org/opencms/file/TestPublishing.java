@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/06/14 11:46:35 $
- * Version: $Revision: 1.21.4.13 $
+ * Date   : $Date: 2007/06/14 15:11:43 $
+ * Version: $Revision: 1.21.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,10 @@ package org.opencms.file;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
@@ -44,8 +47,11 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -56,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.13 $
+ * @version $Revision: 1.21.4.14 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -99,6 +105,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishMovedFiles"));
         suite.addTest(new TestPublishing("testPublishRelatedFiles"));
         suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
+        suite.addTest(new TestPublishing("testPublishRelatedFilesInNewFolder"));
         suite.addTest(new TestPublishing("testPublishContentDate"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -1154,6 +1161,73 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(pubList.getDeletedFolderList(), mergedList.getDeletedFolderList());
         assertEquals(pubList.getFolderList(), mergedList.getFolderList());
         assertEquals(pubList.getFileList(), mergedList.getFileList());
+    }
+
+    /**
+     * Test publishing of related files in an unpublished folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishRelatedFilesInNewFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing of related files in an unpublished folder");
+
+        String folderName = "/testFolder/";
+        String fileName = "/testFolder/testFile.gif";
+        String srcName = "sourceTest.html";
+
+        // create folder and file        
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(fileName, CmsResourceTypeImage.getStaticTypeId());
+        
+        // create source file
+        String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
+        CmsResource source = cms.createResource(srcName, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(CmsEncoder.ENCODING_UTF_8), null);
+        
+        CmsFile file = cms.readFile(srcName);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
+        String element = "test";
+        page.addValue(element, Locale.ENGLISH);
+
+        // set the strong link
+        content = "<img src='"+fileName+"'>";
+        page.setStringValue(cms, element, Locale.ENGLISH, content);
+        
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+        
+        // get the publish list
+        CmsPublishList pubList = OpenCms.getPublishManager().getPublishList(cms, source, false);
+        // just check the publish list
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+
+        // get the list of related resources
+        CmsPublishList relatedList = OpenCms.getPublishManager().getRelatedResourcesToPublish(cms, pubList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertEquals(1, relatedList.getFolderList().size());
+        assertEquals(1, relatedList.getFileList().size());
+
+        CmsPublishList mergedList = OpenCms.getPublishManager().mergePublishLists(cms, pubList, relatedList);
+        // check the publish list has not been touched
+        assertTrue(pubList.getDeletedFolderList().isEmpty());
+        assertTrue(pubList.getFolderList().isEmpty());
+        assertEquals(1, pubList.getFileList().size());
+        // check the related publish list
+        assertTrue(relatedList.getDeletedFolderList().isEmpty());
+        assertEquals(1, relatedList.getFolderList().size());
+        assertEquals(1, relatedList.getFileList().size());
+        // check the merged publish list
+        assertTrue(mergedList.getDeletedFolderList().isEmpty());
+        assertEquals(1, mergedList.getFolderList().size());
+        assertEquals(2, mergedList.getFileList().size());
     }
 
     /**

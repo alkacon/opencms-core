@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/14 11:46:35 $
- * Version: $Revision: 1.570.2.102 $
+ * Date   : $Date: 2007/06/14 15:11:43 $
+ * Version: $Revision: 1.570.2.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3870,7 +3870,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (!publishResources.contains(target) // is not in the original list
                         && !relations.containsKey(target.getRootPath()) // has not been already added by another relation
                         && !target.getState().isUnchanged()) { // has been changed
+
                         relations.put(target.getRootPath(), target);
+                        // now check the folder structure
+                        CmsResource parent = m_vfsDriver.readParentFolder(
+                            dbc,
+                            dbc.currentProject().getUuid(),
+                            target.getStructureId());
+                        while ((parent != null) && parent.getState().isNew()) {
+                            // just add resources that may come in question
+                            if (!publishResources.contains(parent) // is not in the original list
+                                && !relations.containsKey(parent.getRootPath())) { // has not been already added by another relation
+
+                                relations.put(parent.getRootPath(), parent);
+                            }
+                            parent = m_vfsDriver.readParentFolder(
+                                dbc,
+                                dbc.currentProject().getUuid(),
+                                parent.getStructureId());
+                        }
                     }
                 } catch (CmsVfsResourceNotFoundException e) {
                     // ignore broken links
@@ -3881,8 +3899,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
 
-        CmsPublishList ret = new CmsPublishList(new ArrayList(relations.values()), false, false);
-        fillPublishList(dbc, ret); // ensure consistency of locks/permissions
+        CmsPublishList ret = new CmsPublishList(publishList.getDirectPublishResources(), false, false);
+        ret.addAll(relations.values(), false);
+        ret.initialize();
         return ret;
     }
 

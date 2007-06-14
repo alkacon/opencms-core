@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestConcurrentOperations.java,v $
- * Date   : $Date: 2007/06/12 14:27:02 $
- * Version: $Revision: 1.1.4.4 $
+ * Date   : $Date: 2007/06/14 15:11:43 $
+ * Version: $Revision: 1.1.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.4.4 $
+ * @version $Revision: 1.1.4.5 $
  */
 public class TestConcurrentOperations extends OpenCmsTestCase {
 
@@ -328,7 +328,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
             OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
             value};
         OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
-        suite.setAllowedRuntime(10000);
+        suite.setAllowedRuntime(20000);
         OpenCmsThreadedTestCase[] threads = suite.run();
 
         if (suite.getThrowable() != null) {
@@ -445,7 +445,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
             OpenCmsThreadedTestCaseSuite.PARAM_COUNTER,
             value};
         OpenCmsThreadedTestCaseSuite suite = new OpenCmsThreadedTestCaseSuite(count, this, name, parameters);
-        suite.setAllowedRuntime(10000);
+        suite.setAllowedRuntime(20000);
         OpenCmsThreadedTestCase[] threads = suite.run();
 
         if (suite.getThrowable() != null) {
