@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/06/04 15:09:54 $
- * Version: $Revision: 1.27.4.19 $
+ * Date   : $Date: 2007/06/14 11:38:42 $
+ * Version: $Revision: 1.27.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.19 $ 
+ * @version $Revision: 1.27.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,11 +95,11 @@ public class CmsPublishProject extends CmsMultiDialog {
     /** Request parameter name for the publishsiblings parameter. */
     public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
 
-    /** Request parameter name for the subresources parameter. */
-    public static final String PARAM_SUBRESOURCES = "subresources";
-
     /** Request parameter name for the relatedresources parameter. */
     public static final String PARAM_RELATEDRESOURCES = "relatedresources";
+
+    /** Request parameter name for the subresources parameter. */
+    public static final String PARAM_SUBRESOURCES = "subresources";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishProject.class);
@@ -116,11 +116,11 @@ public class CmsPublishProject extends CmsMultiDialog {
     /** Parameter value for the publish siblings flag. */
     private String m_paramPublishsiblings;
 
-    /** Parameter value for the publish subresources flag. */
-    private String m_paramSubresources;
-
     /** Parameter value for the publish related resources flag. */
     private String m_paramRelatedresources;
+
+    /** Parameter value for the publish subresources flag. */
+    private String m_paramSubresources;
 
     /**
      * Public constructor.<p>
@@ -162,8 +162,15 @@ public class CmsPublishProject extends CmsMultiDialog {
                 // if no exception is caused and "true" is returned publish operation was successful
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
-                    List folderList = new ArrayList(1);
+                    List folderList = new ArrayList();
                     folderList.add(CmsResource.getParentFolder((String)getResourceList().get(0)));
+                    Iterator it = getResourceList().iterator();
+                    while (it.hasNext()) {
+                        String res = (String)it.next();
+                        if (CmsResource.isFolder(res)) {
+                            folderList.add(res);
+                        }
+                    }
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
                 actionCloseDialog();
@@ -428,6 +435,19 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#getParamFramename()
+     */
+    public String getParamFramename() {
+
+        String fn = super.getParamFramename();
+        // to correctly return after publish project 
+        if ((fn == null) && !isDirectPublish()) {
+            fn = "body";
+        }
+        return fn;
+    }
+
+    /**
      * Returns the value of the project id which will be published.<p>
      * 
      * @return the String value of the project id
@@ -458,16 +478,6 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the subresources parameter.<p>
-     * 
-     * @return the value of the subresources parameter
-     */
-    public String getParamSubresources() {
-
-        return m_paramSubresources;
-    }
-
-    /**
      * Returns the value of the related resources parameter.<p>
      * 
      * @return the value of the related resources parameter
@@ -475,6 +485,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     public String getParamRelatedresources() {
 
         return m_paramRelatedresources;
+    }
+
+    /**
+     * Returns the value of the subresources parameter.<p>
+     * 
+     * @return the value of the subresources parameter
+     */
+    public String getParamSubresources() {
+
+        return m_paramSubresources;
     }
 
     /**
@@ -649,16 +669,6 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Sets the value of the subresources parameter.<p>
-     * 
-     * @param paramSubresources the value of the subresources parameter
-     */
-    public void setParamSubresources(String paramSubresources) {
-
-        m_paramSubresources = paramSubresources;
-    }
-
-    /**
      * Sets the value of the related resources parameter.<p>
      * 
      * @param relatedResources the value of the related resources parameter
@@ -666,6 +676,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     public void setParamRelatedresources(String relatedResources) {
 
         m_paramRelatedresources = relatedResources;
+    }
+
+    /**
+     * Sets the value of the subresources parameter.<p>
+     * 
+     * @param paramSubresources the value of the subresources parameter
+     */
+    public void setParamSubresources(String paramSubresources) {
+
+        m_paramSubresources = paramSubresources;
     }
 
     /**
