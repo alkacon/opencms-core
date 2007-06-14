@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/05/11 13:40:44 $
- * Version: $Revision: 1.32.4.21 $
+ * Date   : $Date: 2007/06/14 14:48:28 $
+ * Version: $Revision: 1.32.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32.4.21 $ 
+ * @version $Revision: 1.32.4.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -585,7 +585,9 @@ public class CmsExplorer extends CmsWorkplace {
                 reloadFolder = (String)reloadTreeFolders.get(i);
                 if (getSettings().getUserSettings().getRestrictExplorerView()) {
                     // in restricted view, adjust folder path to reload: remove restricted folder name
-                    reloadFolder = reloadFolder.substring(rootFolder.length() - 1);
+                    if (reloadFolder.length() >= rootFolder.length()) {
+                        reloadFolder = reloadFolder.substring(rootFolder.length() - 1);
+                    }
                 }
                 content.append("top.addNodeToLoad(\"" + reloadFolder + "\");\n");
             }
