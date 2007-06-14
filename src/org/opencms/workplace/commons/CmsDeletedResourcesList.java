@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2007/06/05 19:16:50 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/14 11:45:54 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.9.1
  */
@@ -251,7 +251,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_COLS_NAME_0));
         nameCol.setSorteable(false);
-        nameCol.setWidth("62%");
+        nameCol.setWidth("60%");
         nameCol.setFormatter(new I_CmsListFormatter() {
 
             /**
@@ -294,14 +294,14 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
         CmsListColumnDefinition delDateCol = new CmsListColumnDefinition(LIST_COLUMN_DELETION_DATE);
         delDateCol.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_COLS_DEL_DATE_0));
         delDateCol.setSorteable(false);
-        delDateCol.setWidth("17%");
+        delDateCol.setWidth("20%");
         metadata.addColumn(delDateCol);
 
         // add column for version
         CmsListColumnDefinition versionCol = new CmsListColumnDefinition(LIST_COLUMN_VERSION);
         versionCol.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_COLS_VERSION_0));
         versionCol.setSorteable(false);
-        versionCol.setWidth("8%");
+        versionCol.setWidth("20%");
         versionCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         metadata.addColumn(versionCol);
 
