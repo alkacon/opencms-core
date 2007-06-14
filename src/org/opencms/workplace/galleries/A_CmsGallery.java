@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2007/05/11 12:48:46 $
- * Version: $Revision: 1.24.4.9 $
+ * Date   : $Date: 2007/06/14 15:00:08 $
+ * Version: $Revision: 1.24.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.24.4.9 $ 
+ * @version $Revision: 1.24.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,12 +250,14 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             HttpSession session = jsp.getRequest().getSession();
             // lookup the workplace settings 
             CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-            if (CmsStringUtil.isEmpty(galleryTypeName)) {
-                // look up the gallery type from the settings
-                galleryTypeName = settings.getGalleryType();
-            } else {
-                // store the last used gallery type name
-                settings.setGalleryType(galleryTypeName);
+            if (settings != null) {
+                if (CmsStringUtil.isEmpty(galleryTypeName)) {
+                    // look up the gallery type from the settings
+                    galleryTypeName = settings.getGalleryType();
+                } else {
+                    // store the last used gallery type name
+                    settings.setGalleryType(galleryTypeName);
+                }
             }
         }
         // get the gallery class name for the type
