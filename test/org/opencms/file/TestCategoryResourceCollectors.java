@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2007/06/04 16:11:24 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/15 13:41:03 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.test.OpenCmsTestCase;
@@ -52,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -70,25 +69,37 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      * Initializes the resources needed for the tests.<p>
      * 
      * @param cms the cms object
-     * @throws CmsException if something goes wrong
+     * 
+     * @throws Exception if something goes wrong
      */
-    public static void initResources(CmsObject cms) throws CmsException {
+    public static synchronized void initResources(CmsObject cms) throws Exception {
 
-        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+        synchronized (cms) {
+            cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+            cms.wait(100);
 
-        // jsps
-        cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            // jsps
+            cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
 
-        // plains
-        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-
+            // plains
+            cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+        }
         CmsCategoryService service = CmsCategoryService.getInstance();
         CmsCategory catBusiness = service.createCategory(
             cms,
@@ -139,7 +150,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
                 CmsObject cms = setupOpenCms(null, null, false);
                 try {
                     initResources(cms);
-                } catch (CmsException exc) {
+                } catch (Exception exc) {
                     fail(exc.getMessage());
                 }
             }
