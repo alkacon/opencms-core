@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2007/06/12 14:04:53 $
- * Version: $Revision: 1.87.4.11 $
+ * Date   : $Date: 2007/06/15 15:01:59 $
+ * Version: $Revision: 1.87.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.87.4.11 $ 
+ * @version $Revision: 1.87.4.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -171,6 +171,59 @@ public class CmsImportVersion4 extends A_CmsImport {
         }
 
         super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
+    }
+
+    /**
+     * Rewrites all parseable files, to assure link check.<p>
+     */
+    protected void rewriteParseables() {
+
+        if (m_parseables.isEmpty()) {
+            return;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+
+        int i = 0;
+        Iterator it = m_parseables.iterator();
+        while (it.hasNext()) {
+            CmsResource res = (CmsResource)it.next();
+
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i + 1),
+                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
+
+            m_report.print(
+                Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, m_cms.getSitePath(res)),
+                I_CmsReport.FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+            try {
+                // make sure the date last modified is kept...
+                CmsFile file = CmsFile.upgrade(res, m_cms);
+                file.setDateLastModified(res.getDateLastModified());
+                m_cms.writeFile(file);
+
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            } catch (Throwable e) {
+                m_report.addWarning(e);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_ERROR);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()));
+                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            i++;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -586,29 +639,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                 LOG.debug(message.key(), e);
             }
             throw new CmsImportExportException(message, e);
-        }
-    }
-
-    /**
-     * Rewrites all parseable files, to assure link check.<p>
-     */
-    protected void rewriteParseables() {
-
-        Iterator it = m_parseables.iterator();
-        while (it.hasNext()) {
-            CmsResource res = (CmsResource)it.next();
-            try {
-                // make sure the date last modified is kept...
-                CmsFile file = CmsFile.upgrade(res, m_cms);
-                file.setDateLastModified(res.getDateLastModified());
-                m_cms.writeFile(file);
-            } catch (Throwable e) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()),
-                        e);
-                }
-            }
         }
     }
 }
