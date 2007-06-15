@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/05/03 13:48:56 $
- * Version: $Revision: 1.46.4.10 $
+ * Date   : $Date: 2007/06/15 11:59:19 $
+ * Version: $Revision: 1.46.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.10 $ 
+ * @version $Revision: 1.46.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -903,9 +903,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 addCheckRule(rootContentDefinition, elementPath, null, null);
             }
         } else {
-            // TODO: Check requirement for this recursion
-            int todo_v7 = 0;
-
             // recursion required
             CmsXmlContentDefinition nestedContentDefinition = rootContentDefinition;
             if (schemaType != null) {
@@ -1387,14 +1384,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
 
-        Iterator mappings = m_elementMappings.keySet().iterator();
 
         String rootPath = null;
         List siblings = null;
 
+        Iterator mappings = m_elementMappings.entrySet().iterator();
         while (mappings.hasNext()) {
-            String path = (String)mappings.next();
-            String mapping = (String)m_elementMappings.get(path);
+            Map.Entry e = (Map.Entry)mappings.next();
+            String path = e.getKey().toString();
+            String mapping = e.getValue().toString();
 
             if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 

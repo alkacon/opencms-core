@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2006/08/25 11:03:52 $
- * Version: $Revision: 1.11.4.1 $
+ * Date   : $Date: 2007/06/15 11:59:19 $
+ * Version: $Revision: 1.11.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.4.1 $ 
+ * @version $Revision: 1.11.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +62,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
     CmsXmlContent m_content;
 
     /** The "main" content definition, used for all mappings. */
-    CmsXmlContentDefinition m_definition;
+    I_CmsXmlContentHandler m_handler;
 
     /**
      * Creates a new error handler node visitor.<p> 
@@ -76,7 +75,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         // store references
         m_cms = cms;
         m_content = content;
-        m_definition = content.getContentDefinition();
+        m_handler = content.getContentDefinition().getContentHandler();
     }
 
     /**
@@ -88,7 +87,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_VISIT_1, value.getPath()));
         }
         try {
-            m_definition.getContentHandler().resolveMapping(m_cms, m_content, value);
+            m_handler.resolveMapping(m_cms, m_content, value);
         } catch (CmsException e) {    
             LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
         }
