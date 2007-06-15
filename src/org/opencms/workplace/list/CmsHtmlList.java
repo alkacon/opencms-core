@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/03/22 15:20:51 $
- * Version: $Revision: 1.35.4.13 $
+ * Date   : $Date: 2007/06/15 08:34:51 $
+ * Version: $Revision: 1.35.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.13 $ 
+ * @version $Revision: 1.35.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -180,8 +180,10 @@ public class CmsHtmlList {
             m_originalItems.clear();
         }
         m_filteredItems = null;
-        if (m_visibleItems != null) {
-            m_visibleItems.clear();
+        synchronized (this) {
+            if (m_visibleItems != null) {
+                m_visibleItems.clear();
+            }
         }
         setSearchFilter("");
         m_sortedColumn = null;
@@ -470,7 +472,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    public String listHtml() {
+    public synchronized String listHtml() {
 
         // this block has to be executed before calling htmlBegin()
         if (isPrintable()) {
@@ -763,8 +765,10 @@ public class CmsHtmlList {
         if (!m_metadata.isSelfManaged()) {
             m_filteredItems = null;
         }
-        if (m_visibleItems != null) {
-            m_visibleItems.clear();
+        synchronized (this) {
+            if (m_visibleItems != null) {
+                m_visibleItems.clear();
+            }
         }
         setSearchFilter(listState.getFilter());
         setSortedColumn(listState.getColumn());

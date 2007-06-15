@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/14 16:05:52 $
- * Version: $Revision: 1.717.2.185 $
+ * Date   : $Date: 2007/06/15 08:34:51 $
+ * Version: $Revision: 1.717.2.186 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,9 +24,9 @@ OpenCms 7.0.0 - July 4, 2007
 * A number of potential problems reported by the "Findbugs" tool have been removed
 * Fixed bug if workplace search index was not defined
 * Fixed bug in WebDAV when creating resources in locked folders
-- Added Workplace User role check to the workplace dialog base class
+- Improved security: added Workplace User role check to the workplace dialog base class
 - In broadcast and project management lists are organizational unit columns only shown if more OUs are defined
-- Some additional database indexes added
+- Improved performance: some additional database indexes added
 - New GUI for historical versions management
 - New scheduled job to clean up the historical versions
 - Selection for organizational units restricted to folders
@@ -45,6 +45,7 @@ OpenCms 7.0.0 - July 4, 2007
 - Improved column display in the restore deleted dialog
 * Fixed method to get the related resources to publish so that new parent folders are included
 * Fixed wrong parameter in history context menu entry definition in the opencms-workplace.xml
+* Fixed synchronization problem while displaying a back office list of items
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
