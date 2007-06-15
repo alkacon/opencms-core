@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/05/03 16:00:23 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2007/06/15 15:02:53 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.16 $ 
+ * @version $Revision: 1.1.2.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -992,13 +993,11 @@ public final class CmsResourceUtil {
 
         String user = m_resource.getUserCreated().toString();
         try {
-            user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserCreated()).getName());
+            user = getCurrentOuRelativeName(CmsPrincipal.readPrincipalIncludingHistory(
+                getCms(),
+                m_resource.getUserCreated()).getName());
         } catch (Throwable e) {
-            try {
-                user = getCurrentOuRelativeName(getCms().readHistoryPrincipal(m_resource.getUserCreated()).getName());
-            } catch (Throwable e1) {
-                LOG.error(e1.getLocalizedMessage(), e1);
-            }
+            LOG.error(e.getLocalizedMessage());
         }
         return user;
     }
@@ -1012,13 +1011,11 @@ public final class CmsResourceUtil {
 
         String user = m_resource.getUserLastModified().toString();
         try {
-            user = getCurrentOuRelativeName(getCms().readUser(m_resource.getUserLastModified()).getName());
+            user = getCurrentOuRelativeName(CmsPrincipal.readPrincipalIncludingHistory(
+                getCms(),
+                m_resource.getUserLastModified()).getName());
         } catch (Throwable e) {
-            try {
-                user = getCurrentOuRelativeName(getCms().readHistoryPrincipal(m_resource.getUserLastModified()).getName());
-            } catch (Throwable e1) {
-                LOG.error(e1.getLocalizedMessage(), e1);
-            }
+            LOG.error(e.getLocalizedMessage());
         }
         return user;
     }

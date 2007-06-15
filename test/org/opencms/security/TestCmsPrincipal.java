@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2007/06/01 12:15:35 $
- * Version: $Revision: 1.2.4.8 $
+ * Date   : $Date: 2007/06/15 15:02:53 $
+ * Version: $Revision: 1.2.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -126,7 +126,7 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
             caught = e;
         }
         assertNotNull(caught);
-        assertTrue(caught instanceof CmsSecurityException);
+        assertTrue(caught instanceof CmsDbEntryNotFoundException);
         if (caught != null) {
             assertSame(Messages.ERR_INVALID_PRINCIPAL_1, caught.getMessageContainer().getKey());
         }

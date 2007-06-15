@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/05/22 16:07:08 $
- * Version: $Revision: 1.2.4.9 $
+ * Date   : $Date: 2007/06/15 15:02:53 $
+ * Version: $Revision: 1.2.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.security;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
@@ -49,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.9 $ 
+ * @version $Revision: 1.2.4.10 $ 
  * 
  * @since 6.2.0 
  */
@@ -200,7 +201,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             }
         }
         // invalid principal name was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
     }
 
     /**
@@ -229,7 +230,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             //  assume group does not exist
         }
         // invalid principal name was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**
@@ -260,7 +261,10 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             }
         }
         // invalid principal type was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_TYPE_2, type, name));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(
+            Messages.ERR_INVALID_PRINCIPAL_TYPE_2,
+            type,
+            name));
     }
 
     /**
@@ -295,7 +299,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             //  assume the principal does not exist at all
         }
         // invalid principal name was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**
