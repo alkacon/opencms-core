@@ -39,6 +39,8 @@
 			<resource uri="/system/workplace/resources/buttons/calendar.png"/>
 			<resource uri="/system/workplace/resources/buttons/deletecontent.png"/>
 			<resource uri="/system/workplace/resources/buttons/deletecontent_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/deletelocale.png"/>
+			<resource uri="/system/workplace/resources/buttons/deletelocale_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/downloadgallery.png"/>
 			<resource uri="/system/workplace/resources/buttons/edit.png"/>
 			<resource uri="/system/workplace/resources/buttons/edit_in.png"/>
@@ -2063,6 +2065,46 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/deletelocale.png</source>
+			<destination>system/workplace/resources/buttons/deletelocale.png</destination>
+			<type>image</type>
+			<uuidstructure>844e9a20-1b11-11dc-9ef5-411aebaeaf41</uuidstructure>
+			<uuidresource>844e9a21-1b11-11dc-9ef5-411aebaeaf41</uuidresource>
+			<datelastmodified>Fri, 15 Jun 2007 07:25:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Jun 2007 07:24:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/deletelocale_in.png</source>
+			<destination>system/workplace/resources/buttons/deletelocale_in.png</destination>
+			<type>image</type>
+			<uuidstructure>84702be4-1b11-11dc-9ef5-411aebaeaf41</uuidstructure>
+			<uuidresource>84702be5-1b11-11dc-9ef5-411aebaeaf41</uuidresource>
+			<datelastmodified>Fri, 15 Jun 2007 07:25:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Jun 2007 07:24:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

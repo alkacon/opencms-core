@@ -70,7 +70,7 @@ if (options.showElement("option.element.language", displayOptions) && wp.showEle
 	out.println(wp.buttonBarSeparator(5, 5));
 	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_LANG_0));
 	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
-	out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletecontent", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
+	out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletelocale", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
 }
 
 %>
