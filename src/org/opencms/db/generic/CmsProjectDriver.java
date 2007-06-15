@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/06/14 11:48:15 $
- * Version: $Revision: 1.241.4.40 $
+ * Date   : $Date: 2007/06/15 15:01:43 $
+ * Version: $Revision: 1.241.4.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.40 $
+ * @version $Revision: 1.241.4.41 $
  * 
  * @since 6.0.0 
  */
@@ -2543,7 +2543,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (properties == null) {
                     properties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), resource);
                 }
-
                 m_driverManager.getHistoryDriver().writeResource(dbc, resource, properties, publishTag);
             }
             // write the resource to the publish history
@@ -2807,17 +2806,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         try {
             // remove the file online and offline
             m_driverManager.getVfsDriver().removeFile(dbc, dbc.currentProject().getUuid(), offlineResource);
-
-            try {
-                m_driverManager.getVfsDriver().readResource(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    offlineResource.getStructureId(),
-                    true);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // remove the online file only if it is really deleted offline
-                m_driverManager.getVfsDriver().removeFile(dbc, onlineProject.getUuid(), onlineResource);
-            }
+            m_driverManager.getVfsDriver().removeFile(dbc, onlineProject.getUuid(), onlineResource);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2845,6 +2834,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         }
 
         try {
+            // delete relations online and offline
             m_driverManager.getVfsDriver().deleteRelations(
                 dbc,
                 onlineProject.getUuid(),

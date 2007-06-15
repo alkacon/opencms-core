@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/06 09:03:30 $
- * Version: $Revision: 1.258.4.32 $
+ * Date   : $Date: 2007/06/15 15:01:43 $
+ * Version: $Revision: 1.258.4.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.32 $
+ * @version $Revision: 1.258.4.33 $
  * 
  * @since 6.0.0 
  */
@@ -2146,7 +2146,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             siblingCount = internalCountSiblings(dbc, projectId, resource.getResourceId());
 
             if (siblingCount > 0) {
-
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_SIBLING_COUNT");
                 stmt.setInt(1, this.internalCountSiblings(dbc, projectId, resource.getResourceId()));
@@ -2162,7 +2161,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
 
             } else {
-
                 // if not referenced any longer, also delete the resource and the content record
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_DELETE_BY_RESOURCEID");
                 stmt.setString(1, resource.getResourceId().toString());

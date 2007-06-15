@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/30 13:59:11 $
- * Version: $Revision: 1.114.4.18 $
+ * Date   : $Date: 2007/06/15 15:01:43 $
+ * Version: $Revision: 1.114.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.18 $
+ * @version $Revision: 1.114.4.19 $
  * 
  * @since 6.0.0 
  */
@@ -343,7 +343,7 @@ public interface I_CmsVfsDriver {
      *
      * @param dbc the current database context
      * @param projectId the project in which the resource will be used
-     * @param folderId the id of the folder to be read
+     * @param folderId the structure id of the folder to be read
      * 
      * @return the read folder
      * 
