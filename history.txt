@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/18 12:36:58 $
- * Version: $Revision: 1.717.2.188 $
+ * Date   : $Date: 2007/06/18 12:56:39 $
+ * Version: $Revision: 1.717.2.189 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ OpenCms 7.0.0 - July 4, 2007
 - Improved link parsing from files during the import of older import versions
 * Fixed back-office internal link validation tool
 * Thread-safe access to the database connection pool
+* Publish queue working in online project
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
