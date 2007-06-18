@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/31 10:37:41 $
- * Version: $Revision: 1.22.8.1 $
+ * Date   : $Date: 2007/06/18 12:28:13 $
+ * Version: $Revision: 1.22.8.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.22.8.1 $
+ * @version $Revision: 1.22.8.2 $
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @param commit the additional statement for the 'commit' command
      * @param wasInTransaction if using transactions
      */
-    public void closeAllInTransaction(
+    public synchronized void closeAllInTransaction(
         CmsDbContext dbc,
         Connection con,
         PreparedStatement stmnt,

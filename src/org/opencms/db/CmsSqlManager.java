@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/31 10:37:41 $
- * Version: $Revision: 1.10.4.4 $
+ * Date   : $Date: 2007/06/18 12:28:13 $
+ * Version: $Revision: 1.10.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10.4.4 $
+ * @version $Revision: 1.10.4.5 $
  * 
  * @since 6.0.0
  */
@@ -99,7 +99,7 @@ public class CmsSqlManager {
      * @return a database connection
      * @throws SQLException if something goes wrong
      */
-    public Connection getConnectionByUrl(String dbPoolUrl) throws SQLException {
+    public synchronized Connection getConnectionByUrl(String dbPoolUrl) throws SQLException {
 
         return DriverManager.getConnection(dbPoolUrl);
     }

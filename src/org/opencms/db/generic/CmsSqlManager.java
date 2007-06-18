@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/05/31 10:40:18 $
- * Version: $Revision: 1.65.4.13 $
+ * Date   : $Date: 2007/06/18 12:28:13 $
+ * Version: $Revision: 1.65.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65.4.13 $
+ * @version $Revision: 1.65.4.14 $
  * 
  * @since 6.0.0 
  */
@@ -148,7 +148,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @param stmnt the statement
      * @param res the result set
      */
-    public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
+    public synchronized void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
 
         // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
@@ -198,11 +198,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * a byte array in the Java programming language.<p>
      * 
      * The bytes represent the raw values returned by the driver. Overwrite this method if another 
-     * database server requires a different handling of byte attributes in tables.
+     * database server requires a different handling of byte attributes in tables.<p>
      * 
      * @param res the result set
      * @param attributeName the name of the table attribute
+     * 
      * @return byte[] the column value; if the value is SQL NULL, the value returned is null 
+     * 
      * @throws SQLException if a database access error occurs
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
@@ -241,7 +243,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
+    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
     throws SQLException {
 
         return getPreparedStatement(con, project.getUuid(), queryKey);
@@ -259,7 +261,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
+    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
     throws SQLException {
 
         String rawSql = readQuery(projectId, queryKey);
@@ -274,7 +276,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
+    public synchronized PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
 
         String rawSql = readQuery(CmsUUID.getNullUUID(), queryKey);
         return getPreparedStatementForSql(con, rawSql);
@@ -288,7 +290,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
+    public synchronized PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
 
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 
