@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.11.4.13 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.11.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.13 $ 
+ * @version $Revision: 1.11.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,7 +111,7 @@ public final class CmsRole {
     private static final List SYSTEM_ROLES;
 
     /** The child roles of this role. */
-    private final List m_childs = new ArrayList();
+    private final List m_children = new ArrayList();
 
     /** The distinct group names of this role. */
     private List m_distictGroupNames = new ArrayList();
@@ -162,7 +162,7 @@ public final class CmsRole {
         m_parentRole = role.m_parentRole;
         m_systemRole = role.m_systemRole;
         m_ouDependent = role.m_ouDependent;
-        m_childs.addAll(role.m_childs);
+        m_children.addAll(role.m_children);
         m_distictGroupNames.addAll(Collections.unmodifiableList(role.m_distictGroupNames));
     }
 
@@ -185,7 +185,7 @@ public final class CmsRole {
             m_groupName = groupName;
         }
         if (parentRole != null) {
-            parentRole.m_childs.add(this);
+            parentRole.m_children.add(this);
         }
     }
 
@@ -394,27 +394,27 @@ public final class CmsRole {
     /**
      * Returns a list of all sub roles.<p>
      * 
-     * @param recursive if not set just direct childs are returned
+     * @param recursive if not set just direct children are returned
      * 
      * @return all sub roles as a list of {@link CmsRole} objects
      */
-    public List getChilds(boolean recursive) {
+    public List getChildren(boolean recursive) {
 
-        List childs = new ArrayList();
-        Iterator itChilds = m_childs.iterator();
-        while (itChilds.hasNext()) {
-            CmsRole child = (CmsRole)itChilds.next();
+        List children = new ArrayList();
+        Iterator itChildren = m_children.iterator();
+        while (itChildren.hasNext()) {
+            CmsRole child = (CmsRole)itChildren.next();
             if (child.isOrganizationalUnitIndependent()) {
                 child = child.forOrgUnit(null);
             } else {
                 child = child.forOrgUnit(m_ouFqn);
             }
-            childs.add(child);
+            children.add(child);
             if (recursive) {
-                childs.addAll(child.getChilds(true));
+                children.addAll(child.getChildren(true));
             }
         }
-        return childs;
+        return children;
     }
 
     /**

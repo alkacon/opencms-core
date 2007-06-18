@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2007/05/16 08:33:32 $
- * Version: $Revision: 1.3.4.8 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.3.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3.4.8 $ 
+ * @version $Revision: 1.3.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     public static final String LIST_DEFACTION_EDIT = "de";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_CHILDS = "dc";
+    public static final String LIST_DETAIL_CHILDREN = "dc";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_PARENT = "dp";
@@ -323,17 +323,17 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                         }
                         html.append("\n");
                     }
-                } else if (detailId.equals(LIST_DETAIL_CHILDS)) {
-                    // childs
-                    Iterator itChilds = getCms().getChild(groupName).iterator();
-                    while (itChilds.hasNext()) {
-                        CmsGroup group = (CmsGroup)itChilds.next();
+                } else if (detailId.equals(LIST_DETAIL_CHILDREN)) {
+                    // childen
+                    Iterator itChildren = getCms().getChildren(groupName, false).iterator();
+                    while (itChildren.hasNext()) {
+                        CmsGroup group = (CmsGroup)itChildren.next();
                         if (group.getOuFqn().equals(getParamOufqn())) {
                             html.append(group.getSimpleName());
                         } else {
                             html.append(group.getDisplayName(getCms(), getLocale()));
                         }
-                        if (itChilds.hasNext()) {
+                        if (itChildren.hasNext()) {
                             html.append("<br>");
                         }
                         html.append("\n");
@@ -590,17 +590,17 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
-        // add user childs details
-        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDS);
+        // add user children details
+        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDREN);
         childDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         childDetails.setVisible(false);
-        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0));
-        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0));
-        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0));
-        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_HELP_0));
-        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0));
+        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0));
+        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0));
+        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0));
+        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0));
+        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0));
         childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0)));
+            Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
         metadata.addItemDetails(childDetails);
 
         // add parent group details

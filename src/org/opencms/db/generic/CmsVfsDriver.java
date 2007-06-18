@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/15 15:01:43 $
- * Version: $Revision: 1.258.4.33 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.258.4.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.33 $
+ * @version $Revision: 1.258.4.34 $
  * 
  * @since 6.0.0 
  */
@@ -3473,11 +3473,21 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (resource != null) {
                 conditions.append(BEGIN_CONDITION);
                 if (filter.isSource() && checkSource) {
-                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_ID"));
-                    params.add(resource.getStructureId().toString());
+                    if (!filter.isIncludeSubresources()) {
+                        conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_ID"));
+                        params.add(resource.getStructureId().toString());
+                    } else {
+                        conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_PATH"));
+                        params.add(resource.getRootPath() + '%');
+                    }
                 } else if (filter.isTarget() && !checkSource) {
-                    conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_ID"));
-                    params.add(resource.getStructureId().toString());
+                    if (!filter.isIncludeSubresources()) {
+                        conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_ID"));
+                        params.add(resource.getStructureId().toString());
+                    } else {
+                        conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_PATH"));
+                        params.add(resource.getRootPath() + '%');
+                    }
                 }
                 conditions.append(END_CONDITION);
             }
@@ -3509,7 +3519,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
 
                 String queryPath = filter.getPath();
-                if (filter.isIncludeChilds()) {
+                if (filter.isIncludeSubresources()) {
                     queryPath += '%';
                 }
                 if (filter.isSource() && checkSource) {

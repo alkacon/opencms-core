@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2007/05/09 07:59:15 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.5.3
  */
@@ -167,7 +167,7 @@ public class CmsInternalLinksValidator {
 
         Map brokenRelations = new HashMap();
 
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChilds();
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChildren();
 
         Iterator itFolders = resourceNames.iterator();
         while (itFolders.hasNext()) {

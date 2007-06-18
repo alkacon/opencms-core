@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/04 16:03:58 $
- * Version: $Revision: 1.58.8.9 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.58.8.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58.8.9 $
+ * @version $Revision: 1.58.8.10 $
  * 
  * @since 6.0.0 
  */
@@ -317,13 +317,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param dbc the current db context
      * @param parent the parent organizational unit, or <code>null</code> for the root
-     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * @param includeChildren if hierarchical deeper organization units should also be returned
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
      * @throws CmsDataAccessException if operation was not succesful
      */
-    List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
+    List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChildren)
     throws CmsDataAccessException;
 
     /**

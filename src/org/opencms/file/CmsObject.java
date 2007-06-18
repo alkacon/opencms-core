@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/06/04 16:06:43 $
- * Version: $Revision: 1.146.4.49 $
+ * Date   : $Date: 2007/06/18 12:35:42 $
+ * Version: $Revision: 1.146.4.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.49 $
+ * @version $Revision: 1.146.4.50 $
  * 
  * @since 6.0.0 
  */
@@ -806,7 +806,7 @@ public final class CmsObject {
     }
 
     /**
-     * Deletes a group, where all permissions, users and childs of the group
+     * Deletes a group, where all permissions, users and children of the group
      * are transfered to a replacement group.<p>
      * 
      * @param groupId the id of the group to be deleted
@@ -1234,10 +1234,27 @@ public final class CmsObject {
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #getChildren(String, boolean)} with <code>false</code> instead.
      */
     public List getChild(String groupname) throws CmsException {
 
-        return (m_securityManager.getChild(m_context, groupname));
+        return getChildren(groupname, false);
+    }
+
+    /**
+     * Returns all child groups of a group.<p>
+     * 
+     * @param groupname the name of the group
+     * @param includeSubChildren if set also returns all sub-child groups of the given group
+     *
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
+     * 
+     * @throws CmsException if operation was not succesful
+     */
+    public List getChildren(String groupname, boolean includeSubChildren) throws CmsException {
+
+        return m_securityManager.getChildren(m_context, groupname, includeSubChildren);
     }
 
     /**
@@ -1250,10 +1267,12 @@ public final class CmsObject {
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link #getChildren(String, boolean)} with <code>true</code> instead.
      */
     public List getChilds(String groupname) throws CmsException {
 
-        return (m_securityManager.getChilds(m_context, groupname));
+        return getChildren(groupname, true);
     }
 
     /**

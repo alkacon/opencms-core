@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/05 09:46:28 $
- * Version: $Revision: 1.110.2.35 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.110.2.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.35 $
+ * @version $Revision: 1.110.2.36 $
  * 
  * @since 6.0.0 
  */
@@ -823,7 +823,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#getOrganizationalUnits(org.opencms.db.CmsDbContext, org.opencms.security.CmsOrganizationalUnit, boolean)
      */
-    public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
+    public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChildren)
     throws CmsDataAccessException {
 
         List orgUnits = new ArrayList();
@@ -833,7 +833,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 dbc,
                 parentFolder,
                 CmsResourceFilter.DEFAULT,
-                includeChilds).iterator();
+                includeChildren).iterator();
             while (itResources.hasNext()) {
                 CmsResource resource = (CmsResource)itResources.next();
                 orgUnits.add(internalCreateOrgUnitFromResource(dbc, resource));
@@ -1129,14 +1129,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     public List readChildGroups(CmsDbContext dbc, String parentGroupFqn) throws CmsDataAccessException {
 
-        List childs = new ArrayList();
+        List children = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             // get parent group
             CmsGroup parent = m_driverManager.getUserDriver().readGroup(dbc, parentGroupFqn);
-            // parent group exists, so get all childs
+            // parent group exists, so get all children
             if (parent != null) {
                 // create statement
                 conn = m_sqlManager.getConnection(dbc);
@@ -1145,7 +1145,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 res = stmt.executeQuery();
                 // create new Cms group objects
                 while (res.next()) {
-                    childs.add(internalCreateGroup(res));
+                    children.add(internalCreateGroup(res));
                 }
             }
         } catch (SQLException e) {
@@ -1156,7 +1156,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        return childs;
+        return children;
     }
 
     /**

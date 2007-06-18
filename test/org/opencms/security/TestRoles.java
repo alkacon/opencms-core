@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2007/04/26 14:31:16 $
- * Version: $Revision: 1.4.8.13 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.4.8.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -300,15 +300,15 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
-        List childs = CmsRole.VFS_MANAGER.forOrgUnit("").getChilds(true);
-        childs.add(CmsRole.VFS_MANAGER.forOrgUnit(""));
-        childs.addAll(CmsRole.WORKPLACE_USER.forOrgUnit("").getChilds(true));
-        childs.add(CmsRole.WORKPLACE_USER.forOrgUnit(""));
-        assertEquals(childs.size(), roles.size());
+        List children = CmsRole.VFS_MANAGER.forOrgUnit("").getChildren(true);
+        children.add(CmsRole.VFS_MANAGER.forOrgUnit(""));
+        children.addAll(CmsRole.WORKPLACE_USER.forOrgUnit("").getChildren(true));
+        children.add(CmsRole.WORKPLACE_USER.forOrgUnit(""));
+        assertEquals(children.size(), roles.size());
         Iterator it = roles.iterator();
         while (it.hasNext()) {
             CmsRole role = (CmsRole)it.next();
-            assertTrue(childs.contains(role));
+            assertTrue(children.contains(role));
         }
 
         // now add a parent role
@@ -320,13 +320,13 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(roles.contains(CmsRole.ADMINISTRATOR.forOrgUnit(user.getOuFqn())));
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
-        childs = CmsRole.ADMINISTRATOR.forOrgUnit("").getChilds(true);
-        childs.add(CmsRole.ADMINISTRATOR.forOrgUnit(""));
-        assertEquals(childs.size(), roles.size());
+        children = CmsRole.ADMINISTRATOR.forOrgUnit("").getChildren(true);
+        children.add(CmsRole.ADMINISTRATOR.forOrgUnit(""));
+        assertEquals(children.size(), roles.size());
         it = roles.iterator();
         while (it.hasNext()) {
             CmsRole role = (CmsRole)it.next();
-            assertTrue(childs.contains(role));
+            assertTrue(children.contains(role));
         }
     }
 

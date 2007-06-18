@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2007/01/31 12:04:36 $
- * Version: $Revision: 1.8.4.8 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.8.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.4.8 $
+ * @version $Revision: 1.8.4.9 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -142,7 +142,7 @@ public class TestDeletion extends OpenCmsTestCase {
         CmsGroup testGroup2 = cms.readGroup("testgroup2");
 
         // remember group data
-        List childs = cms.getChild(testGroup.getName());
+        List children = cms.getChildren(testGroup.getName(), false);
         List users = cms.getUsersOfGroup(testGroup.getName());
 
         // delete the test group
@@ -166,7 +166,7 @@ public class TestDeletion extends OpenCmsTestCase {
         assertTrue(found);
 
         // check group data
-        assertEquals(childs, cms.getChild(testGroup2.getName()));
+        assertEquals(children, cms.getChildren(testGroup2.getName(), false));
         assertEquals(users, cms.getUsersOfGroup(testGroup2.getName()));
 
         // restore the previous state

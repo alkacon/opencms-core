@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupDependenciesList.java,v $
- * Date   : $Date: 2006/11/27 16:02:34 $
- * Version: $Revision: 1.4.4.2 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.4.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4.4.2 $ 
+ * @version $Revision: 1.4.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,9 +390,9 @@ public class CmsGroupDependenciesList extends A_CmsListDialog {
                     }
                 }
                 // add child groups
-                Iterator itChilds = getCms().getChild(group.getName()).iterator();
-                while (itChilds.hasNext()) {
-                    CmsGroup child = (CmsGroup)itChilds.next();
+                Iterator itChildren = getCms().getChildren(group.getName(), false).iterator();
+                while (itChildren.hasNext()) {
+                    CmsGroup child = (CmsGroup)itChildren.next();
                     CmsListItem item = (CmsListItem)ret.getObject(child.getId().toString());
                     if (item == null) {
                         item = getList().newItem(child.getId().toString());

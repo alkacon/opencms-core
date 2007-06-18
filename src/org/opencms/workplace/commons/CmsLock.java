@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/06/14 11:46:36 $
- * Version: $Revision: 1.16.4.16 $
+ * Date   : $Date: 2007/06/18 12:35:42 $
+ * Version: $Revision: 1.16.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.16 $ 
+ * @version $Revision: 1.16.4.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -909,7 +909,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * Returns a set of locked unpublished related resources.<p>
      * 
      * @param resName the resource to check the related resources for
-     * @param filter the relation filter to use
+     * @param filter the lock filter to use
      * @param lockedResources a set of site relative paths, of locked resources to exclude
      */
     private void addLockedRelatedResources(String resName, CmsLockFilter filter, Set lockedResources) {
@@ -918,7 +918,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             // get and iterate over all related resources
             Iterator itRelations = getCms().getRelationsForResource(
                 resName,
-                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChilds()).iterator();
+                CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren()).iterator();
             while (itRelations.hasNext()) {
                 CmsRelation relation = (CmsRelation)itRelations.next();
                 CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);

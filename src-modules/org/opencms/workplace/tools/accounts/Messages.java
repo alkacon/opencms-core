@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/03/16 16:07:12 $
- * Version: $Revision: 1.9.4.24 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.9.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.4.24 $ 
- * @version $Revision: 1.9.4.24 $ 
+ * @version $Revision: 1.9.4.25 $ 
+ * @version $Revision: 1.9.4.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -425,13 +425,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_DELETE_ADMIN_TOOL_NAME_0 = "GUI_GROUPS_DELETE_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_DETAIL_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_CHILDS_NAME_0";
+    public static final String GUI_GROUPS_DETAIL_CHILDREN_NAME_0 = "GUI_GROUPS_DETAIL_CHILDREN_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_DETAIL_HIDE_CHILDS_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_CHILDS_HELP_0";
+    public static final String GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0";
+    public static final String GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0 = "GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_ORGUNIT_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_ORGUNIT_HELP_0";
@@ -476,10 +476,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_DETAIL_SET_PERM_NAME_0 = "GUI_GROUPS_DETAIL_SET_PERM_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0";
+    public static final String GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0";
+    public static final String GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0 = "GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_SHOW_ORGUNIT_HELP_0 = "GUI_GROUPS_DETAIL_SHOW_ORGUNIT_HELP_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2007/03/01 15:01:24 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/18 12:35:42 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,14 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.4 
  */
 public final class CmsLockFilter implements Cloneable {
 
     /** To filter all locks. */
-    public static final CmsLockFilter FILTER_ALL = new CmsLockFilter(true).filterIncludeChilds();
+    public static final CmsLockFilter FILTER_ALL = new CmsLockFilter(true).filterIncludeChildren();
 
     /** To filter all inherited locks. */
     public static final CmsLockFilter FILTER_INHERITED = new CmsLockFilter(true);
@@ -62,7 +62,7 @@ public final class CmsLockFilter implements Cloneable {
     private CmsUUID m_notOwnedByUserId = null;
 
     /** If set the filter extends the result to non inherited locks. */
-    private boolean m_includeChilds = false;
+    private boolean m_includeChildren = false;
 
     /** If set the filter restricts the result including only locks owned by the given user. */
     private CmsUUID m_ownedByUserId = null;
@@ -92,7 +92,7 @@ public final class CmsLockFilter implements Cloneable {
      */
     private CmsLockFilter(boolean inherited) {
 
-        m_includeChilds = !inherited;
+        m_includeChildren = !inherited;
         m_includeParents = inherited;
     }
 
@@ -102,7 +102,7 @@ public final class CmsLockFilter implements Cloneable {
     public Object clone() {
 
         CmsLockFilter filter = new CmsLockFilter(false);
-        filter.m_includeChilds = m_includeChilds;
+        filter.m_includeChildren = m_includeChildren;
         filter.m_includeParents = m_includeParents;
         filter.m_types = new HashSet(m_types);
         filter.m_ownedByUserId = m_ownedByUserId;
@@ -156,14 +156,14 @@ public final class CmsLockFilter implements Cloneable {
     }
 
     /**
-     * Returns an extended filter that will extend the result to the given path and all its childs.<p>
+     * Returns an extended filter that will extend the result to the given path and all its children.<p>
      * 
      * @return an extended filter to search the subresources of the given path
      */
-    public CmsLockFilter filterIncludeChilds() {
+    public CmsLockFilter filterIncludeChildren() {
 
         CmsLockFilter filter = (CmsLockFilter)this.clone();
-        filter.m_includeChilds = true;
+        filter.m_includeChildren = true;
         return filter;
     }
 
@@ -294,13 +294,13 @@ public final class CmsLockFilter implements Cloneable {
     }
 
     /**
-     * Returns the include childs flag.<p>
+     * Returns the include children flag.<p>
      * 
-     * @return if set the filter extends the result to the given path and all its childs
+     * @return if set the filter extends the result to the given path and all its children
      */
-    public boolean isIncludeChilds() {
+    public boolean isIncludeChildren() {
 
-        return m_includeChilds;
+        return m_includeChildren;
     }
 
     /**
@@ -334,7 +334,7 @@ public final class CmsLockFilter implements Cloneable {
     public boolean match(String rootPath, CmsLock lock) {
 
         boolean match = false;
-        if (m_includeChilds) {
+        if (m_includeChildren) {
             match = lock.getResourceName().startsWith(rootPath);
         }
         if (!match && m_includeParents) {
@@ -373,7 +373,7 @@ public final class CmsLockFilter implements Cloneable {
 
         StringBuffer str = new StringBuffer(128);
         str.append("[");
-        str.append("childs").append("=").append(m_includeChilds).append(", ");
+        str.append("children").append("=").append(m_includeChildren).append(", ");
         str.append("parents").append("=").append(m_includeParents).append(", ");
         str.append("types").append("=").append(m_types).append(", ");
         str.append("includedUser").append("=").append(m_ownedByUserId).append(", ");

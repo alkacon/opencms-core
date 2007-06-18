@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2007/06/04 16:08:34 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/18 12:35:41 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,8 +59,8 @@ public final class CmsRelationFilter implements Cloneable {
     /** To filter all targets. */
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
 
-    /** If set the filter extends the result to the given path and all its childs. */
-    private boolean m_includeChilds = false;
+    /** If set the filter extends the result to the given path and all its subresources. */
+    private boolean m_includeSubresources = false;
 
     /** To filter relations for a given source path. */
     private String m_path;
@@ -98,7 +98,7 @@ public final class CmsRelationFilter implements Cloneable {
         filter.m_structureId = m_structureId;
         filter.m_types = new HashSet(m_types);
         filter.m_path = m_path;
-        filter.m_includeChilds = m_includeChilds;
+        filter.m_includeSubresources = m_includeSubresources;
         return filter;
     }
 
@@ -119,14 +119,14 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
-     * Returns an extended filter that will extend the result to the given path and all its childs.<p>
+     * Returns an extended filter that will extend the result to the given path and all its subresources.<p>
      * 
-     * @return an extended filter with the given relation date restriction
+     * @return an extended filter with including subresources
      */
-    public CmsRelationFilter filterIncludeChilds() {
+    public CmsRelationFilter filterIncludeChildren() {
 
         CmsRelationFilter filter = (CmsRelationFilter)this.clone();
-        filter.m_includeChilds = true;
+        filter.m_includeSubresources = true;
         return filter;
     }
 
@@ -317,13 +317,13 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
-     * Returns the include childs flag.<p>
+     * Returns the include subresources flag.<p>
      * 
-     * @return if set the filter extends the result to the given path and all its childs
+     * @return if set the filter extends the result to the given path and all its subresources
      */
-    public boolean isIncludeChilds() {
+    public boolean isIncludeSubresources() {
 
-        return m_includeChilds;
+        return m_includeSubresources;
     }
 
     /**
@@ -385,7 +385,7 @@ public final class CmsRelationFilter implements Cloneable {
         str.append(mode).append("=").append(m_structureId).append(", ");
         str.append("path").append("=").append(m_path).append(", ");
         str.append("types").append("=").append(m_types).append(", ");
-        str.append("childs").append("=").append(m_includeChilds);
+        str.append("subresources").append("=").append(m_includeSubresources);
         str.append("]");
         return str.toString();
     }

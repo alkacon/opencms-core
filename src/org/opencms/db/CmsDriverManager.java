@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/14 15:11:43 $
- * Version: $Revision: 1.570.2.103 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.570.2.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -603,7 +604,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 return;
             }
             // and now we need to remove all possible child-roles
-            List childs = role.getChilds(true);
+            List children = role.getChildren(true);
             Iterator itUserGroups = getGroupsOfUser(
                 dbc,
                 username,
@@ -614,7 +615,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.getRequestContext().getRemoteAddress()).iterator();
             while (itUserGroups.hasNext()) {
                 CmsGroup roleGroup = (CmsGroup)itUserGroups.next();
-                if (childs.contains(CmsRole.valueOf(roleGroup))) {
+                if (children.contains(CmsRole.valueOf(roleGroup))) {
                     // remove only child roles
                     removeUserFromGroup(dbc, username, roleGroup.getName(), true);
                 }
@@ -629,7 +630,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // if setting a role that is not the workplace user role ensure the user is also wp user
             CmsRole wpUser = CmsRole.WORKPLACE_USER.forOrgUnit(group.getOuFqn());
             if (!role.equals(wpUser)
-                && !role.getChilds(true).contains(wpUser)
+                && !role.getChildren(true).contains(wpUser)
                 && !userInGroup(dbc, username, wpUser.getGroupName(), true)) {
                 addUserToGroup(dbc, username, wpUser.getGroupName(), true);
             }
@@ -2067,7 +2068,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Deletes a group, where all permissions, users and childs of the group
+     * Deletes a group, where all permissions, users and children of the group
      * are transfered to a replacement group.<p>
      * 
      * @param dbc the current request context
@@ -2085,7 +2086,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             replacementGroup = readGroup(dbc, replacementId);
         }
         // get all child groups of the group
-        List childs = getChild(dbc, group);
+        List children = getChildren(dbc, group, false);
         // get all users in this group
         List users = getUsersOfGroup(dbc, group.getName(), true, false, group.isRole());
         // get online project
@@ -2099,22 +2100,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     removeUserFromGroup(dbc, user.getName(), group.getName(), true);
                 }
             }
-            // transfer childs to grandfather if possible
+            // transfer children to grandfather if possible
             CmsUUID parentId = group.getParentId();
             if (parentId == null) {
                 parentId = CmsUUID.getNullUUID();
             }
-            Iterator itChilds = childs.iterator();
-            while (itChilds.hasNext()) {
-                CmsGroup child = (CmsGroup)itChilds.next();
+            Iterator itChildren = children.iterator();
+            while (itChildren.hasNext()) {
+                CmsGroup child = (CmsGroup)itChildren.next();
                 child.setParentId(parentId);
                 writeGroup(dbc, child);
             }
         } else {
-            // move childs
-            Iterator itChilds = childs.iterator();
-            while (itChilds.hasNext()) {
-                CmsGroup child = (CmsGroup)itChilds.next();
+            // move children
+            Iterator itChildren = children.iterator();
+            while (itChildren.hasNext()) {
+                CmsGroup child = (CmsGroup)itChildren.next();
                 child.setParentId(replacementId);
                 writeGroup(dbc, child);
             }
@@ -3395,41 +3396,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the current database context
      * @param group the group to get the child for
+     * @param includeSubChildren if set also returns all sub-child groups of the given group
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getChild(CmsDbContext dbc, CmsGroup group) throws CmsException {
+    public List getChildren(CmsDbContext dbc, CmsGroup group, boolean includeSubChildren) throws CmsException {
 
-        return m_userDriver.readChildGroups(dbc, group.getName());
-    }
-
-    /**
-     * Returns all child groups of a group.<p>
-     * 
-     * This method also returns all sub-child groups of the current group.
-     *
-     * @param dbc the current database context
-     * @param group the group to get the children for
-     * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getChilds(CmsDbContext dbc, CmsGroup group) throws CmsException {
-
-        Set allChilds = new HashSet();
+        if (!includeSubChildren) {
+            return m_userDriver.readChildGroups(dbc, group.getName());
+        }
+        Set allChildren = new TreeSet();
         // iterate all child groups
         Iterator it = m_userDriver.readChildGroups(dbc, group.getName()).iterator();
         while (it.hasNext()) {
             CmsGroup child = (CmsGroup)it.next();
             // add the group itself
-            allChilds.add(child);
-            // now get all subchilds for each group
-            allChilds.addAll(getChilds(dbc, child));
+            allChildren.add(child);
+            // now get all subchildren for each group
+            allChildren.addAll(getChildren(dbc, child, true));
         }
-        return new ArrayList(allChilds);
+        return new ArrayList(allChildren);
     }
 
     /**
@@ -3540,7 +3528,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         continue;
                     }
                     // get the child roles
-                    Iterator itChildRoles = role.getChilds(true).iterator();
+                    Iterator itChildRoles = role.getChildren(true).iterator();
                     while (itChildRoles.hasNext()) {
                         CmsRole childRole = (CmsRole)itChildRoles.next();
                         allGroups.add(readGroup(dbc, childRole.getGroupName()));
@@ -3563,7 +3551,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 }
                             }
                             // add child roles in child ous
-                            itChildRoles = role.getChilds(true).iterator();
+                            itChildRoles = role.getChildren(true).iterator();
                             while (itChildRoles.hasNext()) {
                                 CmsRole childRole = (CmsRole)itChildRoles.next();
                                 try {
@@ -3678,7 +3666,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @param dbc the current db context
      * @param parent the parent organizational unit, or <code>null</code> for the root
-     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * @param includeChildren if hierarchical deeper organization units should also be returned
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
@@ -3686,13 +3674,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
-    public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChilds)
+    public List getOrganizationalUnits(CmsDbContext dbc, CmsOrganizationalUnit parent, boolean includeChildren)
     throws CmsException {
 
         if (parent == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PARENT_ORGUNIT_NULL_0));
         }
-        return m_userDriver.getOrganizationalUnits(dbc, parent, includeChilds);
+        return m_userDriver.getOrganizationalUnits(dbc, parent, includeChildren);
     }
 
     /**
@@ -8646,7 +8634,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Integer flags = new Integer(role.getVirtualGroupFlags());
         roleFlags.add(flags);
         // collect all child role flags
-        Iterator itChildRoles = role.getChilds(true).iterator();
+        Iterator itChildRoles = role.getChildren(true).iterator();
         while (itChildRoles.hasNext()) {
             CmsRole child = (CmsRole)itChildRoles.next();
             flags = new Integer(child.getVirtualGroupFlags());

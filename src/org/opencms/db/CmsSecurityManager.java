@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/14 11:46:35 $
- * Version: $Revision: 1.97.4.60 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.97.4.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1130,7 +1130,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Deletes a group, where all permissions, users and childs of the group
+     * Deletes a group, where all permissions, users and children of the group
      * are transfered to a replacement group.<p>
      * 
      * @param context the current request context
@@ -1732,50 +1732,26 @@ public final class CmsSecurityManager {
 
     /**
      * Returns all child groups of a group.<p>
-     *
-     * @param context the current request context
-     * @param groupname the name of the group
-     *
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
-     * 
-     * @throws CmsException if operation was not succesful
-     */
-    public List getChild(CmsRequestContext context, String groupname) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
-        try {
-            result = m_driverManager.getChild(dbc, m_driverManager.readGroup(
-                dbc,
-                CmsOrganizationalUnit.removeLeadingSeparator(groupname)));
-        } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_1, groupname), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
-     * Returns all child groups of a group.<p>
      * 
      * This method also returns all sub-child groups of the current group.<p>
      *
      * @param context the current request context
      * @param groupname the name of the group
+     * @param includeSubChildren if set also returns all sub-child groups of the given group
      *
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getChilds(CmsRequestContext context, String groupname) throws CmsException {
+    public List getChildren(CmsRequestContext context, String groupname, boolean includeSubChildren)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getChilds(dbc, m_driverManager.readGroup(
+            result = m_driverManager.getChildren(dbc, m_driverManager.readGroup(
                 dbc,
-                CmsOrganizationalUnit.removeLeadingSeparator(groupname)));
+                CmsOrganizationalUnit.removeLeadingSeparator(groupname)), includeSubChildren);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_TRANSITIVE_1, groupname), e);
         } finally {
@@ -1952,7 +1928,7 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param parent the parent organizational unit
-     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * @param includeChildren if hierarchical deeper organization units should also be returned
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
@@ -1960,13 +1936,13 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
-    public List getOrganizationalUnits(CmsRequestContext context, CmsOrganizationalUnit parent, boolean includeChilds)
+    public List getOrganizationalUnits(CmsRequestContext context, CmsOrganizationalUnit parent, boolean includeChildren)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getOrganizationalUnits(dbc, parent, includeChilds);
+            result = m_driverManager.getOrganizationalUnits(dbc, parent, includeChildren);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_ORGUNITS_1, parent.getName()), e);
         } finally {

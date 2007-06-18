@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2007/06/04 16:09:23 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/18 12:35:40 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.5.6
  */
@@ -151,16 +151,16 @@ public class CmsOrgUnitManager {
      *
      * @param cms the opencms context
      * @param ouFqn the fully qualified name of the parent organizational unit
-     * @param includeChilds if hierarchical deeper organization units should also be returned
+     * @param includeChildren if hierarchical deeper organization units should also be returned
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
-    public List getOrganizationalUnits(CmsObject cms, String ouFqn, boolean includeChilds) throws CmsException {
+    public List getOrganizationalUnits(CmsObject cms, String ouFqn, boolean includeChildren) throws CmsException {
 
         CmsOrganizationalUnit parent = readOrganizationalUnit(cms, ouFqn);
-        return m_securityManager.getOrganizationalUnits(cms.getRequestContext(), parent, includeChilds);
+        return m_securityManager.getOrganizationalUnits(cms.getRequestContext(), parent, includeChildren);
     }
 
     /**
