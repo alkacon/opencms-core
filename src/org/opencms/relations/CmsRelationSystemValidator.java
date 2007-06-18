@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/18 12:32:02 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.3.0 
  */
@@ -355,12 +355,14 @@ public class CmsRelationSystemValidator {
                 if (report != null) {
                     if (!resource.getState().isDeleted()) {
                         report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_TARGET_1,
+                            Messages.RPT_HTMLLINK_BROKEN_TARGET_2,
+                            relation.getSourcePath(),
                             dbc.removeSiteRoot(link)), I_CmsReport.FORMAT_WARNING);
                     } else {
                         report.println(Messages.get().container(
-                            Messages.RPT_HTMLLINK_BROKEN_SOURCE_1,
-                            dbc.removeSiteRoot(link)), I_CmsReport.FORMAT_WARNING);
+                            Messages.RPT_HTMLLINK_BROKEN_SOURCE_2,
+                            dbc.removeSiteRoot(link),
+                            relation.getTargetPath()), I_CmsReport.FORMAT_WARNING);
                     }
                 }
             }
