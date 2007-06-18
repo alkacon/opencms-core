@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/06/04 16:08:34 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/18 12:28:52 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.9.2
  */
@@ -319,18 +319,18 @@ public class CmsCategoryService {
     public List readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
 
         List result = new ArrayList();
-        Iterator itRelations = cms.getRelationsForResource(resourceName, CmsRelationFilter.TARGETS).iterator();
+        Iterator itRelations = cms.getRelationsForResource(
+            resourceName,
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.CATEGORY)).iterator();
         while (itRelations.hasNext()) {
             CmsRelation relation = (CmsRelation)itRelations.next();
-            if (relation.getType().equals(CmsRelationType.CATEGORY)) {
-                CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
-                CmsCategory category = new CmsCategory(
-                    resource.getStructureId(),
-                    resource.getRootPath().substring(BASE_PATH.length()),
-                    cms.readPropertyObject(resource, "Title", false).getValue(),
-                    cms.readPropertyObject(resource, "Description", false).getValue());
-                result.add(category);
-            }
+            CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
+            CmsCategory category = new CmsCategory(
+                resource.getStructureId(),
+                resource.getRootPath().substring(BASE_PATH.length()),
+                cms.readPropertyObject(resource, "Title", false).getValue(),
+                cms.readPropertyObject(resource, "Description", false).getValue());
+            result.add(category);
         }
         return result;
     }
@@ -367,19 +367,11 @@ public class CmsCategoryService {
         // check the category exists
         readCategory(cms, categoryPath);
 
-        if (readResourceCategories(cms, resourceName).contains(readCategory(cms, categoryPath))) {
-            // recursively remove from deeper level categories
-            Iterator it = readSubCategories(cms, categoryPath, false).iterator();
-            while (it.hasNext()) {
-                CmsCategory category = (CmsCategory)it.next();
-                removeResourceFromCategory(cms, resourceName, category.getPath());
-            }
-
-            // remove the resource just from this category
-            CmsRelationFilter filter = CmsRelationFilter.TARGETS;
-            filter = filter.filterType(CmsRelationType.CATEGORY);
-            filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
-            cms.deleteRelationsFromResource(resourceName, filter);
-        }
+        // remove the resource just from this category
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
+        filter = filter.filterType(CmsRelationType.CATEGORY);
+        filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
+        filter = filter.filterIncludeChildren();
+        cms.deleteRelationsFromResource(resourceName, filter);
     }
 }
