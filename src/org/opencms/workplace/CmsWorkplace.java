@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/06/13 08:19:43 $
- * Version: $Revision: 1.156.4.21 $
+ * Date   : $Date: 2007/06/19 08:21:42 $
+ * Version: $Revision: 1.156.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.21 $ 
+ * @version $Revision: 1.156.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -564,7 +564,7 @@ public abstract class CmsWorkplace {
     /**
      * Returns all present request parameters as String.<p>
      * 
-     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
+     * The String is formatted as a parameter String (<code>param1=val1&amp;param2=val2</code>) with UTF-8 encoded values.<p>
      * 
      * @return all present request parameters as String
      */
