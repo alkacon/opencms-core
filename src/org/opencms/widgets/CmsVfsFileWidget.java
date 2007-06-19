@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2007/06/05 13:35:13 $
- * Version: $Revision: 1.15.4.2 $
+ * Date   : $Date: 2007/06/19 12:19:01 $
+ * Version: $Revision: 1.15.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.4.2 $ 
+ * @version $Revision: 1.15.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,7 +68,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     /** The start site used in the popup window. */
     private String m_startSite;
 
-    /** Flag to determine if if files should be shown in popup window. */
+    /** Flag to determine if files should be shown in popup window. */
     private boolean m_includeFiles;
     
     /**
@@ -289,6 +289,8 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public void setConfiguration(String configuration) {
 
         m_showSiteSelector = true;
+        m_includeFiles = true;
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
             if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
                 // site selector should be hidden
@@ -303,6 +305,10 @@ public class CmsVfsFileWidget extends A_CmsWidget {
                     site = site.substring(0, site.indexOf('|'));
                 }
                 m_startSite = site;
+            }
+            if (configuration.indexOf(CONFIGURATION_EXCLUDEFILES) != -1) {
+                // files should not be included
+                m_includeFiles = false;
             }
         }
         super.setConfiguration(configuration);
