@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/06/15 11:59:19 $
- * Version: $Revision: 1.46.4.11 $
+ * Date   : $Date: 2007/06/19 13:16:44 $
+ * Version: $Revision: 1.46.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.11 $ 
+ * @version $Revision: 1.46.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -525,6 +525,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // re-initialize the XML content 
             document.initDocument();
         }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForUse(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     */
+    public CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content) {
+
+        // noop, just return the unmodified content
+        return content;
     }
 
     /**
@@ -1384,7 +1393,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
 
-
         String rootPath = null;
         List siblings = null;
 
@@ -1393,7 +1401,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             Map.Entry e = (Map.Entry)mappings.next();
             String path = e.getKey().toString();
             String mapping = e.getValue().toString();
-
             if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
                 // get root path of the file

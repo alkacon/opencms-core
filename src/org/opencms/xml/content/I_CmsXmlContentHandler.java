@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.24.4.3 $
+ * Date   : $Date: 2007/06/19 13:16:44 $
+ * Version: $Revision: 1.24.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.3 $ 
+ * @version $Revision: 1.24.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,12 +204,23 @@ public interface I_CmsXmlContentHandler {
      * @param content the XML content to be written
      * @param file the resource the XML content in it's current state was unmarshalled from 
      * 
-     * @return the file to write to the OpenCms VFS, this will be an updated vresion of the parameter file
+     * @return the file to write to the OpenCms VFS, this will be an updated version of the parameter file
      * 
      * @throws CmsException in case something goes wrong
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
 
+    /**
+     * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
+     * 
+     * This method is alway called after any content is unmarshalled.
+     * It can be used to perform customized actions on the given XML content.<p>  
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to be used as read from the VFS
+     */
+    CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content);
+    
     /**
      * Resolves the value mappings of the given XML content value, according 
      * to the rules of this XML content handler.<p>

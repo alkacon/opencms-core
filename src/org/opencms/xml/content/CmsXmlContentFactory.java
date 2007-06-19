@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.11.8.2 $
+ * Date   : $Date: 2007/06/19 13:16:44 $
+ * Version: $Revision: 1.11.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.8.2 $ 
+ * @version $Revision: 1.11.8.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,7 +90,9 @@ public final class CmsXmlContentFactory {
     public static CmsXmlContent createDocument(CmsObject cms, Locale locale, String modelUri) throws CmsException {
 
         // create the XML content
-        return new CmsXmlContent(cms, locale, modelUri);
+        CmsXmlContent content = new CmsXmlContent(cms, locale, modelUri);
+        // call prepare for use content handler and return the result 
+        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -113,7 +115,9 @@ public final class CmsXmlContentFactory {
         CmsXmlContentDefinition contentDefinition) {
 
         // create the XML content
-        return new CmsXmlContent(cms, locale, encoding, contentDefinition);
+        CmsXmlContent content = new CmsXmlContent(cms, locale, encoding, contentDefinition);
+        // call prepare for use content handler and return the result 
+        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -215,8 +219,8 @@ public final class CmsXmlContentFactory {
 
         // set the file
         content.setFile(file);
-        // return the result
-        return content;
+        // call prepare for use content handler and return the result 
+        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
@@ -273,7 +277,9 @@ public final class CmsXmlContentFactory {
      */
     public static CmsXmlContent unmarshal(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
 
-        return new CmsXmlContent(cms, document, encoding, resolver);
+        CmsXmlContent content = new CmsXmlContent(cms, document, encoding, resolver);
+        // call prepare for use content handler and return the result 
+        return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
