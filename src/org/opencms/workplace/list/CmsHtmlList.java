@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/06/15 08:34:51 $
- * Version: $Revision: 1.35.4.14 $
+ * Date   : $Date: 2007/06/19 07:35:25 $
+ * Version: $Revision: 1.35.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.14 $ 
+ * @version $Revision: 1.35.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -737,6 +737,9 @@ public class CmsHtmlList {
                 m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
             }
             if (!m_metadata.isSelfManaged()) {
+                if (m_filteredItems == null) {
+                    m_filteredItems = new ArrayList(getAllContent());
+                }
                 Collections.reverse(m_filteredItems);
             }
             return;
