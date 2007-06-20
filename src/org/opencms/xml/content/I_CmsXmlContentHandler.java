@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2007/06/19 13:16:44 $
- * Version: $Revision: 1.24.4.4 $
+ * Date   : $Date: 2007/06/20 10:54:37 $
+ * Version: $Revision: 1.24.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.4 $ 
+ * @version $Revision: 1.24.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,6 +218,8 @@ public interface I_CmsXmlContentHandler {
      * 
      * @param cms the current OpenCms user context
      * @param content the XML content to be used as read from the VFS
+     * 
+     * @return the prepared content to be used
      */
     CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content);
     
