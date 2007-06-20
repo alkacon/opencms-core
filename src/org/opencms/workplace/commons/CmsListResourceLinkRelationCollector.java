@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationCollector.java,v $
- * Date   : $Date: 2007/04/26 14:31:14 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/20 08:39:01 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.1 
  */
@@ -170,8 +170,8 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
                     resource = relation.getTarget(cms, CmsResourceFilter.ALL);
                 }
             } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(getWp().getLocale()), e);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(getWp().getLocale()), e);
                 }
                 resource = new CmsResource(
                     new CmsUUID(),
