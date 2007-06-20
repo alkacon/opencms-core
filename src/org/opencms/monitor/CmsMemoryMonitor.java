@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/06/12 14:09:21 $
- * Version: $Revision: 1.58.4.13 $
+ * Date   : $Date: 2007/06/20 12:01:07 $
+ * Version: $Revision: 1.58.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.13 $ 
+ * @version $Revision: 1.58.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1613,7 +1613,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored map.<p>
-     * the keys must be of type String.
+     * 
+     * the keys must be of type String.<p>
      * 
      * @param map the map
      * @param depth the max recursion depth for calculation the size
@@ -1659,9 +1660,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored object.<p>
-     * obj must be of type map, the keys must be of type String.
+     * 
+     * obj must be of type {@link Map}, the keys must be of type {@link String}.<p>
      * 
      * @param obj the object
+     * 
      * @return the total size of key strings
      */
     private long getKeySize(Object obj) {
@@ -1675,9 +1678,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the max costs for all items within a monitored object.<p>
-     * obj must be of type CmsLruCache, CmsLruHashMap
+     * 
+     * obj must be of type {@link CmsLruCache} or {@link LRUMap}.<p>
      * 
      * @param obj the object
+     * 
      * @return max cost limit or "-"
      */
     private String getLimit(Object obj) {
@@ -1697,6 +1702,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param listValue the list object
      * @param depth the max recursion depth for calculation the size
+     * 
      * @return the size of the list object
      */
     private long getValueSize(List listValue, int depth) {
@@ -1745,6 +1751,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param mapValue the map object
      * @param depth the max recursion depth for calculation the size
+     * 
      * @return the size of the map object
      */
     private long getValueSize(Map mapValue, int depth) {
@@ -1790,9 +1797,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the value sizes of value objects within the monitored object.<p>
-     * obj must be of type map
      * 
      * @param obj the object 
+     * 
      * @return the value sizes of value objects or "-"-fields
      */
     private long getValueSize(Object obj) {
@@ -1999,7 +2006,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     new Long(m_memoryCurrent.getUsage()),
                     new Integer(m_maxUsagePercent)}));
         } else {
-
             m_logCount++;
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_LOG_INFO_2,
