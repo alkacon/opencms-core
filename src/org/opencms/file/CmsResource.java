@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/06/12 13:58:28 $
- * Version: $Revision: 1.45.4.14 $
+ * Date   : $Date: 2007/06/20 10:14:05 $
+ * Version: $Revision: 1.45.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.14 $
+ * @version $Revision: 1.45.4.15 $
  * 
  * @since 6.0.0 
  */
@@ -638,7 +638,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static String getParentFolder(String resource) {
 
-        if ("/".equals(resource)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource) || "/".equals(resource)) {
             return null;
         }
         // remove the last char, for a folder this will be "/", for a file it does not matter
