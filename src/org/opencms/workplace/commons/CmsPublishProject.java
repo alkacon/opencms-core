@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/06/14 11:38:42 $
- * Version: $Revision: 1.27.4.20 $
+ * Date   : $Date: 2007/06/21 15:07:56 $
+ * Version: $Revision: 1.27.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.20 $ 
+ * @version $Revision: 1.27.4.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -723,6 +723,22 @@ public class CmsPublishProject extends CmsMultiDialog {
             setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_RESOURCES_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_RESOURCES_CONFIRMED);
+            // merge publish list with related resources if needed
+            CmsPublishList publishList = getSettings().getPublishList();
+            if (Boolean.valueOf(getParamRelatedresources()).booleanValue() && publishList.isDirectPublish()) {
+                try {
+                    CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                        getCms(),
+                        publishList);
+                    publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
+                    getSettings().setPublishList(publishList);
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
             // if there is no broken link
             if (!hasBrokenLinks()) {
                 // skip broken links confirmation screen
@@ -771,12 +787,6 @@ public class CmsPublishProject extends CmsMultiDialog {
             throw new CmsException(Messages.get().container(
                 org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
                 getProjectname()));
-        }
-        if (Boolean.valueOf(getParamRelatedresources()).booleanValue() && publishList.isDirectPublish()) {
-            CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
-                getCms(),
-                publishList);
-            publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
         }
         OpenCms.getPublishManager().publishProject(
             getCms(),
