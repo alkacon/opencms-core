@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 13:07:38 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/21 15:19:38 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.2
  */
@@ -64,12 +64,13 @@ public class TestCmsHtmlStripper extends TestCase {
      */
     public void testStripHtmlBypass() throws Exception {
 
-        CmsHtmlStripper stripper = new CmsHtmlStripper();
+        CmsHtmlStripper stripper = new CmsHtmlStripper(false);
 
         String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result1 = stripper.stripHtml(content1);
         System.out.println(result1 + "\n\n");
-        // assertEquals(content1, result1);
+        // This fails as htmlparser adds a missing closing tag:
+        //assertEquals(content1, result1);
 
         String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result2 = stripper.stripHtml(content2);

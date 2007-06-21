@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 15:11:58 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/21 15:19:38 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.9.2
  * 
@@ -216,8 +216,8 @@ public final class CmsHtmlStripper {
      */
     private String tidy(final String content) {
 
-        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_WORD
-            + CmsHtmlConverter.PARAM_XHTML);
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, new StringBuffer(
+            CmsHtmlConverter.PARAM_WORD).append(";").append(CmsHtmlConverter.PARAM_XHTML).toString());
         String result = content;
         try {
             result = converter.convertToString(content);
