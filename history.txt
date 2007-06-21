@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/20 08:40:35 $
- * Version: $Revision: 1.717.2.191 $
+ * Date   : $Date: 2007/06/21 10:45:22 $
+ * Version: $Revision: 1.717.2.192 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ OpenCms 7.0.0 - July 4, 2007
 * Publish queue working in online project
 * Fixed NPE bug in the back-office html list
 * Fixed bug in the VFS file widget
+! New org.opencms.util.CmsHtmlStripper supports removing of all unwanted HTML tags in Strings. 
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
