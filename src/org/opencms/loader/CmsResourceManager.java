@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.36.4.9 $
+ * Date   : $Date: 2007/06/21 16:14:57 $
+ * Version: $Revision: 1.36.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.9 $ 
+ * @version $Revision: 1.36.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -411,6 +411,19 @@ public class CmsResourceManager {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
 
+        int conflictIndex = m_resourceTypesFromXml.indexOf(resourceType);
+        if (conflictIndex >= 0) {
+            // configuration problem: the resource type (or at least the id or the name) is already configured
+            I_CmsResourceType conflictingType = (I_CmsResourceType)m_resourceTypesFromXml.get(conflictIndex);
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFLICTING_RESOURCE_TYPES_4,
+                new Object[] {
+                    resourceType.getTypeName(),
+                    Integer.valueOf(resourceType.getTypeId()),
+                    conflictingType.getTypeName(),
+                    Integer.valueOf(conflictingType.getTypeId())}));
+        }
+
         m_resourceTypesFromXml.add(resourceType);
     }
 
@@ -700,6 +713,21 @@ public class CmsResourceManager {
     }
 
     /**
+     * Checks if an initialized resource type instance equal to the given resource type is available.<p>
+     * 
+     * @param type the resource type to check
+     * @return <code>true</code> if such a resource type has been configured, <code>false</code> otherwise
+     * 
+     * @see #getResourceType(String)
+     * @see #getResourceType(int)
+     */
+    public boolean hasResourceType(I_CmsResourceType type) {
+
+        int result = m_configuration.getResourceTypeList().indexOf(type);
+        return result >= 0;
+    }
+
+    /**
      * Checks if an initialized resource type instance for the given resource type is is available.<p>
      * 
      * @param typeId the id of the resource type to check
@@ -732,8 +760,10 @@ public class CmsResourceManager {
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     * 
+     * @throws CmsConfigurationException in case of duplicate resource types in the configuration
      */
-    public void initConfiguration() {
+    public void initConfiguration() throws CmsConfigurationException {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LOADER_CONFIG_FINISHED_0));
@@ -757,8 +787,9 @@ public class CmsResourceManager {
      * @param cms an initialized OpenCms user context with "module manager" role permissions
      * 
      * @throws CmsRoleViolationException in case the provided OpenCms user context did not have "module manager" role permissions
+     * @throws CmsConfigurationException in case of duplicate resource types in the configuration
      */
-    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
+    public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException, CmsConfigurationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // some simple test cases don't require this check       
@@ -983,8 +1014,10 @@ public class CmsResourceManager {
 
     /**
      * Initializes member variables required for storing the resource types.<p>
+     *
+     * @throws CmsConfigurationException in case of duplicate resource types in the configuration
      */
-    private synchronized void initResourceTypes() {
+    private synchronized void initResourceTypes() throws CmsConfigurationException {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STARTING_LOADER_CONFIG_0));
@@ -1025,6 +1058,20 @@ public class CmsResourceManager {
                     Iterator j = module.getResourceTypes().iterator();
                     while (j.hasNext()) {
                         I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
+                        int conflictIndex = newConfiguration.getResourceTypeList().indexOf(resourceType);
+                        if (conflictIndex >= 0) {
+                            // configuration problem: the resource type (or at least the id or the name) is already configured
+                            I_CmsResourceType conflictingType = (I_CmsResourceType)newConfiguration.getResourceTypeList().get(
+                                conflictIndex);
+                            throw new CmsConfigurationException(Messages.get().container(
+                                Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
+                                new Object[] {
+                                    resourceType.getTypeName(),
+                                    Integer.valueOf(resourceType.getTypeId()),
+                                    module.getName(),
+                                    conflictingType.getTypeName(),
+                                    Integer.valueOf(conflictingType.getTypeId())}));
+                        }
                         initResourceType(resourceType, newConfiguration);
                     }
                 }

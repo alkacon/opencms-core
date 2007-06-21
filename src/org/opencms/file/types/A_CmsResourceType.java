@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/06/04 16:06:57 $
- * Version: $Revision: 1.42.4.20 $
+ * Date   : $Date: 2007/06/21 16:14:57 $
+ * Version: $Revision: 1.42.4.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.20 $ 
+ * @version $Revision: 1.42.4.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -324,6 +324,38 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * Returns <code>true</code>, if this resource type is equal to the given Object.<p>
+     * 
+     * Please note: A resource type is identified by it's id {@link #getTypeId()} and it's name {@link #getTypeName()}.
+     * Two resource types are considered equal, if either their id or ther name is equal.
+     * This is to prevent issues in the configuration with multiple occurences of the same name or id.<p> 
+     * 
+     * @param obj the Object to compare this resource type with
+     * 
+     * @return <code>true</code>, if this resource type is equal to the given Object
+     * 
+     * @see #getTypeId()
+     * @see #getTypeName()
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof I_CmsResourceType) {
+            I_CmsResourceType other = (I_CmsResourceType)obj;
+            if (getTypeId() == other.getTypeId()) {
+                return true;
+            }
+            if ((getTypeName() != null) && (getTypeName().equals(other.getTypeName()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
     public String getCachePropertyDefault() {
@@ -399,6 +431,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String getTypeName() {
 
         return m_typeName;
+    }
+
+    /**
+     * The hash code implementation simply returns the unique type id of this resource type.
+     * 
+     * @see #getTypeId()
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return getTypeId();
     }
 
     /**
@@ -962,7 +1005,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            if (undoneResource1 == null || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+            if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
                 List links = null;
                 try {
                     links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));

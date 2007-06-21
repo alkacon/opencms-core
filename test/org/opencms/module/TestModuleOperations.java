@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2007/01/19 16:54:01 $
- * Version: $Revision: 1.22.4.2 $
+ * Date   : $Date: 2007/06/21 16:14:58 $
+ * Version: $Revision: 1.22.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.2 $
+ * @version $Revision: 1.22.4.3 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -89,6 +89,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         suite.addTest(new TestModuleOperations("testModuleImport"));
         suite.addTest(new TestModuleOperations("testModuleExport"));
         suite.addTest(new TestModuleOperations("testOldModuleImport"));
+        suite.addTest(new TestModuleOperations("testModuleImportConflictId"));
         suite.addTest(new TestModuleOperations("testModuleImportMissingResTypeClass"));
         suite.addTest(new TestModuleOperations("testModuleDependencies"));
         suite.addTest(new TestModuleOperations("testModuleAdditionalResourcesWorkaround"));
@@ -533,6 +534,54 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertEquals(module.getParameter("param2"), "value2");
     }
 
+    /**
+     * Tests a module with a module that has a duplicate id.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testModuleImportConflictId() throws Throwable {
+
+        // this test imports a module with the id "12" and name "article"
+        // "article" is already configured with id 12
+        // id 12 is already configured for "tablegallery"
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing import of a module with a conflicting id");
+
+        String moduleName = "org.opencms.test.modules.testConflictId";
+
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        try {
+            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        } catch (CmsConfigurationException e) {
+            // this is the expected exception - the module should not have been imported
+        }
+
+        // check if the module was not imported
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was imported, but should not have been because of id conflicts!");
+        }
+        
+        // next test: try a module that has an internal id conflict
+        echo("Testing import of a module with internal conflicting ids");
+        
+        moduleName = "org.opencms.test.modules.testConflictId2";
+        moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        
+        try {
+            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        } catch (CmsConfigurationException e) {
+            // this is the expected exception - the module should not have been imported
+        }        
+        
+        // check if the module was not imported
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was imported, but should not have been because of id conflicts!");
+        }       
+    }
+    
     /**
      * Tests a module import with an unknown resource type class.<p>
      * 

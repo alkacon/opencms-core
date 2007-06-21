@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2007/05/14 12:23:16 $
- * Version: $Revision: 1.40.4.3 $
+ * Date   : $Date: 2007/06/21 16:14:58 $
+ * Version: $Revision: 1.40.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.3 $
+ * @version $Revision: 1.40.4.4 $
  * 
  * @since 6.0.0
  */
@@ -123,14 +123,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The mimetypes node name. */
     public static final String N_MIMETYPES = "mimetypes";
 
+    /** The properties node name. */
+    public static final String N_PROPERTIES = "properties";
+
     /** The relation type node name. */
     public static final String N_RELATIONTYPE = "relationtype";
 
     /** The relation types node name. */
     public static final String N_RELATIONTYPES = "relationtypes";
-
-    /** The properties node name. */
-    public static final String N_PROPERTIES = "properties";
 
     /** The resource loaders node name. */
     public static final String N_RESOURCELOADERS = "resourceloaders";
@@ -218,7 +218,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         // add rules for resource types
         digester.addFactoryCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, CmsDigesterResourceTypeCreationFactory.class);
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);
 
+        // please note: the order of the rules is very important here,
+        // the "set next" rule (above) must be added _before_ the "call method" rule (below)!
+        // reason is digester will call the rule that was last added first
+        // here we must make sure that the resource type is initialized first (with the "call method" rule)
+        // before it is actually added to the resource type container (with the "set next" rule)
+        // otherwise there will be an empty resource type added to the container, and validation will not work
         digester.addCallMethod(
             "*/" + N_RESOURCETYPES + "/" + N_TYPE,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD,
@@ -227,8 +234,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 2, A_CLASS);
-
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);
 
         // add rules for default properties
         digester.addObjectCreate(
