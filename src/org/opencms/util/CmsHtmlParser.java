@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2006/09/20 08:49:19 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/06/21 10:44:45 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.2.0
  */
@@ -131,7 +131,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
 
     /**
-     * Degrades Composite tags that do have children in the DOM tree 
+     * Internally degrades Composite tags that do have children in the DOM tree 
      * to simple single tags. This allows to avoid auto correction of unclosed HTML tags.<p>
      * 
      * @return A node factory that will not autocorrect open tags specified via <code>{@link #setNoAutoCloseTags(List)}</code>
