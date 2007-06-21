@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 10:45:22 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/21 15:11:58 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,15 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
+
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.commons.logging.Log;
 
 import org.htmlparser.Attribute;
 import org.htmlparser.Parser;
@@ -57,15 +63,21 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.2
  * 
  */
 public final class CmsHtmlStripper {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlStripper.class);
+
     /** A tag factory that is able to make tags invisible to visitors. */
     private CmsHtmlTagRemoveFactory m_nodeFactory;
+
+    /** Flag to control whether tidy is used. */
+    private boolean m_useTidy = true;
 
     /**
      * Default constructor that turns echo on and uses the settings for replacing tags.
@@ -74,6 +86,17 @@ public final class CmsHtmlStripper {
     public CmsHtmlStripper() {
 
         reset();
+    }
+
+    /**
+     * Creates an instance with control whether tidy is used.<p>
+     * 
+     * @param useTidy if true tidy will be used
+     */
+    public CmsHtmlStripper(final boolean useTidy) {
+
+        this();
+        m_useTidy = useTidy;
     }
 
     /**
@@ -162,13 +185,18 @@ public final class CmsHtmlStripper {
      * 
      * @throws ParserException if something goes wrong.
      */
-    public String stripHtml(String html) throws ParserException {
+    public String stripHtml(final String html) throws ParserException {
+
+        String content = html;
+        if (m_useTidy) {
+            content = tidy(content);
+        }
 
         // initialize a parser with the given charset
         Parser parser = new Parser();
         parser.setNodeFactory(m_nodeFactory);
         Lexer lexer = new Lexer();
-        Page page = new Page(html);
+        Page page = new Page(content);
         lexer.setPage(page);
         parser.setLexer(lexer);
         // process the page using a string collection wizard 
@@ -177,5 +205,28 @@ public final class CmsHtmlStripper {
         parser.visitAllNodesWith(visitor);
         // return the result
         return visitor.getResult();
+    }
+
+    /**
+     * Internally tidies with cleanup and xmhtml.<p> 
+     * 
+     * @param content html to clean 
+     * 
+     * @return the tidy html
+     */
+    private String tidy(final String content) {
+
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_WORD
+            + CmsHtmlConverter.PARAM_XHTML);
+        String result = content;
+        try {
+            result = converter.convertToString(content);
+        } catch (UnsupportedEncodingException e) {
+            // should never happen
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_WARN_TIDY_FAILURE_0), e);
+            }
+        }
+        return result;
     }
 }

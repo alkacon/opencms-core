@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2007/06/21 15:11:58 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.util.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHARSET_ILLEGAL_NAME_1 = "ERR_CHARSET_ILLEGAL_NAME_1";
@@ -120,6 +123,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEUTIL_FILESIZE_MBYTES_1 = "GUI_FILEUTIL_FILESIZE_MBYTES_1";
 
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONVERSION_BYTE_FAILED_0 = "LOG_CONVERSION_BYTE_FAILED_0";
 
@@ -160,13 +166,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_TRANSLATION_MATCH_3 = "LOG_TRANSLATION_MATCH_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_TIDY_FAILURE_0 = "LOG_WARN_TIDY_FAILURE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_UUID_1 = "LOG_WRITE_UUID_1";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.util.messages";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
