@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 10:45:22 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/21 13:07:38 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.9.2
  */
@@ -62,7 +62,7 @@ public class TestCmsHtmlStripper extends TestCase {
      * 
      * @throws Exception in case the test fails
      */
-    public void testHtmlExtractorBypass() throws Exception {
+    public void testStripHtmlBypass() throws Exception {
 
         CmsHtmlStripper stripper = new CmsHtmlStripper();
 
@@ -89,7 +89,7 @@ public class TestCmsHtmlStripper extends TestCase {
      * 
      * @throws Exception in case the test fails
      */
-    public void testHtmlExtractor() throws Exception {
+    public void testStripHtml() throws Exception {
 
         CmsHtmlStripper stripper = new CmsHtmlStripper();
         stripper.addPreserveTags("b,p,strong,i", ',');
@@ -99,26 +99,26 @@ public class TestCmsHtmlStripper extends TestCase {
         System.out.println(result1 + "\n\n");
         assertFalse(content1.equals(result1));
         result1 = result1.toLowerCase();
-        assertTrue("Html must not contain h1 tag.", result1.indexOf("h1") < 0);
-        assertTrue("Html must not contain h2 tag.", result1.indexOf("h2") < 0);
-        assertTrue("Html must not contain head tag.", result1.indexOf("head") < 0);
+        assertTrue("Html must not contain h1 tag.", result1.indexOf("<h1") < 0);
+        assertTrue("Html must not contain h2 tag.", result1.indexOf("<h2") < 0);
+        assertTrue("Html must not contain head tag.", result1.indexOf("<head") < 0);
 
         String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result2 = stripper.stripHtml(content2);
         System.out.println(result2 + "\n\n");
         assertFalse(content2.equals(result2));
         result1 = result1.toLowerCase();
-        assertTrue("Html must not contain h1 tag.", result2.indexOf("h1") < 0);
-        assertTrue("Html must not contain h2 tag.", result2.indexOf("h2") < 0);
-        assertTrue("Html must not contain head tag.", result2.indexOf("head") < 0);
+        assertTrue("Html must not contain h1 tag.", result2.indexOf("<h1") < 0);
+        assertTrue("Html must not contain h2 tag.", result2.indexOf("<h2") < 0);
+        assertTrue("Html must not contain head tag.", result2.indexOf("<head") < 0);
 
         String emil = CmsFileUtil.readFile("org/opencms/util/testHtml_03.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result3 = stripper.stripHtml(emil);
         System.out.println(result3 + "\n\n");
         assertFalse(emil.equals(result3));
-        assertTrue("Html must not contain h1 tag.", result3.indexOf("h1") < 0);
-        assertTrue("Html must not contain h2 tag.", result3.indexOf("h2") < 0);
-        assertTrue("Html must not contain head tag.", result3.indexOf("head") < 0);
+        assertTrue("Html must not contain h1 tag.", result3.indexOf("<h1") < 0);
+        assertTrue("Html must not contain h2 tag.", result3.indexOf("<h2") < 0);
+        assertTrue("Html must not contain head tag.", result3.indexOf("<head") < 0);
 
     }
 
