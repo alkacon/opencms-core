@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/03/30 09:32:00 $
- * Version: $Revision: 1.19.4.7 $
+ * Date   : $Date: 2007/06/22 09:49:06 $
+ * Version: $Revision: 1.19.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.7 $ 
+ * @version $Revision: 1.19.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1156,7 +1156,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (charsRead < size && readCount != -1) {
                 readCount = fileStream.read(buffer);
                 charsRead += readCount;
-                out.write(buffer);
+                out.write(buffer, 0, charsRead);
             }
         } catch (IOException e) {
             throw e;
