@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/06/18 12:35:42 $
- * Version: $Revision: 1.146.4.50 $
+ * Date   : $Date: 2007/06/22 14:53:41 $
+ * Version: $Revision: 1.146.4.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.50 $
+ * @version $Revision: 1.146.4.51 $
  * 
  * @since 6.0.0 
  */
@@ -2325,7 +2325,11 @@ public final class CmsObject {
      */
     public CmsUUID publishProject() throws Exception {
 
-        return OpenCms.getPublishManager().publishProject(this, new CmsShellReport(m_context.getLocale()));
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
+            this,
+            new CmsShellReport(m_context.getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
@@ -2341,10 +2345,12 @@ public final class CmsObject {
      */
     public CmsUUID publishProject(I_CmsReport report) throws CmsException {
 
-        return OpenCms.getPublishManager().publishProject(
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
             this,
             report,
             OpenCms.getPublishManager().getPublishList(this));
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
@@ -2365,7 +2371,9 @@ public final class CmsObject {
      */
     public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        return OpenCms.getPublishManager().publishProject(this, report, publishList);
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(this, report, publishList);
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
@@ -2390,10 +2398,12 @@ public final class CmsObject {
     public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
     throws CmsException {
 
-        return OpenCms.getPublishManager().publishProject(
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
             this,
             report,
             OpenCms.getPublishManager().getPublishList(this, directPublishResource, directPublishSiblings));
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
@@ -2413,11 +2423,13 @@ public final class CmsObject {
      */
     public CmsUUID publishResource(String resourcename) throws Exception {
 
-        return OpenCms.getPublishManager().publishResource(
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishResource(
             this,
             resourcename,
             false,
             new CmsShellReport(m_context.getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
@@ -2436,7 +2448,9 @@ public final class CmsObject {
     public CmsUUID publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        return OpenCms.getPublishManager().publishProject(this, report, resource, publishSiblings);
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(this, report, resource, publishSiblings);
+        OpenCms.getPublishManager().waitWhileRunning();
+        return publishHistoryId;
     }
 
     /**
