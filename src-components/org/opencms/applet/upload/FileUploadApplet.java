@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/03/29 15:47:04 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/06/22 10:02:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -616,7 +616,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 files[i] = null;
             }
             zipStream.close();
-            
+
             // get the zipfile
             targetFile = new File(zipFileName);
         } catch (Exception e) {
@@ -691,7 +691,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (charsRead < size && readCount != -1) {
                 readCount = fileStream.read(buffer);
                 charsRead += readCount;
-                out.write(buffer);
+                out.write(buffer, 0, charsRead);
             }
         } catch (IOException e) {
             throw e;
