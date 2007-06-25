@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2007/06/21 16:14:58 $
- * Version: $Revision: 1.22.4.3 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.22.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.3 $
+ * @version $Revision: 1.22.4.4 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -542,7 +542,6 @@ public class TestModuleOperations extends OpenCmsTestCase {
     public void testModuleImportConflictId() throws Throwable {
 
         // this test imports a module with the id "12" and name "article"
-        // "article" is already configured with id 12
         // id 12 is already configured for "tablegallery"
         
         CmsObject cms = getCmsObject();

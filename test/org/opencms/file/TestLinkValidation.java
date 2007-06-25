@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/05/22 16:07:07 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -377,7 +377,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         // create files
         int type;
         if (mode > MODE_XMLPAGE) {
-            type = 12; // article
+            type = OpenCmsTestCase.ARTICLE_TYPEID; // article
         } else {
             type = CmsResourceTypeXmlPage.getStaticTypeId();
         }

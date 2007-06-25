@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/06/04 16:11:24 $
- * Version: $Revision: 1.43.4.14 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.43.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.14 $
+ * @version $Revision: 1.43.4.15 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -752,7 +752,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // create a new xml content article
         String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, 12);
+        cms.createResource(xmlContentFile, OpenCmsTestCase.ARTICLE_TYPEID);
 
         CmsFile file = cms.readFile(xmlContentFile);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
@@ -1964,7 +1964,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         String filename = "xmlcontent.html";
-        CmsResource res = cms.createResource(filename, 12);
+        CmsResource res = cms.createResource(filename, OpenCmsTestCase.ARTICLE_TYPEID);
         CmsFile file = CmsFile.upgrade(res, cms);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);

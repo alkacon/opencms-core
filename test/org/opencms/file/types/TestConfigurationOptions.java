@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestConfigurationOptions.java,v $
- * Date   : $Date: 2007/03/01 15:01:38 $
- * Version: $Revision: 1.6.8.5 $
+ * Date   : $Date: 2007/06/25 15:02:18 $
+ * Version: $Revision: 1.6.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the resource type configuration options.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6.8.5 $
+ * @version $Revision: 1.6.8.6 $
  */
 public class TestConfigurationOptions extends OpenCmsTestCase {
 
@@ -142,11 +142,11 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         String resourcename = "/folder1/article_test.html";
         byte[] content = new byte[0];
 
-        // resource 12 is article (xml content) with default properties
-        cms.createResource(resourcename, 12, content, null);
+        // resource 27 is article (xml content) with default properties
+        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
 
         // ensure created resource type
-        assertResourceType(cms, resourcename, 12);
+        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"

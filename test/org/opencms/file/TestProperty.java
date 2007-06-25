@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2007/06/14 14:20:43 $
- * Version: $Revision: 1.23.4.8 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.23.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23.4.8 $
+ * @version $Revision: 1.23.4.9 $
  */
 public class TestProperty extends OpenCmsTestCase {
 
@@ -615,11 +615,11 @@ public class TestProperty extends OpenCmsTestCase {
         String resourcename = "/folder1/article_test.html";
         byte[] content = new byte[0];
 
-        // resource 12 is article (xml content) with default properties
-        cms.createResource(resourcename, 12, content, null);
+        // resource 27 is article (xml content) with default properties
+        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
 
         // ensure created resource type
-        assertResourceType(cms, resourcename, 12);
+        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"

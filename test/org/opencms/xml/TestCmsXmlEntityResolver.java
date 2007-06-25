@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/TestCmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/04/13 08:01:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/25 15:02:18 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML entity resolver.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
 
@@ -126,7 +126,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
         cms.writeFile(schemaFile);
 
         // create a new xml content article with the updated schema
-        cms.createResource(xmlContentUri, 12);
+        cms.createResource(xmlContentUri, OpenCmsTestCase.ARTICLE_TYPEID);
         CmsFile xmlContentFile = cms.readFile(xmlContentUri);
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, xmlContentFile);
 

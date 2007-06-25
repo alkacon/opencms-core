@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/06/04 16:11:24 $
- * Version: $Revision: 1.16.4.9 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.16.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -347,9 +347,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
         // create files 
-        CmsResource res1 = cms.createResource(filename1, 12);
+        CmsResource res1 = cms.createResource(filename1, OpenCmsTestCase.ARTICLE_TYPEID);
 
-        CmsResource res2 = cms.createResource(filename2, 12);
+        CmsResource res2 = cms.createResource(filename2, OpenCmsTestCase.ARTICLE_TYPEID);
         CmsFile file2 = CmsFile.upgrade(res2, cms);
         String content2 = new String(file2.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);
@@ -412,7 +412,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 "/",
                 new CmsShellReport(cms.getRequestContext().getLocale()));
 
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(12);
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(OpenCmsTestCase.ARTICLE_TYPEID);
             I_CmsLinkParseable validatable = (I_CmsLinkParseable)type;
 
             // check the links

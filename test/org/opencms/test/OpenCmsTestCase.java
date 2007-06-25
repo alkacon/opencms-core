@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/06/04 16:11:24 $
- * Version: $Revision: 1.90.4.28 $
+ * Date   : $Date: 2007/06/25 15:02:17 $
+ * Version: $Revision: 1.90.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.28 $
+ * @version $Revision: 1.90.4.29 $
  * 
  * @since 6.0.0
  */
@@ -152,6 +152,9 @@ public class OpenCmsTestCase extends TestCase {
             return result;
         }
     }
+
+    /** test article type id constant. */
+    public static final int ARTICLE_TYPEID = 27;
 
     /** Key for tests on MySql database. */
     public static final String DB_MYSQL = "mysql";
