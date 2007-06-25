@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/06/06 09:03:30 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2007/06/25 17:45:37 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.17 $
+ * @version $Revision: 1.1.2.18 $
  * 
  * @since 6.9.1
  */
@@ -1289,6 +1289,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             }
             m_sqlManager.closeAll(dbc, null, stmt, res);
 
+            int sibCount = internalCountSiblings(dbc, dbc.currentProject().getUuid(), resource.getResourceId());
             if (!internalValidateResource(dbc, resource, publishTag)) {
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_WRITE");
@@ -1312,15 +1313,50 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
                 // if it is a file
                 if (resource instanceof CmsFile) {
+                    // if deleted
                     if (resource.getState().isDeleted()) {
-                        // if deleted, first copy content from offline to online content tables
+                        CmsResource onlineResource;
+                        try {
+                            // read the file header online                   
+                            onlineResource = m_driverManager.getVfsDriver().readResource(
+                                dbc,
+                                CmsProject.ONLINE_PROJECT_ID,
+                                resource.getStructureId(),
+                                true);
+                        } catch (CmsDataAccessException e) {
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                            throw e;
+                        }
+
+                        // copy content from offline to online content tables
+                        // so that the history contains the last state of the file
                         m_driverManager.getVfsDriver().createOnlineContent(
                             dbc,
                             resource.getResourceId(),
                             ((CmsFile)resource).getContents(),
                             publishTag,
-                            false,
-                            true);
+                            (sibCount > 1),
+                            (onlineResource.getDateContent() < resource.getDateContent()));
+                    }
+                }
+            } else {
+                // if it is a file
+                if (resource instanceof CmsFile) {
+                    // if deleted
+                    if (resource.getState().isDeleted()) {
+                        // if no more siblings
+                        if (sibCount < 2) {
+                            // put the content definitively in the history if no sibling is left
+                            m_driverManager.getVfsDriver().createOnlineContent(
+                                dbc,
+                                resource.getResourceId(),
+                                ((CmsFile)resource).getContents(),
+                                publishTag,
+                                false,
+                                false);
+                        }
                     }
                 }
             }
@@ -1515,6 +1551,48 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return returnValue;
+    }
+
+    /**
+     * Counts the number of siblings of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the current project id
+     * @param resourceId the resource id to count the number of siblings from
+     * 
+     * @return number of siblings
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected int internalCountSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        int count = 0;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNT_SIBLINGS");
+            stmt.setString(1, resourceId.toString());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                count = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return count;
     }
 
     /**

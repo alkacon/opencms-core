@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/06/06 10:44:27 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/25 17:45:37 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 6.9.1
  */
@@ -151,11 +151,12 @@ public class TestHistory extends OpenCmsTestCase {
         // delete the file
         cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(filename);
+
         OpenCms.getPublishManager().publishResource(cms, filename);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // the history works only by ID so the expected number of versions is ZERO
         cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), null, null);
+        // the history works only by ID so the expected number of versions is ZERO
         List historyResources = cms.readAllAvailableVersions(filename);
         assertTrue(historyResources.isEmpty());
 
@@ -476,13 +477,19 @@ public class TestHistory extends OpenCmsTestCase {
 
         // create a new folder and resource
         CmsResource folder = cms.createResource("testFolder", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        cms.writePropertyObject("testFolder", new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "strFolder", "resFolder"));
+        cms.writePropertyObject("testFolder", new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "strFolder",
+            "resFolder"));
         CmsResource res = cms.createResource(
             "testFolder/test.txt",
             CmsResourceTypePlain.getStaticTypeId(),
             "test".getBytes(),
             null);
-        cms.writePropertyObject("testFolder/test.txt", new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "strFile", "resFile"));
+        cms.writePropertyObject("testFolder/test.txt", new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "strFile",
+            "resFile"));
 
         storeResources(cms, "testFolder", true);
 

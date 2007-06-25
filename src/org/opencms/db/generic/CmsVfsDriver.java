@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/18 12:35:41 $
- * Version: $Revision: 1.258.4.34 $
+ * Date   : $Date: 2007/06/25 17:45:37 $
+ * Version: $Revision: 1.258.4.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.34 $
+ * @version $Revision: 1.258.4.35 $
  * 
  * @since 6.0.0 
  */
@@ -354,7 +354,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conn = m_sqlManager.getConnection(dbc);
 
             if (needToUpdateContent) {
-                // put the online content in the history
+                // put the online content in the history, only if explicit requested 
+                // or if writting history and there are no more siblings 
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
                 stmt.setString(1, resourceId.toString());
                 stmt.executeUpdate();
@@ -385,13 +386,20 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             } else {
-                // update old content entry                        
+                // update old content entry
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
                 stmt.setInt(1, publishTag);
                 stmt.setString(2, resourceId.toString());
-
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
+
+                if (!keepOnline) {
+                    // put the online content in the history 
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

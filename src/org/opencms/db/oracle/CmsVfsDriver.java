@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/05/31 10:37:41 $
- * Version: $Revision: 1.36.8.11 $
+ * Date   : $Date: 2007/06/25 17:45:37 $
+ * Version: $Revision: 1.36.8.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.11 $
+ * @version $Revision: 1.36.8.12 $
  * 
  * @since 6.0.0 
  */
@@ -134,6 +134,14 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 stmt.setString(2, resourceId.toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
+
+                if (!keepOnline) {
+                    // put the online content in the history 
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
