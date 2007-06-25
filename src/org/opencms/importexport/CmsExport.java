@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/05/14 13:48:02 $
- * Version: $Revision: 1.84.4.17 $
+ * Date   : $Date: 2007/06/25 16:51:45 $
+ * Version: $Revision: 1.84.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.17 $ 
+ * @version $Revision: 1.84.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -396,7 +396,7 @@ public class CmsExport {
                     || (m_includeUnchanged)
                     || state.isNew()
                     || state.isChanged()) {
-                    if (!state.isDeleted() && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
+                    if (!state.isDeleted() && !CmsWorkplace.isTemporaryFile(file) && (age >= m_contentAge)) {
                         String export = getCms().getSitePath(file);
                         if (checkExportResource(export)) {
                             if (isInExportableProject(file)) {
@@ -798,7 +798,7 @@ public class CmsExport {
 
                 try {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
-                    if (!file.getState().isDeleted() && (!file.getName().startsWith("~"))) {
+                    if (!file.getState().isDeleted() && !CmsWorkplace.isTemporaryFile(file)) {
                         if (checkExportResource(fileName)) {
                             if (m_recursive) {
                                 addParentFolders(fileName);

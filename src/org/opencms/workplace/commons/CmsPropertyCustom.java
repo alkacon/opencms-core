@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2006/08/19 13:40:47 $
- * Version: $Revision: 1.22.4.1 $
+ * Date   : $Date: 2007/06/25 16:51:45 $
+ * Version: $Revision: 1.22.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.4.1 $ 
+ * @version $Revision: 1.22.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -587,7 +587,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             setAction(ACTION_EDIT);
             String resName = CmsResource.getName(getParamResource());
-            if (resName.startsWith(CmsWorkplace.TEMP_FILE_PREFIX)) {
+            if (CmsWorkplace.isTemporaryFileName(resName)) {
                 resName = resName.substring(1);
             }
             setParamTitle(key(Messages.GUI_PROPERTIES_1, new Object[] {resName}));

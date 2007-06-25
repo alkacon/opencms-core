@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2006/10/16 11:44:14 $
- * Version: $Revision: 1.9.4.1 $
+ * Date   : $Date: 2007/06/25 16:51:45 $
+ * Version: $Revision: 1.9.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9.4.1 $
+ * @version $Revision: 1.9.4.2 $
  * 
  * @since 6.0.0 
  */
@@ -238,25 +238,17 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         }
 
         String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
-        int fileNameLength = fileName.length();
-        String checkFileName;
-        String checkName;
-        StringBuffer checkTempFileName;
-        String number;
+        String checkFileName, checkTempFileName, number;
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
 
         int j = 0;
         do {
             number = NUMBER_FORMAT.sprintf(++j);
             resolver.addMacro(MACRO_NUMBER, number);
+            // resolve macros in file name
             checkFileName = resolver.resolveMacros(fileName);
-            // get new resource name without path information
-            checkName = CmsResource.getName(checkFileName);
-            // create temporary file name to check for additionally
-            checkTempFileName = new StringBuffer(fileNameLength);
-            checkTempFileName.append(CmsResource.getFolderPath(checkFileName));
-            checkTempFileName.append(CmsWorkplace.TEMP_FILE_PREFIX);
-            checkTempFileName.append(checkName);
+            // get name of the resolved temp file
+            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
         } while (result.contains(checkFileName) || result.contains(checkTempFileName.toString()));
 
         return cms.getRequestContext().removeSiteRoot(checkFileName);

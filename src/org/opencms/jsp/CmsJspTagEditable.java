@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.23.8.3 $
+ * Date   : $Date: 2007/06/25 16:51:45 $
+ * Version: $Revision: 1.23.8.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
  * 
- * @version $Revision: 1.23.8.3 $ 
+ * @version $Revision: 1.23.8.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,50 +126,57 @@ public class CmsJspTagEditable extends BodyTagSupport {
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
 
-        if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
             // direct edit is never enabled in the online project
-            I_CmsDirectEditProvider eb = getDirectEditProvider(context);
+            return;
+        }
+
+        if (CmsWorkplace.isTemporaryFileName(cms.getRequestContext().getUri())) {
+            // don't display direct edit buttons if a temporary file is displayed
+            return;
+        }
+
+        I_CmsDirectEditProvider eb = getDirectEditProvider(context);
+        if (eb == null) {
+            if (CmsStringUtil.isNotEmpty(fileName) && CmsStringUtil.isEmpty(provider)) {
+                // if only a filename but no provider class is given, use JSP includes for backward compatibility
+                provider = CmsDirectEditJspIncludeProvider.class.getName();
+            }
+            // no provider available in page context
+            if (CmsStringUtil.isNotEmpty(provider)) {
+                try {
+                    // create a new instance of the selected provider
+                    eb = (I_CmsDirectEditProvider)Class.forName(provider).newInstance();
+                } catch (Exception e) {
+                    // log error
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_DIRECT_EDIT_PROVIDER_1, provider), e);
+                }
+            }
             if (eb == null) {
-                if (CmsStringUtil.isNotEmpty(fileName) && CmsStringUtil.isEmpty(provider)) {
-                    // if only a filename but no provider class is given, use JSP includes for backward compatibility
-                    provider = CmsDirectEditJspIncludeProvider.class.getName();
-                }
-                // no provider available in page context
-                if (CmsStringUtil.isNotEmpty(provider)) {
-                    try {
-                        // create a new instance of the selected provider
-                        eb = (I_CmsDirectEditProvider)Class.forName(provider).newInstance();
-                    } catch (Exception e) {
-                        // log error
-                        LOG.error(Messages.get().getBundle().key(Messages.ERR_DIRECT_EDIT_PROVIDER_1, provider), e);
-                    }
-                }
-                if (eb == null) {
-                    // use configured direct edit provider as a fallback
-                    eb = OpenCms.getWorkplaceManager().getDirectEditProvider();
-                }
-                if (mode == null) {
-                    // use automatic placement by default
-                    mode = CmsDirectEditMode.AUTO;
-                }
-                eb.init(cms, mode, fileName);
-                // store the provider in the page context
-                setDirectEditProvider(context, eb);
+                // use configured direct edit provider as a fallback
+                eb = OpenCms.getWorkplaceManager().getDirectEditProvider();
             }
-            if (eb.isManual(mode)) {
-                // manual mode, insert required HTML
-                CmsDirectEditParams params = getDirectEditProviderParams(context);
-                if (params != null) {
-                    // insert direct edit start HTML
-                    eb.insertDirectEditStart(context, params);
-                } else {
-                    // insert direct edit end HTML
-                    eb.insertDirectEditEnd(context);
-                }
+            if (mode == null) {
+                // use automatic placement by default
+                mode = CmsDirectEditMode.AUTO;
+            }
+            eb.init(cms, mode, fileName);
+            // store the provider in the page context
+            setDirectEditProvider(context, eb);
+        }
+        if (eb.isManual(mode)) {
+            // manual mode, insert required HTML
+            CmsDirectEditParams params = getDirectEditProviderParams(context);
+            if (params != null) {
+                // insert direct edit start HTML
+                eb.insertDirectEditStart(context, params);
             } else {
-                // insert direct edit header HTML
-                eb.insertDirectEditIncludes(context, new CmsDirectEditParams(cms.getRequestContext().getUri()));
+                // insert direct edit end HTML
+                eb.insertDirectEditEnd(context);
             }
+        } else {
+            // insert direct edit header HTML
+            eb.insertDirectEditIncludes(context, new CmsDirectEditParams(cms.getRequestContext().getUri()));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/01/29 09:44:55 $
- * Version: $Revision: 1.34.4.13 $
+ * Date   : $Date: 2007/06/25 16:51:45 $
+ * Version: $Revision: 1.34.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.13 $ 
+ * @version $Revision: 1.34.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,29 +233,24 @@ public abstract class CmsEditor extends CmsEditorBase {
      * Builds the html String for the element language selector.<p>
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * @param resource the name of the resource to edit
+     * @param resourceName the name of the resource to edit
      * @param selectedLocale the currently selected Locale
      * @return the html for the element language selectbox
      */
-    public String buildSelectElementLanguage(String attributes, String resource, Locale selectedLocale) {
+    public String buildSelectElementLanguage(String attributes, String resourceName, Locale selectedLocale) {
 
         // get locale names based on properties and global settings
-        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), resource);
+        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), resourceName);
         List options = new ArrayList(locales.size());
         List selectList = new ArrayList(locales.size());
         int currentIndex = -1;
-
-        String filename = resource;
-
+        
         //get the locales already used in the resource
         List contentLocales = new ArrayList();
         try {
 
-            CmsResource res = getCms().readResource(filename);
-
-            String temporaryFilename = CmsResource.getFolderPath(resource)
-                + CmsWorkplace.TEMP_FILE_PREFIX
-                + res.getName();
+            CmsResource res = getCms().readResource(resourceName);
+            String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName); 
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
@@ -265,7 +260,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         } catch (CmsException e) {
             // to nothing here in case the resource could not be opened
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, resourceName), e);
             }
         }
 
@@ -417,9 +412,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         try {
             CmsResource res = getCms().readResource(filename);
 
-            String temporaryFilename = CmsResource.getFolderPath(filename)
-                + CmsWorkplace.TEMP_FILE_PREFIX
-                + res.getName();
+            String temporaryFilename = CmsWorkplace.getTemporaryFileName(filename);
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
@@ -441,7 +434,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         return button(href, target, image, label, type, getSkinUri() + "buttons/");
 
     }
-
+    
     /**
      * Returns the instanciated editor display option class from the workplace manager.<p>
      * 
@@ -776,13 +769,8 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected String createTempFile() throws CmsException {
 
-        // read the selected file
-        CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-
         // create the filename of the temporary file
-        String temporaryFilename = CmsResource.getFolderPath(getCms().getSitePath(file))
-            + CmsWorkplace.TEMP_FILE_PREFIX
-            + file.getName();
+        String temporaryFilename = CmsWorkplace.getTemporaryFileName(getParamResource());
 
         // check if the temporary file is already present
         if (getCms().existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
@@ -802,7 +790,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
         // copy the file to edit to a temporary file
         try {
-            getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
+            getCms().copyResource(getParamResource(), temporaryFilename, CmsResource.COPY_AS_NEW);
             getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
             // set the temporary file flag
             CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
