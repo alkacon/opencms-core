@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/06/14 11:46:35 $
- * Version: $Revision: 1.25.4.13 $
+ * Date   : $Date: 2007/06/25 07:59:06 $
+ * Version: $Revision: 1.25.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.db;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.13 $
+ * @version $Revision: 1.25.4.14 $
  * 
  * @since 6.0.0
  * 
@@ -592,7 +593,7 @@ public class CmsPublishList implements Externalizable {
         List resList = new ArrayList(uuidList.size());
         for (Iterator i = uuidList.iterator(); i.hasNext();) {
             try {
-                CmsResource res = cms.readResource((CmsUUID)i.next());
+                CmsResource res = cms.readResource((CmsUUID)i.next(), CmsResourceFilter.ALL);
                 resList.add(res);
             } catch (CmsException exc) {
                 LOG.error(exc);
