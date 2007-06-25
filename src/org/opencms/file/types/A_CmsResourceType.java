@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/06/21 16:14:57 $
- * Version: $Revision: 1.42.4.21 $
+ * Date   : $Date: 2007/06/25 15:21:29 $
+ * Version: $Revision: 1.42.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.21 $ 
+ * @version $Revision: 1.42.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,6 +336,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * 
      * @see #getTypeId()
      * @see #getTypeName()
+     * @see #isIdentical(I_CmsResourceType)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -579,6 +580,18 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public boolean isFolder() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#isIdentical(org.opencms.file.types.I_CmsResourceType)
+     */
+    public boolean isIdentical(I_CmsResourceType type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        return (getTypeId() == type.getTypeId()) && (getTypeName().equals(type.getTypeName()));
     }
 
     /**

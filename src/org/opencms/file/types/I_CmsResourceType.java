@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2007/05/03 16:00:20 $
- * Version: $Revision: 1.29.4.9 $
+ * Date   : $Date: 2007/06/25 15:21:29 $
+ * Version: $Revision: 1.29.4.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.4.9 $ 
+ * @version $Revision: 1.29.4.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -460,6 +460,21 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     boolean isFolder();
 
     /**
+     * Tests if the given resource type definition is identical to this resource type definition.<p>
+     * 
+     * Two resource types are considered identical if their names {@link #getTypeName()} 
+     * <b>and</b> their ids {@link #getTypeId()} are both the same.<p>
+     * 
+     * <b>Please note:</b> Two resource type are considered equal in the sense of {@link Object#equals(Object)} if
+     * either if their names {@link #getTypeName()} <b>or</b> their ids {@link #getTypeId()} are equal.<p>
+     * 
+     * @param type another resource type
+     * 
+     * @return true, if the specified resource type is identical to this resource type
+     */
+    boolean isIdentical(I_CmsResourceType type);
+
+    /**
      * Locks a resource.<p>
      *
      * The <code>type</code> parameter controls what kind of lock is used.<br>
@@ -692,8 +707,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
      * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource, org.opencms.file.CmsResource.CmsResourceUndoMode)
      */
-    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsResource.CmsResourceUndoMode mode)
-    throws CmsException;
+    void undoChanges(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceUndoMode mode) throws CmsException;
 
     /**
      * Unlocks a resource.<p>

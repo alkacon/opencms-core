@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2007/06/25 15:02:17 $
- * Version: $Revision: 1.22.4.4 $
+ * Date   : $Date: 2007/06/25 15:21:29 $
+ * Version: $Revision: 1.22.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.4.4 $
+ * @version $Revision: 1.22.4.5 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -90,6 +90,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         suite.addTest(new TestModuleOperations("testModuleExport"));
         suite.addTest(new TestModuleOperations("testOldModuleImport"));
         suite.addTest(new TestModuleOperations("testModuleImportConflictId"));
+        suite.addTest(new TestModuleOperations("testModuleUpdateWithResourceId"));
         suite.addTest(new TestModuleOperations("testModuleImportMissingResTypeClass"));
         suite.addTest(new TestModuleOperations("testModuleDependencies"));
         suite.addTest(new TestModuleOperations("testModuleAdditionalResourcesWorkaround"));
@@ -535,11 +536,11 @@ public class TestModuleOperations extends OpenCmsTestCase {
     }
 
     /**
-     * Tests a module with a module that has a duplicate id.<p>
+     * Tests the import of a module that has a duplicate id.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testModuleImportConflictId() throws Throwable {
+    public void testModuleImportConflictId() throws Exception {
 
         // this test imports a module with the id "12" and name "article"
         // id 12 is already configured for "tablegallery"
@@ -578,6 +579,51 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // check if the module was not imported
         if (OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("Module '" + moduleName + "' was imported, but should not have been because of id conflicts!");
+        }       
+    }
+    
+    /**
+     * Tests a update of a module that contains a new resource type.<p>
+     * 
+     * This test was added because there was an issue where modules with a resource 
+     * type generated an error "conficting id" during update.<p>
+     * 
+     * @throws Exception if the test fails
+     */    
+    public void testModuleUpdateWithResourceId() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing update of a module that contains a resource type id definition");
+
+        String moduleName = "org.opencms.test.modules.testConflictIdUpdate";
+
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        
+        // now import the module first time - this must work
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was imported correctly
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }
+        
+        // update the module - this is a "delete" and then "import again" operation
+
+        // first delete the module - marked as "true" for update
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was deletet correctly
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not deleted!");
+        }       
+        
+        // now import the module again second time
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was imported correctly again
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
         }       
     }
     

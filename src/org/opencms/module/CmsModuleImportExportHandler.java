@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2007/06/21 16:14:58 $
- * Version: $Revision: 1.33.4.10 $
+ * Date   : $Date: 2007/06/25 15:21:29 $
+ * Version: $Revision: 1.33.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.10 $ 
+ * @version $Revision: 1.33.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -511,14 +511,17 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             if (externalConflictIndex >= 0) {
                 I_CmsResourceType conflictingType = (I_CmsResourceType)OpenCms.getResourceManager().getResourceTypes().get(
                     externalConflictIndex);
-                throw new CmsConfigurationException(org.opencms.loader.Messages.get().container(
-                    org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
-                    new Object[] {
-                        type.getTypeName(),
-                        Integer.valueOf(type.getTypeId()),
-                        importedModule.getName(),
-                        conflictingType.getTypeName(),
-                        Integer.valueOf(conflictingType.getTypeId())}));
+                if (!type.isIdentical(conflictingType)) {
+                    // if name and id are identical, we assume this is a module replace operation
+                    throw new CmsConfigurationException(org.opencms.loader.Messages.get().container(
+                        org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
+                        new Object[] {
+                            type.getTypeName(),
+                            Integer.valueOf(type.getTypeId()),
+                            importedModule.getName(),
+                            conflictingType.getTypeName(),
+                            Integer.valueOf(conflictingType.getTypeId())}));
+                }
             }
             // now check against the other resource types of the imported module
             int internalConflictIndex = checkedTypes.indexOf(type);
