@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/03/27 15:06:46 $
- * Version: $Revision: 1.51.4.8 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.51.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.51.4.8 $ 
+ * @version $Revision: 1.51.4.9 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsSiteManager implements Cloneable {
+public final class CmsSiteManager {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManager.class);

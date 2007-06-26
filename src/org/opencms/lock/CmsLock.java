@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2007/06/12 14:07:41 $
- * Version: $Revision: 1.28.8.11 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.28.8.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.11 $ 
+ * @version $Revision: 1.28.8.12 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
-public class CmsLock implements Cloneable {
+public class CmsLock {
 
     /** The shared null lock object. */
     private static final CmsLock NULL_LOCK = new CmsLock(

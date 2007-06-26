@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestQueryProperties.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.4.1 $
  */
 public class TestQueryProperties extends OpenCmsTestCase {
 
@@ -231,6 +231,17 @@ public class TestQueryProperties extends OpenCmsTestCase {
         parseQueryProperties(queries);
     }
 
+    private void parseKeyValue(String keyValue) throws ParseException {
+
+        StringTokenizer tokenizer = new StringTokenizer(keyValue, "=:     ", false);
+        if (tokenizer.countTokens() != 2) {
+
+            throw new ParseException("Illegal key value pair " + keyValue, 0);
+
+        }
+
+    }
+
     /**
      * Implementation of the checks to perform.
      * 
@@ -297,17 +308,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
             // further checks if desired
         }
+        reader.close();
     }
-
-    private void parseKeyValue(String keyValue) throws ParseException {
-
-        StringTokenizer tokenizer = new StringTokenizer(keyValue, "=:     ", false);
-        if (tokenizer.countTokens() != 2) {
-
-            throw new ParseException("Illegal key value pair " + keyValue, 0);
-
-        }
-
-    }
-
 }

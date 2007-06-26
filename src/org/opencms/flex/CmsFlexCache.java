@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2007/03/20 14:38:48 $
- * Version: $Revision: 1.52.4.6 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.52.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52.4.6 $ 
+ * @version $Revision: 1.52.4.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -489,8 +489,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
         try {
             clear();
-            m_variationCache = null;
-            m_keyCache = null;
         } catch (Throwable t) {
             // ignore
         }

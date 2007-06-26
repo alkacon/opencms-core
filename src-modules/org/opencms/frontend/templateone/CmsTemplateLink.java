@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateLink.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.7.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package org.opencms.frontend.templateone;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.8.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,13 +91,30 @@ public class CmsTemplateLink implements Comparable {
      * 
      * Use java.util.Collections.sort(List) to sort a list of link objects by their order number ascending.<p>
      * 
-     * @param theObject the other given object instance to compare with
+     * @param obj the other given object instance to compare with
      * @return the comparison result for the objects
      */
-    public int compareTo(Object theObject) {
+    public int compareTo(Object obj) {
 
-        // sort links by their order number in ascending order
-        return new Integer(getOrder()).compareTo(new Integer(((CmsTemplateLink)theObject).getOrder()));
+        if (obj instanceof CmsTemplateLink) {
+            // sort links by their order number in ascending order
+            return new Integer(getOrder()).compareTo(new Integer(((CmsTemplateLink)obj).getOrder()));
+        }
+        return 0;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsTemplateLink) {
+            return ((CmsTemplateLink)obj).m_order == m_order;
+        }
+        return false;
     }
 
     /**
@@ -138,6 +155,14 @@ public class CmsTemplateLink implements Comparable {
     public String getText() {
 
         return m_text;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_order;
     }
 
     /**
@@ -183,5 +208,4 @@ public class CmsTemplateLink implements Comparable {
 
         m_text = text;
     }
-
 }

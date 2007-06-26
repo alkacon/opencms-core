@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/05/04 16:03:16 $
- * Version: $Revision: 1.30.4.6 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.30.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.6 $ 
+ * @version $Revision: 1.30.4.7 $ 
  * 
  * @since 6.0.0 
  * 
@@ -803,16 +803,12 @@ public class CmsImportExportManager {
             if (m_immutableResources != null) {
                 m_immutableResources.clear();
             }
-            m_immutableResources = null;
-
             if (m_ignoredProperties != null) {
                 m_ignoredProperties.clear();
             }
-            m_ignoredProperties = null;
         } catch (Throwable t) {
             // noop
-        } finally {
-            super.finalize();
         }
+        super.finalize();
     }
 }

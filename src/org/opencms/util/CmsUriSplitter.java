@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2006/08/19 13:40:45 $
- * Version: $Revision: 1.3.4.1 $
+ * Date   : $Date: 2007/06/26 10:09:20 $
+ * Version: $Revision: 1.3.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.net.URI;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3.4.1 $
+ * @version $Revision: 1.3.4.2 $
  */
 public class CmsUriSplitter {
 
@@ -180,13 +180,13 @@ public class CmsUriSplitter {
         }
         if (obj instanceof CmsUriSplitter) {
             CmsUriSplitter other = (CmsUriSplitter)obj;
-            if (((m_prefix == null) && (other.m_prefix != null)) && (!m_prefix.equals(other.m_prefix))) {
+            if (((m_prefix == null) && (other.m_prefix != null)) && (!other.m_prefix.equals(m_prefix))) {
                 return false;
             }
-            if (((m_anchor == null) && (other.m_anchor != null)) && (!m_anchor.equals(other.m_anchor))) {
+            if (((m_anchor == null) && (other.m_anchor != null)) && (!other.m_anchor.equals(m_anchor))) {
                 return false;
             }
-            if (((m_query == null) && (other.m_query != null)) && (!m_query.equals(other.m_query))) {
+            if (((m_query == null) && (other.m_query != null)) && (!other.m_query.equals(m_query))) {
                 return false;
             }
             return true;

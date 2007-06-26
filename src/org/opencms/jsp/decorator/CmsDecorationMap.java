@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.2.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.4.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -110,6 +110,20 @@ public class CmsDecorationMap implements Comparable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsDecorationMap) {
+            return ((CmsDecorationMap)obj).m_name.equals(m_name);
+        }
+        return false;
+    }
+
+    /**
      * Returns the decorationMap.<p>
      *
      * @return the decorationMap
@@ -137,6 +151,14 @@ public class CmsDecorationMap implements Comparable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_name.hashCode();
     }
 
     /**
@@ -258,5 +280,4 @@ public class CmsDecorationMap implements Comparable {
 
         return decMap;
     }
-
 }

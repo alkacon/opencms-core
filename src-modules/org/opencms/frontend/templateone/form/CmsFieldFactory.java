@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2006/08/19 13:40:58 $
- * Version: $Revision: 1.5.4.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.5.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5.4.2 $
+ * @version $Revision: 1.5.4.3 $
  */
 public final class CmsFieldFactory {
 
@@ -135,25 +135,6 @@ public final class CmsFieldFactory {
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-
-            if (m_registeredFieldTypes != null) {
-                m_registeredFieldTypes.clear();
-            }
-
-            m_registeredFieldTypes = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-
-        super.finalize();
-    }
-
-    /**
      * Returns the shared instance of the field factory.<p>
      * 
      * @return the shared instance of the field factory
@@ -168,15 +149,18 @@ public final class CmsFieldFactory {
     }
 
     /**
-     * Registers a class as a field type in the factory.<p>
-     * 
-     * @param type the type of the field
-     * @param className the name of the field class
-     * @return the previous class associated with this type, or null if there was no mapping before
+     * @see java.lang.Object#finalize()
      */
-    private Object registerFieldType(String type, String className) {
+    protected void finalize() throws Throwable {
 
-        return m_registeredFieldTypes.put(type, className);
+        try {
+            if (m_registeredFieldTypes != null) {
+                m_registeredFieldTypes.clear();
+            }
+        } catch (Throwable t) {
+            // ignore
+        }
+        super.finalize();
     }
 
     /**
@@ -201,5 +185,17 @@ public final class CmsFieldFactory {
         }
 
         return field;
+    }
+
+    /**
+     * Registers a class as a field type in the factory.<p>
+     * 
+     * @param type the type of the field
+     * @param className the name of the field class
+     * @return the previous class associated with this type, or null if there was no mapping before
+     */
+    private Object registerFieldType(String type, String className) {
+
+        return m_registeredFieldTypes.put(type, className);
     }
 }

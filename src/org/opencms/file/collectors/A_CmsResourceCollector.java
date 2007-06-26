@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2007/06/25 16:51:45 $
- * Version: $Revision: 1.9.4.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.9.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9.4.2 $
+ * @version $Revision: 1.9.4.3 $
  * 
  * @since 6.0.0 
  */
@@ -249,7 +249,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
             checkFileName = resolver.resolveMacros(fileName);
             // get name of the resolved temp file
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
-        } while (result.contains(checkFileName) || result.contains(checkTempFileName.toString()));
+        } while (result.contains(checkFileName) || result.contains(checkTempFileName));
 
         return cms.getRequestContext().removeSiteRoot(checkFileName);
     }

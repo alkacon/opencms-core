@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchAnalyzer.java,v $
- * Date   : $Date: 2006/12/11 13:31:59 $
- * Version: $Revision: 1.9.8.2 $
+ * Date   : $Date: 2007/06/26 10:09:20 $
+ * Version: $Revision: 1.9.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,11 @@ import java.util.Locale;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9.8.2 $ 
+ * @version $Revision: 1.9.8.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchAnalyzer implements Cloneable {
+public class CmsSearchAnalyzer {
 
     /** The class name of the analyzer. */
     private String m_className;

@@ -63,9 +63,6 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1", "page2"};
 
-    /** The OpenCms context info object used for the job info. */
-    CmsContextInfo m_contextInfo;
-
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 

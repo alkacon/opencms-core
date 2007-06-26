@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2007/01/19 16:53:57 $
- * Version: $Revision: 1.14.8.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.14.8.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14.8.2 $
+ * @version $Revision: 1.14.8.3 $
  * 
  * @since 6.0.0
  */
@@ -59,6 +59,7 @@ public class TestExportFile extends OpenCmsTestCase {
      * @param arg0 JUnit parameters
      */
     public TestExportFile(String arg0) {
+
         super(arg0);
     }
 
@@ -68,64 +69,67 @@ public class TestExportFile extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
-        suite.setName(TestExportFile.class.getName());        
-        
+        suite.setName(TestExportFile.class.getName());
+
         suite.addTest(new TestExportFile("testStaticexportFile"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms(null, null, true);
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
     }
-    
+
     /**
      * Tests the file export.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testStaticexportFile() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
         echo("Testing file export");
-        
+
         // set the export mode to export immediately after publishing resources
         OpenCms.getStaticExportManager().setHandler("org.opencms.staticexport.CmsAfterPublishStaticExportHandler");
-        
+
         String resourcename = "/file1.txt";
         String content = "this is a test content";
-        
+
         // create a file in the root directory
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
         cms.unlockResource(resourcename);
-        
+
         // read and check the content
-        this.assertContent(cms, resourcename, content.getBytes()); 
-        
+        this.assertContent(cms, resourcename, content.getBytes());
+
         // now publish (and export) the resource
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
-        
+
         // now read the exported file in the file system and check its content
         File f = new File(getTestDataPath("export/sites/default" + resourcename));
         assertTrue(f.exists());
-        
+
         // check the exported content
         byte[] exportContent = new byte[(int)f.length()];
         FileInputStream fileStream = new FileInputStream(f);
         fileStream.read(exportContent);
-        
+        fileStream.close();
+
         this.assertContent(cms, resourcename, exportContent);
-        
     }
 }

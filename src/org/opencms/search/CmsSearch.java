@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.41.4.2 $
+ * Date   : $Date: 2007/06/26 10:09:20 $
+ * Version: $Revision: 1.41.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,11 +69,11 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41.4.2 $ 
+ * @version $Revision: 1.41.4.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearch implements Cloneable {
+public class CmsSearch {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearch.class);
@@ -737,5 +737,4 @@ public class CmsSearch implements Cloneable {
         m_categoriesFound = null;
         m_parameterRestriction = null;
     }
-
 }

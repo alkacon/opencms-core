@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.20.4.6 $
+ * Date   : $Date: 2007/06/26 10:09:20 $
+ * Version: $Revision: 1.20.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20.4.6 $ 
+ * @version $Revision: 1.20.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,6 +161,21 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             return ((CmsSearchResult)obj).m_score - m_score;
         }
         return 0;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSearchResult) {
+            CmsSearchResult other = (CmsSearchResult)obj;
+            return m_documentType.equals(other.m_documentType) && m_path.equals(other.m_path);
+        }
+        return false;
     }
 
     /**
@@ -312,5 +327,13 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     public String getTitle() {
 
         return getField(CmsSearchField.FIELD_TITLE);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_documentType.hashCode() * 1109 + m_path.hashCode();
     }
 }

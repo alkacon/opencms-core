@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2006/08/24 06:43:23 $
- * Version: $Revision: 1.8.4.2 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.8.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.8.4.2 $
+ * @version $Revision: 1.8.4.3 $
  * 
  * @since 6.0.0
  */
@@ -255,7 +255,7 @@ public class CmsSetNextRule extends Rule {
                 return;
             }
 
-        } else if ((m_paramTypes != null) && (m_paramTypes.length != 0)) {
+        } else if (m_paramTypes.length != 0) {
             // Having paramCount == 0 and paramTypes.length == 1 indicates
             // that we have the special case where the target method has one
             // parameter being the body text of the current element.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.25.4.7 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.25.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.setup;
 
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsDataTypeUtil;
+import org.opencms.util.CmsStringUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -50,17 +54,13 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.opencms.main.CmsException;
-import org.opencms.util.CmsDataTypeUtil;
-import org.opencms.util.CmsStringUtil;
-
 /**
  * Helper class to call database setup scripts.<p>
  * 
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.7 $ 
+ * @version $Revision: 1.25.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,13 +305,18 @@ public class CmsSetupDb extends Object {
         ResultSet resultSet = null;
 
         stmt = m_con.createStatement();
-        String queryToExecute = query;
-        // Check if a map of replacements is given
-        if (replacer != null) {
-            queryToExecute = replaceTokens(query, replacer);
+        try {
+            String queryToExecute = query;
+            // Check if a map of replacements is given
+            if (replacer != null) {
+                queryToExecute = replaceTokens(query, replacer);
+            }
+            // do the query
+            resultSet = stmt.executeQuery(queryToExecute);
+        } finally {
+            // close the statement
+            stmt.close();
         }
-
-        resultSet = stmt.executeQuery(queryToExecute);
 
         return resultSet;
     }
@@ -475,53 +480,56 @@ public class CmsSetupDb extends Object {
      */
     public int updateSqlStatement(String query, Map replacer, List params) throws SQLException {
 
-        PreparedStatement stmt = null;
-        int result;
-
         String queryToExecute = query;
         // Check if a map of replacements is given
         if (replacer != null) {
             queryToExecute = replaceTokens(query, replacer);
         }
 
+        int result;
+        PreparedStatement stmt = null;
         stmt = m_con.prepareStatement(queryToExecute);
-        // Check the params
-        if (params != null) {
-            for (int i = 0; i < params.size(); i++) {
-                Object item = params.get(i);
+        try {
+            // Check the params
+            if (params != null) {
+                for (int i = 0; i < params.size(); i++) {
+                    Object item = params.get(i);
 
-                // Check if the parameter is a string
-                if (item instanceof String) {
-                    stmt.setString(i + 1, (String)item);
-                }
-                if (item instanceof Integer) {
-                    Integer number = (Integer)item;
-                    stmt.setInt(i + 1, number.intValue());
-                }
-                if (item instanceof Long) {
-                    Long longNumber = (Long)item;
-                    stmt.setLong(i + 1, longNumber.longValue());
-                }
+                    // Check if the parameter is a string
+                    if (item instanceof String) {
+                        stmt.setString(i + 1, (String)item);
+                    }
+                    if (item instanceof Integer) {
+                        Integer number = (Integer)item;
+                        stmt.setInt(i + 1, number.intValue());
+                    }
+                    if (item instanceof Long) {
+                        Long longNumber = (Long)item;
+                        stmt.setLong(i + 1, longNumber.longValue());
+                    }
 
-                // If item is none of types above set the statement to use the bytes
-                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
-                    try {
-                        stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    // If item is none of types above set the statement to use the bytes
+                    if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                        try {
+                            stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
-        }
 
-        if (!queryToExecute.startsWith("UPDATE CMS_ONLINE_STRUCTURE SET STRUCTURE_VERSION")
-            && !queryToExecute.startsWith("UPDATE CMS_OFFLINE_STRUCTURE SET STRUCTURE_VERSION")) {
-            System.out.println("executing query: " + queryToExecute);
-            if ((params != null) && !params.isEmpty()) {
-                System.out.println("params: " + params);
+            if (!queryToExecute.startsWith("UPDATE CMS_ONLINE_STRUCTURE SET STRUCTURE_VERSION")
+                && !queryToExecute.startsWith("UPDATE CMS_OFFLINE_STRUCTURE SET STRUCTURE_VERSION")) {
+                System.out.println("executing query: " + queryToExecute);
+                if ((params != null) && !params.isEmpty()) {
+                    System.out.println("params: " + params);
+                }
             }
+            result = stmt.executeUpdate();
+        } finally {
+            stmt.close();
         }
-        result = stmt.executeUpdate();
 
         return result;
     }
@@ -702,5 +710,4 @@ public class CmsSetupDb extends Object {
 
         return sql;
     }
-
 }

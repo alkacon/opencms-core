@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/06/25 07:59:06 $
- * Version: $Revision: 1.25.4.14 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.25.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25.4.14 $
+ * @version $Revision: 1.25.4.15 $
  * 
  * @since 6.0.0
  * 
@@ -523,17 +523,12 @@ public class CmsPublishList implements Externalizable {
             if (m_fileList != null) {
                 m_fileList.clear();
             }
-            m_fileList = null;
-
             if (m_folderList != null) {
                 m_folderList.clear();
             }
-            m_folderList = null;
-
             if (m_deletedFolderList != null) {
                 m_deletedFolderList.clear();
             }
-            m_deletedFolderList = null;
         } catch (Throwable t) {
             // ignore
         }
@@ -613,7 +608,7 @@ public class CmsPublishList implements Externalizable {
     private CmsUUID internalReadUUID(ObjectInput in) throws IOException {
 
         byte[] bytes = new byte[UUID_LENGTH];
-        in.read(bytes, 0, UUID_LENGTH);
+        in.readFully(bytes, 0, UUID_LENGTH);
         return new CmsUUID(bytes);
     }
 

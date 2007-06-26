@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2007/05/16 08:37:03 $
- * Version: $Revision: 1.31.4.7 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.31.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.4.7 $
+ * @version $Revision: 1.31.4.9 $
  * 
  * @since 6.0.0
  * 
@@ -197,12 +197,13 @@ public class CmsPublishedResource implements Serializable, Comparable {
         m_rootPath = rootPath;
         m_resourceType = resourceType;
         m_isFolder = isFolder;
-        m_resourceState = resourceState;
-        m_siblingCount = siblingCount;
-        if (m_resourceState instanceof CmsPublishedResourceState) {
-            m_resourceState = ((CmsPublishedResourceState)m_resourceState).getResourceState();
+        if (resourceState instanceof CmsPublishedResourceState) {
+            m_resourceState = ((CmsPublishedResourceState)resourceState).getResourceState();
             m_isMoved = true;
+        } else {
+            m_resourceState = resourceState;
         }
+        m_siblingCount = siblingCount;
     }
 
     /**
@@ -420,20 +421,5 @@ public class CmsPublishedResource implements Serializable, Comparable {
         result.append("]");
 
         return result.toString();
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            m_structureId = null;
-            m_resourceId = null;
-            m_rootPath = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
     }
 }

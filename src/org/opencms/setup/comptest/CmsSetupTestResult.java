@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/06/26 10:09:21 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ package org.opencms.setup.comptest;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSetupTestResult extends Object implements Cloneable {
+public class CmsSetupTestResult {
 
     /** Test passed flag. */
     private boolean m_green;
@@ -222,5 +222,4 @@ public class CmsSetupTestResult extends Object implements Cloneable {
         m_red = false;
         m_yellow = true;
     }
-
 }
