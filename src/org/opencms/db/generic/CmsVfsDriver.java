@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/25 17:45:37 $
- * Version: $Revision: 1.258.4.35 $
+ * Date   : $Date: 2007/06/26 15:19:32 $
+ * Version: $Revision: 1.258.4.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.35 $
+ * @version $Revision: 1.258.4.36 $
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,47 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } else {
             return path.substring(0, l - 1);
         }
+    }
+
+    /**
+     * Counts the number of siblings of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the current project id
+     * @param resourceId the resource id to count the number of siblings from
+     * 
+     * @return number of siblings
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    public int countSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        int count = 0;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNT_SIBLINGS");
+            stmt.setString(1, resourceId.toString());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                count = res.getInt(1);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        return count;
     }
 
     /**
@@ -642,7 +683,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     stmt.setInt(6, resource.getLength());
                     stmt.setLong(7, resource.getDateContent());
                     stmt.setString(8, projectId.toString());
-                    stmt.setInt(9, internalCountSiblings(dbc, projectId, resource.getResourceId()));
+                    stmt.setInt(9, countSiblings(dbc, projectId, resource.getResourceId()));
                     stmt.setString(10, resource.getResourceId().toString());
                     stmt.executeUpdate();
 
@@ -656,7 +697,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     } else if (resource.getState().isKeep()) {
                         // special case sibling creation - update the link Count
                         stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_SIBLING_COUNT");
-                        stmt.setInt(1, internalCountSiblings(dbc, projectId, resource.getResourceId()));
+                        stmt.setInt(1, countSiblings(dbc, projectId, resource.getResourceId()));
                         stmt.setString(2, resource.getResourceId().toString());
                         stmt.executeUpdate();
                         m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -839,7 +880,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             // update the link Count
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_SIBLING_COUNT");
-            stmt.setInt(1, internalCountSiblings(dbc, project.getUuid(), resource.getResourceId()));
+            stmt.setInt(1, countSiblings(dbc, project.getUuid(), resource.getResourceId()));
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
 
@@ -1208,7 +1249,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     stmt.setInt(6, resourceSize);
                     stmt.setLong(7, offlineResource.getDateContent());
                     stmt.setString(8, offlineResource.getProjectLastModified().toString());
-                    stmt.setInt(9, internalCountSiblings(dbc, onlineProject.getUuid(), onlineResource.getResourceId()));
+                    stmt.setInt(9, countSiblings(dbc, onlineProject.getUuid(), onlineResource.getResourceId()));
                     stmt.setString(10, offlineResource.getResourceId().toString());
                     stmt.executeUpdate();
                 } finally {
@@ -2132,6 +2173,45 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#readVersions(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID structureId) throws CmsDataAccessException {
+
+        int structureVersion = -1;
+        int resourceVersion = -1;
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+
+            // read the offline version numbers
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_VERSIONS");
+            stmt.setString(1, structureId.toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                resourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
+                structureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        Map result = new HashMap();
+        result.put("structure", new Integer(structureVersion));
+        result.put("resource", new Integer(resourceVersion));
+        return result;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#removeFile(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsResource)
      */
     public void removeFile(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDataAccessException {
@@ -2151,12 +2231,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.closeAll(dbc, null, stmt, null);
 
             // count the references to the resource
-            siblingCount = internalCountSiblings(dbc, projectId, resource.getResourceId());
+            siblingCount = countSiblings(dbc, projectId, resource.getResourceId());
 
             if (siblingCount > 0) {
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_SIBLING_COUNT");
-                stmt.setInt(1, this.internalCountSiblings(dbc, projectId, resource.getResourceId()));
+                stmt.setInt(1, countSiblings(dbc, projectId, resource.getResourceId()));
                 stmt.setString(2, resource.getResourceId().toString());
                 stmt.executeUpdate();
 
@@ -2704,7 +2784,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(6, resource.getLength());
                 stmt.setLong(7, resource.getDateContent());
                 stmt.setString(8, projectLastModified.toString());
-                stmt.setInt(9, internalCountSiblings(dbc, projectId, resource.getResourceId()));
+                stmt.setInt(9, countSiblings(dbc, projectId, resource.getResourceId()));
                 stmt.setString(10, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -2717,7 +2797,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(5, resource.getLength());
                 stmt.setLong(6, resource.getDateContent());
                 stmt.setString(7, projectLastModified.toString());
-                stmt.setInt(8, internalCountSiblings(dbc, projectId, resource.getResourceId()));
+                stmt.setInt(8, countSiblings(dbc, projectId, resource.getResourceId()));
                 stmt.setString(9, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -2907,91 +2987,39 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * Counts the number of siblings of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId the current project id
-     * @param resourceId the resource id to count the number of siblings from
-     * 
-     * @return number of siblings
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected int internalCountSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
-    throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        int count = 0;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNT_SIBLINGS");
-            stmt.setString(1, resourceId.toString());
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                count = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return count;
-    }
-
-    /**
      * Copies the version number from the offline resource to the online resource,
      * this has to be done during publishing, direct after copying the resource itself.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource that has been publish
      * 
-     * @throws CmsDbSqlException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    protected void internalPublishVersions(CmsDbContext dbc, CmsResource resource) throws CmsDbSqlException {
+    protected void internalPublishVersions(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
 
         if (!dbc.getProjectId().isNullUUID() || dbc.currentProject().getUuid().equals(CmsProject.ONLINE_PROJECT_ID)) {
             // this method is suppossed to be used only in the offline project
             return;
         }
 
+        // read the offline version numbers
+        Map offlineVersions = readVersions(dbc, dbc.currentProject().getUuid(), resource.getStructureId());
+        int offlineStructureVersion = ((Integer)offlineVersions.get("structure")).intValue();
+        int offlineResourceVersion = ((Integer)offlineVersions.get("resource")).intValue();
+
+        if ((offlineResourceVersion < 0) || (offlineStructureVersion < 0)) {
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                //                LOG.error(Messages.get().getBundle().key(
+                //                    Messages.ERR_WRONG_VERSIONS_0));
+            }
+        }
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-
-            int offlineStructureVersion = -1;
-            int offlineResourceVersion = -1;
-            // read the offline version numbers
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCES_READ_VERSIONS");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                offlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
-                offlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_GENERIC_SQL_1,
-                        CmsDbSqlException.getErrorQuery(stmt)));
-                }
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
 
             // update the resource version
             stmt = m_sqlManager.getPreparedStatement(
@@ -3229,10 +3257,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param resource the resource to update the version number for
      * @param updateOnlyStructure if the last modification applies only one sibling or the whole resource
      * 
-     * @throws CmsDbSqlException if something goes wrong 
+     * @throws CmsDataAccessException if something goes wrong 
      */
     protected void internalUpdateVersions(CmsDbContext dbc, CmsResource resource, boolean updateOnlyStructure)
-    throws CmsDbSqlException {
+    throws CmsDataAccessException {
 
         if (dbc.getRequestContext() == null) {
             // no needed during initialization 
@@ -3243,71 +3271,54 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
+        // read the online version numbers
+        Map onlineVersions = readVersions(dbc, CmsProject.ONLINE_PROJECT_ID, resource.getStructureId());
+        int onlineStructureVersion = ((Integer)onlineVersions.get("structure")).intValue();
+        int onlineResourceVersion = ((Integer)onlineVersions.get("resource")).intValue();
+
+        if ((onlineResourceVersion < 0) || (onlineStructureVersion < 0)) {
+            // resource is new, do not change the version numbers
+            return;
+        }
+
+        // read the offline version numbers
+        Map offlineVersions = readVersions(dbc, dbc.currentProject().getUuid(), resource.getStructureId());
+        int offlineStructureVersion = ((Integer)offlineVersions.get("structure")).intValue();
+        int offlineResourceVersion = ((Integer)offlineVersions.get("resource")).intValue();
+
+        if ((offlineResourceVersion < 0) || (offlineStructureVersion < 0)) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_READ_RESOURCE_VERSIONS_1,
+                dbc.removeSiteRoot(resource.getRootPath())));
+            return;
+        }
+
+        if (offlineResourceVersion != onlineResourceVersion) {
+            // already updated in a previous operation
+            return;
+        }
+
+        int newResourceVersion = -1;
+        int newStructureVersion = -1;
+        if (offlineStructureVersion == onlineStructureVersion) {
+            if (updateOnlyStructure) {
+                newStructureVersion = onlineStructureVersion + 1;
+            } else {
+                newResourceVersion = onlineResourceVersion + 1;
+            }
+        } else {
+            if (!updateOnlyStructure) {
+                newStructureVersion = onlineStructureVersion; // this will decrease the offline version
+                newResourceVersion = onlineResourceVersion + 1;
+            }
+        }
+
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-
-            int onlineResourceVersion = -1;
-            int onlineStructureVersion = -1;
-
-            // read the online version numbers
-            stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_RESOURCES_READ_VERSIONS");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                onlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
-                onlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                // resource is new, do not change the version numbers
-                return;
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            int offlineStructureVersion = -1;
-            int offlineResourceVersion = -1;
-            // read the offline version numbers
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCES_READ_VERSIONS");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                offlineResourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
-                offlineStructureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_READ_RESOURCE_VERSIONS_1,
-                    dbc.removeSiteRoot(resource.getRootPath())));
-                return;
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            if (offlineResourceVersion != onlineResourceVersion) {
-                // already updated in a previous operation
-                return;
-            }
-
-            int newResourceVersion = -1;
-            int newStructureVersion = -1;
-            if (offlineStructureVersion == onlineStructureVersion) {
-                if (updateOnlyStructure) {
-                    newStructureVersion = onlineStructureVersion + 1;
-                } else {
-                    newResourceVersion = onlineResourceVersion + 1;
-                }
-            } else {
-                if (!updateOnlyStructure) {
-                    newStructureVersion = onlineStructureVersion; // this will decrease the offline version
-                    newResourceVersion = onlineResourceVersion + 1;
-                }
-            }
 
             if (newResourceVersion != -1) {
                 // update the resource version if needed

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/06/25 17:45:37 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/06/26 15:19:32 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 6.9.1
  */
@@ -505,6 +505,17 @@ public class TestHistory extends OpenCmsTestCase {
         // publish again
         OpenCms.getPublishManager().publishResource(cms, "testFolder");
         OpenCms.getPublishManager().waitWhileRunning();
+
+        // be sure the files were deleted, this could fail with enabled cache
+        assertFalse(cms.existsResource("testFolder", CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource("testFolder/test.txt", CmsResourceFilter.ALL));
+
+        // be sure the files were deleted, this could fail with enabled cache
+        CmsProject offline = cms.getRequestContext().currentProject();
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertFalse(cms.existsResource("testFolder", CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource("testFolder/test.txt", CmsResourceFilter.ALL));
+        cms.getRequestContext().setCurrentProject(offline);
 
         // check the deleted resources
         deletedResources = cms.readDeletedResources("/", false);
@@ -1177,10 +1188,9 @@ public class TestHistory extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check after publish
-        assertVersion(cms, sib4, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib3).size());
-        // here the second published sibling get the history from the first one
         assertVersion(cms, sib3, 1);
+        assertEquals(1, cms.readAllAvailableVersions(sib3).size());
+        assertVersion(cms, sib4, 1);
         assertEquals(1, cms.readAllAvailableVersions(sib4).size());
     }
 

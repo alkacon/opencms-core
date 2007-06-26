@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/06/25 17:45:37 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2007/06/26 15:19:32 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.18 $
+ * @version $Revision: 1.1.2.19 $
  * 
  * @since 6.9.1
  */
@@ -1265,31 +1265,24 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     public void writeResource(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
     throws CmsDataAccessException {
 
+        // read the version numbers
+        Map versions = m_driverManager.getVfsDriver().readVersions(
+            dbc,
+            resource.getState().isDeleted() ? dbc.currentProject().getUuid() : CmsProject.ONLINE_PROJECT_ID,
+            resource.getStructureId());
+        int structureVersion = ((Integer)versions.get("structure")).intValue();
+        int resourceVersion = ((Integer)versions.get("resource")).intValue();
+
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet res = null;
 
-        int resourceVersion = -1;
-        int structureVersion = -1;
         try {
             conn = m_sqlManager.getConnection(dbc);
 
-            stmt = m_sqlManager.getPreparedStatement(
-                conn,
-                resource.getState().isDeleted() ? dbc.currentProject().getUuid() : CmsProject.ONLINE_PROJECT_ID,
-                "C_RESOURCES_READ_VERSIONS");
-            stmt.setString(1, resource.getStructureId().toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                resourceVersion = res.getInt(1);
-                structureVersion = res.getInt(2);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-            m_sqlManager.closeAll(dbc, null, stmt, res);
-
-            int sibCount = internalCountSiblings(dbc, dbc.currentProject().getUuid(), resource.getResourceId());
+            int sibCount = m_driverManager.getVfsDriver().countSiblings(
+                dbc,
+                dbc.currentProject().getUuid(),
+                resource.getResourceId());
             if (!internalValidateResource(dbc, resource, publishTag)) {
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_WRITE");
@@ -1551,48 +1544,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return returnValue;
-    }
-
-    /**
-     * Counts the number of siblings of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId the current project id
-     * @param resourceId the resource id to count the number of siblings from
-     * 
-     * @return number of siblings
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    protected int internalCountSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId)
-    throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        int count = 0;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNT_SIBLINGS");
-            stmt.setString(1, resourceId.toString());
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                count = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return count;
     }
 
     /**

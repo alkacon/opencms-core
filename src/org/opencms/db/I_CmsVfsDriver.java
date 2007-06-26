@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/15 15:01:43 $
- * Version: $Revision: 1.114.4.19 $
+ * Date   : $Date: 2007/06/26 15:19:32 $
+ * Version: $Revision: 1.114.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.util.CmsUUID;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Definitions of all required VFS driver methods.<p>
@@ -53,7 +54,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.19 $
+ * @version $Revision: 1.114.4.20 $
  * 
  * @since 6.0.0 
  */
@@ -61,6 +62,18 @@ public interface I_CmsVfsDriver {
 
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 3;
+
+    /**
+     * Counts the number of siblings of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the current project id
+     * @param resourceId the resource id to count the number of siblings from
+     * 
+     * @return number of siblings
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    int countSiblings(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException;
 
     /**
      * Creates a content entry for the resource identified by the specified resource id.<p>
@@ -122,8 +135,13 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createOnlineContent(CmsDbContext dbc, CmsUUID resourceId, byte[] contents, int publishTag, boolean keepOnline, boolean needToUpdateContent)
-    throws CmsDataAccessException;
+    void createOnlineContent(
+        CmsDbContext dbc,
+        CmsUUID resourceId,
+        byte[] contents,
+        int publishTag,
+        boolean keepOnline,
+        boolean needToUpdateContent) throws CmsDataAccessException;
 
     /**
      * Creates a new property defintion in the database.<p>
@@ -618,6 +636,21 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
+     * Reads a resource version numbers.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the project to read the versions from
+     * @param structureId the structure id of the resource to read the versions from
+     * 
+     * @return a map with two entries with keys "structure" and "resource" for the
+     *         structure and resource version number respectivly, the values are {@link Integer} 
+     *         objects and may be <code>-1</code> if no resource entry could be found
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID structureId) throws CmsDataAccessException;
+
+    /**
      * Removes a file physically in the database.<p>
      * 
      * @param dbc the current database context
@@ -718,8 +751,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content)
-    throws CmsDataAccessException;
+    long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException;
 
     /**
      * Writes the "last-modified-in-project" ID of a resource.<p>
