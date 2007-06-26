@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/26 15:36:01 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.6
  */
@@ -2057,7 +2057,7 @@ public class CmsWebdavServlet extends HttpServlet {
             }
 
             m_session.save(path, resourceInputStream, exists);
-        } catch (CmsException e) {
+        } catch (Exception e) {
 
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_REPOSITORY_ERROR_2, "PUT", path), e);
