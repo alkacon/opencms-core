@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/06/26 10:09:21 $
- * Version: $Revision: 1.25.4.8 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.25.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25.4.8 $ 
+ * @version $Revision: 1.25.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,20 +305,86 @@ public class CmsSetupDb extends Object {
         ResultSet resultSet = null;
 
         stmt = m_con.createStatement();
-        try {
-            String queryToExecute = query;
-            // Check if a map of replacements is given
-            if (replacer != null) {
-                queryToExecute = replaceTokens(query, replacer);
-            }
-            // do the query
-            resultSet = stmt.executeQuery(queryToExecute);
-        } finally {
-            // close the statement
-            stmt.close();
+        String queryToExecute = query;
+
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
         }
 
+        // do the query
+        resultSet = stmt.executeQuery(queryToExecute);
+
         return resultSet;
+    }
+
+    /** Creates and executes a database statment from a String returning the result set.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * @param params the list of parameters for the statement
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public ResultSet executeSqlStatement(String query, Map replacer, List params) throws SQLException {
+
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+
+        String queryToExecute = query;
+
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        stmt = m_con.prepareStatement(queryToExecute);
+
+        // Check the params
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                Object item = params.get(i);
+
+                // Check if the parameter is a string
+                if (item instanceof String) {
+                    stmt.setString(i + 1, (String)item);
+                }
+                if (item instanceof Integer) {
+                    Integer number = (Integer)item;
+                    stmt.setInt(i + 1, number.intValue());
+                }
+                if (item instanceof Long) {
+                    Long longNumber = (Long)item;
+                    stmt.setLong(i + 1, longNumber.longValue());
+                }
+
+                // If item is none of types above set the statement to use the bytes
+                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                    try {
+                        stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        // do the query
+        resultSet = stmt.executeQuery();
+
+        return resultSet;
+    }
+
+    /**
+     * Returns the connection.<p>
+     *
+     * @return the connection
+     */
+    public Connection getConnection() {
+
+        return m_con;
     }
 
     /**

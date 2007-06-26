@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2007/06/05 12:25:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,16 +44,19 @@ import org.opencms.setup.CmsSetupDb;
  * Oracle implementation to create the new tables for version 7 of OpenCms.<p>
  * 
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.3 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBNewTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBNewTables {
 
-    
-    /** Constant for the replacement in the sql query. */
-    private static final String REPLACEMENT_TABLEINDEX_SPACE = "${indexTablespace}";
-    
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "oracle/cms_new_tables_queries.properties";
+
+    /** Constant for the replacement in the sql query. */
+    private static final String REPLACEMENT_TABLEINDEX_SPACE = "${indexTablespace}";
 
     /**
      * Constructor.<p>
@@ -66,68 +69,68 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.update6to7.generic.C
         super();
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
- 
+
     /** 
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBNewTables#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
-        
-        String indexTablespace = (String) m_poolData.get("indexTablespace");
-        
+
+        String indexTablespace = (String)m_poolData.get("indexTablespace");
+
         List elements = new ArrayList();
-        elements.add("CMS_OFFLINE_RESOURCE_RELATIONS_ORACLE");
-        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_05_ORACLE");
-        
-        elements.add("CMS_ONLINE_RESOURCE_RELATIONS_ORACLE");
-        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_05_ORACLE");
-        
-        elements.add("CMS_PUBLISH_JOBS_ORACLE");       
-        elements.add("CMS_RESOURCE_LOCKS_ORACLE");
-        
-        elements.add("CMS_CONTENTS_ORACLE");
-        elements.add("CREATE_INDEX_CMS_CONTENTS_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_CONTENTS_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_CONTENTS_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_CONTENTS_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_CONTENTS_05_ORACLE");
-        
-        elements.add("CMS_HISTORY_PROJECTRESOURCES_ORACLE");
-        elements.add("CMS_HISTORY_PROPERTYDEF_ORACLE");
-        
-        elements.add("CMS_HISTORY_PROPERTIES_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_05_ORACLE");
-        
-        elements.add("CMS_HISTORY_RESOURCES_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_05_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_06_ORACLE");
-        
-        elements.add("CMS_HISTORY_STRUCTURE_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_01_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_02_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_03_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_04_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_05_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_06_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_07_ORACLE");
-        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_08_ORACLE");
+        elements.add("CMS_OFFLINE_RESOURCE_RELATIONS");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_01");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_02");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_03");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_04");
+        elements.add("CREATE_INDEX_CMS_OFFLINE_RELATIONS_05");
+
+        elements.add("CMS_ONLINE_RESOURCE_RELATIONS");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_01");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_02");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_03");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_04");
+        elements.add("CREATE_INDEX_CMS_ONLINE_RELATIONS_05");
+
+        elements.add("CMS_PUBLISH_JOBS");
+        elements.add("CMS_RESOURCE_LOCKS");
+
+        elements.add("CMS_CONTENTS");
+        elements.add("CREATE_INDEX_CMS_CONTENTS_01");
+        elements.add("CREATE_INDEX_CMS_CONTENTS_02");
+        elements.add("CREATE_INDEX_CMS_CONTENTS_03");
+        elements.add("CREATE_INDEX_CMS_CONTENTS_04");
+        elements.add("CREATE_INDEX_CMS_CONTENTS_05");
+
+        elements.add("CMS_HISTORY_PROJECTRESOURCES");
+        elements.add("CMS_HISTORY_PROPERTYDEF");
+
+        elements.add("CMS_HISTORY_PROPERTIES");
+        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_01");
+        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_02");
+        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_03");
+        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_04");
+        elements.add("CREATE_INDEX_CMS_HISTORY_PROPERTIES_05");
+
+        elements.add("CMS_HISTORY_RESOURCES");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_01");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_02");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_03");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_04");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_05");
+        elements.add("CREATE_INDEX_CMS_HISTORY_RESOURCES_06");
+
+        elements.add("CMS_HISTORY_STRUCTURE");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_01");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_02");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_03");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_04");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_05");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_06");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_07");
+        elements.add("CREATE_INDEX_CMS_HISTORY_STRUCTURE_08");
 
         for (Iterator it = elements.iterator(); it.hasNext();) {
             String table = (String)it.next();

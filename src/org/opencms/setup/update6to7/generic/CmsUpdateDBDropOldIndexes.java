@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,11 @@ import java.util.List;
  * This class drops all indexes of each table of the database.<p> 
  * This is done so that the indexes can be updated to the version 6.2.3 and afterwards to version 7
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.6 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
@@ -92,26 +96,26 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
     /** Constant ArrayList of the tables of the base OpenCms 6.2.3 installation.<p> */
     protected static final List CMS_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_TABLES));
 
+    /** Constant for the sql query to drop an index from a table.<p> */
+    protected static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
+
+    /** Constant for the sql query to show the indexes of a table.<p> */
+    protected static final String QUERY_SHOW_INDEX = "Q_SHOW_INDEXES";
+
+    /** Constant for the sql query replacement of the tablename.<p> */
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
+
     /** Constant for the field of the index name.<p> */
     private static final String FIELD_INDEX = "KEY_NAME";
 
     /** Constant for the primary key of a the index result set.<p> */
     private static final String PRIMARY_KEY = "PRIMARY";
 
-    /** Constant for the sql query to drop an index from a table.<p> */
-    private static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
-
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "generic/cms_drop_all_indexes_queries.properties";
 
-    /** Constant for the sql query to show the indexes of a table.<p> */
-    private static final String QUERY_SHOW_INDEX = "Q_SHOW_INDEXES";
-
     /** Constant for the sql query replacement of the index.<p> */
     private static final String REPLACEMENT_INDEX = "${dropindexes}";
-
-    /** Constant for the sql query replacement of the tablename.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /**
      * Constructor.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBHistoryTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,11 @@ import java.io.IOException;
  * Oracle implementation to create the history tables and move the according contents to them.<p>
  * 
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBHistoryTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryTables {
 

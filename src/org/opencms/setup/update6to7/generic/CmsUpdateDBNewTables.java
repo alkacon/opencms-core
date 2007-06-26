@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,11 @@ import java.util.List;
  * CMS_RESOURCE_LOCKS
  * CMS_CONTENTS 
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.4 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBNewTables extends A_CmsUpdateDBPart {
 

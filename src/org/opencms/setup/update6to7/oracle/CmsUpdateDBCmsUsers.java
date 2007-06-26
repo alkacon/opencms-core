@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,40 @@
 
 package org.opencms.setup.update6to7.oracle;
 
+import oracle.sql.BLOB;
+
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.util.CmsDataTypeUtil;
+
 import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Oracle implementation of the generic update class for the Users.<p>
  *
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers {
+
+    /** Constant for the query to insert the new user data into the new table CMS_USERDATA.<p> */
+    private static final String QUERY_ORACLE_USERDATA_UPDATE = "Q_ORACLE_USERDATA_UPDATE";
+
+    /** Constant for the SQL query properties.<p> */
+    private static final String QUERY_PROPERTY_FILE = "oracle/cms_users_queries.properties";
+
+    /** Constant for the replacement in the sql query. */
+    private static final String REPLACEMENT_TABLEINDEX_SPACE = "${indexTablespace}";
 
     /**
      * Constructor.<p>
@@ -50,6 +75,128 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
     throws IOException {
 
         super();
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
-    // Nothing is done here yet
+
+    /**
+     * @see org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers#createUserDataTable(org.opencms.setup.CmsSetupDb)
+     */
+    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
+
+        String indexTablespace = (String)m_poolData.get("indexTablespace");
+
+        HashMap replacer = new HashMap();
+        replacer.put(REPLACEMENT_TABLEINDEX_SPACE, indexTablespace);
+
+        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
+        dbCon.updateSqlStatement(createStatement, replacer, null);
+
+        // create indices
+        List indexElements = new ArrayList();
+        indexElements.add("CMS_USERDATA_01_IDX_INDEX");
+        indexElements.add("CMS_USERDATA_02_IDX_INDEX");
+
+        Iterator iter = indexElements.iterator();
+        while (iter.hasNext()) {
+            String stmt = readQuery((String)iter.next());
+
+            try {
+
+                // Create the index
+                dbCon.updateSqlStatement(stmt, replacer, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers#writeUserInfo(org.opencms.setup.CmsSetupDb, java.lang.String, java.lang.String, java.lang.Object)
+     */
+    protected void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
+
+        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
+
+        try {
+            // Generate the list of parameters to add into the user info table
+            List params = new ArrayList();
+            params.add(id);
+            params.add(key);
+            params.add(value.getClass().getName());
+
+            dbCon.updateSqlStatement(query, null, params);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // update user_info in this special way because of using blob
+        ResultSet res = null;
+        boolean wasInTransaction = false;
+
+        try {
+
+            wasInTransaction = !dbCon.getConnection().getAutoCommit();
+            if (!wasInTransaction) {
+                dbCon.getConnection().setAutoCommit(false);
+            }
+
+            String stmt = readQuery(QUERY_ORACLE_USERDATA_UPDATE);
+
+            // Generate the list of parameters to add into the user info table
+            List params = new ArrayList();
+            params.add(id);
+            params.add(key);
+
+            res = dbCon.executeSqlStatement(stmt, null, params);
+            if (res.next()) {
+
+                // write serialized user info 
+                BLOB blob = (BLOB)res.getBlob("DATA_VALUE");
+
+                OutputStream output = blob.getBinaryOutputStream();
+                output.write(CmsDataTypeUtil.dataSerialize(value));
+                output.close();
+
+            } else {
+                System.out.println("Could not insert blob");
+            }
+
+            if (!wasInTransaction) {
+                String commit = readQuery("Q_COMMIT");
+                dbCon.executeSqlStatement(commit, null);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            // close result set
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // rollback
+            try {
+                if (!wasInTransaction) {
+                    String rollback = readQuery("Q_ROLLBACK");
+                    dbCon.executeSqlStatement(rollback, null);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // set auto commit back to original value
+            try {
+                if (!wasInTransaction) {
+                    dbCon.getConnection().setAutoCommit(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

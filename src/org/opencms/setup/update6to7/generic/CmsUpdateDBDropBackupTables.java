@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropBackupTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,11 @@ import java.util.List;
  * <li>CMS_BACKUP_STRUCTURE</li>
  * </ul>
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.4 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
 
@@ -71,14 +75,14 @@ public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
     /** Constant ArrayList of the BACKUP_TABLES that are to be dropped.<p> */
     protected static final List BACKUP_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(BACKUP_TABLES));
 
+    /** Constant for the replacement of the tablename in the sql query.<p> */
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
+
     /** Constant for the sql query to drop a table.<p> */
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "generic/cms_drop_backup_tables_queries.properties";
-
-    /** Constant for the replacement of the tablename in the sql query.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
 
     /**
      * Constructor.<p>

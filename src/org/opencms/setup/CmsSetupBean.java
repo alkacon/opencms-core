@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2007/04/26 14:31:14 $
- * Version: $Revision: 1.47.4.7 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.47.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.47.4.7 $ 
+ * @version $Revision: 1.47.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -180,7 +180,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected Map m_moduleFilenames;
 
     /** Location for module archives relative to the webapp folder.  */
-    protected String m_modulesFolder = CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FOLDER_PACKAGES + CmsSystemInfo.FOLDER_MODULES;
+    protected String m_modulesFolder = CmsSystemInfo.FOLDER_WEBINF
+        + CmsSystemInfo.FOLDER_PACKAGES
+        + CmsSystemInfo.FOLDER_MODULES;
 
     /** The new logging offset in the workplace import thread. */
     protected int m_newLoggingOffset;
@@ -322,6 +324,47 @@ public class CmsSetupBean implements I_CmsShellCommands {
         html.append("\t\t\t\t\t\tThe Alkacon OpenCms setup wizard has not been started correctly!<br>");
         html.append("\t\t\t\t\t\tPlease click <a href='").append(pathPrefix);
         html.append("index.jsp'>here</a> to restart the wizard.");
+        html.append("\t\t\t\t\t</td>");
+        html.append("\t\t\t\t</tr>");
+        html.append("\t\t\t</table>");
+        html.append(getHtmlPart("C_BLOCK_END"));
+        html.append("\t\t</td>");
+        html.append("\t</tr>");
+        html.append("</table>");
+        return html.toString();
+    }
+
+    /**
+     * Returns html code to display the errors occured.<p> 
+     * 
+     * @param pathPrefix to adjust the path
+     * 
+     * @return html code
+     */
+    public String displayErrors(String pathPrefix) {
+
+        if (pathPrefix == null) {
+            pathPrefix = "";
+        }
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' cellpadding='5' cellspacing='0' style='width: 100%; height: 100%;'>");
+        html.append("\t<tr>");
+        html.append("\t\t<td style='vertical-align: middle; height: 100%;'>");
+        html.append(getHtmlPart("C_BLOCK_START", "Error"));
+        html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' style='width: 100%;'>");
+        html.append("\t\t\t\t<tr>");
+        html.append("\t\t\t\t\t<td><img src='").append(pathPrefix).append("resources/error.png' border='0'></td>");
+        html.append("\t\t\t\t\t<td>&nbsp;&nbsp;</td>");
+        html.append("\t\t\t\t\t<td style='width: 100%;'>");
+
+        Iterator iter = getErrors().iterator();
+        while (iter.hasNext()) {
+            String msg = (String)iter.next();
+            html.append("\t\t\t\t\t\t");
+            html.append(msg);
+            html.append("<br/>");
+        }
+
         html.append("\t\t\t\t\t</td>");
         html.append("\t\t\t\t</tr>");
         html.append("\t\t\t</table>");
@@ -1995,6 +2038,28 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Creates an string out of the given array to store back in the property file.<p>
+     * 
+     * @param values the array with the values to create a string from
+     * 
+     * @return a string with the values of the array which is ready to store in the property file
+     */
+    private String createValueString(String[] values) {
+
+        StringBuffer buf = new StringBuffer();
+
+        for (int i = 0; i < values.length; i++) {
+
+            // escape commas and equals in value
+            values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
+            values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
+
+            buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
+        }
+        return buf.toString();
+    }
+
+    /**
      * Saves the properties to a file.<p>
      * 
      * @param properties the properties to be saved
@@ -2040,34 +2105,33 @@ public class CmsSetupBean implements I_CmsShellCommands {
                             Object obj = properties.get(key);
                             String value = "";
 
-                            if ((obj != null) && (obj instanceof Vector)) {
-                                String[] values = {};
-                                values = (String[])((Vector)obj).toArray(values);
-                                StringBuffer buf = new StringBuffer();
+                            if (obj != null) {
+                                if (obj instanceof Vector) {
+                                    String[] values = {};
+                                    values = (String[])((Vector)obj).toArray(values);
 
-                                for (int i = 0; i < values.length; i++) {
+                                    // write it
+                                    fw.write("\\\n" + createValueString(values));
+
+                                } else if (obj instanceof List) {
+
+                                    String[] values = {};
+                                    values = (String[])((List)obj).toArray(values);
+
+                                    // write it
+                                    fw.write("\\\n" + createValueString(values));
+
+                                } else {
+
+                                    value = ((String)obj).trim();
 
                                     // escape commas and equals in value
-                                    values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
-                                    values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
+                                    value = CmsStringUtil.substitute(value, ",", "\\,");
+                                    value = CmsStringUtil.substitute(value, "=", "\\=");
 
-                                    buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
+                                    // write it
+                                    fw.write(value);
                                 }
-                                value = buf.toString();
-
-                                // write it
-                                fw.write("\\\n" + value);
-
-                            } else if (obj != null) {
-
-                                value = ((String)obj).trim();
-
-                                // escape commas and equals in value
-                                value = CmsStringUtil.substitute(value, ",", "\\,");
-                                value = CmsStringUtil.substitute(value, "=", "\\=");
-
-                                // write it
-                                fw.write(value);
                             }
 
                         } catch (NullPointerException e) {

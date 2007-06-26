@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBDropBackupTables.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,25 +32,18 @@
 package org.opencms.setup.update6to7.oracle;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import org.opencms.setup.CmsSetupDb;
 
 /**
  * Oracle implementation of the generic class to drop the backup tables from the database.<p>
  * 
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBDropBackupTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBDropBackupTables {
-
-    /** Constant for the sql query to drop a table.<p> */
-    private static final String QUERY_DROP_TABLE_ORACLE = "Q_DROP_TABLE_ORACLE";
-
-    /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "oracle/cms_drop_backup_tables_queries.properties";
 
     /**
      * Constructor.<p>
@@ -61,27 +54,6 @@ public class CmsUpdateDBDropBackupTables extends org.opencms.setup.update6to7.ge
     throws IOException {
 
         super();
-        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
-    /**
-     * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
-     */
-    protected void internalExecute(CmsSetupDb dbCon) {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String dropQuery = readQuery(QUERY_DROP_TABLE_ORACLE);
-        for (Iterator it = BACKUP_TABLES_LIST.iterator(); it.hasNext();) {
-            String table = (String)it.next();
-            HashMap replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, table);
-            try {
-                if (dbCon.hasTableOrColumn(table, null)) {
-                    dbCon.updateSqlStatement(dropQuery, replacer, null);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

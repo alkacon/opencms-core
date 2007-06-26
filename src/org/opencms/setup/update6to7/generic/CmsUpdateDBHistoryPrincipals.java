@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/06/06 11:06:49 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,14 +50,18 @@ import java.util.List;
  * </ul>
  *
  * @author Raphael Schnuck
+ * 
+ * @version $Revision: 1.1.2.8 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
+    /** Constant for sql query to create the history principals table.<p> */
+    protected static final String QUERY_HISTORY_PRINCIPALS_CREATE_TABLE = "Q_HISTORY_PRINCIPALS_CREATE_TABLE";
+
     /** Constant for the CMS_HISTORY_PRINICIPALS table.<p> */
     protected static final String TABLE_CMS_HISTORY_PRINCIPALS = "CMS_HISTORY_PRINCIPALS";
-
-    /** Constant for sql query to create the history principals table.<p> */
-    private static final String QUERY_HISTORY_PRINCIPALS_CREATE_TABLE = "Q_HISTORY_PRINCIPALS_CREATE_TABLE";
 
     /** Constant for sql query.<p> */
     private static final String QUERY_HISTORY_PRINCIPALS_PROJECTS_GROUPS = "Q_HISTORY_PRINCIPALS_PROJECTS_GROUPS";

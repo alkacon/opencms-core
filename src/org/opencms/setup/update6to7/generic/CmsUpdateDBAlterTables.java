@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/06/06 10:43:58 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,11 @@ import java.util.List;
  * CMS_ONLINE/OFFLINE_STRUCTURE     Add the column STRUCTURE_VERSION
  * CMS_PROJECTS                     Drop the column TASK_ID and change the size for the project name
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.7 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
@@ -91,11 +95,11 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
     /** Constant for the column STRUCTURE_VERSION in the STRUCTURE tables.<p> */
     protected static final String COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION = "STRUCTURE_VERSION";
 
-    /** Constant for the column TASK_ID of the CMS_PROJECTS table.<p> */
-    protected static final String COLUMN_PROJECTS_TASK_ID = "TASK_ID";
-
     /** Constant for the column PROJECT_NAME of the CMS_PROJECTS table.<p> */
     protected static final String COLUMN_PROJECTS_PROJECT_NAME = "PROJECT_NAME";
+
+    /** Constant for the column TASK_ID of the CMS_PROJECTS table.<p> */
+    protected static final String COLUMN_PROJECTS_TASK_ID = "TASK_ID";
 
     /** Constant for the new column DATE_CONTENT of the CMS_RESOURCES tables.<p> */
     protected static final String COLUMN_RESOURCES_DATE_CONTENT = "DATE_CONTENT";
@@ -103,11 +107,20 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
     /** Constant for the new column RESOURCE_VERSION of the CMS_RESOURCES tables.<p> */
     protected static final String COLUMN_RESOURCES_RESOURCE_VERSION = "RESOURCE_VERSION";
 
-    /** Constant for the sql query to drop the TASK_ID from the CMS_PROJECTS table.<p> */
-    private static final String QUERY_CMS_PROJECTS_DROP_TASK_ID = "Q_CMS_PROJECTS_DROP_TASK_ID";
+    /** Constant for the sql replacement of the tablename.<p> */
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
+
+    /** Constant for the table name CMS_OFFLINE_CONTENTS.<p> */
+    protected static final String TABLE_CMS_OFFLINE_CONTENTS = "CMS_OFFLINE_CONTENTS";
+
+    /** Constant for the table name CMS_PROJECTS.<p> */
+    protected static final String TABLE_CMS_PROJECTS = "CMS_PROJECTS";
 
     /** Constant for the sql query to change the colum PROJECT_NAME.<p> */
     private static final String QUERY_CMS_PROJECTS_CHANGE_PROJECT_NAME = "Q_CMS_PROJECTS_CHANGE_PROJECT_NAME_SIZE";
+
+    /** Constant for the sql query to drop the TASK_ID from the CMS_PROJECTS table.<p> */
+    private static final String QUERY_CMS_PROJECTS_DROP_TASK_ID = "Q_CMS_PROJECTS_DROP_TASK_ID";
 
     /** Constant for the sql query to change the colum PROJECT_NAME.<p> */
     private static final String QUERY_CMS_PROJECTS_UPDATE_PROJECT_FLAGS = "Q_CMS_PROJECTS_UPDATE_PROJECT_FLAGS";
@@ -132,15 +145,6 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to update the structure version in each row.<p> */
     private static final String QUERY_UPDATE_STRUCTURE_VERSION = "Q_UPDATE_STRUCTURE_VERSION";
-
-    /** Constant for the sql replacement of the tablename.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
-
-    /** Constant for the table name CMS_OFFLINE_CONTENTS.<p> */
-    protected static final String TABLE_CMS_OFFLINE_CONTENTS = "CMS_OFFLINE_CONTENTS";
-
-    /** Constant for the table name CMS_PROJECTS.<p> */
-    protected static final String TABLE_CMS_PROJECTS = "CMS_PROJECTS";
 
     /**
      * Default constructor.<p>

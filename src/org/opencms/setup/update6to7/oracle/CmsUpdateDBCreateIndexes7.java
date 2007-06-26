@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/06/05 12:25:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,27 +45,31 @@ import org.opencms.setup.CmsSetupDb;
  * Oracle implementation for the creation of the indexes of the tables in version 7.<p>
  * 
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.3 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.generic.CmsUpdateDBCreateIndexes7 {
 
+    /** Constant for the field of the constraint name.<p> */
+    private static final String FIELD_CONSTRAINT = "CONSTRAINT_NAME";
+
     /** Constant for the field of the index name.<p> */
-    private static final String FIELD_INDEX_ORACLE = "INDEX_NAME";
-
-    /** Constant for the primary key of a the index result set.<p> */
-    private static final String PRIMARY_KEY_ORACLE = "PK_";
-
-    /** Constant for the sql query to drop an index. */
-    private static final String QUERY_DROP_INDEX_ORACLE = "Q_DROP_INDEX_ORACLE";
+    private static final String FIELD_INDEX = "INDEX_NAME";
 
     /** Constant for the sql query to drop the primary key of a table. */
-    private static final String QUERY_DROP_PRIMARY_KEY_ORACLE = "Q_DROP_PRIMARY_KEY_ORACLE";
+    private static final String QUERY_DROP_CONSTRAINT = "Q_DROP_CONSTRAINT";
+
+    /** Constant for the sql query to drop an index. */
+    private static final String QUERY_DROP_INDEX = "Q_DROP_INDEX";
 
     /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE_ORACLE = "oracle/cms_add_new_indexes_queries.properties";
+    private static final String QUERY_PROPERTY_FILE = "oracle/cms_add_new_indexes_queries.properties";
 
-    /** Constant for the sql query to get the list of indexes for a table. */
-    private static final String QUERY_SHOW_INDEX_ORACLE = "Q_SHOW_INDEX_ORACLE";
+    /** Constant for the sql query to list contraints for a table. */
+    private static final String QUERY_SHOW_CONSTRAINTS = "Q_SHOW_CONSTRAINTS";
 
     /** Constant for the replacement of the indexname. */
     private static final String REPLACEMENT_INDEXNAME = "${indexname}";
@@ -82,8 +86,7 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
     throws IOException {
 
         super();
-        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE_ORACLE);
-
+        loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
     }
 
     /**
@@ -116,33 +119,44 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
         // iterate the queries
         for (Iterator it = elements.iterator(); it.hasNext();) {
             String tablename = (String)it.next();
+
             // Check if the table exists
             if (dbCon.hasTableOrColumn(tablename, null)) {
-                //              Get the indexes to drop
-                List dropIndexes = getIndexesToDrop(dbCon, tablename);
-                Iterator dropIndexIterator = dropIndexes.iterator();
-                // Drop the indexes
-                while (dropIndexIterator.hasNext()) {
-                    String indexToDrop = (String)dropIndexIterator.next();
-                    try {
-                        if (indexToDrop.indexOf(PRIMARY_KEY_ORACLE) > 0) {
-                            // Drop the primary key
-                            String dropPrimaryKey = readQuery(QUERY_DROP_PRIMARY_KEY_ORACLE);
-                            HashMap replaceTablename = new HashMap();
-                            replaceTablename.put(REPLACEMENT_TABLENAME, tablename);
-                            dbCon.updateSqlStatement(dropPrimaryKey, replaceTablename, null);
-                        } else {
-                            // Drop the index
-                            String dropIndexQuery = readQuery(QUERY_DROP_INDEX_ORACLE);
-                            HashMap replaceIndexname = new HashMap();
-                            replaceIndexname.put(REPLACEMENT_INDEXNAME, indexToDrop);
-                            dbCon.updateSqlStatement(dropIndexQuery, replaceIndexname, null);
-                        }
 
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                // Drop the constraints
+                try {
+                    List constraints = getConstraintsTopDrop(dbCon, tablename);
+                    Iterator iter = constraints.iterator();
+                    while (iter.hasNext()) {
+                        String constraint = (String)iter.next();
+
+                        String dropConstraint = readQuery(QUERY_DROP_CONSTRAINT);
+                        HashMap replacer = new HashMap();
+                        replacer.put(REPLACEMENT_TABLENAME, tablename);
+                        replacer.put(REPLACEMENT_INDEXNAME, constraint);
+                        dbCon.updateSqlStatement(dropConstraint, replacer, null);
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
+
+                // Drop the indexes
+                try {
+                    List indexes = getIndexesToDrop(dbCon, tablename);
+                    Iterator iter = indexes.iterator();
+                    while (iter.hasNext()) {
+                        String index = (String)iter.next();
+
+                        // Drop the index
+                        String dropIndex = readQuery(QUERY_DROP_INDEX);
+                        HashMap replacerIndex = new HashMap();
+                        replacerIndex.put(REPLACEMENT_INDEXNAME, index);
+                        dbCon.updateSqlStatement(dropIndex, replacerIndex, null);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
             } else {
                 System.out.println("Table " + tablename + "does not exist.");
             }
@@ -260,6 +274,34 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
     }
 
     /**
+     * Gets the constraints for a table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to get the indexes from
+     * 
+     * @return a list of constraints
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    private List getConstraintsTopDrop(CmsSetupDb dbCon, String tablename) throws SQLException {
+
+        ArrayList constraints = new ArrayList();
+        String tableConstraints = readQuery(QUERY_SHOW_CONSTRAINTS);
+        HashMap replacer = new HashMap();
+        replacer.put(REPLACEMENT_TABLENAME, tablename);
+        ResultSet set = dbCon.executeSqlStatement(tableConstraints, replacer);
+        while (set.next()) {
+            String constraint = set.getString(FIELD_CONSTRAINT);
+            if (!constraints.contains(constraint)) {
+                constraints.add(constraint);
+            }
+
+        }
+        set.close();
+        return constraints;
+    }
+
+    /**
      * Returns the list of the indexes that shall be dropped before adding the final new indexes.<p>
      * 
      * @param dbCon the connection to the database
@@ -270,13 +312,13 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
     private List getIndexesToDrop(CmsSetupDb dbCon, String tablename) {
 
         List indexes = new ArrayList();
-        String tableIndex = readQuery(QUERY_SHOW_INDEX_ORACLE);
+        String tableIndex = readQuery(QUERY_SHOW_INDEX);
         HashMap replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
         try {
             ResultSet set = dbCon.executeSqlStatement(tableIndex, replacer);
             while (set.next()) {
-                String index = set.getString(FIELD_INDEX_ORACLE);
+                String index = set.getString(FIELD_INDEX);
                 if (!indexes.contains(index)) {
                     indexes.add(index);
                 }

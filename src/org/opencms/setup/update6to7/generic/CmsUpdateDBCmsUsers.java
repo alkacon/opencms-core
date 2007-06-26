@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/06/04 16:01:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,19 @@ import java.util.Map;
  * This class makes an update of the CMS_USERS table splitting it up into CMS_USERS and CMS_USERDATA.<p>
  * Unnecessary colums from CMS_USERS will be deleted and the new column USER_DATECREATED is added.
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.4 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
+
+    /** Constant for the query to create the user data table.<p> */
+    protected static final String QUERY_CREATE_TABLE_USERDATA = "Q_CREATE_TABLE_USERDATA";
+
+    /** Constant for the query to insert the new user data into the new table CMS_USERDATA.<p> */
+    protected static final String QUERY_INSERT_CMS_USERDATA = "Q_INSERT_CMS_USERDATA";
 
     /** Constant for the table CMS_USERDATA.<p> */
     private static final String CHECK_CMS_USERDATA = "CMS_USERDATA";
@@ -67,9 +77,6 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to add all webusers to the group with the given id.<p> */
     private static final String QUERY_ADD_WEBUSERS_TO_GROUP = "Q_ADD_WEBUSERS_TO_GROUP";
-
-    /** Constant for the query to create the user data table.<p> */
-    private static final String QUERY_CREATE_TABLE_USERDATA = "Q_CREATE_TABLE_USERDATA";
 
     /** Constant for the sql query to create a new group in the CMS_GROUPS table for the webusers.<p> */
     private static final String QUERY_CREATE_WEBUSERS_GROUP = "Q_CREATE_WEBUSERS_GROUP";
@@ -85,9 +92,6 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to drop the USER_TYPE column from CMS_USERS.<p> */
     private static final String QUERY_DROP_USER_TYPE_COLUMN = "Q_DROP_USER_TYPE_COLUMN";
-
-    /** Constant for the query to insert the new user data into the new table CMS_USERDATA.<p> */
-    private static final String QUERY_INSERT_CMS_USERDATA = "Q_INSERT_CMS_USERDATA";
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "generic/cms_users_queries.properties";
@@ -213,6 +217,32 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
         dbCon.updateSqlStatement(createStatement, null, null);
+    }
+
+    /**
+     * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param id the user id 
+     * @param key the data key
+     * @param value the data value
+     */
+    protected void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
+
+        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
+
+        try {
+            // Generate the list of parameters to add into the user info table
+            List params = new ArrayList();
+            params.add(id);
+            params.add(key);
+            params.add(value);
+            params.add(value.getClass().getName());
+
+            dbCon.updateSqlStatement(query, null, params);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -349,32 +379,6 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
                 // Write the additional user information to the database
                 writeUserInfo(dbCon, id, (String)entry.getKey(), entry.getValue());
             }
-        }
-    }
-
-    /**
-     * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param id the user id 
-     * @param key the data key
-     * @param value the data value
-     */
-    private void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
-
-        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
-
-        try {
-            // Generate the list of parameters to add into the user info table
-            List params = new ArrayList();
-            params.add(id);
-            params.add(key);
-            params.add(value);
-            params.add(value.getClass().getName());
-
-            dbCon.updateSqlStatement(query, null, params);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }

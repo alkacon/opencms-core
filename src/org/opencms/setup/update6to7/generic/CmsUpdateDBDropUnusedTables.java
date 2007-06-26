@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropUnusedTables.java,v $
- * Date   : $Date: 2007/05/31 14:37:09 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,11 @@ import java.util.List;
  * CMS_TASKTYPE
  * TEMP_PROJECT_UUIDS
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.3 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBDropUnusedTables extends A_CmsUpdateDBPart {
 

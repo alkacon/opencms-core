@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/06/06 10:43:58 $
- * Version: $Revision: 1.6.4.18 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.6.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6.4.18 $ 
+ * @version $Revision: 1.6.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -713,6 +713,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     public void updateRelations() throws Exception {
 
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+
+        report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+
         String storedSite = m_cms.getRequestContext().getSiteRoot();
         CmsProject project = null;
         try {
@@ -733,9 +736,22 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_cms.getRequestContext().setSiteRoot(""); // change to the root site
             m_cms.getRequestContext().setCurrentProject(project);
 
-            Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
+            List types = OpenCms.getResourceManager().getResourceTypes();
+            int n = types.size();
+            int m = 0;
+            Iterator itTypes = types.iterator();
             while (itTypes.hasNext()) {
                 I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                m++;
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    type.getTypeName()));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
                 if (type instanceof I_CmsLinkParseable) {
                     try {
                         CmsXmlContentRepairSettings settings = new CmsXmlContentRepairSettings(m_cms);
@@ -749,6 +765,9 @@ public class CmsUpdateBean extends CmsSetupBean {
                         synchronized (this) {
                             t.join();
                         }
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
                     } catch (Exception e) {
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
@@ -758,14 +777,19 @@ public class CmsUpdateBean extends CmsSetupBean {
                     }
                 } else {
                     report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0));
+                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_WARNING);
                 }
             }
         } finally {
             try {
                 if (project != null) {
                     try {
-                        m_cms.unlockResource("/"); // unlock everything
+                        m_cms.unlockProject(project.getUuid()); // unlock everything
+                        OpenCms.getPublishManager().publishProject(
+                            m_cms,
+                            report,
+                            OpenCms.getPublishManager().getPublishList(m_cms));
+                        OpenCms.getPublishManager().waitWhileRunning();
                     } finally {
                         m_cms.getRequestContext().setCurrentProject(m_cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                     }
@@ -773,6 +797,10 @@ public class CmsUpdateBean extends CmsSetupBean {
             } finally {
                 m_cms.getRequestContext().setSiteRoot(storedSite);
             }
+            report.println(
+                Messages.get().container(Messages.RPT_FINISH_UPDATE_RELATIONS_0),
+                I_CmsReport.FORMAT_HEADLINE);
+
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/06/06 11:06:49 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,21 +59,16 @@ import java.util.Map;
  * After that the original indexes and the column for the project id index is dropped and the new column with the
  * project uuid becomes the primary key.<p>
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.9 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
-    /** Constant for the table name of the CMS_HISTORY_PROJECTS table.<p> */
-    protected static final String HISTORY_PROJECTS_TABLE = "CMS_HISTORY_PROJECTS";
-
-    /** Constant for the name of temporary table containing the project ids and uuids.<p> */
-    protected static final String TEMPORARY_TABLE_NAME = "TEMP_PROJECT_UUIDS";
-
     /** Constant for the sql column PROJECT_ID.<p> */
     protected static final String COLUMN_PROJECT_ID = "PROJECT_ID";
-
-    /** Constant for the sql primary key of the CMS_PROJECTRESOURCES table.<p> */
-    protected static final String COLUMN_PROJECT_ID_RESOURCE_PATH = "PROJECT_ID,RESOURCE_PATH(255)";
 
     /** Constant for the sql query to use the column PROJECT_LASTMODIFIED.<p> */
     protected static final String COLUMN_PROJECT_LASTMODIFIED = "PROJECT_LASTMODIFIED";
@@ -84,20 +79,66 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /** Constant for the sql column TEMP_PROJECT_UUID.<p> */
     protected static final String COLUMN_TEMP_PROJECT_UUID = "TEMP_PROJECT_UUID";
 
+    /** Constant for the table name of the CMS_HISTORY_PROJECTS table.<p> */
+    protected static final String HISTORY_PROJECTS_TABLE = "CMS_HISTORY_PROJECTS";
+
     /** Constant for the sql query to add a new primary key.<p> */
-    private static final String QUERY_ADD_PRIMARY_KEY = "Q_ADD_PRIMARY_KEY";
+    protected static final String QUERY_ADD_PRIMARY_KEY = "Q_ADD_PRIMARY_KEY";
 
     /** Constant for the sql query to add a new column to the table.<p> */
-    private static final String QUERY_ADD_TEMP_UUID_COLUMN = "Q_ADD_COLUMN";
+    protected static final String QUERY_ADD_TEMP_UUID_COLUMN = "Q_ADD_COLUMN";
 
     /** Constant for the sql query to create the new CMS_HISTORY_PROJECTS table.<p> */
-    private static final String QUERY_CREATE_HISTORY_PROJECTS_TABLE = "Q_CREATE_HISTORY_PROJECTS_TABLE";
+    protected static final String QUERY_CREATE_HISTORY_PROJECTS_TABLE = "Q_CREATE_HISTORY_PROJECTS_TABLE";
 
     /** Constant for the sql query to create the temporary table.<p> */
-    private static final String QUERY_CREATE_TEMP_TABLE_UUIDS = "Q_CREATE_TEMPORARY_TABLE_UUIDS";
+    protected static final String QUERY_CREATE_TEMP_TABLE_UUIDS = "Q_CREATE_TEMPORARY_TABLE_UUIDS";
 
     /** Constant for the sql query to describe the given table.<p> */
-    private static final String QUERY_DESCRIBE_TABLE = "Q_DESCRIBE_TABLE";
+    protected static final String QUERY_DESCRIBE_TABLE = "Q_DESCRIBE_TABLE";
+
+    /** Constant for the sql query to read max publish tag.<p> */
+    protected static final String QUERY_READ_MAX_PUBTAG = "Q_READ_MAX_PUBTAG";
+
+    /** Constant for the replacement in the SQL query for the columnname.<p> */
+    protected static final String REPLACEMENT_COLUMN = "${column}";
+
+    /** Constant for the replacement in the SQL query for the new columnname.<p> */
+    protected static final String REPLACEMENT_NEW_COLUMN = "${newcolumn}";
+
+    /** Constant for the replacement in the SQL query for old id to update.<p> */
+    protected static final String REPLACEMENT_OLDID = "${oldid}";
+
+    /** Constant for the replacement in the SQL query for the primary key.<p> */
+    protected static final String REPLACEMENT_PRIMARY_KEY = "${primarykeycolumn}";
+
+    /** Constant for the replacement in the SQL query for the tablename.<p> */
+    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
+
+    /** Array of the online and offline resources tables.<p> */
+    protected static final String[] RESOURCE_TABLES = {"CMS_OFFLINE_RESOURCES", "CMS_ONLINE_RESOURCES"};
+
+    /** Arraylist for the online and offline resources tables that shall be updated.<p> */
+    protected static final List RESOURCES_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(RESOURCE_TABLES));
+
+    /** Array of the tables that are to be updated.<p> */
+    protected static final String[] TABLES = {
+        "CMS_OFFLINE_RESOURCES",
+        "CMS_ONLINE_RESOURCES",
+        "CMS_PROJECTRESOURCES",
+        "CMS_PROJECTS"};
+
+    /** Arraylist for the tables that shall be updated.<p> */
+    protected static final List TABLES_LIST = Collections.unmodifiableList(Arrays.asList(TABLES));
+
+    /** Constant for the temporary UUID column in the tables.<p> */
+    protected static final String TEMP_UUID_COLUMN = "TEMP_PROJECT_UUID";
+
+    /** Constant for the name of temporary table containing the project ids and uuids.<p> */
+    protected static final String TEMPORARY_TABLE_NAME = "TEMP_PROJECT_UUIDS";
+
+    /** Constant for the sql primary key of the CMS_PROJECTRESOURCES table.<p> */
+    private static final String COLUMN_PROJECT_ID_RESOURCE_PATH = "PROJECT_ID,RESOURCE_PATH(255)";
 
     /** Constant for the sql query to drop a given column.<p> */
     private static final String QUERY_DROP_COLUMN = "Q_DROP_COLUMN";
@@ -138,40 +179,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /** Constant for the sql query to repair lost project ids.<p> */
     private static final String QUERY_UPDATE_NULL_PROJECTID = "Q_UPDATE_NULL_PROJECTID";
 
-    /** Constant for the replacement in the SQL query for the columnname.<p> */
-    protected static final String REPLACEMENT_COLUMN = "${column}";
-
-    /** Constant for the replacement in the SQL query for the new columnname.<p> */
-    protected static final String REPLACEMENT_NEW_COLUMN = "${newcolumn}";
-
-    /** Constant for the replacement in the SQL query for old id to update.<p> */
-    protected static final String REPLACEMENT_OLDID = "${oldid}";
-
-    /** Constant for the replacement in the SQL query for the primary key.<p> */
-    protected static final String REPLACEMENT_PRIMARY_KEY = "${primarykeycolumn}";
-
-    /** Constant for the replacement in the SQL query for the tablename.<p> */
-    protected static final String REPLACEMENT_TABLENAME = "${tablename}";
-
-    /** Array of the online and offline resources tables.<p> */
-    protected static final String[] RESOURCE_TABLES = {"CMS_OFFLINE_RESOURCES", "CMS_ONLINE_RESOURCES"};
-
-    /** Arraylist for the online and offline resources tables that shall be updated.<p> */
-    protected static final List RESOURCES_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(RESOURCE_TABLES));
-
-    /** Array of the tables that are to be updated.<p> */
-    protected static final String[] TABLES = {
-        "CMS_OFFLINE_RESOURCES",
-        "CMS_ONLINE_RESOURCES",
-        "CMS_PROJECTRESOURCES",
-        "CMS_PROJECTS"};
-
-    /** Arraylist for the tables that shall be updated.<p> */
-    protected static final List TABLES_LIST = Collections.unmodifiableList(Arrays.asList(TABLES));
-
-    /** Constant for the temporary UUID column in the tables.<p> */
-    protected static final String TEMP_UUID_COLUMN = "TEMP_PROJECT_UUID";
-
     /**
      * Constructor.<p>
      * 
@@ -182,6 +189,68 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
         super();
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
+    }
+
+    /**
+     * Adds a new primary key to the given table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to add the primary key to
+     * @param primaryKey the new primary key
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected void addPrimaryKey(CmsSetupDb dbCon, String tablename, String primaryKey) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (dbCon.hasTableOrColumn(tablename, null)) {
+            String query = readQuery(QUERY_ADD_PRIMARY_KEY);
+            Map replacer = new HashMap();
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_PRIMARY_KEY, primaryKey);
+            dbCon.updateSqlStatement(query, replacer, null);
+        } else {
+            System.out.println("table " + tablename + " does not exists");
+        }
+    }
+
+    /**
+     * Adds the new column for the uuids to a table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to add the column to
+     * @param column the new colum to add
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    protected void addUUIDColumnToTable(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        if (!dbCon.hasTableOrColumn(tablename, column)) {
+            String query = readQuery(QUERY_ADD_TEMP_UUID_COLUMN); // Get the query
+            // if the table is not one of the ONLINE or OFFLINE resources add the new column in the first position
+            if (!RESOURCES_TABLES_LIST.contains(tablename)) {
+                query += " FIRST";
+            }
+            Map replacer = new HashMap(); // Build the replacements
+            replacer.put(REPLACEMENT_TABLENAME, tablename);
+            replacer.put(REPLACEMENT_COLUMN, column);
+            dbCon.updateSqlStatement(query, replacer, null); // execute the query
+        } else {
+            System.out.println("column " + column + " in table " + tablename + " already exists");
+        }
+    }
+
+    /**
+     * Check if the column type of the project id is incorrect.<p>
+     * 
+     * @param type the type of the column from the meta data
+     * 
+     * @return true if the type is incorrect
+     */
+    protected boolean checkColumnTypeProjectId(int type) {
+
+        return type == java.sql.Types.INTEGER;
     }
 
     /**
@@ -219,6 +288,16 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         } else {
             System.out.println("table " + TEMPORARY_TABLE_NAME + " already exists");
         }
+    }
+
+    /**
+     * Returns the columns for the primary key of the project resources table.<p>
+     * 
+     * @return the columns for the primary key of the project resources table
+     */
+    protected String getColumnProjectIdResourcePath() {
+
+        return COLUMN_PROJECT_ID_RESOURCE_PATH;
     }
 
     /**
@@ -293,7 +372,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
                     // add the new primary key
                     if (tablename.equals("CMS_PROJECTRESOURCES")) {
-                        addPrimaryKey(dbCon, tablename, COLUMN_PROJECT_ID_RESOURCE_PATH);
+                        addPrimaryKey(dbCon, tablename, getColumnProjectIdResourcePath());
                     }
                     if (tablename.equals("CMS_PROJECTS")) {
                         addPrimaryKey(dbCon, tablename, COLUMN_PROJECT_ID);
@@ -326,25 +405,71 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                 groupId = new CmsUUID(set.getString(1));
             }
 
+            // read publish tag
+            int pubTag = 1;
+            String query = readQuery(QUERY_READ_MAX_PUBTAG);
+            ResultSet res = dbCon.executeSqlStatement(query, null);
+            if (res.next()) {
+                pubTag = res.getInt(1);
+            }
+            res.close();
+
             List params = new ArrayList();
             params.add(new CmsUUID().toString());
             params.add("updateWizardDummyProject");
             params.add("dummy project just for having an entry");
             params.add(new Integer(1));
-            params.add(userId);
-            params.add(groupId);
-            params.add(groupId);
+            params.add(userId.toString());
+            params.add(groupId.toString());
+            params.add(groupId.toString());
             params.add(new Long(System.currentTimeMillis()));
-            params.add(new Integer(1));
+            params.add(new Integer(pubTag));
             params.add(new Long(System.currentTimeMillis()));
-            params.add(userId);
+            params.add(userId.toString());
             params.add(CmsOrganizationalUnit.SEPARATOR);
 
-            String query = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
+            query = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
             dbCon.updateSqlStatement(query, null, params);
         } else {
             System.out.println("table " + HISTORY_PROJECTS_TABLE + " has content");
         }
+    }
+
+    /**
+     * Checks if the given table needs an update of the uuids.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to check
+     * 
+     * @return true if the project ids are not yet updated, false if nothing needs to be done
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    protected boolean needsUpdating(CmsSetupDb dbCon, String tablename) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        boolean result = true;
+
+        String query = readQuery(QUERY_DESCRIBE_TABLE);
+        Map replacer = new HashMap();
+        replacer.put(REPLACEMENT_TABLENAME, tablename);
+        ResultSet set = dbCon.executeSqlStatement(query, replacer);
+
+        while (set.next()) {
+            String fieldname = set.getString("Field");
+            if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
+                try {
+                    String fieldtype = set.getString("Type");
+                    // If the type is varchar then no update needs to be done.
+                    if (fieldtype.indexOf("varchar") > 0) {
+                        return false;
+                    }
+                } catch (SQLException e) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -385,56 +510,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             params.add(set.getString("PROJECT_OU"));
 
             dbCon.updateSqlStatement(insertQuery, null, params);
-        }
-    }
-
-    /**
-     * Adds a new primary key to the given table.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param tablename the table to add the primary key to
-     * @param primaryKey the new primary key
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void addPrimaryKey(CmsSetupDb dbCon, String tablename, String primaryKey) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (dbCon.hasTableOrColumn(tablename, null)) {
-            String query = readQuery(QUERY_ADD_PRIMARY_KEY);
-            Map replacer = new HashMap();
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_PRIMARY_KEY, primaryKey);
-            dbCon.updateSqlStatement(query, replacer, null);
-        } else {
-            System.out.println("table " + tablename + " does not exists");
-        }
-    }
-
-    /**
-     * Adds the new column for the uuids to a table.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param tablename the table to add the column to
-     * @param column the new colum to add
-     * 
-     * @throws SQLException if something goes wrong
-     */
-    private void addUUIDColumnToTable(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        if (!dbCon.hasTableOrColumn(tablename, column)) {
-            String query = readQuery(QUERY_ADD_TEMP_UUID_COLUMN); // Get the query
-            // if the table is not one of the ONLINE or OFFLINE resources add the new column in the first position
-            if (!RESOURCES_TABLES_LIST.contains(tablename)) {
-                query += " FIRST";
-            }
-            Map replacer = new HashMap(); // Build the replacements
-            replacer.put(REPLACEMENT_TABLENAME, tablename);
-            replacer.put(REPLACEMENT_COLUMN, column);
-            dbCon.updateSqlStatement(query, replacer, null); // execute the query
-        } else {
-            System.out.println("column " + column + " in table " + tablename + " already exists");
         }
     }
 
@@ -515,7 +590,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         ResultSetMetaData metaData = set.getMetaData();
         // Check the type of the column if it is integer, then create the new uuids
         int columnType = metaData.getColumnType(1);
-        if (columnType == java.sql.Types.INTEGER) {
+        if (checkColumnTypeProjectId(columnType)) {
             if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
                 createTempTable(dbCon);
 
@@ -537,7 +612,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                     if (id == 1) {
                         uuid = CmsProject.ONLINE_PROJECT_ID;
                     }
-                    params.add(uuid); // Add the uuid
+                    params.add(uuid.toString()); // Add the uuid
 
                     // Insert the values to the temp table
                     dbCon.updateSqlStatement(updateQuery, null, params);
@@ -548,7 +623,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                 // If no project id with value 0 was found 
                 if (!hasNullId) {
                     params.add(new Integer(0));
-                    params.add(CmsUUID.getNullUUID());
+                    params.add(CmsUUID.getNullUUID().toString());
                     dbCon.updateSqlStatement(updateQuery, null, params);
                 }
             } else {
@@ -578,43 +653,6 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             String value = set.getString(COLUMN_PROJECT_UUID);
 
             result.put(key, value);
-        }
-        return result;
-    }
-
-    /**
-     * Checks if the given table needs an update of the uuids.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param tablename the table to check
-     * 
-     * @return true if the project ids are not yet updated, false if nothing needs to be done
-     * 
-     * @throws SQLException if something goes wrong 
-     */
-    private boolean needsUpdating(CmsSetupDb dbCon, String tablename) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        boolean result = true;
-
-        String query = readQuery(QUERY_DESCRIBE_TABLE);
-        Map replacer = new HashMap();
-        replacer.put(REPLACEMENT_TABLENAME, tablename);
-        ResultSet set = dbCon.executeSqlStatement(query, replacer);
-
-        while (set.next()) {
-            String fieldname = set.getString("Field");
-            if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
-                try {
-                    String fieldtype = set.getString("Type");
-                    // If the type is varchar then no update needs to be done.
-                    if (fieldtype.indexOf("varchar") > 0) {
-                        return false;
-                    }
-                } catch (SQLException e) {
-                    result = true;
-                }
-            }
         }
         return result;
     }

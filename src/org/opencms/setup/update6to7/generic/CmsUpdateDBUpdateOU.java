@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBUpdateOU.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,11 @@ import java.util.Map;
  * cms_projects
  * cms_users
  * 
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.5 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
@@ -60,13 +64,10 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
     protected static final String PROJECT_OU_COLUMN = "PROJECT_OU";
 
     /** Constant for the query that adds the ous to the table.<p> */
-    private static final String QUERY_ADD_OUS_TO_TABLE = "Q_ADD_OUS_TO_TABLE";
+    protected static final String QUERY_ADD_OUS_TO_TABLE = "Q_ADD_OUS_TO_TABLE";
 
     /** Constant for the alteration of the table.<p> */
-    private static final String QUERY_KEY_ALTER_TABLE = "Q_ALTER_TABLE_ADD_OU_COLUMN";
-
-    /** Constant for the SQL query properties.<p> */
-    private static final String QUERY_PROPERTY_FILE = "generic/cms_ou_query.properties";
+    protected static final String QUERY_KEY_ALTER_TABLE = "Q_ALTER_TABLE_ADD_OU_COLUMN";
 
     /** Constant for the replacement in the SQL query for the columnname.<p> */
     protected static final String REPLACEMENT_COLUMNNAME = "${columnname}";
@@ -89,6 +90,9 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
     /** Constant for the USER_OU column.<p> */
     protected static final String USER_OU_COLUMN = "USER_OU";
 
+    /** Constant for the SQL query properties.<p> */
+    private static final String QUERY_PROPERTY_FILE = "generic/cms_ou_query.properties";
+
     /**
      * Constructor.<p>
      * 
@@ -99,6 +103,21 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
         super();
         loadQueryProperties(QUERY_PROPERTIES_PREFIX + QUERY_PROPERTY_FILE);
+    }
+
+    /**
+     * Checks if the column USER_OU is found in the resultset.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param table the table to check
+     * @param ouColumn the type of OU to find (e.g. USER_OU or GROUP_OU)
+     * 
+     * @return true if the column is in the result set, false if not
+     */
+    protected boolean findOUColumn(CmsSetupDb dbCon, String table, String ouColumn) {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        return dbCon.hasTableOrColumn(table, ouColumn);
     }
 
     /**
@@ -115,21 +134,6 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
     }
 
     /**
-     * Checks if the column USER_OU is found in the resultset.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param table the table to check
-     * @param ouColumn the type of OU to find (e.g. USER_OU or GROUP_OU)
-     * 
-     * @return true if the column is in the result set, false if not
-     */
-    private boolean findOUColumn(CmsSetupDb dbCon, String table, String ouColumn) {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        return dbCon.hasTableOrColumn(table, ouColumn);
-    }
-
-    /**
      * Updates the database tables with the new OUs if necessary for the given table.<p>
      * 
      * @param dbCon the db connection interface
@@ -138,7 +142,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
      * 
      * @return true if everything worked fine, false if not
      */
-    private int updateOUs(CmsSetupDb dbCon, String table, String ouColumn) {
+    protected int updateOUs(CmsSetupDb dbCon, String table, String ouColumn) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         int result = 1;

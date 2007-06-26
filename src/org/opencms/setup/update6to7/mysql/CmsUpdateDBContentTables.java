@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/06/06 11:06:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
 public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables {
 
     /** Constant for the sql query to create the CMS_CONTENTS table.<p> */
-    private static final String QUERY_CREATE_CMS_CONTENTS_TABLE = "Q_CREATE_CMS_CONTENTS_TABLE_MYSQL";
+    private static final String QUERY_CREATE_CMS_CONTENTS_TABLE_MYSQL = "Q_CREATE_CMS_CONTENTS_TABLE_MYSQL";
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "mysql/cms_content_table_queries.properties";
@@ -74,7 +74,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         if (!dbCon.hasTableOrColumn(TABLE_CMS_CONTENTS, null)) {
-            String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE);
+            String query = readQuery(QUERY_CREATE_CMS_CONTENTS_TABLE_MYSQL);
             Map replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
             dbCon.updateSqlStatement(query, replacer, null);
         } else {

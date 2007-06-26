@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/06/04 12:00:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,44 +31,44 @@
 
 package org.opencms.setup.update6to7.oracle;
 
+import org.opencms.setup.CmsSetupDb;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.opencms.setup.CmsSetupDb;
 
 /**
  * Oracle implementation to drop the old indexes from the database.<p> 
  * 
  * @author Roland Metzler
+ * @author Peter Bonrad
  *
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBDropOldIndexes extends org.opencms.setup.update6to7.generic.CmsUpdateDBDropOldIndexes {
+
+    /** Constant for the field of the constraint name.<p> */
+    private static final String FIELD_CONSTRAINT_ORACLE = "CONSTRAINT_NAME";
 
     /** Constant for the field of the index name.<p> */
     private static final String FIELD_INDEX_ORACLE = "INDEX_NAME";
 
-    /** Constant for the field for the uniqueness of an index. */
-    private static final String FIELD_INDEX_UNIQUENESS_ORACLE = "UNIQUENESS";
-
-    /** Constant for the sql query to drop an index. */
-    private static final String QUERY_DROP_INDEX_ORACLE = "Q_DROP_INDEX_ORACLE";
-
     /** Constant for the sql query to drop a unique index key. */
-    private static final String QUERY_DROP_UNIQUE_INDEX_ORACLE = "Q_DROP_UNIQUE_INDEX_ORACLE";
+    private static final String QUERY_DROP_CONSTRAINT = "Q_DROP_CONSTRAINT";
 
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE_ORACLE = "oracle/cms_drop_all_indexes_queries.properties";
 
-    /** Constant for the sql query to show the indexes of a table.<p> */
-    private static final String QUERY_SHOW_INDEX_ORACLE = "Q_SHOW_INDEXES_ORACLE";
+    /** Constant for the sql query to list contraints for a table. */
+    private static final String QUERY_SHOW_CONSTRAINTS = "Q_SHOW_CONSTRAINTS";
 
     /** Constant for the replacement of the index name. */
     private static final String REPLACEMENT_INDEX_ORACLE = "${indexname}";
@@ -125,9 +125,6 @@ public class CmsUpdateDBDropOldIndexes extends org.opencms.setup.update6to7.gene
     /** Constant Array List of the temporary indexes. */
     private static final List TEMP_INDEXES_LIST = Collections.unmodifiableList(Arrays.asList(TEMP_INDEXES));
 
-    /** Constant for a unique key of the index result set. */
-    private static final String UNIQUE_KEY_ORACLE = "UNIQUE";
-
     /**
      * Constructor.<p>
      * 
@@ -156,33 +153,31 @@ public class CmsUpdateDBDropOldIndexes extends org.opencms.setup.update6to7.gene
             // Check if the table is existing
             if (dbCon.hasTableOrColumn(tablename, null)) {
                 try {
-                    HashMap indexes = getIndexes(dbCon, tablename);
+
+                    // First drop constraints
+                    List constraints = getConstraints(dbCon, tablename);
+                    Iterator iter = constraints.iterator();
+                    while (iter.hasNext()) {
+                        String constraint = (String)iter.next();
+
+                        String dropConstraint = readQuery(QUERY_DROP_CONSTRAINT);
+                        HashMap replacer = new HashMap();
+                        replacer.put(REPLACEMENT_TABLENAME, tablename);
+                        replacer.put(REPLACEMENT_INDEX_ORACLE, constraint);
+                        dbCon.updateSqlStatement(dropConstraint, replacer, null);
+                    }
+
                     // Drop the indexes from the table.
-                    Set indexEntries = indexes.entrySet();
+                    List indexes = getIndexes(dbCon, tablename);
+                    iter = indexes.iterator();
+                    while (iter.hasNext()) {
+                        String index = (String)iter.next();
 
-                    for (Iterator indexIt = indexEntries.iterator(); indexIt.hasNext();) {
-                        Map.Entry entry = (Map.Entry)indexIt.next();
-                        if (entry.getKey() != null && entry.getValue() != null) {
-                            String index = (String)entry.getKey();
-                            String uniqueness = (String)entry.getValue();
-
-                            // Drop a unique index key (Including primary keys
-                            if (UNIQUE_KEY_ORACLE.equals(uniqueness)) {
-                                String dropUniqueKey = readQuery(QUERY_DROP_UNIQUE_INDEX_ORACLE);
-                                HashMap replacerUnique = new HashMap();
-                                replacerUnique.put(REPLACEMENT_TABLENAME, tablename);
-                                replacerUnique.put(REPLACEMENT_INDEX_ORACLE, index);
-                                dbCon.updateSqlStatement(dropUniqueKey, replacerUnique, null);
-                            }
-
-                            else {
-                                // Otherwise drop the index
-                                String dropIndex = readQuery(QUERY_DROP_INDEX_ORACLE);
-                                HashMap replacerIndex = new HashMap();
-                                replacerIndex.put(REPLACEMENT_INDEX_ORACLE, index);
-                                dbCon.updateSqlStatement(dropIndex, replacerIndex, null);
-                            }
-                        }
+                        // Drop the index
+                        String dropIndex = readQuery(QUERY_DROP_INDEX);
+                        HashMap replacerIndex = new HashMap();
+                        replacerIndex.put(REPLACEMENT_INDEX_ORACLE, index);
+                        dbCon.updateSqlStatement(dropIndex, replacerIndex, null);
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -204,6 +199,34 @@ public class CmsUpdateDBDropOldIndexes extends org.opencms.setup.update6to7.gene
     }
 
     /**
+     * Gets the constraints for a table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param tablename the table to get the indexes from
+     * 
+     * @return a list of constraints
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    private List getConstraints(CmsSetupDb dbCon, String tablename) throws SQLException {
+
+        ArrayList constraints = new ArrayList();
+        String tableConstraints = readQuery(QUERY_SHOW_CONSTRAINTS);
+        HashMap replacer = new HashMap();
+        replacer.put(REPLACEMENT_TABLENAME, tablename);
+        ResultSet set = dbCon.executeSqlStatement(tableConstraints, replacer);
+        while (set.next()) {
+            String constraint = set.getString(FIELD_CONSTRAINT_ORACLE);
+            if (!constraints.contains(constraint)) {
+                constraints.add(constraint);
+            }
+
+        }
+        set.close();
+        return constraints;
+    }
+
+    /**
      * Gets the indexes for a table.<p>
      * 
      * @param dbCon the db connection interface
@@ -211,20 +234,19 @@ public class CmsUpdateDBDropOldIndexes extends org.opencms.setup.update6to7.gene
      * 
      * @return a list of indexes
      * 
-     * @throws SQLException if somehting goes wrong 
+     * @throws SQLException if something goes wrong 
      */
-    private HashMap getIndexes(CmsSetupDb dbCon, String tablename) throws SQLException {
+    private List getIndexes(CmsSetupDb dbCon, String tablename) throws SQLException {
 
-        HashMap indexes = new HashMap();
-        String tableIndex = readQuery(QUERY_SHOW_INDEX_ORACLE);
+        ArrayList indexes = new ArrayList();
+        String tableIndex = readQuery(QUERY_SHOW_INDEX);
         HashMap replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
         ResultSet set = dbCon.executeSqlStatement(tableIndex, replacer);
         while (set.next()) {
             String index = set.getString(FIELD_INDEX_ORACLE);
-            String unique = set.getString(FIELD_INDEX_UNIQUENESS_ORACLE);
-            if (!indexes.containsKey(index)) {
-                indexes.put(index, unique);
+            if (!indexes.contains(index)) {
+                indexes.add(index);
             }
 
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/CmsUpdateDBManager.java,v $
- * Date   : $Date: 2007/06/06 10:43:58 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.setup.update6to7;
 
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.CmsUpdateBean;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -46,8 +47,11 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * This manager controls the update of the database from OpenCms 6 to OpenCms 7.<p>
  * 
- * @author metzler
+ * @author Roland Metzler
  *
+ * @version $Revision: 1.1.2.12 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBManager {
 
@@ -180,7 +184,7 @@ public class CmsUpdateDBManager {
 
             m_dbName = props.getString("db.name");
 
-            List pools = props.getList("db.pools");
+            List pools = CmsStringUtil.splitAsList(props.getString("db.pools"), ',');
             for (Iterator it = pools.iterator(); it.hasNext();) {
                 String pool = (String)it.next();
                 Map data = new HashMap();

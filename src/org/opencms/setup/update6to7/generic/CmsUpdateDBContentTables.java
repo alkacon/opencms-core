@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/06/06 11:06:49 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,22 @@ import java.util.Map;
 /**
  * This class creates the table CMS_CONTENTS and fills it with data from the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS.<p>
  *
- * @author metzler
+ * @author Roland Metzler
+ * 
+ * @version $Revision: 1.1.2.7 $ 
+ * 
+ * @since 7.0.0
  */
 public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /** Constant for the sql query to create the CMS_CONTENTS table.<p> */
-    private static final String QUERY_CREATE_CMS_CONTENTS_TABLE = "Q_CREATE_CMS_CONTENTS_TABLE";
+    protected static final String QUERY_CREATE_CMS_CONTENTS_TABLE = "Q_CREATE_CMS_CONTENTS_TABLE";
+
+    /** Constant for the sql query to transfer the online contents.<p> */
+    protected static final String QUERY_TRANSFER_ONLINE_CONTENTS = "Q_TRANSFER_ONLINE_CONTENTS";
+
+    /** Constant for the table CMS_CONTENTS.<p> */
+    protected static final String TABLE_CMS_CONTENTS = "CMS_CONTENTS";
 
     /** Constant for the sql query to drop a table.<p> */
     private static final String QUERY_DROP_TABLE = "Q_DROP_TABLE";
@@ -57,14 +67,11 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
     /** Constant for the SQL query properties.<p> */
     private static final String QUERY_PROPERTY_FILE = "generic/cms_content_table_queries.properties";
 
-    /** Constant for the sql query to transfer the backup contents.<p> */
-    private static final String QUERY_TRANSFER_BACKUP_CONTENTS = "Q_TRANSFER_BACKUP_CONTENTS";
-
-    /** Constant for the sql query to transfer the online contents.<p> */
-    private static final String QUERY_TRANSFER_ONLINE_CONTENTS = "Q_TRANSFER_ONLINE_CONTENTS";
-
     /** Constant for the sql query to read the max publish tag.<p> */
     private static final String QUERY_READ_MAX_PUBTAG = "Q_READ_MAX_PUBTAG";
+
+    /** Constant for the sql query to transfer the backup contents.<p> */
+    private static final String QUERY_TRANSFER_BACKUP_CONTENTS = "Q_TRANSFER_BACKUP_CONTENTS";
 
     /** Constant for the replacement in the SQL query for the tablename.<p> */
     private static final String REPLACEMENT_TABLENAME = "${tablename}";
@@ -74,9 +81,6 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /** Constant for the table CMS_ONLINE_CONTENTS.<p> */
     private static final String TABLE_CMS_ONLINE_CONTENTS = "CMS_ONLINE_CONTENTS";
-
-    /** Constant for the table CMS_CONTENTS.<p> */
-    protected static final String TABLE_CMS_CONTENTS = "CMS_CONTENTS";
 
     /**
      * Constructor.<p>
@@ -125,9 +129,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
                 pubTag = res.getInt(1);
             }
             res.close();
-            query = readQuery(QUERY_TRANSFER_ONLINE_CONTENTS);
-            Map replacer = Collections.singletonMap("${pubTag}", "" + pubTag);
-            dbCon.updateSqlStatement(query, replacer, null);
+            transferOnlineContents(dbCon, pubTag);
         } else {
             System.out.println("no table " + TABLE_CMS_ONLINE_CONTENTS + " found");
         }
@@ -144,6 +146,21 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
         // Drop the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS
         cleanUpContentsTables(dbCon);
+    }
+
+    /**
+     * Transfers the online content.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param pubTag the publish tag to use
+     * 
+     * @throws SQLException if something goes wrong 
+     */
+    protected void transferOnlineContents(CmsSetupDb dbCon, int pubTag) throws SQLException {
+
+        String query = readQuery(QUERY_TRANSFER_ONLINE_CONTENTS);
+        Map replacer = Collections.singletonMap("${pubTag}", "" + pubTag);
+        dbCon.updateSqlStatement(query, replacer, null);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/06/06 10:43:58 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/26 12:25:48 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.9.2 
  */
@@ -126,13 +126,41 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
 
             return getInstanceForDb("mysql");
         } else if (dbName.indexOf("oracle") > -1) {
-            int todo; // recognize these params from the db
 
+            String dataTablespace = "users";
             String indexTablespace = "users";
+            CmsSetupDb setupDb = new CmsSetupDb(null);
+
+            try {
+                setupDb.setConnection(
+                    (String)m_poolData.get("driver"),
+                    (String)m_poolData.get("url"),
+                    (String)m_poolData.get("params"),
+                    (String)m_poolData.get("user"),
+                    (String)m_poolData.get("pwd"));
+
+                // read tablespace for data
+                ResultSet res = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_tables", null);
+                if (res.next()) {
+                    dataTablespace = res.getString(1).toLowerCase();
+                }
+                res.close();
+
+                // read tablespace for indexes
+                res = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_indexes", null);
+                if (res.next()) {
+                    indexTablespace = res.getString(1).toLowerCase();
+                }
+                res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                setupDb.closeConnection();
+            }
+
             m_poolData.put("indexTablespace", indexTablespace);
             System.out.println("Index Tablespace:           " + indexTablespace);
 
-            String dataTablespace = "users";
             m_poolData.put("dataTablespace", dataTablespace);
             System.out.println("Data Tablespace:            " + dataTablespace);
 
