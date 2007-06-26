@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/25 16:52:12 $
- * Version: $Revision: 1.717.2.195 $
+ * Date   : $Date: 2007/06/26 10:25:05 $
+ * Version: $Revision: 1.717.2.196 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ OpenCms 7.0.0 - July 4, 2007
 ! Added configuration check for conflicting resource type ids or names
 * Fixed issue #1430: Extra bytes at the end of files (e.g. classfiles ) when importing with upload applet
 ! No direct edit buttons are shown if a temporary file is displayed
+* Fixed issue #1417: editor content scrambled after save, when top-folder content-encoding is set to non-default.
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 

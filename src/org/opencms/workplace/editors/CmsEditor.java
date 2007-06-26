@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/06/25 16:51:45 $
- * Version: $Revision: 1.34.4.14 $
+ * Date   : $Date: 2007/06/26 10:25:05 $
+ * Version: $Revision: 1.34.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.14 $ 
+ * @version $Revision: 1.34.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -945,7 +945,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     protected String getFileEncoding(CmsObject cms, String filename) {
 
         try {
-            return cms.readPropertyObject(filename, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, false).getValue(
+            return cms.readPropertyObject(filename, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
                 OpenCms.getSystemInfo().getDefaultEncoding());
         } catch (CmsException e) {
             return OpenCms.getSystemInfo().getDefaultEncoding();
