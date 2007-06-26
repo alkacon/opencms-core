@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/26 12:25:48 $
- * Version: $Revision: 1.717.2.197 $
+ * Date   : $Date: 2007/06/26 15:20:29 $
+ * Version: $Revision: 1.717.2.198 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,10 +55,16 @@ OpenCms 7.0.0 - July 4, 2007
 * Fixed bug in the VFS file widget
 ! New org.opencms.util.CmsHtmlStripper supports removing of all unwanted HTML tags in Strings. 
 ! Added configuration check for conflicting resource type ids or names
-* Fixed issue #1430: Extra bytes at the end of files (e.g. classfiles ) when importing with upload applet
+* Fixed issue with Extra bytes at the end of files (e.g. classfiles) when importing with upload applet
 ! No direct edit buttons are shown if a temporary file is displayed
-* Fixed issue #1417: editor content scrambled after save, when top-folder content-encoding is set to non-default.
+* Fixed issue with broken links during publishing with related resources
+- Deprecated publishXXX methods in org.opencms.file.CmsObject now wait again for publishing
+* Fixed issue when deleting one sibling (other remaining siblings could remain corrupted)
+* Fixed issue with publish queue persistence ignoring deleted resources to publish
+* Fixed issue with editor content scrambled after save, when top-folder content-encoding is set to non-default
+* Fixed issue with reading uncommitted changes if using transactions and separate database pools
 - Added update wizard for Oracle databases
+
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 
@@ -66,7 +72,7 @@ OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 - Improved check for the availability of a VFS resource in the full text search component
 - Changed internal message buffer
 * A number of potential problems reported by the "Findbugs" tool have been removed
-* Fixed issue #1367: Index source - assign document types error
+* Fixed issue with Index source - assign document types error
 - Improved performance by caching role checks
 * To edit a relation the resource has to be locked and the last modification date is set
 
