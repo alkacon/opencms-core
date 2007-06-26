@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2007/05/03 10:55:49 $
- * Version: $Revision: 1.18.4.8 $
+ * Date   : $Date: 2007/06/26 15:14:56 $
+ * Version: $Revision: 1.18.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.4.8 $ 
+ * @version $Revision: 1.18.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Cache-Control". */
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
+
+    /** HTTP Header "Connection". */
+    public static final String HEADER_CONNECTION = "Connection";
 
     /** The "Content-Disposition" http header. */
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
@@ -606,6 +609,24 @@ public final class CmsRequestUtil {
             }
         }
         return parameterMap;
+    }
+
+    /**
+     * Redirects the response to the target link using a "301 - Moved Permanently" header.<p>
+     * 
+     * This implementation will work only on JSP pages in OpenCms that use the default JSP loader implementation.<p>
+     * 
+     * @param jsp the jsp context
+     * @param target the target link
+     */
+    public static void redirectPermanently(CmsJspActionElement jsp, String target) {
+
+        String newTarget = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target, null, true);
+        jsp.getRequest().setAttribute(
+            CmsRequestUtil.ATTRIBUTE_ERRORCODE,
+            new Integer(HttpServletResponse.SC_MOVED_PERMANENTLY));
+        jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
+        jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
     }
 
     /**
