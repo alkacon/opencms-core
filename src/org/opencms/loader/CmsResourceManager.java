@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/06/21 16:14:57 $
- * Version: $Revision: 1.36.4.10 $
+ * Date   : $Date: 2007/06/26 08:47:56 $
+ * Version: $Revision: 1.36.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.10 $ 
+ * @version $Revision: 1.36.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -419,9 +419,9 @@ public class CmsResourceManager {
                 Messages.ERR_CONFLICTING_RESOURCE_TYPES_4,
                 new Object[] {
                     resourceType.getTypeName(),
-                    Integer.valueOf(resourceType.getTypeId()),
+                    new Integer(resourceType.getTypeId()),
                     conflictingType.getTypeName(),
-                    Integer.valueOf(conflictingType.getTypeId())}));
+                    new Integer(conflictingType.getTypeId())}));
         }
 
         m_resourceTypesFromXml.add(resourceType);
@@ -1067,10 +1067,10 @@ public class CmsResourceManager {
                                 Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
                                 new Object[] {
                                     resourceType.getTypeName(),
-                                    Integer.valueOf(resourceType.getTypeId()),
+                                    new Integer(resourceType.getTypeId()),
                                     module.getName(),
                                     conflictingType.getTypeName(),
-                                    Integer.valueOf(conflictingType.getTypeId())}));
+                                    new Integer(conflictingType.getTypeId())}));
                         }
                         initResourceType(resourceType, newConfiguration);
                     }

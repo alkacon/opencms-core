@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2007/06/25 15:21:29 $
- * Version: $Revision: 1.33.4.11 $
+ * Date   : $Date: 2007/06/26 08:47:56 $
+ * Version: $Revision: 1.33.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.4.11 $ 
+ * @version $Revision: 1.33.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -517,10 +517,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                         org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
                         new Object[] {
                             type.getTypeName(),
-                            Integer.valueOf(type.getTypeId()),
+                            new Integer(type.getTypeId()),
                             importedModule.getName(),
                             conflictingType.getTypeName(),
-                            Integer.valueOf(conflictingType.getTypeId())}));
+                            new Integer(conflictingType.getTypeId())}));
                 }
             }
             // now check against the other resource types of the imported module
@@ -532,9 +532,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                     new Object[] {
                         importedModule.getName(),
                         type.getTypeName(),
-                        Integer.valueOf(type.getTypeId()),
+                        new Integer(type.getTypeId()),
                         conflictingType.getTypeName(),
-                        Integer.valueOf(conflictingType.getTypeId())}));
+                        new Integer(conflictingType.getTypeId())}));
             }
             // add the resource type for the next check
             checkedTypes.add(type);
