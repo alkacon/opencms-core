@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2006/10/26 12:25:35 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/06/27 15:33:54 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -750,9 +750,11 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);
         }
 
-        // unmarshal the XML content from the resource        
-        m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
-
+        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource) 
+        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
+        // will come from there!
+        m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
+        
         // check if locale is available
         m_contentLocale = m_locale;
         if (!m_content.hasLocale(m_contentLocale)) {

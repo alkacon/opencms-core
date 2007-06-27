@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/06/27 15:33:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,11 @@ public final class CmsXmlContentFactory {
      * Factory method to unmarshal (read) a XML content instance from a OpenCms VFS file
      * that contains XML data.<p>
      * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
+     * 
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
      * @return a XML page instance unmarshalled from the provided file
@@ -136,6 +141,11 @@ public final class CmsXmlContentFactory {
      * 
      * If you are not sure about the implications of the encoding issues, 
      * use {@link #unmarshal(CmsObject, CmsFile)} instead.<p>
+     * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
      * 
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
@@ -237,6 +247,11 @@ public final class CmsXmlContentFactory {
      * 
      * The given encoding is used when marshalling the XML again later.<p>
      * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
+     * 
      * @param document the XML document to generate the XML content from
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
@@ -252,6 +267,11 @@ public final class CmsXmlContentFactory {
      * that contains XML data.<p>
      * 
      * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * <b>Warning:</b><br/>
+     * This method does not support requested historic versions, it always loads the 
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * for history support.<p>
      * 
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
