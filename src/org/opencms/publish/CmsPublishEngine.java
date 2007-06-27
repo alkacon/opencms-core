@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/06/14 11:46:36 $
- * Version: $Revision: 1.1.2.19 $
+ * Date   : $Date: 2007/06/27 10:55:02 $
+ * Version: $Revision: 1.1.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.19 $
+ * @version $Revision: 1.1.2.20 $
  * 
  * @since 6.5.5
  */
@@ -580,6 +580,7 @@ public final class CmsPublishEngine implements Runnable {
             publishJob.getPublishReport().println(t);
         } finally {
             dbc.clear();
+            dbc = null;
         }
         // fire the publish finish event
         m_listeners.fireFinish(new CmsPublishJobRunning(publishJob));
@@ -635,6 +636,7 @@ public final class CmsPublishEngine implements Runnable {
             publishJob.getPublishReport().println(t);
         } finally {
             dbc.clear();
+            dbc = null;
         }
         // fire the publish start event
         m_listeners.fireStart(new CmsPublishJobEnqueued(publishJob));

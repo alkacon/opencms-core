@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishHistory.java,v $
- * Date   : $Date: 2007/03/30 07:37:53 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/27 10:55:02 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.5.5
  */
@@ -197,6 +197,7 @@ public class CmsPublishHistory {
                 OpenCms.getPublishManager().getEngine().getDriverManager().deletePublishJob(dbc, publishJob.getPublishHistoryId());
             } finally {
                 dbc.clear();
+                dbc = null;
             }
         }
         

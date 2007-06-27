@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/06/14 11:46:36 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/06/27 10:55:02 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.5.5
  */
@@ -183,12 +183,13 @@ public class CmsPublishQueue {
                     publishJobs = driverManager.readPublishJobs(dbc, 0L, 0L);
                 } finally {
                     dbc.clear();
+                    dbc = null;
                 }
                 for (Iterator i = publishJobs.iterator(); i.hasNext();) {
                     CmsPublishJobInfoBean job = (CmsPublishJobInfoBean)i.next();
+                    dbc = m_publishEngine.getDbContextFactory().getDbContext();
                     if (!job.isStarted()) {
                         // add jobs not already started to queue again
-                        dbc = m_publishEngine.getDbContextFactory().getDbContext();
                         try {
                             job.revive(adminCms, driverManager.readPublishList(dbc, job.getPublishHistoryId()));
                             m_publishEngine.lockPublishList(job);
@@ -231,7 +232,7 @@ public class CmsPublishQueue {
      */
     protected boolean isEmpty() {
 
-        return (OpenCms.getMemoryMonitor().getFirstCachedPublishJob() == null);
+        return ((OpenCms.getMemoryMonitor() == null) || (OpenCms.getMemoryMonitor().getFirstCachedPublishJob() == null));
     }
 
     /**
