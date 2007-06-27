@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/06/05 13:14:42 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/27 12:20:50 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.9.2
  */
@@ -127,11 +127,15 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             String categoryPath = item.getId();
             StringBuffer html = new StringBuffer(512);
             try {
+                CmsCategory category = m_categoryService.readCategory(getCms(), categoryPath);
                 if (detailId.equals(LIST_DETAIL_PATH)) {
                     html.append(categoryPath);
                 } else if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
-                    CmsCategory category = m_categoryService.readCategory(getCms(), categoryPath);
-                    html.append(category.getDescription());
+
+                    // Append the description if one is given
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())) {
+                        html.append(category.getDescription());
+                    }
                 } else {
                     continue;
                 }
@@ -180,9 +184,19 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
                     + getJsp().link("/system/workplace/resources/tree/empty.gif")
                     + "\" width=\"30px\" height=\"11px\"/>";
             }
-            String name = category.getName();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(htmlName)) {
-                name = htmlName + name;
+            String title = category.getTitle();
+            String name;
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) { // Display the title of the category if one is given
+                name = htmlName + title;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(htmlName)) {
+                    name = htmlName + name;
+                }
+            } else { // If no title is given display the name of the category
+                name = category.getName();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(htmlName)) {
+                    name = htmlName + name;
+                }
+
             }
             item.set(LIST_COLUMN_NAME, name);
             item.set(LIST_COLUMN_PATH, categoryPath);

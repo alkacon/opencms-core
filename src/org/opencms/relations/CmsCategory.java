@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2007/06/05 07:28:25 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/27 12:20:50 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.9.2
  */
@@ -50,8 +50,10 @@ public class CmsCategory {
 
     /** The path of the category. */
     private String m_path;
+
     /** The structure id of the resource that this category represents. */
     private CmsUUID m_structureId;
+
     /** The title of the category. */
     private String m_title;
 
