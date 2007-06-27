@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/18 12:35:40 $
- * Version: $Revision: 1.570.2.104 $
+ * Date   : $Date: 2007/06/27 08:39:13 $
+ * Version: $Revision: 1.570.2.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1706,26 +1706,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 if ((content != null) && resource.isFile()) {
                     // also update file content if required                    
-                    long contentModificationDate = m_vfsDriver.writeContent(dbc, newResource.getResourceId(), content);
-                    newResource = new CmsResource(
-                        newResource.getStructureId(),
-                        newResource.getResourceId(),
-                        newResource.getRootPath(),
-                        newResource.getTypeId(),
-                        newResource.isFolder(),
-                        newResource.getFlags(),
-                        newResource.getProjectLastModified(),
-                        newResource.getState(),
-                        newResource.getDateCreated(),
-                        newResource.getUserCreated(),
-                        newResource.getDateLastModified(),
-                        newResource.getUserLastModified(),
-                        newResource.getDateReleased(),
-                        newResource.getDateExpired(),
-                        newResource.getSiblingCount(),
-                        newResource.getLength(),
-                        contentModificationDate,
-                        newResource.getVersion());
+                    m_vfsDriver.writeContent(dbc, newResource.getResourceId(), content);
                 }
             }
 
@@ -2314,20 +2295,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Messages.ERR_ORGUNIT_DELETE_SUB_ORGUNITS_1,
                 organizationalUnit.getName()));
         }
+        // check groups
         List groups = getGroups(dbc, organizationalUnit, true, false);
-        boolean hasGroups = (groups.size() > 4);
         Iterator itGroups = groups.iterator();
-        while (itGroups.hasNext() && !hasGroups) {
+        while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
             if (!OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
-                hasGroups = true;
+                throw new CmsDbConsistencyException(Messages.get().container(
+                    Messages.ERR_ORGUNIT_DELETE_GROUPS_1,
+                    organizationalUnit.getName()));
             }
-        }
-        // check groups
-        if (hasGroups) {
-            throw new CmsDbConsistencyException(Messages.get().container(
-                Messages.ERR_ORGUNIT_DELETE_GROUPS_1,
-                organizationalUnit.getName()));
         }
         // check users
         if (!getUsers(dbc, organizationalUnit, false).isEmpty()) {
@@ -2357,8 +2334,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             deleteGroup(dbc, role, null);
         }
 
+        // create a publish list for the 'virtual' publish event
+        CmsResource resource = readResource(dbc, organizationalUnit.getId(), CmsResourceFilter.DEFAULT);
+        CmsPublishList pl = new CmsPublishList(resource, false);
+        pl.add(resource, false);
+
         // remove the organizational unit itself
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
+
+        // write the publish history entry
+        m_projectDriver.writePublishHistory(dbc, pl.getPublishHistoryId(), new CmsPublishedResource(resource));
 
         // flush relevant caches
         OpenCms.getMemoryMonitor().flushRoles();
@@ -2367,6 +2352,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
+
+        // fire the 'virtual' publish event
+        Map eventData = new HashMap();
+        eventData.put(I_CmsEventListener.KEY_PUBLISHID, pl.getPublishHistoryId().toString());
+        eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
+        eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+        CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+        OpenCms.fireCmsEvent(afterPublishEvent);
+        
+        m_lockManager.removeDeletedResource(dbc, resource.getRootPath());
     }
 
     /**
@@ -7688,6 +7683,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsFile writeFile(CmsDbContext dbc, CmsFile resource) throws CmsException {
 
         resource.setUserLastModified(dbc.currentUser().getId());
+        resource.setContents(resource.getContents()); // to be sure the content date is updated
 
         m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 

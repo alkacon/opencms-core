@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/18 12:35:41 $
- * Version: $Revision: 1.110.2.36 $
+ * Date   : $Date: 2007/06/27 08:39:12 $
+ * Version: $Revision: 1.110.2.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.36 $
+ * @version $Revision: 1.110.2.37 $
  * 
  * @since 6.0.0 
  */
@@ -2396,17 +2396,19 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             resource,
             filter);
 
-        m_driverManager.getSecurityManager().getLockManager().removeDeletedResource(dbc, resource.getRootPath());
-        // flush all caches
+        // flush all relevant caches
         m_driverManager.clearAccessControlListCache();
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
         OpenCms.getMemoryMonitor().flushProjectResources();
 
-        // fire event
+        // fire events
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
             "resources",
             Collections.singletonList(resource))));
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+            Collections.singletonMap("resource", resource)));
     }
 
     /**
