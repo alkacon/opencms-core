@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/06/15 15:01:43 $
- * Version: $Revision: 1.241.4.41 $
+ * Date   : $Date: 2007/06/27 09:22:13 $
+ * Version: $Revision: 1.241.4.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.41 $
+ * @version $Revision: 1.241.4.42 $
  * 
  * @since 6.0.0 
  */
@@ -237,6 +237,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        try {
+            CmsPublishJobInfoBean currentJob = readPublishJob(dbc, publishJob.getPublishHistoryId());
+            LOG.error("wanted to write: " + publishJob);
+            LOG.error("already on db: " + currentJob);
+            return;
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, this is the expected behaviour
+        }
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PUBLISHJOB_CREATE");
@@ -739,11 +747,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishHistoryId,
                 publishTag);
 
-            // write history before deleting
-            internalWriteHistory(dbc, currentFolder, folderState, null, publishHistoryId, publishTag);
-
             // read the folder online
             CmsFolder onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
+
+            // write history before deleting
+            internalWriteHistory(dbc, currentFolder, folderState, null, publishHistoryId, publishTag);
 
             try {
                 // delete the properties online and offline
@@ -769,16 +777,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             try {
                 // remove the folder online and offline
                 m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), currentFolder);
-
-                try {
-                    m_driverManager.getVfsDriver().readFolder(
-                        dbc,
-                        dbc.currentProject().getUuid(),
-                        currentFolder.getRootPath());
-                } catch (CmsVfsResourceNotFoundException e) {
-                    // remove the online folder only if it is really deleted offline
-                    m_driverManager.getVfsDriver().removeFolder(dbc, onlineProject, currentFolder);
-                }
+                m_driverManager.getVfsDriver().removeFolder(dbc, onlineProject, currentFolder);
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -816,7 +815,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 m_driverManager.getVfsDriver().deleteRelations(
                     dbc,
                     dbc.currentProject().getUuid(),
-                    onlineFolder,
+                    currentFolder,
                     CmsRelationFilter.TARGETS);
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
@@ -1693,7 +1692,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYOU_1");
 
-            stmt.setString(1, ouFqn + "%");
+            stmt.setString(1, CmsOrganizationalUnit.SEPARATOR + ouFqn + "%");
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2754,6 +2753,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineResource.setFlags(flags);
         }
 
+        // write history before deleting
         CmsFile offlineFile = new CmsFile(offlineResource);
         offlineFile.setContents(m_driverManager.getVfsDriver().readContent(
             dbc,
