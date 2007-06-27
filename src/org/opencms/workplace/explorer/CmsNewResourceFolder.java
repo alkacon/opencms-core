@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2007/05/11 12:49:30 $
- * Version: $Revision: 1.22.4.3 $
+ * Date   : $Date: 2007/06/27 13:20:25 $
+ * Version: $Revision: 1.22.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.22.4.3 $ 
+ * @version $Revision: 1.22.4.4 $ 
  * 
  * @since 6.7.1 
  */
@@ -463,7 +463,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             result.append(" checked");
         }
         result.append(">&nbsp;");
-        result.append(key(Messages.GUI_NEWFILE_EDITPROPERTIES_0));
+        result.append(key(Messages.GUI_NEWFOLDER_EDITPROPERTIES_0));
         result.append("\n");
         result.append("\t\t</td>\n");
         result.append("\t</tr>\n");
