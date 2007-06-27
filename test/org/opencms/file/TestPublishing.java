@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/06/25 17:45:37 $
- * Version: $Revision: 1.21.4.15 $
+ * Date   : $Date: 2007/06/27 08:40:42 $
+ * Version: $Revision: 1.21.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.15 $
+ * @version $Revision: 1.21.4.16 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -262,34 +262,50 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // test creating content
         long time = System.currentTimeMillis();
+        synchronized (this) {
+            wait(50);
+        }
         CmsResource offlineResource = cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), null, null);
-        assertTrue(offlineResource.getDateContent() <= System.currentTimeMillis());
+        CmsFile offlineFile = cms.readFile(offlineResource);
+        offlineFile.setContents("abc".getBytes());
+        offlineFile = cms.writeFile(offlineFile);
+        synchronized (this) {
+            wait(50);
+        }
+        assertTrue(offlineResource.getDateContent() < System.currentTimeMillis());
         assertDateContentAfter(cms, resName, time);
 
         // test publishing new content
-        time = System.currentTimeMillis();
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         CmsProject onlineProject = cms.readProject("Online");
         cms.getRequestContext().setCurrentProject(onlineProject);
         assertDateContentAfter(cms, resName, offlineResource.getDateContent());
+        synchronized (this) {
+            wait(50);
+        }
+        assertTrue(cms.readResource(offlineResource.getStructureId()).getDateContent() < System.currentTimeMillis());
 
         // test modifying the content
         CmsProject offlineProject = cms.readProject("Offline");
         cms.getRequestContext().setCurrentProject(offlineProject);
 
         cms.lockResource(resName);
-        CmsFile offlineFile = cms.readFile(offlineResource);
+        offlineFile = cms.readFile(offlineResource);
         time = System.currentTimeMillis();
-        offlineFile.setContents("".getBytes());
+        synchronized (this) {
+            wait(50);
+        }
+        offlineFile.setContents("xyz".getBytes());
         offlineFile = cms.writeFile(offlineFile);
-        assertTrue(offlineFile.getDateContent() <= System.currentTimeMillis());
+        offlineFile = cms.readFile(resName);
+        assertTrue(offlineFile.getDateContent() < System.currentTimeMillis());
         assertDateContentAfter(cms, resName, time);
 
         // check the online project before publishing
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertTrue(offlineFile.getDateContent() >= cms.readResource(resName).getDateContent());
+        assertDateContentAfter(cms, resName, offlineResource.getDateContent());
 
         cms.getRequestContext().setCurrentProject(offlineProject);
 
@@ -304,40 +320,51 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
         cms.lockResource(resName);
         time = cms.readResource(resName).getDateContent();
+        synchronized (this) {
+            wait(50);
+        }
         cms.writePropertyObject(resName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "abc", "def"));
         cms.setDateExpired(resName, System.currentTimeMillis() + 100000, false);
         assertDateContent(cms, resName, time);
 
         // check the online project before publishing
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContentAfter(cms, resName, offlineFile.getDateContent());
+        assertDateContentAfter(cms, resName, time);
 
         // now publish and check again
         cms.getRequestContext().setCurrentProject(offlineProject);
         time = cms.readResource(resName).getDateContent();
+        synchronized (this) {
+            wait(50);
+        }
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContentAfter(cms, resName, offlineFile.getDateContent());
-        assertDateContent(cms, resName, time);
+        assertDateContentAfter(cms, resName, time);
 
         // test creating a sibling
         String sibName = "/newtext_sib.txt";
 
         cms.getRequestContext().setCurrentProject(offlineProject);
         time = cms.readResource(resName).getDateContent();
+        synchronized (this) {
+            wait(50);
+        }
         CmsResource siblingOffline = cms.createSibling(resName, sibName, null);
         assertDateContent(cms, sibName, time);
         assertDateContent(cms, resName, time);
 
+        synchronized (this) {
+            wait(50);
+        }
         // now publish and check
         OpenCms.getPublishManager().publishResource(cms, sibName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContent(cms, sibName, time);
-        assertDateContent(cms, resName, time);
+        assertDateContentAfter(cms, sibName, time);
+        assertDateContentAfter(cms, resName, time);
 
         // test modifying the content of a sibling
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -345,21 +372,31 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.lockResource(resName);
         offlineFile = cms.readFile(resName);
         time = System.currentTimeMillis();
+        synchronized (this) {
+            wait(50);
+        }
         offlineFile.setContents("test".getBytes());
         offlineFile = cms.writeFile(offlineFile);
-
-        assertTrue(offlineFile.getDateContent() <= System.currentTimeMillis());
+        offlineFile = cms.readFile(resName);
+        synchronized (this) {
+            wait(50);
+        }
+        
+        assertTrue(offlineFile.getDateContent() < System.currentTimeMillis());
         assertDateContentAfter(cms, resName, time);
-        assertDateContent(cms, sibName, offlineFile.getDateContent());
+        assertDateContentAfter(cms, sibName, time);
 
         // check the online project before publishing
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertTrue(offlineFile.getDateContent() >= cms.readResource(resName).getDateContent());
+        assertDateContentAfter(cms, resName, offlineResource.getDateContent());
         siblingOffline = cms.readResource(sibName);
-        assertTrue(siblingOffline.getDateContent() >= cms.readResource(sibName).getDateContent());
+        assertDateContentAfter(cms, sibName, siblingOffline.getDateContent());
 
         // now publish and check again
         cms.getRequestContext().setCurrentProject(offlineProject);
+        synchronized (this) {
+            wait(50);
+        }
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -375,14 +412,20 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(offlineProject);
         cms.lockResource(resName);
         time = System.currentTimeMillis();
+        synchronized (this) {
+            wait(50);
+        }
         // this will write the content for updating links
         cms.moveResource(resName, movedName);
-
+        offlineFile = cms.readFile(movedName);
+        
         assertDateContentAfter(cms, movedName, time);
         assertDateContentAfter(cms, sibName, time);
         time = offlineFile.getDateContent();
-        offlineFile = cms.readFile(movedName);
-        assertDateContent(cms, sibName, offlineFile.getDateContent());
+        synchronized (this) {
+            wait(50);
+        }
+        assertDateContent(cms, sibName, time);
 
         // check the online project before publishing
         cms.getRequestContext().setCurrentProject(onlineProject);
@@ -391,12 +434,15 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // now publish and check again
         cms.getRequestContext().setCurrentProject(offlineProject);
+        synchronized (this) {
+            wait(50);
+        }
         OpenCms.getPublishManager().publishResource(cms, movedName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContentAfter(cms, movedName, offlineFile.getDateContent());
-        assertDateContentAfter(cms, sibName, offlineFile.getDateContent());
+        assertDateContentAfter(cms, movedName, time);
+        assertDateContentAfter(cms, sibName, time);
     }
 
     /**

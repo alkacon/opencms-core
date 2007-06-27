@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/06/20 10:14:05 $
- * Version: $Revision: 1.45.4.15 $
+ * Date   : $Date: 2007/06/27 08:40:42 $
+ * Version: $Revision: 1.45.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45.4.15 $
+ * @version $Revision: 1.45.4.16 $
  * 
  * @since 6.0.0 
  */
@@ -422,11 +422,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 257325098790850498L;
 
+    /** The date of the last modification of the content of this resource. */
+    protected long m_dateContent = System.currentTimeMillis();
+
     /** The size of the content. */
     protected int m_length;
-
-    /** The date of the last modification of the content of this resource. */
-    private long m_dateContent;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
@@ -1220,6 +1220,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(new java.util.Date(m_dateReleased));
         result.append(", date expired: ");
         result.append(new java.util.Date(m_dateExpired));
+        result.append(", date content: ");
+        result.append(new java.util.Date(m_dateContent));
         result.append(", size: ");
         result.append(m_length);
         result.append(", sibling count: ");

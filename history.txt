@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/26 15:20:29 $
- * Version: $Revision: 1.717.2.198 $
+ * Date   : $Date: 2007/06/27 08:40:42 $
+ * Version: $Revision: 1.717.2.199 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,9 @@ OpenCms 7.0.0 - July 4, 2007
 * Fixed issue with publish queue persistence ignoring deleted resources to publish
 * Fixed issue with editor content scrambled after save, when top-folder content-encoding is set to non-default
 * Fixed issue with reading uncommitted changes if using transactions and separate database pools
-- Added update wizard for Oracle databases
+- Added update wizard for Oracle databases 
+* Fixed issue while deleting organizational units cleaning up projects
+* Fixed issue while deleting organizational units due to a missing event
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007

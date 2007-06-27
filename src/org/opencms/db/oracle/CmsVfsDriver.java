@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/25 17:45:37 $
- * Version: $Revision: 1.36.8.12 $
+ * Date   : $Date: 2007/06/27 08:40:42 $
+ * Version: $Revision: 1.36.8.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.36.8.12 $
+ * @version $Revision: 1.36.8.13 $
  * 
  * @since 6.0.0 
  */
@@ -163,9 +163,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsUUID, byte[])
      */
-    public long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
+    public void writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
 
-        return internalWriteContent(dbc, dbc.currentProject().getUuid(), resourceId, content, -1);
+        internalWriteContent(dbc, dbc.currentProject().getUuid(), resourceId, content, -1);
     }
 
     /**
@@ -177,11 +177,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
      * @param contents the new content of the file
      * @param publishTag the publish tag if to be written to the online content
      * 
-     * @return returns the modification time
-     * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected long internalWriteContent(
+    protected void internalWriteContent(
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsUUID resourceId,
@@ -255,23 +253,5 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 commit,
                 wasInTransaction);
         }
-
-        // update the content modification date
-        long time = System.currentTimeMillis();
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
-            stmt.setLong(1, time);
-            stmt.setString(2, resourceId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-
-        return time;
     }
 }

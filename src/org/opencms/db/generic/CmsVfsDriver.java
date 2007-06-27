@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/26 15:19:32 $
- * Version: $Revision: 1.258.4.36 $
+ * Date   : $Date: 2007/06/27 08:40:42 $
+ * Version: $Revision: 1.258.4.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.36 $
+ * @version $Revision: 1.258.4.37 $
  * 
  * @since 6.0.0 
  */
@@ -193,19 +193,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             } else {
                 stmt.setBinaryStream(2, new ByteArrayInputStream(content), content.length);
             }
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, null);
-        }
-        // set the content modification date
-        try {
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCE_UPDATE_CONTENT_DATE");
-            stmt.setLong(1, System.currentTimeMillis());
-            stmt.setString(2, resourceId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -414,16 +401,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(3, publishTag);
                 stmt.setInt(4, publishTag);
                 stmt.setInt(5, keepOnline ? 1 : 0);
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
-
-                // set the content modification date
-                stmt = m_sqlManager.getPreparedStatement(
-                    conn,
-                    CmsProject.ONLINE_PROJECT_ID,
-                    "C_RESOURCE_UPDATE_CONTENT_DATE");
-                stmt.setLong(1, System.currentTimeMillis());
-                stmt.setString(2, resourceId.toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             } else {
@@ -2348,7 +2325,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCE_REPLACE");
             stmt.setInt(1, newResourceType);
             stmt.setInt(2, resContent.length);
-            stmt.setString(3, newResource.getResourceId().toString());
+            stmt.setLong(3, newResource.getDateContent());
+            stmt.setString(4, newResource.getResourceId().toString());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -2499,7 +2477,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
-    public long writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
+    public void writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2520,23 +2498,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, null);
-        }
-        // store the content modification time
-        long time = System.currentTimeMillis();
-        try {
-            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCE_UPDATE_CONTENT_DATE");
-            stmt.setLong(1, time);
-            stmt.setString(2, resourceId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-        return time;
     }
 
     /**
