@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/06/12 13:59:10 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/27 13:20:05 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.9.2
  */
@@ -86,7 +86,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * @author Raphael Schnuck
      *
-     * @version $Revision: 1.1.2.4 $
+     * @version $Revision: 1.1.2.5 $
      *
      * @since 6.9.2
      */
@@ -245,8 +245,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         }
     }
 
-    /** Compares the release date of resources in ascending order. */
-    public static final Comparator COMPARE_DATE_RELEASED_ASC = new Comparator() {
+    /** Compares the release date of resources in descending order. */
+    public static final Comparator COMPARE_DATE_RELEASED_DESC = new Comparator() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -416,8 +416,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             }
 
             if ((data.getSortBy() != null) && data.getSortBy().equals("date")) {
-                if (data.isSortAsc()) {
-                    Collections.sort(result, COMPARE_DATE_RELEASED_ASC);
+                if (!data.isSortAsc()) {
+                    Collections.sort(result, COMPARE_DATE_RELEASED_DESC);
                 } else {
                     Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
                 }

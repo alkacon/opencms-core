@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2007/06/15 13:41:21 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/27 13:20:05 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -243,7 +243,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+        assertEquals("/sites/default/folder1/file3", res.getRootPath());
 
         resources = collector.getResults(
             cms,
@@ -253,7 +253,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+        assertEquals("/sites/default/folder1/file3", res.getRootPath());
 
         resources = collector.getResults(
             cms,
@@ -263,7 +263,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/folder1/file3", res.getRootPath());
+        assertEquals("/sites/default/folder1/file2", res.getRootPath());
     }
 
     /**
@@ -396,7 +396,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(9, resources.size());
 
         CmsResource res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+        assertEquals("/sites/default/file1", res.getRootPath());
 
         resources = collector.getResults(
             cms,
@@ -406,7 +406,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(9, resources.size());
 
         res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+        assertEquals("/sites/default/file1", res.getRootPath());
 
         resources = collector.getResults(
             cms,
@@ -416,6 +416,6 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
         assertEquals(9, resources.size());
 
         res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/file1", res.getRootPath());
+        assertEquals("/sites/default/folder1/file2", res.getRootPath());
     }
 }
