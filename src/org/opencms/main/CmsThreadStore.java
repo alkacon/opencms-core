@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2007/06/27 12:05:09 $
- * Version: $Revision: 1.16.4.4 $
+ * Date   : $Date: 2007/06/27 13:26:00 $
+ * Version: $Revision: 1.16.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.4 $
+ * @version $Revision: 1.16.4.5 $
  * 
  * @since 6.0.0
  */
@@ -220,10 +220,9 @@ public final class CmsThreadStore extends Thread {
                                     // log thread state
                                     if (LOG.isDebugEnabled()) {
                                         LOG.debug(Messages.get().getBundle().key(
-                                            Messages.LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_3,
+                                            Messages.LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2,
                                             thread.getName(),
-                                            thread.getUUID(),
-                                            thread.getState()));
+                                            thread.getUUID()));
                                     }
 
                                     // interrupt/kill thread
