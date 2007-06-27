@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/06/22 09:49:06 $
- * Version: $Revision: 1.19.4.8 $
+ * Date   : $Date: 2007/06/27 10:25:52 $
+ * Version: $Revision: 1.19.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -89,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.4.8 $ 
+ * @version $Revision: 1.19.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -441,13 +443,30 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 // get the zipfile
                 targetFile = new File(zipFileName);
             } catch (Exception e) {
-                System.err.println("Error creating zipfile " + e);
+                System.err.println("Error creating zipfile " + getStackTraceAsString(e));
             }
 
         }
         return targetFile;
     }
 
+
+    /**
+     * Returns the stack trace (including the message) of an exception as a String.<p>
+     * 
+     * If the exception is a CmsException, 
+     * also writes the root cause to the String.<p>
+     * 
+     * @param e the exception to get the stack trace from
+     * @return the stack trace of an exception as a String
+     */
+    private static String getStackTraceAsString(Throwable e) {
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        e.printStackTrace(printWriter);
+        return stringWriter.toString();
+    }
     /**
      * @see java.applet.Applet#destroy()
      */
@@ -1156,7 +1175,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (charsRead < size && readCount != -1) {
                 readCount = fileStream.read(buffer);
                 charsRead += readCount;
-                out.write(buffer, 0, charsRead);
+                out.write(buffer, 0, readCount);
             }
         } catch (IOException e) {
             throw e;
