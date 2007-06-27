@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.28.4.11 $
+ * Date   : $Date: 2007/06/27 12:05:09 $
+ * Version: $Revision: 1.28.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28.4.11 $ 
+ * @version $Revision: 1.28.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -432,6 +432,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_STARTUP_CONSOLE_NOTE_2 = "LOG_STARTUP_CONSOLE_NOTE_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0 = "LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0 = "LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0";
 
     /** Message contant for key in the resource bundle. */
@@ -442,6 +445,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_THREADSTORE_POOL_CONTENT_2 = "LOG_THREADSTORE_POOL_CONTENT_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_3 = "LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_3";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_WRONG_INIT_SEQUENCE_2 = "LOG_WRONG_INIT_SEQUENCE_2";

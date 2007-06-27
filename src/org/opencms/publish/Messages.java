@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Messages.java,v $
- * Date   : $Date: 2007/04/02 12:31:53 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/27 12:05:09 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -45,7 +45,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_ENGINE_ABORT_DENIED_1 = "ERR_PUBLISH_ENGINE_ABORT_DENIED_1";
 
@@ -54,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_ENGINE_DISABLED_0 = "ERR_PUBLISH_ENGINE_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_ENGINE_ERROR_0 = "ERR_PUBLISH_ENGINE_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0 = "ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0";
@@ -128,6 +131,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PUBLISH_ENGINE_DEAD_JOB_0 = "LOG_PUBLISH_ENGINE_DEAD_JOB_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISH_ENGINE_INTERRUPTED_JOB_0 = "LOG_PUBLISH_ENGINE_INTERRUPTED_JOB_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_ENGINE_NO_RUNNING_JOB_0 = "LOG_PUBLISH_ENGINE_NO_RUNNING_JOB_0";
 
     /** Message constant for key in the resource bundle. */
@@ -158,10 +164,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PUBLISH_REPORT_DEFAULT_PATH_TRY_1 = "LOG_PUBLISH_REPORT_DEFAULT_PATH_TRY_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0 = "RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_REPORT_DELETE_FAILED_1 = "LOG_PUBLISH_REPORT_DELETE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0 = "RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";

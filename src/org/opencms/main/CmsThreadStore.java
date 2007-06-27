@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2006/11/29 14:57:29 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2007/06/27 12:05:09 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
@@ -58,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.3 $
+ * @version $Revision: 1.16.4.4 $
  * 
  * @since 6.0.0
  */
@@ -126,6 +128,7 @@ public final class CmsThreadStore extends Thread {
     public void run() {
 
         int m_minutesForSessionUpdate = 0;
+        int minutesForPublishEngineCheck = 0;
         while (m_alive) {
             // the Grim Reaper is eternal, of course
             try {
@@ -187,6 +190,53 @@ public final class CmsThreadStore extends Thread {
                         LOG.error(org.opencms.lock.Messages.get().getBundle().key(
                             org.opencms.lock.Messages.ERR_WRITE_LOCKS_0), t);
                     }
+                }
+            }
+
+            // check the publish manager if the current thread is still active
+            minutesForPublishEngineCheck++;
+            if (minutesForPublishEngineCheck >= 10) {
+
+                // do this every 10 minutes
+                minutesForPublishEngineCheck = 0;
+
+                try {
+                    
+                    // get the current publish job
+                    CmsPublishJobRunning publishJob = OpenCms.getPublishManager().getCurrentPublishJob();
+                    if (publishJob != null) {
+                        
+                        // get the thread id of the current publish job
+                        CmsUUID uid = publishJob.getThreadUUID();
+                        if ((uid != null) && (!uid.isNullUUID())) {
+                            
+                            // find the thread
+                            A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(uid);
+                            if (thread != null) {
+                                
+                                // check if the report still has output and so is active
+                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(thread.getReportUpdate())) {
+
+                                    // log thread state
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(Messages.get().getBundle().key(
+                                            Messages.LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_3,
+                                            thread.getName(),
+                                            thread.getUUID(),
+                                            thread.getState()));
+                                    }
+
+                                    // interrupt/kill thread
+                                    thread.interrupt();
+                                    
+                                    // clean up the interrupted thread
+                                    OpenCms.getPublishManager().checkCurrentPublishJobThread();
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0), t);
                 }
             }
         }

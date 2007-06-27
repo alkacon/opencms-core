@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/06/27 10:55:02 $
- * Version: $Revision: 1.1.2.20 $
+ * Date   : $Date: 2007/06/27 12:05:09 $
+ * Version: $Revision: 1.1.2.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.20 $
+ * @version $Revision: 1.1.2.21 $
  * 
  * @since 6.5.5
  */
@@ -70,6 +70,9 @@ public final class CmsPublishEngine implements Runnable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishEngine.class);
+
+    /** The id of the admin user. */
+    private CmsUUID m_adminUserId;
 
     /** The current running publish job. */
     private CmsPublishThread m_currentPublishThread;
@@ -97,9 +100,6 @@ public final class CmsPublishEngine implements Runnable {
 
     /** Is set during shutdown. */
     private boolean m_shuttingDown;
-
-    /** The id of the admin user. */
-    private CmsUUID m_adminUserId;
 
     /**
      * Default constructor.<p>
@@ -217,55 +217,87 @@ public final class CmsPublishEngine implements Runnable {
     public synchronized void run() {
 
         try {
-            // give the finishing publish thread enough time to clean up
-            wait(200);
-        } catch (InterruptedException e) {
-            // ignore
-        }
-        // create a publish thread only if engine is started
-        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
-            return;
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_RUNNING_0));
-        }
-        // check the driver manager
-        if (m_driverManager == null || m_dbContextFactory == null) {
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
-            // without these there is nothing we can do
-            return;
-        }
-        // there is no running publish job
-        if (m_currentPublishThread == null) {
-            // but something is waiting in the queue
-            if (!m_publishQueue.isEmpty()) {
-                // start the next waiting publish job
-                CmsPublishJobInfoBean publishJob = m_publishQueue.next();
-                m_currentPublishThread = new CmsPublishThread(this, publishJob);
-                m_currentPublishThread.start();
-            } else {
-                // nothing to do
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_NO_RUNNING_JOB_0));
+            try {
+                // give the finishing publish thread enough time to clean up
+                wait(200);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+
+            // create a publish thread only if engine is started
+            if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
+                return;
+            }
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_RUNNING_0));
+            }
+
+            // check the driver manager
+            if ((m_driverManager == null) || (m_dbContextFactory == null)) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
+                // without these there is nothing we can do
+                return;
+            }
+
+            // there is no running publish job
+            if (m_currentPublishThread == null) {
+                // but something is waiting in the queue
+                if (!m_publishQueue.isEmpty()) {
+                    // start the next waiting publish job
+                    CmsPublishJobInfoBean publishJob = m_publishQueue.next();
+                    m_currentPublishThread = new CmsPublishThread(this, publishJob);
+                    m_currentPublishThread.start();
+                } else {
+                    // nothing to do
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_NO_RUNNING_JOB_0));
+                    }
                 }
+                return;
             }
-            return;
-        }
-        // there is a still running publish job
-        if (m_currentPublishThread.isAlive()) {
-            // wait until it is finished
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_WAITING_0));
+            // there is a still running publish job
+            if (m_currentPublishThread.isAlive()) {
+
+                // thread was interrupted (by the grim reaper)
+                if (m_currentPublishThread.isInterrupted()) {
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_INTERRUPTED_JOB_0));
+                    }
+
+                    // unlock publish list
+                    try {
+                        unlockPublishList(m_currentPublishThread.getPublishJob());
+                    } catch (CmsException exc) {
+                        LOG.error(exc.getLocalizedMessage(), exc);
+                    }
+
+                    // throw it away
+                    m_currentPublishThread = null;
+
+                    // and try again
+                    run();
+                } else {
+
+                    // wait until it is finished
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_WAITING_0));
+                    }
+                }
+            } else {
+                // why is it still set??
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_DEAD_JOB_0));
+                }
+                // just throw it away
+                m_currentPublishThread = null;
+                // and try again
+                run();
             }
-        } else {
-            // why is it still set??
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_ENGINE_DEAD_JOB_0));
-            }
-            // just throw it away
-            m_currentPublishThread = null;
-            // and try again
-            run();
+        } catch (Throwable e) {
+            // catch every thing including runtime exceptions
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_PUBLISH_ENGINE_ERROR_0), e);
         }
     }
 
@@ -482,6 +514,26 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
+     * Returns the user identified by the given id.<p>
+     * 
+     * @param userId the id of the user to retrieve
+     * 
+     * @return the user identified by the given id
+     */
+    protected CmsUser getUser(CmsUUID userId) {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext();
+        try {
+            return m_driverManager.readUser(dbc, userId);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        } finally {
+            dbc.clear();
+        }
+        return null;
+    }
+
+    /**
      * Initializes the publish engine.<p>
      * 
      * @param adminCms the admin cms
@@ -554,7 +606,7 @@ public final class CmsPublishEngine implements Runnable {
         // in order to avoid unremovable pub lish locks, unlock all assigned resources again
         unlockPublishList(publishJob);
 
-        if (m_currentPublishThread.isAborted()) {
+        if ((m_currentPublishThread != null) && (m_currentPublishThread.isAborted())) {
             // try to start a new publish job
             new Thread(this).start();
             return;
@@ -669,26 +721,6 @@ public final class CmsPublishEngine implements Runnable {
         } finally {
             dbc.clear();
         }
-    }
-
-    /**
-     * Returns the user identified by the given id.<p>
-     * 
-     * @param userId the id of the user to retrieve
-     * 
-     * @return the user identified by the given id
-     */
-    protected CmsUser getUser(CmsUUID userId) {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext();
-        try {
-            return m_driverManager.readUser(dbc, userId);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        } finally {
-            dbc.clear();
-        }
-        return null;
     }
 
     /**
