@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2007/05/03 14:09:46 $
- * Version: $Revision: 1.31.4.6 $
+ * Date   : $Date: 2007/06/27 15:24:35 $
+ * Version: $Revision: 1.31.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
-import org.opencms.file.history.I_CmsHistoryResource;
-import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -52,7 +50,6 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -68,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.6 $ 
+ * @version $Revision: 1.31.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -745,7 +742,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             file = (CmsFile)resource;
             if ((file.getContents() == null) || (file.getContents().length <= 0)) {
                 // file has no contents available, force re-read
-                file = null;
+                file = CmsFile.upgrade(resource, m_cms);
             }
         }
         if (file == null) {
@@ -753,8 +750,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);
         }
 
-        // unmarshal the XML content from the resource        
-        m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
+        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource) 
+        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
+        // will come from there!
+        m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
 
         // check if locale is available
         m_contentLocale = m_locale;
@@ -889,25 +888,6 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                 if (createParam != null) {
                     // use "create link" only if collector supports it
                     m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
-                }
-            }
-
-            // check if an historical resource is displayed
-            if (m_collectorResult != null) {
-                I_CmsHistoryResource backRes = CmsHistoryResourceHandler.getHistoryResource(pageContext.getRequest());
-                if (backRes != null) {
-                    // an historical resource was requested, make sure this is displayed if contained in the result list
-                    List modifiedResult = new ArrayList(m_collectorResult.size());
-                    Iterator i = m_collectorResult.iterator();
-                    while (i.hasNext()) {
-                        CmsResource res = (CmsResource)i.next();
-                        if (backRes.equals(res)) {
-                            modifiedResult.add(backRes);
-                        } else {
-                            modifiedResult.add(res);
-                        }
-                    }
-                    m_collectorResult = modifiedResult;
                 }
             }
 

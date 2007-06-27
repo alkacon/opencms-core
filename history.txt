@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/27 12:05:09 $
- * Version: $Revision: 1.717.2.200 $
+ * Date   : $Date: 2007/06/27 15:24:35 $
+ * Version: $Revision: 1.717.2.201 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,6 +67,8 @@ OpenCms 7.0.0 - July 4, 2007
 * Fixed issue while deleting organizational units cleaning up projects
 * Fixed issue while deleting organizational units due to a missing event
 - Improved handling of unactive publish job threads
+* Fixed issue that prevented to see historical versions of XML content resources
+
 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
