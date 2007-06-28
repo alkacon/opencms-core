@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/27 08:40:42 $
- * Version: $Revision: 1.258.4.37 $
+ * Date   : $Date: 2007/06/28 07:35:31 $
+ * Version: $Revision: 1.258.4.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.37 $
+ * @version $Revision: 1.258.4.38 $
  * 
  * @since 6.0.0 
  */
@@ -2325,7 +2325,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCE_REPLACE");
             stmt.setInt(1, newResourceType);
             stmt.setInt(2, resContent.length);
-            stmt.setLong(3, newResource.getDateContent());
+            stmt.setLong(3, System.currentTimeMillis());
             stmt.setString(4, newResource.getResourceId().toString());
             stmt.executeUpdate();
 
@@ -2363,6 +2363,30 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(1, createdUser.toString());
             stmt.setString(2, lastModifiedUser.toString());
             stmt.setString(3, resource.getResourceId().toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#updateBrokenRelations(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource)
+     */
+    public void updateBrokenRelations(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RELATIONS_UPDATE_BROKEN");
+
+            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setString(2, resource.getRootPath());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
