@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsDiskCache.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/06/28 18:32:57 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.1 $
+ * @version $Revision: 1.2.4.2 $
  * 
  * @since 6.2.0
  */
@@ -132,7 +132,7 @@ public class CmsVfsDiskCache {
 
         String rfsName = CmsFileUtil.getRepositoryName(m_rfsRepository, rootPath, online);
         if (CmsStringUtil.isNotEmpty(parameters)) {
-            String extension = CmsFileUtil.getFileExtension(rfsName);
+            String extension = CmsFileUtil.getExtension(rfsName);
             // build the RFS name for the VFS name with parameters
             rfsName = CmsFileUtil.getRfsPath(rfsName, extension, parameters);
         }

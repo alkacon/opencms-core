@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsNameBasedDiskCache.java,v $
- * Date   : $Date: 2006/11/28 16:20:45 $
- * Version: $Revision: 1.2.4.2 $
+ * Date   : $Date: 2007/06/28 18:32:57 $
+ * Version: $Revision: 1.2.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.2 $
+ * @version $Revision: 1.2.4.3 $
  * 
  * @since 6.2.0
  */
@@ -111,7 +111,7 @@ public class CmsVfsNameBasedDiskCache {
 
         // calculate the base cache path for the resource        
         String rfsName = m_rfsRepository + resource.getRootPath();
-        String extension = CmsFileUtil.getFileExtension(rfsName);
+        String extension = CmsFileUtil.getExtension(rfsName);
 
         // create a StringBuffer for the result
         StringBuffer buf = new StringBuffer(rfsName.length() + 24);
