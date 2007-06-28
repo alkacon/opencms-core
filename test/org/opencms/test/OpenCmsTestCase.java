@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/06/25 15:02:17 $
- * Version: $Revision: 1.90.4.29 $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.90.4.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.90.4.29 $
+ * @version $Revision: 1.90.4.30 $
  * 
  * @since 6.0.0
  */
@@ -1216,9 +1216,6 @@ public class OpenCmsTestCase extends TestCase {
         CmsUUID principal,
         CmsPermissionSet permission) {
 
-        //TODO: This method does not work correctly so far, it must be completed!
-        int todo;
-
         try {
             // create the exclude list
             List excludeList = new ArrayList();
@@ -1226,7 +1223,7 @@ public class OpenCmsTestCase extends TestCase {
                 excludeList.add(principal);
             }
 
-            //TODO: This is the code to recalculate the permission set if necessary. Its not completed yet!
+            // TODO: This is the code to recalculate the permission set if necessary. Its not completed yet!
 
             Map parents = getParents(cms, resourceName);
             List aceList = cms.getAccessControlEntries(resourceName);
@@ -1883,8 +1880,10 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param filter the filter contianing the flags defining which attributes to compare
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    public void assertFilter(CmsObject cms, String resourceName, OpenCmsTestResourceFilter filter) {
+    public void assertFilter(CmsObject cms, String resourceName, OpenCmsTestResourceFilter filter) throws CmsException {
 
         // get the stored resource
         OpenCmsTestResourceStorageEntry storedResource = null;
@@ -1895,13 +1894,8 @@ public class OpenCmsTestCase extends TestCase {
             fail(e.getMessage());
         }
 
-        CmsResource res = null;
-        try {
-            // get the actual resource from the vfs
-            res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-        } catch (Exception e) {
-            fail("cannot read resource " + resourceName + " " + e.getMessage());
-        }
+        // get the actual resource from the vfs
+        CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
         // compare the current resource with the stored resource
         assertFilter(cms, storedResource, res, filter);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestValidFilename.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.6.8.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsIllegalArgumentException;
+
 import junit.framework.TestCase;
 
 /** 
@@ -38,7 +41,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.8.1 $
  * 
  * @since 6.0.0
  */
@@ -59,9 +62,7 @@ public class TestValidFilename extends TestCase {
      * 
      * @throws Exception if something goes wrong
      */
-    public void testValidateResourceName() throws Exception {
-
-        // PLEASE NOTE: This logic is NOT yet used by OpenCms, this is planned for the future
+    public void testCheckNameForResource() throws Exception {
 
         // according to windows, the following characters are illegal:
         // \ / : * ? " < > |
@@ -75,42 +76,52 @@ public class TestValidFilename extends TestCase {
         // ; / ? : @ = &
 
         // stupidity tests
-        assertFalse(CmsStringUtil.validateResourceName(null));
-        assertFalse(CmsStringUtil.validateResourceName(""));
+        assertFalse(checkName(null));
+        assertFalse(checkName(""));
 
-        // all valid chard according to the "old" OpenCms logic
-        assertTrue(CmsStringUtil.validateResourceName("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
+        // all valid chars according to the OpenCms logic
+        assertTrue(checkName("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
 
         // add some of the new valid chars
-        assertTrue(CmsStringUtil.validateResourceName("Copy of abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
-        assertTrue(CmsStringUtil.validateResourceName("Some German umlauts - הצüÄÖÜ‗"));
-        assertTrue(CmsStringUtil.validateResourceName("Some more western European special chars - יטפבאûםל"));
+        assertFalse(checkName("Copy of abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
+        assertFalse(checkName("Some German umlauts - הצüÄÖÜ‗"));
+        assertFalse(checkName("Some more western European special chars - יטפבאûםל"));
 
-        assertTrue(CmsStringUtil.validateResourceName("my File"));
+        assertFalse(checkName("my File"));
         // Window logic invalid chars
-        assertFalse(CmsStringUtil.validateResourceName(" my File"));
-        assertFalse(CmsStringUtil.validateResourceName("my File "));
-        assertFalse(CmsStringUtil.validateResourceName("\tmy File"));
-        assertFalse(CmsStringUtil.validateResourceName("\rmy File"));
-        assertFalse(CmsStringUtil.validateResourceName("\nmy File"));
-        assertFalse(CmsStringUtil.validateResourceName("my/file"));
-        assertFalse(CmsStringUtil.validateResourceName("my\\file"));
-        assertFalse(CmsStringUtil.validateResourceName("my:file"));
-        assertFalse(CmsStringUtil.validateResourceName("my*file"));
-        assertFalse(CmsStringUtil.validateResourceName("my?file"));
-        assertFalse(CmsStringUtil.validateResourceName("my\"file"));
-        assertFalse(CmsStringUtil.validateResourceName("my<file"));
-        assertFalse(CmsStringUtil.validateResourceName("my>file"));
-        assertFalse(CmsStringUtil.validateResourceName("my|file"));
+        assertFalse(checkName(" my File"));
+        assertFalse(checkName("my File "));
+        assertFalse(checkName("\tmy File"));
+        assertFalse(checkName("\rmy File"));
+        assertFalse(checkName("\nmy File"));
+        assertFalse(checkName("my/file"));
+        assertFalse(checkName("my\\file"));
+        assertFalse(checkName("my:file"));
+        assertFalse(checkName("my*file"));
+        assertFalse(checkName("my?file"));
+        assertFalse(checkName("my\"file"));
+        assertFalse(checkName("my<file"));
+        assertFalse(checkName("my>file"));
+        assertFalse(checkName("my|file"));
 
         // JSR 170 chars
-        assertTrue(CmsStringUtil.validateResourceName("my[file"));
-        assertTrue(CmsStringUtil.validateResourceName("my]file"));
-        assertTrue(CmsStringUtil.validateResourceName("my'file"));
+        assertFalse(checkName("my[file"));
+        assertFalse(checkName("my]file"));
+        assertFalse(checkName("my'file"));
 
         // HTML reserved chars 
-        assertTrue(CmsStringUtil.validateResourceName("my&file"));
-        assertTrue(CmsStringUtil.validateResourceName("my=file"));
-        assertTrue(CmsStringUtil.validateResourceName("my@file"));
+        assertFalse(checkName("my&file"));
+        assertFalse(checkName("my=file"));
+        assertFalse(checkName("my@file"));
+    }
+
+    private boolean checkName(String name) {
+
+        try {
+            CmsResource.checkResourceName(name);
+            return true;
+        } catch (CmsIllegalArgumentException e) {
+            return false;
+        }
     }
 }

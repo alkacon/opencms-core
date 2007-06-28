@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestPriorityResourceCollectors.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestPriorityResourceCollectors.java,v $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.file;
 
-import org.opencms.file.collectors.CmsPriorityDateResourceComparator;
-import org.opencms.file.collectors.CmsPriorityResourceCollector;
-import org.opencms.file.collectors.I_CmsResourceCollector;
+package org.opencms.file.collectors;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -57,43 +57,11 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestPriorityResourceCollectors(String arg0) {
+
         super(arg0);
     }
-    
-    /**
-     * Test suite for this test class.<p>
-     * 
-     * @return the test suite
-     */
-    public static Test suite() {
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPriorityResourceCollectors.class.getName());
-
-        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInFolderPriority"));
-        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInSubTreePriority"));
-        
-        TestSetup wrapper = new TestSetup(suite) {
-            
-            protected void setUp() {
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                } catch (CmsException exc) {
-                    fail(exc.getMessage());
-                }  
-            }
-            
-            protected void tearDown() {
-                removeOpenCms();
-            }
-        };
-        
-        return wrapper;
-    }     
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -102,29 +70,29 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
      * @throws CmsException if something goes wrong
      */
     public static void initResources(CmsObject cms) throws CmsException {
-        
+
         List properties = new ArrayList(2);
         CmsProperty propPrio = new CmsProperty();
         propPrio.setName(CmsPriorityResourceCollector.PROPERTY_PRIORITY);
         CmsProperty propDate = new CmsProperty();
         propDate.setName(CmsPriorityDateResourceComparator.PROPERTY_DATE);
-        
+
         long time = System.currentTimeMillis();
-        
+
         // absolute priority order of the created files:
         // /folder1/sub1/file5, /file1, /folder1/file3, /folder1/file2, /folder1/file1, /folder1/file4 
-    
+
         // create a file in the root directory              
         propPrio.setStructureValue("15");
-        properties.add(propPrio);        
+        properties.add(propPrio);
         propDate.setStructureValue("" + time);
         properties.add(propDate);
         CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
         cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId(), null, properties);
-        
+
         // create a folder in the root directory
         cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
-        
+
         // create a file in the folder directory
         properties.clear();
         propPrio.setStructureValue("5");
@@ -140,7 +108,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         propDate.setStructureValue("" + time);
         properties.add(propDate);
         cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, properties);
-        
+
         // create a file in the folder directory
         properties.clear();
         propPrio.setStructureValue("10");
@@ -148,7 +116,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         propDate.setStructureValue("" + (time + 10));
         properties.add(propDate);
         cms.createResource("/folder1/file3", CmsResourceTypePlain.getStaticTypeId(), null, properties);
-        
+
         // create a file in the folder directory
         properties.clear();
         propPrio.setStructureValue("1");
@@ -156,7 +124,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         propDate.setStructureValue("" + (time + 30));
         properties.add(propDate);
         cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, properties);
-        
+
         // create a file of other type in the folder directory
         properties.clear();
         propPrio.setStructureValue("10");
@@ -164,10 +132,10 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         propDate.setStructureValue("" + (time + 50));
         properties.add(propDate);
         cms.createResource("/folder1/fileJsp", CmsResourceTypeJsp.getStaticTypeId(), null, properties);
-        
+
         // create a subfolder in the folder1 directory
         cms.createResource("/folder1/sub1", CmsResourceTypeFolder.getStaticTypeId());
-        
+
         //create a file in the subfolder directory
         properties.clear();
         propPrio.setStructureValue("15");
@@ -176,79 +144,114 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         properties.add(propDate);
         cms.createResource("/folder1/sub1/file5", CmsResourceTypePlain.getStaticTypeId(), null, properties);
     }
-    
+
+    /**
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestPriorityResourceCollectors.class.getName());
+
+        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInFolderPriority"));
+        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInSubTreePriority"));
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            protected void setUp() {
+
+                CmsObject cms = setupOpenCms(null, null, false);
+                try {
+                    initResources(cms);
+                } catch (CmsException exc) {
+                    exc.printStackTrace();
+                    fail(exc.getMessage());
+                }
+            }
+
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
+    }
+
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderPriority() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
-        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId(); 
+        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId();
         echo("Testing allInFolderPriorityDateDesc resource collector");
-        
+
         I_CmsResourceCollector collector = new CmsPriorityResourceCollector();
         List resources = collector.getResults(cms, "allInFolderPriorityDateDesc", "/folder1/|" + resTypeIdPlain + "|3");
-        
+
         // assert that 3 files are returned
         assertEquals(3, resources.size());
-        
+
         CmsResource res;
-        
+
         // order descending determined by root path
-        
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/file3", res.getRootPath());
-        
+
         res = (CmsResource)resources.get(1);
-        assertEquals("/sites/default/folder1/file2", res.getRootPath()); 
-        
+        assertEquals("/sites/default/folder1/file2", res.getRootPath());
+
         res = (CmsResource)resources.get(2);
-        assertEquals("/sites/default/folder1/file1", res.getRootPath()); 
+        assertEquals("/sites/default/folder1/file1", res.getRootPath());
     }
-    
+
     /**
      * Tests the "allInSubTreePriorityDesc" resource collector.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInSubTreePriority() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
-        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId(); 
+        int resTypeIdPlain = CmsResourceTypePlain.getStaticTypeId();
         echo("Testing allInSubTreePriorityDesc resource collector");
-        
+
         I_CmsResourceCollector collector = new CmsPriorityResourceCollector();
         List resources = collector.getResults(cms, "allInSubTreePriorityDateDesc", "/|" + resTypeIdPlain + "|4");
-        
+
         // assert that 4 files are returned
         assertEquals(4, resources.size());
-        
+
         CmsResource res;
-        
+
         // order descending determined by root path
-        
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/sub1/file5", res.getRootPath());
-        
+
         res = (CmsResource)resources.get(1);
-        assertEquals("/sites/default/file1", res.getRootPath()); 
-        
+        assertEquals("/sites/default/file1", res.getRootPath());
+
         res = (CmsResource)resources.get(2);
-        assertEquals("/sites/default/folder1/file3", res.getRootPath()); 
-        
+        assertEquals("/sites/default/folder1/file3", res.getRootPath());
+
         res = (CmsResource)resources.get(3);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
-        
+
         resources = collector.getResults(cms, "allInSubTreePriorityDateDesc", "/|1");
-        
+
         // assert that all 6 plain files are returned
         assertEquals(6, resources.size());
-        
+
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/sub1/file5", res.getRootPath());
-        
+
         res = (CmsResource)resources.get(5);
         assertEquals("/sites/default/folder1/file4", res.getRootPath());
     }

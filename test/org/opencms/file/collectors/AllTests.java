@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/AllTests.java,v $
  * Date   : $Date: 2007/06/28 18:30:55 $
- * Version: $Revision: 1.42.4.10 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.file.collectors;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -37,12 +37,13 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
+ * Main test suite for the package <code>{@link org.opencms.file.collectors}</code>.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.42.4.10 $
+ * @author Michael Moossen
  * 
- * @since 6.0
+ * @version $Revision: 1.1.2.1 $
+ * 
+ * @since 7.0
  */
 public final class AllTests {
 
@@ -64,38 +65,8 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestChacc.suite());
-        suite.addTest(TestChangeProperties.suite());
-        suite.addTest(TestCopy.suite());
-        suite.addTest(TestChtype.suite());
-        suite.addTest(TestConcurrentOperations.suite());
-        suite.addTest(TestCreateWriteResource.suite());
-        suite.addTest(TestDefaultResourceCollectors.suite());
-        suite.addTest(TestDeletion.suite());
-        suite.addTest(TestExists.suite());
-        suite.addTest(TestHistory.suite());
-        suite.addTest(TestLinkValidation.suite());
-        suite.addTest(TestLock.suite());
-        suite.addTest(TestMoveRename.suite());
-        suite.addTest(TestMoveRename2.suite());
-        suite.addTest(TestPermissions.suite());
-        suite.addTest(TestProjects.suite());
-        suite.addTest(TestProperty.suite());
-        suite.addTest(TestPropertyDefinition.suite());
-        suite.addTest(TestPublishing.suite());
-        suite.addTest(TestPublishIssues.suite());
-        suite.addTest(TestReadResource.suite());
-        suite.addTest(TestReadResourceTree.suite());
-        suite.addTest(TestReleaseExpire.suite());
-        suite.addTest(TestReplace.suite());
-        suite.addTest(TestResourceFilter.suite());
-        suite.addTest(TestResourceOperations.suite());
-        suite.addTest(TestRestoreFromHistory.suite());
-        suite.addTest(TestSiblings.suite());
-        suite.addTest(TestTouch.suite());
-        suite.addTest(TestUndelete.suite());
-        suite.addTest(TestUndoChanges.suite());
-        suite.addTest(TestUser.suite());
+        suite.addTest(TestCategoryResourceCollectors.suite());
+        suite.addTest(TestPriorityResourceCollectors.suite());
         //$JUnit-END$
         return suite;
     }

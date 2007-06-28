@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2007/06/27 13:20:05 $
- * Version: $Revision: 1.1.2.6 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.file.collectors;
 
-import org.opencms.file.collectors.CmsCategoryResourceCollector;
-import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.1 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -150,6 +150,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
                 try {
                     initResources(cms);
                 } catch (Exception exc) {
+                    exc.printStackTrace();
                     fail(exc.getMessage());
                 }
             }

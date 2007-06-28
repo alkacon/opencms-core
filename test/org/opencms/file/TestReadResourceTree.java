@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.12.4.2 $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.12.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.12.4.2 $
+ * @version $Revision: 1.12.4.3 $
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
@@ -168,7 +168,6 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         // check each resource in the result
         int i;
         for (i = 0; i < result.size(); i++) {
-            int todo; // may fail with transactions, due to wrong cached values read by the static export scrubfolder thread
             assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
         }
 

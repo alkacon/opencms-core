@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/06/28 11:03:53 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/28 18:30:55 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -275,7 +275,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
         assertEquals(1, relations.size());
         assertRelation(expected, (CmsRelation)relations.get(0));
-        
+
         cms.moveResource(folderName2, folderName);
         CmsResource img = cms.readResource(folderName + imgName);
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
@@ -554,13 +554,15 @@ public class TestLinkValidation extends OpenCmsTestCase {
                 setContent(cms, filename6, content6);
                 relType1 = CmsRelationType.HYPERLINK;
                 break;
-
         }
 
         // check the links before publishing
         CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        Map validation = cms.validateRelations(Collections.singletonList(res1), report);
+        Map validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res1), false),
+            report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename1)));
         List brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename1));
@@ -571,13 +573,22 @@ public class TestLinkValidation extends OpenCmsTestCase {
             assertTrue(brokenLinks.contains(new CmsRelation(res1, res2, CmsRelationType.XML_WEAK)));
         }
 
-        validation = cms.validateRelations(Collections.singletonList(res2), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res2), false),
+            report);
         assertTrue(validation.isEmpty());
 
-        validation = cms.validateRelations(Collections.singletonList(res3), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res3), false),
+            report);
         assertTrue(validation.isEmpty());
 
-        validation = cms.validateRelations(Collections.singletonList(res4), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res4), false),
+            report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename4)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename4));
@@ -587,7 +598,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
             assertTrue(brokenLinks.contains(new CmsRelation(res4, res2, CmsRelationType.XML_WEAK)));
         }
 
-        validation = cms.validateRelations(Collections.singletonList(res5), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res5), false),
+            report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename5)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename5));
@@ -596,7 +610,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         if (mode == MODE_XMLCONTENT_BOTH) {
             assertTrue(brokenLinks.contains(new CmsRelation(res5, res6, CmsRelationType.XML_WEAK)));
         }
-        validation = cms.validateRelations(Collections.singletonList(res6), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res6), false),
+            report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename6)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename6));
@@ -606,20 +623,29 @@ public class TestLinkValidation extends OpenCmsTestCase {
             assertTrue(brokenLinks.contains(new CmsRelation(res6, res5, CmsRelationType.XML_WEAK)));
         }
 
-        validation = cms.validateRelations(Collections.singletonList(res7), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res7), false),
+            report);
         assertTrue(validation.isEmpty());
 
         List res56 = new ArrayList();
         res56.add(res5);
         res56.add(res6);
-        validation = cms.validateRelations(res56, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, res56, false),
+            report);
         assertTrue(validation.isEmpty());
 
         List res123 = new ArrayList();
         res123.add(res1);
         res123.add(res2);
         res123.add(res3);
-        validation = cms.validateRelations(res123, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, res123, false),
+            report);
         assertTrue(validation.isEmpty());
 
         List resAll = new ArrayList();
@@ -630,7 +656,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         resAll.add(res5);
         resAll.add(res6);
         resAll.add(res7);
-        validation = cms.validateRelations(resAll, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, resAll, false),
+            report);
         assertTrue(validation.isEmpty());
 
         // publish
@@ -721,7 +750,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         List resources = new ArrayList(resAll);
         resources.remove(res5);
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        validation = cms.validateRelations(resources, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, resources, false),
+            report);
         assertTrue(validation.isEmpty());
         switch (mode) {
             case 1:
@@ -766,7 +798,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         resources = new ArrayList(resAll);
         resources.remove(res2);
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        validation = cms.validateRelations(resources, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, resources, false),
+            report);
         assertTrue(validation.isEmpty());
         switch (mode) {
             case 1:
@@ -808,7 +843,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         }
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        validation = cms.validateRelations(Collections.singletonList(res7), report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, Collections.singletonList(res7), false),
+            report);
         assertEquals(validation.size(), 1);
         assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename7)));
         brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename7));
@@ -823,7 +861,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         List res78 = new ArrayList();
         res78.add(res7);
         res78.add(res8);
-        validation = cms.validateRelations(res78, report);
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, res78, false),
+            report);
         assertTrue(validation.isEmpty());
     }
 
@@ -869,7 +910,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
             otherRes.remove(resource);
         }
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        Map validation = cms.validateRelations(otherRes, report);
+        Map validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, otherRes, false),
+            report);
         itRes = resources.iterator();
         while (itRes.hasNext()) {
             CmsResource resource = (CmsResource)itRes.next();
