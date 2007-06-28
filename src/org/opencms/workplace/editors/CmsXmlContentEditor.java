@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2007/03/15 15:57:35 $
- * Version: $Revision: 1.68.4.11 $
+ * Date   : $Date: 2007/06/28 08:01:27 $
+ * Version: $Revision: 1.68.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.11 $ 
+ * @version $Revision: 1.68.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1413,13 +1414,64 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             result.append("\">\n");
 
             // show error header once if there were validation errors
-            if (!nested && showErrors && (getValidationHandler().hasErrors(getElementLocale()))) {
+            if (!nested && showErrors && (getValidationHandler().hasErrors())) {
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
                 result.append(key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
                 result.append("</td><td>&nbsp;");
                 result.append("</td></tr>\n");
+
+                // show errors in different locales
+                if ((getValidationHandler().getErrors(getElementLocale()) == null)
+                    || (getValidationHandler().getErrors().size() > getValidationHandler().getErrors(getElementLocale()).size())) {
+
+                    // iterate through all found errors
+                    Map locErrors = getValidationHandler().getErrors();
+                    Iterator locErrorsIter = locErrors.entrySet().iterator();
+                    while (locErrorsIter.hasNext()) {
+                        Map.Entry locEntry = (Map.Entry)locErrorsIter.next();
+                        Locale locale = (Locale)locEntry.getKey();
+
+                        // skip errors in the actual locale
+                        if (getElementLocale().equals(locale)) {
+                            continue;
+                        }
+
+                        result.append("<tr><td colspan=\"2\">&nbsp;</td>");
+                        result.append("<td class=\"xmlTdError\">");
+                        result.append(key(
+                            Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
+                            new Object[] {locale.getLanguage()}));
+                        result.append("</td><td>&nbsp;");
+                        result.append("</td></tr>\n");
+                        
+                        result.append("<tr><td colspan=\"2\">&nbsp;</td>");
+                        result.append("<td class=\"xmlTdError\">");
+                        result.append("<ul>");
+
+                        // iterate through the found errors in a different locale
+                        Map elErrors = (Map)locEntry.getValue();
+                        Iterator elErrorsIter = elErrors.entrySet().iterator();
+                        while (elErrorsIter.hasNext()) {
+                            Map.Entry elEntry = (Map.Entry)elErrorsIter.next();
+
+                            String nodeName = (String)elEntry.getKey();
+                            String errorMsg = (String)elEntry.getValue();
+
+                            // output the error message
+                            result.append("<li>");
+                            result.append(nodeName);
+                            result.append(": ");
+                            result.append(errorMsg);
+                            result.append("</li>\n");
+                        }
+                        
+                        result.append("</ul>");
+                        result.append("</td><td>&nbsp;");
+                        result.append("</td></tr>\n");
+                    }
+                }
             }
 
             // iterate the type sequence        
