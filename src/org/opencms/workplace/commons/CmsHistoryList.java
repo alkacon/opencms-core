@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/06/26 08:41:24 $
- * Version: $Revision: 1.5.4.21 $
+ * Date   : $Date: 2007/06/28 09:43:07 $
+ * Version: $Revision: 1.5.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,9 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -83,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.21 $ 
+ * @version $Revision: 1.5.4.22 $ 
  * 
  * @since 6.0.2 
  */
@@ -299,12 +301,18 @@ public class CmsHistoryList extends A_CmsListDialog {
     public static String getHistoryLink(CmsObject cms, CmsUUID structureId, String version) {
 
         String resourcePath;
+        CmsResource resource;
         try {
-            resourcePath = cms.readResource(structureId).getRootPath();
+            resource = cms.readResource(structureId);
+            resourcePath = resource.getRootPath();
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer(), e);
         }
         if (Integer.parseInt(version) == PROJECT_OFFLINE) {
+            if (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId()) {
+                resourcePath = new StringBuffer(resourcePath).append('?').append(CmsJspLoader.PARAM_SHOWSOURCE).append(
+                    "=true").toString();
+            }
             return cms.getRequestContext().removeSiteRoot(resourcePath);
         }
         StringBuffer link = new StringBuffer();
