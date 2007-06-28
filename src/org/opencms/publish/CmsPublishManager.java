@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/06/27 12:05:09 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/06/28 18:41:16 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,13 +50,14 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This manager provide access to the publish engine runtime information.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  * 
  * @since 6.5.5
  */
@@ -458,6 +459,26 @@ public class CmsPublishManager {
     public CmsUUID publishProject(CmsObject cms, I_CmsReport report) throws CmsException {
 
         return publishProject(cms, report, getPublishList(cms));
+    }
+
+    /**
+     * Validates the relations for the given resources.<p>
+     * 
+     * @param cms the cms request context
+     * @param publishList the publish list to validate against the online project
+     * @param report a report to write the messages to
+     * 
+     * @return a map with lists of invalid links 
+     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
+     *          keyed by resource names
+     * 
+     * TODO: change return value to List of CmsRelation
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public Map validateRelations(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
+
+        return m_securityManager.validateRelations(cms.getRequestContext(), publishList, report);
     }
 
     /**

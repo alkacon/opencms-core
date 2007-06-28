@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/28 07:36:32 $
- * Version: $Revision: 1.570.2.106 $
+ * Date   : $Date: 2007/06/28 18:41:16 $
+ * Version: $Revision: 1.570.2.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1337,7 +1337,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         name = name.trim();
         // validate the property name
         CmsPropertyDefinition.checkPropertyName(name);
-        int todo; // make the type a parameter
+        // TODO: make the type a parameter
         try {
             try {
                 propertyDefinition = m_vfsDriver.readPropertyDefinition(dbc, name, dbc.currentProject().getUuid());
@@ -2761,6 +2761,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // delete relations
             m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), currentResource, CmsRelationFilter.TARGETS);
+            // update broken remaining relations
+            m_vfsDriver.updateBrokenRelations(dbc, resource, true);
         }
 
         if ((resource.getSiblingCount() <= 1) || allSiblingsRemoved) {
@@ -6805,23 +6807,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // check the name
         String path = CmsResource.getParentFolder(histRes.getRootPath()); // path
         String resName = CmsResource.getName(histRes.getRootPath()); // name
-        String ext = CmsFileUtil.getExtension(resName); // extension
-        String nameWOExt = resName.substring(0, resName.length() - ext.length() - 1); // name without extension
-        boolean nameOk = false;
-        int i = 1;
-        while (!nameOk) {
+        String ext = "";
+        if (resName.charAt(resName.length() - 1) == '/') {
+            resName = resName.substring(0, resName.length() - 1);
+        } else {
+            ext = CmsFileUtil.getExtension(resName); // extension
+        }
+        String nameWOExt = resName.substring(0, resName.length() - ext.length()); // name without extension
+        for (int i = 1; true; i++) {
             try {
                 readResource(dbc, path + resName, CmsResourceFilter.ALL);
+                resName = nameWOExt + "_" + i + ext;
                 // try the next resource name with following schema: path/name_{i}.ext
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
-                    resName = nameWOExt + "_" + i + "." + ext;
-                } else {
-                    resName = nameWOExt + "_" + i;
-                }
-                i++;
-            } catch (Exception e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 // ok, we found a not used resource name
-                nameOk = true;
+                break;
             }
         }
 
@@ -7396,7 +7396,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
         deleteRelationsWithSiblings(dbc, resource);
-        m_vfsDriver.updateBrokenRelations(dbc, resource);
+        m_vfsDriver.updateBrokenRelations(dbc, resource, false);
 
         // build the links again only if needed
         if ((links == null) || links.isEmpty()) {
@@ -7492,8 +7492,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Validates the relations for the given resources.<p>
      * 
      * @param dbc the database context
-     * @param resources the resources to validate during publishing 
-     *              or <code>null</code> for all in current project
+     * @param publishList the resources to validate during publishing 
      * @param report a report to write the messages to
      * 
      * @return a map with lists of invalid links 
@@ -7502,9 +7501,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsDbContext dbc, List resources, I_CmsReport report) throws Exception {
+    public Map validateRelations(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) throws Exception {
 
-        return m_htmlLinkValidator.validateResources(dbc, resources, report);
+        return m_htmlLinkValidator.validateResources(dbc, publishList, report);
     }
 
     /**

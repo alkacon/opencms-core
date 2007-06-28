@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/28 13:15:20 $
- * Version: $Revision: 1.97.4.62 $
+ * Date   : $Date: 2007/06/28 18:41:16 $
+ * Version: $Revision: 1.97.4.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1380,8 +1380,10 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the name of the resource to delete (full path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
+     * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource. 
+     * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource.
+     *  
      * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
     public void deleteResource(
@@ -4896,8 +4898,7 @@ public final class CmsSecurityManager {
      * Validates the relations for the given resources.<p>
      * 
      * @param context the current request context
-     * @param resources the resources to validate during publishing 
-     *              or <code>null</code> for all in current project
+     * @param publishList the resources to validate during publishing 
      * @param report a report to write the messages to
      * 
      * @return a map with lists of invalid links 
@@ -4906,12 +4907,12 @@ public final class CmsSecurityManager {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsRequestContext context, List resources, I_CmsReport report) throws Exception {
+    public Map validateRelations(CmsRequestContext context, CmsPublishList publishList, I_CmsReport report) throws Exception {
 
         Map result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            result = m_driverManager.validateRelations(dbc, resources, report);
+            result = m_driverManager.validateRelations(dbc, publishList, report);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_VALIDATE_RELATIONS_0), e);
         } finally {

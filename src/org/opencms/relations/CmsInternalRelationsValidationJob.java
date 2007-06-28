@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalRelationsValidationJob.java,v $
- * Date   : $Date: 2006/08/25 08:13:11 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/06/28 18:41:17 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.relations;
 import org.opencms.file.CmsObject;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsStringBufferReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -62,7 +63,7 @@ import javax.mail.internet.InternetAddress;
  *            
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.5.0 
  * 
@@ -91,7 +92,8 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
             report.println(Messages.get().container(
                 Messages.GUI_RELATIONS_VALIDATION_PROJECT_1,
                 cms.getRequestContext().currentProject().getName()), I_CmsReport.FORMAT_HEADLINE);
-            cms.validateRelations(null, report);
+            // TODO: replace by CmsObject#getRelationsForResource 
+            OpenCms.getPublishManager().validateRelations(cms, null, report);
         } catch (Exception e) {
             if (report != null) {
                 report.println(e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/06/22 14:53:41 $
- * Version: $Revision: 1.146.4.51 $
+ * Date   : $Date: 2007/06/28 18:41:18 $
+ * Version: $Revision: 1.146.4.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.51 $
+ * @version $Revision: 1.146.4.52 $
  * 
  * @since 6.0.0 
  */
@@ -4148,24 +4148,6 @@ public final class CmsObject {
     public void validatePassword(String password) throws CmsSecurityException {
 
         m_securityManager.validatePassword(password);
-    }
-
-    /**
-     * Validates the relations for the given resources.<p>
-     * 
-     * @param resources the resources to validate during publishing 
-     *              or <code>null</code> for all in current project
-     * @param report a report to write the messages to
-     * 
-     * @return a map with lists of invalid links 
-     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
-     *          keyed by resource names
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public Map validateRelations(List resources, I_CmsReport report) throws Exception {
-
-        return m_securityManager.validateRelations(m_context, resources, report);
     }
 
     /**

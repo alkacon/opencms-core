@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/28 07:36:32 $
- * Version: $Revision: 1.114.4.22 $
+ * Date   : $Date: 2007/06/28 18:41:16 $
+ * Version: $Revision: 1.114.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.114.4.22 $
+ * @version $Revision: 1.114.4.23 $
  * 
  * @since 6.0.0 
  */
@@ -705,12 +705,17 @@ public interface I_CmsVfsDriver {
     /**
      * Updates/Repairs broken links.<p>
      * 
+     * To update is when a resource is deleted, then the relations pointing to the 
+     * deleted resource are set to the null uuid, to repair is, the opposite, when a 
+     * resource is created any relation pointing to it are updated to use the right id.<p>
+     * 
      * @param dbc the current database context
      * @param resource the resource that may help to repair broken links
+     * @param update if to update or to repair
      * 
      * @throws CmsDataAccessException if something goes wrong 
      */
-    void updateBrokenRelations(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException;
+    void updateBrokenRelations(CmsDbContext dbc, CmsResource resource, boolean update) throws CmsDataAccessException;
 
     /**
      * Updates the relations on the online project copying the relations from the offline project.<p>

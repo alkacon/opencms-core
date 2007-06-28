@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/28 07:35:31 $
- * Version: $Revision: 1.258.4.38 $
+ * Date   : $Date: 2007/06/28 18:41:17 $
+ * Version: $Revision: 1.258.4.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.38 $
+ * @version $Revision: 1.258.4.39 $
  * 
  * @since 6.0.0 
  */
@@ -2374,20 +2374,25 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#updateBrokenRelations(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#updateBrokenRelations(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, boolean)
      */
-    public void updateBrokenRelations(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+    public void updateBrokenRelations(CmsDbContext dbc, CmsResource resource, boolean update)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RELATIONS_UPDATE_BROKEN");
-
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setString(2, resource.getRootPath());
-            stmt.executeUpdate();
+            if (update) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_RELATIONS_UPDATE_BROKEN");
+                stmt.executeUpdate();
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_RELATIONS_REPAIR_BROKEN");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setString(2, resource.getRootPath());
+                stmt.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -2556,8 +2561,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public void writePropertyObject(CmsDbContext dbc, CmsProject project, CmsResource resource, CmsProperty property)
     throws CmsDataAccessException {
 
-        // check if we need autocreation for link property definition types too
-        int todo;
+        // TODO: check if we need autocreation for link property definition types too
         CmsPropertyDefinition propertyDefinition = null;
         try {
             // read the property definition

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/06/26 15:19:32 $
- * Version: $Revision: 1.1.2.19 $
+ * Date   : $Date: 2007/06/28 18:41:17 $
+ * Version: $Revision: 1.1.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.19 $
+ * @version $Revision: 1.1.2.20 $
  * 
  * @since 6.9.1
  */
@@ -396,7 +396,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         if (configuration.get("db.history.pool") != null) {
             poolUrl = configuration.get("db.history.pool").toString();
         } else {
-            int todoDeprecated; // deprecated, remove as soon as possible
+            // TODO: deprecated, remove as soon as possible
             poolUrl = configuration.get("db.backup.pool").toString();
         }
 
@@ -404,7 +404,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         if (configuration.get("db.history.sqlmanager") != null) {
             classname = configuration.get("db.history.sqlmanager").toString();
         } else {
-            int todoDeprecated; // deprecated, remove as soon as possible
+            // TODO: deprecated, remove as soon as possible
             classname = configuration.get("db.backup.sqlmanager").toString();
         }
 

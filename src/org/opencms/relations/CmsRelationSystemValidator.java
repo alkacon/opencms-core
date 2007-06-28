@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/06/18 12:32:02 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/28 18:41:17 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.relations;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.3.0 
  */
@@ -88,34 +89,33 @@ public class CmsRelationSystemValidator {
     }
 
     /**
-     * Validates the relations.<p>
+     * Validates the relations against the online project.<p>
      * 
      * The result is printed to the given report.<p>
      * 
-     * If the resources list is <code>null</code> or empty, the whole current project will be validated.<p>
-     * 
-     * If the resources list is not empty, Validating references means to answer the question, whether 
-     * we would have broken links in the online project if a file or a list of files would get published.<p>
+     * Validating references means to answer the question, whether 
+     * we would have broken links in the online project if the given 
+     * publish list would get published.<p>
      * 
      * @param dbc the database context
-     * @param resources a list of offline resources, or <code>null</code>
+     * @param publishList the publish list to validate
      * @param report a report to print messages
      * 
      * @return a map with lists of invalid links 
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
      *          keyed by resource names
      */
-    public Map validateResources(CmsDbContext dbc, List resources, I_CmsReport report) {
+    public Map validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
 
         Map invalidResources = new HashMap();
-        boolean interProject = (resources != null);
+        boolean interProject = (publishList != null);
         if (report != null) {
             report.println(
                 Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);
         }
-        if (resources == null) {
-            resources = new ArrayList();
+        List resources = new ArrayList();
+        if (publishList == null) {
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
             Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
             while (itTypes.hasNext()) {
@@ -134,6 +134,8 @@ public class CmsRelationSystemValidator {
                     }
                 }
             }
+        } else {
+            resources.addAll(publishList.getAllResources());
         }
 
         // populate a lookup map with the project resources that 

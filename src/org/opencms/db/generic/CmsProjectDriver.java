@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/06/27 09:22:13 $
- * Version: $Revision: 1.241.4.42 $
+ * Date   : $Date: 2007/06/28 18:41:17 $
+ * Version: $Revision: 1.241.4.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.241.4.42 $
+ * @version $Revision: 1.241.4.43 $
  * 
  * @since 6.0.0 
  */
@@ -568,7 +568,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsResourceTypeFolder.RESOURCE_TYPE_ID,
             0,
             onlineProject.getUuid(),
-            CmsResource.STATE_NEW,
+            CmsResource.STATE_CHANGED,
             0,
             admin.getId(),
             0,
@@ -598,7 +598,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsResourceTypeFolder.RESOURCE_TYPE_ID,
             0,
             onlineProject.getUuid(),
-            CmsResource.STATE_NEW,
+            CmsResource.STATE_CHANGED,
             0,
             admin.getId(),
             0,
@@ -633,6 +633,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             I_CmsPrincipal.FLAG_ENABLED,
             CmsProject.PROJECT_TYPE_TEMPORARY);
 
+        rootFolder.setState(CmsResource.STATE_CHANGED);
         // create the root-folder for the offline project       
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
             dbc,
@@ -654,6 +655,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             setupProject.getUuid(),
             offlineRootFolder.getRootPath());
 
+        systemFolder.setState(CmsResource.STATE_CHANGED);
         // create the system-folder for the offline project       
         CmsResource offlineSystemFolder = m_driverManager.getVfsDriver().createResource(
             dbc,

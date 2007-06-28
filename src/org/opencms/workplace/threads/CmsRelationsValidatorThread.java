@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsRelationsValidatorThread.java,v $
- * Date   : $Date: 2007/06/12 14:20:45 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/28 18:41:18 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 
 /**
  * A report thread for the relations validator.<p>
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,15 +125,9 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
      */
     public void run() {
 
-        List resources = null;
         try {
-            // get the list of resources that actually get published
-            if (m_publishList != null) {
-                resources = m_publishList.getFileList();
-            }
-
-            // validate the HTML links in these resources
-            getCms().validateRelations(resources, getReport());
+            // validate the HTML links in the resources that actually get published
+            OpenCms.getPublishManager().validateRelations(getCms(), m_publishList, getReport());
 
             if (m_savePublishList && (m_settings != null)) {
                 // save the publish list optionally to be processed by further workplace threads
