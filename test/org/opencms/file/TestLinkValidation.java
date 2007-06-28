@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/06/25 15:02:17 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/06/28 11:03:53 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,18 @@
 package org.opencms.file;
 
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPage;
@@ -61,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -147,6 +151,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
         suite.addTest(new TestLinkValidation("testLinkValidationXmlContents"));
         suite.addTest(new TestLinkValidation("testLinkValidationXmlContentsHtml"));
         suite.addTest(new TestLinkValidation("testLinkValidationXmlContentsFileRef"));
+        suite.addTest(new TestLinkValidation("testBrokenLinkFile"));
+        suite.addTest(new TestLinkValidation("testBrokenLinkFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -162,6 +168,130 @@ public class TestLinkValidation extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test broken link issue with files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testBrokenLinkFile() throws Throwable {
+
+        echo("Testing broken link issue with files");
+
+        CmsObject cms = getCmsObject();
+
+        String resName = "testBrokenLinkFile.html";
+        String imgName = "testBrokenLinkFile.gif";
+        CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+
+        List relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertTrue(relations.isEmpty());
+
+        setContent(cms, resName, "<img src='" + imgName + "' >");
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertEquals(1, relations.size());
+        CmsRelation expected = new CmsRelation(
+            res.getStructureId(),
+            res.getRootPath(),
+            CmsUUID.getNullUUID(),
+            cms.getRequestContext().addSiteRoot(imgName),
+            CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertEquals(0, relations.size());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
+
+        CmsResource img = cms.createResource(imgName, CmsResourceTypeImage.getStaticTypeId());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertEquals(1, relations.size());
+        expected = new CmsRelation(
+            res.getStructureId(),
+            res.getRootPath(),
+            img.getStructureId(),
+            img.getRootPath(),
+            CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertEquals(0, relations.size());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
+    }
+
+    /**
+     * Test broken link issue with folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testBrokenLinkFolder() throws Throwable {
+
+        echo("Testing broken link issue with folder");
+
+        CmsObject cms = getCmsObject();
+
+        String resName = "testBrokenLinkFile2.html";
+        String folderName = "testBrokenLinkFolder/";
+        String folderName2 = "testBrokenLinkFolder2/";
+        String imgName = "testBrokenLinkFile2.gif";
+        CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+
+        List relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertTrue(relations.isEmpty());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertTrue(relations.isEmpty());
+
+        setContent(cms, resName, "<img src='" + folderName + imgName + "' >");
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertEquals(1, relations.size());
+        CmsRelation expected = new CmsRelation(
+            res.getStructureId(),
+            res.getRootPath(),
+            CmsUUID.getNullUUID(),
+            cms.getRequestContext().addSiteRoot(folderName + imgName),
+            CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertEquals(0, relations.size());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
+
+        cms.createResource(folderName2, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folderName2 + imgName, CmsResourceTypeImage.getStaticTypeId());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertEquals(0, relations.size());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        
+        cms.moveResource(folderName2, folderName);
+        CmsResource img = cms.readResource(folderName + imgName);
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
+        assertEquals(1, relations.size());
+        expected = new CmsRelation(
+            res.getStructureId(),
+            res.getRootPath(),
+            img.getStructureId(),
+            img.getRootPath(),
+            CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(expected, (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
+        assertEquals(0, relations.size());
+        relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertRelation(expected, (CmsRelation)relations.get(0));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/06/27 08:40:42 $
- * Version: $Revision: 1.21.4.16 $
+ * Date   : $Date: 2007/06/28 11:03:52 $
+ * Version: $Revision: 1.21.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21.4.16 $
+ * @version $Revision: 1.21.4.17 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -110,6 +110,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishContentDate"));
         suite.addTest(new TestPublishing("testPublishDeletedSiblings"));
         suite.addTest(new TestPublishing("testPublishDeletedSiblings2"));
+        suite.addTest(new TestPublishing("testPublishReplacedFile"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -940,6 +941,47 @@ public class TestPublishing extends OpenCmsTestCase {
     }
 
     /**
+     * Test publishing a replaced file.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishReplacedFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a replaced file");
+
+        String resourcename = "testReplace.txt";
+        byte[] orgCnt = "original content".getBytes();
+        byte[] newCnt = "new content".getBytes();
+
+        // create new file
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), orgCnt, null);
+        // assert offline
+        assertContent(cms, resourcename, orgCnt);
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert online
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertContent(cms, resourcename, orgCnt);
+        cms = getCmsObject();
+        
+        // replace
+        cms.lockResource(resourcename);
+        cms.replaceResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), newCnt, null);
+        // assert offline
+        assertContent(cms, resourcename, newCnt);
+        // publish again
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert online
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertContent(cms, resourcename, newCnt);
+    }
+
+    /**
      * Test publishing a project with an iteration.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -954,7 +996,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.lockResource(resourcename);
         cms.setDateLastModified(resourcename, System.currentTimeMillis(), true);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) { // size of publish queue
             OpenCms.getPublishManager().publishProject(cms);
         }
         OpenCms.getPublishManager().waitWhileRunning();
@@ -962,7 +1004,7 @@ public class TestPublishing extends OpenCmsTestCase {
         List pubHistory = OpenCms.getPublishManager().getPublishHistory();
         assertEquals(10, pubHistory.size());
         CmsPublishJobFinished pubJob = (CmsPublishJobFinished)pubHistory.get(0);
-        assertEquals(13 + 51, pubJob.getSize());
+        assertEquals(13 + 51, pubJob.getSize()); // folders + files
         for (int i = 1; i < 10; i++) {
             pubJob = (CmsPublishJobFinished)pubHistory.get(i);
             assertEquals("pubJob: " + i, 0, pubJob.getSize());
