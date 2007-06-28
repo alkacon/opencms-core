@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/06/14 11:46:36 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/06/28 18:39:13 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.12 $ 
+ * @version $Revision: 1.1.2.13 $ 
  * 
  * @since 6.5.5 
  */
@@ -229,9 +230,14 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                         CmsRelationFilter.TARGETS.filterStrong()).iterator();
                     while (itRelations.hasNext()) {
                         CmsRelation relation = (CmsRelation)itRelations.next();
-                        CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                        CmsResource target = null;
+                        try {
+                            target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // target not found, ignore, will come later in the link check dialog
+                        }
                         // just add resources that may come in question
-                        if (!publishResources.contains(target) && !target.getState().isUnchanged()) {
+                        if ((target != null) && !publishResources.contains(target) && !target.getState().isUnchanged()) {
                             String relationName = target.getRootPath();
                             if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
                                 // same site
@@ -271,9 +277,14 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                             CmsRelationFilter.SOURCES.filterStrong()).iterator();
                         while (itRelations.hasNext()) {
                             CmsRelation relation = (CmsRelation)itRelations.next();
-                            CmsResource source = relation.getSource(getCms(), CmsResourceFilter.ALL);
+                            CmsResource source = null;
+                            try {
+                                source = relation.getSource(getCms(), CmsResourceFilter.ALL);
+                            } catch (CmsVfsResourceNotFoundException e) {
+                                // source not found, ignore, will come later in the link check dialog
+                            }
                             // just add resources that may come in question
-                            if (publishResources.contains(source)) {
+                            if ((source != null) && publishResources.contains(source)) {
                                 String relationName = source.getRootPath();
                                 if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
                                     // same site
@@ -301,16 +312,18 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                             }
                         }
                     }
-                    if (relatedResources.isEmpty()) {
-                        relatedResources = null; // prevent empty row
+                    if (!relatedResources.isEmpty()) {
+                        item.set(detailId, relatedResources);
                     }
-                    item.set(detailId, relatedResources);
                 } else {
                     continue;
                 }
             } catch (CmsException e) {
                 // should never happen, log exception
-                item.set(detailId, CmsException.getStackTraceAsString(e));
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                item.set(detailId, e.getLocalizedMessage());
             }
         }
     }
