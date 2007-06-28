@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/03/02 08:46:51 $
- * Version: $Revision: 1.29.4.11 $
+ * Date   : $Date: 2007/06/28 18:36:46 $
+ * Version: $Revision: 1.29.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29.4.11 $
+ * @version $Revision: 1.29.4.12 $
  * 
  * @since 6.0.0 
  */
@@ -409,16 +409,11 @@ public final class CmsRequestContext {
     public String removeSiteRoot(String resourcename) {
 
         String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
-        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
+        if ((siteRoot == m_siteRoot)
+            && resourcename.startsWith(siteRoot)
+            && ((resourcename.length() == siteRoot.length()) || resourcename.charAt(siteRoot.length()) == '/')) {
             resourcename = resourcename.substring(siteRoot.length());
         }
-
-        // TODO: since the site root does not includes the trailing slash,
-        // having a multisite configuration, where one site path is prefix of other,
-        // like: /sites/test and /sites/testA, will result into a mix up of the site 
-        // resources in the whole system (sibling view, project view, and more).
-        int todoV7;
-
         return resourcename;
     }
 
