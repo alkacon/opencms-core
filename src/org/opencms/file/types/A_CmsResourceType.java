@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/06/28 07:36:32 $
- * Version: $Revision: 1.42.4.23 $
+ * Date   : $Date: 2007/06/28 08:25:40 $
+ * Version: $Revision: 1.42.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.23 $ 
+ * @version $Revision: 1.42.4.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -1027,24 +1027,26 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext(),
             resource.getStructureId(),
             CmsResourceFilter.ALL);
-        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
-        List links = null;
-        if (resourceType instanceof I_CmsLinkParseable) {
-            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
-                try {
-                    links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
-                } catch (CmsException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e);
-                    }
-                } catch (CmsRuntimeException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e);
+        if (!undoneResource2.equals(undoneResource1)) {
+            I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+            List links = null;
+            if (resourceType instanceof I_CmsLinkParseable) {
+                I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+                if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+                    try {
+                        links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                    } catch (CmsException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e);
+                        }
+                    } catch (CmsRuntimeException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e);
+                        }
                     }
                 }
             }
+            securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
         }
-        securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
     }
 }
