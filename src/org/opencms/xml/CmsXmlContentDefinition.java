@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2007/02/05 16:02:48 $
- * Version: $Revision: 1.36.4.6 $
+ * Date   : $Date: 2007/06/28 18:33:01 $
+ * Version: $Revision: 1.36.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.6 $ 
+ * @version $Revision: 1.36.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1107,9 +1107,6 @@ public class CmsXmlContentDefinition implements Cloneable {
      * @return the internal set of schema type names
      */
     public Set getSchemaTypes() {
-
-        // TODO: What is this needed for?
-        int todo_v7 = 0;
 
         return m_types.keySet();
     }

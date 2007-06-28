@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2007/01/19 16:54:02 $
- * Version: $Revision: 1.31.4.3 $
+ * Date   : $Date: 2007/06/28 18:33:01 $
+ * Version: $Revision: 1.31.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31.4.3 $ 
+ * @version $Revision: 1.31.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -312,9 +312,6 @@ public class CmsXmlContentTypeManager {
         if (typeElement.elements().size() > 0) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
         }
-
-        int todo = 0;
-        // TODO: Use validation methods from CmsXmlContentDefinition here
 
         String elementName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME);
         String typeName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE);
