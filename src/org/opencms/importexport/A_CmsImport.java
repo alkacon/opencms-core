@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/06/12 14:31:07 $
- * Version: $Revision: 1.84.4.17 $
+ * Date   : $Date: 2007/06/28 08:19:53 $
+ * Version: $Revision: 1.84.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.4.17 $ 
+ * @version $Revision: 1.84.4.18 $ 
  * 
  * @since 6.0.0 
  * 
@@ -697,6 +697,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo = (Map)oin.readObject();
                 } catch (IOException ioex) {
                     m_report.println(ioex);
+                } catch (ClassCastException ccex) {
+                    m_report.println(ccex);
+                } catch (ClassNotFoundException cnfex) {
+                    m_report.println(cnfex);
                 }
 
                 // get the groups of the user and put them into the list
