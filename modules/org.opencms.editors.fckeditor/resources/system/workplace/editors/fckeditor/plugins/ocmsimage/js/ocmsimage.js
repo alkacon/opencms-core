@@ -500,9 +500,11 @@ function UpdateImage( e, skipId, setScaleParam )
 	var newWidth = GetE('txtWidth').value;
 	var newHeight = GetE('txtHeight').value;
 	if (setScaleParam && activeImage != null) {
-		if (newWidth != activeImage.width || newHeight != activeImage.height) {
-			var scaler = new OCmsScaler(newWidth, newHeight); 
-			txtUrl += scaler.toParams();
+		if((!isEmpty(newWidth) ) && (!isEmpty(newHeight))) { 
+			if (newWidth != activeImage.width || newHeight != activeImage.height) {
+				var scaler = new OCmsScaler(newWidth, newHeight); 
+				txtUrl += scaler.toParams();
+			}
 		}
 	}
 	

@@ -517,10 +517,17 @@ OCmsScaler.prototype.toParams = function() {
 	var result = "?";
 	result += paramScale;
 	result += "="
-	result += "w:";
-	result += this.width;
-	result += ",h:";
-	result += this.height;
+	if(!isEmpty(this.width)) {
+		result += "w:";
+		result += this.width;
+	}
+	if(!isEmpty(this.height)) {
+		if(!isEmpty(this.width)) {
+			result += ",";
+		}
+		result += "h:";
+		result += this.height;
+	}
 	result += ",t:";
 	result += this.type;
 	result += ",c:";
@@ -536,6 +543,11 @@ OCmsScaler.prototype.toParams = function() {
 	return result;
 }
 
+/* helper for testing for empty string. */
+function isEmpty(string) {
+	return (string == null) || (string == "");
+}
+
 /* returns an initialized scaler object generated from the given parameter */
 function createScaler(paramValue) {
 	var width = getScalerSettingFromString("w", paramValue);
@@ -545,6 +557,7 @@ function createScaler(paramValue) {
 	if (col != null) {
 		col = "#" + col;
 	}
+	alert("width: (" + width + ")\nheight: (" + height +")");
 	var q = getScalerSettingFromString("q", paramValue);
 	return new OCmsScaler(width, height, type, col, q);
 }
