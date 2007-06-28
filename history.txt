@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/28 09:43:07 $
- * Version: $Revision: 1.717.2.204 $
+ * Date   : $Date: 2007/06/28 18:44:22 $
+ * Version: $Revision: 1.717.2.205 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,12 +66,13 @@ OpenCms 7.0.0 - July 4, 2007
 - Added update wizard for Oracle databases 
 * Fixed issue while deleting organizational units cleaning up projects
 * Fixed issue while deleting organizational units due to a missing event
-- Improved handling of unactive publish job threads
 - Improved handling of inactive publish job threads
 * Fixed issue that prevented to see historical versions of XML content resources
 - The XmlContentEditor shows now errors from other locales than the actual
 * Fixed issue when importing Users with incompatible additional data from Version 6
 ! History view now shows source code of jsp resources in plain text
+* Fixed issue that mixed up resources in two different sites where the name of one is prefix of the other
+
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 
