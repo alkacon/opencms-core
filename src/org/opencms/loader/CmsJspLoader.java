@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/06/28 12:52:49 $
- * Version: $Revision: 1.100.4.12 $
+ * Date   : $Date: 2007/06/28 14:22:24 $
+ * Version: $Revision: 1.100.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,7 +113,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.12 $ 
+ * @version $Revision: 1.100.4.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1028,10 +1028,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         CmsFile historyFile = CmsFile.upgrade(historyResource, cms);
         String content = new String(historyFile.getContents());
-        //content = CmsEncoder.escapeXml(content);
-        // change the content-type header so that browsers show plain text: 
-        // this is better than starting to escape XML (no-one could copy paste the old code)
-        res.setContentLength((int)content.length());
+        // change the content-type header so that browsers show plain text
+        res.setContentLength(content.length());
         res.setContentType("text/plain");
 
         Writer out = res.getWriter();
