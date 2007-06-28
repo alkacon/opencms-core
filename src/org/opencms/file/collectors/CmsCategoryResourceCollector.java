@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/06/27 13:20:05 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/06/28 07:35:34 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 6.9.2
  */
@@ -86,7 +86,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * @author Raphael Schnuck
      *
-     * @version $Revision: 1.1.2.5 $
+     * @version $Revision: 1.1.2.6 $
      *
      * @since 6.9.2
      */
@@ -94,6 +94,9 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
         /** The collector parameter key for the resource type. */
         public static final String PARAM_KEY_CATEGORY_TYPES = "categoryTypes";
+
+        /** The collector parameter key for the count. */
+        public static final String PARAM_KEY_COUNT = "count";
 
         /** The collector parameter key for the resource (folder / file). */
         public static final String PARAM_KEY_RESOURCE = "resource";
@@ -238,6 +241,14 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                     m_sortBy = value;
                 } else if (PARAM_KEY_SUB_TREE.equals(key)) {
                     m_subTree = Boolean.valueOf(value).booleanValue();
+                } else if (PARAM_KEY_COUNT.equals(key)) {
+                    int count = 0;
+                    try {
+                        count = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        // ignore
+                    }
+                    setCount(count);
                 } else {
                     LOG.error("Unknow key found in collector parameters.");
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2006/03/27 14:52:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/06/28 07:35:34 $
+ * Version: $Revision: 1.9.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.4.1 $
  * 
  * @since 6.0.0
  */
@@ -147,5 +147,15 @@ public class CmsCollectorData {
     public int getType() {
 
         return m_type;
+    }
+    
+    /**
+     * Sets the count.<p>
+     * 
+     * @param count the count
+     */
+    protected void setCount(int count) {
+
+        m_count = count;
     }
 }
