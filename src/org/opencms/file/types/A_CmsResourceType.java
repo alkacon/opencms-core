@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/06/25 15:21:29 $
- * Version: $Revision: 1.42.4.22 $
+ * Date   : $Date: 2007/06/28 07:36:32 $
+ * Version: $Revision: 1.42.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.22 $ 
+ * @version $Revision: 1.42.4.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,6 +256,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             source,
             cms.getRequestContext().addSiteRoot(destination),
             siblingMode);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
     }
 
     /**
@@ -293,6 +295,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // process the (optional) copy resources from the configuration
         processCopyResources(cms, resourcename, resolver);
 
+        // create the relations for the new resource
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename));
+
         // return the created resource
         return result;
     }
@@ -307,8 +312,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String destination,
         List properties) throws CmsException {
 
-        return securityManager.createSibling(cms.getRequestContext(), source, cms.getRequestContext().addSiteRoot(
-            destination), properties);
+        CmsResource sibling = securityManager.createSibling(
+            cms.getRequestContext(),
+            source,
+            cms.getRequestContext().addSiteRoot(destination),
+            properties);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
+        createRelations(cms, securityManager, sibling.getRootPath());
+        return sibling;
     }
 
     /**
@@ -630,6 +641,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // move
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
 
+        // create the relations for the new resource, this could be improved by an sql query for moving relations
+        createRelations(cms, securityManager, dest);
         // touch
         CmsResource file = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
         writeFile(cms, securityManager, CmsFile.upgrade(file, cms));
@@ -789,13 +802,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
             I_CmsResourceType type = getResourceType(file.getTypeId());
             // update the relations after writing!!
+            List links = null;
             if (type instanceof I_CmsLinkParseable) {
                 // if the new type is link parseable
-                securityManager.updateRelationsForResource(
-                    cms.getRequestContext(),
-                    file,
-                    ((I_CmsLinkParseable)type).parseLinks(cms, file));
+                links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
             }
+            securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
             return file;
         }
         // folders can never be written like a file
@@ -847,12 +859,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resourceName,
             CmsResourceFilter.ALL);
         I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        List links = null;
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            securityManager.updateRelationsForResource(cms.getRequestContext(), resource, linkParseable.parseLinks(
-                cms,
-                CmsFile.upgrade(resource, cms)));
+            links = linkParseable.parseLinks(cms, CmsFile.upgrade(resource, cms));
         }
+        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, links);
         return resource;
     }
 
@@ -1016,10 +1028,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource.getStructureId(),
             CmsResourceFilter.ALL);
         I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        List links = null;
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
             if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
-                List links = null;
                 try {
                     links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
                 } catch (CmsException e) {
@@ -1031,8 +1043,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                         LOG.warn(e);
                     }
                 }
-                securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
             }
         }
+        securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
     }
 }

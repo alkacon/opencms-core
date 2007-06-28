@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/27 08:39:13 $
- * Version: $Revision: 1.570.2.105 $
+ * Date   : $Date: 2007/06/28 07:36:32 $
+ * Version: $Revision: 1.570.2.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2360,7 +2360,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
         CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
         OpenCms.fireCmsEvent(afterPublishEvent);
-        
+
         m_lockManager.removeDeletedResource(dbc, resource.getRootPath());
     }
 
@@ -7396,6 +7396,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
         deleteRelationsWithSiblings(dbc, resource);
+        m_vfsDriver.updateBrokenRelations(dbc, resource);
 
         // build the links again only if needed
         if ((links == null) || links.isEmpty()) {
@@ -7650,7 +7651,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
                     }
                 }
-
             }
         }
         if (printReportHeaders) {

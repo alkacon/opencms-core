@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2007/06/04 16:06:57 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/28 07:36:32 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,14 @@
 
 package org.opencms.file.types;
 
-import org.opencms.db.CmsSecurityManager;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.I_CmsLinkParseable;
-
-import java.util.List;
 
 /**
  * Base implementation for resource types implementing the {@link I_CmsLinkParseable} interface.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.0 
  */
@@ -60,70 +53,10 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
-     */
-    public void copyResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource source,
-        String destination,
-        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
-
-        super.copyResource(cms, securityManager, source, destination, siblingMode);
-        // create the relations for the new resource, this could be improved by an sql query for copying relations
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
-     */
-    public CmsResource createResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        String resourcename,
-        byte[] content,
-        List properties) throws CmsException {
-
-        CmsResource resource = super.createResource(cms, securityManager, resourcename, content, properties);
-        // create the relations for the new resource
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename));
-
-        return resource;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#createSibling(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, CmsResource, java.lang.String, java.util.List)
-     */
-    public CmsResource createSibling(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource source,
-        String destination,
-        List properties) throws CmsException {
-
-        CmsResource sibling = super.createSibling(cms, securityManager, source, destination, properties);
-        // create the relations for the new resource, this could be improved by an sql query for copying relations
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
-
-        return sibling;
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
     public boolean isDirectEditable() {
 
         return true;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
-     */
-    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException, CmsIllegalArgumentException {
-
-        super.moveResource(cms, securityManager, resource, destination);
-        // create the relations for the new resource, this could be improved by an sql query for moving relations
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
     }
 }

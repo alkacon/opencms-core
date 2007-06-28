@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2007/02/28 11:00:22 $
- * Version: $Revision: 1.24.4.5 $
+ * Date   : $Date: 2007/06/28 07:36:32 $
+ * Version: $Revision: 1.24.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.5 $ 
+ * @version $Revision: 1.24.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,7 +156,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceTypeLinkParseable#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
+     * @see org.opencms.file.types.A_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
      */
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
