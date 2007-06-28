@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2007/05/30 15:34:49 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/28 12:52:49 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.1
  */
@@ -63,11 +63,14 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     /** The historical version handler path. */
     public static final String HISTORY_HANDLER = "/system/shared/showversion";
 
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHistoryResourceHandler.class);
+
     /** Request parameter name for the version number. */
     public static final String PARAM_VERSION = "version";
 
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHistoryResourceHandler.class);
+    /** Constant for the offline project version. */
+    public static final int PROJECT_OFFLINE_VERSION = Integer.MAX_VALUE;
 
     /**
      * Returns the historical version of a resource, 
@@ -123,8 +126,11 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                             // extract the "real" resourcename
                             uri = uri.substring(HISTORY_HANDLER.length(), uri.length());
                             int id = new Integer(version).intValue();
-                            resource = (CmsResource)cms.readResource(cms.readResource(uri).getStructureId(), id);
-
+                            if (id == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+                                resource = new CmsHistoryFile(cms.readFile(uri));
+                            } else {
+                                resource = (CmsResource)cms.readResource(cms.readResource(uri).getStructureId(), id);
+                            }
                             // store a request attribute to indicate that this is in fact a historical version
                             req.setAttribute(ATTRIBUTE_NAME, resource);
                         } catch (CmsException e) {

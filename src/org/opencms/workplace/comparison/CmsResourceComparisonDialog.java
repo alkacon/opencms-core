@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/06/14 11:37:58 $
- * Version: $Revision: 1.4.4.8 $
+ * Date   : $Date: 2007/06/28 12:54:05 $
+ * Version: $Revision: 1.4.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -60,7 +61,6 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsMultiListDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4.4.8 $ 
+ * @version $Revision: 1.4.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,7 +217,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
 
-        if (Integer.parseInt(version) == CmsHistoryList.PROJECT_OFFLINE) {
+        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // offline
             CmsResource resource = cms.readResource(structureId);
             return CmsFile.upgrade(resource, cms);
@@ -252,7 +252,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
 
-        if (Integer.parseInt(version) == CmsHistoryList.PROJECT_OFFLINE) {
+        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             return cms.readResource(id);
         } else {
             int ver = Integer.parseInt(version);

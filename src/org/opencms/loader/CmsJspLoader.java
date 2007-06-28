@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/06/28 09:43:07 $
- * Version: $Revision: 1.100.4.11 $
+ * Date   : $Date: 2007/06/28 12:52:49 $
+ * Version: $Revision: 1.100.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,7 +113,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.100.4.11 $ 
+ * @version $Revision: 1.100.4.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -162,9 +162,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** Jsp repository parameter name. */
     public static final String PARAM_JSP_REPOSITORY = "jsp.repository";
-
-    /** Request parameter constant used to show source instead of interpret jsp. */
-    public static final String PARAM_SHOWSOURCE="showsource";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 6;
@@ -540,7 +537,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        if (CmsHistoryResourceHandler.isHistoryRequest(req) || req.getParameter(CmsJspLoader.PARAM_SHOWSOURCE) != null) {
+        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
             showSource(cms, file, req, res);
         } else {
             // load and process the JSP         

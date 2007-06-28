@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/06/28 09:43:07 $
- * Version: $Revision: 1.5.4.22 $
+ * Date   : $Date: 2007/06/28 12:52:49 $
+ * Version: $Revision: 1.5.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.history.I_CmsHistoryResource;
-import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -85,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.22 $ 
+ * @version $Revision: 1.5.4.23 $ 
  * 
  * @since 6.0.2 
  */
@@ -237,9 +235,6 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** list independent action id constant. */
     public static final String LIST_RACTION_SEL2 = "rs2";
 
-    /** constant for the offline project.<p> */
-    public static final int PROJECT_OFFLINE = Integer.MAX_VALUE;
-
     /** parameter for the path of the first resource. */
     public static final String PARAM_ID_1 = "id1";
 
@@ -308,13 +303,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer(), e);
         }
-        if (Integer.parseInt(version) == PROJECT_OFFLINE) {
-            if (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId()) {
-                resourcePath = new StringBuffer(resourcePath).append('?').append(CmsJspLoader.PARAM_SHOWSOURCE).append(
-                    "=true").toString();
-            }
-            return cms.getRequestContext().removeSiteRoot(resourcePath);
-        }
         StringBuffer link = new StringBuffer();
         link.append(CmsHistoryResourceHandler.HISTORY_HANDLER);
         link.append(resourcePath);
@@ -336,7 +324,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     public static String getDisplayVersion(String version, Locale locale) {
 
         int ver = Integer.parseInt(version);
-        if (ver == PROJECT_OFFLINE) {
+        if (ver == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_OFFLINE_0);
         }
         if (ver < 0) {
@@ -358,13 +346,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     public static int getVersion(String version) {
 
         int ver = Integer.parseInt(version);
-        if (ver == PROJECT_OFFLINE) {
-            return PROJECT_OFFLINE;
-        }
-        if (ver < 0) {
-            ver *= -1;
-        }
-        return ver;
+        return Math.abs(ver);
     }
 
     /**
@@ -540,7 +522,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         if (!offlineResource.getState().isUnchanged()) {
             CmsListItem item = getList().newItem("" + offlineResource.getVersion());
             //version
-            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(PROJECT_OFFLINE));
+            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION));
             // filename
             item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
             // nicename
