@@ -165,6 +165,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages.properties</source>
+			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e666eca3-2548-11dc-926c-39714ae4dc28</uuidstructure>
+			<uuidresource>e666eca4-2548-11dc-926c-39714ae4dc28</uuidresource>
+			<datelastmodified>Thu, 28 Jun 2007 07:26:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jun 2007 07:26:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages_de.properties</source>
 			<destination>system/modules/org.opencms.frontend.photoalbum/classes/org/opencms/frontend/photoalbum/messages_de.properties</destination>
 			<type>plain</type>
