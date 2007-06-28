@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/12/11 15:10:53 $
- * Version: $Revision: 1.39.4.7 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.39.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.4.7 $ 
+ * @version $Revision: 1.39.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1073,12 +1073,10 @@ public final class CmsStringUtil {
      *
      * @param name the resource name to check
      * @return true if the resource name is vaild, false otherwise 
+     * 
+     * @deprecated use {@link org.opencms.file.CmsResource#checkResourceName(String)} instead
      */
     public static boolean validateResourceName(String name) {
-
-        // PLEASE NOTE:
-        // This logic is NOT yet used in the current release
-        int todo;
 
         if (name == null) {
             return false;

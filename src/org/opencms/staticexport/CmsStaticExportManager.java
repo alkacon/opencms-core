@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.121.4.15 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.121.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.121.4.15 $ 
+ * @version $Revision: 1.121.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -1187,7 +1187,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 rfsName = exportname + rfsName.substring(resourceName.length());
             }
 
-            String extension = CmsFileUtil.getFileExtension(rfsName);
+            String extension = CmsFileUtil.getExtension(rfsName);
             // check if the VFS resouce is a JSP page with a ".jsp" ending 
             // in this case the rfs name suffix must be build with special care,
             // usually it must be set to ".html"             

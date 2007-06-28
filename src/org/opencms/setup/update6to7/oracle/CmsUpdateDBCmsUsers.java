@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/06/26 12:25:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@
 
 package org.opencms.setup.update6to7.oracle;
 
-import oracle.sql.BLOB;
-
+import org.opencms.db.oracle.CmsUserDriver;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDataTypeUtil;
 
@@ -51,7 +50,7 @@ import java.util.List;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.0.0
  */
@@ -151,9 +150,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
             if (res.next()) {
 
                 // write serialized user info 
-                BLOB blob = (BLOB)res.getBlob("DATA_VALUE");
-
-                OutputStream output = blob.getBinaryOutputStream();
+                OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "DATA_VALUE");
                 output.write(CmsDataTypeUtil.dataSerialize(value));
                 output.close();
 

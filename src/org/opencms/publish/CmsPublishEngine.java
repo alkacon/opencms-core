@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/06/27 12:05:09 $
- * Version: $Revision: 1.1.2.21 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.1.2.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.21 $
+ * @version $Revision: 1.1.2.22 $
  * 
  * @since 6.5.5
  */
@@ -614,9 +614,6 @@ public final class CmsPublishEngine implements Runnable {
         // trigger the old event mechanism
         CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
         try {
-            // TODO: this is no longer required if we use publish listener classes!!
-            int todo;
-
             // fire an event that a project has been published
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_REPORT, publishJob.getPublishReport());
@@ -673,9 +670,6 @@ public final class CmsPublishEngine implements Runnable {
 
         // trigger the old event mechanism
         try {
-            // TODO: this is no longer required if we use publish listener classes!!
-            int todo;
-
             // fire an event that a project is to be published
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_REPORT, publishJob.getPublishReport());

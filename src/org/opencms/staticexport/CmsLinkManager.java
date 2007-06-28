@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/06/12 14:16:58 $
- * Version: $Revision: 1.60.4.10 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.60.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.60.4.10 $ 
+ * @version $Revision: 1.60.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -404,7 +404,7 @@ public class CmsLinkManager {
             permalink += id;
             String ext = CmsFileUtil.getExtension(resourceName);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
-                permalink += "." + ext;
+                permalink += ext;
             }
             String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(cms, resourceName);
             if (!permalink.startsWith(serverPrefix)) {

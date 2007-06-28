@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/06/25 16:51:45 $
- * Version: $Revision: 1.156.4.23 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.156.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.156.4.23 $ 
+ * @version $Revision: 1.156.4.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -1706,8 +1706,7 @@ public abstract class CmsWorkplace {
      */
     public void sendCmsRedirect(String location) throws IOException {
 
-        // IBM Websphere patch: use forward here
-        int todo = 0;
+        // TOOD: IBM Websphere v5 has problems here, use forward instead (which has other problems)
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
     }
 

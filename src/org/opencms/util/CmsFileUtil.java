@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2007/05/14 12:19:37 $
- * Version: $Revision: 1.24.4.10 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.24.4.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.4.10 $ 
+ * @version $Revision: 1.24.4.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,16 +201,21 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Returns the extension of a resource.<p>
+     * Returns the extension of the given resource name, that is the part behind the last '.' char,
+     * converted to lower case letters.<p>
      * 
-     * The extension of a file is the part of the name after the last dot.
-     * The extension of a folder is empty.<p>
+     * The extension of a file is the part of the name after the last dot, including the dot.
+     * The extension of a folder is empty.
+     * All extensions are returned as lower case<p>
+     * 
+     * Please note: No check is performed to ensure the given file name is not <code>null</code>.<p>
      * 
      * Examples:<br> 
      * <ul>
      *   <li><code>/folder.test/</code> has an empty extension.
      *   <li><code>/folder.test/config</code> has an empty extension.
-     *   <li><code>/index.html.pdf</code> has the extension <code>pdf</code>.
+     *   <li><code>/strange.filename.</code> has an empty extension.
+     *   <li><code>/document.PDF</code> has the extension <code>.pdf</code>.
      * </ul>
      * 
      * @param resourceName the resource to get the extension for
@@ -220,7 +225,7 @@ public final class CmsFileUtil {
     public static String getExtension(String resourceName) {
 
         // if the resource name indicates a folder
-        if (resourceName.endsWith("/")) {
+        if (resourceName.charAt(resourceName.length() - 1) == '/') {
             // folders have no extensions
             return "";
         }
@@ -233,7 +238,7 @@ public final class CmsFileUtil {
             return "";
         }
         // return the extension
-        return name.substring(pos + 1);
+        return name.substring(pos).toLowerCase();
     }
 
     /**
@@ -249,11 +254,10 @@ public final class CmsFileUtil {
      * 
      * @param filename the file name to get the extension for
      * @return the extension of the given file name
+     * 
+     * @deprecated use {@link #getExtension(String)} instead, it is better implemented
      */
     public static String getFileExtension(String filename) {
-
-        // TODO: remove this method and replace it by #getExtension(String)
-        int todo;
 
         int pos = filename.lastIndexOf('.');
         return (pos >= 0) ? filename.substring(pos).toLowerCase() : "";

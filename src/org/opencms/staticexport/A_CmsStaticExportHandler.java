@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2007/06/15 15:03:20 $
- * Version: $Revision: 1.3.4.17 $
+ * Date   : $Date: 2007/06/28 18:39:55 $
+ * Version: $Revision: 1.3.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.4.17 $ 
+ * @version $Revision: 1.3.4.18 $ 
  * 
  * @since 6.1.7 
  * 
@@ -93,7 +93,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         public PrefixFileFilter(File baseFile) {
 
             String fileName = baseFile.getName();
-            m_baseExtension = CmsFileUtil.getFileExtension(fileName);
+            m_baseExtension = CmsFileUtil.getExtension(fileName);
             m_baseName = fileName + "_";
         }
 
