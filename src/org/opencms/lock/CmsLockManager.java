@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/06/12 14:07:53 $
- * Version: $Revision: 1.37.4.27 $
+ * Date   : $Date: 2007/06/28 13:15:20 $
+ * Version: $Revision: 1.37.4.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.27 $ 
+ * @version $Revision: 1.37.4.28 $ 
  * 
  * @since 6.0.0 
  * 
@@ -75,8 +75,11 @@ public final class CmsLockManager {
     /** The driver manager instance. */
     private CmsDriverManager m_driverManager;
 
-    /** The flag to indicate if the lcoks should be written to the db. */
+    /** The flag to indicate if the locks should be written to the db. */
     private boolean m_isDirty = false;
+
+    /** The flag to indicate if the lock manager has been started in run level 4. */
+    private boolean m_runningInServlet = false;
 
     /**
      * Default constructor, creates a new lock manager.<p>
@@ -348,6 +351,7 @@ public final class CmsLockManager {
                 internalLockResource(lock, lockCache);
             }
             OpenCms.getMemoryMonitor().flushLocks(lockCache);
+            m_runningInServlet = true;
         }
     }
 
@@ -551,7 +555,7 @@ public final class CmsLockManager {
     public void writeLocks(CmsDbContext dbc) throws CmsException {
 
         if (m_isDirty // only if something changed
-            && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) // only if wizard is not enabled 
+            && m_runningInServlet // only if started in run level 4 
             && OpenCms.getMemoryMonitor().requiresPersistency()) { // only if persistency is required
 
             List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();

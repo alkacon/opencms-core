@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/05/16 15:57:31 $
- * Version: $Revision: 1.218.4.38 $
+ * Date   : $Date: 2007/06/28 13:15:20 $
+ * Version: $Revision: 1.218.4.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.218.4.38 $ 
+ * @version $Revision: 1.218.4.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -1724,6 +1724,17 @@ public final class OpenCmsCore {
             // the runlevel will change from 2 directly to 4, this is on purpose
             setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
 
+            try {
+                // now read the persistent locks
+                m_instance.m_securityManager.readLocks();
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(
+                        org.opencms.lock.Messages.get().getBundle().key(org.opencms.lock.Messages.ERR_READ_LOCKS_0),
+                        e);
+                }
+            }
+            
             return m_instance;
         }
     }

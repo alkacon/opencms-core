@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/18 12:35:40 $
- * Version: $Revision: 1.97.4.61 $
+ * Date   : $Date: 2007/06/28 13:15:20 $
+ * Version: $Revision: 1.97.4.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2709,18 +2709,6 @@ public final class CmsSecurityManager {
 
         // create a new lock manager
         m_lockManager = m_driverManager.getLockManager();
-
-        try {
-            // now read the persistent locks
-            readLocks();
-        } catch (CmsException e) {
-
-            if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    org.opencms.lock.Messages.get().getBundle().key(org.opencms.lock.Messages.ERR_READ_LOCKS_0),
-                    e);
-            }
-        }
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
