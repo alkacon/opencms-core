@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/29 11:21:24 $
- * Version: $Revision: 1.717.2.207 $
+ * Date   : $Date: 2007/06/29 13:46:14 $
+ * Version: $Revision: 1.717.2.208 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,8 @@ OpenCms 7.0.0 - July 4, 2007
 ! History view now shows source code of jsp resources in plain text
 * Fixed issue that mixed up resources in two different sites where the name of one is prefix of the other
 ! Property activation / deactivation checkboxes are now always shown in property dialogs
-! Added new type "CmsXmlVarLinkValue" for XML contents, this is a link with either internal or external target
+! Added new type "CmsXmlVarLinkValue" for XML contents, this is a link with either internal or external target 
+* Fixed issue with empty default resource name for XML content index pages when creating a folder 
 
 OpenCms 6.9.2 (aka 7.0 RC2) - June 6, 2007
 ! Added context menue entry to get a two lists dialog to assign categories to a resource 

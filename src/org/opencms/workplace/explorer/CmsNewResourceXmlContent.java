@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2007/04/12 12:28:05 $
- * Version: $Revision: 1.15.4.3 $
+ * Date   : $Date: 2007/06/29 13:45:31 $
+ * Version: $Revision: 1.15.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.15.4.3 $ 
+ * @version $Revision: 1.15.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,14 +86,14 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     /** The name for the choose model file form action. */
     public static final String DIALOG_CHOOSEMODEL = "choosemodel";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlContent.class);
+
     /** Request parameter name for the model file. */
     public static final String PARAM_MODELFILE = "modelfile";
 
     /** Value for the option to use no model file. */
     public static final String VALUE_NONE = "none";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlContent.class);
 
     /** The selected model file for the new resource. */
     private String m_paramModelFile;
@@ -187,6 +187,31 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     }
 
     /**
+     * Returns the http URI of the current dialog, to be used
+     * as value for the "action" attribute of a html form.<p>
+     *  
+     * @return the http URI of the current dialog
+     */
+    public String getDialogUri() {
+
+        if (!useNewStyle()) {
+            return getJsp().link(VFS_PATH_COMMONS + "newresource_xmlcontent.jsp");
+        } else {
+            return super.getDialogUri();
+        }
+    }
+
+    /**
+     * Returns the possible model files for the new resource.<p>
+     * 
+     * @return the possible model files for the new resource
+     */
+    protected List getModelFiles() {
+
+        return getModelFiles(getCms(), getSettings().getExplorerResource(), getParamNewResourceType());
+    }
+
+    /**
      * Returns the parameter that specifies the model file name.<p>
      * 
      * @return the parameter that specifies the model file name
@@ -204,41 +229,6 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     public boolean hasModelFiles() {
 
         return getModelFiles().size() > 0;
-    }
-
-    /**
-     * Sets the parameter that specifies the model file name.<p>
-     * 
-     * @param paramMasterFile the parameter that specifies the model file name
-     */
-    public void setParamModelFile(String paramMasterFile) {
-
-        m_paramModelFile = paramMasterFile;
-    }
-
-    /**
-     * Returns the possible model files for the new resource.<p>
-     * 
-     * @return the possible model files for the new resource
-     */
-    protected List getModelFiles() {
-
-        return getModelFiles(getCms(), getSettings().getExplorerResource(), getParamNewResourceType());
-    }
-
-    /**
-     * Returns the http URI of the current dialog, to be used
-     * as value for the "action" attribute of a html form.<p>
-     *  
-     * @return the http URI of the current dialog
-     */
-    public String getDialogUri() {
-
-        if (!useNewStyle()) {
-            return getJsp().link(VFS_PATH_COMMONS + "newresource_xmlcontent.jsp");
-        } else {
-            return super.getDialogUri();
-        }
     }
 
     /**
@@ -294,12 +284,25 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
             // set the correct title
             setParamTitle(getTitle());
+            setInitialResourceName();
+
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLCONTENT_0));
+            setInitialResourceName();
         }
+    }
+
+    /**
+     * Sets the parameter that specifies the model file name.<p>
+     * 
+     * @param paramMasterFile the parameter that specifies the model file name
+     */
+    public void setParamModelFile(String paramMasterFile) {
+
+        m_paramModelFile = paramMasterFile;
     }
 }
