@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/ajax.js,v $
- * Date   : $Date: 2007/03/01 15:01:24 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/06/29 14:16:09 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,22 @@
 
 /**
  * This method executes an AJAX request to the given url.<p>
- * Params are passed as content using a post request.<p>
  *
- * The given method is used to communicate the result of the request.<p>
+ * Normally you have to call this method using following syntax:<br>
+ * <code>makeRequest('url', 'param1=value1&...', 'method')</code><p>
+ *
+ * Parameters are passed as content using a post request.<p>
+ *
+ * The given <code>method</code> is used to communicate the result of the request.<p>
  *
  * The method parameter needs to have following signature:<br>
  * <code>method(result, state);</code><p>
- *
- * Normally you have to call this method using following syntax:<br>
- * <code>makeRequest('url', 'param1=value1&...','method')</code><p>
  *
  * Where the <code>state</code> can have following values:<br>
  * <code>'ok'</code>   : Everything went fine and the result of the request is given in the <code>result</code> parameter.<br>
  * <code>'fatal'</code>: The AJAX XmlHttpRequest object could not be created, the <code>result</code> parameter is empty.<br>
  * <code>'wait'</code> : The AJAX request was successfully send, so please wait, the <code>result</code> parameter is empty.<br>
- * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (code 200), 
+ * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (different to 200), 
  *                       The <code>result</code> parameter is the received status code.<br>
  */
 function makeRequest(url, params, method) {

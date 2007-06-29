@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/27 08:39:12 $
- * Version: $Revision: 1.110.2.37 $
+ * Date   : $Date: 2007/06/29 14:16:57 $
+ * Version: $Revision: 1.110.2.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.37 $
+ * @version $Revision: 1.110.2.38 $
  * 
  * @since 6.0.0 
  */
@@ -1231,7 +1231,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
                     groupFqn);
                 if (LOG.isWarnEnabled()) {
-                    // this may happen while deleting an orgunit
+                    // this may happen while deleting an orgunit and its roles
                     LOG.warn(message.key());
                 } else if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key(), new Exception());

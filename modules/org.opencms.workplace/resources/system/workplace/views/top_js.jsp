@@ -1,5 +1,4 @@
 <%@ page import="
-    org.opencms.main.*,
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
 %><%
