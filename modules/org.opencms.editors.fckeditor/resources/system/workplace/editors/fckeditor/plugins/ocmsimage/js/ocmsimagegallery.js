@@ -557,7 +557,6 @@ function createScaler(paramValue) {
 	if (col != null) {
 		col = "#" + col;
 	}
-	alert("width: (" + width + ")\nheight: (" + height +")");
 	var q = getScalerSettingFromString("q", paramValue);
 	return new OCmsScaler(width, height, type, col, q);
 }
