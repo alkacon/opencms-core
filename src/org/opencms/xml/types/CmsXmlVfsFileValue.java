@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2007/06/29 11:21:24 $
- * Version: $Revision: 1.18.8.4 $
+ * Date   : $Date: 2007/06/29 16:32:02 $
+ * Version: $Revision: 1.18.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18.8.4 $ 
+ * @version $Revision: 1.18.8.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -217,10 +218,19 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         }
         String path = value;
         if (cms != null) {
-            // remove the site root, because the next call will append it anyway
-            path = cms.getRequestContext().removeSiteRoot(value);
-            // get the site path
-            path = CmsLinkManager.getSitePath(cms, null, path);
+            String siteRoot = CmsSiteManager.getSiteRoot(value);
+            String oldSite = cms.getRequestContext().getSiteRoot();
+            try {
+                if (siteRoot != null) {
+                    cms.getRequestContext().setSiteRoot(siteRoot);
+                }
+                // remove the site root, because the next call will append it anyway
+                path = cms.getRequestContext().removeSiteRoot(value);
+                // get the site path
+                path = CmsLinkManager.getSitePath(cms, null, path);
+            } finally {
+                cms.getRequestContext().setSiteRoot(oldSite);
+            }
         }
         if (path == null) {
             return;

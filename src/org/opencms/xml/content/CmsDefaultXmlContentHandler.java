@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/06/19 13:16:44 $
- * Version: $Revision: 1.46.4.12 $
+ * Date   : $Date: 2007/06/29 16:32:02 $
+ * Version: $Revision: 1.46.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
@@ -80,7 +81,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.12 $ 
+ * @version $Revision: 1.46.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -1495,8 +1496,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (link == null) {
             return false;
         }
-        String resName = cms.getRequestContext().removeSiteRoot(link.getTarget());
+        String siteRoot = CmsSiteManager.getSiteRoot(link.getTarget());
+        String oldSite = cms.getRequestContext().getSiteRoot();
         try {
+            if (siteRoot != null) {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }
+            String resName = cms.getRequestContext().removeSiteRoot(link.getTarget());
             // validate the link for error
             CmsResource res = cms.readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION);
 
@@ -1526,6 +1532,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
+        } finally {
+            cms.getRequestContext().setSiteRoot(oldSite);
         }
         return false;
     }
