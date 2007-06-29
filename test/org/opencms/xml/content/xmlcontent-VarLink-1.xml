@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Linktests 
+<VarLinktests 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:noNamespaceSchemaLocation="http://www.opencms.org/testVarLink1.xsd">
   
-	<Linktest language="en">
+	<VarLinktest language="en">
 		<VfsLink>
 			<link type="WEAK">
 				<target><![CDATA[/sites/default/index.html]]></target>
@@ -20,5 +20,5 @@
 				<target><![CDATA[http://www.alkacon.com]]></target>
 			</link>			
 		</VarLink>	
-	</Linktest>
-</Linktests>
+	</VarLinktest>
+</VarLinktests>

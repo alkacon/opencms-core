@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/06/29 13:53:47 $
- * Version: $Revision: 1.43.4.18 $
+ * Date   : $Date: 2007/06/29 14:15:46 $
+ * Version: $Revision: 1.43.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.18 $
+ * @version $Revision: 1.43.4.19 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1087,7 +1087,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         echo("New XML Content for VarLink:");
         echo(newContent.toString());
         echo("-----------------");    
-      
+              
+        // validate the XML of the created XML content
+        xmlcontent.validateXmlStructure(resolver); 
+        
         // validate the XML of the created XML content
         newContent.validateXmlStructure(resolver);        
     }

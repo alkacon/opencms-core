@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
- * Date   : $Date: 2007/06/29 13:53:47 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/06/29 14:15:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -128,9 +128,6 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         if (defaultValue != null) {
             I_CmsXmlContentValue value = createValue(document, element, locale);
             value.setStringValue(cms, defaultValue);
-        } else {
-            // assume this is an external link if no value is given
-            element.addAttribute(CmsLink.ATTRIBUTE_INTERNAL, String.valueOf(false));
         }
         return element;
     }
@@ -187,7 +184,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
         // the schema definition is located in a separate file for easier editing
         if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVarLinkValue.xsd");
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
         }
         return m_schemaDefinition;
     }

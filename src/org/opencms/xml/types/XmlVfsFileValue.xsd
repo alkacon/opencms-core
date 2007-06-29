@@ -6,6 +6,12 @@
 	<xsd:attribute name="enabled" type="xsd:boolean" use="optional" />
 </xsd:complexType>
 
+<xsd:complexType name="OpenCmsVarLink">
+    <xsd:sequence>
+        <xsd:element name="link" type="OpenCmsReference" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>   
+</xsd:complexType>
+
 <xsd:complexType name="OpenCmsReference">
 	<xsd:sequence>
 		<xsd:element name="target" type="xsd:string" />
@@ -13,6 +19,7 @@
 		<xsd:element name="anchor" type="xsd:string" minOccurs="0" />
 		<xsd:element name="query" type="xsd:string" minOccurs="0" />
 	</xsd:sequence>
+    <xsd:attribute name="internal" type="xsd:boolean" use="optional" />	
 	<xsd:attribute name="type" type="OpenCmsDefaultAppinfoRelationType" use="optional" />
 </xsd:complexType>
 
