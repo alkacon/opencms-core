@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2007/02/22 16:48:29 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2007/06/29 11:21:24 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,9 @@ public class CmsLink {
 
     /** Name of the uuid node. */
     public static final String NODE_UUID = "uuid";
+
+    /** Constant for the NULL link. */
+    public static final CmsLink NULL_LINK = new CmsLink();
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLink.class);
@@ -201,6 +204,14 @@ public class CmsLink {
     public CmsLink(String name, CmsRelationType type, String uri, boolean internal) {
 
         this(name, type, null, uri, internal);
+    }
+
+    /**
+     *  Empty contructor for NULL contant.<p>
+     */
+    private CmsLink() {
+
+        // empty contructor for NULL contant
     }
 
     /**
@@ -349,7 +360,7 @@ public class CmsLink {
                 CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
                 m_uri = wrapper.rewriteLink(getUri());
             }
-            
+
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!processEditorLinks && (cms.getRequestContext().getSiteRoot().length() == 0)) {
                 return OpenCms.getLinkManager().substituteLink(cms, getUri());

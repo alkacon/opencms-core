@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
  * Date   : $Date: 2007/06/29 11:21:24 $
- * Version: $Revision: 1.18.8.4 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,26 +48,29 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 
 /**
- * Describes the XML content type "OpenCmsVfsFile".<p>
+ * Describes the XML content type "OpenCmsVarLink".<p>
  *
- * This type allows links to internal VFS resources only.<p>
+ * This type allows a link to either an internal VFS resource, or to an external website.<p>
  *
- * @author Michael Moossen 
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.18.8.4 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.0.0 
  */
-public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
+public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /** Value to mark that no link is defined, "none". */
     public static final String NO_LINK = "none";
 
     /** The name of this type as used in the XML schema. */
-    public static final String TYPE_NAME = "OpenCmsVfsFile";
+    public static final String TYPE_NAME = "OpenCmsVarLink";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
+
+    /** The link object represented by this object. */
+    private CmsLink m_linkValue;
 
     /** The String value of the element node. */
     private String m_stringValue;
@@ -75,7 +78,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsVfsFile".<p>
      */
-    public CmsXmlVfsFileValue() {
+    public CmsXmlVarLinkValue() {
 
         // empty constructor is required for class registration
     }
@@ -88,7 +91,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * @param locale the locale this value is created for
      * @param type the type instance to create the value for
      */
-    public CmsXmlVfsFileValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
+    public CmsXmlVarLinkValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
         super(document, element, locale, type);
     }
@@ -100,7 +103,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * @param minOccurs minimum number of occurences of this type according to the XML schema
      * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
-    public CmsXmlVfsFileValue(String name, String minOccurs, String maxOccurs) {
+    public CmsXmlVarLinkValue(String name, String minOccurs, String maxOccurs) {
 
         super(name, minOccurs, maxOccurs);
     }
@@ -110,7 +113,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlVfsFileValue(document, element, locale, this);
+        return new CmsXmlVarLinkValue(document, element, locale, this);
     }
 
     /**
@@ -132,31 +135,38 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * Returns the link object represented by this XML content value.<p>
      * 
-     * @param cms the cms context, can be <code>null</code> but in this case no link check is performed
+     * @param cms the cms context, can be <code>null</code> but in this case no link check is performed, 
+     *      and the target is marked as "external"
      * 
      * @return the link object represented by this XML content value
      */
     public CmsLink getLink(CmsObject cms) {
 
-        Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
-        if (linkElement == null) {
-            String uri = m_element.getText();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(uri)) {
-                setStringValue(cms, uri);
-            }
-            linkElement = m_element.element(CmsXmlPage.NODE_LINK);
+        if (m_linkValue == null) {
+            // need to to calculate link value twice
+            Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
             if (linkElement == null) {
-                return null;
+                setStringValue(cms, m_element.getText());
+            } else {
+                CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(
+                    this));
+                CmsLink link = new CmsLink(linkElement);
+                if (link.isInternal()) {
+                    // link management check
+                    link.checkConsistency(cms);
+                }
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
+                    // this may just be an anchor link
+                    m_linkValue = CmsLink.NULL_LINK;
+                } else {
+                    m_linkValue = link;
+                }
             }
         }
-        CmsLinkUpdateUtil.updateType(linkElement, getContentDefinition().getContentHandler().getRelationType(this));
-        CmsLink link = new CmsLink(linkElement);
-        // link management check
-        link.checkConsistency(cms);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
+        if (m_linkValue == CmsLink.NULL_LINK) {
             return null;
         }
-        return link;
+        return m_linkValue;
     }
 
     /**
@@ -174,7 +184,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
         // the schema definition is located in a separate file for easier editing
         if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVarLinkValue.xsd");
         }
         return m_schemaDefinition;
     }
@@ -203,7 +213,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
-        return new CmsXmlVfsFileValue(name, minOccurs, maxOccurs);
+        return new CmsXmlVarLinkValue(name, minOccurs, maxOccurs);
     }
 
     /**
@@ -211,8 +221,14 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
+        // element is rebuild from given String value below
         m_element.clearContent();
-        if (value == null) {
+        // link value is re-calculated below
+        m_linkValue = null;
+        // ensure the String value is re-calculated next time it's needed
+        m_stringValue = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            // no valid value given
             return;
         }
         String path = value;
@@ -222,25 +238,33 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
             // get the site path
             path = CmsLinkManager.getSitePath(cms, null, path);
         }
-        if (path == null) {
-            return;
+        boolean internal = (path != null);
+        CmsRelationType type;
+        if (internal) {
+            type = getContentDefinition().getContentHandler().getRelationType(this);
+        } else {
+            // use original value for external links
+            path = value;
+            // external links are always "weak"
+            type = CmsRelationType.XML_WEAK;
         }
-        CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(this);
-        CmsLink link = new CmsLink("vfsLink", type, path, true);
-        // link management check
-        link.checkConsistency(cms);
+        CmsLink link = new CmsLink("varLink", type, path, internal);
+        if (internal) {
+            // link management check for internal links
+            link.checkConsistency(cms);
+        }
         // update xml node
-        CmsLinkUpdateUtil.updateXmlForVfsFile(link, m_element.addElement(CmsXmlPage.NODE_LINK));
-        // ensure the String value is re-calculated next time
-        m_stringValue = null;
+        CmsLinkUpdateUtil.updateXmlForHtmlValue(link, null, m_element.addElement(CmsXmlPage.NODE_LINK));
+        // store the calculated link
+        m_linkValue = link;
     }
 
     /**
-     * Creates the String value for this vfs file value element.<p>
+     * Creates the String value for this VarLink value element.<p>
      * 
-     * @param cms the cms context
+     * @param cms the current users OpenCms context
      * 
-     * @return the String value for this vfs file value element
+     * @return the String value for this VarLink value element
      */
     private String createStringValue(CmsObject cms) {
 
@@ -251,7 +275,8 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
             CmsLink link = getLink(cms);
             if (link != null) {
                 content = link.getUri();
-                if (cms != null) {
+                if (link.isInternal() && (cms != null)) {
+                    // remove site root for internal links
                     content = cms.getRequestContext().removeSiteRoot(link.getUri());
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2006/08/19 13:40:50 $
- * Version: $Revision: 1.35.4.1 $
+ * Date   : $Date: 2007/06/29 11:21:24 $
+ * Version: $Revision: 1.35.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35.4.1 $ 
+ * @version $Revision: 1.35.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -277,7 +277,10 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
                 for (Iterator i = linkTable.iterator(); i.hasNext();) {
                     CmsLink link = (CmsLink)i.next();
-                    CmsLinkUpdateUtil.updateXmlForHtmlValue(link, links.addElement(CmsXmlPage.NODE_LINK));
+                    CmsLinkUpdateUtil.updateXmlForHtmlValue(
+                        link,
+                        link.getName(),
+                        links.addElement(CmsXmlPage.NODE_LINK));
                 }
             }
         }

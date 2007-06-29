@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/06/25 15:02:17 $
- * Version: $Revision: 1.43.4.15 $
+ * Date   : $Date: 2007/06/29 11:21:24 $
+ * Version: $Revision: 1.43.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlStringValue;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -74,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.15 $
+ * @version $Revision: 1.43.4.16 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -123,6 +124,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testVarLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testEmptyLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testCopyMoveRemoveLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
@@ -979,6 +981,99 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
         assertEquals("/index.html", vfsValue.getStringValue(cms));
+    }
+    
+    /**
+     * Test resolving a {@link CmsXmlVarLinkValue} in an XML content.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testVarLinkResolver() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing link CmsXmlVarLinkValue in an XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        String schemaId = "http://www.opencms.org/testVarLink1.xsd";
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, schemaId, resolver);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(schemaId, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasValue("VarLink", Locale.ENGLISH));
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        CmsXmlVfsFileValue vfsValue = (CmsXmlVfsFileValue)xmlcontent.getValue("VfsLink", Locale.ENGLISH);
+        CmsXmlVarLinkValue varValue1 = (CmsXmlVarLinkValue)xmlcontent.getValue("VarLink", Locale.ENGLISH, 0);
+        CmsXmlVarLinkValue varValue2 = (CmsXmlVarLinkValue)xmlcontent.getValue("VarLink", Locale.ENGLISH, 1);
+
+        // make sure the XML unmarshals as expected
+        CmsLink link = vfsValue.getLink(cms);
+        assertEquals("/sites/default/index.html", link.getTarget());
+        assertTrue(link.isInternal());
+        assertEquals("/index.html", vfsValue.getStringValue(cms));
+        
+        CmsLink varLink1 = varValue1.getLink(cms);
+        assertEquals("/sites/default/index.html", varLink1.getTarget());
+        assertTrue(varLink1.isInternal());
+        assertEquals("/index.html", varValue1.getStringValue(cms));
+        
+        CmsLink varLink2 = varValue2.getLink(cms);
+        assertEquals("http://www.alkacon.com", varLink2.getTarget());
+        assertFalse(varLink2.isInternal());
+        
+        // now set some VarLinks with different types of targets
+        
+        // simple external link
+        CmsXmlVarLinkValue varVal;
+        CmsLink varLink;
+        
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 2);
+        varVal.setStringValue(cms, "http://www.opencms.org");
+        varLink = varVal.getLink(cms);
+        assertEquals("http://www.opencms.org", varLink.getTarget());
+        assertFalse(varLink.isInternal());
+        
+        // internal link to an existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 3);
+        varVal.setStringValue(cms, "/folder1/page1.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder1/page1.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder1/page1.html", varVal.getStringValue(cms));
+        
+        // internal link to a not existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 4);
+        varVal.setStringValue(cms, "/folder_notexist/page_i_dont_exist.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder_notexist/page_i_dont_exist.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder_notexist/page_i_dont_exist.html", varVal.getStringValue(cms));
+        
+        // internal link using the server prefix to an existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 5);
+        varVal.setStringValue(cms, "http://localhost:8080/folder1/page1.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder1/page1.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder1/page1.html", varVal.getStringValue(cms));
+        
+        // internal link using the server prefix to a not existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 6);
+        varVal.setStringValue(cms, "http://localhost:8080/folder_notexist/page_i_dont_exist.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder_notexist/page_i_dont_exist.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder_notexist/page_i_dont_exist.html", varVal.getStringValue(cms));
     }
 
     /**
