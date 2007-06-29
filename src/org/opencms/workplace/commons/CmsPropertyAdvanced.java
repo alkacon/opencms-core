@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/03/26 09:12:03 $
- * Version: $Revision: 1.28.4.12 $
+ * Date   : $Date: 2007/06/29 10:27:41 $
+ * Version: $Revision: 1.28.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28.4.12 $ 
+ * @version $Revision: 1.28.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,23 +117,25 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /** The dialog type. */
     public static final String DIALOG_TYPE = "property";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyAdvanced.class);
     /** Value for the dialog mode: new resource wizard. */
     public static final String MODE_WIZARD = "wizard";
     /** Value for the dialog mode: new resource wizard with creation of index page for new folder. */
     public static final String MODE_WIZARD_CREATEINDEX = "wizardcreateindex";
+
     /** Value for the dialog mode: new resource wizard with index page created in new folder. */
     public static final String MODE_WIZARD_INDEXCREATED = "wizardindexcreated";
-
     /** Key name for the resource panel. */
     public static final String PANEL_RESOURCE = "panel.properties.resource";
+
     /** Key name for the structure panel. */
     public static final String PANEL_STRUCTURE = "panel.properties.structure";
-
     /** Request parameter name for the new property definition. */
     public static final String PARAM_DIALOGMODE = "dialogmode";
+
     /** Request parameter name for the new property definition. */
     public static final String PARAM_NEWPROPERTY = "newproperty";
-
     /** Prefix for the hidden fields. */
     public static final String PREFIX_HIDDEN = "valhidden";
     /** Prefix for the hidden resource value. */
@@ -142,11 +144,12 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public static final String PREFIX_STRUCTURE = "valstructure";
     /** Prefix for the use property checkboxes. */
     public static final String PREFIX_USEPROPERTY = "useprop";
+
     /** Prefix for the input values. */
     public static final String PREFIX_VALUE = "valprop";
-
     /** Name for the shared (resource) property tab. */
     public static final String TAB_RESOURCE = "tabres";
+
     /** Name for the individual (structure) property tab. */
     public static final String TAB_STRUCTURE = "tabstr";
 
@@ -159,8 +162,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /** The URI to the property dialog handler. */
     public static final String URI_PROPERTY_DIALOG_HANDLER = PATH_DIALOGS + "property.jsp";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPropertyAdvanced.class);
+    /** Holds all active properties for the current resource. */
+    private Map m_activeProperties;
 
     /** Helper object storing the current editable state of the resource. */
     private Boolean m_isEditable;
@@ -170,10 +173,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /** Helper stores the mode this dialog is in, because it can be called from "new" wizard. */
     private String m_paramDialogMode;
-
     private String m_paramIndexPageType;
     /** Request parameter members. */
     private String m_paramNewproperty;
+
     private String m_paramUseTempfileProject;
 
     /** Stores the values of properties in a String array. */
@@ -285,9 +288,13 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1,
+                    PATH_DIALOGS + newUri));
             } catch (ServletException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1,
+                    PATH_DIALOGS + newUri));
             }
         } else if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -444,8 +451,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append("\t<td class=\"textbold\">");
             result.append(key(Messages.GUI_PROPERTY_VALUE_0));
             result.append("</td>\n");
+            // build column for checkbox 
             result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
-            result.append(key(Messages.GUI_PROPERTY_USED_0));
+            result.append("&nbsp;");
             result.append("</td>\n");
             result.append("</tr>\n");
             result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -463,6 +471,125 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append(key(Messages.GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0));
         }
         return result.toString();
+    }
+
+    /**
+     * Builds the html for a single property entry row.<p>
+     * 
+     * The output depends on the currently active tab (shared or individual properties)
+     * and on the present values of the current property.<p>
+     * 
+     * The values of the property are not inserted directly in the &lt;input&gt; tag,
+     * because there is a display issue when the property values are very long.
+     * Have a look at buildSetFormValues() for a detailed description.<p>
+     * 
+     * @param propName the name of the property
+     * @param propValue the displayed value of the property
+     * @param valueStructure the structure value of the property
+     * @param valueResource the resource value of the property
+     * @param disabled contains attribute String to disable the fields
+     * @param activeTab the name of the currently active dialog tab
+     * @return the html for a single property entry row
+     */
+    private StringBuffer buildPropertyRow(
+        String propName,
+        String propValue,
+        String valueStructure,
+        String valueResource,
+        String disabled,
+        String activeTab) {
+
+        StringBuffer result = new StringBuffer(256);
+        //        boolean existsPropertyValues = getActiveProperties().size() > 0;
+        String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
+        String inputAttrs = "class=\"maxwidth\"";
+        if (structurePanelName.equals(activeTab)) {
+            // in "shared properties" form, show resource value if no structure value is set
+            if ("".equals(valueStructure) && !"".equals(valueResource)) {
+                inputAttrs = "class=\"dialogmarkedfield\"";
+            }
+        }
+        result.append("<tr>\n");
+        result.append("\t<td style=\"white-space: nowrap;\">" + propName);
+        result.append("</td>\n");
+        result.append("\t<td class=\"maxwidth\">");
+
+        // build text input field
+        result.append("<input type=\"text\" ");
+        result.append(inputAttrs);
+        result.append(" name=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propName);
+        result.append("\"");
+        result.append(" onFocus=\"deleteResEntry('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\"");
+        result.append(" onBlur=\"checkResEntry('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\" onKeyup=\"checkValue('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\"");
+        result.append(disabled);
+        result.append(">");
+
+        // build hidden input field for structure value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_STRUCTURE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_STRUCTURE);
+        result.append(propName);
+        result.append("\" value=\"");
+        result.append(CmsEncoder.escapeXml(valueStructure));
+        result.append("\">");
+
+        // build hidden input field for resource value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_RESOURCE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_RESOURCE);
+        result.append(propName);
+        result.append("\" value=\"");
+        result.append(CmsEncoder.escapeXml(valueResource));
+        result.append("\"></td>\n");
+        result.append("\t<td class=\"propertydialog-checkboxcell\">");
+        // show checkbox always 
+        String prefix = PREFIX_RESOURCE;
+        if (structurePanelName.equals(activeTab)) {
+            prefix = PREFIX_STRUCTURE;
+        }
+        result.append("<input type=\"checkbox\" name=\"");
+        result.append(PREFIX_USEPROPERTY);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_USEPROPERTY);
+        result.append(propName);
+        result.append("\" value=\"true\"");
+        result.append(disabled);
+        if (CmsStringUtil.isNotEmpty(propValue)) {
+            result.append(" checked=\"checked\" ");
+        }
+        result.append("onClick=\"toggleDelete('");
+        result.append(propName);
+        result.append("', '");
+        result.append(prefix);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\">");
+        result.append("</td>\n");
+
+        result.append("</tr>\n");
+        return result;
     }
 
     /**
@@ -508,6 +635,33 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
+     */
+    protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
+
+        attribute = appendDelimiter(attribute);
+
+        switch (button) {
+            case BUTTON_DEFINE:
+                result.append("<input name=\"define\" type=\"button\" value=\"");
+                result.append(key(Messages.GUI_PROPERTY_DEFINE_0));
+                result.append("\" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_FINISH:
+                result.append("<input name=\"finish\" type=\"submit\" value=\"");
+                result.append(key(Messages.GUI_PROPERTY_FINISH_0));
+                result.append("\" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            default:
+                super.dialogButtonsHtml(result, button, attribute);
+        }
+    }
+
+    /**
      * Builds a button row with an "Ok", a "Cancel" and a "Define" button.<p>
      * 
      * @return the button row
@@ -528,6 +682,30 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {null});
 
         }
+    }
+
+    /**
+     * Returns a map with CmsProperty object values keyed by property keys.<p>
+     * 
+     * @return a map with CmsProperty object values
+     */
+    protected Map getActiveProperties() {
+
+        // get all used properties for the resource
+        if (m_activeProperties == null) {
+            try {
+                m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(
+                    getParamResource(),
+                    false));
+            } catch (CmsException e) {
+                // create an empty list
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+                m_activeProperties = new HashMap();
+            }
+        }
+        return m_activeProperties;
     }
 
     /**
@@ -618,6 +796,134 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
+     * Creates a list of String arrays containing the property names and values.<p>
+     * 
+     * The list items consist of the following Strings:
+     * <ol>
+     * <li>The name of the property</li>
+     * <li>The currently active property value</li>
+     * <li>The value of the structure</li>
+     * <li>The value of the resource</li>
+     * </ol>
+     * 
+     * @return the list of property values in display order
+     */
+    private List getPropertyValues() {
+
+        // check if list has to be generated
+        if (m_propertyValues == null) {
+
+            // get currently active tab
+            String activeTab = getActiveTabName();
+            String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
+
+            // get all properties for the resource
+            List propertyDef = new ArrayList();
+            try {
+                propertyDef = getCms().readAllPropertyDefinitions();
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
+            m_propertyValues = new ArrayList(propertyDef.size());
+
+            // get all used properties for the resource
+            Map activeProperties = getActiveProperties();
+
+            // iterate over all possible properties for the resource
+            Iterator i = propertyDef.iterator();
+            while (i.hasNext()) {
+                CmsPropertyDefinition currentPropertyDef = (CmsPropertyDefinition)i.next();
+                String propName = CmsEncoder.escapeXml(currentPropertyDef.getName());
+                String propValue = "";
+                String valueStructure = "";
+                String valueResource = "";
+                if (m_tabSwitched) {
+                    // switched the tab, get values from hidden fields
+                    if (structurePanelName.equals(activeTab)) {
+                        // structure form
+                        propValue = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
+                        valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
+                        if (!isEditable()) {
+                            // values from disabled fields are not posted
+                            valueResource = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
+                        } else {
+                            valueResource = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
+                        }
+                    } else {
+                        // resource form
+                        propValue = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
+                        if (!isEditable()) {
+                            // values from disabled fields are not posted
+                            valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
+                        } else {
+                            valueStructure = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
+                        }
+                        valueResource = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(valueStructure)
+                            && valueStructure.equals(valueResource)) {
+                            // the resource value was shown in the input field, set structure value to empty String
+                            valueStructure = "";
+                        }
+                    }
+                } else {
+                    // initial call of edit form, get property values from database 
+                    CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
+                    if (currentProperty == null) {
+                        currentProperty = new CmsProperty();
+                    }
+                    if (structurePanelName.equals(activeTab)) {
+                        // show the structure properties
+                        propValue = currentProperty.getStructureValue();
+                    } else {
+                        // show the resource properties
+                        propValue = currentProperty.getResourceValue();
+                    }
+                    valueStructure = currentProperty.getStructureValue();
+                    valueResource = currentProperty.getResourceValue();
+                    // check values for null
+                    if (propValue == null) {
+                        propValue = "";
+                    }
+                    if (valueStructure == null) {
+                        valueStructure = "";
+                    }
+                    if (valueResource == null) {
+                        valueResource = "";
+                    }
+                }
+                // remove unnecessary blanks from values
+                propValue = propValue.trim();
+                valueStructure = valueStructure.trim();
+                valueResource = valueResource.trim();
+                String[] property = new String[] {propName, propValue, valueStructure, valueResource};
+                m_propertyValues.add(property);
+            }
+        }
+        // return the filled list
+        return m_propertyValues;
+    }
+
+    /**
+     * Returns the explorer type settings of the resource type, considering eventual references to another type.<p>
+     * 
+     * @param resTypeName the resource type name
+     * @return the explorer type settings of the resource type
+     */
+    protected CmsExplorerTypeSettings getSettingsForType(String resTypeName) {
+
+        // get settings for resource type
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (CmsStringUtil.isNotEmpty(settings.getReference())) {
+            // refers to another resource type, get settings of referred type
+            settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
+        }
+        return settings;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
     public List getTabParameterOrder() {
@@ -653,90 +959,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         }
         return tabList;
-    }
-
-    /**
-     * Sets the value of the dialogmode parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamDialogmode(String value) {
-
-        m_paramDialogMode = value;
-    }
-
-    /**
-     * Sets the paramIndexPageType.<p>
-     *
-     * @param paramIndexPageType the paramIndexPageType to set
-     */
-    public void setParamIndexPageType(String paramIndexPageType) {
-
-        m_paramIndexPageType = paramIndexPageType;
-    }
-
-    /**
-     * Sets the value of the new property parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamNewproperty(String value) {
-
-        m_paramNewproperty = value;
-    }
-
-    /**
-     * Sets the value of the usetempfileproject parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamUsetempfileproject(String value) {
-
-        m_paramUseTempfileProject = value;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
-     */
-    protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
-
-        attribute = appendDelimiter(attribute);
-
-        switch (button) {
-            case BUTTON_DEFINE:
-                result.append("<input name=\"define\" type=\"button\" value=\"");
-                result.append(key(Messages.GUI_PROPERTY_DEFINE_0));
-                result.append("\" class=\"dialogbutton\"");
-                result.append(attribute);
-                result.append(">\n");
-                break;
-            case BUTTON_FINISH:
-                result.append("<input name=\"finish\" type=\"submit\" value=\"");
-                result.append(key(Messages.GUI_PROPERTY_FINISH_0));
-                result.append("\" class=\"dialogbutton\"");
-                result.append(attribute);
-                result.append(">\n");
-                break;
-            default:
-                super.dialogButtonsHtml(result, button, attribute);
-        }
-    }
-
-    /**
-     * Returns the explorer type settings of the resource type, considering eventual references to another type.<p>
-     * 
-     * @param resTypeName the resource type name
-     * @return the explorer type settings of the resource type
-     */
-    protected CmsExplorerTypeSettings getSettingsForType(String resTypeName) {
-
-        // get settings for resource type
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
-        if (CmsStringUtil.isNotEmpty(settings.getReference())) {
-            // refers to another resource type, get settings of referred type
-            settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
-        }
-        return settings;
     }
 
     /**
@@ -898,247 +1120,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
-     * Builds the html for a single property entry row.<p>
-     * 
-     * The output depends on the currently active tab (shared or individual properties)
-     * and on the present values of the current property.<p>
-     * 
-     * The values of the property are not inserted directly in the &lt;input&gt; tag,
-     * because there is a display issue when the property values are very long.
-     * Have a look at buildSetFormValues() for a detailed description.<p>
-     * 
-     * @param propName the name of the property
-     * @param propValue the displayed value of the property
-     * @param valueStructure the structure value of the property
-     * @param valueResource the resource value of the property
-     * @param disabled contains attribute String to disable the fields
-     * @param activeTab the name of the currently active dialog tab
-     * @return the html for a single property entry row
-     */
-    private StringBuffer buildPropertyRow(
-        String propName,
-        String propValue,
-        String valueStructure,
-        String valueResource,
-        String disabled,
-        String activeTab) {
-
-        StringBuffer result = new StringBuffer(256);
-        String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
-        String inputAttrs = "class=\"maxwidth\"";
-        if (structurePanelName.equals(activeTab)) {
-            // in "shared properties" form, show resource value if no structure value is set
-            if ("".equals(valueStructure) && !"".equals(valueResource)) {
-                inputAttrs = "class=\"dialogmarkedfield\"";
-            }
-        }
-        result.append("<tr>\n");
-        result.append("\t<td style=\"white-space: nowrap;\">" + propName);
-        result.append("</td>\n");
-        result.append("\t<td class=\"maxwidth\">");
-
-        // build text input field
-        result.append("<input type=\"text\" ");
-        result.append(inputAttrs);
-        result.append(" name=\"");
-        result.append(PREFIX_VALUE);
-        result.append(propName);
-        result.append("\" id=\"");
-        result.append(PREFIX_VALUE);
-        result.append(propName);
-        result.append("\"");
-        result.append(" onFocus=\"deleteResEntry('");
-        result.append(propName);
-        result.append("', '");
-        result.append(activeTab);
-        result.append("');\"");
-        result.append(" onBlur=\"checkResEntry('");
-        result.append(propName);
-        result.append("', '");
-        result.append(activeTab);
-        result.append("');\" onKeyup=\"checkValue('");
-        result.append(propName);
-        result.append("', '");
-        result.append(activeTab);
-        result.append("');\"");
-        result.append(disabled);
-        result.append(">");
-
-        // build hidden input field for structure value
-        result.append("<input type=\"hidden\" name=\"");
-        result.append(PREFIX_STRUCTURE);
-        result.append(propName);
-        result.append("\" id=\"");
-        result.append(PREFIX_STRUCTURE);
-        result.append(propName);
-        result.append("\" value=\"");
-        result.append(CmsEncoder.escapeXml(valueStructure));
-        result.append("\">");
-
-        // build hidden input field for resource value
-        result.append("<input type=\"hidden\" name=\"");
-        result.append(PREFIX_RESOURCE);
-        result.append(propName);
-        result.append("\" id=\"");
-        result.append(PREFIX_RESOURCE);
-        result.append(propName);
-        result.append("\" value=\"");
-        result.append(CmsEncoder.escapeXml(valueResource));
-        result.append("\"></td>\n");
-        result.append("\t<td class=\"textcenter\">");
-        if (!"".equals(propValue)) {
-            // show checkbox only for non empty value
-            String prefix = PREFIX_RESOURCE;
-            if (structurePanelName.equals(activeTab)) {
-                prefix = PREFIX_STRUCTURE;
-            }
-            result.append("<input type=\"checkbox\" name=\"");
-            result.append(PREFIX_USEPROPERTY);
-            result.append(propName);
-            result.append("\" id=\"");
-            result.append(PREFIX_USEPROPERTY);
-            result.append(propName);
-            result.append("\" value=\"true\"");
-            result.append(disabled);
-            result.append(" checked=\"checked\" onClick=\"toggleDelete('");
-            result.append(propName);
-            result.append("', '");
-            result.append(prefix);
-            result.append("', '");
-            result.append(activeTab);
-            result.append("');\">");
-        } else {
-            result.append("&nbsp;");
-        }
-        result.append("</td>\n");
-        result.append("</tr>\n");
-        return result;
-    }
-
-    /**
-     * Creates a list of String arrays containing the property names and values.<p>
-     * 
-     * The list items consist of the following Strings:
-     * <ol>
-     * <li>The name of the property</li>
-     * <li>The currently active property value</li>
-     * <li>The value of the structure</li>
-     * <li>The value of the resource</li>
-     * </ol>
-     * 
-     * @return the list of property values in display order
-     */
-    private List getPropertyValues() {
-
-        // check if list has to be generated
-        if (m_propertyValues == null) {
-
-            // get currently active tab
-            String activeTab = getActiveTabName();
-            String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
-
-            // get all properties for the resource
-            List propertyDef = new ArrayList();
-            try {
-                propertyDef = getCms().readAllPropertyDefinitions();
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-            }
-            m_propertyValues = new ArrayList(propertyDef.size());
-
-            // get all used properties for the resource
-            Map activeProperties = new HashMap();
-            if (!m_tabSwitched) {
-                try {
-                    activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(
-                        getParamResource(),
-                        false));
-                } catch (CmsException e) {
-                    // should usually never happen
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e.getLocalizedMessage());
-                    }
-                }
-            }
-
-            // iterate over all possible properties for the resource
-            Iterator i = propertyDef.iterator();
-            while (i.hasNext()) {
-                CmsPropertyDefinition currentPropertyDef = (CmsPropertyDefinition)i.next();
-                String propName = CmsEncoder.escapeXml(currentPropertyDef.getName());
-                String propValue = "";
-                String valueStructure = "";
-                String valueResource = "";
-                if (m_tabSwitched) {
-                    // switched the tab, get values from hidden fields
-                    if (structurePanelName.equals(activeTab)) {
-                        // structure form
-                        propValue = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
-                        valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
-                        if (!isEditable()) {
-                            // values from disabled fields are not posted
-                            valueResource = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
-                        } else {
-                            valueResource = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
-                        }
-                    } else {
-                        // resource form
-                        propValue = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
-                        if (!isEditable()) {
-                            // values from disabled fields are not posted
-                            valueStructure = getJsp().getRequest().getParameter(PREFIX_STRUCTURE + propName);
-                        } else {
-                            valueStructure = getJsp().getRequest().getParameter(PREFIX_VALUE + propName);
-                        }
-                        valueResource = getJsp().getRequest().getParameter(PREFIX_RESOURCE + propName);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(valueStructure)
-                            && valueStructure.equals(valueResource)) {
-                            // the resource value was shown in the input field, set structure value to empty String
-                            valueStructure = "";
-                        }
-                    }
-                } else {
-                    // initial call of edit form, get property values from database 
-                    CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
-                    if (currentProperty == null) {
-                        currentProperty = new CmsProperty();
-                    }
-                    if (structurePanelName.equals(activeTab)) {
-                        // show the structure properties
-                        propValue = currentProperty.getStructureValue();
-                    } else {
-                        // show the resource properties
-                        propValue = currentProperty.getResourceValue();
-                    }
-                    valueStructure = currentProperty.getStructureValue();
-                    valueResource = currentProperty.getResourceValue();
-                    // check values for null
-                    if (propValue == null) {
-                        propValue = "";
-                    }
-                    if (valueStructure == null) {
-                        valueStructure = "";
-                    }
-                    if (valueResource == null) {
-                        valueResource = "";
-                    }
-                }
-                // remove unnecessary blanks from values
-                propValue = propValue.trim();
-                valueStructure = valueStructure.trim();
-                valueResource = valueResource.trim();
-                String[] property = new String[] {propName, propValue, valueStructure, valueResource};
-                m_propertyValues.add(property);
-            }
-        }
-        // return the filled list
-        return m_propertyValues;
-    }
-
-    /**
      * Performs the definition of a new property.<p>
      * 
      * @return true, if the new property was created, otherwise false
@@ -1180,7 +1161,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (useTempfileProject) {
                 switchToTempProject();
             }
-            Map activeProperties = getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
+            Map activeProperties = getActiveProperties();
             String activeTab = getActiveTabName();
             List propertiesToWrite = new ArrayList();
 
@@ -1278,6 +1259,46 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
         }
         return true;
+    }
+
+    /**
+     * Sets the value of the dialogmode parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamDialogmode(String value) {
+
+        m_paramDialogMode = value;
+    }
+
+    /**
+     * Sets the paramIndexPageType.<p>
+     *
+     * @param paramIndexPageType the paramIndexPageType to set
+     */
+    public void setParamIndexPageType(String paramIndexPageType) {
+
+        m_paramIndexPageType = paramIndexPageType;
+    }
+
+    /**
+     * Sets the value of the new property parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamNewproperty(String value) {
+
+        m_paramNewproperty = value;
+    }
+
+    /**
+     * Sets the value of the usetempfileproject parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamUsetempfileproject(String value) {
+
+        m_paramUseTempfileProject = value;
     }
 
 }

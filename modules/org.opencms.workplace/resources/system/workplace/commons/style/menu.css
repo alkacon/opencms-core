@@ -776,6 +776,11 @@ input.dialogmarkedfield {
 	text-align: center;
 }
 
+/* The checkboxes in property dialogs. */
+table tr td.propertydialog-checkboxcell {
+	padding-left:4px;
+}
+
 /* maximum width for td, input field, etc. */
 .maxwidth {
 	width: 100%;
