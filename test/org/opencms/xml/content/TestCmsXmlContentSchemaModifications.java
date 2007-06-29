@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2006/09/28 07:53:12 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/06/29 11:30:07 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -168,7 +168,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         // trying to write the file now (with the changed schema but XML still using the old schema) is not possible 
         // this is because of the build-in validation while writing
         try {
-            file = cms.writeFile(file);
+            cms.writeFile(file);
             fail("should fail to write the old xml file");
         } catch (CmsXmlException e) {
             // ok, ignore

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/06/29 11:21:24 $
- * Version: $Revision: 1.43.4.16 $
+ * Date   : $Date: 2007/06/29 11:30:07 $
+ * Version: $Revision: 1.43.4.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43.4.16 $
+ * @version $Revision: 1.43.4.17 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1074,6 +1074,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("/sites/default/folder_notexist/page_i_dont_exist.html", varLink.getTarget());
         assertTrue(varLink.isInternal());
         assertEquals("/folder_notexist/page_i_dont_exist.html", varVal.getStringValue(cms));
+        
+        // output the XML content after modifications
+        echo("XML Content after VarLink modification:");
+        echo(xmlcontent.toString());
+        echo("-----------------");        
     }
 
     /**
