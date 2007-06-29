@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2007/06/12 14:23:45 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.7.1
  */
@@ -273,7 +273,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
             while (itRoles.hasNext()) {
                 List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
                     getCms(),
-                    CmsRole.valueOf((String)itRoles.next()),
+                    CmsRole.valueOfGroupName((String)itRoles.next()),
                     true,
                     false);
                 Iterator itRoleUsers = roleUsers.iterator();

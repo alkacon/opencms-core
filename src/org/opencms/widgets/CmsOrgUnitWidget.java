@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsOrgUnitWidget.java,v $
- * Date   : $Date: 2007/03/01 15:01:37 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/29 16:33:54 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.CmsWorkplace;
  * @author Raphael Schnuck
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -202,7 +202,7 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
                     // cut eventual following configuration values
                     groupName = groupName.substring(0, groupName.indexOf('|'));
                 }
-                m_role = CmsRole.valueOf(groupName);
+                m_role = CmsRole.valueOfGroupName(groupName);
             }
         }
         super.setConfiguration(configuration);

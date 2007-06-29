@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/06/28 18:41:17 $
- * Version: $Revision: 1.258.4.39 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.258.4.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.258.4.39 $
+ * @version $Revision: 1.258.4.40 $
  * 
  * @since 6.0.0 
  */
@@ -339,9 +339,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsUUID resProjectId = new CmsUUID(res.getString("LOCKED_IN_PROJECT"));
         int resourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
         int structureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
+        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
 
         // in case of folder type ensure, that the root path has a trailing slash
-        if (CmsFolder.isFolderType(resourceType)) {
+        if (CmsFolder.isFolderSize(resourceSize)) {
             resourcePath = addTrailingSeparator(resourcePath);
         }
 
@@ -717,17 +718,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
         long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));
-        int resourceSize;
-
-        // in case of folder type ensure, that the root path has a trailing slash
-        boolean isFolder = CmsFolder.isFolderType(resourceType);
+        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        boolean isFolder = CmsFolder.isFolderSize(resourceSize);
         if (isFolder) {
+            // in case of folder type ensure, that the root path has a trailing slash
             resourcePath = addTrailingSeparator(resourcePath);
-            // folders must have -1 size
-            resourceSize = -1;
-        } else {
-            // not a folder
-            resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
         }
         long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
@@ -1319,7 +1314,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             query.append(resourceTypeClause);
         }
 
-        String typeColumn = m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE");
+        String sizeColumn = m_sqlManager.readQuery("C_RESOURCES_SIZE");
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1331,8 +1326,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             while (res.next()) {
-                int type = res.getInt(typeColumn);
-                if (CmsFolder.isFolderType(type)) {
+                long size = res.getInt(sizeColumn);
+                if (CmsFolder.isFolderSize(size)) {
                     result.add(createFolder(res, projectId, false));
                 } else {
                     result.add(createFile(res, projectId, false));

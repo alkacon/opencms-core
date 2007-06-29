@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
 
-<opencms>	
+<opencms>
 	<vfs>
 		<resources>
 			<resourceloaders>
@@ -15,6 +15,8 @@
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
 			</resourceloaders>
 			<resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFile" name="unknown_file" id="-1" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
 					<param name="restypes.indexpage">none|xmlpage|layoutpage</param>
 				</type>

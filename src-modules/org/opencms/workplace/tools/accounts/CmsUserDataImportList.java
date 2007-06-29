@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2007/03/16 09:03:22 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.6
  */
@@ -210,7 +210,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 try {
                                     OpenCms.getRoleManager().addUserToRole(
                                         getCms(),
-                                        CmsRole.valueOf((String)itRoles.next()),
+                                        CmsRole.valueOfGroupName((String)itRoles.next()),
                                         createdUser.getName());
                                 } catch (CmsException e) {
                                     throw new CmsRuntimeException(Messages.get().container(
@@ -279,7 +279,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 while (itRoles.hasNext()) {
                                     OpenCms.getRoleManager().addUserToRole(
                                         getCms(),
-                                        CmsRole.valueOf((String)itRoles.next()),
+                                        CmsRole.valueOfGroupName((String)itRoles.next()),
                                         createdUser.getName());
                                 }
                             }

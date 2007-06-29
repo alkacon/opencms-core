@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/06/18 12:35:40 $
- * Version: $Revision: 1.11.4.14 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.11.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.14 $ 
+ * @version $Revision: 1.11.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +216,7 @@ public final class CmsRole {
             ACCOUNT_MANAGER,
             VFS_MANAGER,
             DEVELOPER,
-            WORKPLACE_USER,
+            WORKPLACE_USER
         // DIRECT_EDIT_USER
         }));
 
@@ -247,7 +247,7 @@ public final class CmsRole {
 
         // check groups for internal representing the roles
         if (group.isRole()) {
-            CmsRole role = valueOf(group.getName());
+            CmsRole role = valueOfGroupName(group.getName());
             if (role != null) {
                 return role;
             }
@@ -269,7 +269,7 @@ public final class CmsRole {
      * 
      * @return the role for the given group name
      */
-    public static CmsRole valueOf(String groupName) {
+    public static CmsRole valueOfGroupName(String groupName) {
 
         String groupOu = CmsOrganizationalUnit.getParentFqn(groupName);
         Iterator it = SYSTEM_ROLES.iterator();
@@ -283,6 +283,33 @@ public final class CmsRole {
                 // the role group name does not start with "/", but the given group fqn does 
                 if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
                     return role.forOrgUnit(groupOu);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the role for the given role name.<p>
+     * 
+     * @param roleName a role name to check for role representation
+     * 
+     * @return the role for the given group name
+     */
+    public static CmsRole valueOfRoleName(String roleName) {
+
+        String roleOu = CmsOrganizationalUnit.getParentFqn(roleName);
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            // direct check
+            if (roleName.equals(role.getRoleName())) {
+                return role.forOrgUnit(roleOu);
+            }
+            if (!role.isOrganizationalUnitIndependent()) {
+                // the role name does not start with "/", but the given role fqn does 
+                if (roleName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
+                    return role.forOrgUnit(roleOu);
                 }
             }
         }

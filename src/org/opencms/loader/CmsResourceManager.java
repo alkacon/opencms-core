@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/06/26 08:47:56 $
- * Version: $Revision: 1.36.4.11 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.36.4.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeUnknownFile;
+import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -74,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.11 $ 
+ * @version $Revision: 1.36.4.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -197,6 +201,12 @@ public class CmsResourceManager {
 
     /** A list that contains all resource types added from the XML configuration. */
     private List m_resourceTypesFromXml;
+
+    /** The configured default type for files when the resource type is missing. */
+    private I_CmsResourceType m_restypeUnknownFile;
+
+    /** The configured default type for folders when the resource type is missing. */
+    private I_CmsResourceType m_restypeUnknownFolder;
 
     /**
      * Creates a new instance for the resource manager, 
@@ -411,10 +421,34 @@ public class CmsResourceManager {
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
         }
 
-        int conflictIndex = m_resourceTypesFromXml.indexOf(resourceType);
-        if (conflictIndex >= 0) {
+        I_CmsResourceType conflictingType = null;
+        if (resourceType.getTypeId() == CmsResourceTypeUnknownFile.RESOURCE_TYPE_ID) {
+            // default unknown file resource type
+            if (m_restypeUnknownFile != null) {
+                // error: already set
+                conflictingType = m_restypeUnknownFile;
+            } else {
+                m_restypeUnknownFile = resourceType;
+                return;
+            }
+        } else if (resourceType.getTypeId() == CmsResourceTypeUnknownFolder.RESOURCE_TYPE_ID) {
+            // default unknown folder resource type
+            if (m_restypeUnknownFolder != null) {
+                // error: already set
+                conflictingType = m_restypeUnknownFolder;
+            } else {
+                m_restypeUnknownFolder = resourceType;
+                return;
+            }
+        } else {
+            // normal resource types
+            int conflictIndex = m_resourceTypesFromXml.indexOf(resourceType);
+            if (conflictIndex >= 0) {
+                conflictingType = (I_CmsResourceType)m_resourceTypesFromXml.get(conflictIndex);
+            }
+        }
+        if (conflictingType != null) {
             // configuration problem: the resource type (or at least the id or the name) is already configured
-            I_CmsResourceType conflictingType = (I_CmsResourceType)m_resourceTypesFromXml.get(conflictIndex);
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_CONFLICTING_RESOURCE_TYPES_4,
                 new Object[] {
@@ -637,10 +671,45 @@ public class CmsResourceManager {
     }
 
     /**
+     * Convenience method to get the initialized resource type 
+     * instance for the given resource, including unknown resource types.<p>
+     * 
+     * @param resource the resource to get the type for
+     * 
+     * @return the initialized resource type instance for the given resource
+     * @throws CmsLoaderException 
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
+     * 
+     * @throws CmsLoaderException if no resource type is available for the given resource
+     */
+    public I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
+
+        try {
+            return getResourceType(resource.getTypeId());
+        } catch (CmsLoaderException e) {
+            if (resource.isFolder()) {
+                if (m_restypeUnknownFolder != null) {
+                    return m_restypeUnknownFolder;
+                }
+                // if no unknown folder configured, take the default folder type
+                return getResourceType(CmsResourceTypeFolder.getStaticTypeId());
+            }
+            if (m_restypeUnknownFile != null) {
+                return m_restypeUnknownFile;
+            }
+            // if no unknown folder configured, take the default folder type
+            return getResourceType(CmsResourceTypeBinary.getStaticTypeId());
+        }
+    }
+
+    /**
      * Returns the initialized resource type instance for the given id.<p>
      * 
      * @param typeId the id of the resource type to get
+     * 
      * @return the initialized resource type instance for the given id
+     * 
      * @throws CmsLoaderException if no resource type is available for the given id
      */
     public I_CmsResourceType getResourceType(int typeId) throws CmsLoaderException {
@@ -682,6 +751,25 @@ public class CmsResourceManager {
 
         // return the list of resource types
         return m_configuration.getResourceTypeList();
+    }
+
+    /**
+     * Returns the list with all initialized resource types including unknown types.<p>
+     * 
+     * @return the list with all initialized resource types including unknown types
+     */
+    public List getResourceTypesWithUnknown() {
+
+        // return the list of resource types
+        List result = new ArrayList(m_configuration.getResourceTypeList().size() + 2);
+        if (m_restypeUnknownFolder != null) {
+            result.add(m_restypeUnknownFolder);
+        }
+        if (m_restypeUnknownFile != null) {
+            result.add(m_restypeUnknownFile);
+        }
+        result.addAll(m_configuration.getResourceTypeList());
+        return result;
     }
 
     /**
@@ -1058,11 +1146,34 @@ public class CmsResourceManager {
                     Iterator j = module.getResourceTypes().iterator();
                     while (j.hasNext()) {
                         I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
-                        int conflictIndex = newConfiguration.getResourceTypeList().indexOf(resourceType);
-                        if (conflictIndex >= 0) {
-                            // configuration problem: the resource type (or at least the id or the name) is already configured
-                            I_CmsResourceType conflictingType = (I_CmsResourceType)newConfiguration.getResourceTypeList().get(
-                                conflictIndex);
+                        I_CmsResourceType conflictingType = null;
+                        if (resourceType.getTypeId() == CmsResourceTypeUnknownFile.RESOURCE_TYPE_ID) {
+                            // default unknown file resource type
+                            if (m_restypeUnknownFile != null) {
+                                // error: already set
+                                conflictingType = m_restypeUnknownFile;
+                            } else {
+                                m_restypeUnknownFile = resourceType;
+                                continue;
+                            }
+                        } else if (resourceType.getTypeId() == CmsResourceTypeUnknownFolder.RESOURCE_TYPE_ID) {
+                            // default unknown folder resource type
+                            if (m_restypeUnknownFolder != null) {
+                                // error: already set
+                                conflictingType = m_restypeUnknownFolder;
+                            } else {
+                                m_restypeUnknownFolder = resourceType;
+                                continue;
+                            }
+                        } else {
+                            // normal resource types
+                            int conflictIndex = newConfiguration.getResourceTypeList().indexOf(resourceType);
+                            if (conflictIndex >= 0) {
+                                conflictingType = (I_CmsResourceType)newConfiguration.getResourceTypeList().get(
+                                    conflictIndex);
+                            }
+                        }
+                        if (conflictingType != null) {
                             throw new CmsConfigurationException(Messages.get().container(
                                 Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
                                 new Object[] {

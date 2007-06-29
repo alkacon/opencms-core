@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2007/03/20 14:38:49 $
- * Version: $Revision: 1.12.4.7 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.12.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.7 $ 
+ * @version $Revision: 1.12.4.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +147,7 @@ public class CmsExplorerTypeAccess {
                         principalId = cms.readGroup(principal).getId();
                     } catch (CmsException e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.debug(e.getLocalizedMessage(), e);
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                 } else if (key.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
@@ -157,17 +157,22 @@ public class CmsExplorerTypeAccess {
                         principalId = cms.readUser(principal).getId();
                     } catch (CmsException e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.debug(e.getLocalizedMessage(), e);
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                 } else {
-                    // read the role, from the root ou
-                    principal = CmsRole.valueOf(principal).getGroupName();
+                    // read the role with role name
+                    CmsRole role = CmsRole.valueOfRoleName(principal);
+                    if (role == null) {
+                        // try to read the role in the old fashion with group name
+                        role = CmsRole.valueOfGroupName(principal);
+                    }
+                    principal = role.getGroupName();
                     try {
                         principalId = cms.readGroup(principal).getId();
                     } catch (CmsException e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.debug(e.getLocalizedMessage(), e);
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                 }

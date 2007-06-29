@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsOrgUnitSelectionList.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.5.6 
  */
@@ -237,7 +237,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
         List ret = new ArrayList();
         CmsRole role = null;
         if (getParamRole() != null) {
-            role = CmsRole.valueOf(getParamRole());
+            role = CmsRole.valueOfGroupName(getParamRole());
         }
         String ou = getParamOufqn();
         if (ou == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/06/28 08:25:40 $
- * Version: $Revision: 1.42.4.24 $
+ * Date   : $Date: 2007/06/29 16:33:54 $
+ * Version: $Revision: 1.42.4.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42.4.24 $ 
+ * @version $Revision: 1.42.4.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -518,7 +519,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
-
         }
 
         if (m_frozen) {
@@ -545,7 +545,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         }
 
         // check type id, type name and classs name
-        if ((getTypeId() < 0) || (getTypeName() == null) || (getClassName() == null)) {
+        if ((getTypeName() == null)
+            || (getClassName() == null)
+            || ((getTypeId() < 0) && (!m_typeName.equals(CmsResourceTypeUnknownFile.getStaticTypeName())) && (!m_typeName.equals(CmsResourceTypeUnknownFolder.getStaticTypeName())))) {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_3,
                 className,
@@ -800,7 +802,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (resource.isFile()) {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
-            I_CmsResourceType type = getResourceType(file.getTypeId());
+            I_CmsResourceType type = getResourceType(file);
             // update the relations after writing!!
             List links = null;
             if (type instanceof I_CmsLinkParseable) {
@@ -858,7 +860,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext(),
             resourceName,
             CmsResourceFilter.ALL);
-        I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+        I_CmsResourceType resourceType = getResourceType(resource);
         List links = null;
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
@@ -894,18 +896,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * Convenience method to return the initialized resource type 
-     * instance for the given id.<p>
+     * Convenience method to get the initialized resource type 
+     * instance for the given resource, including unknown resource types.<p>
      * 
-     * @param resourceType the id of the resource type to get
-     * @return the initialized resource type instance for the given id
-     * @throws CmsException if something goes wrong
+     * @param resource the resource to get the type for
+     * 
+     * @return the initialized resource type instance for the given resource
+     * 
+     * @throws CmsLoaderException if no resource type is available for the given resource
      * 
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
-    protected I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+    protected I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
 
-        return OpenCms.getResourceManager().getResourceType(resourceType);
+        return OpenCms.getResourceManager().getResourceType(resource);
     }
 
     /**
@@ -1028,7 +1032,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resource.getStructureId(),
             CmsResourceFilter.ALL);
         if (!undoneResource2.equals(undoneResource1)) {
-            I_CmsResourceType resourceType = getResourceType(resource.getTypeId());
+            I_CmsResourceType resourceType = getResourceType(resource);
             List links = null;
             if (resourceType instanceof I_CmsLinkParseable) {
                 I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;

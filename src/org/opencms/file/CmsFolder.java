@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2007/04/26 14:31:01 $
- * Version: $Revision: 1.25.4.5 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.25.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.4.5 $
+ * @version $Revision: 1.25.4.6 $
  * 
  * @since 6.0.0 
  */
@@ -142,12 +142,23 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     }
 
     /**
+     * Returns <code>true</code> if the given resource size describes a folder type.<p>
+     * 
+     * @param size the resource size to check 
+     * 
+     * @return true if the given resource size describes a folder type or false if it is no folder
+     */
+    public static final boolean isFolderSize(long size) {
+
+        return (size < 0);
+    }
+
+    /**
      * Returns <code>true</code> if the given resource type id describes a folder type.<p>
      * 
      * @param typeId the resource type id to check 
      * 
      * @return true if the given resource type id describes a folder type or false if it is no folder or an unknown type.
-     * 
      */
     public static final boolean isFolderType(int typeId) {
 

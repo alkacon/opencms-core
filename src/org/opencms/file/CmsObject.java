@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/06/28 18:41:18 $
- * Version: $Revision: 1.146.4.52 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.146.4.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
@@ -93,7 +94,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.52 $
+ * @version $Revision: 1.146.4.53 $
  * 
  * @since 6.0.0 
  */
@@ -322,7 +323,7 @@ public final class CmsObject {
     public void changeLock(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).changeLock(this, m_securityManager, resource);
+        getResourceType(resource).changeLock(this, m_securityManager, resource);
     }
 
     /**
@@ -403,7 +404,7 @@ public final class CmsObject {
     public void chflags(String resourcename, int flags) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).chflags(this, m_securityManager, resource, flags);
+        getResourceType(resource).chflags(this, m_securityManager, resource, flags);
     }
 
     /**
@@ -423,7 +424,7 @@ public final class CmsObject {
     public void chtype(String resourcename, int type) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).chtype(this, m_securityManager, resource, type);
+        getResourceType(resource).chtype(this, m_securityManager, resource, type);
     }
 
     /**
@@ -474,7 +475,7 @@ public final class CmsObject {
     throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, destination, siblingMode);
+        getResourceType(resource).copyResource(this, m_securityManager, resource, destination, siblingMode);
     }
 
     /**
@@ -513,7 +514,7 @@ public final class CmsObject {
     public void copyResourceToProject(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).copyResourceToProject(this, m_securityManager, resource);
+        getResourceType(resource).copyResourceToProject(this, m_securityManager, resource);
     }
 
     /**
@@ -725,12 +726,7 @@ public final class CmsObject {
     public CmsResource createSibling(String source, String destination, List properties) throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        return getResourceType(resource.getTypeId()).createSibling(
-            this,
-            m_securityManager,
-            resource,
-            destination,
-            properties);
+        return getResourceType(resource).createSibling(this, m_securityManager, resource, destination, properties);
     }
 
     /**
@@ -955,7 +951,7 @@ public final class CmsObject {
     public void deleteResource(String resourcename, CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).deleteResource(this, m_securityManager, resource, siblingMode);
+        getResourceType(resource).deleteResource(this, m_securityManager, resource, siblingMode);
     }
 
     /**
@@ -1993,7 +1989,7 @@ public final class CmsObject {
     public CmsResource importResource(String resourcename, CmsResource resource, byte[] content, List properties)
     throws CmsException {
 
-        return getResourceType(resource.getTypeId()).importResource(
+        return getResourceType(resource).importResource(
             this,
             m_securityManager,
             resourcename,
@@ -2285,7 +2281,7 @@ public final class CmsObject {
     public void moveResource(String source, String destination) throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).moveResource(this, m_securityManager, resource, destination);
+        getResourceType(resource).moveResource(this, m_securityManager, resource, destination);
     }
 
     /**
@@ -3741,7 +3737,7 @@ public final class CmsObject {
     public void removeResourceFromProject(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).removeResourceFromProject(this, m_securityManager, resource);
+        getResourceType(resource).removeResourceFromProject(this, m_securityManager, resource);
     }
 
     /**
@@ -3786,13 +3782,7 @@ public final class CmsObject {
     public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).replaceResource(
-            this,
-            m_securityManager,
-            resource,
-            type,
-            content,
-            properties);
+        getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
     }
 
     /**
@@ -3841,7 +3831,7 @@ public final class CmsObject {
     public void restoreResourceVersion(CmsUUID structureId, int version) throws CmsException {
 
         CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).restoreResource(this, m_securityManager, resource, version);
+        getResourceType(resource).restoreResource(this, m_securityManager, resource, version);
     }
 
     /**
@@ -3879,7 +3869,7 @@ public final class CmsObject {
     public void setDateExpired(String resourcename, long dateExpired, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateExpired(this, m_securityManager, resource, dateExpired, recursive);
+        getResourceType(resource).setDateExpired(this, m_securityManager, resource, dateExpired, recursive);
     }
 
     /**
@@ -3894,12 +3884,7 @@ public final class CmsObject {
     public void setDateLastModified(String resourcename, long dateLastModified, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateLastModified(
-            this,
-            m_securityManager,
-            resource,
-            dateLastModified,
-            recursive);
+        getResourceType(resource).setDateLastModified(this, m_securityManager, resource, dateLastModified, recursive);
     }
 
     /**
@@ -3914,12 +3899,7 @@ public final class CmsObject {
     public void setDateReleased(String resourcename, long dateReleased, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).setDateReleased(
-            this,
-            m_securityManager,
-            resource,
-            dateReleased,
-            recursive);
+        getResourceType(resource).setDateReleased(this, m_securityManager, resource, dateReleased, recursive);
     }
 
     /**
@@ -4036,7 +4016,7 @@ public final class CmsObject {
     public void undeleteResource(String resourcename, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).undelete(this, m_securityManager, resource, recursive);
+        getResourceType(resource).undelete(this, m_securityManager, resource, recursive);
     }
 
     /**
@@ -4076,7 +4056,7 @@ public final class CmsObject {
     public void undoChanges(String resourcename, CmsResource.CmsResourceUndoMode mode) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).undoChanges(this, m_securityManager, resource, mode);
+        getResourceType(resource).undoChanges(this, m_securityManager, resource, mode);
     }
 
     /**
@@ -4115,7 +4095,7 @@ public final class CmsObject {
     public void unlockResource(String resourcename) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).unlockResource(this, m_securityManager, resource);
+        getResourceType(resource).unlockResource(this, m_securityManager, resource);
     }
 
     /**
@@ -4168,7 +4148,7 @@ public final class CmsObject {
      */
     public CmsFile writeFile(CmsFile resource) throws CmsException {
 
-        return getResourceType(resource.getTypeId()).writeFile(this, m_securityManager, resource);
+        return getResourceType(resource).writeFile(this, m_securityManager, resource);
     }
 
     /**
@@ -4318,7 +4298,7 @@ public final class CmsObject {
     public void writePropertyObject(String resourcename, CmsProperty property) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).writePropertyObject(this, m_securityManager, resource, property);
+        getResourceType(resource).writePropertyObject(this, m_securityManager, resource, property);
     }
 
     /**
@@ -4336,7 +4316,7 @@ public final class CmsObject {
     public void writePropertyObjects(String resourcename, List properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).writePropertyObjects(this, m_securityManager, resource, properties);
+        getResourceType(resource).writePropertyObjects(this, m_securityManager, resource, properties);
     }
 
     /**
@@ -4467,6 +4447,23 @@ public final class CmsObject {
     }
 
     /**
+     * Convenience method to get the initialized resource type 
+     * instance for the resource, including unknown resource types.<p>
+     * 
+     * @param resource the resource to get the type for
+     * 
+     * @return the initialized resource type instance for the resource
+     * 
+     * @throws CmsLoaderException if no resource type is available for the given resource
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
+     */
+    private I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
+
+        return OpenCms.getResourceManager().getResourceType(resource);
+    }
+
+    /**
      * Convenience method to return the initialized resource type 
      * instance for the given id.<p>
      * 
@@ -4513,6 +4510,6 @@ public final class CmsObject {
     private void lockResource(String resourcename, CmsLockType type) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource.getTypeId()).lockResource(this, m_securityManager, resource, type);
+        getResourceType(resource).lockResource(this, m_securityManager, resource, type);
     }
 }

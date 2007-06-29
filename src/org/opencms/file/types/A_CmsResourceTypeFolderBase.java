@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2007/05/09 07:59:19 $
- * Version: $Revision: 1.16.4.17 $
+ * Date   : $Date: 2007/06/29 16:33:54 $
+ * Version: $Revision: 1.16.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.17 $ 
+ * @version $Revision: 1.16.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             CmsResource childResource = (CmsResource)resources.get(i);
             String childDestination = destination.concat(childResource.getName());
             // handle child resources
-            getResourceType(childResource.getTypeId()).copyResource(
+            getResourceType(childResource).copyResource(
                 cms,
                 securityManager,
                 childResource,
@@ -201,10 +201,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 }
                 try {
                     // touch, collecting the errors
-                    getResourceType(childResource.getTypeId()).writeFile(
-                        cms,
-                        securityManager,
-                        CmsFile.upgrade(childResource, cms));
+                    getResourceType(childResource).writeFile(cms, securityManager, CmsFile.upgrade(childResource, cms));
                 } catch (CmsException e) {
                     me.addException(e);
                 } catch (CmsRuntimeException e) {
@@ -280,7 +277,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 // handle child resources
-                getResourceType(childResource.getTypeId()).setDateExpired(
+                getResourceType(childResource).setDateExpired(
                     cms,
                     securityManager,
                     childResource,
@@ -316,7 +313,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 // handle child resources
-                getResourceType(childResource.getTypeId()).setDateLastModified(
+                getResourceType(childResource).setDateLastModified(
                     cms,
                     securityManager,
                     childResource,
@@ -352,7 +349,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 // handle child resources
-                getResourceType(childResource.getTypeId()).setDateReleased(
+                getResourceType(childResource).setDateReleased(
                     cms,
                     securityManager,
                     childResource,
@@ -384,7 +381,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 // handle child resources
-                getResourceType(childResource.getTypeId()).undelete(cms, securityManager, childResource, recursive);
+                getResourceType(childResource).undelete(cms, securityManager, childResource, recursive);
             }
         }
     }
@@ -433,7 +430,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                I_CmsResourceType type = getResourceType(childResource.getTypeId());
+                I_CmsResourceType type = getResourceType(childResource);
                 if (isMoved) {
                     securityManager.lockResource(cms.getRequestContext(), childResource, CmsLockType.EXCLUSIVE);
                 }

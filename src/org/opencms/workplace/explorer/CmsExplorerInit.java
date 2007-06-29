@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2007/03/09 14:19:47 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/06/29 16:33:55 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.2.4.4 $ 
+ * @version $Revision: 1.2.4.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -87,17 +87,16 @@ public class CmsExplorerInit extends CmsWorkplace {
         if (entries == null) {
             StringBuffer result = new StringBuffer();
             // get all available resource types
-            List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+            List allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
             for (int i = 0; i < allResTypes.size(); i++) {
                 // loop through all types
                 I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-                int resTypeId = type.getTypeId();
                 // get explorer type settings for current resource type
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
                 if (settings != null) {
                     // append the context menu of the current resource type 
-                    result.append(settings.getJSEntries(settings, resTypeId, getMessages()));
+                    result.append(settings.getJSEntries(settings, type.getTypeId(), getMessages()));
                 }
             }
             entries = result.toString();
@@ -125,40 +124,40 @@ public class CmsExplorerInit extends CmsWorkplace {
      * @return the server name
      */
     public String getServerName() {
-        
+
         return getJsp().getRequest().getServerName();
     }
-    
+
     /**
      * Returns the server path for initializing the explorer view.<p>
      * 
      * @return the server path
      */
     public String getServerPath() {
-    
+
         return OpenCms.getStaticExportManager().getVfsPrefix();
     }
-    
+
     /**
      * Returns the setting for the upload button for initializing the explorer view.<p>
      * 
      * @return the setting for the upload button
      */
     public String getShowFileUploadButtons() {
-        
+
         return OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowFileUploadButtonString();
     }
-    
+
     /**
      * Returns the name of the current user for initializing the explorer view.<p>
      * 
      * @return the name of the user
      */
     public String getUserName() {
-    
+
         return getSettings().getUser().getName();
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
