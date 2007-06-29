@@ -14,7 +14,7 @@
 	<xsd:complexType name="OpenCmsVarLinktest">
 		<xsd:sequence>
 			<xsd:element name="VfsLink" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="10" />
-			<xsd:element name="VarLink" type="OpenCmsVarLink" minOccurs="0" maxOccurs="10" />
+			<xsd:element name="VarLink" type="OpenCmsVarLink" minOccurs="1" maxOccurs="10" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
