@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2006/12/11 15:53:01 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/07/02 20:56:58 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.5.5 
  */
@@ -108,7 +108,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
-        resUtil.setRelativeTo(relativeTo);
+        resUtil.setRelativeTo(getCms().getRequestContext().addSiteRoot(relativeTo));
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
     }
 

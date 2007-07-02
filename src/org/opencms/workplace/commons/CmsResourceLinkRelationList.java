@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2007/06/04 15:08:50 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2007/07/02 20:56:58 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.9.1 
  */
@@ -114,7 +114,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
-        resUtil.setRelativeTo(jsp.getRequestContext().getFolderUri());
+        resUtil.setRelativeTo(getCms().getRequestContext().addSiteRoot(jsp.getRequestContext().getFolderUri()));
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
     }
 

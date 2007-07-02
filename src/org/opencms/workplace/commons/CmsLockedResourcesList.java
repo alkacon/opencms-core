@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2007/06/12 14:19:22 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/07/02 20:56:58 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
-        resUtil.setRelativeTo(relativeTo);
+        resUtil.setRelativeTo(getCms().getRequestContext().addSiteRoot(relativeTo));
 
         m_lockParams = lockParams;
         getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OWN_LOCKS).setVisible(

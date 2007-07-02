@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsShowSiblingsList.java,v $
- * Date   : $Date: 2007/05/14 08:07:38 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/07/02 20:56:58 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.9.2 
  */
@@ -79,7 +79,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
-        resUtil.setRelativeTo(jsp.getRequestContext().getFolderUri());
+        resUtil.setRelativeTo(getCms().getRequestContext().addSiteRoot(jsp.getRequestContext().getFolderUri()));
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
     }
 

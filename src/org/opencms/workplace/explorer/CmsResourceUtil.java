@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/06/29 16:33:55 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2007/07/02 20:57:24 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.18 $ 
+ * @version $Revision: 1.1.2.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -319,7 +319,7 @@ public final class CmsResourceUtil {
     public String getFullPath() {
 
         String path = m_resource.getRootPath();
-        if (m_siteMode != SITE_MODE_ROOT && m_cms != null) {
+        if ((m_siteMode != SITE_MODE_ROOT) && (m_cms != null)) {
             String site = getSite();
             if (path.startsWith(site)) {
                 path = path.substring(site.length());
@@ -607,10 +607,18 @@ public final class CmsResourceUtil {
     public String getPath() {
 
         String path = getFullPath();
-        if (m_relativeTo != null && path.startsWith(m_relativeTo)) {
-            path = path.substring(m_relativeTo.length());
-            if (path.length() == 0) {
-                path = ".";
+        if (m_relativeTo != null) {
+            path = getResource().getRootPath();
+            if (path.startsWith(m_relativeTo)) {
+                path = path.substring(m_relativeTo.length());
+                if (path.length() == 0) {
+                    path = ".";
+                }
+            } else {
+                String site = getSite();
+                if (path.startsWith(site + "/") || path.equals(site)) {
+                    path = path.substring(site.length());
+                }
             }
         }
         if (m_abbrevLength > 0) {
@@ -776,7 +784,7 @@ public final class CmsResourceUtil {
     public String getSite() {
 
         String site = null;
-        if (m_siteMode == SITE_MODE_MATCHING || m_cms == null) {
+        if ((m_siteMode == SITE_MODE_MATCHING) || (m_cms == null)) {
             site = CmsSiteManager.getSiteRoot(m_resource.getRootPath());
         } else if (m_siteMode == SITE_MODE_CURRENT) {
             site = m_cms.getRequestContext().getSiteRoot();
@@ -1030,7 +1038,14 @@ public final class CmsResourceUtil {
         }
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName());
         if (settings != null) {
-            return settings.isEditable(getCms(), getResource());
+            String rightSite = CmsSiteManager.getSiteRoot(getResource().getRootPath());
+            String currentSite = getCms().getRequestContext().getSiteRoot();
+            try {
+                getCms().getRequestContext().setSiteRoot(rightSite);
+                return settings.isEditable(getCms(), getResource());
+            } finally {
+                getCms().getRequestContext().setSiteRoot(currentSite);
+            }
         }
         return false;
     }

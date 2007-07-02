@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/06/28 18:39:13 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2007/07/02 20:56:58 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.13 $ 
+ * @version $Revision: 1.1.2.14 $ 
  * 
  * @since 6.5.5 
  */
@@ -125,7 +125,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         // set the right resource util parameters
         CmsResourceUtil resUtil = getResourceUtil();
         resUtil.setAbbrevLength(50);
-        resUtil.setRelativeTo(relativeTo);
+        resUtil.setRelativeTo(getCms().getRequestContext().addSiteRoot(relativeTo));
         resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
 
         m_publishRelated = publishRelated;
@@ -212,6 +212,12 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
      */
     protected void fillDetails(String detailId) {
 
+        CmsObject cms;
+        try {
+            cms = OpenCms.initCmsObject(getCms());
+        } catch (CmsException e) {
+            cms = getCms();
+        }
         List publishResources = getSettings().getPublishList().getAllResources();
 
         // get content
@@ -224,71 +230,30 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     List relatedResources = new ArrayList();
                     CmsResource resource = getResourceUtil(item).getResource();
 
-                    // get and iterate over all related resources
-                    Iterator itRelations = getCms().getRelationsForResource(
-                        getCms().getSitePath(resource),
-                        CmsRelationFilter.TARGETS.filterStrong()).iterator();
-                    while (itRelations.hasNext()) {
-                        CmsRelation relation = (CmsRelation)itRelations.next();
-                        CmsResource target = null;
-                        try {
-                            target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
-                        } catch (CmsVfsResourceNotFoundException e) {
-                            // target not found, ignore, will come later in the link check dialog
-                        }
-                        // just add resources that may come in question
-                        if ((target != null) && !publishResources.contains(target) && !target.getState().isUnchanged()) {
-                            String relationName = target.getRootPath();
-                            if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
-                                // same site
-                                relationName = getCms().getSitePath(target);
-                            } else {
-                                // other site
-                                String site = CmsSiteManager.getSiteRoot(relationName);
-                                String siteName = site;
-                                if (site != null) {
-                                    relationName = relationName.substring(site.length());
-                                    siteName = CmsSiteManager.getSite(site).getTitle();
-                                } else {
-                                    siteName = "/";
-                                }
-                                relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                                    siteName,
-                                    relationName});
-                            }
-                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                            if (!getCms().getLock(target).isLockableBy(getCms().getRequestContext().currentUser())) {
-                                // mark not lockable resources
-                                relationName = relationName + "*";
-                            } else if (m_publishRelated) {
-                                // mark related resources to be published
-                                relationName = relationName + "!";
-                            }
-                            if (!resourceNames.contains(relationName)) {
-                                relatedResources.add(relationName);
-                            }
-                        }
-                    }
-
-                    if (((Boolean)item.get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
-                        // mark the reverse references
-                        itRelations = getCms().getRelationsForResource(
-                            getCms().getSitePath(resource),
-                            CmsRelationFilter.SOURCES.filterStrong()).iterator();
+                    String rightSite = CmsSiteManager.getSiteRoot(resource.getRootPath());
+                    String oldSite = cms.getRequestContext().getSiteRoot();
+                    try {
+                        cms.getRequestContext().setSiteRoot(rightSite);
+                        // get and iterate over all related resources
+                        Iterator itRelations = cms.getRelationsForResource(
+                            cms.getSitePath(resource),
+                            CmsRelationFilter.TARGETS.filterStrong()).iterator();
                         while (itRelations.hasNext()) {
                             CmsRelation relation = (CmsRelation)itRelations.next();
-                            CmsResource source = null;
+                            CmsResource target = null;
                             try {
-                                source = relation.getSource(getCms(), CmsResourceFilter.ALL);
+                                target = relation.getTarget(cms, CmsResourceFilter.ALL);
                             } catch (CmsVfsResourceNotFoundException e) {
-                                // source not found, ignore, will come later in the link check dialog
+                                // target not found, ignore, will come later in the link check dialog
                             }
                             // just add resources that may come in question
-                            if ((source != null) && publishResources.contains(source)) {
-                                String relationName = source.getRootPath();
-                                if (relationName.startsWith(getCms().getRequestContext().getSiteRoot())) {
+                            if ((target != null)
+                                && !publishResources.contains(target)
+                                && !target.getState().isUnchanged()) {
+                                String relationName = target.getRootPath();
+                                if (relationName.startsWith(cms.getRequestContext().getSiteRoot())) {
                                     // same site
-                                    relationName = getCms().getSitePath(source);
+                                    relationName = cms.getSitePath(target);
                                 } else {
                                     // other site
                                     String site = CmsSiteManager.getSiteRoot(relationName);
@@ -304,13 +269,62 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                         relationName});
                                 }
                                 relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                                // mark as reverse reference
-                                relationName = relationName + "$";
+                                if (!cms.getLock(target).isLockableBy(cms.getRequestContext().currentUser())) {
+                                    // mark not lockable resources
+                                    relationName = relationName + "*";
+                                } else if (m_publishRelated) {
+                                    // mark related resources to be published
+                                    relationName = relationName + "!";
+                                }
                                 if (!resourceNames.contains(relationName)) {
                                     relatedResources.add(relationName);
                                 }
                             }
                         }
+                        if (((Boolean)item.get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
+                            // mark the reverse references
+                            itRelations = cms.getRelationsForResource(
+                                cms.getSitePath(resource),
+                                CmsRelationFilter.SOURCES.filterStrong()).iterator();
+                            while (itRelations.hasNext()) {
+                                CmsRelation relation = (CmsRelation)itRelations.next();
+                                CmsResource source = null;
+                                try {
+                                    source = relation.getSource(cms, CmsResourceFilter.ALL);
+                                } catch (CmsVfsResourceNotFoundException e) {
+                                    // source not found, ignore, will come later in the link check dialog
+                                }
+                                // just add resources that may come in question
+                                if ((source != null) && publishResources.contains(source)) {
+                                    String relationName = source.getRootPath();
+                                    if (relationName.startsWith(cms.getRequestContext().getSiteRoot())) {
+                                        // same site
+                                        relationName = cms.getSitePath(source);
+                                    } else {
+                                        // other site
+                                        String site = CmsSiteManager.getSiteRoot(relationName);
+                                        String siteName = site;
+                                        if (site != null) {
+                                            relationName = relationName.substring(site.length());
+                                            siteName = CmsSiteManager.getSite(site).getTitle();
+                                        } else {
+                                            siteName = "/";
+                                        }
+                                        relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
+                                            siteName,
+                                            relationName});
+                                    }
+                                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                                    // mark as reverse reference
+                                    relationName = relationName + "$";
+                                    if (!resourceNames.contains(relationName)) {
+                                        relatedResources.add(relationName);
+                                    }
+                                }
+                            }
+                        }
+                    } finally {
+                        cms.getRequestContext().setSiteRoot(oldSite);
                     }
                     if (!relatedResources.isEmpty()) {
                         item.set(detailId, relatedResources);
