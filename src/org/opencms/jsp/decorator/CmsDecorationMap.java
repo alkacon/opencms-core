@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2007/06/26 10:09:21 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/07/02 11:53:09 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -186,11 +186,11 @@ public class CmsDecorationMap implements Comparable {
     private Locale extractLocale() {
 
         Locale loc = null;
-        int underscore = m_name.indexOf("_");
+        int underscore = m_name.lastIndexOf("_");
         if (underscore > -1) {
             String localeName = m_name.substring(underscore + 1);
-            if (localeName.indexOf(".") > -1) {
-                localeName = localeName.substring(0, localeName.indexOf("."));
+            if (localeName.lastIndexOf(".") > -1) {
+                localeName = localeName.substring(0, localeName.lastIndexOf("."));
             }
             loc = new Locale(localeName);
         }

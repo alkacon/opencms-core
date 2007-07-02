@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2006/08/19 13:40:59 $
- * Version: $Revision: 1.2.4.1 $
+ * Date   : $Date: 2007/07/02 11:53:09 $
+ * Version: $Revision: 1.2.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2.4.1 $ 
+ * @version $Revision: 1.2.4.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -376,12 +376,12 @@ public class CmsDecorationDefintion {
         baseFilename.append(CmsResource.getParentFolder(m_configurationFile));
         String filename = cms.readResource(m_configurationFile).getName();
         // get rid of the fileextension if there is one
-        if (filename.indexOf(".") > -1) {
-            filename = filename.substring(0, filename.indexOf("."));
+        if (filename.lastIndexOf(".") > -1) {
+            filename = filename.substring(0, filename.lastIndexOf("."));
         }
         // extract the basename
-        if (filename.indexOf("_") > -1) {
-            filename = filename.substring(0, filename.indexOf("_"));
+        if (filename.lastIndexOf("_") > -1) {
+            filename = filename.substring(0, filename.lastIndexOf("_"));
         }
         baseFilename.append(filename);
         String basename = baseFilename.toString();
