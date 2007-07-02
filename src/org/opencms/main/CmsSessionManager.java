@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/05/30 13:56:16 $
- * Version: $Revision: 1.12.4.19 $
+ * Date   : $Date: 2007/07/02 17:24:46 $
+ * Version: $Revision: 1.12.4.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12.4.19 $ 
+ * @version $Revision: 1.12.4.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -539,7 +539,9 @@ public class CmsSessionManager {
      */
     protected void shutdown() throws Exception {
 
-        m_sessionStorageProvider.shutdown();
+        if (m_sessionStorageProvider != null) {
+            m_sessionStorageProvider.shutdown();
+        }
     }
 
     /**
