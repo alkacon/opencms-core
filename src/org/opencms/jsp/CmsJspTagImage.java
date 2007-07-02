@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2007/05/29 10:53:53 $
- * Version: $Revision: 1.2.4.4 $
+ * Date   : $Date: 2007/07/02 15:19:28 $
+ * Version: $Revision: 1.2.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2.4.4 $ 
+ * @version $Revision: 1.2.4.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -152,6 +153,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
+        
+        // resolve possible relative URI
+        src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
         CmsResource imageRes = cms.readResource(src);
 
         // calculate target scale dimensions (if required)  
