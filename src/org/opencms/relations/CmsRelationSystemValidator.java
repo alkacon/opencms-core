@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/07/03 20:40:33 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/07/03 20:56:51 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.3.0 
  */
@@ -207,14 +207,14 @@ public class CmsRelationSystemValidator {
         boolean foundBrokenLinks = false;
         for (int index = 0, size = validatableResources.size(); index < size; index++) {
 
-            // set progress in thread (last 80 percent)
+            // set progress in thread (next 20 percent; leave rest for creating the list and the html)
             if (thread != null) {
 
                 if (thread.isInterrupted()) {
                     throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
-                thread.setProgress((index * 80 / resources.size()) + 20);
+                thread.setProgress((index * 20 / resources.size()) + 20);
             }
 
             CmsResource resource = (CmsResource)validatableResources.get(index);
