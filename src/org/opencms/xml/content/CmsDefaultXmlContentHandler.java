@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/06/29 16:32:02 $
- * Version: $Revision: 1.46.4.13 $
+ * Date   : $Date: 2007/07/03 16:42:12 $
+ * Version: $Revision: 1.46.4.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -81,7 +82,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.46.4.13 $ 
+ * @version $Revision: 1.46.4.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -799,7 +800,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 Messages.ERR_XMLCONTENT_CHECK_INVALID_ELEM_1,
                 elementName));
         }
-        if (!CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())) {
+        if (!CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
+            && !CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName())) {
             // element is not a OpenCmsVfsFile
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_CHECK_INVALID_TYPE_1,
@@ -906,7 +908,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if ((schemaType != null) && schemaType.isSimpleType()) {
             if ((schemaType.getMinOccurs() == 0)
-                && CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
+                && (CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName()) || CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName()))
                 && !m_relations.containsKey(elementPath)
                 && !m_relations.containsKey(RELATION_TYPE_PREFIX + elementPath)) {
                 // add default check rule for the element
@@ -1488,12 +1490,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
 
         // if there is a value of type file ref
-        if ((value == null) || !(value instanceof CmsXmlVfsFileValue)) {
+        if ((value == null) || (!(value instanceof CmsXmlVfsFileValue) && !(value instanceof CmsXmlVarLinkValue))) {
             return false;
         }
         // if the value has a link (this will automatically fix, for instance, the path of moved resources)
-        CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
-        if (link == null) {
+        CmsLink link = null;
+        if (value instanceof CmsXmlVfsFileValue) {
+            link = ((CmsXmlVfsFileValue)value).getLink(cms);
+        } else if (value instanceof CmsXmlVarLinkValue) {
+            link = ((CmsXmlVarLinkValue)value).getLink(cms);
+        }
+        if ((link == null) || !link.isInternal()) {
             return false;
         }
         String siteRoot = CmsSiteManager.getSiteRoot(link.getTarget());

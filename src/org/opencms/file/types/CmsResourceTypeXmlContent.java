@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/02/22 14:39:55 $
- * Version: $Revision: 1.22.8.10 $
+ * Date   : $Date: 2007/07/03 16:42:12 $
+ * Version: $Revision: 1.22.8.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.CmsXmlHtmlValue;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.10 $ 
+ * @version $Revision: 1.22.8.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,6 +235,12 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                     CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
                     CmsLink link = refValue.getLink(cms);
                     if (link != null) {
+                        links.add(link);
+                    }
+                } else if (value instanceof CmsXmlVarLinkValue) {
+                    CmsXmlVarLinkValue refValue = (CmsXmlVarLinkValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if ((link != null) && link.isInternal()) {
                         links.add(link);
                     }
                 }
