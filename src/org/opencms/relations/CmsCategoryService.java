@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/06/18 12:28:52 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/07/03 20:41:47 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.9.2
  */
@@ -324,13 +324,19 @@ public class CmsCategoryService {
             CmsRelationFilter.TARGETS.filterType(CmsRelationType.CATEGORY)).iterator();
         while (itRelations.hasNext()) {
             CmsRelation relation = (CmsRelation)itRelations.next();
-            CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
-            CmsCategory category = new CmsCategory(
-                resource.getStructureId(),
-                resource.getRootPath().substring(BASE_PATH.length()),
-                cms.readPropertyObject(resource, "Title", false).getValue(),
-                cms.readPropertyObject(resource, "Description", false).getValue());
-            result.add(category);
+            try {
+                CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
+                CmsCategory category = new CmsCategory(
+                    resource.getStructureId(),
+                    resource.getRootPath().substring(BASE_PATH.length()),
+                    cms.readPropertyObject(resource, "Title", false).getValue(),
+                    cms.readPropertyObject(resource, "Description", false).getValue());
+                result.add(category);
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
         }
         return result;
     }
