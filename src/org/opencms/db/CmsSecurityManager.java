@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/07/03 09:19:33 $
- * Version: $Revision: 1.97.4.64 $
+ * Date   : $Date: 2007/07/03 20:40:32 $
+ * Version: $Revision: 1.97.4.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4928,7 +4928,7 @@ public final class CmsSecurityManager {
      * 
      * @return a map with lists of invalid links 
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
-     *          keyed by resource names
+     *          keyed by root paths
      * 
      * @throws Exception if something goes wrong
      */

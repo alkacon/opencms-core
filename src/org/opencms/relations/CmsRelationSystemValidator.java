@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/07/03 14:15:14 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2007/07/03 20:40:33 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.3.0 
  */
@@ -105,7 +105,7 @@ public class CmsRelationSystemValidator {
      * 
      * @return a map with lists of invalid links 
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
-     *          keyed by resource names
+     *          keyed by root paths
      */
     public Map validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
 

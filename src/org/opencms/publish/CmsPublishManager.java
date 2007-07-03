@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/06/28 18:41:16 $
- * Version: $Revision: 1.1.2.16 $
+ * Date   : $Date: 2007/07/03 20:40:33 $
+ * Version: $Revision: 1.1.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.16 $
+ * @version $Revision: 1.1.2.17 $
  * 
  * @since 6.5.5
  */
@@ -470,7 +470,7 @@ public class CmsPublishManager {
      * 
      * @return a map with lists of invalid links 
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
-     *          keyed by resource names
+     *          keyed by root paths
      * 
      * TODO: change return value to List of CmsRelation
      * 
