@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/07/03 18:04:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/07/03 21:00:27 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.util.CmsStringUtil;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.0.0
  */
@@ -722,7 +723,7 @@ public class CmsProgressWidget {
         msg.append("\n");
         msg.append(t.getMessage());
         msg.append("\n");
-        msg.append(t.getStackTrace());
+        msg.append(CmsException.getStackTraceAsString(t));
 
         return createError(msg.toString());
     }
