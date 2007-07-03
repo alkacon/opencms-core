@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/07/02 20:56:58 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/07/03 07:49:37 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.14 $ 
+ * @version $Revision: 1.1.2.15 $ 
  * 
  * @since 6.5.5 
  */
@@ -231,6 +231,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     CmsResource resource = getResourceUtil(item).getResource();
 
                     String rightSite = CmsSiteManager.getSiteRoot(resource.getRootPath());
+                    if (rightSite == null) {
+                        rightSite = "";
+                    }
                     String oldSite = cms.getRequestContext().getSiteRoot();
                     try {
                         cms.getRequestContext().setSiteRoot(rightSite);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/07/02 20:57:24 $
- * Version: $Revision: 1.1.2.19 $
+ * Date   : $Date: 2007/07/03 07:49:37 $
+ * Version: $Revision: 1.1.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.19 $ 
+ * @version $Revision: 1.1.2.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -572,7 +572,7 @@ public final class CmsResourceUtil {
         } catch (Throwable e) {
             String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
             try {
-                getCms().getRequestContext().setSiteRoot("/");
+                getCms().getRequestContext().setSiteRoot("");
                 navText = getCms().readPropertyObject(
                     m_resource.getRootPath(),
                     CmsPropertyDefinition.PROPERTY_NAVTEXT,
@@ -645,7 +645,7 @@ public final class CmsResourceUtil {
         } catch (Throwable e) {
             String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
             try {
-                getCms().getRequestContext().setSiteRoot("/");
+                getCms().getRequestContext().setSiteRoot("");
                 permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
             } catch (Throwable e1) {
                 permissions = e1.getMessage();
@@ -968,7 +968,7 @@ public final class CmsResourceUtil {
         } catch (Throwable e) {
             String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
             try {
-                getCms().getRequestContext().setSiteRoot("/");
+                getCms().getRequestContext().setSiteRoot("");
                 title = getCms().readPropertyObject(
                     m_resource.getRootPath(),
                     CmsPropertyDefinition.PROPERTY_TITLE,
@@ -1039,6 +1039,9 @@ public final class CmsResourceUtil {
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName());
         if (settings != null) {
             String rightSite = CmsSiteManager.getSiteRoot(getResource().getRootPath());
+            if (rightSite == null) {
+                rightSite = "";
+            }
             String currentSite = getCms().getRequestContext().getSiteRoot();
             try {
                 getCms().getRequestContext().setSiteRoot(rightSite);
