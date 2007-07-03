@@ -19,6 +19,7 @@
 			</importversions>
 			<immutables>
 				<resource uri="/system/"/>
+				<resource uri="/system/categories/"/>
 				<resource uri="/system/galleries/"/>
 				<resource uri="/system/galleries/download/"/>
 				<resource uri="/system/galleries/externallinks/"/>
