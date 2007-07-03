@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/07/03 14:15:13 $
- * Version: $Revision: 1.27.4.22 $
+ * Date   : $Date: 2007/07/03 18:04:20 $
+ * Version: $Revision: 1.27.4.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.22 $ 
+ * @version $Revision: 1.27.4.23 $ 
  * 
  * @since 6.0.0 
  */

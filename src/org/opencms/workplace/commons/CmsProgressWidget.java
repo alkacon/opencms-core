@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/07/03 17:10:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/07/03 18:04:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.0.0
  */
@@ -410,6 +410,7 @@ public class CmsProgressWidget {
         // function reset progress bar
         result.append("\tfunction resetProgressBar() {\n");
         result.append("\t\tvar bar = document.getElementById(\"progressbar_bar\");\n");
+        result.append("\t\tbar.parentNode.style.display = \"inline\";\n");
         result.append("\t\tbar.style.width = \"0%\";\n");
         result.append("\t\tbar.style.display = \"block\";\n");
 
@@ -422,10 +423,10 @@ public class CmsProgressWidget {
         result.append("\t\terror.style.display = \"none\";\n");
 
         result.append("\t\tvar wait = document.getElementById(\"progressbar_wait\");\n");
-        result.append("\t\twait.parentNode.style.display = \"block\";\n");
         result.append("\t\twait.style.display = \"none\";\n");
 
         result.append("\t\tvar desc = document.getElementById(\"progressbar_desc\");\n");
+        result.append("\t\tdesc.style.display = \"block\";\n");
         result.append("\t\tdesc.innerHTML = \"\";\n");
 
         result.append("\t\t\t\t\tprogressResult = \"\";\n");

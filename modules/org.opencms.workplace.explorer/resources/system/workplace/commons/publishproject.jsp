@@ -112,6 +112,10 @@ function reloadReport() {
    
    // show progress bar
    resetProgressBar();
+   document.getElementById("progressbar_bar").parentNode.style.display = "none";
+   document.getElementById("progressbar_percent").style.display = "none";
+   document.getElementById("progressbar_wait").style.display = "block";
+   
    document.getElementById("progress").style.display = "block";   
      
    restartProgress();
@@ -129,7 +133,7 @@ function restartProgress() {
 		return;
 	}
 	progressState = 1;
-	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources + '&<%= CmsProgressWidget.PARAMETER_KEY%>=<%= wp.getProgress().getKey()%>' + '&<%= CmsProgressWidget.PARAMETER_SHOWWAITTIME%>=<%= wp.getProgress().getShowWaitTime()%>', 'updateProgressBar');
+	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources + '&<%= CmsProgressWidget.PARAMETER_KEY%>=<%= wp.getProgress().getKey()%>' + '&<%= CmsProgressWidget.PARAMETER_SHOWWAITTIME%>=<%= wp.getProgress().getShowWaitTime()%>' + '&<%= CmsProgressWidget.PARAMETER_REFRESHRATE%>=<%= wp.getProgress().getRefreshRate()%>', 'updateProgressBar');
 }
 
 // -->
