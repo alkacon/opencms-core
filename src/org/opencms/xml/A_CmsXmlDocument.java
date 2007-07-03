@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/04/10 11:20:03 $
- * Version: $Revision: 1.30.4.1 $
+ * Date   : $Date: 2007/07/03 09:33:29 $
+ * Version: $Revision: 1.30.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -60,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30.4.1 $ 
+ * @version $Revision: 1.30.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +116,35 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         result.append('/');
         result.append(name);
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#copyLocale(java.util.List, java.util.Locale)
+     */
+    public void copyLocale(List possibleSources, Locale destination) throws CmsXmlException {
+
+        if (hasLocale(destination)) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
+        }
+        Iterator i = possibleSources.iterator();
+        Locale source = null;
+        while (i.hasNext() && (source == null)) {
+            // check all locales and try to find the first match
+            Locale candidate = (Locale)i.next();
+            if (hasLocale(candidate)) {
+                // locale has been found
+                source = candidate;
+            }
+        }
+        if (source != null) {
+            // found a locale, copy this to the destination
+            copyLocale(source, destination);
+        }
+
+        // no matching locale has been found
+        throw new CmsXmlException(Messages.get().container(
+            Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+            CmsLocaleManager.getLocaleNames(possibleSources)));
     }
 
     /**
