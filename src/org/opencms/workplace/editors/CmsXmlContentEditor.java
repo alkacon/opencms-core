@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2007/06/28 08:01:27 $
- * Version: $Revision: 1.68.4.12 $
+ * Date   : $Date: 2007/07/03 11:06:17 $
+ * Version: $Revision: 1.68.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.68.4.12 $ 
+ * @version $Revision: 1.68.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -972,26 +973,28 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     protected void initElementLanguage() {
 
-        // get all locales of the content
-        List locales = new ArrayList();
-        if (m_content != null) {
-            locales = m_content.getLocales();
-        }
-        Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+        // get the default locale for the resource
+        Locale requiredLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(
+            0);
 
-        if (locales.size() > 0) {
-            // locale element present, get the language
-            if (locales.contains(defaultLocale)) {
-                // get the element for the default locale
-                setParamElementlanguage(defaultLocale.toString());
-                return;
-            } else {
-                // get the first element that can be found
-                setParamElementlanguage(locales.get(0).toString());
-                return;
+        if ((m_content != null) && (m_content.getLocales().size() > 0) && !m_content.hasLocale(requiredLocale)) {
+            // required locale not available, check if an existing default locale should be copied as "template"
+            try {
+                String defaultLocales = getCms().readPropertyObject(
+                    getParamResource(),
+                    CmsPropertyDefinition.PROPERTY_LOCALES_DEFAULT,
+                    true).getValue("");
+                // a list of possible default locales has been set as propertry, try to find a match
+                m_content.copyLocale(CmsLocaleManager.getLocales(defaultLocales), requiredLocale);
+                writeContent();
+                // no exception means a match was found
+            } catch (CmsException e) {
+                // either property could not be read, or no match was found for the required locale
+                // use the first Locale that can be found
+                requiredLocale = (Locale)m_content.getLocales().get(0);
             }
         }
-        setParamElementlanguage(defaultLocale.toString());
+        setParamElementlanguage(requiredLocale.toString());
     }
 
     /**
