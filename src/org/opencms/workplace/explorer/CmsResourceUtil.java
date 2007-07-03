@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/07/03 07:49:37 $
- * Version: $Revision: 1.1.2.20 $
+ * Date   : $Date: 2007/07/03 20:42:15 $
+ * Version: $Revision: 1.1.2.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.20 $ 
+ * @version $Revision: 1.1.2.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -804,6 +805,26 @@ public final class CmsResourceUtil {
     public CmsResourceUtilSiteMode getSiteMode() {
 
         return m_siteMode;
+    }
+
+    /**
+     * Returns the title of the site.<p>
+     * 
+     * @return the title of the site
+     */
+    public String getSiteTitle() {
+
+        String title = getSite();
+        String rootSite = getCms().getRequestContext().getSiteRoot();
+        try {
+            getCms().getRequestContext().setSiteRoot("");
+            title = getCms().readPropertyObject(title, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(title);
+        } catch (CmsException e) {
+            // ignore
+        } finally {
+            getCms().getRequestContext().setSiteRoot(rootSite);            
+        }
+        return title;
     }
 
     /**

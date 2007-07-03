@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/07/03 14:15:13 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/07/03 20:42:15 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.15 $ 
+ * @version $Revision: 1.1.2.16 $ 
  * 
  * @since 6.1.0 
  */
@@ -489,7 +489,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         } else {
             item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
         }
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSite());
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSiteTitle());
         setAdditionalColumns(item, resUtil);
         return item;
     }
