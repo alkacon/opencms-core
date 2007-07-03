@@ -4,27 +4,68 @@
   <configuration language="en">
     <area.name/>
     <layout.version><![CDATA[accessible]]></layout.version>
-    <navigation.startfolder>/sites/default/</navigation.startfolder>
+    <navigation.startfolder>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/]]></target>
+        <uuid>224c41e1-2944-11dc-8159-6188b772e9df</uuid>
+      </link>
+    </navigation.startfolder>
     <headnav.menus>true</headnav.menus>
     <headnav.menudepth><![CDATA[2]]></headnav.menudepth>
     <headnav.markcurrent>true</headnav.markcurrent>
     <navleft.showselected>false</navleft.showselected>
-    <login.uri/>
-    <help.uri/>
-    <page.form.letter/>
-    <page.form.recommend/>
+    <login.uri>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </login.uri>
+    <help.uri>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </help.uri>
+    <page.form.letter>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </page.form.letter>
+    <page.form.recommend>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </page.form.recommend>
   </configuration>
   <configuration language="de">
     <area.name/>
     <layout.version><![CDATA[accessible]]></layout.version>
-    <navigation.startfolder/>
+    <navigation.startfolder>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </navigation.startfolder>
     <headnav.menus>true</headnav.menus>
     <headnav.menudepth><![CDATA[2]]></headnav.menudepth>
     <headnav.markcurrent>true</headnav.markcurrent>
     <navleft.showselected>false</navleft.showselected>
-    <login.uri/>
-    <help.uri/>
-    <page.form.letter/>
-    <page.form.recommend/>
+    <login.uri>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </login.uri>
+    <help.uri>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </help.uri>
+    <page.form.letter>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </page.form.letter>
+    <page.form.recommend>
+      <link type="WEAK">
+        <target><![CDATA[]]></target>
+      </link>
+    </page.form.recommend>
   </configuration>
 </configurations>
