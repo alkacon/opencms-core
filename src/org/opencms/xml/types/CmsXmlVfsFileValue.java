@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2007/06/29 16:32:02 $
- * Version: $Revision: 1.18.8.5 $
+ * Date   : $Date: 2007/07/03 17:01:20 $
+ * Version: $Revision: 1.18.8.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18.8.5 $ 
+ * @version $Revision: 1.18.8.6 $ 
  * 
  * @since 7.0.0 
  */
@@ -228,11 +228,15 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
                 path = cms.getRequestContext().removeSiteRoot(value);
                 // get the site path
                 path = CmsLinkManager.getSitePath(cms, null, path);
+                if (path == null) {
+                    path = value;
+                }
             } finally {
                 cms.getRequestContext().setSiteRoot(oldSite);
             }
         }
-        if (path == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            m_stringValue = null;
             return;
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(this);
