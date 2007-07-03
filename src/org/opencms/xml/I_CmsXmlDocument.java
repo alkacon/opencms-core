@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/08/21 14:16:56 $
- * Version: $Revision: 1.16.4.3 $
+ * Date   : $Date: 2007/07/03 09:33:30 $
+ * Version: $Revision: 1.16.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16.4.3 $ 
+ * @version $Revision: 1.16.4.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,12 +63,30 @@ public interface I_CmsXmlDocument {
     void addLocale(CmsObject cms, Locale locale) throws CmsXmlException;
 
     /**
+     * Copies the content from the first matching source locale that exists in this XML document 
+     * to the given destination locale in this XML document.<p>
+     * 
+     * The list of possible sources, has to be sorted in order of preference. 
+     * The first match that exists in this XML document is used as source for the destination locale.
+     * No "locale simplification" ("en_EN" to "en" etc.) is performed for the match.<p>
+     * 
+     * @param possibleSources the possible source locales in order of preference, 
+     *      must contain objects of type {@link Locale}
+     * @param destination the destination locale
+     * 
+     * @throws CmsXmlException in case non of the source locales did not exist, 
+     *      or the destination locale already exists in the document, or if something else goes wrong
+     */
+    void copyLocale(List possibleSources, Locale destination) throws CmsXmlException;
+
+    /**
      * Copies the content of the given source locale to the given destination locale in this XML document.<p>
      * 
      * @param source the source locale 
      * @param destination the destination locale
      * 
-     * @throws CmsXmlException in case either the source locale did not exist, or the destination locale already exists in the document, or if something else goes wrong
+     * @throws CmsXmlException in case either the source locale did not exist, 
+     *      or the destination locale already exists in the document, or if something else goes wrong
      */
     void copyLocale(Locale source, Locale destination) throws CmsXmlException;
 

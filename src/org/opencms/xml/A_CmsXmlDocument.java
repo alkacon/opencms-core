@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2007/07/03 09:33:29 $
- * Version: $Revision: 1.30.4.2 $
+ * Date   : $Date: 2007/07/03 09:34:51 $
+ * Version: $Revision: 1.30.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30.4.2 $ 
+ * @version $Revision: 1.30.4.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,12 +139,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         if (source != null) {
             // found a locale, copy this to the destination
             copyLocale(source, destination);
+        } else {
+            // no matching locale has been found
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+                CmsLocaleManager.getLocaleNames(possibleSources)));
         }
-
-        // no matching locale has been found
-        throw new CmsXmlException(Messages.get().container(
-            Messages.ERR_LOCALE_NOT_AVAILABLE_1,
-            CmsLocaleManager.getLocaleNames(possibleSources)));
     }
 
     /**
