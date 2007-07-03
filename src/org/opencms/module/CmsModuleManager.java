@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/07/03 10:19:34 $
- * Version: $Revision: 1.35.4.6 $
+ * Date   : $Date: 2007/07/03 17:59:09 $
+ * Version: $Revision: 1.35.4.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35.4.6 $ 
+ * @version $Revision: 1.35.4.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,18 +583,25 @@ public class CmsModuleManager {
                         LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                     }
                     if (cms.existsResource(currentResource)) {
-                        // lock the resource
-                        cms.lockResource(currentResource);
+                        CmsLock lock = cms.getLock(currentResource);
+                        if (lock.isUnlocked()) {
+                            // lock the resource
+                            cms.lockResource(currentResource);
+                        } if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+                            // steal the resource
+                            cms.changeLock(currentResource);
+                        }
                         // delete the resource
                         cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
                         // update the report
-
                         report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             currentResource));
-                        // unlock the resource (so it gets deleted with next publish)
-                        cms.unlockResource(currentResource);
+                        if (cms.existsResource(currentResource)) {
+                            // unlock the resource (so it gets deleted with next publish)
+                            cms.unlockResource(currentResource);
+                        }
                     }
                 } catch (CmsException e) {
                     // ignore the exception and delete the next resource
