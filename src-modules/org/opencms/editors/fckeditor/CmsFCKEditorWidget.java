@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2006/12/08 16:25:47 $
- * Version: $Revision: 1.2.4.3 $
+ * Date   : $Date: 2007/07/03 17:06:52 $
+ * Version: $Revision: 1.2.4.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2.4.3 $ 
+ * @version $Revision: 1.2.4.4 $ 
  * 
  * @since 6.1.7
  */
@@ -338,6 +338,11 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             result.append("\";\n");
             // set the styles XML path to a value that the JS will create the selector
             getHtmlWidgetOption().setStylesXmlPath("true");
+        }
+
+        // set full page mode for current editor widget if configured
+        if (getHtmlWidgetOption().isFullPage()) {
+            result.append("editor.Config[\"FullPage\"] = true;\n");
         }
 
         result.append("editor.Width = \"100%\";\n");
