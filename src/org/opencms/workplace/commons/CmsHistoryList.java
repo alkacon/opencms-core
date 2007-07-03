@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/06/28 12:52:49 $
- * Version: $Revision: 1.5.4.23 $
+ * Date   : $Date: 2007/07/03 18:00:43 $
+ * Version: $Revision: 1.5.4.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.5.4.23 $ 
+ * @version $Revision: 1.5.4.24 $ 
  * 
  * @since 6.0.2 
  */
@@ -608,10 +609,10 @@ public class CmsHistoryList extends A_CmsListDialog {
             getCms()) {
 
             /**
-             * @see org.opencms.workplace.list.CmsListResourceIconAction#defButtonHtml(org.opencms.jsp.CmsJspActionElement, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
+             * @see org.opencms.workplace.list.CmsListResourceIconAction#defButtonHtml(CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
              */
             public String defButtonHtml(
-                CmsJspActionElement jsp,
+                CmsObject cms,
                 String id,
                 String helpId,
                 String name,
@@ -627,11 +628,15 @@ public class CmsHistoryList extends A_CmsListDialog {
                 CmsVersionWrapper version = (CmsVersionWrapper)getItem().get(LIST_COLUMN_VERSION);
 
                 // is the resource already a sibling already deleted?
-                jsCode.append(jsp.link(getHistoryLink(jsp.getCmsObject(), new CmsUUID(getItem().get(
-                    LIST_COLUMN_STRUCTURE_ID).toString()), version.toString())));
+                jsCode.append(OpenCms.getLinkManager().substituteLink(
+                    cms,
+                    getHistoryLink(
+                        cms,
+                        new CmsUUID(getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()),
+                        version.toString())));
                 jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
                 return super.defButtonHtml(
-                    jsp,
+                    cms,
                     id,
                     helpId,
                     name,

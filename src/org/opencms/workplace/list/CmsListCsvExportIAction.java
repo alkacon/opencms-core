@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 
 /**
@@ -66,7 +67,8 @@ public class CmsListCsvExportIAction extends A_CmsListIndependentJsAction {
      */
     public String jsCode(CmsWorkplace wp) {
 
-        String url = wp.getJsp().link(
+        String url = OpenCms.getLinkManager().substituteLink(
+            wp.getCms(),
             "/system/workplace/commons/list-csv.jsp?"
                 + CmsListCsvExportDialog.PARAM_LISTCLASS
                 + "="

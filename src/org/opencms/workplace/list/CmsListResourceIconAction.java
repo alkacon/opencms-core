@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceIconAction.java,v $
- * Date   : $Date: 2006/10/27 11:14:07 $
- * Version: $Revision: 1.4.4.1 $
+ * Date   : $Date: 2007/07/03 18:00:42 $
+ * Version: $Revision: 1.4.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,20 +32,17 @@
 package org.opencms.workplace.list;
 
 import org.opencms.file.CmsObject;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-
-import java.io.File;
 
 /**
  * Displays an icon action for dependency lists.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4.4.1 $ 
+ * @version $Revision: 1.4.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +77,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
             return "";
         }
         return defButtonHtml(
-            wp.getJsp(),
+            wp.getCms(),
             getId() + getItem().getId(),
             getId(),
             resolveName(wp.getLocale()),
@@ -122,7 +119,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
      * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
      * is that the icons are 16x16.<p>
      * 
-     * @param jsp the cms context, can be null
+     * @param cms the cms context, can be null
      * @param id the id
      * @param helpId the id of the helptext div tag
      * @param name the name, if empty only the icon is displayed
@@ -138,7 +135,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
      */
     protected String defButtonHtml(
-        CmsJspActionElement jsp,
+        CmsObject cms,
         String id,
         String helpId,
         String name,
@@ -198,11 +195,8 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
+                if (cms != null) {
+                    if (cms.existsResource(CmsWorkplace.VFS_PATH_RESOURCES + icon.toString())) {
                         html.append(icon);
                     } else {
                         html.append(iconPath);

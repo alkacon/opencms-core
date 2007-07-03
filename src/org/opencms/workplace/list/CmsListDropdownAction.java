@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDropdownAction.java,v $
- * Date   : $Date: 2006/11/08 09:28:47 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/07/03 18:00:42 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,10 +111,7 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
                 icon.append(getIconPath().substring(0, getIconPath().lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(getIconPath().substring(getIconPath().lastIndexOf('.')));
-                String resorcesRoot = wp.getJsp().getJspContext().getServletConfig().getServletContext().getRealPath(
-                    "/resources/");
-                File test = new File(resorcesRoot + "/" + icon.toString());
-                if (test.exists()) {
+                if (wp.getCms().existsResource(CmsWorkplace.VFS_PATH_RESOURCES + icon.toString())) {
                     html.append(icon);
                 } else {
                     html.append(getIconPath());
