@@ -158,6 +158,7 @@ function restartProgress() {
 	<table border="0" align="center" style="vertical-align:middle; height: 200px;">
 		<tr>
 			<td valign="middle">
+				<% wp.getProgress().startProgress(wp.getPublishResourcesList()); %>
 				<%= wp.getProgress().getWidget() %> 
 			</td>
 		</tr>
@@ -180,7 +181,6 @@ cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
 // -->
 </script>
 <%= wp.htmlEnd() %>
-<%= wp.getProgress().startProgress(wp.getPublishResourcesList()) %>
 <% 
     break;
     

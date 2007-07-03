@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/07/03 14:15:13 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/07/03 17:10:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.0.0
  */
@@ -70,8 +70,11 @@ public class CmsProgressWidget {
     /** The name of the key request parameter. */
     public static final String PARAMETER_KEY = "progresskey";
 
-    /** The name of the key request parameter. */
+    /** The name of the show wait time request parameter. */
     public static final String PARAMETER_SHOWWAITTIME = "showwaittime";
+
+    /** The name of the refresh rate request parameter. */
+    public static final String PARAMETER_REFRESHRATE = "refreshrate";
 
     /** The time period after finished thread will be removed (10 min). */
     private static final long CLEANUP_PERIOD = 10 * 60 * 1000;
@@ -80,7 +83,7 @@ public class CmsProgressWidget {
     private static final String DEFAULT_COLOR = "blue";
 
     /** The default refresh reate (in ms) of the progress bar. */
-    private static final int DEFAULT_REFRESH_RATE = 500;
+    private static final int DEFAULT_REFRESH_RATE = 2000;
 
     /** The default width of the progress bar. */
     private static final String DEFAULT_WIDTH = "200px";
@@ -121,7 +124,6 @@ public class CmsProgressWidget {
         m_jsp = jsp;
 
         // set default values
-        m_refreshRate = DEFAULT_REFRESH_RATE;
         m_width = DEFAULT_WIDTH;
         m_color = DEFAULT_COLOR;
 
@@ -129,6 +131,12 @@ public class CmsProgressWidget {
         m_showWaitTime = 0;
         if (getJsp().getRequest().getParameter(PARAMETER_SHOWWAITTIME) != null) {
             m_showWaitTime = Integer.valueOf(getJsp().getRequest().getParameter(PARAMETER_SHOWWAITTIME)).intValue();
+        }
+
+        // find the show wait time from the request
+        m_refreshRate = DEFAULT_REFRESH_RATE;
+        if (getJsp().getRequest().getParameter(PARAMETER_REFRESHRATE) != null) {
+            m_refreshRate = Integer.valueOf(getJsp().getRequest().getParameter(PARAMETER_REFRESHRATE)).intValue();
         }
 
         // find the key from the request
@@ -197,13 +205,16 @@ public class CmsProgressWidget {
                 thread = (CmsProgressThread)m_threads.get(getKey());
 
                 if (thread.isAlive()) {
-
                     if (thread.getRuntime() < m_showWaitTime) {
-                        return "WAIT";
+                        while ((thread.getRuntime() < m_showWaitTime) && (thread.isAlive())) {
+                            synchronized (this) {
+                                wait(500);
+                            }
+                        }
                     } else {
 
                         synchronized (this) {
-                            thread.join(getRefreshRate());
+                            wait(getRefreshRate());
                         }
                     }
                 }
@@ -326,17 +337,15 @@ public class CmsProgressWidget {
         result.append(PARAMETER_SHOWWAITTIME);
         result.append("=");
         result.append(m_showWaitTime);
+        result.append("&");
+        result.append(PARAMETER_REFRESHRATE);
+        result.append("=");
+        result.append(getRefreshRate());
         result.append("', 'updateProgressBar');\n");
 
         // set error message
         result.append("\t\t\t\t} else if (msg.substring(0,3) == \"ERR\") {\n");
         result.append("\t\t\t\t\tsetProgressBarError(msg.substr(3));\n");
-
-        // show wait symbol
-        result.append("\t\t\t\t} else if (msg.substring(0,4) == \"WAIT\") {\n");
-        result.append("\t\t\t\t\tbar.parentNode.style.display = \"none\";\n");
-        result.append("\t\t\t\t\tpercent.style.display = \"none\";\n");
-        result.append("\t\t\t\t\twait.style.display = \"block\";\n");
 
         // set result
         result.append("\t\t\t\t} else {\n");
@@ -443,7 +452,10 @@ public class CmsProgressWidget {
         result.append(PARAMETER_SHOWWAITTIME);
         result.append("=");
         result.append(m_showWaitTime);
-        result.append("', 'updateProgressBar');\n");
+        result.append("&");
+        result.append(PARAMETER_REFRESHRATE);
+        result.append("=");
+        result.append(getRefreshRate());        result.append("', 'updateProgressBar');\n");
         result.append("\t}\n");
 
         result.append("</script>\n");
@@ -551,6 +563,10 @@ public class CmsProgressWidget {
             result.append(org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
                 org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
             result.append("</div>\n");
+
+            result.append("<script type=\"text/javascript\">\n");
+            result.append("\tstartProgressBar();\n");
+            result.append("</script>\n");
         }
 
         return result.toString();
@@ -620,12 +636,10 @@ public class CmsProgressWidget {
      * Starts a thread for the progress on the given list.<p>
      * 
      * @param list the list to use for the progress bar
-     * 
-     * @return the javascript code to start the progress bar
      */
-    public String startProgress(A_CmsListDialog list) {
+    public void startProgress(A_CmsListDialog list) {
 
-        return startProgress(list, false);
+        startProgress(list, false);
     }
 
     /**
@@ -633,10 +647,8 @@ public class CmsProgressWidget {
      * 
      * @param list the list to use for the progress bar
      * @param abortExisting if true then an already existing thread will be killed
-     * 
-     * @return the javascript code to start the progress bar
      */
-    public String startProgress(A_CmsListDialog list, boolean abortExisting) {
+    public void startProgress(A_CmsListDialog list, boolean abortExisting) {
 
         // check the list
         if (list == null) {
@@ -659,7 +671,7 @@ public class CmsProgressWidget {
         }
 
         // start the thread
-        Thread thread = new CmsProgressThread(list, getKey(), getJsp().getRequestContext().getLocale());
+        Thread thread = new CmsProgressThread(list, getKey(), list.getLocale());
         m_threads.put(getKey(), thread);
         thread.start();
 
@@ -674,14 +686,6 @@ public class CmsProgressWidget {
                 m_threads.remove(entry.getKey());
             }
         }
-
-        StringBuffer result = new StringBuffer();
-
-        result.append("<script type=\"text/javascript\">\n");
-        result.append("\tstartProgressBar();\n");
-        result.append("</script>\n");
-
-        return result.toString();
     }
 
     /**

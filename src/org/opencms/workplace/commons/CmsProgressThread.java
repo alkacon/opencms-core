@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressThread.java,v $
- * Date   : $Date: 2007/07/03 14:15:13 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2007/07/03 17:10:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.0.0
  */
@@ -217,10 +217,6 @@ public class CmsProgressThread extends Thread {
 
             m_starttime = System.currentTimeMillis();
 
-            synchronized (this) {
-                wait(2000);
-            }
-            
             // calculate size of the list
             m_list.refreshList();
 
