@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsCollector.java,v $
- * Date   : $Date: 2006/12/11 15:10:52 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/07/03 20:41:25 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
@@ -44,16 +45,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Collector for resources with links that could get broken after publishing.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollector {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishBrokenRelationsCollector.class);
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "potentialBrokenResources";
@@ -83,13 +89,28 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) throws CmsException {
+    public List getResources(CmsObject cms, Map params) {
 
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        if (siteRoot == null) {
+            siteRoot = "";
+        }
         List resources = new ArrayList();
-        Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
-        while (itResourceNames.hasNext()) {
-            String resName = (String)itResourceNames.next();
-            resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
+            while (itResourceNames.hasNext()) {
+                String resName = (String)itResourceNames.next();
+                try {
+                    resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
+                } catch (CmsException e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+        } finally {
+            cms.getRequestContext().setSiteRoot(siteRoot);
         }
         return resources;
     }
