@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/03/01 15:01:31 $
- * Version: $Revision: 1.35.4.5 $
+ * Date   : $Date: 2007/07/03 10:19:34 $
+ * Version: $Revision: 1.35.4.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35.4.5 $ 
+ * @version $Revision: 1.35.4.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -489,19 +489,15 @@ public class CmsModuleManager {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_1, moduleName));
         }
 
-        CmsModule module;
-        boolean removeResourceTypes = false;
+        CmsModule module = (CmsModule)m_modules.get(moduleName);
+        boolean removeResourceTypes = !module.getResourceTypes().isEmpty();
+        if (removeResourceTypes) {
+            // mark the resource manager to reinitialize if necessary
+            OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
+        }
 
         if (!replace) {
             // module is deleted, not replaced
-            module = (CmsModule)m_modules.get(moduleName);
-            // makr the resource manager to reinitialize if nescessary
-            if (module.getResourceTypes() != Collections.EMPTY_LIST) {
-                removeResourceTypes = true;
-            }
-            if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
-                OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
-            }
 
             // perform dependency check
             List dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
@@ -532,7 +528,6 @@ public class CmsModuleManager {
 
         CmsProject previousProject = cms.getRequestContext().currentProject();
         try {
-
             CmsProject deleteProject = null;
 
             try {
