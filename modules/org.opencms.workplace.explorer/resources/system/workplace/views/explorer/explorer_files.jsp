@@ -1,4 +1,5 @@
 <%@ page import="
+	org.opencms.workplace.*,
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
 %><%
@@ -14,7 +15,10 @@
 <%
 
 if (request.getParameter("reload") != null) {
-	%>top.body.location.reload();<%
+	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+	CmsFrameset wp2 = new CmsFrameset(jsp);
+    // reload only the first time
+	%>top.body.location.href = '<%=wp2.getStartupUri()%>';<%
 }
 	String files = wp.getFileList();
 	// System.err.println(files);
