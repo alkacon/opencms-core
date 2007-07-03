@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/07/03 10:43:17 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.5
  */
@@ -275,7 +275,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition startCol = new CmsListColumnDefinition(LIST_COLUMN_STARTTIME);
         startCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STARTPUBLISHING_0));
         startCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        startCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        startCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
+            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         startCol.setWidth("20%");
         // add default action 
         CmsListDefaultAction startAction = new CmsListDefaultAction(LIST_ACTION_START);
@@ -288,7 +290,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition endCol = new CmsListColumnDefinition(LIST_COLUMN_ENDTIME);
         endCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STOPPUBLISHING_0));
         endCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        endCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        endCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
+            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         endCol.setWidth("20%");
         // add default action
         CmsListDefaultAction endAction = new CmsListDefaultAction(LIST_ACTION_END);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/05/02 16:55:29 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2007/07/03 10:43:17 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.5.5
  */
@@ -469,7 +469,9 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         CmsListColumnDefinition startCol = new CmsListColumnDefinition(LIST_COLUMN_STARTTIME);
         startCol.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_COLS_INQUEUETIME_0));
         startCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        startCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
+        startCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
+            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
+            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         startCol.setWidth("30%");
         // add view action
         startCol.addDefaultAction(new CmsPublishQueueViewLiveReportAction(LIST_ACTION_STARTTIME));
