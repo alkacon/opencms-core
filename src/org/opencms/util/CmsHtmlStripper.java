@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 15:19:38 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/07/03 12:48:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.2
  * 
@@ -77,7 +77,7 @@ public final class CmsHtmlStripper {
     private CmsHtmlTagRemoveFactory m_nodeFactory;
 
     /** Flag to control whether tidy is used. */
-    private boolean m_useTidy = true;
+    private boolean m_useTidy = false;
 
     /**
      * Default constructor that turns echo on and uses the settings for replacing tags.

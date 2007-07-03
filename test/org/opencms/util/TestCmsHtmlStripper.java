@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlStripper.java,v $
- * Date   : $Date: 2007/06/21 15:19:38 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2007/07/03 12:48:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.9.2
  */
@@ -54,34 +54,6 @@ public class TestCmsHtmlStripper extends TestCase {
     public TestCmsHtmlStripper(String arg0) {
 
         super(arg0);
-    }
-
-    /**
-     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
-     * with no configuration (bypass-mode).<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testStripHtmlBypass() throws Exception {
-
-        CmsHtmlStripper stripper = new CmsHtmlStripper(false);
-
-        String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);
-        String result1 = stripper.stripHtml(content1);
-        System.out.println(result1 + "\n\n");
-        // This fails as htmlparser adds a missing closing tag:
-        //assertEquals(content1, result1);
-
-        String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
-        String result2 = stripper.stripHtml(content2);
-        System.out.println(result2 + "\n\n");
-        assertEquals(content2, result2);
-
-        String emil = CmsFileUtil.readFile("org/opencms/util/testHtml_03.html", CmsEncoder.ENCODING_ISO_8859_1);
-        String result3 = stripper.stripHtml(emil);
-        System.out.println(result3 + "\n\n");
-        assertEquals(emil, result3);
-
     }
 
     /**
@@ -123,4 +95,46 @@ public class TestCmsHtmlStripper extends TestCase {
 
     }
 
+    /**
+     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
+     * with no configuration (bypass-mode).<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testStripHtmlBypass() throws Exception {
+
+        CmsHtmlStripper stripper = new CmsHtmlStripper(false);
+
+        String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);
+        String result1 = stripper.stripHtml(content1);
+        System.out.println(result1 + "\n\n");
+        // This fails as htmlparser adds a missing closing tag:
+        //assertEquals(content1, result1);
+
+        String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
+        String result2 = stripper.stripHtml(content2);
+        System.out.println(result2 + "\n\n");
+        assertEquals(content2, result2);
+
+        String emil = CmsFileUtil.readFile("org/opencms/util/testHtml_03.html", CmsEncoder.ENCODING_ISO_8859_1);
+        String result3 = stripper.stripHtml(emil);
+        System.out.println(result3 + "\n\n");
+        assertEquals(emil, result3);
+
+    }
+
+    /**
+     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
+     * if it strips newline separators. <p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testStripHtmlNewline() throws Exception {
+
+        String test = "<p>Dies ist eine Paragrahph\r hier die 2. Zeile \r\n und die dritte.</p> Nach dem Paragrahp";
+        CmsHtmlStripper stripper = new CmsHtmlStripper();
+        stripper.addPreserveTag("p");
+        String result = stripper.stripHtml(test);
+        assertEquals(test, result);
+    }
 }
