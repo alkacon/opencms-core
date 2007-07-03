@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/06/29 14:16:57 $
- * Version: $Revision: 1.110.2.38 $
+ * Date   : $Date: 2007/07/03 09:21:05 $
+ * Version: $Revision: 1.110.2.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.110.2.38 $
+ * @version $Revision: 1.110.2.39 $
  * 
  * @since 6.0.0 
  */
@@ -1052,20 +1052,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_DELETED) > 0) {
                     continue;
                 }
-
                 if (inheritedOnly && !ace.isInheriting()) {
                     continue;
                 }
-
                 if (inheritedOnly && ace.isInheriting()) {
                     ace.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
                 }
-
                 aceList.add(ace);
             }
-
             return aceList;
-
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -1575,7 +1570,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
-
             stmt.setString(1, principal.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -1588,12 +1582,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_ONLINE_1");
-
+            stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_ACCESS_REMOVE_ALL_FOR_PRINCIPAL_1");
             stmt.setString(1, principal.toString());
-
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, stmt), e);
         } finally {

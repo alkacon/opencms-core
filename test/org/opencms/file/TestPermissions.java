@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.22.8.8 $
+ * Date   : $Date: 2007/07/03 09:19:34 $
+ * Version: $Revision: 1.22.8.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -55,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22.8.8 $
+ * @version $Revision: 1.22.8.9 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -283,8 +284,8 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
 
         assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
-        assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
-        assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
     }
 
@@ -318,7 +319,12 @@ public class TestPermissions extends OpenCmsTestCase {
             CmsUUID principal = ace.getPrincipal();
             // the principal is missing, so the test must fail
             if (cms.lookupPrincipal(principal) == null) {
-                fail("Principal " + principal.toString() + " is missing");
+                if (CmsRole.valueOfId(principal) == null) { // it could also be a role
+                    if (!principal.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)
+                        && !principal.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) { // or a special id
+                        fail("Principal " + principal.toString() + " is missing");
+                    }
+                }
             }
         }
     }
@@ -336,13 +342,13 @@ public class TestPermissions extends OpenCmsTestCase {
         String foldername = "testPermissionOverwrite";
         cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
 
-        assertEquals("+r+w+v+c", cms.getPermissions(foldername, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
 
         cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
         assertEquals("", cms.getPermissions(foldername, "testUser").getPermissionString());
 
         cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "-r");
-        assertEquals("-r+w+v+c", cms.getPermissions(foldername, "testUser").getPermissionString());
+        assertEquals("-r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
     }
 
     /**
@@ -365,15 +371,15 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
         cms.createResource(subresourcename, CmsResourceTypePlain.getStaticTypeId());
 
-        assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w+v+c", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w+v+c", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
 
         cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
 
         assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w+v+c", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w+v+c", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
 
         cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o+i");
         assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());

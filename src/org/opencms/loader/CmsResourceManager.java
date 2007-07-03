@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/06/29 16:33:55 $
- * Version: $Revision: 1.36.4.12 $
+ * Date   : $Date: 2007/07/03 09:19:35 $
+ * Version: $Revision: 1.36.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36.4.12 $ 
+ * @version $Revision: 1.36.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -770,6 +770,26 @@ public class CmsResourceManager {
         }
         result.addAll(m_configuration.getResourceTypeList());
         return result;
+    }
+
+    /**
+     * The configured default type for files when the resource type is missing.<p>
+     * 
+     * @return the configured default type for files
+     */
+    public I_CmsResourceType getResTypeUnknownFile() {
+
+        return m_restypeUnknownFile;
+    }
+
+    /**
+     * The configured default type for folders when the resource type is missing.<p>
+     * 
+     * @return The configured default type for folders
+     */
+    public I_CmsResourceType getResTypeUnknownFolder() {
+
+        return m_restypeUnknownFolder;
     }
 
     /**

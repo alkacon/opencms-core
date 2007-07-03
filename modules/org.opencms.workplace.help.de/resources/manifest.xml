@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the online help pages for the OpenCms workplace in German language.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.1</version>
+		<version>7.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -45,16 +45,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
@@ -82,11 +73,19 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -152,8 +151,8 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>34</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>1</allowed>
 						<denied>0</denied>
@@ -187,16 +186,7 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>32</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/locales/de/help/index.html</source>
@@ -340,16 +330,7 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Projectmanagers</uuidprincipal>
-					<flags>32</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/de/help/administration/accounts/groups</destination>

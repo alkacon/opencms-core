@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2007/04/26 15:21:54 $
- * Version: $Revision: 1.13.4.4 $
+ * Date   : $Date: 2007/07/03 09:19:36 $
+ * Version: $Revision: 1.13.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13.4.4 $ 
+ * @version $Revision: 1.13.4.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,11 +136,7 @@ public class CmsExplorerContextMenu {
      */
     public boolean isEmpty() {
 
-        boolean empty = true;
-        if (m_allEntries.size() > 0) {
-            empty = false;
-        }
-        return empty;
+        return m_allEntries.isEmpty();
     }
 
     /**

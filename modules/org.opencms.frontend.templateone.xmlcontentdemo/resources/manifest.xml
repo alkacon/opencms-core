@@ -49,19 +49,19 @@
 			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
@@ -78,16 +78,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
@@ -1902,11 +1893,19 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>

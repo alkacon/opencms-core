@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2007/06/26 10:09:21 $
- * Version: $Revision: 1.28.8.12 $
+ * Date   : $Date: 2007/07/03 09:19:35 $
+ * Version: $Revision: 1.28.8.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28.8.12 $ 
+ * @version $Revision: 1.28.8.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -456,14 +456,14 @@ public class CmsLock {
 
         if (m_relatedLock == null) {
             CmsLockType type;
-            if (this.isSystemLock()) {
+            if (isSystemLock()) {
                 type = CmsLockType.UNLOCKED;
             } else {
                 type = CmsLockType.SYSTEM_UNLOCKED;
             }
             CmsLock lock = new CmsLock(getResourceName(), getUserId(), getProject(), type);
             lock.setRelatedLock(this);
-            if (this == NULL_LOCK) {
+            if (isUnlocked()) {
                 // prevent the null lock gets modified
                 return lock;
             }
@@ -482,7 +482,7 @@ public class CmsLock {
         if (this == NULL_LOCK) {
             throw new RuntimeException("null lock");
         }
-        if ((relatedLock == null) || (relatedLock == NULL_LOCK)) {
+        if ((relatedLock == null) || relatedLock.isUnlocked()) {
             m_relatedLock = null;
         } else {
             m_relatedLock = relatedLock;

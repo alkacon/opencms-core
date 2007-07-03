@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2007/03/13 09:55:16 $
- * Version: $Revision: 1.15.8.4 $
+ * Date   : $Date: 2007/07/03 09:19:34 $
+ * Version: $Revision: 1.15.8.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
@@ -51,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.15.8.4 $
+ * @version $Revision: 1.15.8.5 $
  */
 public class TestChacc extends OpenCmsTestCase {
 
@@ -320,15 +319,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.lockResource(resName);
         assertTrue(cms.hasPermissions(cms.readResource(resName), permissions));
         assertTrue(cms.hasPermissions(cms.readResource("/folder2/index.html"), permissions));
-        boolean success = false;
-        try {
-            assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
-        } catch (CmsException e) {
-            success = true;
-        }
-        if (!success) {
-            throw new Exception("Test user has permissions +r+v+w set on /folder1/");
-        }
+        assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
         cms.unlockResource(resName);
 
         // switch back to Admin user and remove ACE
@@ -354,15 +345,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         // re-check permissions of test user after removing ACE
         cms.loginUser("testuser", "test");
-        success = false;
-        try {
-            assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
-        } catch (CmsException e) {
-            success = true;
-        }
-        if (!success) {
-            throw new Exception("Test user has permissions +r+v set on /folder2/ after removal of ACE");
-        }
+        assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
     }
 
     /**

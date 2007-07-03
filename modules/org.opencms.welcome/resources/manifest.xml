@@ -503,16 +503,7 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>

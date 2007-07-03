@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/05/16 08:38:38 $
- * Version: $Revision: 1.24.4.12 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.24.4.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsPrincipalWidget;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24.4.12 $ 
+ * @version $Revision: 1.24.4.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,6 +164,7 @@ public class CmsChacc extends CmsDialog {
     private String[] m_types = {
         I_CmsPrincipal.PRINCIPAL_GROUP,
         I_CmsPrincipal.PRINCIPAL_USER,
+        CmsRole.PRINCIPAL_ROLE,
         CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
         CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME};
 
@@ -170,11 +172,12 @@ public class CmsChacc extends CmsDialog {
     private int[] m_typesInt = {
         CmsAccessControlEntry.ACCESS_FLAGS_GROUP,
         CmsAccessControlEntry.ACCESS_FLAGS_USER,
+        CmsAccessControlEntry.ACCESS_FLAGS_ROLE,
         CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS,
         CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL};
 
     /** The possible localized types of new access control entries. */
-    private String[] m_typesLocalized = new String[4];
+    private String[] m_typesLocalized = new String[5];
 
     /**
      * Public constructor.<p>
@@ -289,6 +292,21 @@ public class CmsChacc extends CmsDialog {
                         CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME,
                         permissionString);
                 } else {
+                    if (getTypes(false)[arrayPosition].equalsIgnoreCase(CmsRole.PRINCIPAL_ROLE)) {
+                        // if role, first check if we have to translate the role name  
+                        CmsRole role = CmsRole.valueOfRoleName(name);
+                        if (role == null) {
+                            // we need translation
+                            Iterator it = CmsRole.getSystemRoles().iterator();
+                            while (it.hasNext()) {
+                                role = (CmsRole)it.next();
+                                if (role.getName(getLocale()).equalsIgnoreCase(name)) {
+                                    name = role.getRoleName();
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     getCms().chacc(file, getTypes(false)[arrayPosition], name, permissionString);
                 }
                 return true;
@@ -391,7 +409,6 @@ public class CmsChacc extends CmsDialog {
                     LOG.info(e.getLocalizedMessage());
                 }
             }
-
         }
 
         // get the current Ace to get the current ace flags
@@ -405,10 +422,17 @@ public class CmsChacc extends CmsDialog {
                 if (((p != null) && p.getName().equals(name) && curType.equals(type))) {
                     flags = curEntry.getFlags();
                     break;
-                } else if ((p == null)
-                    && (name.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString()) || name.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString()))) {
-                    flags = curEntry.getFlags();
-                    break;
+                } else if (p == null) {
+                    // check if it is the case of a role
+                    CmsRole role = CmsRole.valueOfId(curEntry.getPrincipal());
+                    if ((role != null) && name.equals(role.getRoleName())) {
+                        flags = curEntry.getFlags();
+                        break;
+                    } else if ((curEntry.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID) && name.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME))
+                        || (curEntry.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID) && name.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME))) {
+                        flags = curEntry.getFlags();
+                        break;
+                    }
                 }
             }
 
@@ -477,6 +501,12 @@ public class CmsChacc extends CmsDialog {
         try {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
+            // check if it is the case of a role
+            CmsRole role = CmsRole.valueOfGroupName(name);
+            if (role != null) {
+                // translate the internal group name to a role name
+                name = role.getFqn();
+            }
             getCms().rmacc(file, type, name);
             return true;
         } catch (CmsException e) {
@@ -604,8 +634,15 @@ public class CmsChacc extends CmsDialog {
                 }
                 ou = principal.getOuFqn();
             } else {
-                name = entry.getKey().toString();
-                image = "explorer/project_none.gif";
+                // check if it is the case of a role
+                CmsRole role = CmsRole.valueOfId((CmsUUID)entry.getKey());
+                if (role != null) {
+                    name = role.getName(getLocale());
+                    image = "commons/role.png";
+                } else {
+                    name = entry.getKey().toString();
+                    image = "explorer/project_none.gif";
+                }
             }
             result.append("<div class=\"dialogrow\"><img src=\"");
             result.append(getSkinUri());
@@ -834,8 +871,9 @@ public class CmsChacc extends CmsDialog {
         if (m_typesLocalized[0] == null) {
             m_typesLocalized[0] = key(Messages.GUI_LABEL_GROUP_0);
             m_typesLocalized[1] = key(Messages.GUI_LABEL_USER_0);
-            m_typesLocalized[2] = key(Messages.GUI_LABEL_ALLOTHERS_0);
-            m_typesLocalized[3] = key(Messages.GUI_LABEL_OVERWRITEALL_0);
+            m_typesLocalized[2] = key(Messages.GUI_LABEL_ROLE_0);
+            m_typesLocalized[3] = key(Messages.GUI_LABEL_ALLOTHERS_0);
+            m_typesLocalized[4] = key(Messages.GUI_LABEL_OVERWRITEALL_0);
         }
 
         // set flags to show editable or non editable entries
@@ -993,15 +1031,15 @@ public class CmsChacc extends CmsDialog {
     /**
      * Returns a String array with the possible entry types.<p>
      * 
-     * @param all to include all types, or just user and groups 
+     * @param all to include all types, or just user, groups and roles 
      * 
      * @return the possible types
      */
     protected String[] getTypes(boolean all) {
 
         if (!all) {
-            String[] array = new String[2];
-            return (String[])Arrays.asList(m_types).subList(0, 2).toArray(array);
+            String[] array = new String[3];
+            return (String[])Arrays.asList(m_types).subList(0, 3).toArray(array);
         }
         return m_types;
     }
@@ -1183,7 +1221,7 @@ public class CmsChacc extends CmsDialog {
             // get all possible entry types
             ArrayList options = new ArrayList();
             ArrayList optionValues = new ArrayList();
-            for (int i = 0; i < getTypes(false).length; i++) {
+            for (int i = 0; i < getTypes(false).length - 1 * (isRoleEditable() ? 0 : 1); i++) {
                 options.add(getTypesLocalized()[i]);
                 optionValues.add(Integer.toString(i));
             }
@@ -1346,6 +1384,7 @@ public class CmsChacc extends CmsDialog {
         String inheritRes) {
 
         StringBuffer result = new StringBuffer(8);
+        editable &= isRoleEditable(); // only vfs managers can edit a role based permission
 
         // get name and type of the current entry
         I_CmsPrincipal principal = getCms().lookupPrincipal(entry.getPrincipal());
@@ -1365,7 +1404,14 @@ public class CmsChacc extends CmsDialog {
         } else if ((id != null) && id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
             name = key(Messages.GUI_LABEL_OVERWRITEALL_0);
         } else {
-            name = entry.getPrincipal().toString();
+            // check if it is the case of a role
+            CmsRole role = CmsRole.valueOfId(entry.getPrincipal());
+            if (role != null) {
+                name = role.getName(getLocale());
+                id = role.getRoleName();
+            } else {
+                name = entry.getPrincipal().toString();
+            }
         }
 
         String type = getEntryType(entry.getFlags(), false);
@@ -1645,8 +1691,14 @@ public class CmsChacc extends CmsDialog {
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
             } else if ((p == null) && id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS;
-            } else {
+            } else if ((p == null) && id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL;
+            } else {
+                // check if it is the case of a role
+                CmsRole role = CmsRole.valueOfId(id);
+                if (role != null) {
+                    flags = CmsAccessControlEntry.ACCESS_FLAGS_ROLE;
+                }
             }
 
             CmsResource res = getCms().readResource(fileName, CmsResourceFilter.ALL);
@@ -1729,7 +1781,7 @@ public class CmsChacc extends CmsDialog {
             // list all entries
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
-                result.append(buildPermissionEntryForm(curEntry, this.getEditable(), false, null));
+                result.append(buildPermissionEntryForm(curEntry, getEditable(), false, null));
                 if (i.hasNext()) {
                     result.append(dialogSeparator());
                 }
@@ -1741,4 +1793,14 @@ public class CmsChacc extends CmsDialog {
         return result;
     }
 
+    /**
+     * Checks if the current user has the vfs manager role for the current select resource.<p> 
+     * 
+     * @return <code>true</code> if the current user has the vfs manager role for the current select resource
+     */
+    private boolean isRoleEditable() {
+
+        return OpenCms.getRoleManager().hasRoleForResource(getCms(), CmsRole.VFS_MANAGER, getParamResource())
+            && getParamResource().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
+    }
 }

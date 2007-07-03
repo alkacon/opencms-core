@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/06/28 18:41:16 $
- * Version: $Revision: 1.570.2.107 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.570.2.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -544,6 +544,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         OpenCms.getMemoryMonitor().flushRoles();
+        OpenCms.getMemoryMonitor().flushRoleLists();
         m_userDriver.addResourceToOrganizationalUnit(dbc, orgUnit, resource);
     }
 
@@ -642,6 +643,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // flush the cache
         if (readRoles) {
             OpenCms.getMemoryMonitor().flushRoles();
+            OpenCms.getMemoryMonitor().flushRoleLists();
         }
         OpenCms.getMemoryMonitor().flushUserGroups();
     }
@@ -2347,6 +2349,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // flush relevant caches
         OpenCms.getMemoryMonitor().flushRoles();
+        OpenCms.getMemoryMonitor().flushRoleLists();
         clearAccessControlListCache();
 
         OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
@@ -2837,7 +2840,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER);
 
-        for (boolean readRoles = false; !readRoles; readRoles = !readRoles) {
+        for (int i = 0; i < 2; i++) {
+            boolean readRoles = false; // iterate groups and roles
             Iterator itGroups = getGroupsOfUser(
                 dbc,
                 username,
@@ -2859,6 +2863,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     removeUserFromGroup(dbc, username, group.getName(), readRoles);
                 }
             }
+            readRoles = !readRoles;
         }
         // remove all locks set for the deleted user
         m_lockManager.removeLocks(user.getId());
@@ -3756,7 +3761,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         CmsAccessControlList acList = getAccessControlList(dbc, resource, false);
-        return acList.getPermissions(user, getGroupsOfUser(dbc, user.getName(), false));
+        return acList.getPermissions(user, getGroupsOfUser(dbc, user.getName(), false), getRolesForUser(dbc, user));
     }
 
     /**
@@ -3983,6 +3988,121 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         return resources;
+    }
+
+    /**
+     * Returns all roles the given user has for the given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param user the user to check
+     * @param resource the resource to check the roles for 
+     * 
+     * @return a list of {@link CmsRole} objects
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List getRolesForResource(CmsDbContext dbc, CmsUser user, CmsResource resource) throws CmsException {
+
+        // guest user has no role
+        if (user.isGuestUser()) {
+            return Collections.EMPTY_LIST;
+        }
+
+        // try to read from cache
+        String key = user.getId().toString() + resource.getRootPath();
+        List result = OpenCms.getMemoryMonitor().getCachedRoleList(key);
+        if (result != null) {
+            return result;
+        }
+        result = new ArrayList();
+
+        // read all roles of the current user
+        List roles = new ArrayList(getGroupsOfUser(
+            dbc,
+            user.getName(),
+            "",
+            true,
+            true,
+            false,
+            dbc.getRequestContext().getRemoteAddress()));
+
+        // check the roles applying to the given resource
+        Iterator it = roles.iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            CmsRole givenRole = CmsRole.valueOf(group);
+            if (result.contains(givenRole.forOrgUnit(null))) {
+                // skip already added roles
+                continue;
+            }
+            // now check the resource if needed
+            if (givenRole.getOuFqn() != null) {
+                CmsOrganizationalUnit orgUnit = readOrganizationalUnit(dbc, givenRole.getOuFqn());
+                Iterator itResources = getResourcesForOrganizationalUnit(dbc, orgUnit).iterator();
+                while (itResources.hasNext()) {
+                    CmsResource givenResource = (CmsResource)itResources.next();
+                    if (resource.getRootPath().startsWith(givenResource.getRootPath())) {
+                        result.add(givenRole.forOrgUnit(null));
+                        break;
+                    }
+                }
+            } else {
+                result.add(givenRole);
+            }
+        }
+        result = Collections.unmodifiableList(result);
+        OpenCms.getMemoryMonitor().cacheRoleList(key, result);
+        return result;
+    }
+
+    /**
+     * Returns all roles the given user has independent of the resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param user the user to check
+     * 
+     * @return a list of {@link CmsRole} objects
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public List getRolesForUser(CmsDbContext dbc, CmsUser user) throws CmsException {
+
+        // guest user has no role
+        if (user.isGuestUser()) {
+            return Collections.EMPTY_LIST;
+        }
+
+        // try to read from cache
+        String key = user.getId().toString();
+        List result = OpenCms.getMemoryMonitor().getCachedRoleList(key);
+        if (result != null) {
+            return result;
+        }
+        result = new ArrayList();
+
+        // read all roles of the current user
+        List roles = new ArrayList(getGroupsOfUser(
+            dbc,
+            user.getName(),
+            "",
+            true,
+            true,
+            false,
+            dbc.getRequestContext().getRemoteAddress()));
+
+        // check the roles applying to the given resource
+        Iterator it = roles.iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            CmsRole givenRole = CmsRole.valueOf(group);
+            givenRole = givenRole.forOrgUnit(null);
+            if (!result.contains(givenRole)) {
+                result.add(givenRole);
+            }
+        }
+        result = Collections.unmodifiableList(result);
+        OpenCms.getMemoryMonitor().cacheRoleList(key, result);
+        return result;
     }
 
     /**
@@ -4609,6 +4729,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (source.isFolder()) {
             OpenCms.getMemoryMonitor().flushRoles();
+            OpenCms.getMemoryMonitor().flushRoleLists();
         }
         m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
         // move lock 
@@ -6537,6 +6658,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         OpenCms.getMemoryMonitor().flushRoles();
+        OpenCms.getMemoryMonitor().flushRoleLists();
         m_userDriver.removeResourceFromOrganizationalUnit(dbc, orgUnit, resource);
     }
 
@@ -6667,6 +6789,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // flush relevant caches
         if (readRoles) {
             OpenCms.getMemoryMonitor().flushRoles();
+            OpenCms.getMemoryMonitor().flushRoleLists();
         }
         OpenCms.getMemoryMonitor().flushUserGroups();
     }
@@ -8213,6 +8336,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getMemoryMonitor().flushACLs();
         OpenCms.getMemoryMonitor().flushPermissions();
         OpenCms.getMemoryMonitor().flushRoles();
+        OpenCms.getMemoryMonitor().flushRoleLists();
 
         if (!principalsOnly) {
             OpenCms.getMemoryMonitor().flushProjects();
@@ -8231,6 +8355,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         OpenCms.getMemoryMonitor().flushResources();
         OpenCms.getMemoryMonitor().flushRoles();
+        OpenCms.getMemoryMonitor().flushRoleLists();
         OpenCms.getMemoryMonitor().flushResourceLists();
     }
 
@@ -9198,5 +9323,4 @@ public final class CmsDriverManager implements I_CmsEventListener {
             m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_STRUCTURE_STATE);
         }
     }
-
 }

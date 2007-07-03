@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/06/28 18:41:16 $
- * Version: $Revision: 1.97.4.63 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.97.4.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2205,6 +2205,34 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns all roles the given user has for the given resource.<p>
+     *  
+     * @param context the current request context
+     * @param user the user to check
+     * @param resource the resource to check the roles for
+     * 
+     * @return a list of {@link CmsRole} objects
+     * 
+     * @throws CmsException is something goes wrong
+     */
+    public List getRolesForResource(CmsRequestContext context, CmsUser user, CmsResource resource) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        List result = null;
+        try {
+            result = m_driverManager.getRolesForResource(dbc, user, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_GET_ROLES_FOR_RESOURCE_2,
+                user.getName(),
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
      * Returns an instance of the common sql manager.<p>
      * 
      * @return an instance of the common sql manager
@@ -2356,7 +2384,7 @@ public final class CmsSecurityManager {
                 "",
                 true,
                 true,
-                true,
+                false,
                 dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
@@ -2413,10 +2441,7 @@ public final class CmsSecurityManager {
         }
 
         // try to read from cache
-        String key = user.getId().toString()
-            + (dbc.currentProject().isOnlineProject() ? "+" : "-")
-            + role.getGroupName()
-            + resource.getRootPath();
+        String key = user.getId().toString() + role.getGroupName() + resource.getRootPath();
         Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
         if (result != null) {
             return result.booleanValue();
@@ -4907,7 +4932,8 @@ public final class CmsSecurityManager {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsRequestContext context, CmsPublishList publishList, I_CmsReport report) throws Exception {
+    public Map validateRelations(CmsRequestContext context, CmsPublishList publishList, I_CmsReport report)
+    throws Exception {
 
         Map result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);

@@ -100,6 +100,7 @@
 			<resource uri="/system/workplace/resources/commons/minus.png"/>
 			<resource uri="/system/workplace/resources/commons/overwrite_all.png"/>
 			<resource uri="/system/workplace/resources/commons/plus.png"/>
+			<resource uri="/system/workplace/resources/commons/role.png"/>
 			<resource uri="/system/workplace/resources/commons/tree.js"/>
 			<resource uri="/system/workplace/resources/commons/user.png"/>
 			<resource uri="/system/workplace/resources/components/upload_applet/"/>
@@ -129,16 +130,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/categories</destination>
@@ -179,11 +171,19 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -3340,6 +3340,26 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/role.png</source>
+			<destination>system/workplace/resources/commons/role.png</destination>
+			<type>image</type>
+			<uuidstructure>35e25f47-ace7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>ed514260-dcd1-fdb9-8352-0fc796c4637a</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>

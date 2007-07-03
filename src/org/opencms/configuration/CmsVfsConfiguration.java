@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2007/06/21 16:14:58 $
- * Version: $Revision: 1.40.4.4 $
+ * Date   : $Date: 2007/07/03 09:21:05 $
+ * Version: $Revision: 1.40.4.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40.4.4 $
+ * @version $Revision: 1.40.4.5 $
  * 
  * @since 6.0.0
  */
@@ -596,7 +596,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         // add resource types
         Element resourcetypesElement = resources.addElement(N_RESOURCETYPES);
-        List resourceTypes = m_resourceManager.getResourceTypes();
+        List resourceTypes = new ArrayList();
+        if (m_resourceManager.getResTypeUnknownFolder() != null) {
+            resourceTypes.add(m_resourceManager.getResTypeUnknownFolder());
+        }
+        if (m_resourceManager.getResTypeUnknownFile() != null) {
+            resourceTypes.add(m_resourceManager.getResTypeUnknownFile());
+        }
+        resourceTypes.addAll(m_resourceManager.getResourceTypes());
         generateResourceTypeXml(resourcetypesElement, resourceTypes, false);
 
         // add VFS content collectors

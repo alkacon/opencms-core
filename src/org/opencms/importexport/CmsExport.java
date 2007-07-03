@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/06/25 16:51:45 $
- * Version: $Revision: 1.84.4.18 $
+ * Date   : $Date: 2007/07/03 09:21:05 $
+ * Version: $Revision: 1.84.4.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.84.4.18 $ 
+ * @version $Revision: 1.84.4.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -1111,9 +1111,12 @@ public class CmsExport {
                 } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
                     acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
-                } else {
+                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
                     // the principal is a user
                     acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
+                } else {
+                    // the principal is a role
+                    acePrincipalName = CmsRole.PRINCIPAL_ROLE + "." + CmsRole.valueOfId(acePrincipal).getRoleName();
                 }
 
                 a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);

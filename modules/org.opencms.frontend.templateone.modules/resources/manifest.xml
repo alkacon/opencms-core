@@ -124,37 +124,37 @@
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="faq" key="fileicon.faq" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="event" key="fileicon.event" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="job" key="fileicon.job" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="layout" key="fileicon.layout" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="" order="55" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
-					<accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
@@ -171,16 +171,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
@@ -3277,11 +3268,19 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>

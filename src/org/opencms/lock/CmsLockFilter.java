@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2007/06/18 12:35:42 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/07/03 09:19:35 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.5.4 
  */
@@ -180,7 +180,7 @@ public final class CmsLockFilter implements Cloneable {
         filter.m_ownedByUserId = userId;
         return filter;
     }
-    
+
     /**
      * Returns an extended filter that will extend the result to the given path and all its parents.<p>
      * 
@@ -192,7 +192,7 @@ public final class CmsLockFilter implements Cloneable {
         filter.m_includeParents = true;
         return filter;
     }
-    
+
     /**
      * Returns an extended filter with the given project restriction.<p>
      * 
@@ -213,7 +213,7 @@ public final class CmsLockFilter implements Cloneable {
      * @return an extended filter that also matches shared exclusive locks
      */
     public CmsLockFilter filterSharedExclusive() {
-        
+
         CmsLockFilter filter = (CmsLockFilter)this.clone();
         filter.m_sharedExclusive = true;
         return filter;
@@ -340,19 +340,19 @@ public final class CmsLockFilter implements Cloneable {
         if (!match && m_includeParents) {
             match = rootPath.startsWith(lock.getResourceName());
         }
-        if (match && (m_projectId != null)) {
+        if (match && (m_projectId != null) && !m_ownedByUserId.isNullUUID() && (lock.getProjectId() != null)) {
             match = lock.getProjectId().equals(m_projectId);
         }
-        if (match && m_ownedByUserId != null && !m_ownedByUserId.isNullUUID()) {
+        if (match && (m_ownedByUserId != null) && !m_ownedByUserId.isNullUUID()) {
             match = lock.getUserId().equals(m_ownedByUserId);
         }
-        if (match && m_notOwnedByUserId != null && !m_notOwnedByUserId.isNullUUID()) {
+        if (match && (m_notOwnedByUserId != null) && !m_notOwnedByUserId.isNullUUID()) {
             match = !lock.getUserId().equals(m_notOwnedByUserId);
         }
-        if (match && m_lockableByUser != null) {
+        if (match && (m_lockableByUser != null)) {
             match = lock.isLockableBy(m_lockableByUser);
         }
-        if (match && m_notLockableByUser != null) {
+        if (match && (m_notLockableByUser != null)) {
             match = !lock.isLockableBy(m_notLockableByUser);
         }
         if (match && !m_types.isEmpty()) {
@@ -361,7 +361,7 @@ public final class CmsLockFilter implements Cloneable {
         }
         // check the related lock if available
         if (!match && !lock.getRelatedLock().isNullLock()) {
-           match = match(rootPath, lock.getRelatedLock());
+            match = match(rootPath, lock.getRelatedLock());
         }
         return match;
     }

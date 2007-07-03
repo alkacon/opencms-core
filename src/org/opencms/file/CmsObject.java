@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/06/29 16:33:55 $
- * Version: $Revision: 1.146.4.53 $
+ * Date   : $Date: 2007/07/03 09:19:36 $
+ * Version: $Revision: 1.146.4.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
@@ -61,6 +62,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -94,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.146.4.53 $
+ * @version $Revision: 1.146.4.54 $
  * 
  * @since 6.0.0 
  */
@@ -218,40 +220,53 @@ public final class CmsObject {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
 
-        I_CmsPrincipal principal = null;
+        CmsAccessControlEntry acEntry = null;
         try {
-            principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
-        } catch (CmsException e) {
+            I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+            acEntry = new CmsAccessControlEntry(
+                res.getResourceId(),
+                principal.getId(),
+                allowedPermissions,
+                deniedPermissions,
+                flags);
+            acEntry.setFlagsForPrincipal(principal);
+        } catch (CmsDbEntryNotFoundException e) {
             // check for special ids
-            if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
-                && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            if (principalName.equalsIgnoreCase(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+                acEntry = new CmsAccessControlEntry(
+                    res.getResourceId(),
+                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                    allowedPermissions,
+                    deniedPermissions,
+                    flags);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
+            } else if (principalName.equalsIgnoreCase(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+                acEntry = new CmsAccessControlEntry(
+                    res.getResourceId(),
+                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                    allowedPermissions,
+                    deniedPermissions,
+                    flags);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
+            } else if (principalType.equalsIgnoreCase(CmsRole.PRINCIPAL_ROLE)) {
+                // only vfs managers can set role based permissions
+                m_securityManager.checkRoleForResource(m_context, CmsRole.VFS_MANAGER, res);
+                // check for role
+                CmsRole role = CmsRole.valueOfRoleName(principalName);
+                // role based permissions can only be set in the system folder
+                if ((role == null) || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM))) {
+                    throw e;
+                }
+                acEntry = new CmsAccessControlEntry(
+                    res.getResourceId(),
+                    role.getId(),
+                    allowedPermissions,
+                    deniedPermissions,
+                    flags);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ROLE);
+            } else {
                 throw e;
             }
-        }
-
-        CmsUUID principalId = null;
-        if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
-            principalId = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID;
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID;
-        } else if (principal != null) {
-            principalId = principal.getId();
-        }
-
-        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
-            res.getResourceId(),
-            principalId,
-            allowedPermissions,
-            deniedPermissions,
-            flags);
-
-        if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
-            && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            acEntry.setFlagsForPrincipal(principal);
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
         }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
@@ -276,35 +291,39 @@ public final class CmsObject {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
 
-        I_CmsPrincipal principal = null;
+        CmsAccessControlEntry acEntry = null;
         try {
-            principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
-        } catch (CmsException e) {
+            I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
+            acEntry.setFlagsForPrincipal(principal);
+        } catch (CmsDbEntryNotFoundException e) {
             // check for special ids
-            if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
-                && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+            if (principalName.equalsIgnoreCase(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
+                acEntry = new CmsAccessControlEntry(
+                    res.getResourceId(),
+                    CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID,
+                    permissionString);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
+            } else if (principalName.equalsIgnoreCase(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
+                acEntry = new CmsAccessControlEntry(
+                    res.getResourceId(),
+                    CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
+                    permissionString);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
+            } else if (principalType.equalsIgnoreCase(CmsRole.PRINCIPAL_ROLE)) {
+                // only vfs managers can set role based permissions
+                m_securityManager.checkRoleForResource(m_context, CmsRole.VFS_MANAGER, res);
+                // check for role
+                CmsRole role = CmsRole.valueOfRoleName(principalName);
+                // role based permissions can only be set in the system folder
+                if ((role == null) || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !res.getRootPath().equals("/") && !res.getRootPath().equals("/system"))) {
+                    throw e;
+                }
+                acEntry = new CmsAccessControlEntry(res.getResourceId(), role.getId(), permissionString);
+                acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ROLE);
+            } else {
                 throw e;
             }
-        }
-
-        CmsUUID principalId = null;
-        if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
-            principalId = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID;
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID;
-        } else if (principal != null) {
-            principalId = principal.getId();
-        }
-
-        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principalId, permissionString);
-
-        if (!principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)
-            && !principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            acEntry.setFlagsForPrincipal(principal);
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME)) {
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS);
-        } else if (principalName.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME)) {
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL);
         }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
@@ -3851,9 +3870,18 @@ public final class CmsObject {
             // principal name is in fact a UUID, probably the user was already deleted
             m_securityManager.removeAccessControlEntry(m_context, res, new CmsUUID(principalName));
         } else {
-            // principal name not a UUID, assume this is a normal name
-            I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
-            m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
+            try {
+                // principal name not a UUID, assume this is a normal group or user name
+                I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+                m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
+            } catch (CmsDbEntryNotFoundException e) {
+                // role case
+                CmsRole role = CmsRole.valueOfRoleName(principalName);
+                if (role == null) {
+                    throw e;
+                }
+                m_securityManager.removeAccessControlEntry(m_context, res, role.getId());
+            }
         }
     }
 

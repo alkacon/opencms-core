@@ -133,16 +133,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/login</destination>
@@ -346,11 +337,11 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -677,16 +668,8 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>USER.Export</uuidprincipal>
-					<flags>16</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>1</allowed>
 						<denied>0</denied>
@@ -1877,8 +1860,8 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>36</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
 						<denied>0</denied>

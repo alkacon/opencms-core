@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/06/29 16:33:55 $
- * Version: $Revision: 1.11.4.15 $
+ * Date   : $Date: 2007/07/03 09:19:34 $
+ * Version: $Revision: 1.11.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +73,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11.4.15 $ 
+ * @version $Revision: 1.11.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,8 +91,12 @@ public final class CmsRole {
     /** The "DEVELOPER" role. */
     public static final CmsRole DEVELOPER;
 
+    /** Identifier for role principals. */
+    public static final String PRINCIPAL_ROLE = "ROLE";
+
     /** The "DIRECT_EDIT_USER" role. */
     // public static final CmsRole DIRECT_EDIT_USER;
+
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
@@ -118,6 +123,9 @@ public final class CmsRole {
 
     /** The name of the group this role is mapped to in the OpenCms database.*/
     private final String m_groupName;
+
+    /** The id of the role, does not differentiate for organizational units. */
+    private final CmsUUID m_id;
 
     /** Indicates if this role is organizational unit dependent. */
     private boolean m_ouDependent;
@@ -158,6 +166,7 @@ public final class CmsRole {
     private CmsRole(CmsRole role) {
 
         m_roleName = role.m_roleName;
+        m_id = CmsUUID.getConstantUUID(m_roleName);
         m_groupName = role.m_groupName;
         m_parentRole = role.m_parentRole;
         m_systemRole = role.m_systemRole;
@@ -176,6 +185,7 @@ public final class CmsRole {
     private CmsRole(String roleName, CmsRole parentRole, String groupName) {
 
         m_roleName = roleName;
+        m_id = CmsUUID.getConstantUUID(m_roleName);
         m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
         m_parentRole = parentRole;
         m_systemRole = true;
@@ -290,11 +300,30 @@ public final class CmsRole {
     }
 
     /**
+     * Returns the role for the given id.<p>
+     * 
+     * @param roleId the id to check for role representation
+     * 
+     * @return the role for the given role id
+     */
+    public static CmsRole valueOfId(CmsUUID roleId) {
+
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            if (roleId.equals(role.getId())) {
+                return role;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the role for the given role name.<p>
      * 
      * @param roleName a role name to check for role representation
      * 
-     * @return the role for the given group name
+     * @return the role for the given role name
      */
     public static CmsRole valueOfRoleName(String roleName) {
 
@@ -492,6 +521,19 @@ public final class CmsRole {
     }
 
     /**
+     * Returns the fully qualified name of this role.<p>
+     * 
+     * @return the fqn of this role
+     */
+    public String getFqn() {
+
+        if (getOuFqn() == null) {
+            return getRoleName();
+        }
+        return getOuFqn() + getRoleName();
+    }
+
+    /**
      * Returns the name of the group this role is mapped to in the OpenCms database.<p>
      * 
      * Here the fully qualified group name is returned.<p>
@@ -504,6 +546,18 @@ public final class CmsRole {
             return m_groupName;
         }
         return m_ouFqn + m_groupName;
+    }
+
+    /**
+     * Returns the id of this role.<p>
+     * 
+     * Does not differentiate for organizational units.<p>
+     * 
+     * @return the id of this role
+     */
+    public CmsUUID getId() {
+
+        return m_id;
     }
 
     /**

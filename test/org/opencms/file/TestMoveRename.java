@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2007/03/01 15:01:03 $
- * Version: $Revision: 1.16.8.6 $
+ * Date   : $Date: 2007/07/03 09:19:34 $
+ * Version: $Revision: 1.16.8.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16.8.6 $
+ * @version $Revision: 1.16.8.7 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -308,11 +308,8 @@ public class TestMoveRename extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing multiple move of a resource");
 
-        // switch to the root context
-        cms.getRequestContext().setSiteRoot("/");
-
-        String source = "/sites/default/folder1/page1.html";
-        String destination1 = "/sites/default/folder1/page1_move.html";
+        String source = "/folder1/page1.html";
+        String destination1 = "/folder1/page1_move.html";
         String destination2 = "/page1_move.html";
 
         storeResources(cms, source);
@@ -321,12 +318,12 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.moveResource(source, destination1);
 
         // check lock
-        assertFalse(cms.getLockedResources("/sites/default/folder1", CmsLockFilter.FILTER_ALL).contains(source));
+        assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
 
         cms.moveResource(destination1, destination2);
 
         // check lock
-        assertFalse(cms.getLockedResources("/sites/default/folder1", CmsLockFilter.FILTER_ALL).contains(destination1));
+        assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(destination1));
 
         // source resource:
         try {

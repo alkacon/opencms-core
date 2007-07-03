@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/06/05 09:52:34 $
- * Version: $Revision: 1.43.4.33 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.43.4.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.43.4.33 $
+ * @version $Revision: 1.43.4.34 $
  * 
  * @since 6.0.0 
  */
@@ -266,6 +266,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_RESOURCES_IN_TIME_RANGE_3 = "ERR_GET_RESOURCES_IN_TIME_RANGE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_ROLES_FOR_RESOURCE_2 = "ERR_GET_ROLES_FOR_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_USERS_OF_GROUP_1 = "ERR_GET_USERS_OF_GROUP_1";

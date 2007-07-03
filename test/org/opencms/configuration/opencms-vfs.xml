@@ -20,6 +20,8 @@
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 			</resourceloaders>
 			<resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFile" name="unknown_file" id="-1" />
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
 					<param name="restypes.indexpage">none|xmlpage|layoutpage</param>
 				</type>

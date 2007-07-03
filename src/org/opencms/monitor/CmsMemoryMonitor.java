@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/06/20 12:01:07 $
- * Version: $Revision: 1.58.4.14 $
+ * Date   : $Date: 2007/07/03 09:19:36 $
+ * Version: $Revision: 1.58.4.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.58.4.14 $ 
+ * @version $Revision: 1.58.4.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,6 +206,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache for resource lists. */
     private Map m_resourceListCache;
+
+    /** Cache for role lists. */
+    private Map m_roleListsCache;
 
     /** Cache for roles. */
     private Map m_rolesCache;
@@ -520,6 +523,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given value under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param roles the roles of the user
+     */
+    public void cacheRoleList(String key, List roles) {
+
+        m_roleListsCache.put(key, roles);
+    }
+
+    /**
      * Caches the given user under its id AND the fully qualified name.<p>
      * 
      * @param user the user to cache
@@ -725,6 +739,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void flushResources() {
 
         m_resourceCache.clear();
+    }
+
+    /**
+     * Flushes the role lists cache.<p>
+     */
+    public void flushRoleLists() {
+
+        m_roleListsCache.clear();
     }
 
     /**
@@ -1040,6 +1062,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Returns the value cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return list of roles
+     */
+    public List getCachedRoleList(String key) {
+
+        return (List)m_roleListsCache.get(key);
+    }
+
+    /**
      * Returns the user cached with the given cache key or <code>null</code> if not found.<p>
      * 
      * @param key the cache key to look for, this may be the user's uuid or the fqn
@@ -1284,6 +1318,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_rolesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".rolesCache", lruMap);
 
+        // role lists cache
+        lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
+        m_roleListsCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".roleListsCache", lruMap);
+
         // resource list cache
         lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
         m_resourceListCache = Collections.synchronizedMap(lruMap);
@@ -1440,6 +1479,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushXmlPermanentEntities();
         flushXmlTemporaryEntities();
         flushRoles();
+        flushRoleLists();
     }
 
     /**

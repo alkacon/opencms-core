@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2007/03/13 09:55:15 $
- * Version: $Revision: 1.21.4.2 $
+ * Date   : $Date: 2007/07/03 09:19:34 $
+ * Version: $Revision: 1.21.4.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,20 +54,23 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21.4.2 $ 
+ * @version $Revision: 1.21.4.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccessControlEntry {
 
-    /** Flag to indicate the pricipal type 'all others'. */
+    /** Flag to indicate the principal type 'all others'. */
     public static final int ACCESS_FLAGS_ALLOTHERS = 128;
 
     /** Flag to indicate that an access control entry is currently deleted. */
     public static final int ACCESS_FLAGS_DELETED = 1;
 
-    /** Flag to indicate the pricipal type group. */
+    /** Flag to indicate the principal type group. */
     public static final int ACCESS_FLAGS_GROUP = 32;
+
+    /** Flag to indicate the principal type role. */
+    public static final int ACCESS_FLAGS_ROLE = 512;
 
     /** Flag to indicate that an access control entry should be inherited. */
     public static final int ACCESS_FLAGS_INHERIT = 2;
@@ -78,7 +81,7 @@ public class CmsAccessControlEntry {
     /** Flag to indicate that an access control entry overwrites inherited entries. */
     public static final int ACCESS_FLAGS_OVERWRITE = 4;
 
-    /** Flag to indicate the pricipal type 'overwrite all'. */
+    /** Flag to indicate the principal type 'overwrite all'. */
     public static final int ACCESS_FLAGS_OVERWRITE_ALL = 256;
 
     /** Flag to indicate that the principal is responsible for the resource. */

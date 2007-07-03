@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/03/13 16:20:50 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 6.5.6
  */
@@ -218,6 +218,24 @@ public class CmsRoleManager {
             roles.add(CmsRole.valueOf(group));
         }
         return roles;
+    }
+    
+    /**
+     * Returns all roles the given user has over the given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param userFqn the user name to check
+     * @param resourceName the resource name
+     * 
+     * @return a list of {@link CmsRole} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getRolesForResource(CmsObject cms, String userFqn, String resourceName) throws CmsException {
+        
+        CmsUser user = cms.readUser(userFqn);
+        CmsResource resource = cms.readResource(resourceName);
+        return m_securityManager.getRolesForResource(cms.getRequestContext(), user, resource);
     }
 
     /**

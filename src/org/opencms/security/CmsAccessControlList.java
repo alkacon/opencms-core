@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2007/03/13 09:55:15 $
- * Version: $Revision: 1.21.4.1 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.21.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.RandomAccess;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
@@ -58,7 +57,7 @@ import java.util.RandomAccess;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21.4.1 $ 
+ * @version $Revision: 1.21.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,10 +123,11 @@ public class CmsAccessControlList {
      *  
      * @param user the user
      * @param groups the groups of this user
+     * @param roles the roles of this user
      * 
      * @return the summarized permission set of the user
      */
-    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups) {
+    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups, List roles) {
 
         CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
         boolean hasPermissions = false;
@@ -137,26 +137,24 @@ public class CmsAccessControlList {
             hasPermissions = true;
         }
         if (groups != null) {
-            I_CmsPrincipal principal;
-            if (groups instanceof RandomAccess) {
-                int size = groups.size();
-                for (int i = 0; i < size; i++) {
-                    principal = (I_CmsPrincipal)groups.get(i);
-                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
-                    if (p != null) {
-                        sum.addPermissions(p);
-                        hasPermissions = true;
-                    }
+            int size = groups.size();
+            for (int i = 0; i < size; i++) {
+                I_CmsPrincipal principal = (I_CmsPrincipal)groups.get(i);
+                p = (CmsPermissionSet)m_permissions.get(principal.getId());
+                if (p != null) {
+                    sum.addPermissions(p);
+                    hasPermissions = true;
                 }
-            } else {
-                Iterator it = groups.iterator();
-                while (it.hasNext()) {
-                    principal = (I_CmsPrincipal)it.next();
-                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
-                    if (p != null) {
-                        sum.addPermissions(p);
-                        hasPermissions = true;
-                    }
+            }
+        }
+        if (roles != null) {
+            int size = roles.size();
+            for (int i = 0; i < size; i++) {
+                CmsRole role = (CmsRole)roles.get(i);
+                p = (CmsPermissionSet)m_permissions.get(role.getId());
+                if (p != null) {
+                    sum.addPermissions(p);
+                    hasPermissions = true;
                 }
             }
         }
@@ -165,7 +163,6 @@ public class CmsAccessControlList {
             p = (CmsPermissionSet)m_permissions.get(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID);
             if (p != null) {
                 sum.addPermissions(p);
-                hasPermissions = true;
             }
         }
         return sum;
@@ -188,13 +185,14 @@ public class CmsAccessControlList {
      * The permissions are returned as permission string in the format {{+|-}{r|w|v|c|i}}*.
      * 
      * @param user the user
-     * @param groups the groups oft this user
+     * @param groups the groups of this user
+     * @param roles the roles of this user
      * 
      * @return a string that displays the permissions
      */
-    public String getPermissionString(CmsUser user, List groups) {
+    public String getPermissionString(CmsUser user, List groups, List roles) {
 
-        return getPermissions(user, groups).getPermissionString();
+        return getPermissions(user, groups, roles).getPermissionString();
     }
 
     /**

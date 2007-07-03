@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/06/18 12:35:42 $
- * Version: $Revision: 1.16.4.17 $
+ * Date   : $Date: 2007/07/03 09:19:33 $
+ * Version: $Revision: 1.16.4.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16.4.17 $ 
+ * @version $Revision: 1.16.4.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -936,12 +936,11 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                         continue;
                     }
                 }
-                // if not matching the relation filter
-                if (!filter.match("/", getCms().getLock(targetName))) {
-                    continue;
+                org.opencms.lock.CmsLock lock = getCms().getLock(targetName);
+                if (!lock.isUnlocked() && filter.match("/", lock)) {
+                    // just add resources that may come in question
+                    lockedResources.add(targetName + "*");
                 }
-                // just add resources that may come in question
-                lockedResources.add(targetName + "*");
             }
         } catch (CmsException e) {
             // error reading a resource, should usually never happen

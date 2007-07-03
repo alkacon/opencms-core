@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2007/06/29 16:33:55 $
- * Version: $Revision: 1.12.4.8 $
+ * Date   : $Date: 2007/07/03 09:19:36 $
+ * Version: $Revision: 1.12.4.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.4.8 $ 
+ * @version $Revision: 1.12.4.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,14 +167,7 @@ public class CmsExplorerTypeAccess {
                         // try to read the role in the old fashion with group name
                         role = CmsRole.valueOfGroupName(principal);
                     }
-                    principal = role.getGroupName();
-                    try {
-                        principalId = cms.readGroup(principal).getId();
-                    } catch (CmsException e) {
-                        if (LOG.isErrorEnabled()) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
+                    principalId = role.getId();
                 }
                 if (principalId != null) {
                     // create a new entry for the principal
@@ -234,6 +227,13 @@ public class CmsExplorerTypeAccess {
             // error reading the groups of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
         }
+        List roles = null;
+        try {
+            roles = OpenCms.getRoleManager().getRolesForResource(cms, user.getName(), cms.getSitePath(resource));
+        } catch (CmsException e) {
+            // error reading the roles of the current user
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+        }
         String defaultPermissions = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
         // add the default permissions to the acl
         if ((defaultPermissions != null) && !user.isGuestUser()) {
@@ -254,33 +254,26 @@ public class CmsExplorerTypeAccess {
                     }
                 }
             }
+            if (!found && (roles != null)) {
+                // look up all roles to see if we need the default
+                Iterator itRoles = roles.iterator();
+                while (itRoles.hasNext()) {
+                    CmsRole role = (CmsRole)itRoles.next();
+                    if (acl.getPermissions(role.getId()) != null) {
+                        // acl already contains the group, no need for default
+                        found = true;
+                        break;
+                    }
+                }
+            }
             if (!found) {
                 // add default access control settings for current user
                 CmsAccessControlEntry entry = new CmsAccessControlEntry(null, user.getId(), defaultPermissions);
                 acl.add(entry);
             }
         }
-        permissions = acl.getPermissions(user, groups);
+        permissions = acl.getPermissions(user, groups, roles);
 
-        // add permissions of the current user based on the role
-        Iterator itPerm = acl.getPermissionMap().entrySet().iterator();
-        while (itPerm.hasNext()) {
-            Map.Entry entry = (Map.Entry)itPerm.next();
-            CmsUUID principalId = (CmsUUID)entry.getKey();
-            CmsGroup group;
-            try {
-                group = cms.readGroup(principalId);
-            } catch (CmsException e) {
-                continue;
-            }
-            CmsRole role = CmsRole.valueOf(group);
-            if (role != null && OpenCms.getRoleManager().hasRoleForResource(cms, role, cms.getSitePath(resource))) {
-                CmsPermissionSet p = (CmsPermissionSet)entry.getValue();
-                if (p != null) {
-                    permissions.addPermissions(p);
-                }
-            }
-        }
         if (cacheKey != null) {
             m_permissionsCache.put(cacheKey, permissions);
         }
