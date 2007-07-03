@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/06/28 18:41:17 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2007/07/03 14:15:14 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,12 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.commons.CmsProgressThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.3.0 
  */
@@ -107,6 +109,12 @@ public class CmsRelationSystemValidator {
      */
     public Map validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
 
+        // check if progress should be set in the thread
+        CmsProgressThread thread = null;
+        if (Thread.currentThread() instanceof CmsProgressThread) {
+            thread = (CmsProgressThread)Thread.currentThread();
+        }
+
         Map invalidResources = new HashMap();
         boolean interProject = (publishList != null);
         if (report != null) {
@@ -117,8 +125,22 @@ public class CmsRelationSystemValidator {
         List resources = new ArrayList();
         if (publishList == null) {
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-            Iterator itTypes = OpenCms.getResourceManager().getResourceTypes().iterator();
+            List resTypes = OpenCms.getResourceManager().getResourceTypes();
+            Iterator itTypes = resTypes.iterator();
+            int count = 0;
             while (itTypes.hasNext()) {
+
+                // set progress in thread (first 10 percent)
+                count++;
+                if (thread != null) {
+
+                    if (thread.isInterrupted()) {
+                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    }
+                    thread.setProgress(count * 10 / resTypes.size());
+                }
+
                 I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
                 if (type instanceof I_CmsLinkParseable) {
                     filter = filter.addRequireType(type.getTypeId());
@@ -144,7 +166,20 @@ public class CmsRelationSystemValidator {
         Map offlineFilesLookup = new HashMap();
         List validatableResources = new ArrayList();
         Iterator itResources = resources.iterator();
+        int count = 0;
         while (itResources.hasNext()) {
+
+            // set progress in thread (next 10 percent)
+            count++;
+            if (thread != null) {
+
+                if (thread.isInterrupted()) {
+                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                }
+                thread.setProgress((count * 10 / resources.size()) + 10);
+            }
+
             CmsResource resource = (CmsResource)itResources.next();
             offlineFilesLookup.put(resource.getRootPath(), resource);
             try {
@@ -171,6 +206,17 @@ public class CmsRelationSystemValidator {
 
         boolean foundBrokenLinks = false;
         for (int index = 0, size = validatableResources.size(); index < size; index++) {
+
+            // set progress in thread (last 80 percent)
+            if (thread != null) {
+
+                if (thread.isInterrupted()) {
+                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                }
+                thread.setProgress((index * 80 / resources.size()) + 20);
+            }
+
             CmsResource resource = (CmsResource)validatableResources.get(index);
             String resourceName = resource.getRootPath();
 

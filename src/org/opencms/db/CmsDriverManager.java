@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/03 09:19:33 $
- * Version: $Revision: 1.570.2.108 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.570.2.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,6 +67,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
@@ -97,6 +98,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.commons.CmsProgressThread;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -3830,11 +3832,34 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         Map relations = new HashMap();
 
+        // check if progress should be set in the thread
+        CmsProgressThread thread = null;
+        if (Thread.currentThread() instanceof CmsProgressThread) {
+            thread = (CmsProgressThread)Thread.currentThread();
+        }
+
         // get all resources to publish
         List publishResources = publishList.getAllResources();
         Iterator itCheckList = publishResources.iterator();
         // iterate over them
+        int count = 0;
         while (itCheckList.hasNext()) {
+
+            // set progress in thread
+            count++;
+            if (thread != null) {
+
+                if (thread.isInterrupted()) {
+                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                }
+                thread.setProgress(count * 20 / publishResources.size());
+                thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle().key(
+                    org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP1_2,
+                    new Integer(count),
+                    new Integer(publishResources.size())));
+            }
+
             CmsResource checkResource = (CmsResource)itCheckList.next();
             // get and iterate over all related resources
             Iterator itRelations = getRelationsForResource(dbc, checkResource, filter).iterator();

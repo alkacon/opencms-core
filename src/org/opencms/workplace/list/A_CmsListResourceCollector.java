@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/06/12 14:20:02 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.commons.CmsProgressThread;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.14 $ 
+ * @version $Revision: 1.1.2.15 $ 
  * 
  * @since 6.1.0 
  */
@@ -206,9 +208,36 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             }
             getWp().applyColumnVisibilities();
             CmsHtmlList list = getWp().getList();
+
+            // check if progress should be set in the thread
+            CmsProgressThread thread = null;
+            int progressOffset = 0;
+            if (Thread.currentThread() instanceof CmsProgressThread) {
+                thread = (CmsProgressThread)Thread.currentThread();
+                progressOffset = thread.getProgress();
+            }
+
             // get content
             Iterator itRes = resources.iterator();
+            int count = 0;
             while (itRes.hasNext()) {
+
+                // set progress in thread
+                count++;
+                if (thread != null) {
+
+                    if (thread.isInterrupted()) {
+                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    }
+                    thread.setProgress((count * 40 / resources.size()) + progressOffset);
+                    thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
+                        new Integer(count),
+                        new Integer(resources.size())));
+
+                }
+
                 Object obj = itRes.next();
                 if (!(obj instanceof CmsResource)) {
                     ret.add(getDummyListItem(list));

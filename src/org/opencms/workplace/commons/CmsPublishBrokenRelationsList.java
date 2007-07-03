@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2007/07/02 20:56:58 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.5.5 
  */
@@ -96,12 +96,6 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_LIST_NAME_0));
 
-        m_validator = new CmsRelationPublishValidator(getCms(), getSettings().getPublishList());
-        List resourceList = new ArrayList(m_validator.keySet());
-        Collections.sort(resourceList);
-
-        m_collector = new CmsPublishBrokenRelationsCollector(this, resourceList);
-
         // prevent paging
         getList().setMaxItemsPerPage(Integer.MAX_VALUE);
 
@@ -133,6 +127,15 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
      */
     public I_CmsListResourceCollector getCollector() {
 
+        if (m_collector == null) {
+            
+            m_validator = new CmsRelationPublishValidator(getCms(), getSettings().getPublishList());
+            List resourceList = new ArrayList(m_validator.keySet());
+            Collections.sort(resourceList);
+
+            m_collector = new CmsPublishBrokenRelationsCollector(this, resourceList);
+        }
+        
         return m_collector;
     }
 

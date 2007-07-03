@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/07/03 07:49:37 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.15 $ 
+ * @version $Revision: 1.1.2.16 $ 
  * 
  * @since 6.5.5 
  */
@@ -101,6 +102,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsPublishResourcesList.class);
+
+    /** The publish list created for that list. */
+    protected CmsPublishList m_publishList;
 
     /** Indicates if the related resources should be included. */
     protected boolean m_publishRelated;
@@ -182,14 +186,15 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                 cms,
                                 getSettings().getPublishList(),
                                 relatedPL);
-                            return mergedPL.getAllResources();
+                            m_publishList = mergedPL;
                         } catch (CmsException e) {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(e.getLocalizedMessage(getLocale()), e);
                             }
                         }
                     }
-                    return getSettings().getPublishList().getAllResources();
+                    m_publishList = getSettings().getPublishList();
+                    return m_publishList.getAllResources();
                 }
 
                 /**
@@ -208,6 +213,16 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * Returns the publish list created for that list.<p>
+     *
+     * @return the publish list created for that list
+     */
+    public CmsPublishList getPublishList() {
+
+        return m_publishList;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
@@ -218,12 +233,38 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         } catch (CmsException e) {
             cms = getCms();
         }
+
+        // check if progress should be set in the thread
+        CmsProgressThread thread = null;
+        int progressOffset = 0;
+        if (Thread.currentThread() instanceof CmsProgressThread) {
+            thread = (CmsProgressThread)Thread.currentThread();
+            progressOffset = thread.getProgress();
+        }
+
         List publishResources = getSettings().getPublishList().getAllResources();
 
         // get content
         List resourceNames = getList().getAllContent();
         Iterator itResourceNames = resourceNames.iterator();
+        int count = 0;
         while (itResourceNames.hasNext()) {
+
+            // set progress in thread
+            count++;
+            if (thread != null) {
+
+                if (thread.isInterrupted()) {
+                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                }
+                thread.setProgress((count * 10 / resourceNames.size()) + progressOffset);
+                thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                    org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP3_2,
+                    new Integer(count),
+                    new Integer(resourceNames.size())));
+            }
+
             CmsListItem item = (CmsListItem)itResourceNames.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RELATIONS)) {

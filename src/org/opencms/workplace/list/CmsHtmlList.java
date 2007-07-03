@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2007/06/19 07:35:25 $
- * Version: $Revision: 1.35.4.15 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.35.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,10 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.commons.CmsProgressThread;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
@@ -51,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35.4.15 $ 
+ * @version $Revision: 1.35.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -474,6 +476,14 @@ public class CmsHtmlList {
      */
     public synchronized String listHtml() {
 
+        // check if progress should be set in the thread
+        CmsProgressThread thread = null;
+        int progressOffset = 0;
+        if (Thread.currentThread() instanceof CmsProgressThread) {
+            thread = (CmsProgressThread)Thread.currentThread();
+            progressOffset = thread.getProgress();
+        }
+
         // this block has to be executed before calling htmlBegin()
         if (isPrintable()) {
             m_visibleItems = new ArrayList(getContent());
@@ -507,7 +517,24 @@ public class CmsHtmlList {
         } else {
             Iterator itItems = m_visibleItems.iterator();
             boolean odd = true;
+            int count = 0;
             while (itItems.hasNext()) {
+
+                // set progress in thread
+                count++;
+                if (thread != null) {
+
+                    if (thread.isInterrupted()) {
+                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    }
+                    thread.setProgress((count * (100 - progressOffset) / m_visibleItems.size()) + progressOffset);
+                    thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP4_2,
+                        new Integer(count),
+                        new Integer(m_visibleItems.size())));
+                }
+
                 CmsListItem item = (CmsListItem)itItems.next();
                 html.append(m_metadata.htmlItem(item, odd, isPrintable()));
                 odd = !odd;

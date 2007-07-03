@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/06/21 15:07:56 $
- * Version: $Revision: 1.27.4.21 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.27.4.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.CmsListExplorerColumn;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.27.4.21 $ 
+ * @version $Revision: 1.27.4.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +106,9 @@ public class CmsPublishProject extends CmsMultiDialog {
     /** Parameter value for the direct publish flag. */
     private String m_paramDirectpublish;
 
+    /** Parameter value for the progress key. */
+    private String m_paramProgresskey;
+
     /** Parameter value for the project id. */
     private String m_paramProjectid;
 
@@ -121,6 +123,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /** Parameter value for the publish subresources flag. */
     private String m_paramSubresources;
+
+    /** The progress bar for the dialog. */
+    private CmsProgressWidget m_progress;
 
     /**
      * Public constructor.<p>
@@ -378,50 +383,13 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Returns html code for the possible broken relations.<p>
+     * Returns the list of the resources to publish with broken relations.<p>
      * 
-     * @return html code for the possible broken relations
+     * @return the list of the resources to publish with broken relations
      */
-    public String buildReport() {
+    public CmsPublishBrokenRelationsList getBrokenRelationsList() {
 
-        CmsPublishBrokenRelationsList list = new CmsPublishBrokenRelationsList(getJsp(), getParentFolder());
-        list.refreshList();
-
-        StringBuffer result = new StringBuffer(512);
-        list.getList().setBoxed(false);
-        result.append("<input type='hidden' name='result' value='");
-        result.append(list.getList().getTotalSize()).append("'>\n");
-        result.append(CmsListExplorerColumn.getExplorerStyleDef());
-        result.append("<div style='height:150px; overflow: auto;'>\n");
-        result.append(list.getList().listHtml());
-        result.append("</div>\n");
-        return result.toString();
-    }
-
-    /**
-     * Returns html code for the list of resources to be published.<p>
-     * 
-     * @return html code for the list of resources to be published
-     * 
-     * @throws JspException if creation of publish list fails
-     */
-    public String buildResourcesReport() throws JspException {
-
-        StringBuffer result = new StringBuffer(512);
-        if (getPublishList() != null) {
-            CmsPublishResourcesList list = new CmsPublishResourcesList(getJsp(), getParentFolder(), Boolean.valueOf(
-                getParamRelatedresources()).booleanValue());
-            list.refreshList();
-
-            list.getList().setBoxed(false);
-            result.append("<input type='hidden' name='result' value='");
-            result.append(list.getList().getTotalSize()).append("'>\n");
-            result.append(CmsListExplorerColumn.getExplorerStyleDef());
-            result.append("<div style='height:200px; overflow: auto;'>\n");
-            result.append(list.getList().listHtml());
-            result.append("</div>\n");
-        }
-        return result.toString();
+        return new CmsPublishBrokenRelationsList(getJsp(), getParentFolder());
     }
 
     /**
@@ -445,6 +413,16 @@ public class CmsPublishProject extends CmsMultiDialog {
             fn = "body";
         }
         return fn;
+    }
+
+    /**
+     * Returns the value for the progress key.<p>
+     *
+     * @return the value for the progress key
+     */
+    public String getParamProgresskey() {
+
+        return m_paramProgresskey;
     }
 
     /**
@@ -495,6 +473,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     public String getParamSubresources() {
 
         return m_paramSubresources;
+    }
+
+    /**
+     * Returns the progress bar for the dialog.<p>
+     *
+     * @return the progress bar for the dialog
+     */
+    public CmsProgressWidget getProgress() {
+
+        return m_progress;
     }
 
     /**
@@ -552,15 +540,35 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
+     * Returns the list with the resources to publish.<p>
+     * 
+     * @return the list with the resources to publish
+     * 
+     * @throws JspException if creation of publish list fails
+     */
+    public CmsPublishResourcesList getPublishResourcesList() throws JspException {
+
+        if (getPublishList() != null) {
+            return new CmsPublishResourcesList(
+                getJsp(),
+                getParentFolder(),
+                Boolean.valueOf(getParamRelatedresources()).booleanValue());
+        }
+
+        return null;
+    }
+
+    /**
      * Returns <code>true</code> if the resources to be published will generate broken links.<p>
      * 
      * @return <code>true</code> if the resources to be published will generate broken links
      */
     public boolean hasBrokenLinks() {
 
-        CmsPublishBrokenRelationsList list = new CmsPublishBrokenRelationsList(getJsp(), getParentFolder());
-        list.refreshList();
-        return (list.getList().getTotalSize() > 0);
+        //        CmsPublishBrokenRelationsList list = new CmsPublishBrokenRelationsList(getJsp(), getParentFolder());
+        //        list.refreshList();
+
+        return (getBrokenRelationsList().getList().getTotalSize() > 0);
     }
 
     /**
@@ -639,6 +647,16 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
+     * Sets the value for the progress key.<p>
+     *
+     * @param value the value for the progress key to set
+     */
+    public void setParamProgresskey(String value) {
+
+        m_paramProgresskey = value;
+    }
+
+    /**
      * Sets the value of the project id which will be published.<p> 
      * 
      * @param value the String value of the project id
@@ -689,6 +707,20 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
+     */
+    public void actionCloseDialog() throws JspException {
+
+        CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
+        if (thread != null) {
+            thread.interrupt();
+            CmsProgressWidget.removeProgressThread(thread.getKey());
+        }
+
+        super.actionCloseDialog();
+    }
+    
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -697,6 +729,9 @@ public class CmsPublishProject extends CmsMultiDialog {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
+
+        m_progress = new CmsProgressWidget(getJsp());
+        m_progress.setWidth("300px");
 
         // set the publishing type: publish project or direct publish
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamResource()) || isMultiOperation()) {
@@ -723,14 +758,28 @@ public class CmsPublishProject extends CmsMultiDialog {
             setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_RESOURCES_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_RESOURCES_CONFIRMED);
+
             // merge publish list with related resources if needed
             CmsPublishList publishList = getSettings().getPublishList();
             if (Boolean.valueOf(getParamRelatedresources()).booleanValue() && publishList.isDirectPublish()) {
                 try {
-                    CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
-                        getCms(),
-                        publishList);
-                    publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
+                    // try to find the publish list with related related resources in the progress thread
+                    CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
+                    CmsPublishList storedList = null;
+                    if (thread != null) {
+
+                        storedList = ((CmsPublishResourcesList)thread.getList()).getPublishList();
+                    }
+
+                    if (storedList == null) {
+                        CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
+                            getCms(),
+                            publishList);
+                        publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
+                    } else {
+                        publishList = storedList;
+                    }
+
                     getSettings().setPublishList(publishList);
                 } catch (CmsException e) {
                     // should never happen
@@ -739,11 +788,27 @@ public class CmsPublishProject extends CmsMultiDialog {
                     }
                 }
             }
-            // if there is no broken link
-            if (!hasBrokenLinks()) {
+
+            // start the progress
+            CmsProgressWidget.removeProgressThread(getProgress().getKey());
+            getProgress().startProgress(getBrokenRelationsList());
+
+            // wait to see if already finished
+            synchronized (this) {
+                try {
+                    wait(500);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
+            }
+
+            CmsProgressThread thread = CmsProgressWidget.getProgressThread(getProgress().getKey());
+            if ((!thread.isAlive()) && (thread.getList().getList().getTotalSize() == 0)) {
+
                 // skip broken links confirmation screen
                 setAction(ACTION_PUBLISH);
             }
+
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {

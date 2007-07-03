@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/07/03 09:19:33 $
- * Version: $Revision: 1.15.4.34 $
+ * Date   : $Date: 2007/07/03 14:15:13 $
+ * Version: $Revision: 1.15.4.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.4.34 $ 
+ * @version $Revision: 1.15.4.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERMISSION_SELECT_TYPE_0 = "ERR_PERMISSION_SELECT_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROGRESS_START_INVALID_LIST_0 = "ERR_PROGRESS_START_INVALID_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROGRESS_START_THREAD_EXISTS_0 = "ERR_PROGRESS_START_THREAD_EXISTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
@@ -1153,6 +1162,33 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PRINCIPALSELECTION_LIST_NAME_0 = "GUI_PRINCIPALSELECTION_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_ERROR_CALCULATING_0 = "GUI_PROGRESS_ERROR_CALCULATING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_ERROR_IN_THREAD_0 = "GUI_PROGRESS_ERROR_IN_THREAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_KEY_NOT_SET_0 = "GUI_PROGRESS_KEY_NOT_SET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_PUBLISH_STEP1_2 = "GUI_PROGRESS_PUBLISH_STEP1_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_PUBLISH_STEP2_2 = "GUI_PROGRESS_PUBLISH_STEP2_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_PUBLISH_STEP3_2 = "GUI_PROGRESS_PUBLISH_STEP3_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_PUBLISH_STEP4_2 = "GUI_PROGRESS_PUBLISH_STEP4_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_THREAD_NAME_1 = "GUI_PROGRESS_THREAD_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROGRESS_THREAD_NOT_FOUND_1 = "GUI_PROGRESS_THREAD_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_OFFLINE_0 = "GUI_PROJECT_OFFLINE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1514,6 +1550,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DISPLAY_UNLOCK_INF_FAILED_0 = "LOG_DISPLAY_UNLOCK_INF_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_EXECUTING_THREAD_0 = "LOG_ERROR_EXECUTING_THREAD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_INCLUDE_FAILED_1 = "LOG_ERROR_INCLUDE_FAILED_1";

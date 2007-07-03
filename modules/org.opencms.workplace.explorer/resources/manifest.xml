@@ -68,6 +68,7 @@
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/report-brokenrelations.jsp"/>
 			<resource uri="/system/workplace/commons/report-potentialbrokenrelations.jsp"/>
+			<resource uri="/system/workplace/commons/report-progress.jsp"/>
 			<resource uri="/system/workplace/commons/report-publishresources.jsp"/>
 			<resource uri="/system/workplace/commons/report-locks.jsp"/>
 			<resource uri="/system/workplace/commons/report-deleted.jsp"/>
@@ -2678,6 +2679,30 @@
 					<value><![CDATA[Publish Dialog - Broken Relations Report]]></value>
 				</property>
 				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/report-progress.jsp</source>
+			<destination>system/workplace/commons/report-progress.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a0df41ae-2566-11dc-94bb-614a5bfcd88a</uuidstructure>
+			<uuidresource>a0df41af-2566-11dc-94bb-614a5bfcd88a</uuidresource>
+			<datelastmodified>Mon, 02 Jul 2007 19:33:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Jun 2007 10:59:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Progress Bar]]></value>
+				</property>
+				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>

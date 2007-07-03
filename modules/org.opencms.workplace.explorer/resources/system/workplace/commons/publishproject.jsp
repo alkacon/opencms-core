@@ -3,6 +3,7 @@
 		org.opencms.workplace.CmsMultiDialog,
 		org.opencms.workplace.CmsWorkplace,
 		org.opencms.workplace.commons.CmsPublishProject,
+		org.opencms.workplace.commons.CmsProgressWidget,
 		org.opencms.workplace.commons.Messages,
 		java.util.List,
 		java.util.ArrayList
@@ -10,7 +11,7 @@
 
 	// initialize the workplace class
 	CmsPublishProject wp = new CmsPublishProject(pageContext, request, response);
-	
+
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
@@ -25,6 +26,13 @@ case CmsDialog.ACTION_LOCKS_CONFIRMED:
     
     wp.setParamAction(CmsPublishProject.DIALOG_RESOURCES_CONFIRMED); %>
 <%= wp.htmlStart("help.explorer.contextmenu.publish") %>
+
+<% 
+	wp.getProgress().setJsFinishMethod("setList"); 
+	wp.getProgress().setShowWaitTime(5000);
+%>
+<%= wp.getProgress().getJsIncludes() %>
+
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>commons/ajax.js'></script>
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>editors/xmlcontent/help.js'></script>
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>admin/javascript/general.js'></script>
@@ -66,63 +74,64 @@ function showRelatedResources(show){
 	}
 }
 
-var cnfMsgTxt = '';
+function setList() {
 
-function doReportUpdate(msg, state) {
-   var img = state + ".png";
-   var txt = '';
-   var elem = document.getElementById("resourcesreport");
-   if (state != 'ok') {
-      if (state == 'fatal') {
-         img = "error.png";
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_GIVEUP_0) %>";
-      } else if (state == 'wait') {
-         img = "wait.gif";
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0) %>";
-      } else if (state == 'error') {
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_ERROR_0) %> " + msg;
-      }
-   } else {
-      elem.innerHTML = msg;
-      if (document.forms['main'].result.value == '0') {
-        img = "error.png";
-        txt = "<%= wp.key(Messages.GUI_PUBLISH_LIST_EMPTY_0) %>";
-        state = "error";
-      } else {
-        showRelatedResources(true);
-      }
-   }
-   if (txt != '') {
-      var html = "<table border='0' style='vertical-align:middle; height: 200px;'>";
-      html += "<tr><td width='40' align='center' valign='middle'><img src='<%= CmsWorkplace.getSkinUri() %>commons/";
-      html += img;
-      html += "' width='32' height='32' alt=''></td>";
-      html += "<td valign='middle'><span style='color: #000099; font-weight: bold;'>";
-      html += txt;
-      html += "</span><br></td></tr></table>";
-      elem.innerHTML = html;
-   }
+   // hide progress bar
+   document.getElementById("progress").style.display = "none";
 
-   var okButton = document.getElementById("ok-button");
-   var confMsg = document.getElementById('conf-msg');
-   var isCanContinue = (state == 'ok' && document.forms['main'].result.value != '0');
-   okButton.disabled = !isCanContinue;
-   if (isCanContinue && state == 'ok') {
-      confMsg.innerHTML = cnfMsgTxt;
-   } else if (!isCanContinue || state != 'ok') {
-      confMsg.innerHTML = '<%= wp.key(Messages.GUI_PUBLISH_LIST_EMPTY_0) %>';
+   var elem = document.getElementById("resourcesreport");   
+   elem.innerHTML = progressResult;
+
+   if (document.forms['main'].result.value == '0') {
+     img = "error.png";
+     txt = "<%= wp.key(Messages.GUI_PUBLISH_LIST_EMPTY_0) %>";
+     
+     var html = "<table border='0' style='vertical-align:middle; height: 200px;'>";
+     html += "<tr><td width='40' align='center' valign='middle'><img src='<%= CmsWorkplace.getSkinUri() %>commons/";
+     html += img;
+     html += "' width='32' height='32' alt=''></td>";
+     html += "<td valign='middle'><span style='color: #000099; font-weight: bold;'>";
+     html += txt;
+     html += "</span><br></td></tr></table>";
+     elem.innerHTML = html;
+     
    } else {
-      confMsg.innerHTML = '<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0) %>';
+     showRelatedResources(true);
+     
+     var okButton = document.getElementById("ok-button");
+     if (okButton != null) {
+       okButton.disabled = false;
+     }
    }
 }
 
 function reloadReport() {
 
-   var publishSiblings = document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.checked;
-   var publishSubresources = document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.checked;
-   var relatedResources = document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.checked;   
-   makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources, 'doReportUpdate');
+   var elem = document.getElementById("resourcesreport");
+   elem.innerHTML = "";
+   
+   // show progress bar
+   resetProgressBar();
+   document.getElementById("progress").style.display = "block";   
+     
+   restartProgress();
 }
+
+function restartProgress() {
+
+	var publishSiblings = document.forms["main"].<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>.checked;
+	var publishSubresources = document.forms["main"].<%=CmsPublishProject.PARAM_SUBRESOURCES%>.checked;
+	var relatedResources = document.forms["main"].<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>.checked;   
+   
+	if (progressState > 0) {
+		progressState = 2;
+		window.setTimeout("restartProgress()", <%= wp.getProgress().getRefreshRate() %>);
+		return;
+	}
+	progressState = 1;
+	makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>', 'action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=' + publishSiblings + '&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=' + publishSubresources + '&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=' + relatedResources + '&<%= CmsProgressWidget.PARAMETER_KEY%>=<%= wp.getProgress().getKey()%>' + '&<%= CmsProgressWidget.PARAMETER_SHOWWAITTIME%>=<%= wp.getProgress().getShowWaitTime()%>', 'updateProgressBar');
+}
+
 // -->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -139,15 +148,27 @@ function reloadReport() {
 %>
 <%= wp.paramsAsHidden(excludes) %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsProgressWidget.PARAMETER_KEY %>" value="<%= wp.getProgress().getKey() %>">
 <%= wp.dialogBlockStart(wp.key(Messages.GUI_PUBLISH_RESOURCES_TITLE_0)) %>
 <%= wp.dialogWhiteBoxStart() %>
-<div id="resourcesreport" >
+
+<div id="resourcesreport" ></div>
+
+<div id="progress">
+	<table border="0" align="center" style="vertical-align:middle; height: 200px;">
+		<tr>
+			<td valign="middle">
+				<%= wp.getProgress().getWidget() %> 
+			</td>
+		</tr>
+	</table>
 </div>
+
 <%= wp.dialogWhiteBoxEnd() %>
 <%= wp.dialogBlockEnd() %>
 <%= wp.buildPublishOptions() %>
 <%= wp.buildConfirmation() %>
-<%= wp.dialogButtonsOkCancel("id='ok-button' onclick=\"this.disabled=true; document.forms['main'].submit(); \"", null) %>
+<%= wp.dialogButtonsOkCancel("id='ok-button' onclick=\"this.disabled=true; document.forms['main'].submit(); \" disabled", null) %>
 </form>
 
 <%= wp.dialogContentEnd() %>
@@ -156,10 +177,10 @@ function reloadReport() {
 <script type="text/javascript">
 <!--
 cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-publishresources.jsp") %>','action=resourcereport&<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=<%=wp.getParamRelatedresources()%>', 'doReportUpdate');
 // -->
 </script>
 <%= wp.htmlEnd() %>
+<%= wp.getProgress().startProgress(wp.getPublishResourcesList()) %>
 <% 
     break;
     
@@ -168,6 +189,10 @@ case CmsPublishProject.ACTION_RESOURCES_CONFIRMED:
 
     wp.setParamAction(CmsPublishProject.DIALOG_TYPE);  %>
 <%= wp.htmlStart("help.explorer.contextmenu.publish") %>
+
+<% wp.getProgress().setJsFinishMethod("setList"); %>
+<%= wp.getProgress().getJsIncludes() %>
+
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>commons/ajax.js'></script>
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>editors/xmlcontent/help.js'></script>
 <script type='text/javascript' src='<%=CmsWorkplace.getSkinUri()%>admin/javascript/general.js'></script>
@@ -209,55 +234,30 @@ function showBrokenLinks(show){
 	}
 }
 
-var cnfMsgTxt = '';
+function setList() {
 
-function doReportUpdate(msg, state) {
-   var img = state + ".png";
-   var txt = '';
    var elem = document.getElementById("relationsreport");
-   if (state != 'ok') {
-      if (state == 'fatal') {
-         img = "error.png";
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_GIVEUP_0) %>";
-      } else if (state == 'wait') {
-         img = "wait.gif";
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0) %>";
-      } else if (state == 'error') {
-         txt = "<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_ERROR_0) %> " + msg;
-      }
+   elem.style.display = "none";
+   elem.innerHTML = progressResult;
+   
+   if (document.forms['main'].result.value == '0') {
+    
+     document.forms['main'].submit();
+     
    } else {
-      elem.innerHTML = msg;
-      if (document.forms['main'].result.value == '0') {
-        img = state + ".png";
-        txt = "<%= wp.key(Messages.GUI_PUBLISH_RELATIONS_NOT_BROKEN_0) %>";
-      } else {
-        showBrokenLinks(true);
-      }
-   }
-   if (txt != '') {
-      var html = "<table border='0' style='vertical-align:middle; height: 150px;'>";
-      html += "<tr><td width='40' align='center' valign='middle'><img src='<%= CmsWorkplace.getSkinUri() %>commons/";
-      html += img;
-      html += "' width='32' height='32' alt=''></td>";
-      html += "<td valign='middle'><span style='color: #000099; font-weight: bold;'>";
-      html += txt;
-      html += "</span><br></td></tr></table>";
-      elem.innerHTML = html;
-   }
+     // hide progress bar
+     document.getElementById("progress").style.display = "none";
 
-   var okButton = document.getElementById("ok-button");
-   var confMsg = document.getElementById('conf-msg');
-   var isCanPublish = <%= wp.isCanPublish() %>;
-   okButton.disabled = !isCanPublish;
-   if (!isCanPublish && state == 'ok' && txt == '') {
-      confMsg.innerHTML = '<%= wp.key(Messages.GUI_PUBLISH_RELATIONS_NOT_ALLOWED_0) %>';
-   } else if (isCanPublish || state == 'ok') {
-      confMsg.innerHTML = cnfMsgTxt;
-      okButton.disabled = false;
-   } else {
-      confMsg.innerHTML = '<%= wp.key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0) %>';
+     elem.style.display = "block";
+     showBrokenLinks(true);
+     
+     var okButton = document.getElementById("ok-button");
+     if (okButton != null) {
+       okButton.disabled = false;
+     }
    }
 }
+
 // -->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -272,7 +272,17 @@ function doReportUpdate(msg, state) {
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <%= wp.dialogBlockStart(wp.key(Messages.GUI_PUBLISH_RELATIONS_TITLE_0)) %>
 <%= wp.dialogWhiteBoxStart() %>
-<div id="relationsreport" >
+
+<div id="relationsreport" ></div>
+
+<div id="progress">
+	<table border="0" align="center" style="vertical-align:middle; height: 200px;">
+		<tr>
+			<td valign="middle">
+				<%= wp.getProgress().getWidget() %> 
+			</td>
+		</tr>
+	</table>
 </div>
 <%= wp.dialogWhiteBoxEnd() %>
 <%= wp.dialogBlockEnd() %>
@@ -283,13 +293,7 @@ function doReportUpdate(msg, state) {
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
-<script type="text/javascript">
-<!--
-document.getElementById("ok-button").disabled = true;
-cnfMsgTxt = document.getElementById('conf-msg').innerHTML;
-makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-potentialbrokenrelations.jsp") %>','<%=CmsMultiDialog.PARAM_RESOURCELIST%>=<%=wp.getParamResourcelist()%>&<%=CmsDialog.PARAM_RESOURCE%>=<%=wp.getParamResource()%>&<%=CmsPublishProject.PARAM_PUBLISHSIBLINGS%>=<%=wp.getParamPublishsiblings()%>&<%=CmsPublishProject.PARAM_SUBRESOURCES%>=<%=wp.getParamSubresources()%>&<%=CmsPublishProject.PARAM_RELATEDRESOURCES%>=<%=wp.getParamRelatedresources()%>', 'doReportUpdate');
-// -->
-</script>
+
 <%= wp.htmlEnd() %>
 <% 
     break;
