@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/06/04 15:04:50 $
- * Version: $Revision: 1.13.4.31 $
+ * Date   : $Date: 2007/07/03 17:50:10 $
+ * Version: $Revision: 1.13.4.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -335,7 +335,7 @@ function getContextMenu() {
    		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
 	// ajax call
-    makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList, 'showContextMenu');
+    makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList + "&acttarget=" + top.active_target, 'showContextMenu');
 }
 
 // builds the HTML for a context menu (single or multi context menu)
@@ -581,6 +581,11 @@ function linkOut(obj) {
 
 function printList(wo) {
 
+        top.active_target = '';
+        if ((win.fileswin.location.href.indexOf('list-explorer.jsp') >= 0) || (win.fileswin.location.href.indexOf('mode=galleryview') >= 0)) {
+           top.active_target = '_parent';
+        }
+
 	var temp =
 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"
 	+ "<html><head>"
@@ -591,9 +596,9 @@ function printList(wo) {
 	+ "document.oncontextmenu = new Function('return false;');\n"
 	+ "document.onmousedown = new Function('return false;');\n"
 	+ "document.onmouseup = top.handleOnClick;\n"
-	+ "</script>"
-	+ "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>"
-	+ "</head>";
+	+ "</script>\n"
+	+ "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>\n"
+	+ "</head>\n";
 
 	var returnplace = wo.location.href;
 	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {

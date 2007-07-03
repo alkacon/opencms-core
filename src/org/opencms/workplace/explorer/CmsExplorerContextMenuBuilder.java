@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/05/10 15:40:32 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2007/07/03 17:50:10 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -71,6 +71,29 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /** The resource list parameter value. */
     private String m_paramResourcelist;
+
+    /** The link target parameter value. */
+    private String m_paramActtarget;
+
+    /**
+     * Returns the link target parameter value.<p>
+     *
+     * @return the link target parameter value
+     */
+    public String getParamActtarget() {
+
+        return m_paramActtarget;
+    }
+
+    /**
+     * Sets the link target parameter value.<p>
+     *
+     * @param paramActtarget the link target parameter value to set
+     */
+    public void setParamActtarget(String paramActtarget) {
+
+        m_paramActtarget = paramActtarget;
+    }
 
     /**
      * Public constructor.<p>
@@ -311,8 +334,13 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                     itemLink = getJsp().link(CmsWorkplace.PATH_WORKPLACE + item.getUri());
                 }
                 String itemTarget = item.getTarget();
-                if (itemTarget == null) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(itemTarget)) {
                     itemTarget = "";
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamActtarget())
+                        && (item.getUri() != null)
+                        && item.getUri().startsWith("views/admin/admin-main.jsp")) {
+                        itemTarget = getParamActtarget();
+                    }
                 }
 
                 CmsMenuRule customMenuRule = null;
