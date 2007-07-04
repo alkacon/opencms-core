@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateDefaultProperties.java,v $
- * Date   : $Date: 2007/07/04 18:12:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 18:13:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,11 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Update the default properties, from 6.2.3 to 7.0.x<p>
+ * Update the default properties, from 6.2.3 to 7.0.x.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
