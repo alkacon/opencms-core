@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/06/28 13:15:20 $
- * Version: $Revision: 1.37.4.28 $
+ * Date   : $Date: 2007/07/04 11:37:22 $
+ * Version: $Revision: 1.37.4.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37.4.28 $ 
+ * @version $Revision: 1.37.4.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -120,7 +120,7 @@ public final class CmsLockManager {
 
         boolean needNewLock = true;
         // prevent shared locks get compromised
-        if (type.isExclusive()) {
+        if ((type.isExclusive()) && (!type.isTemporary())) {
             if (!currentLock.getEditionLock().isUnlocked()) {
                 needNewLock = false;
             }

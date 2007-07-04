@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/06/26 10:25:05 $
- * Version: $Revision: 1.34.4.15 $
+ * Date   : $Date: 2007/07/04 11:37:22 $
+ * Version: $Revision: 1.34.4.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34.4.15 $ 
+ * @version $Revision: 1.34.4.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -244,13 +245,13 @@ public abstract class CmsEditor extends CmsEditorBase {
         List options = new ArrayList(locales.size());
         List selectList = new ArrayList(locales.size());
         int currentIndex = -1;
-        
+
         //get the locales already used in the resource
         List contentLocales = new ArrayList();
         try {
 
             CmsResource res = getCms().readResource(resourceName);
-            String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName); 
+            String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName);
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
@@ -388,14 +389,23 @@ public abstract class CmsEditor extends CmsEditorBase {
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-        if (!getCms().getLock(res).isNullLock()) {
+        CmsLock lock = getCms().getLock(res); 
+        if (!lock.isNullLock()) {
+
             setParamModified(Boolean.TRUE.toString());
         }
-        super.checkLock(resource, type);
+
+        // for resources with siblings make sure all sibling have at least a
+        // temporary lock
+        if ((res.getSiblingCount() > 1) && (lock.isInherited())) {
+            super.checkLock(resource, CmsLockType.TEMPORARY);
+        } else {
+            super.checkLock(resource, type);
+        }
     }
 
     /**
-     * Generates a button for delte locale.<p>
+     * Generates a button for delete locale.<p>
      * 
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
@@ -434,7 +444,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         return button(href, target, image, label, type, getSkinUri() + "buttons/");
 
     }
-    
+
     /**
      * Returns the instanciated editor display option class from the workplace manager.<p>
      * 
