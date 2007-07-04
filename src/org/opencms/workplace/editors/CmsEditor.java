@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/07/04 16:57:16 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/07/04 18:50:05 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,7 +391,6 @@ public abstract class CmsEditor extends CmsEditorBase {
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCms().getLock(res); 
         if (!lock.isNullLock()) {
-
             setParamModified(Boolean.TRUE.toString());
         }
 
