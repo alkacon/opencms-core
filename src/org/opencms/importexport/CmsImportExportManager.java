@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/06/26 10:09:21 $
- * Version: $Revision: 1.30.4.7 $
+ * Date   : $Date: 2007/07/04 12:10:20 $
+ * Version: $Revision: 1.30.4.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30.4.7 $ 
+ * @version $Revision: 1.30.4.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -323,17 +323,10 @@ public class CmsImportExportManager {
      * file resource.<p>
      * 
      * @param resource a File resource
-     * @return the "manifest.xml" as a dom4j document
+     * 
+     * @return the "manifest.xml" as a dom4j document, or <code>null</code> if not found
      */
     public static Document getManifest(File resource) {
-
-        Document manifest = null;
-        ZipFile zipFile = null;
-        ZipEntry zipFileEntry = null;
-        InputStream input = null;
-        Reader reader = null;
-        SAXReader saxReader = null;
-        File manifestFile = null;
 
         try {
             if (resource.isFile()) {
@@ -342,37 +335,58 @@ public class CmsImportExportManager {
                     return null;
                 }
                 // create a Reader for a ZIP file
-                zipFile = new ZipFile(resource);
-                zipFileEntry = zipFile.getEntry(EXPORT_MANIFEST);
-                input = zipFile.getInputStream(zipFileEntry);
-                // transform the manifest.xml file into a dom4j Document
-                saxReader = new SAXReader();
-                manifest = saxReader.read(input);
+                ZipFile zipFile = new ZipFile(resource);
+                ZipEntry zipFileEntry = zipFile.getEntry(EXPORT_MANIFEST);
+                if (zipFileEntry == null) {
+                    throw new CmsImportExportException(Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                        EXPORT_MANIFEST));
+                }
+                InputStream input = null;
+                try {
+                    input = zipFile.getInputStream(zipFileEntry);
+                    // transform the manifest.xml file into a dom4j Document
+                    return new SAXReader().read(input);
+                } finally {
+                    try {
+                        if (input != null) {
+                            input.close();
+                        }
+                    } catch (Exception e) {
+                        // noop
+                    }
+                }
             } else if (resource.isDirectory()) {
                 // create a Reader for a file in the file system
-                manifestFile = new File(resource, EXPORT_MANIFEST);
-                reader = new BufferedReader(new FileReader(manifestFile));
-                // transform the manifest.xml file into a dom4j Document
-                saxReader = new SAXReader();
-                manifest = saxReader.read(reader);
+                File manifestFile = new File(resource, EXPORT_MANIFEST);
+                if (!manifestFile.exists()) {
+                    throw new CmsImportExportException(Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                        EXPORT_MANIFEST));
+                }
+                Reader reader = null;
+                try {
+                    reader = new BufferedReader(new FileReader(manifestFile));
+                    // transform the manifest.xml file into a dom4j Document
+                    return new SAXReader().read(reader);
+                } finally {
+                    try {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                    } catch (Exception e) {
+                        // noop
+                    }
+                }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(
                     Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource),
                     e);
             }
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
         }
-
-        return manifest;
+        return null;
     }
 
     /**
@@ -525,9 +539,6 @@ public class CmsImportExportManager {
      */
     public I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsImportExportException {
 
-        Document manifest = null;
-        I_CmsImportExportHandler handler = null;
-
         File file = new File(importFile);
         if (!file.exists()) {
             // file does not exist
@@ -541,14 +552,17 @@ public class CmsImportExportManager {
             throw new CmsImportExportException(message);
         }
 
-        manifest = getManifest(file);
+        Document manifest = getManifest(file);
+        if (manifest == null) {
+            throw new CmsImportExportException(Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                EXPORT_MANIFEST));
+        }
         for (int i = 0; i < m_importExportHandlers.size(); i++) {
-            handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);
+            I_CmsImportExportHandler handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);
             if (handler.matches(manifest)) {
                 return handler;
             }
-
-            handler = null;
         }
 
         CmsMessageContainer message = Messages.get().container(
