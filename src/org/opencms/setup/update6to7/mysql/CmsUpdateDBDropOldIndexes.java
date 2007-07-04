@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/mysql/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/07/04 16:56:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 18:12:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,8 @@ import java.io.IOException;
 
 /**
  * This class drops all indexes of each table of the database.<p> 
- * This is done so that the indexes can be updated to the version 6.2.3 and afterwards to version 7
+ * 
+ * This is done so that the indexes can be updated to the version 7.0.x<p>
  * 
  * @author metzler
  */

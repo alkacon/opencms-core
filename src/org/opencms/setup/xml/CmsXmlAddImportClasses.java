@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddImportClasses.java,v $
- * Date   : $Date: 2007/07/04 16:57:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 18:12:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new import classes, from 6.2.3 to 7.<p>
+ * Adds the new import classes, from 6.2.3 to 7.0.x.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  */

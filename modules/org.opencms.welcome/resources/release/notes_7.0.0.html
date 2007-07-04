@@ -6,22 +6,16 @@
       <links>
         <link name="link0" internal="true" type="A">
           <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
-          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
         <link name="link1" internal="false" type="A">
-          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+          <target><![CDATA[http://bugzilla.opencms.org]]></target>
         </link>
       </links>
       <content><![CDATA[<h1>Release Notes for OpenCms 7.0.0</h1>
-<p>July 4, 2007: This is the final release of OpenCms 7.0.0. OpenCms 7 is a major upgrade, and it
-vastly expands the features of OpenCms 6.</p>
-<h2>
-<strong>Features of the OpenCms 7.0.0 release</strong>
-</h2>
+<p>July 4, 2007: This is the first stable release of OpenCms 7. OpenCms 7.0.0 contains many
+enhancements and improvements.</p>
+<h2><strong>Features of the OpenCms 7.0.0 release</strong></h2>
 <ul>
-<li>An update Wizard for OpenCms 6 installations on MySQL and Oracle&nbsp;is available.</li>
-<li>Support for the PostgreSQL database now included.</li>
-<li>Improved backward compatibility with OpenCms version 6.</li>
 <li>The internal link management has been greatly improved.</li>
 <li>If files (or folders) are moved / renamed, all links to these files are now kept intact.</li>
 <li>Deleting a resource that is linked by other resources does now display a warning / confirmation
@@ -57,17 +51,18 @@ moved or renamed.</li>
 'embed'.</li>
 <li>The core database structure has been optimized.</li>
 <li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
+<li>An update Wizard for OpenCms 6 installations on MySQL and Oracle&nbsp;is available.</li>
+<li>Support for the PostgreSQL database is included.</li>
+<li>Support for MS SQL Server databse is included.</li>
+<li>Many other improvements...</li>
 </ul>
 <h2>Backward compatibility with version 6</h2>
-<p>We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.0 release. In
-case you are using one of the previous development versions (OpenCms&nbsp;7 alpha, beta or release
-candidates), there have been a lot of issues fixed in the final release.</p>
-<p>OpenCms 7.0.0 features&nbsp;is largely&nbsp;backward compatible with version 6. Most templates
-and other OpenCms developed code from version 6 should work "out of the box" with version 7. A
-number of API methods from OpenCms 6 have been marked as "deprecated". In case you have made
-extensive use of OpenCms internal classes and APIs from version 6, there may be some changes
-required in your code. However, in most cases this should not take longer than a couple of
-hours.</p>
+<p>We recommend everyone who uses OpenCms to update to the 7.0.0 release.</p>
+<p>OpenCms 7.0.0 features&nbsp;is highly backward compatible with version 6. Most templates and
+other OpenCms developed code from version 6 should work "out of the box" with version 7. A number
+of API methods from OpenCms 6 have been marked as "deprecated". In case you have made extensive use
+of OpenCms internal classes and APIs from version 6, there may be some changes required in your
+code. However, in most cases this should not take longer than a couple of hours.</p>
 <p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have
 to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates run without
 change. You must edit the "web-app" node in the OpenCms web.xml file to do that.</p>
@@ -81,22 +76,16 @@ with Tomcat 5.5, which we recommend. Others have reported deploying 7.0.0 develo
 successfully on other servlet containers like JBoss, BEA and Websphere. We appreciate any feedback
 regarding other servlet containers.</p>
 <p>On the database side, we have tested with MySQL 4.1, MySQL 5.x, Oracle 9.x and Oracle 10.x, as
-well as PostgreSQL 8.2.x and 7.4.x. The automatic update wizard for OpenCms 7 supports MySQL and
-Oracle.</p>
-<h2>Regarding version numbers and CVS build tags</h2>
-<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
-tag numbers&nbsp;for all OpenCms 7&nbsp;final&nbsp;releases&nbsp;are "build_7_0_x", so the 7.0.0
-release is tagged "build_7_0_0". Development of maintenance releases (like 6.2.3) is currently done
-in CVS HEAD. OpenCms&nbsp;7 alpha had CVS build tags 6.5.x, the&nbsp;6 beta did use 6.7.x, and
-the&nbsp;7 RC had 6.9.x.</p>
+well as PostgreSQL 8.2.x and 7.4.x and MS SQL Server 2000 and 2005. The automatic update wizard for
+OpenCms 7.0.0 currently supports MySQL and Oracle.</p>
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core
-development team on the 
-<a target="_self" href="%(link0)">opencms-dev</a> mailing list in
-case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: 
-<a target="extern" href="%(link1)">http://www.opencms.org/bugzilla/
-<br /></a></p>
+development team on the <a target="_self" href=
+"%(link0)">opencms-dev</a> mailing list in case you are interested
+in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)"
+target="extern">http://bugzilla.opencms.org/<br>
+</a></p>
 <p>Thank you for using OpenCms and have fun with OpenCms 7.0.0 :-)</p>]]></content>
     </element>
   </page>

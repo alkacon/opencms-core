@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBDropOldIndexes.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 18:12:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import java.util.List;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
 public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
-    /** Constant array of the base tables of the OpenCms 6.2.3 installation.<p> */
+    /** Constant array of the base tables of the OpenCms 7.0.x installation.<p> */
     protected static final String[] CMS_TABLES = {
         "CMS_BACKUP_CONTENTS",
         "CMS_BACKUP_PROJECTRESOURCES",
@@ -93,7 +93,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
     };
 
-    /** Constant ArrayList of the tables of the base OpenCms 6.2.3 installation.<p> */
+    /** Constant ArrayList of the tables of the base OpenCms 7.0.x installation.<p> */
     protected static final List CMS_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_TABLES));
 
     /** Constant for the sql query to drop an index from a table.<p> */
