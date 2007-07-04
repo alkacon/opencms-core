@@ -2,14 +2,14 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="7 RC 2 (6.9.2)" />
+    <property name="version.number"             		value="7.0.0" />
     <property name="java.target.version"                value="1.4" />
     
 	<property name="app.name" 							value="opencms" />
 	<property name="src.all.comps" 						value="src-modules,src-components,modules,test,webapp" />
 	
     <property name="opencms.input" 						location="${basedir}" />
-    <property name="opencms.output"						location="${basedir}/../" />    	
+	<property name="opencms.output" 					location="${basedir}/../BuildCms" />
 
     <property name="opencms.build"			            location="${opencms.output}/build" />
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
