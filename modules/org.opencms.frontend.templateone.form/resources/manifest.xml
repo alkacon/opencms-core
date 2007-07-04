@@ -47,7 +47,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60" autosetnavigation="false" autosettitle="false" info="desc.emailform"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>

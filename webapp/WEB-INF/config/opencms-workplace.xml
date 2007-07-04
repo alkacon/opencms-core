@@ -44,7 +44,7 @@
     </rfsfileviewsettings>
     <explorertypes>
       <explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-        <newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false" info="desc.folder"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -90,13 +90,13 @@
         </editoptions>
       </explorertype>
       <explorertype name="extendedfolder" key="fileicon.extendedfolder" icon="gallery.gif" reference="folder">
-        <newresource uri="newresource.jsp?page=extendedfolder" order="10" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource.jsp?page=extendedfolder" order="10" autosetnavigation="false" autosettitle="false" info="desc.extendedfolder"/>
       </explorertype>
       <explorertype name="structurecontent" key="fileicon.structurecontent" icon="xmlcontent.gif" reference="xmlcontent">
-        <newresource uri="newresource.jsp?page=structurecontent" order="15" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource.jsp?page=structurecontent" order="15" autosetnavigation="false" autosettitle="false" info="desc.structuredcontent"/>
       </explorertype>
       <explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-        <newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false" info="desc.xmlpage"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -149,7 +149,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-        <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false" info="desc.plain"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -244,7 +244,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-        <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
           <accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
@@ -345,7 +345,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-        <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false" info="desc.pointer" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -389,13 +389,13 @@
         </editoptions>
       </explorertype>
       <explorertype name="link" key="fileicon.link" icon="link.gif">
-        <newresource uri="newresource_sibling.jsp" order="90" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource_sibling.jsp" order="90" autosetnavigation="false" autosettitle="false" info="desc.link" />
       </explorertype>
       <explorertype name="upload" key="fileicon.upload" icon="upload.png">
-        <newresource uri="newresource_upload.jsp" order="100" autosetnavigation="false" autosettitle="false"/>
+        <newresource uri="newresource_upload.jsp" order="100" autosetnavigation="false" autosettitle="false" info="desc.upload" />
       </explorertype>
       <explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false" info="desc.imagegallery"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -444,7 +444,7 @@
         </editoptions>
       </explorertype>
       <explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false" info="desc.downloadgallery" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>
@@ -491,16 +491,16 @@
         </editoptions>
       </explorertype>
       <explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="downloadgallery">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
       </explorertype>
       <explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="downloadgallery">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40" autosetnavigation="false" autosettitle="false" info="desc.htmlgallery" />
       </explorertype>
       <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
-        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
       </explorertype>
       <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
-        <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
+        <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
             <defaultproperty name="Title"/>

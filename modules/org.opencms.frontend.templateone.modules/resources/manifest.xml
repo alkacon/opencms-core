@@ -122,37 +122,37 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=news" order="50" autosetnavigation="false" autosettitle="false" info="desc.news" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="faq" key="fileicon.faq" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=faq" order="51" autosetnavigation="false" autosettitle="false" info="desc.faq" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="event" key="fileicon.event" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=event" order="52" autosetnavigation="false" autosettitle="false" info="desc.event" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="job" key="fileicon.job" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53" autosetnavigation="false" autosettitle="false" info="desc.jobs" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54" autosetnavigation="false" autosettitle="false" info="desc.filelist" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="layout" key="fileicon.layout" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="" order="55" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="" order="55" autosetnavigation="false" autosettitle="false"  />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>

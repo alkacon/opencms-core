@@ -43,7 +43,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="photoalbum" key="fileicon.photoalbum" icon="photoalbum.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61" autosetnavigation="false" autosettitle="false"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=photoalbum" order="61" autosetnavigation="false" autosettitle="false" info="desc.photoalbum" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
