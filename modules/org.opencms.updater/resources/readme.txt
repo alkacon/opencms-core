@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x to OpenCms 7 RC2
+            Instructions for updating OpenCms 6.x to OpenCms 7.0
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.x to OpenCms 7 RC2:
+Follow the following steps to update from OpenCms 6.x to OpenCms 7.0:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7RC2.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -46,24 +46,28 @@ in the config file WEB-INF/config/opencms.properties.
 
 3.a. Manual configuration files update
 
-The automatic configuration files update from OpenCms 6.x to OpenCms 7 is working, 
+The automatic configuration files update from OpenCms 6.x to OpenCms 7.0 is working, 
 but just for the essentials.
-To get the full power of OpenCms 7 you need to use an OpenCms 7 
-opencms-workplace.xml configuration file. One is provided under update/config.
+To get the full power of OpenCms 7.0 you need to use an OpenCms 7.0 
+opencms-workplace.xml configuration file. One is provided under update/config, but
+you will need to manually copy it to your WEB-INF/config/ folder.
+
+If you decide not to update this configuration file, some context menu entries will
+not properly work and you will not get the context menu entries for the new features.
 
 3.b. Disable search index update
 
 By default, during the update before installing the new modules, all your search
 indexes will be rebuild, this is needed because we updated to the latest Lucene
 search engine version which has a different index format.
-Depending on your system, this may take too long. So you can disable it and then
-later after the Update you can rebuild your indexes one by one from the 
+Depending on your system, this may take too long. So you can disable it and, then
+later after the Update, you can rebuild your indexes one by one from the 
 Administration view. To disable it, edit the /update/cmsupdate.ori file, find
 lines 10-11:
-
+---
 # Rebuild search indexes
 rebuildAllIndexes
-
+---
 and delete them or comment it out.
 
 4. Restart your OpenCms servlet container
@@ -82,27 +86,37 @@ wizard. Make sure to read the instructions and the disclaimer on the start
 page. Then execute the wizard which guides you through the update process.
 
 The first step is a database update, please notice that until now this is working
-only for MySQL and not for Oracle nor other databases.
+and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
+9i and 10g.
 
 This process is very time and space consuming, for instance, for a system with 
 3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
-resources takes about 2 hours.
+resources takes about 2 hours (with historical data).
 
-By default, this process deletes all historical versions. But you can decide to
-keep them, but this is not recommended since it is not really possible to convert 
-the data to the new schema, so that the convert data might be unusuable any how, 
+By default, this process deletes all historical data. But you can decide to keep
+them, but this is not recommended since it is not really possible to convert the
+data to the new schema, so that the converted data might be unusuable any how, 
 and second, the process might be more than 10 times slower if this option is 
 activated.
 
-The database update process writes a log file under /WEB-INF/logs/db-update.log.
+The database update process writes report which is very technical, it is just to
+give you an idea of what is going on and if there is a problem, logging almost 
+any SQL statement send to the database, this report is also written to a log file 
+under /WEB-INF/logs/db-update.log.
+
+You should expect some exceptions while converting user data, so some user 
+settings may get lost, but this is unfortunately inevitable.
 
 After the database update is finished, you need the Admin password to continue 
 with the upgrade. 
 
 When asked to select the modules to update you should definitely select all
 org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
-the org.opencms.frontend.templateone.* modules if you have installed
+the org.opencms.frontend.* modules if you have installed
 Template One on your OpenCms server.
+
+Here the site selection is only important for the org.opencms.frontend.* modules,
+so it should be the site where you have installed these modules.
 
 After you confirmed the module selection, you should see the status report of the 
 module import. This report is also written to WEB-INF/logs/update.log. Check this 
@@ -124,7 +138,7 @@ You should now be able to log into the OpenCms workplace as before.
 
 7. After restarting
 
-Yyou might need to uninstall no longer supported legacy (OpenCms5) modules, 
+You might need to uninstall no longer supported legacy (OpenCms5) modules, 
 like, org.opencms.legacy (which including the old workflow engine) 
 
 
