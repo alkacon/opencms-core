@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2007/06/12 14:20:45 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2007/07/04 12:10:02 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
@@ -101,15 +101,6 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
         try {
             // repair the XML content resources
             repairXmlContents();
-        } catch (CmsException e) {
-            // report the failure
-            getReport().println(
-                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                I_CmsReport.FORMAT_ERROR);
-            getReport().println(e.getMessageContainer(), I_CmsReport.FORMAT_ERROR);
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getMessageContainer(), e);
-            }
         } catch (Throwable f) {
             getReport().println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),

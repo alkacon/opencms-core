@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2007/03/01 15:01:40 $
- * Version: $Revision: 1.7.4.1 $
+ * Date   : $Date: 2007/07/04 12:10:01 $
+ * Version: $Revision: 1.7.4.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.util.CmsUUID;
@@ -44,7 +43,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.4.1 $ 
+ * @version $Revision: 1.7.4.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,8 +90,8 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
 
         try {
             getCms().deleteProject(m_projectId);
-        } catch (CmsException e) {
-            m_error = e;
+        } catch (Throwable e) {
+            m_error = e;            
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_PROJECT_DELETE_FAILED_1, m_projectId), e);
         }
     }

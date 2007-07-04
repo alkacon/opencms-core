@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
         try {
             // do the validation                
             m_externLinkValidator.validateLinks(m_cms);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage());
