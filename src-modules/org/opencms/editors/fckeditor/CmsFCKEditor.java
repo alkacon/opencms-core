@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.7
  */
@@ -106,10 +106,11 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
         List galleries = new ArrayList(galleryMap.size());
         Map typeMap = new HashMap(galleryMap.size());
 
-        Iterator i = galleryMap.keySet().iterator();
+        Iterator i = galleryMap.entrySet().iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
-            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
             galleries.add(currGallery);
             // put the type name to the type Map
             typeMap.put(currGallery, key);

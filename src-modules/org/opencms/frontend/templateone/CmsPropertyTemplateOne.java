@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2006/07/20 10:35:10 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.frontend.templateone.modules.CmsLayoutXmlContentHandler;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,7 +390,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
 
@@ -448,7 +447,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return URI_PROPERTY_DIALOG;
@@ -734,7 +733,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             // try to find a localized key for the description property value
@@ -900,7 +899,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         } catch (CmsException e) {
             // error reading resources
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;

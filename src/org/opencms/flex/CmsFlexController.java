@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2006/10/26 12:25:34 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -242,7 +242,8 @@ public class CmsFlexController {
      * Checks if the provided request is running in OpenCms.<p>
      *
      * @param req the current request
-     * @return true if the request is running in OpenCms, false otherwise
+     * 
+     * @return <code>true</code> if the request is running in OpenCms, <code>false</code> otherwise
      */
     public static boolean isCmsRequest(ServletRequest req) {
 
@@ -252,9 +253,6 @@ public class CmsFlexController {
     /**
      * Checks if the request has the "If-Modified-Since" header set, and if so,
      * if the header date value is equal to the provided last modification date.<p>
-     * 
-     * The "expires" information is automatically also checked since if a page recently
-     * expired, the date of last modification is set to the expiration date.<p>
      * 
      * @param req the request to set the "If-Modified-Since" date header from
      * @param dateLastModified the date to compare the header with

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupDependenciesList.java,v $
- * Date   : $Date: 2006/03/28 10:13:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -53,6 +52,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -331,77 +331,80 @@ public class CmsGroupDependenciesList extends A_CmsListDialog {
 
         CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
         Iterator itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
-        getCms().getRequestContext().saveSiteRoot();
-        getCms().getRequestContext().setSiteRoot("/");
-        while (itGroups.hasNext()) {
-            CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next().toString()));
-            // get content
-            List resources = getCms().getResourcesForPrincipal(group.getId(), null, true);
-            Iterator itRes = resources.iterator();
-            while (itRes.hasNext()) {
-                CmsResource resource = (CmsResource)itRes.next();
-                CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
-                if (item == null) {
-                    item = getList().newItem(resource.getResourceId().toString());
-                    item.set(LIST_COLUMN_NAME, resource.getRootPath());
-                    item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
-                    Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                    while (itAces.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                        if (ace.getPrincipal().equals(group.getId())) {
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                item.set(LIST_COLUMN_PERMISSIONS, group.getName()
-                                    + ": "
-                                    + ace.getPermissions().getPermissionString());
-                            }
-                            break;
-                        }
-                    }
-                    ret.addIdentifiableObject(item.getId(), item);
-                } else {
-                    String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
-                    Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                    while (itAces.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                        if (ace.getPrincipal().equals(group.getId())) {
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                String data = group.getName() + ": " + ace.getPermissions().getPermissionString();
-                                if (oldData != null) {
-                                    data = oldData + ", " + data;
+        String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
+        try {
+            getCms().getRequestContext().setSiteRoot("/");
+            while (itGroups.hasNext()) {
+                CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next().toString()));
+                // get content
+                List resources = getCms().getResourcesForPrincipal(group.getId(), null, true);
+                Iterator itRes = resources.iterator();
+                while (itRes.hasNext()) {
+                    CmsResource resource = (CmsResource)itRes.next();
+                    CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
+                    if (item == null) {
+                        item = getList().newItem(resource.getResourceId().toString());
+                        item.set(LIST_COLUMN_NAME, resource.getRootPath());
+                        item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
+                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        while (itAces.hasNext()) {
+                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            if (ace.getPrincipal().equals(group.getId())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    item.set(LIST_COLUMN_PERMISSIONS, group.getName()
+                                        + ": "
+                                        + ace.getPermissions().getPermissionString());
                                 }
-                                item.set(LIST_COLUMN_PERMISSIONS, data);
+                                break;
                             }
-                            break;
+                        }
+                        ret.addIdentifiableObject(item.getId(), item);
+                    } else {
+                        String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
+                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        while (itAces.hasNext()) {
+                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            if (ace.getPrincipal().equals(group.getId())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    String data = group.getName() + ": " + ace.getPermissions().getPermissionString();
+                                    if (oldData != null) {
+                                        data = oldData + ", " + data;
+                                    }
+                                    item.set(LIST_COLUMN_PERMISSIONS, data);
+                                }
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            // add users
-            Iterator itUsers = getCms().getUsersOfGroup(group.getName()).iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
-                CmsListItem item = (CmsListItem)ret.getObject(user.getId().toString());
-                if (item == null) {
-                    item = getList().newItem(user.getId().toString());
-                    item.set(LIST_COLUMN_NAME, user.getName());
-                    item.set(LIST_COLUMN_PERMISSIONS, "--");
-                    ret.addIdentifiableObject(item.getId(), item);
+                // add users
+                Iterator itUsers = getCms().getUsersOfGroup(group.getName()).iterator();
+                while (itUsers.hasNext()) {
+                    CmsUser user = (CmsUser)itUsers.next();
+                    CmsListItem item = (CmsListItem)ret.getObject(user.getId().toString());
+                    if (item == null) {
+                        item = getList().newItem(user.getId().toString());
+                        item.set(LIST_COLUMN_NAME, user.getName());
+                        item.set(LIST_COLUMN_PERMISSIONS, "--");
+                        ret.addIdentifiableObject(item.getId(), item);
+                    }
+                }
+                // add child groups
+                Iterator itChildren = getCms().getChildren(group.getName(), false).iterator();
+                while (itChildren.hasNext()) {
+                    CmsGroup child = (CmsGroup)itChildren.next();
+                    CmsListItem item = (CmsListItem)ret.getObject(child.getId().toString());
+                    if (item == null) {
+                        item = getList().newItem(child.getId().toString());
+                        item.set(LIST_COLUMN_NAME, child.getName());
+                        item.set(LIST_COLUMN_PERMISSIONS, "--");
+                        ret.addIdentifiableObject(item.getId(), item);
+                    }
                 }
             }
-            // add child groups
-            Iterator itChilds = getCms().getChild(group.getName()).iterator();
-            while (itChilds.hasNext()) {
-                CmsGroup child = (CmsGroup)itChilds.next();
-                CmsListItem item = (CmsListItem)ret.getObject(child.getId().toString());
-                if (item == null) {
-                    item = getList().newItem(child.getId().toString());
-                    item.set(LIST_COLUMN_NAME, child.getName());
-                    item.set(LIST_COLUMN_PERMISSIONS, "--");
-                    ret.addIdentifiableObject(item.getId(), item);
-                }
-            }
+        } finally {
+            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        getCms().getRequestContext().restoreSiteRoot();
         return ret.elementList();
     }
 

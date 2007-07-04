@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2006/10/25 09:55:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.List;
  * <li><code>css:/vfs/path/to/cssfile.css</code>: the absolute path in the OpenCms VFS to the CSS style sheet 
  *     to use to render the contents in the editor (availability depends on the integrated editor)</li>
  * <li><code>formatselect</code>: the format selector for selecting text format like paragraph or headings</li>
+ * <li><code>fullpage</code>: the editor creates an entire html page code </li>
  * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code> displays 
  *     the image gallery button or <code>downloadgallery</code> displays the download gallery button</li>
  * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
@@ -67,7 +68,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.1
  */
@@ -87,6 +88,9 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the "formatselect" selector. */
     public static final String OPTION_FORMATSELECT = "formatselect";
+
+    /** Option for the "fullpage" editor variant. */
+    public static final String OPTION_FULLPAGE = "fullpage";
 
     /** Option for the "height" configuration. */
     public static final String OPTION_HEIGHT = "height:";
@@ -109,6 +113,7 @@ public class CmsHtmlWidgetOption {
     private String m_cssPath;
     private List m_displayGalleries;
     private String m_editorHeight;
+    private boolean m_fullPage;
     private boolean m_showAnchorDialog;
     private boolean m_showFormatSelect;
     private boolean m_showImageDialog;
@@ -279,6 +284,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns if the editor should be used in full page mode.<p>
+     * 
+     * @return true if the editor should be used in full page mode, otherwise false
+     */
+    public boolean isFullPage() {
+
+        return m_fullPage;
+    }
+
+    /**
      * Sets the css style sheet VFS path to use in the widget area.<p>
      *
      * @param cssPath the css style sheet VFS path to use in the widget area
@@ -306,6 +321,16 @@ public class CmsHtmlWidgetOption {
     public void setEditorHeight(String editorHeight) {
 
         m_editorHeight = editorHeight;
+    }
+
+    /**
+     * Sets if the editor should be used in full page mode.<p>
+     * 
+     * @param fullPage true if the editor should be used in full page mode, otherwise false
+     */
+    public void setFullPage(boolean fullPage) {
+
+        m_fullPage = fullPage;
     }
 
     /**
@@ -493,6 +518,9 @@ public class CmsHtmlWidgetOption {
                 } else if (OPTION_FORMATSELECT.equals(option)) {
                     // show format selector
                     setShowFormatSelect(true);
+                } else if (OPTION_FULLPAGE.equals(option)) {
+                    // use editor in full page mode
+                    setFullPage(true);
                 } else if (OPTION_IMAGE.equals(option)) {
                     // show image dialog
                     setShowImageDialog(true);

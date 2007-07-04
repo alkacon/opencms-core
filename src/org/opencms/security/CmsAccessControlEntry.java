@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.security;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.Comparator;
 import java.util.StringTokenizer;
 
 /**
@@ -53,17 +54,23 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccessControlEntry {
 
+    /** Flag to indicate the principal type 'all others'. */
+    public static final int ACCESS_FLAGS_ALLOTHERS = 128;
+
     /** Flag to indicate that an access control entry is currently deleted. */
     public static final int ACCESS_FLAGS_DELETED = 1;
 
-    /** Flag to indicate the pricipal type group. */
+    /** Flag to indicate the principal type group. */
     public static final int ACCESS_FLAGS_GROUP = 32;
+
+    /** Flag to indicate the principal type role. */
+    public static final int ACCESS_FLAGS_ROLE = 512;
 
     /** Flag to indicate that an access control entry should be inherited. */
     public static final int ACCESS_FLAGS_INHERIT = 2;
@@ -74,6 +81,9 @@ public class CmsAccessControlEntry {
     /** Flag to indicate that an access control entry overwrites inherited entries. */
     public static final int ACCESS_FLAGS_OVERWRITE = 4;
 
+    /** Flag to indicate the principal type 'overwrite all'. */
+    public static final int ACCESS_FLAGS_OVERWRITE_ALL = 256;
+
     /** Flag to indicate that the principal is responsible for the resource. */
     public static final int ACCESS_FLAGS_RESPONSIBLE = 64;
 
@@ -81,23 +91,99 @@ public class CmsAccessControlEntry {
     public static final int ACCESS_FLAGS_USER = 16;
 
     /**
-     * Flags of this access control entry.
+     * ACE comparator.<p>
+     * 
+     * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
+     * 
+     * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
      */
+    public static final Comparator COMPARATOR_ACE = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object ace1, Object ace2) {
+
+            if (ace1 == ace2) {
+                return 0;
+            }
+            if ((ace1 instanceof CmsAccessControlEntry) && (ace2 instanceof CmsAccessControlEntry)) {
+                CmsUUID id1 = ((CmsAccessControlEntry)ace1).getPrincipal();
+                CmsUUID id2 = ((CmsAccessControlEntry)ace2).getPrincipal();
+                return COMPARATOR_PRINCIPALS.compare(id1, id2);
+            }
+            return 0;
+        }
+    };
+
+    /**
+     * ACE principals comparator.<p>
+     * 
+     * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
+     * 
+     * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
+     */
+    public static final Comparator COMPARATOR_PRINCIPALS = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object ace1, Object ace2) {
+
+            if (ace1 == ace2) {
+                return 0;
+            }
+            if ((ace1 instanceof CmsUUID) && (ace2 instanceof CmsUUID)) {
+                CmsUUID id1 = ((CmsUUID)ace1);
+                CmsUUID id2 = ((CmsUUID)ace2);
+
+                if (id1.equals(id2)) {
+                    return 0;
+                } else if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                    return -1;
+                } else if (id1.equals(PRINCIPAL_ALL_OTHERS_ID)) {
+                    if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } else if (id2.equals(PRINCIPAL_ALL_OTHERS_ID)) {
+                    if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                } else if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                    return 1;
+                }
+                return id1.compareTo(id2);
+            }
+            return 0;
+        }
+    };
+
+    /** The used name for ace's that apply to all other principals. */
+    public static final String PRINCIPAL_ALL_OTHERS_NAME = "all_others";
+
+    /** The used id for ace's that apply to all other principals. */
+    public static final CmsUUID PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME);
+
+    /** The used name for ace's that overwrites all inherited permissions. */
+    public static final String PRINCIPAL_OVERWRITE_ALL_NAME = "overwrite_all";
+
+    /** The used id for ace's that overwrites all inherited permissions. */
+    public static final CmsUUID PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME);
+
+    /** Flags of this access control entry. */
     private int m_flags;
 
-    /**
-     * The permission set.
-     */
+    /** The permission set. */
     private CmsPermissionSetCustom m_permissions;
 
-    /**
-     * Id of the principal.
-     */
+    /** Id of the principal. */
     private CmsUUID m_principal;
 
-    /**
-     * Id of the resource.
-     */
+    /** Id of the resource. */
     private CmsUUID m_resource;
 
     /**
@@ -281,6 +367,20 @@ public class CmsAccessControlEntry {
     }
 
     /**
+     * Returns the string representation of the "inherit" flag.<p>
+     * 
+     * @return string of the format {{+|-}i}*
+     */
+    public String getInheritingString() {
+
+        if (isInheriting()) {
+            return "+i";
+        } else {
+            return "-i";
+        }
+    }
+
+    /**
      * Returns the current permission set (both allowed and denied permissions).<p>
      * 
      * @return the set of permissions
@@ -346,6 +446,16 @@ public class CmsAccessControlEntry {
     }
 
     /**
+     * Checks if the {@link #ACCESS_FLAGS_ALLOTHERS} flag is set.<p>
+     * 
+     * @return <code>true</code> if the {@link #ACCESS_FLAGS_ALLOTHERS} flag is set
+     */
+    public boolean isAllOthers() {
+
+        return (m_flags & ACCESS_FLAGS_ALLOTHERS) == ACCESS_FLAGS_ALLOTHERS;
+    }
+
+    /**
      * Returns if this access control entry has the inherited flag set.<p>
      * Note: to check if an access control entry is inherited, also the
      * resource id and the id of the current resource must be different.
@@ -355,6 +465,26 @@ public class CmsAccessControlEntry {
     public boolean isInherited() {
 
         return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERITED) > 0);
+    }
+
+    /**
+     * Returns if this ace is being inherited to the folder subresources.<p>
+     * 
+     * @return  <code>true</code>, if this ace is being inherited to the folder subresources
+     */
+    public boolean isInheriting() {
+
+        return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) > 0);
+    }
+
+    /**
+     * Checks if the {@link #ACCESS_FLAGS_OVERWRITE_ALL} flag is set.<p>
+     * 
+     * @return <code>true</code> if the {@link #ACCESS_FLAGS_OVERWRITE_ALL} flag is set
+     */
+    public boolean isOverwriteAll() {
+
+        return (m_flags & ACCESS_FLAGS_OVERWRITE_ALL) == ACCESS_FLAGS_OVERWRITE_ALL;
     }
 
     /**

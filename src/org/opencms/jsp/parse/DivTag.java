@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/Attic/DivTag.java,v $
- * Date   : $Date: 2006/11/06 13:34:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.htmlparser.tags.Div;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.2
  *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  * 
@@ -112,7 +112,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * 
      * @author Alexander Kandzior 
      */
-    public class CmsFlexCacheVariation extends Object {
+    public static class CmsFlexCacheVariation extends Object {
 
         /** The key belonging to the resource. */
         public CmsFlexCacheKey m_key;
@@ -155,6 +155,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
+         * 
+         * @param entry the entry to remove
+         * 
+         * @return <code>true</code> to actually delete the entry
+         * 
+         * @see LRUMap#removeLRU(LinkEntry)
          */
         protected boolean removeLRU(LinkEntry entry) {
 
@@ -256,18 +262,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         int maxKeys = configuration.getMaxKeys();
 
         m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
-
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_entryLruCache", m_variationCache);
-        }
+        OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_entryLruCache", m_variationCache);
 
         if (m_enabled) {
             CmsFlexKeyMap flexKeyMap = new CmsFlexKeyMap(maxKeys);
             m_keyCache = Collections.synchronizedMap(flexKeyMap);
-
-            if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_resourceMap", flexKeyMap);
-            }
+            OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_resourceMap", flexKeyMap);
 
             OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
@@ -279,8 +279,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.INIT_FLEXCACHE_CREATED_2,
-                new Boolean(m_enabled),
-                new Boolean(m_cacheOffline)));
+                Boolean.valueOf(m_enabled),
+                Boolean.valueOf(m_cacheOffline)));
         }
     }
 
@@ -359,10 +359,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         clearOfflineEntries();
                         break;
                     default:
-                // no operation
+                        // no operation
                 }
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -382,7 +382,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public CmsFlexCacheKey getCachedKey(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -405,7 +405,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedResources(CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         return m_keyCache.keySet();
@@ -427,7 +427,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public Set getCachedVariations(String key, CmsObject cms) {
 
-        if (!isEnabled() || !cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+        if (!isEnabled() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
             return null;
         }
         Object o = m_keyCache.get(key);
@@ -489,8 +489,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
         try {
             clear();
-            m_variationCache = null;
-            m_keyCache = null;
         } catch (Throwable t) {
             // ignore
         }
@@ -732,7 +730,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
                 suffix,
-                new Boolean(entriesOnly)));
+                Boolean.valueOf(entriesOnly)));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:04 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,20 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestServletRequest;
+import org.opencms.test.OpenCmsTestServletResponse;
 import org.opencms.util.CmsMacroResolver;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -51,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -78,6 +84,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         suite.setName(TestOpenCmsSingleton.class.getName());
 
         suite.addTest(new TestOpenCmsSingleton("testInitCmsObject"));
+        suite.addTest(new TestOpenCmsSingleton("testInitResource"));
         suite.addTest(new TestOpenCmsSingleton("testLog"));
         suite.addTest(new TestOpenCmsSingleton("testEncoding"));
 
@@ -112,13 +119,16 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         // get content encoding default property from the JSP resource type
         CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(
             CmsResourceTypeJsp.getStaticTypeId());
+        // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
         List defaultProperties = jsp.getConfiguredDefaultProperties();
+        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());        
         Iterator i = defaultProperties.iterator();
         String jspEncoding = null;
         while (i.hasNext()) {
             CmsProperty property = (CmsProperty)i.next();
             if (CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
                 jspEncoding = property.getValue();
+                assertEquals("Test configuration has property value '${opencms.default.encoding}' configured for JSP", 2, defaultProperties.size());        
                 // resolve the macro
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
                 jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
@@ -144,13 +154,13 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
         // test creation of "Guest" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())) {
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().currentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
         }
 
         // test creation of "Export" user CmsObject
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserExport())) {
+        if (!OpenCms.getDefaultUsers().isUserExport(cms.getRequestContext().currentUser().getName())) {
             fail("'Export' user could not be properly initialized!");
         }
 
@@ -195,8 +205,9 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             cms = OpenCms.initCmsObject(getCmsObject(), contextInfo);
         } catch (CmsException e) {
             fail("'Admin' user creation with valid Admin context didn't work!");
+            return;
         }
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserAdmin())) {
+        if (!OpenCms.getDefaultUsers().isUserAdmin(cms.getRequestContext().currentUser().getName())) {
             fail("'Admin' user could not be properly initialized with valid Admin context!");
         }
         if (cms == getCmsObject()) {
@@ -253,4 +264,33 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Test case for resource initialization.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testInitResource() throws Exception {
+
+        echo("Testing access to initResource method");
+        
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        
+        cms.loginUser("Admin", "admin");        
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+
+
+        HttpServletRequest req = new OpenCmsTestServletRequest();
+        HttpServletResponse res = new OpenCmsTestServletResponse();
+        
+        CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals ("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
+        
+        CmsProperty defaultFileProperty = new CmsProperty("default-file", "page1.html", null);
+        cms.lockResource("/folder1/subfolder12/");
+        cms.writePropertyObject("/folder1/subfolder12/", defaultFileProperty);
+        
+        CmsResource resource2 = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals ("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());        
+    }    
 }

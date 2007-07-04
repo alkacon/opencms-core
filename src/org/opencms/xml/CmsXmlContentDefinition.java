@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2006/07/19 12:38:16 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,40 +68,11 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContentDefinition implements Cloneable {
-
-    /**
-     * Simple data structure to describe a type seqnence in an XML schema.<p>
-     */
-    private final class CmsXmlComplexTypeSequence {
-
-        /** Indicates if this type sequence has a language attribute. */
-        protected boolean m_hasLanguageAttribute;
-
-        /** The name of the complex type seqnence. */
-        protected String m_name;
-
-        /** The type sequence elements. */
-        protected List m_sequence;
-
-        /**
-         * Creates a new complex type sequence data structure.<p>
-         * 
-         * @param name the name of the sequence
-         * @param sequence the type sequence element list
-         * @param hasLanguageAttribute indicates if a "language" attribute is present
-         */
-        protected CmsXmlComplexTypeSequence(String name, List sequence, boolean hasLanguageAttribute) {
-
-            m_name = name;
-            m_sequence = sequence;
-            m_hasLanguageAttribute = hasLanguageAttribute;
-        }
-    }
 
     /** Constant for the XML schema attribute "mapto". */
     public static final String XSD_ATTRIBUTE_DEFAULT = "default";
@@ -505,16 +476,13 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param element the element to validate
      * @param includes the XML schema includes
-     * @param definition the content definition the complex type seqnence belongs to 
      * 
      * @return a data structure containing the validated complex type seqnence data 
      * 
      * @throws CmsXmlException if the validation fails
      */
-    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
-        Element element,
-        Set includes,
-        CmsXmlContentDefinition definition) throws CmsXmlException {
+    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(Element element, Set includes)
+    throws CmsXmlException {
 
         validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
 
@@ -597,7 +565,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // return a data structure with the collected values
-        return definition.new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
+        return new CmsXmlComplexTypeSequence(name, sequence, hasLanguageAttribute);
     }
 
     /**
@@ -711,7 +679,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         Iterator ct = complexTypes.iterator();
         while (ct.hasNext()) {
             Element e = (Element)ct.next();
-            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions, result);
+            CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions);
             complexTypeData.add(sequence);
         }
 
@@ -901,7 +869,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
                 Element typeElement = type.generateXml(cms, document, root, locale);
-                // need to check for default value again because the of appinfo "mappings" node
+                // need to check for default value again because of the appinfo "mappings" node
                 I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
                 String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
                 if (defaultValue != null) {
@@ -1131,6 +1099,16 @@ public class CmsXmlContentDefinition implements Cloneable {
         CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;
         path = CmsXmlUtils.removeFirstXpathElement(elementPath);
         return nestedDefinition.getNestedContentDefinition().getSchemaType(path);
+    }
+
+    /**
+     * Returns the internal set of schema type names.<p>
+     * 
+     * @return the internal set of schema type names
+     */
+    public Set getSchemaTypes() {
+
+        return m_types.keySet();
     }
 
     /**

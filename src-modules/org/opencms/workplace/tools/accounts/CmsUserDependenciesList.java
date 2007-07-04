@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2006/03/28 10:13:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -52,6 +51,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,8 +298,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_NOTICE_0).key(
-            getLocale())));
+        result.append(dialogBlockStart(key(Messages.GUI_USER_DEPENDENCIES_NOTICE_0)));
         result.append("\n");
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_USER_DEPENDENCIES_SELECTED_USERS_0));
@@ -339,55 +338,70 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
 
         CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
         Iterator itUsers = CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
-        getCms().getRequestContext().saveSiteRoot();
-        getCms().getRequestContext().setSiteRoot("/");
-        while (itUsers.hasNext()) {
-            CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
-            // get content
-            List resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
-            Iterator itRes = resources.iterator();
-            while (itRes.hasNext()) {
-                CmsResource resource = (CmsResource)itRes.next();
-                CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
-                if (item == null) {
-                    item = getList().newItem(resource.getResourceId().toString());
-                    item.set(LIST_COLUMN_NAME, resource.getRootPath());
-                    item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
-                    item.set(LIST_COLUMN_CREATED, getCms().readUser(resource.getUserCreated()).getFullName());
-                    item.set(LIST_COLUMN_LASTMODIFIED, getCms().readUser(resource.getUserLastModified()).getFullName());
-                    Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                    while (itAces.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                        if (ace.getPrincipal().equals(user.getId())) {
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                item.set(LIST_COLUMN_PERMISSIONS, user.getName()
-                                    + ": "
-                                    + ace.getPermissions().getPermissionString());
-                            }
-                            break;
+        String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
+        try {
+            getCms().getRequestContext().setSiteRoot("/");
+            while (itUsers.hasNext()) {
+                CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
+                // get content
+                List resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
+                Iterator itRes = resources.iterator();
+                while (itRes.hasNext()) {
+                    CmsResource resource = (CmsResource)itRes.next();
+                    CmsListItem item = (CmsListItem)ret.getObject(resource.getResourceId().toString());
+                    if (item == null) {
+                        String userCreated = resource.getUserCreated().toString();
+                        try {
+                            userCreated = getCms().readUser(resource.getUserCreated()).getFullName();
+                        } catch (CmsException exc) {
+                            // noop - user id could not be resolved, so display it
                         }
-                    }
-                    ret.addIdentifiableObject(item.getId(), item);
-                } else {
-                    String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
-                    Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                    while (itAces.hasNext()) {
-                        CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                        if (ace.getPrincipal().equals(user.getId())) {
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                String data = user.getName() + ": " + ace.getPermissions().getPermissionString();
-                                if (oldData != null) {
-                                    data = oldData + ", " + data;
+                        String userLastmodified = resource.getUserLastModified().toString();
+                        try {
+                            userLastmodified = getCms().readUser(resource.getUserLastModified()).getFullName();
+                        } catch (CmsException exc) {
+                            // noop - user id could not be resolved, so display it
+                        }
+                        item = getList().newItem(resource.getResourceId().toString());
+                        item.set(LIST_COLUMN_NAME, resource.getRootPath());
+                        item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
+                        item.set(LIST_COLUMN_CREATED, userCreated);
+                        item.set(LIST_COLUMN_LASTMODIFIED, userLastmodified);
+                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        while (itAces.hasNext()) {
+                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            if (ace.getPrincipal().equals(user.getId())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    item.set(LIST_COLUMN_PERMISSIONS, user.getName()
+                                        + ": "
+                                        + ace.getPermissions().getPermissionString());
                                 }
-                                item.set(LIST_COLUMN_PERMISSIONS, data);
+                                break;
                             }
-                            break;
+                        }
+                        ret.addIdentifiableObject(item.getId(), item);
+                    } else {
+                        String oldData = (String)item.get(LIST_COLUMN_PERMISSIONS);
+                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                        while (itAces.hasNext()) {
+                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                            if (ace.getPrincipal().equals(user.getId())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    String data = user.getName() + ": " + ace.getPermissions().getPermissionString();
+                                    if (oldData != null) {
+                                        data = oldData + ", " + data;
+                                    }
+                                    item.set(LIST_COLUMN_PERMISSIONS, data);
+                                }
+                                break;
+                            }
                         }
                     }
                 }
             }
+        } finally {
+            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        getCms().getRequestContext().restoreSiteRoot();
         return ret.elementList();
     }
 

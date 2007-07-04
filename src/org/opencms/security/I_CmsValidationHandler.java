@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2006/05/12 16:05:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsIllegalArgumentException;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  */
@@ -54,13 +54,31 @@ public interface I_CmsValidationHandler {
     void checkEmail(String email) throws CmsIllegalArgumentException;
 
     /**
-     * Checks if the provided group name is a valid user name.<p>
+     * Checks if the provided firstname is valid.<p>
+     * 
+     * @param firstname the firstname to validate
+     * 
+     * @throws CmsIllegalArgumentException if the given email address is not valid
+     */
+    void checkFirstname(String firstname) throws CmsIllegalArgumentException;
+
+    /**
+     * Checks if the provided group name is a valid group name.<p>
      *
      * @param groupName the group name to check
      * 
      * @throws CmsIllegalArgumentException if the given group name is not valid
      */
     void checkGroupName(String groupName) throws CmsIllegalArgumentException;
+
+    /**
+     * Checks if the provided lastname is valid.<p>
+     * 
+     * @param lastname the lastname to validate
+     * 
+     * @throws CmsIllegalArgumentException if the given email address is not valid
+     */
+    void checkLastname(String lastname) throws CmsIllegalArgumentException;
 
     /**
      * Checks if the provided user name is a valid user name.<p>

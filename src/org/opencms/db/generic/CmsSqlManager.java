@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2007/07/04 16:57:07 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
-import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,11 +57,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 6.0.0 
  */
-public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
+public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
     protected static final String QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
@@ -78,7 +78,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
-    /** The type ID of the driver (vfs, user, project, workflow or backup) from where this SQL manager is referenced. */
+    /** The type ID of the driver (vfs, user, project or history) from where this SQL manager is referenced. */
     protected int m_driverType;
 
     /** The pool URL to get connections from the JDBC driver manager, including DBCP's pool URL prefix. */
@@ -132,13 +132,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param query the SQL query
      * @return String the SQL query with the table key search pattern replaced
      */
-    protected static String replaceProjectPattern(int projectId, String query) {
+    protected static String replaceProjectPattern(CmsUUID projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
-        query = CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
-
-        return query;
+        String replacePattern = ((projectId == null) || projectId.equals(CmsProject.ONLINE_PROJECT_ID)) ? "_ONLINE_"
+        : "_OFFLINE_";
+        return CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
     }
 
     /**
@@ -149,7 +148,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param stmnt the statement
      * @param res the result set
      */
-    public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
+    public synchronized void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
 
         // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
@@ -162,11 +161,11 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         try {
             // first, close the connection and (eventually) implicitly all assigned statements and result sets
-            if (con != null && !con.isClosed()) {
+            if ((con != null) && !con.isClosed()) {
                 con.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             con = null;
         }
@@ -177,7 +176,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
                 stmnt.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             stmnt = null;
         }
@@ -188,11 +187,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
                 res.close();
             }
         } catch (SQLException e) {
-            // intentionally left blank
+            LOG.debug(e.getLocalizedMessage(), e);
         } finally {
             res = null;
         }
-
     }
 
     /**
@@ -200,11 +198,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * a byte array in the Java programming language.<p>
      * 
      * The bytes represent the raw values returned by the driver. Overwrite this method if another 
-     * database server requires a different handling of byte attributes in tables.
+     * database server requires a different handling of byte attributes in tables.<p>
      * 
      * @param res the result set
      * @param attributeName the name of the table attribute
+     * 
      * @return byte[] the column value; if the value is SQL NULL, the value returned is null 
+     * 
      * @throws SQLException if a database access error occurs
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
@@ -224,27 +224,11 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
 
-        return getConnection(dbc, 0);
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId the id of a project (to distinguish between online / offline tables)
-     * 
-     * @return a JDBC connection
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
-
         if (dbc == null) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
-        return getConnection(projectId);
+        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
+        return getConnectionByUrl(m_poolUrl);
     }
 
     /**
@@ -254,13 +238,15 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param con the JDBC connection
      * @param project the specified CmsProject
      * @param queryKey the key of the SQL query
+     * 
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
+    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
     throws SQLException {
 
-        return getPreparedStatement(con, project.getId(), queryKey);
+        return getPreparedStatement(con, project.getUuid(), queryKey);
     }
 
     /**
@@ -270,10 +256,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param con the JDBC connection
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the SQL query
+     * 
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
+    public synchronized PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
+    throws SQLException {
 
         String rawSql = readQuery(projectId, queryKey);
         return getPreparedStatementForSql(con, rawSql);
@@ -287,9 +276,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
+    public synchronized PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
 
-        String rawSql = readQuery(0, queryKey);
+        String rawSql = readQuery(CmsUUID.getNullUUID(), queryKey);
         return getPreparedStatementForSql(con, rawSql);
     }
 
@@ -301,7 +290,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
+    public synchronized PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
 
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 
@@ -311,7 +300,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     /**
      * Initializes this SQL manager.<p>
      * 
-     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) from where this SQL manager is referenced
+     * @param driverType the type ID of the driver (vfs,user,project or history) from where this SQL manager is referenced
      * @param poolUrl the pool URL to get connections from the JDBC driver manager
      */
     public void init(int driverType, String poolUrl) {
@@ -326,20 +315,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     }
 
     /**
-     * Generates a new primary key for a given database table name.<p>
-     * 
-     * This method makes only sense for old-style tables where the primary key is NOT a CmsUUID!
-     * 
-     * @param tableName the table for which a new primary key should be generated.
-     * @return int the new primary key
-     * @throws CmsDataAccessException if an error occurs
-     */
-    public int nextId(String tableName) throws CmsDataAccessException {
-
-        return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
-    }
-
-    /**
      * Searches for the SQL query with the specified key and CmsProject.<p>
      * 
      * @param project the specified CmsProject
@@ -348,7 +323,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public String readQuery(CmsProject project, String queryKey) {
 
-        return readQuery(project.getId(), queryKey);
+        return readQuery(project.getUuid(), queryKey);
     }
 
     /**
@@ -362,14 +337,14 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param queryKey the key of the SQL query
      * @return the the SQL query in this property list with the specified key
      */
-    public String readQuery(int projectId, String queryKey) {
+    public String readQuery(CmsUUID projectId, String queryKey) {
 
         String key;
-        if (projectId != 0) {
+        if ((projectId != null) && !projectId.isNullUUID()) {
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
-            if (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) {
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
                 buffer.append("_ONLINE");
             } else {
                 buffer.append("_OFFLINE");
@@ -387,11 +362,15 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             // get the SQL statement from the properties hash
             query = readQuery(queryKey);
 
+            if (query == null) {
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_QUERY_NOT_FOUND_1, queryKey));
+            }
+
             // replace control chars.
             query = CmsStringUtil.substitute(query, "\t", " ");
             query = CmsStringUtil.substitute(query, "\n", " ");
 
-            if (projectId != 0) {
+            if ((projectId != null) && !projectId.isNullUUID()) {
                 // a project ID = 0 is an internal indicator that a project-independent 
                 // query was requested - further regex operations are not required then
                 query = CmsSqlManager.replaceProjectPattern(projectId, query);
@@ -471,41 +450,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             }
         } catch (Throwable t) {
             // intentionally left blank
-        } finally {
-            m_cachedQueries = null;
-            m_queries = null;
-            m_poolUrl = null;
         }
-
         super.finalize();
-    }
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
-     * 
-     * The project ID is (usually) the ID of the current project.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
-     * @return a JDBC connection from the pool specified by the project-ID 
-     * @throws SQLException if a database access error occurs
-     */
-    protected Connection getConnection(int projectId) throws SQLException {
-
-        // the specified project ID is not evaluated in this implementation.
-        // extensions of this object might evaluate the project ID to return
-        // different connections...        
-
-        if (projectId < 0) {
-            throw new SQLException(Messages.get().getBundle().key(
-                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1,
-                new Integer(projectId)));
-        }
-
-        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-        return getConnectionByUrl(m_poolUrl);
     }
 
     /**
@@ -553,7 +499,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
                 endIndex = currentValue.indexOf('}', startIndex);
-                if (endIndex != -1 && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+                if ((endIndex != -1) && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
 
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);

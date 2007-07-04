@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -77,6 +77,9 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /** Request parameter name for the resource list. */
     public static final String PARAM_RESOURCELIST = "resourcelist";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
+
     /** Collects all eventually thrown exceptions during a multi operation. */
     private CmsMultiException m_multiOperationException;
 
@@ -85,9 +88,6 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /** The list of resource names for the multi operation. */
     private List m_resourceList;
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
 
     /**
      * Public constructor.<p>
@@ -132,13 +132,24 @@ public abstract class CmsMultiDialog extends CmsDialog {
      */
     public String buildResourceList() {
 
+        // check how many resources are selected to decide using a div or not
+        boolean scroll = (getResourceList().size() > 6);
+
         StringBuffer result = new StringBuffer(1024);
+
+        result.append(dialogWhiteBoxStart());
+
+        // if the output to long, wrap it in a div
+        if (scroll) {
+            result.append("<div style='width: 100%; height:100px; overflow: auto;'>\n");
+        }
+
         result.append("<table border=\"0\">\n");
         Iterator i = getResourceList().iterator();
         while (i.hasNext()) {
             String resName = (String)i.next();
             result.append("\t<tr>\n");
-            result.append("\t\t<td style=\"vertical-align:top;\">./");
+            result.append("\t\t<td class='textbold' style=\"vertical-align:top;\">");
             result.append(CmsResource.getName(resName));
             result.append("&nbsp;</td>\n\t\t<td style=\"vertical-align:top;\">");
             String title = null;
@@ -155,7 +166,29 @@ public abstract class CmsMultiDialog extends CmsDialog {
             result.append("</td>\n\t</tr>\n");
         }
         result.append("</table>");
+
+        // close the div if needed
+        if (scroll) {
+            result.append("</div>\n");
+        }
+        result.append(dialogWhiteBoxEnd());
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
+     */
+    public String buildLockHeaderBox() throws CmsException {
+
+        if (!isMultiOperation()) {
+            return super.buildLockHeaderBox();
+        }
+        StringBuffer html = new StringBuffer(1024);
+        // include multi resource list  
+        html.append(dialogBlockStart(key(org.opencms.workplace.commons.Messages.GUI_MULTI_RESOURCELIST_TITLE_0)));
+        html.append(buildResourceList());
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**
@@ -218,6 +251,24 @@ public abstract class CmsMultiDialog extends CmsDialog {
     }
 
     /**
+     * Returns the value of the resourcelist parameter in form of a String separated 
+     * with {@link #DELIMITER_RESOURCES}, or the value of the  resource parameter if the 
+     * first parameter is not provided (no multiple choice has been done.<p>
+     * 
+     * This may be used for jsps as value for the parameter for resources {@link #PARAM_RESOURCELIST}.<p>
+     *  
+     * @return the value of the resourcelist parameter or null, if the parameter is not provided
+     */
+    public String getResourceListAsParam() {
+
+        String result = getParamResourcelist();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = getParamResource();
+        }
+        return result;
+    }
+
+    /**
      * Returns true if the dialog operation has to be performed on multiple resources.<p>
      * 
      * @return true if the dialog operation has to be performed on multiple resources, otherwise false
@@ -257,8 +308,18 @@ public abstract class CmsMultiDialog extends CmsDialog {
     public void setParamResourcelist(String paramResourcelist) {
 
         m_paramResourcelist = paramResourcelist;
+        m_resourceList = null;
     }
     
+    /**
+     * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
+     */
+    public void setParamResource(String value) {
+    
+        super.setParamResource(value);
+        m_resourceList = null;
+    }
+
     /**
      * Checks if the permissions of the current user on the single resource to use in the dialog are sufficient.<p>
      * 
@@ -280,7 +341,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
             return super.checkResourcePermissions(required, neededForFolder);
         }
     }
-    
+
     /**
      * Checks if the resource operation is an operation on at least one folder.<p>
      * 
@@ -311,6 +372,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
      * Performs the dialog operation for the selected resources.<p>
      * 
      * @return true, if the operation was successful, otherwise false
+     * 
      * @throws CmsException if operation was not successful
      */
     protected abstract boolean performDialogOperation() throws CmsException;

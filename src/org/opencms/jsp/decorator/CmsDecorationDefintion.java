@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2006/03/27 14:52:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -344,9 +344,8 @@ public class CmsDecorationDefintion {
             // 2) the bundle has a locale and the locale of the map is equal or a sublocale
             // 3) the bundle has a locale and the map has no locale
             if ((locale == null)
-                || (locale != null && decMap.getLocale() != null && locale.getDisplayLanguage().equals(
-                    decMap.getLocale().getDisplayLanguage()))
-                || (locale != null && decMap.getLocale() == null)) {
+                || ((decMap.getLocale() == null))
+                || (locale.getDisplayLanguage().equals(decMap.getLocale().getDisplayLanguage()))) {
                 decorationBundle.putAll(decMap.getDecorationMap());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -377,12 +376,12 @@ public class CmsDecorationDefintion {
         baseFilename.append(CmsResource.getParentFolder(m_configurationFile));
         String filename = cms.readResource(m_configurationFile).getName();
         // get rid of the fileextension if there is one
-        if (filename.indexOf(".") > -1) {
-            filename = filename.substring(0, filename.indexOf("."));
+        if (filename.lastIndexOf(".") > -1) {
+            filename = filename.substring(0, filename.lastIndexOf("."));
         }
         // extract the basename
-        if (filename.indexOf("_") > -1) {
-            filename = filename.substring(0, filename.indexOf("_"));
+        if (filename.lastIndexOf("_") > -1) {
+            filename = filename.substring(0, filename.lastIndexOf("_"));
         }
         baseFilename.append(filename);
         String basename = baseFilename.toString();
@@ -393,7 +392,8 @@ public class CmsDecorationDefintion {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            if (cms.getSitePath(res).startsWith(basename) && res.getTypeId() == CmsResourceTypePlain.getStaticTypeId()) {
+            if (cms.getSitePath(res).startsWith(basename)
+                && (res.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
                 files.add(res);
             }
         }

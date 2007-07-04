@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,7 +83,7 @@ public final class CmsXmlPageConverter {
         Document page = CmsXmlUtils.unmarshalHelper(content, null);
 
         Element xmltemplate = page.getRootElement();
-        if (xmltemplate == null || !"XMLTEMPLATE".equals(xmltemplate.getName())) {
+        if ((xmltemplate == null) || !"XMLTEMPLATE".equals(xmltemplate.getName())) {
             throw new CmsImportExportException(Messages.get().container(Messages.ERR_NOT_FOUND_ELEM_XMLTEMPLATE_0));
         }
 
@@ -113,23 +113,21 @@ public final class CmsXmlPageConverter {
                 bodyContent = currentTemplate.getText();
             } else {
                 // parse content for TEMPLATEs
-                if (currentTemplate != null) {
-                    StringBuffer contentBuffer = new StringBuffer();
-                    for (Iterator k = currentTemplate.nodeIterator(); k.hasNext();) {
-                        Node n = (Node)k.next();
-                        if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
+                StringBuffer contentBuffer = new StringBuffer();
+                for (Iterator k = currentTemplate.nodeIterator(); k.hasNext();) {
+                    Node n = (Node)k.next();
+                    if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
+                        contentBuffer.append(n.getText());
+                        continue;
+                    } else if (n.getNodeType() == Node.ELEMENT_NODE) {
+                        if ("LINK".equals(n.getName())) {
+                            contentBuffer.append(OpenCms.getSystemInfo().getOpenCmsContext());
                             contentBuffer.append(n.getText());
                             continue;
-                        } else if (n.getNodeType() == Node.ELEMENT_NODE) {
-                            if ("LINK".equals(n.getName())) {
-                                contentBuffer.append(OpenCms.getSystemInfo().getOpenCmsContext());
-                                contentBuffer.append(n.getText());
-                                continue;
-                            }
                         }
                     }
-                    bodyContent = contentBuffer.toString();
                 }
+                bodyContent = contentBuffer.toString();
             }
 
             if (bodyContent == null) {
@@ -141,7 +139,7 @@ public final class CmsXmlPageConverter {
                 CmsStringUtil.MACRO_OPENCMS_CONTEXT,
                 OpenCms.getSystemInfo().getOpenCmsContext());
 
-            if (!"".equals(bodyContent.trim())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(bodyContent)) {
                 xmlPage.addValue(bodyName, locale);
                 xmlPage.setStringValue(cms, bodyName, locale, bodyContent);
             }

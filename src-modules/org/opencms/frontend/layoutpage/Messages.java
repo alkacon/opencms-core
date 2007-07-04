@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/Messages.java,v $
- * Date   : $Date: 2006/03/28 17:14:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.9
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CMSMACROMANAGER_CLEARED_0 = "LOG_CMSMACROMANAGER_CLEARED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_VFS_RESOURCE_1 = "LOG_ERR_VFS_RESOURCE_1";

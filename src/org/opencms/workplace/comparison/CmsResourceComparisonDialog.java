@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 09:30:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,11 @@ package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.history.CmsHistoryFile;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -52,11 +56,11 @@ import org.opencms.search.extractors.CmsExtractorPdf;
 import org.opencms.search.extractors.CmsExtractorRtf;
 import org.opencms.search.extractors.I_CmsTextExtractor;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsMultiListDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -84,7 +88,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +104,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         /** The locales of the xml content. */
         private List m_locales;
-        
+
         /**
          * Creates a new CmsXmlContentTextExtractor.<p>
          * 
@@ -138,13 +142,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             }
         }
     }
-    
+
     /** Constant indicating that all elements are compared.<p> */
     public static final String COMPARE_ALL_ELEMENTS = "allelements";
-    
+
     /** Constant indicating that the attributes are compared.<p> */
     public static final String COMPARE_ATTRIBUTES = "attributes";
-    
+
     /** Constant indicating that the properties are compared.<p> */
     public static final String COMPARE_PROPERTIES = "properties";
 
@@ -160,20 +164,14 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     /** Parameter value for the element name. */
     private String m_paramElement;
 
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
+
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
+
     /** Parameter value for the locale. */
     private String m_paramLocale;
-
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
-
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
-
-    /** Parameter value for the tag id of the first file. */
-    private String m_paramTagId1;
-
-    /** Parameter value for the tag id of the second file. */
-    private String m_paramTagId2;
 
     /** Parameter value for the text mode. */
     private String m_paramTextmode;
@@ -183,7 +181,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -207,29 +205,67 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Returns either the backup file or the offline file, depending on the version number.<p>
+     * Returns either the historical file or the offline file, depending on the version number.<p>
      * 
      * @param cms the CmsObject to use
-     * @param path the path of the file
-     * @param version the backup version
-     * @param tagId the tag id of the file
+     * @param structureId the structure id of the file
+     * @param version the historical version number
      * 
-     * @return either the backup file or the offline file, depending on the version number
+     * @return either the historical file or the offline file, depending on the version number
      * 
      * @throws CmsException if something goes wrong
      */
-    protected static CmsFile readFile(CmsObject cms, String path, String version, int tagId) throws CmsException {
+    protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
 
-        try {
-            cms.getRequestContext().saveSiteRoot();
-            cms.getRequestContext().setSiteRoot("/");
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
-                return cms.readFile(cms.getRequestContext().removeSiteRoot(path), CmsResourceFilter.ALL);
-            } else {
-                return cms.readBackupFile(cms.getRequestContext().removeSiteRoot(path), tagId);
+        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+            // offline
+            CmsResource resource = cms.readResource(structureId);
+            return CmsFile.upgrade(resource, cms);
+        } else {
+            int ver = Integer.parseInt(version);
+            if (ver < 0) {
+                // online
+                CmsProject project = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    CmsResource resource = cms.readResource(structureId);
+                    return CmsFile.upgrade(resource, cms);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(project);
+                }
             }
-        } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            // backup
+            return CmsFile.upgrade((CmsHistoryFile)cms.readResource(structureId, ver), cms);
+        }
+    }
+
+    /**
+     * Returns either the historical resource or the offline resource, depending on the version number.<p>
+     * 
+     * @param cms the CmsObject to use
+     * @param id the structure id of the resource
+     * @param version the historical version number
+     * 
+     * @return either the historical resource or the offline resource, depending on the version number
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
+
+        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+            return cms.readResource(id);
+        } else {
+            int ver = Integer.parseInt(version);
+            if (ver < 0) {
+                CmsProject project = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    return cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(project);
+                }
+            }
+            return (CmsResource)cms.readResource(id, ver);
         }
     }
 
@@ -258,7 +294,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         lists.add(attributeDiff);
         I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(propertyDiff.getResourceType());
 
-        if (resourceType instanceof CmsResourceTypeXmlContent || resourceType instanceof CmsResourceTypeXmlPage) {
+        if ((resourceType instanceof CmsResourceTypeXmlContent) || (resourceType instanceof CmsResourceTypeXmlPage)) {
 
             // display attributes, properties and compared elements
             CmsElementComparisonList contentDiff = new CmsElementComparisonList(getJsp());
@@ -279,6 +315,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists) {
 
+                /**
+                 * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
+                 */
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -300,6 +339,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists) {
 
+                /**
+                 * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
+                 */
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -314,7 +356,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             twoLists.writeDialog();
             // same as for CmsImageComparisonDialog
             pointers.displayDialog();
-        } else {
+        } else if (propertyDiff.getResource1().isFile()) {
 
             // display attributes and properties 
             lists.add(propertyDiff);
@@ -324,11 +366,11 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 return;
             }
 
-            String path1 = propertyDiff.getParamPath1();
-            String path2 = propertyDiff.getParamPath2();
+            String path1 = propertyDiff.getResource1().getRootPath();
+            String path2 = propertyDiff.getResource2().getRootPath();
 
-            byte[] content1 = propertyDiff.getFile1().getContents();
-            byte[] content2 = propertyDiff.getFile2().getContents();
+            byte[] content1 = readFile(getCms(), propertyDiff.getResource1().getStructureId(), getParamVersion1()).getContents();
+            byte[] content2 = readFile(getCms(), propertyDiff.getResource2().getStructureId(), getParamVersion2()).getContents();
 
             String originalSource = null;
             String copySource = null;
@@ -349,7 +391,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 // extract the content
                 originalSource = textExtractor.extractText(content1).getContent();
                 copySource = textExtractor.extractText(content2).getContent();
-            } else if (resourceType instanceof CmsResourceTypePlain || resourceType instanceof CmsResourceTypeJsp) {
+            } else if ((resourceType instanceof CmsResourceTypePlain) || (resourceType instanceof CmsResourceTypeJsp)) {
                 originalSource = new String(content1);
                 copySource = new String(content2);
             }
@@ -361,6 +403,17 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 // same as for CmsImageComparisonDialog
                 m_differenceDialog.displayDialog();
             }
+        } else {
+            // display attributes and properties 
+            lists.add(propertyDiff);
+            CmsMultiListDialog twoLists = new CmsMultiListDialog(lists);
+            twoLists.displayDialog(true);
+            if (twoLists.isForwarded()) {
+                return;
+            }
+
+            fileInfo.writeDialog();
+            twoLists.writeDialog();
         }
     }
 
@@ -413,6 +466,26 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     }
 
     /**
+     * Returns the paramId1.<p>
+     *
+     * @return the paramId1
+     */
+    public String getParamId1() {
+
+        return m_paramId1;
+    }
+
+    /**
+     * Returns the paramId2.<p>
+     *
+     * @return the paramId2
+     */
+    public String getParamId2() {
+
+        return m_paramId2;
+    }
+
+    /**
      * Returns the paramLocale.<p>
      *
      * @return the paramLocale
@@ -420,46 +493,6 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     public String getParamLocale() {
 
         return m_paramLocale;
-    }
-
-    /**
-     * Returns the paramPath1.<p>
-     *
-     * @return the paramPath1
-     */
-    public String getParamPath1() {
-
-        return m_paramPath1;
-    }
-
-    /**
-     * Returns the paramPath2.<p>
-     *
-     * @return the paramPath2
-     */
-    public String getParamPath2() {
-
-        return m_paramPath2;
-    }
-
-    /**
-     * Returns the paramTagId1.<p>
-     *
-     * @return the paramTagId1
-     */
-    public String getParamTagId1() {
-
-        return m_paramTagId1;
-    }
-
-    /**
-     * Returns the paramTagId2.<p>
-     *
-     * @return the paramTagId2
-     */
-    public String getParamTagId2() {
-
-        return m_paramTagId2;
     }
 
     /**
@@ -532,6 +565,26 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     }
 
     /**
+     * Sets the paramId1.<p>
+     *
+     * @param paramId1 the paramId1 to set
+     */
+    public void setParamId1(String paramId1) {
+
+        m_paramId1 = paramId1;
+    }
+
+    /**
+     * Sets the paramId2.<p>
+     *
+     * @param paramId2 the paramId2 to set
+     */
+    public void setParamId2(String paramId2) {
+
+        m_paramId2 = paramId2;
+    }
+
+    /**
      * Sets the paramLocale.<p>
      *
      * @param paramLocale the paramLocale to set
@@ -539,46 +592,6 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     public void setParamLocale(String paramLocale) {
 
         m_paramLocale = paramLocale;
-    }
-
-    /**
-     * Sets the paramPath1.<p>
-     *
-     * @param paramPath1 the paramPath1 to set
-     */
-    public void setParamPath1(String paramPath1) {
-
-        m_paramPath1 = paramPath1;
-    }
-
-    /**
-     * Sets the paramPath2.<p>
-     *
-     * @param paramPath2 the paramPath2 to set
-     */
-    public void setParamPath2(String paramPath2) {
-
-        m_paramPath2 = paramPath2;
-    }
-
-    /**
-     * Sets the paramTagId1.<p>
-     *
-     * @param paramTagId1 the paramTagId1 to set
-     */
-    public void setParamTagId1(String paramTagId1) {
-
-        m_paramTagId1 = paramTagId1;
-    }
-
-    /**
-     * Sets the paramTagId2.<p>
-     *
-     * @param paramTagId2 the paramTagId2 to set
-     */
-    public void setParamTagId2(String paramTagId2) {
-
-        m_paramTagId2 = paramTagId2;
     }
 
     /**
@@ -616,18 +629,16 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);     
+        super.initWorkplaceRequestValues(settings, request);
         try {
-            CmsFile file1 = CmsResourceComparisonDialog.readFile(
+            CmsResource resource1 = CmsResourceComparisonDialog.readResource(
                 getCms(),
-                getParamPath1(),
-                getParamVersion1(),
-                Integer.parseInt(getParamTagId1()));
-            CmsFile file2 = CmsResourceComparisonDialog.readFile(
+                new CmsUUID(getParamId1()),
+                getParamVersion1());
+            CmsResource resource2 = CmsResourceComparisonDialog.readResource(
                 getCms(),
-                getParamPath2(),
-                getParamVersion2(),
-                Integer.parseInt(getParamTagId2()));
+                new CmsUUID(getParamId2()),
+                getParamVersion2());
             // if certain element is compared, use html difference dialog
             if (CmsStringUtil.isNotEmpty(getParamElement())) {
                 m_differenceDialog = new CmsHtmlDifferenceDialog(getJsp());
@@ -635,25 +646,23 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog = new CmsDifferenceDialog(getJsp());
             }
             if (CmsResourceComparisonDialog.COMPARE_ATTRIBUTES.equals(getParamCompare())) {
-                List comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), file1, file2);
+                List comparedAttributes = CmsResourceComparison.compareAttributes(getCms(), resource1, resource2);
                 String[] attributeStrings = getAttributesAsString(comparedAttributes);
                 m_differenceDialog.setOriginalSource(attributeStrings[0]);
                 m_differenceDialog.setCopySource(attributeStrings[1]);
             } else if (CmsResourceComparisonDialog.COMPARE_PROPERTIES.equals(getParamCompare())) {
-                List comparedProperties = CmsResourceComparison.compareProperties(getCms(), file1, file2);
+                List comparedProperties = CmsResourceComparison.compareProperties(getCms(), resource1, resource2);
                 String[] propertyStrings = getPropertiesAsString(comparedProperties);
                 m_differenceDialog.setOriginalSource(propertyStrings[0]);
                 m_differenceDialog.setCopySource(propertyStrings[1]);
-            } else {
-
+            } else if (resource1.isFile()) {
+                CmsFile file1 = readFile(getCms(), new CmsUUID(getParamId1()), getParamVersion1());
+                CmsFile file2 = readFile(getCms(), new CmsUUID(getParamId2()), getParamVersion2());
                 setContentAsSource(file1, file2);
             }
-
         } catch (CmsException e) {
-
             LOG.error(e.getMessage(), e);
         } catch (UnsupportedEncodingException e) {
-
             LOG.error(e.getMessage(), e);
         }
     }
@@ -668,18 +677,18 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer();
         if (xmlDoc instanceof CmsXmlPage) {
-        List locales = xmlDoc.getLocales();
-        Iterator i = locales.iterator();
-        boolean firstIter = true;
-        while (i.hasNext()) {
-            if (!firstIter) {
-                result.append("\n\n-----");
-            }
-            Locale locale = (Locale)i.next();
-            result.append("\n\n[").append(locale.toString()).append(']');
-            List elements = xmlDoc.getValues(locale);
-            Iterator j = elements.iterator();
-            while (j.hasNext()) {
+            List locales = xmlDoc.getLocales();
+            Iterator i = locales.iterator();
+            boolean firstIter = true;
+            while (i.hasNext()) {
+                if (!firstIter) {
+                    result.append("\n\n-----");
+                }
+                Locale locale = (Locale)i.next();
+                result.append("\n\n[").append(locale.toString()).append(']');
+                List elements = xmlDoc.getValues(locale);
+                Iterator j = elements.iterator();
+                while (j.hasNext()) {
                     I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
                     result.append("\n\n[");
                     // output value of name attribute
@@ -696,12 +705,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                         LOG.error(e.getMessage(), e);
                     }
                 }
-            firstIter = false;
-        }
+                firstIter = false;
+            }
         } else if (xmlDoc instanceof CmsXmlContent) {
             CmsXmlContentTextExtractor visitor = new CmsXmlContentTextExtractor(result);
             ((CmsXmlContent)xmlDoc).visitAllValuesWith(visitor);
-            
+
         }
         return result.toString();
     }
@@ -719,7 +728,6 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         CmsObject cms = getCms();
         if (CmsStringUtil.isNotEmpty(getParamElement())) {
-
             I_CmsXmlDocument resource1;
             I_CmsXmlDocument resource2;
             if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
@@ -745,7 +753,6 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog.setCopySource(value2.getStringValue(cms));
             }
         } else if (CmsResourceComparisonDialog.COMPARE_ALL_ELEMENTS.equals(getParamCompare())) {
-
             I_CmsXmlDocument resource1;
             I_CmsXmlDocument resource2;
             if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {

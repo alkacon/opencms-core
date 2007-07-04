@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,10 +151,10 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public static void checkId(CmsUUID id, boolean canBeNull) {
 
-        if (canBeNull && id == null) {
+        if (canBeNull && (id == null)) {
             return;
         }
-        if ((!canBeNull && id == null) || id.isNullUUID()) {
+        if ((!canBeNull && (id == null)) || id.isNullUUID()) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_UUID_1, id));
         }
     }
@@ -242,6 +242,20 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     }
 
     /**
+     * Returns the given String transformed to a UUID in case the String is a valid UUID.<p>
+     * 
+     * @param uuid the String to transform to a UUID
+     * 
+     * @return the given String transformed to a UUID in case the String is a valid UUID
+     * 
+     * @throws NumberFormatException in case the String is no valid UUID
+     */
+    public static CmsUUID valueOf(String uuid) throws NumberFormatException {
+
+        return new CmsUUID(UUID.valueOf(uuid));
+    }
+
+    /**
      * Creates a clone of this CmsUUID.<p>
      * 
      * @return a clone of this CmsUUID
@@ -305,27 +319,41 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /**
      * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
      */
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) {
 
+        m_uuid = UUID.getNullUUID();
         Object o = null;
-
         try {
-
             o = in.readObject();
-
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // there was an error getting the object form the ObjectInput
             // so try to access it in the old way as it was done before
             // OpenCms 6.2
-            if (in.readLong() == serialVersionUID) {
-                m_uuid = new UUID((String)in.readObject());
-            } else {
-                throw new IOException("Cannot read externalized UUID because of a version mismatch.");
+            try {
+                if (in.readLong() == serialVersionUID) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_OLD_1, o));
+                    }
+                    try {
+                        m_uuid = new UUID((String)in.readObject());
+                    } catch (Throwable t) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_OLD_1, o), t);
+                        }
+                    }
+                } else {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Cannot read externalized UUID because of a version mismatch.");
+                    }
+                }
+            } catch (Throwable t) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_OLD_1, o), t);
+                }
             }
         }
 
         if (o != null) {
-
             if (o instanceof String) {
                 // this UUID has been serialized using the new method
                 if (LOG.isDebugEnabled()) {
@@ -339,17 +367,16 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
                 }
                 m_uuid = (UUID)o;
             }
-        } 
+        }
 
         // throw an error if the uuid could ne be deserialized
-        if (m_uuid == null) {
+        if (m_uuid == UUID.getNullUUID()) {
+            m_uuid = null;
             // UUID cannot be deserialized
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_READ_UUID_0));
             }
-            throw new IOException("Cannot read externalized UUID.");
         }
-
     }
 
     /**

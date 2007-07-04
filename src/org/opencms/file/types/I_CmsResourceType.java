@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 
@@ -68,7 +69,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,27 +106,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param mapping the file extension mapped to the resource type
      */
     void addMappingType(String mapping);
-
-    /**
-     * Changes the project id of the resource to the current project, indicating that 
-     * the resource was last modified in this project.<p>
-     * 
-     * This information is used while publishing. Only resources inside the 
-     * project folders that are new/modified/changed <i>and</i> that "belong" 
-     * to the project (i.e. have the id of the project set) are published
-     * with the project.<p>
-     * 
-     * @param cms the initialized CmsObject
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to apply this operation to
-     * 
-     * @throws CmsException if something goes wrong  
-     * 
-     * @see CmsObject#changeLastModifiedProjectId(String)
-     * @see CmsSecurityManager#changeLastModifiedProjectId(org.opencms.file.CmsRequestContext, CmsResource)   
-     */
-    void changeLastModifiedProjectId(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException;
 
     /**
      * Changes the lock of a resource to the current user,
@@ -213,15 +193,15 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#copyResource(String, String, int)
-     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
     void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        int siblingMode) throws CmsException, CmsIllegalArgumentException;
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Copies a resource to the current project of the user.<p>
@@ -279,12 +259,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
      * 
+     * @return the new created sibling
+     * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#createSibling(String, String, List)
      * @see CmsSecurityManager#createSibling(org.opencms.file.CmsRequestContext, CmsResource, String, List)
      */
-    void createSibling(
+    CmsResource createSibling(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
@@ -298,8 +280,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
@@ -309,11 +291,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#deleteResource(String, int)
-     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsObject#deleteResource(String, CmsResource.CmsResourceDeleteMode)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
-    throws CmsException;
+    void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException;
 
     /**
      * Returns the default for the <code>cache</code> property setting of this resource type.<p>
@@ -405,7 +390,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, String, boolean)
+     * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      * @see CmsObject#importResource(String, CmsResource, byte[], List)
      * @see CmsSecurityManager#importResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
      */
@@ -475,26 +460,41 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     boolean isFolder();
 
     /**
+     * Tests if the given resource type definition is identical to this resource type definition.<p>
+     * 
+     * Two resource types are considered identical if their names {@link #getTypeName()} 
+     * <b>and</b> their ids {@link #getTypeId()} are both the same.<p>
+     * 
+     * <b>Please note:</b> Two resource type are considered equal in the sense of {@link Object#equals(Object)} if
+     * either if their names {@link #getTypeName()} <b>or</b> their ids {@link #getTypeId()} are equal.<p>
+     * 
+     * @param type another resource type
+     * 
+     * @return true, if the specified resource type is identical to this resource type
+     */
+    boolean isIdentical(I_CmsResourceType type);
+
+    /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.<br>
+     * The <code>type</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#EXCLUSIVE}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLockType#TEMPORARY}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to lock
-     * @param mode flag indicating the mode for the lock
+     * @param type type of the lock
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#lockResource(String, int)
-     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsObject#lockResource(String)
+     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, CmsLockType)
      */
-    void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
+    void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsLockType type)
     throws CmsException;
 
     /**
@@ -516,8 +516,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsObject#moveResource(String, String)
      * @see CmsObject#renameResource(String, String)
-     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
-     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, CmsResource.CmsResourceCopyMode)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
     void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException;
@@ -567,19 +567,38 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         List properties) throws CmsException;
 
     /**
-     * Restores a file in the current project with a version from the backup archive.<p>
+     * Restores a resource in the current project with a version from the historical archive.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to restore from the archive
-     * @param tag the tag (version) id to resource form the archive
+     * @param version the version number of the resource to restore
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#restoreResourceBackup(String, int)
+     * @see CmsObject#restoreResourceVersion(org.opencms.util.CmsUUID, int)
      * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
-    void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int tag)
+    void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
+    throws CmsException;
+
+    /**
+     * Restores a file in the current project with a version from the historical archive.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to restore from the archive
+     * @param publishTag the publish tag of the resource to restore
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#restoreResourceVersion(org.opencms.util.CmsUUID, int)
+     * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
+     *             but notice that <code>publishTag != version</code>
+     */
+    void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int publishTag)
     throws CmsException;
 
     /**
@@ -652,23 +671,47 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         boolean recursive) throws CmsException;
 
     /**
+     * Undeletes a resource.<p>
+     * 
+     * Only resources that have already been published once can be undeleted,
+     * if a "new" resource is deleted it can not be undeleted.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to undelete
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undeleteResource(String, boolean)
+     * @see CmsSecurityManager#undelete(org.opencms.file.CmsRequestContext, CmsResource)
+     */
+    void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    throws CmsException;
+
+    /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
-     * 
-     * This is also used when doing an "undelete" operation.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to undo the changes for
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param mode the undo mode, one of the <code>{@link org.opencms.file.CmsResource.CmsResourceUndoMode}#UNDO_XXX</code> constants
      *
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#undoChanges(String, boolean)
-     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsResource#UNDO_CONTENT
+     * @see CmsResource#UNDO_CONTENT_RECURSIVE
+     * @see CmsResource#UNDO_MOVE_CONTENT
+     * @see CmsResource#UNDO_MOVE_CONTENT_RECURSIVE
+     * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
+     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource, org.opencms.file.CmsResource.CmsResourceUndoMode)
      */
-    void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
-    throws CmsException;
+    void undoChanges(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceUndoMode mode) throws CmsException;
 
     /**
      * Unlocks a resource.<p>

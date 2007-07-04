@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailHost.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.mail;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +90,23 @@ public class CmsMailHost implements Comparable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsMailHost) {
+            CmsMailHost other = (CmsMailHost)obj;
+            return m_hostname.equals(other.m_hostname)
+                && m_protocol.equals(other.m_protocol)
+                && m_username.equals(other.m_username);
+        }
+        return false;
+    }
+
+    /**
      * Returns the host name.<p>
      * 
      * @return the host name
@@ -137,6 +154,14 @@ public class CmsMailHost implements Comparable {
     public String getUsername() {
 
         return m_username;
+    }
+
+    /** 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_hostname.hashCode() * 1117 + m_protocol.hashCode() * 2003 + m_username.hashCode();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.search.documents;
 
 import org.opencms.file.CmsObject;
-import org.opencms.search.A_CmsIndexResource;
+import org.opencms.file.CmsResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
- * Lucene document factory class for indexing data from a generic <code>{@link org.opencms.file.CmsResource}</code>.<p> 
+ * Lucene document factory class for indexing data from a generic <code>{@link CmsResource}</code>.<p> 
  * 
  * Since the document type is generic, no content extraction is performed for the resource.
  * However, meta data from the properties and attributes of the resource are indexed.<p>
@@ -48,7 +49,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,15 +68,31 @@ public class CmsDocumentGeneric extends A_CmsVfsDocument {
     /**
      * Just returns an empty extraction result since the content can't be extracted form a generic resource.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsIndexException {
 
         if (resource == null) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_RAW_CONTENT_1, language));
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_RAW_CONTENT_1, index.getLocale()));
         }
         // just return an empty result set
         return new CmsExtractionResult("");
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isLocaleDependend()
+     */
+    public boolean isLocaleDependend() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
+     */
+    public boolean isUsingCache() {
+
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.pdfbox.util.PDFTextStripper;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             parser.parse();
 
             pdfDocument = parser.getPDDocument();
-            
+
             // check for encryption
             if (pdfDocument.isEncrypted()) {
                 DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
@@ -98,51 +98,29 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             // create PDF stripper
             PDFTextStripper stripper = new PDFTextStripper();
             PDDocumentInformation info = pdfDocument.getDocumentInformation();
-
-            Map metaInfo = new HashMap();
-            // append document meta data to content
-            String meta;
-            meta = info.getTitle();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_TITLE, meta);
-            }
-            meta = info.getKeywords();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_KEYWORDS, meta);
-            }
-            meta = info.getSubject();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_SUBJECT, meta);
-            }
-            // extract other available meta information
-            meta = info.getAuthor();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_AUTHOR, meta);
-            }
-            meta = info.getCreator();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_CREATOR, meta);
-            }
-            meta = info.getProducer();
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_PRODUCER, meta);
-            }
-            if (info.getCreationDate() != null) {
-                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, info.getCreationDate().getTime());
-            }
-            if (info.getModificationDate() != null) {
-                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, info.getModificationDate().getTime());
-            }
+            Map contentItems = new HashMap();
 
             // add the main document text
             String result = stripper.getText(pdfDocument);
+            StringBuffer content = new StringBuffer(result);
+            if (CmsStringUtil.isNotEmpty(result)) {
+                contentItems.put(I_CmsExtractionResult.ITEM_RAW, result);
+            }
+
+            // append document meta data as content items
+            combineContentItem(info.getTitle(), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
+            combineContentItem(info.getKeywords(), I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
+            combineContentItem(info.getSubject(), I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
+            combineContentItem(info.getAuthor(), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+            combineContentItem(info.getCreator(), I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
+            combineContentItem(info.getProducer(), I_CmsExtractionResult.ITEM_PRODUCER, content, contentItems);
 
             // free some memory
             stripper = null;
             info = null;
-            
+
             // return the final result
-            return new CmsExtractionResult(result, metaInfo);
+            return new CmsExtractionResult(content.toString(), contentItems);
 
         } finally {
             if (pdfDocument != null) {

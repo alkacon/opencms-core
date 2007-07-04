@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/A_CmsContentCheck.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:56:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -172,11 +172,27 @@ public abstract class A_CmsContentCheck implements I_CmsContentCheck, I_CmsToolH
     }
 
     /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isEnabled(CmsWorkplace wp) {
+
+        return true;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isVisible(CmsWorkplace wp) {
+
+        return false;
     }
 
     /**

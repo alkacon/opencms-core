@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,8 @@ public final class CmsHtmlExtractor {
         StringBean stringBean = new StringBean();
         parser.visitAllNodesWith(stringBean);
 
-        return stringBean.getStrings();
+        String result = stringBean.getStrings();
+        return result == null ? "" : result;
     }
 
     /**
@@ -99,6 +100,11 @@ public final class CmsHtmlExtractor {
      */
     public static String extractText(String content, String encoding)
     throws ParserException, UnsupportedEncodingException {
+
+        if (CmsStringUtil.isEmpty(content)) {
+            // if there is no HTML, then we don't need to extract anything
+            return content;
+        }
 
         // we must make sure that the content passed to the parser always is 
         // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 

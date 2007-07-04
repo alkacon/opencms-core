@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2006/10/10 09:07:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,14 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.Messages;
-import org.opencms.workplace.threads.CmsPublishThread;
-import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
+import org.opencms.workplace.threads.CmsRelationsValidatorThread;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +115,7 @@ public class CmsPublishProjectReport extends CmsReport {
             case ACTION_DEFAULT:
             default:
                 try {
-                    if (getCms().readProject(new Integer(getParamProjectid()).intValue()).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+                    if (getCms().readProject(new CmsUUID(getParamProjectid())).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                         // set the flag that this is a temporary project
                         setParamRefreshWorkplace(CmsStringUtil.TRUE);
                     }
@@ -125,8 +127,8 @@ public class CmsPublishProjectReport extends CmsReport {
                 try {
                     CmsProject currentProject = getCms().getRequestContext().currentProject();
                     getCms().getRequestContext().setCurrentProject(
-                        getCms().readProject(new Integer(getParamProjectid()).intValue()));
-                    list = getCms().getPublishList();
+                        getCms().readProject(new CmsUUID(getParamProjectid())));
+                    list = OpenCms.getPublishManager().getPublishList(getCms());
                     getCms().getRequestContext().setCurrentProject(currentProject);
                 } catch (CmsException e) {
                     throw new CmsRuntimeException(e.getMessageContainer(), e);
@@ -159,7 +161,7 @@ public class CmsPublishProjectReport extends CmsReport {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListReport#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
@@ -193,26 +195,28 @@ public class CmsPublishProjectReport extends CmsReport {
 
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
-        CmsPublishThread thread = new CmsPublishThread(getCms(), publishList, getSettings());
-
-        // set the new thread id and flag that no thread is following
-        setParamThread(thread.getUUID().toString());
+        try {
+            OpenCms.getPublishManager().publishProject(getCms(), new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+        } catch (CmsException e) {
+            throw new CmsRuntimeException(e.getMessageContainer());
+        }
+        setParamAction(REPORT_END);
+        setAction(ACTION_REPORT_END);
         setParamThreadHasNext(CmsStringUtil.FALSE);
-
-        setParamAction(REPORT_UPDATE);
-        setAction(ACTION_REPORT_UPDATE);
-
-        // start the publish thread
-        thread.start();
     }
 
     /**
      * Starts the link validation thread for the project.<p>
+     * 
+     * @param publishList the list of resources to publish
+     * 
+     * @throws JspException if something goes wrong
      */
     private void startValidationThread(CmsPublishList publishList) throws JspException {
 
         try {
-            CmsXmlDocumentLinkValidatorThread thread = new CmsXmlDocumentLinkValidatorThread(getCms(), publishList, getSettings());
+            CmsRelationsValidatorThread thread = new CmsRelationsValidatorThread(getCms(), publishList, getSettings());
+            thread.start();
 
             setParamThread(thread.getUUID().toString());
             setParamThreadHasNext(CmsStringUtil.TRUE);
@@ -222,7 +226,6 @@ public class CmsPublishProjectReport extends CmsReport {
             // set the key name for the continue checkbox
             setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
         } catch (Throwable e) {
-
             // error while link validation, show error screen
             includeErrorpage(this, e);
         }

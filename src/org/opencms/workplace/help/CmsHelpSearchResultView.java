@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -157,7 +158,7 @@ public class CmsHelpSearchResultView {
         // get the action to perform from the request
         String action = request.getParameter("action");
 
-        if (action != null && searchResult == null) {
+        if ((action != null) && (searchResult == null)) {
             result.append("<p class=\"formerror\">\n");
             if (search.getLastException() != null) {
 
@@ -169,12 +170,12 @@ public class CmsHelpSearchResultView {
                 result.append("\n");
             }
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() <= 0) {
+        } else if ((action != null) && (searchResult.size() <= 0)) {
             result.append("<p class=\"formerror\">\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
             result.append("\n");
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() > 0) {
+        } else if ((action != null) && (searchResult.size() > 0)) {
             result.append("<p>\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
             result.append("\n");
@@ -196,7 +197,7 @@ public class CmsHelpSearchResultView {
                         m_jsp.getRequestContext().removeSiteRoot(entry.getPath())).append("&").append(
                         CmsLocaleManager.PARAMETER_LOCALE).append("=").append(m_jsp.getRequestContext().getLocale()).toString()));
                     result.append("\">\n");
-                    result.append(entry.getTitle());
+                    result.append(entry.getField(CmsSearchField.FIELD_TITLE));
                     result.append("</a>");
                     result.append("&nbsp;(").append(entry.getScore()).append("&nbsp;%)\n");
                     result.append("<span class=\"searchExcerpt\">\n");
@@ -211,7 +212,7 @@ public class CmsHelpSearchResultView {
             result.append("</p>\n");
 
             // search page links below results
-            if (search.getPreviousUrl() != null || search.getNextUrl() != null) {
+            if ((search.getPreviousUrl() != null) || (search.getNextUrl() != null)) {
                 result.append("<p>");
                 if (search.getPreviousUrl() != null) {
 

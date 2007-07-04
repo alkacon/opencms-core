@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsSecurityManager;
+import org.opencms.publish.CmsPublishJobRunning;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
@@ -43,7 +46,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * The OpenCms "Grim Reaper" thread store where all system Threads are maintained.<p>
+ * The OpenCms "Grim Reaper" thread store were all system Threads are maintained.<p>
  *
  * This thread executes all 60 seconds and checks if report threads are still active.
  * A report thread usually waits for a user to get the contents written to the report.
@@ -57,11 +60,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
-public class CmsThreadStore extends Thread {
+public final class CmsThreadStore extends Thread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsThreadStore.class);
@@ -69,19 +72,26 @@ public class CmsThreadStore extends Thread {
     /** Indicates that this thread store is alive. */
     private boolean m_alive;
 
+    /** The security manager instance. */
+    private CmsSecurityManager m_securityManager;
+
     /** A map to store all system Threads in. */
     private Map m_threads;
 
     /**
      * Hides the public constructor.<p>
+     * 
+     * @param securityManager needed for scheduling "undercover-jobs" 
+     *      that increase stability and fault tolerance
      */
-    protected CmsThreadStore() {
+    protected CmsThreadStore(CmsSecurityManager securityManager) {
 
         super(new ThreadGroup("OpenCms Thread Store"), "OpenCms: Grim Reaper");
         setDaemon(true);
         // Hashtable is still the most efficient form of a synchronized HashMap
         m_threads = new Hashtable();
         m_alive = true;
+        m_securityManager = securityManager;
         start();
     }
 
@@ -118,6 +128,7 @@ public class CmsThreadStore extends Thread {
     public void run() {
 
         int m_minutesForSessionUpdate = 0;
+        int minutesForPublishEngineCheck = 0;
         while (m_alive) {
             // the Grim Reaper is eternal, of course
             try {
@@ -170,6 +181,61 @@ public class CmsThreadStore extends Thread {
                     }
                 } catch (Throwable t) {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0), t);
+                }
+                // additionally every 5 minutes: save the resource locks to db
+                try {
+                    m_securityManager.writeLocks();
+                } catch (Throwable t) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(org.opencms.lock.Messages.get().getBundle().key(
+                            org.opencms.lock.Messages.ERR_WRITE_LOCKS_0), t);
+                    }
+                }
+            }
+
+            // check the publish manager if the current thread is still active
+            minutesForPublishEngineCheck++;
+            if (minutesForPublishEngineCheck >= 10) {
+
+                // do this every 10 minutes
+                minutesForPublishEngineCheck = 0;
+
+                try {
+                    
+                    // get the current publish job
+                    CmsPublishJobRunning publishJob = OpenCms.getPublishManager().getCurrentPublishJob();
+                    if (publishJob != null) {
+                        
+                        // get the thread id of the current publish job
+                        CmsUUID uid = publishJob.getThreadUUID();
+                        if ((uid != null) && (!uid.isNullUUID())) {
+                            
+                            // find the thread
+                            A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(uid);
+                            if (thread != null) {
+                                
+                                // check if the report still has output and so is active
+                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(thread.getReportUpdate())) {
+
+                                    // log thread state
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(Messages.get().getBundle().key(
+                                            Messages.LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2,
+                                            thread.getName(),
+                                            thread.getUUID()));
+                                    }
+
+                                    // interrupt/kill thread
+                                    thread.interrupt();
+                                    
+                                    // clean up the interrupted thread
+                                    OpenCms.getPublishManager().checkCurrentPublishJobThread();
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0), t);
                 }
             }
         }

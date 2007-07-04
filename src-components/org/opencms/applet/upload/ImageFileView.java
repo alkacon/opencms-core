@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2006/10/17 13:33:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileView;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */

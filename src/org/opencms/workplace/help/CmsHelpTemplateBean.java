@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,8 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
@@ -80,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -657,7 +659,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         String currentUri = getParamHelpresource();
         // ignore ressources outside content folder: e.g. the search.html which 
         // is in the general help module and not the german or english online help folder.
-        if (currentUri == null || currentUri.indexOf("/workplace/locales/") == -1) {
+        if ((currentUri == null) || (currentUri.indexOf("/workplace/locales/") == -1)) {
             // BUG!: getLocale().getLanguage() -> getCms().getRequestContext().getLocale() returns "en"!
             //currentUri = "/system/workplace/locales/" + getLocale().getLanguage() + "/help/";
             currentUri = resolveMacros(PATH_HELP) + DEFAULT_HELPFILE;
@@ -713,6 +715,18 @@ public class CmsHelpTemplateBean extends CmsDialog {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
+     */
+    protected void checkRole() throws CmsRoleViolationException {
+
+        // needed since these pages are static exported
+        if (!OpenCms.getDefaultUsers().isUserExport(getCms().getRequestContext().currentUser().getName())) {
+            // only for users that are not the export user
+            OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_USER);
+        }
     }
 
     /**
@@ -790,7 +804,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 String helpResource = null;
                 String wpResource = getParamWorkplaceresource();
                 if (getCms().existsResource(
-                    // todo: get thsis too.
+                // todo: get thsis too.
                     resolveMacros(getParamWorkplaceresource()),
                     CmsResourceFilter.requireType(CmsResourceTypeXmlPage.getStaticTypeId()))) {
                     // given workplace resource is a page in VFS, use it as start point
@@ -810,7 +824,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                             wpResource = wpResource.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                         }
                         // determine mapping for workplace resource
-                        while (wpResource != null && CmsStringUtil.isEmpty(helpResource)) {
+                        while ((wpResource != null) && CmsStringUtil.isEmpty(helpResource)) {
                             helpResource = props.getString(wpResource, null);
                             wpResource = CmsResource.getParentFolder(wpResource);
                         }

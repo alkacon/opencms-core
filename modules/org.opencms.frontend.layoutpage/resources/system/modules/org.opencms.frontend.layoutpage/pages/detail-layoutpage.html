@@ -1,21 +1,43 @@
-<%@ page import="org.opencms.file.*, org.opencms.frontend.layoutpage.*" %><%--
+<%@ page import="org.opencms.file.*, org.opencms.jsp.*, org.opencms.xml.content.*, org.opencms.frontend.layoutpage.*" %><%--
 --%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
 
-CmsLayoutPageBean cms = new CmsLayoutPageBean(pageContext, request, response);
+CmsJspActionElement cms = new CmsJspActionElement (pageContext, request, response);
 
-// Fill the default layout patterns to the Map of possible layouts.
-// To add your own predefined layout, use 'cms.addLayoutPattern(String patternName, int imageWidth);'.
-cms.createDefaultLayoutPatterns();
+// get the XML content file that contains the page paragraphs to render
+CmsFile xmlFile = cms.getCmsObject().readFile(cms.getRequestContext().getUri());
+CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms.getCmsObject(), xmlFile);
 
-// If using other layout patterns, uncomment the line below and set the VFS path to the folder containing your layout patterns.
-// Be also sure to import the styles of the file "resources/style.css" of this module in your template CSS style sheet.
-// cms.setPathLayoutElements("/system/modules/org.opencms.frontend.layoutpage/layouts/");
+// initialize the layout bean with the current display variant, body width, paddings and spacings
+CmsLayoutPageBean layoutBean = new CmsLayoutPageBean(cms, xmlContent, "common", 950, 4, 8);
 
-String template = cms.property(CmsPropertyDefinition.PROPERTY_TEMPLATE, "search", "/system/modules/org.opencms.frontend.templateone/templates/main");
+// add default layout patterns to use, use layoutBean.addLayoutPattern("name_of_pattern", "image_width_variant");
+// the image width variant can be CmsLayoutPageBean.IMG_WIDTH_LARGE, CmsLayoutPageBean.IMG_WIDTH_MEDIUM or CmsLayoutPageBean.IMG_WIDTH_SMALL
+layoutBean.createDefaultLayoutPatterns();
+
+// If using other layout patterns for your template, uncomment the line below 
+// and set the VFS path to the folder containing your own layout files.
+// layoutBean.setPathLayoutElements("/absolute/path/to/your/macros/");
+
+// set fixed image sizes to use for the welcome template, otherwise image sizes would be dynamically calculated
+layoutBean.setFixedImageSize(true);
+if (layoutBean.getColumnLayout().indexOf(CmsLayoutPageBean.COLUMNS_LAYOUT_2) != -1) {
+	// 2 columns, set image widths
+	layoutBean.setImgWidthSmall(150);
+	layoutBean.setImgWidthMedium(250);
+	layoutBean.setImgWidthLarge(475);
+} else {
+	// 1 column, set image widths
+	layoutBean.setImgWidthSmall(200);
+	layoutBean.setImgWidthMedium(350);
+	layoutBean.setImgWidthLarge(950);
+}
+
+
+String template = cms.property(CmsPropertyDefinition.PROPERTY_TEMPLATE, "search", "/system/modules/org.opencms.welcome/templates/welcome");
 
 cms.include(template, "head");
 
-%><cms:contentload collector="singleFile" param="${opencms.uri}" editable="true"><%= cms.buildHtmlParagraphs() %></cms:contentload><%
+%><cms:contentload collector="singleFile" param="%(opencms.filename)" editable="true"><%= layoutBean.buildHtmlParagraphs() %></cms:contentload><%
 
 cms.include(template, "foot");
 

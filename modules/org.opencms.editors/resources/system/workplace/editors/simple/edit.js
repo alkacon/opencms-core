@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/simple/edit.js,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,6 @@ function setContentDelayed() {
 		contentSetted = true;
 	}
 }
-
 
 // function action on button click
 function buttonAction(para) {
@@ -149,6 +148,25 @@ function keyDownHandler(e) {
 		// prevent switching focus if tabulator key is pressed
 		checkTab();
 		break;
+	}
+
+	if (e.ctrlKey) {
+		if (key == 83) {
+			// 's' pressed
+			if (e.shiftKey == true) {
+				// save content and exit
+				buttonAction(2);
+			} else {
+				// save content without exiting
+				buttonAction(3);
+			}
+			return false;
+		}
+		if (e.shiftKey && key == 88) {
+			// 'x' pressed, exit editor
+			confirmExit();
+			return false;
+		}
 	}
 }
 

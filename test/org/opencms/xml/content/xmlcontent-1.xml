@@ -11,6 +11,6 @@
 			<links />
 			<content><![CDATA[<p>This is some Html</p>]]></content>
 		</Html>
-		<Locale><![CDATA[en_EN]]></Locale>
+		<Locale>en_EN</Locale>
 	</Multitest>
 </Multitests>

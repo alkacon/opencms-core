@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     protected String resolveHelpText(Locale locale) {
 
         String helpText = getHelpText().key(locale);
-        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
             helpText = new MessageFormat(helpText, locale).format(new Object[] {getItem().get(getColumnForTexts())});
         }
         return helpText;
@@ -92,7 +92,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     protected String resolveOnClic(Locale locale) {
 
         String confirmationMessage = getConfirmationMessage().key(locale);
-        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
             confirmationMessage = new MessageFormat(confirmationMessage, locale).format(new Object[] {getItem().get(
                 getColumnForTexts())});
         }
@@ -102,8 +102,8 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         onClic.append("', '");
         onClic.append(getId());
         onClic.append("', '");
-        if (getColumnForTexts() == null
-            || getItem().get(getColumnForTexts()) == null
+        if ((getColumnForTexts() == null)
+            || (getItem().get(getColumnForTexts()) == null)
             || confirmationMessage.equals(new MessageFormat(confirmationMessage, locale).format(new Object[] {""}))) {
             onClic.append("conf" + getId());
         } else {
@@ -133,10 +133,10 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
      * @return the style of the button
      */
     protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
-        
+
         return CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY;
     }
-    
+
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
@@ -146,7 +146,6 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
             return "";
         }
         return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
             resolveButtonStyle(),
             getId() + getItem().getId(),
             getId(),
@@ -156,19 +155,21 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
             getIconPath(),
             null,
             resolveOnClic(wp.getLocale()),
-            getColumnForTexts() == null);
+            getColumnForTexts() == null,
+            null);
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#confirmationTextHtml()
      */
-    public String confirmationTextHtml(CmsWorkplace wp) {
+    public String confirmationTextHtml() {
 
         StringBuffer html = new StringBuffer(512);
-        String cm = getConfirmationMessage().key(wp.getLocale());
-        String confMessage = new MessageFormat(cm, wp.getLocale()).format(new Object[] {""});
-        if (getColumnForTexts() == null
-            || confMessage.equals(new MessageFormat(cm, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+        String cm = getConfirmationMessage().key(getWp().getLocale());
+        String confMessage = new MessageFormat(cm, getWp().getLocale()).format(new Object[] {""});
+        if ((getColumnForTexts() == null)
+            || confMessage.equals(new MessageFormat(cm, getWp().getLocale()).format(new Object[] {getItem().get(
+                getColumnForTexts())}))) {
             html.append(A_CmsListAction.defaultConfirmationHtml(getId(), confMessage));
         }
         return html.toString();
@@ -191,15 +192,16 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#helpTextHtml()
      */
-    public String helpTextHtml(CmsWorkplace wp) {
+    public String helpTextHtml() {
 
         StringBuffer html = new StringBuffer(512);
-        String ht = getHelpText().key(wp.getLocale());
-        String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
-        if (getColumnForTexts() == null
-            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
+        String ht = getHelpText().key(getWp().getLocale());
+        String helptext = new MessageFormat(ht, getWp().getLocale()).format(new Object[] {""});
+        if ((getColumnForTexts() == null)
+            || helptext.equals(new MessageFormat(ht, getWp().getLocale()).format(new Object[] {getItem().get(
+                getColumnForTexts())}))) {
             html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
         }
         return html.toString();

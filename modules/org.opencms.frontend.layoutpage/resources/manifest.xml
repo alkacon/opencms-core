@@ -3,19 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Feb 2006 10:10:46 GMT</createdate>
+		<opencms_version>7RC2</opencms_version>
+		<createdate>Mon, 25 Jun 2007 14:12:31 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.layoutpage</name>
-		<nicename><![CDATA[OpenCms 6 frontend Layoutpage]]></nicename>
+		<nicename><![CDATA[OpenCms 7 frontend Layoutpage]]></nicename>
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[<p>Contains the resource type "layoutpage" that helps creating pages following a set of predefined layout patterns.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.0</version>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -24,6 +24,7 @@
 		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.layoutpage/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.layoutpage/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.layoutpage/"/>
@@ -47,11 +48,9 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="layoutpage" key="fileicon.layoutpage" icon="layoutpage.gif" reference="xmlcontent">
-				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=layoutpage" order="19" autosetnavigation="false" autosettitle="false"/>
+				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=layoutpage" order="19" autosetnavigation="false" autosettitle="false" info="desc.layoutpage"/>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
@@ -60,327 +59,445 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
+			<uuidstructure>0a0c1bea-2325-11dc-8245-53aeb3024788</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 24 Feb 2006 14:33:10 GMT</datecreated>
+			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage</destination>
 			<type>folder</type>
+			<uuidstructure>c0ade2a2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes</destination>
 			<type>folder</type>
+			<uuidstructure>c0b053a4-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org</destination>
 			<type>folder</type>
+			<uuidstructure>c0b053a6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms</destination>
 			<type>folder</type>
+			<uuidstructure>c0b29d98-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend</destination>
 			<type>folder</type>
+			<uuidstructure>c0b50e9a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage</destination>
 			<type>folder</type>
+			<uuidstructure>c0b77f9c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/frontendmessages.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/frontendmessages.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c0b77f9d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>2c89c0f3-e0f7-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 04 May 2006 09:58:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 May 2006 14:05:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/frontendmessages_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/frontendmessages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c0be847f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>2c9f1db7-e0f7-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:04:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 May 2006 14:05:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/frontendmessages_en.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c0be8481-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>2c89c0f3-e0f7-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 04 May 2006 09:58:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 May 2006 14:05:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace.properties</destination>
 			<type>plain</type>
+			<uuidstructure>c0c0f582-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>21668fd9-a225-11da-856e-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 11 May 2006 14:04:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 15:25:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_de.properties</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_de.properties</destination>
 			<type>plain</type>
+			<uuidstructure>c0c36684-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>5f48760f-a489-11da-a1a2-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 11 May 2006 14:03:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 23 Feb 2006 16:28:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_en.properties</destination>
 			<type>plain</type>
+			<uuidstructure>c0c5b076-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>21668fd9-a225-11da-856e-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 11 May 2006 14:04:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 15:25:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/elements</destination>
+			<type>folder</type>
+			<uuidstructure>c0c82178-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Thu, 11 May 2006 13:57:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 May 2006 13:57:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/elements/popup-image.html</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/elements/popup-image.html</destination>
+			<type>jsp</type>
+			<uuidstructure>c0ca9279-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>1e2727f5-e0f6-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:06:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 May 2006 13:57:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Popup Image]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(uri,imgsize);locale]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/layouts</destination>
 			<type>folder</type>
+			<uuidstructure>c0cf4d6e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 21 Feb 2006 11:32:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imagebottom</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imagebottom</destination>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/1col_common.ftl</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/1col_common.ftl</destination>
 			<type>plain</type>
-			<uuidresource>43f52f38-a2d0-11da-b7ca-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0cf4d6f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>26199c4b-e0f6-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Fri, 12 May 2006 09:35:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:50:33 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 13:57:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Layout for image bottom below text]]></value>
+					<value><![CDATA[1 column layout macros]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft</destination>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/2col_common.ftl</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/2col_common.ftl</destination>
 			<type>plain</type>
-			<uuidresource>431090f4-a2cf-11da-b7ca-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0d19762-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>26338cef-e0f6-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Fri, 12 May 2006 09:35:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:43:22 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 13:57:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Layout for image upper left]]></value>
+					<value><![CDATA[2 column layout macros]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft_textright</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft_textright</destination>
-			<type>plain</type>
-			<uuidresource>3321048e-a2d0-11da-b7ca-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<destination>system/modules/org.opencms.frontend.layoutpage/lib</destination>
+			<type>folder</type>
+			<uuidstructure>c0d40866-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Fri, 12 May 2006 09:17:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:50:05 GMT</datecreated>
+			<datecreated>Fri, 12 May 2006 09:17:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Layout for image left, text right]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageright</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageright</destination>
-			<type>plain</type>
-			<uuidresource>46df9a59-a2cf-11da-b7ca-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<source>system/modules/org.opencms.frontend.layoutpage/lib/freemarker-2.3.6.jar</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/lib/freemarker-2.3.6.jar</destination>
+			<type>binary</type>
+			<uuidstructure>c0ee4727-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>41fe8aa6-e198-11da-8b29-0180483573c9</uuidresource>
+			<datelastmodified>Fri, 12 May 2006 09:18:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:43:29 GMT</datecreated>
+			<datecreated>Fri, 12 May 2006 09:18:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Layout for image upper right]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageright_textleft</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageright_textleft</destination>
-			<type>plain</type>
-			<uuidresource>ac515013-a51f-11da-933a-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<source>system/modules/org.opencms.frontend.layoutpage/lib/org.opencms.frontend.layoutpage.jar</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/lib/org.opencms.frontend.layoutpage.jar</destination>
+			<type>binary</type>
+			<uuidstructure>b8ce5c5b-7ae6-11db-a907-010af76e9a79</uuidstructure>
+			<uuidresource>b8ce5c5c-7ae6-11db-a907-010af76e9a79</uuidresource>
+			<datelastmodified>Fri, 12 May 2006 09:18:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 24 Feb 2006 10:24:01 GMT</datecreated>
+			<datecreated>Fri, 12 May 2006 09:18:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Layout for image right, text left]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imagetop</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imagetop</destination>
-			<type>plain</type>
-			<uuidresource>3fdce7d3-a2d0-11da-b7ca-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings</destination>
+			<type>folder</type>
+			<uuidstructure>f9909008-64c4-11db-8fcc-d3ee01eaa4cf</uuidstructure>
+			<datelastmodified>Thu, 26 Oct 2006 07:38:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:50:26 GMT</datecreated>
+			<datecreated>Thu, 26 Oct 2006 07:38:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Layout for image top above text]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.layoutpage/layouts/textonly</source>
-			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/textonly</destination>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/event.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/event.properties</destination>
 			<type>plain</type>
-			<uuidresource>d6fd2373-a2cd-11da-9451-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>3184d913-65b4-11db-aabc-bf6fa13020a5</uuidstructure>
+			<uuidresource>3184d914-65b4-11db-aabc-bf6fa13020a5</uuidresource>
+			<datelastmodified>Fri, 27 Oct 2006 12:11:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 21 Feb 2006 11:33:11 GMT</datecreated>
+			<datecreated>Fri, 27 Oct 2006 12:10:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Layout for text only paragraph]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/faq.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/faq.properties</destination>
+			<type>plain</type>
+			<uuidstructure>60810bd6-65b4-11db-aabc-bf6fa13020a5</uuidstructure>
+			<uuidresource>60810bd7-65b4-11db-aabc-bf6fa13020a5</uuidresource>
+			<datelastmodified>Fri, 27 Oct 2006 12:13:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 27 Oct 2006 12:12:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/mappings/news.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/mappings/news.properties</destination>
+			<type>plain</type>
+			<uuidstructure>0cc73bba-64c5-11db-8fcc-d3ee01eaa4cf</uuidstructure>
+			<uuidresource>0cc73bbb-64c5-11db-8fcc-d3ee01eaa4cf</uuidresource>
+			<datelastmodified>Thu, 26 Oct 2006 07:40:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Oct 2006 07:39:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/pages</destination>
 			<type>folder</type>
+			<uuidstructure>c0f5731a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 15:02:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html</destination>
 			<type>jsp</type>
-			<uuidresource>23035718-a222-11da-8f55-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0f5731b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>08b8fba3-e0f9-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Fri, 12 May 2006 09:25:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 15:04:06 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:18:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[uri]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Detail view for layout page]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/resources</destination>
 			<type>folder</type>
+			<uuidstructure>c0f7bd10-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 24 Feb 2006 11:27:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/resources/style.css</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/resources/style.css</destination>
 			<type>plain</type>
-			<uuidresource>9364ea3d-a528-11da-9d7b-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0fa2e11-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>19557381-e0f9-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:09:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 24 Feb 2006 11:27:45 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:19:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -389,27 +506,31 @@
 					<value><![CDATA[CSS Stylesheet for layout elements]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.layoutpage/schemas</destination>
 			<type>folder</type>
+			<uuidstructure>c0fc9f15-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 20 Feb 2006 14:06:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd</destination>
 			<type>plain</type>
-			<uuidresource>8d7eaeaf-a21a-11da-8f55-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0fc9f16-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>54a5bd57-e0f8-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:18:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 14:09:48 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:13:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -418,16 +539,18 @@
 					<value><![CDATA[Nested XSD for images]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutpage.xsd</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutpage.xsd</destination>
 			<type>plain</type>
-			<uuidresource>882e838a-a21a-11da-8f55-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c0fee909-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>68e8cffb-e0f8-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:50:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 14:09:39 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:14:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -436,16 +559,18 @@
 					<value><![CDATA[XSD for layout pages]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutparagraph.xsd</source>
 			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutparagraph.xsd</destination>
 			<type>plain</type>
-			<uuidresource>5f70de2c-a21b-11da-8f55-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c1015a0c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>7870083f-e0f8-11da-b16e-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:14:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 14:15:40 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:14:33 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -454,11 +579,13 @@
 					<value><![CDATA[Nested XSD for layout paragraphs]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -478,13 +605,22 @@
 					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>30</denied>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -492,33 +628,38 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/layoutpage.gif</source>
 			<destination>system/workplace/resources/filetypes/layoutpage.gif</destination>
 			<type>image</type>
-			<uuidresource>1ca28fef-a22b-11da-b9bc-c93f3446e280</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>c1a11c81-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>af846238-e0fc-11da-8b35-0180483573c9</uuidresource>
+			<datelastmodified>Thu, 11 May 2006 14:46:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Feb 2006 16:08:20 GMT</datecreated>
+			<datecreated>Thu, 11 May 2006 14:44:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -527,6 +668,7 @@
 					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

@@ -14,10 +14,13 @@
 	localizedfolders,
 	dialoghandlers, 
 	editorhandler, 
-	editoraction, 
+	editoraction,
+	editorcsshandlers?,
+	editorpreconditions?,
 	directeditprovider?, 
 	exportpoints, 
-	autolock?, 	
+	autolock?, 
+	xmlcontentautocorrection?,	
 	enableusermanagement?, 	
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
@@ -26,33 +29,74 @@
 	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
+	user-infos?,
 	default-preferences,
-	tool-manager? )>
+	workplace-customfoot?,
+	tool-manager?)>
+
+<!--
+# The user additional information configuration.
+-->
+<!ELEMENT user-infos (info-block+) >
+
+<!--
+# The configuration of a block of user additional information.
+-->
+<!ELEMENT info-block (user-info+) >
+<!ATTLIST info-block name CDATA #REQUIRED>
+
+<!--
+# The user additional information entry configuration.
+-->
+<!ELEMENT user-info EMPTY >
+<!ATTLIST user-info key CDATA #REQUIRED
+                    type (java.lang.Byte|java.lang.Short|java.lang.Integer|java.lang.Long|java.lang.Float|java.lang.Double|java.lang.Boolean|java.lang.Character|java.lang.String|java.util.Date|org.opencms.CmsUUID) #IMPLIED
+		  			widget CDATA #IMPLIED
+		  			params CDATA #IMPLIED
+		  			optional (true|TRUE|false|FALSE) #IMPLIED >
+
+<!--
+# The workplace foot is customizable, color and background-color can be changed to have a better overview when
+# working with more OpenCms installations. Also an additional text can be added to the foot which is displayed which
+# is shown instead of the standard text.
+-->	
+<!ELEMENT workplace-customfoot (color?, background-color?, text?)>
+
+<!ELEMENT color (#PCDATA)>
+<!ELEMENT background-color (#PCDATA)>
+<!ELEMENT text (#PCDATA)>
+<!ATTLIST text replace (true|TRUE|false|FALSE) #REQUIRED>
 
 <!--
 # The tool manager configuration.
 -->
 <!ELEMENT tool-manager (roots) >
+
 <!--
 # A list of tool's roots.
 -->
 <!ELEMENT roots (root*) >
+
 <!--
 # A root.
 -->
 <!ELEMENT root (key, uri, name, helptext) >
+
 <!--
 # The key for accessing a root.
 -->
 <!ELEMENT key (#PCDATA) >
+
 <!--
 # The uri to look for tools for this root.
 -->
 <!ELEMENT uri (#PCDATA) >
+
 <!--
 # a macro for the display name of the given root.
 -->
 <!ELEMENT name (#PCDATA) >
+
 <!--
 # a macro for the helptext of the given root.
 -->
@@ -100,6 +144,24 @@
 <!ELEMENT editoraction EMPTY>
 <!ATTLIST editoraction class CDATA #REQUIRED>
 
+<!--
+# The editor css handler classes.
+# Classes handling the CSS stylesheet assignment for edited files.
+# The specified class must implement the org.opencms.workplace.editors.I_CmsEditorCssHandler interface.
+-->
+<!ELEMENT editorcsshandlers (editorcsshandler+)>
+<!ELEMENT editorcsshandler EMPTY>
+<!ATTLIST editorcsshandler class CDATA #REQUIRED>
+
+<!--
+# The pre editor condition definition classes.
+# For each resource type (identified by the resource type name), a precondition can be executed before the editor is opened.
+# The specified class must implement the org.opencms.workplace.editors.I_CmsPreEditorActionDefinition interface.
+-->
+<!ELEMENT editorpreconditions (editorprecondition+)>
+<!ELEMENT editorprecondition EMPTY>
+<!ATTLIST editorprecondition name CDATA #REQUIRED class CDATA #REQUIRED>
+
 <!ELEMENT directeditprovider (param*)>
 <!ATTLIST directeditprovider class CDATA #REQUIRED>
 
@@ -132,6 +194,14 @@
 # locking of the resource is required.
 -->
 <!ELEMENT autolock (#PCDATA)>
+
+<!--
+# Enables or disables the auto correction of XML content resources in the editor if the XML Schema Definition has changed.
+# If this is set to "true" (the default) the XML content editor corrects automatically the edited content
+# without notifying the user. If this is set to "false", the user gets a confirmation dialog before the
+# content is adjusted.
+-->
+<!ELEMENT xmlcontentautocorrection (#PCDATA)>
 
 <!--
 # Enables or disables the icons for editing users and groups 
@@ -232,7 +302,7 @@
 # The optional multicontextmenu describes the multi context menu configuration that is used if more
 # files are selected in the explorer view.
 -->
-<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol, multicontextmenu?)>
+<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol, multicontextmenu?, menurules?)>
 
 <!--
 # Enter the default permissions for OpenCms groups. 
@@ -245,6 +315,23 @@
 <!ELEMENT multicontextmenu (
 	entry*,
 	separator*)*>
+
+<!--
+# Defines rule sets for menu items that should be displayed for a resource.
+-->
+<!ELEMENT menurules (menurule+)>
+
+<!--
+# A named menu rule set that can be referenced as rule by a context menu item entry.
+-->
+<!ELEMENT menurule (menuitemrule+)>
+<!ATTLIST menurule name CDATA #REQUIRED>
+
+<!--
+# Defines a single rule for a menu item entry, the order of the menu item rules is important.
+-->
+<!ELEMENT menuitemrule EMPTY>
+<!ATTLIST menuitemrule class CDATA #REQUIRED>
 
 <!--
 # <importexport> node options.
@@ -332,26 +419,27 @@
 <!--
 # List of properties which are ignored (ie. not imported) when resources are imported. 
 -->
-<!ELEMENT ignoredproperties (property*)>
-<!ELEMENT property EMPTY>
-<!ATTLIST property name CDATA #REQUIRED>
+<!ELEMENT ignoredproperties (ignoredproperty*)>
+<!ELEMENT ignoredproperty EMPTY>
+<!ATTLIST ignoredproperty name CDATA #REQUIRED>
 
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 
-# for the user workplace preferences. The xml data is subdifeded into five major knots,
+# for the user workplace preferences. The xml data is subdifeded into four major knots,
 # representing the different tabs in the preferences screen in the workplace.
 -->
 <!ELEMENT default-preferences (workplace-preferences,
 				explorer-preferences,
 				dialogs-preferences,
 				editors-preferences,
-				workflow-preferences)>
+				workflow-preferences?)>
 
 <!--
 # The workplace preferences define the preferences of the workplace itself.
 -->
 <!ELEMENT workplace-preferences (workplace-generaloptions,
-								 workplace-startupsettings)>
+								 workplace-startupsettings,
+								 workplace-search?)>
 
 <!--
 # The workplace generaloptions describes the general settings for the workplace.
@@ -359,9 +447,13 @@
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
 									uploadapplet,
-									publishbuttonappearance?, 
+									publishbuttonappearance?,
+									show-fileuploadbutton?,
+									allowbrokenrelations?, 
+									publishrelatedresources?,
 									newfolder-editproperties?, 
-									newfolder-createindexpage?)>
+									newfolder-createindexpage?,
+									show-uploadtypedialog?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -389,10 +481,36 @@
 -->	
 <!ELEMENT publishbuttonappearance (#PCDATA)>									
 	
+<!--
+# If this element is set to "true", the file upload button will be shown in the 
+# workplace explorer. This is a setting for all users.
+-->	
+<!ELEMENT show-fileuploadbutton (#PCDATA)>
+	
+<!--
+# If this is set to <code>false</code> only CmsRole#VFS_MANAGERs 
+# will be able to delete resources that would break the
+# relation integrity.<p>
+# Default value is <code>true</code>
+-->
+<!ELEMENT allowbrokenrelations (#PCDATA)>
+
+<!--
+# If this is set to <code>force</code> only CmsRole#VFS_MANAGERs 
+# will be able to publish resources without publishing unpublished 
+# related resources.<p>
+# Other options are <code>true</code> and <code>false</code> to
+# set the default state of the checkbox in the publish dialog.<p>
+# Default value is <code>true</code>
+-->
+<!ELEMENT publishrelatedresources (#PCDATA)>
+
 <!ELEMENT newfolder-createindexpage (#PCDATA)>
 
+<!ELEMENT show-uploadtypedialog (#PCDATA)>
+
 <!ELEMENT newfolder-editproperties (#PCDATA)>
-	
+								
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly
 # after the login.
@@ -436,6 +554,19 @@
 <!ELEMENT restrictexplorerview (#PCDATA)>								 
 						
 <!--
+# The workplace search settings are used to define the behaviour of the workplace search for editors.
+-->										
+<!ELEMENT workplace-search (searchindex-name, searchview-style)>
+<!--
+# The name of the index to use for search, default is the "Offline project (VFS)" index.
+-->	
+<!ELEMENT searchindex-name (#PCDATA)>	
+<!--
+# The view to display first, the admin list view or the explorer view (default).
+-->	
+<!ELEMENT searchview-style (#PCDATA)>
+
+<!--
 # The explorer preferences define the preferences workplace explorer.
 -->						
 <!ELEMENT explorer-preferences (explorer-generaloptions,
@@ -457,6 +588,7 @@
 # Each of the sub elements can either have the values "true" or "false".
 -->	
 <!ELEMENT explorer-displayoptions (show-title,
+								   show-navtext?,
 								   show-type,
 								   show-datelastmodified,
 								   show-datecreated,
@@ -469,6 +601,7 @@
 								   show-datereleased,
 								   show-dateexpired)>																		
 <!ELEMENT show-title (#PCDATA)>	
+<!ELEMENT show-navtext (#PCDATA)>
 <!ELEMENT show-type (#PCDATA)>	
 <!ELEMENT show-datelastmodified (#PCDATA)>	
 <!ELEMENT show-datecreated (#PCDATA)>	

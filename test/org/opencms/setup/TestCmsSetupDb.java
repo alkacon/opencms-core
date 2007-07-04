@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:56:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.setup;
 
-import org.opencms.scheduler.TestCmsSchedulerInSystem;
 import org.opencms.test.OpenCmsTestCase;
 
 import junit.framework.Test;
@@ -42,7 +41,7 @@ import junit.framework.TestSuite;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -66,7 +65,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     public static Test suite() {
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSchedulerInSystem.class.getName());
+        suite.setName(TestCmsSetupDb.class.getName());
 
         suite.addTest(new TestCmsSetupDb("testCreateDatabase"));
         suite.addTest(new TestCmsSetupDb("testCreateTables"));
@@ -88,7 +87,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use create method form superclass
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.createDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.createDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -109,7 +108,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use create method form superclass
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.createTables(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.createTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -130,7 +129,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use drop method form superclass
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.dropDatabase(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.dropDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);
@@ -151,7 +150,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // use drop method form superclass
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.dropTables(m_dbProduct, getReplacer(m_defaultConnection), true);
+        setupDb.dropTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
         // check for errors 
         checkErrors(setupDb);

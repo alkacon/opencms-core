@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd">
-
-<web-app>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
 
     <display-name>OpenCms</display-name>
     
@@ -50,13 +49,13 @@
     </listener>
         
     <servlet>
-        <servlet-name>OpenCmsServlet</servlet-name>
         <description>
             The main servlet that handles all requests to the OpenCms VFS.  
         </description>
-        <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>       
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
         <!-- Uncomment this if using BEA WLS 9.x -->
-        <!--
+        <!-- 
         <init-param>
         	<param-name>OnErrorExitWithoutException</param-name>
         	<param-value>true</param-value>
@@ -66,19 +65,19 @@
         		But if using BEA WLS 9.x, you should set it to 'true'.
         	</description>
         </init-param>
-        -->
+         -->
         <!-- Uncomment this if using BEA WLS 9.x -->
         <load-on-startup>1</load-on-startup>
     </servlet>
     
     <servlet>
-        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <description>
             The error handling servlet, also servers as trigger for static export requests.  
         </description>
+        <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
         <!-- Uncomment this if using BEA WLS 9.x -->
-        <!--
+        <!-- 
         <init-param>
         	<param-name>OnErrorExitWithoutException</param-name>
         	<param-value>true</param-value>
@@ -97,11 +96,31 @@
      			the 'weblogic.servlet.errorPage' attribute.
         	</description>
         </init-param>
-        -->
+         -->
         <!-- Uncomment this if using BEA WLS 9.x -->
         <load-on-startup>0</load-on-startup>
     </servlet>    
 
+    <servlet>
+        <description>
+            Creates an access to OpenCms through WebDAV.
+        </description>
+        <servlet-name>OpenCmsWebDavServlet</servlet-name>
+        <servlet-class>org.opencms.webdav.CmsWebdavServlet</servlet-class>
+        <init-param>
+          <param-name>listings</param-name>
+          <param-value>true</param-value>
+        </init-param>
+        <init-param>
+          <param-name>readonly</param-name>
+          <param-value>false</param-value>
+        </init-param>
+        <init-param>
+          <param-name>repository</param-name>
+          <param-value>standard</param-value>
+        </init-param>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>OpenCmsServlet</servlet-name>
         <url-pattern>/opencms/*</url-pattern>
@@ -110,6 +129,11 @@
     <servlet-mapping>
         <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <url-pattern>/opencms-errorhandler/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>OpenCmsWebDavServlet</servlet-name>
+      <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
     
     <session-config>
@@ -131,10 +155,12 @@
         <error-code>500</error-code>
         <location>/opencms-errorhandler/system/handler/handle500.html</location>
     </error-page>
-    
-    <taglib>
-        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
-        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
-    </taglib>
+
+	<jsp-config>
+	    <taglib>
+	        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
+	        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
+	    </taglib>
+	</jsp-config>
 
 </web-app>

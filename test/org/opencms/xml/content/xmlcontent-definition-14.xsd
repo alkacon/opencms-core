@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+	<xsd:element name="Test2Links" type="OpenCmsTest2Links" />
+
+	<xsd:complexType name="OpenCmsTest2Links">
+		<xsd:sequence>
+			<xsd:element name="Test2Link" type="OpenCmsTest2Link" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTest2Link">
+		<xsd:sequence>
+			<xsd:element name="Html" type="OpenCmsHtml" />
+			<xsd:element name="VfsLink" type="OpenCmsVfsFile" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<relations>
+				<relation element="VfsLink" type="attachment" invalidate="false" />
+			</relations>
+		</xsd:appinfo>
+	</xsd:annotation>
+</xsd:schema>

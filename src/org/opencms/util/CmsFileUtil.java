@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/10/27 10:49:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -54,30 +53,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Provides File utility functions.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsFileUtil {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileUtil.class);
 
     /**
      * Hides the public constructor.<p> 
@@ -209,6 +201,47 @@ public final class CmsFileUtil {
     }
 
     /**
+     * Returns the extension of the given resource name, that is the part behind the last '.' char,
+     * converted to lower case letters.<p>
+     * 
+     * The extension of a file is the part of the name after the last dot, including the dot.
+     * The extension of a folder is empty.
+     * All extensions are returned as lower case<p>
+     * 
+     * Please note: No check is performed to ensure the given file name is not <code>null</code>.<p>
+     * 
+     * Examples:<br> 
+     * <ul>
+     *   <li><code>/folder.test/</code> has an empty extension.
+     *   <li><code>/folder.test/config</code> has an empty extension.
+     *   <li><code>/strange.filename.</code> has an empty extension.
+     *   <li><code>/document.PDF</code> has the extension <code>.pdf</code>.
+     * </ul>
+     * 
+     * @param resourceName the resource to get the extension for
+     * 
+     * @return the extension of a resource
+     */
+    public static String getExtension(String resourceName) {
+
+        // if the resource name indicates a folder
+        if (resourceName.charAt(resourceName.length() - 1) == '/') {
+            // folders have no extensions
+            return "";
+        }
+        // get just the name of the resource
+        String name = CmsResource.getName(resourceName);
+        // get the position of the last dot
+        int pos = name.lastIndexOf('.');
+        // if no dot or if no chars after the dot
+        if ((pos < 0) || ((pos + 1) == name.length())) {
+            return "";
+        }
+        // return the extension
+        return name.substring(pos).toLowerCase();
+    }
+
+    /**
      * Returns the extension of the given file name, that is the part behind the last '.' char,
      * converted to lower case letters.<p>
      * 
@@ -221,6 +254,8 @@ public final class CmsFileUtil {
      * 
      * @param filename the file name to get the extension for
      * @return the extension of the given file name
+     * 
+     * @deprecated use {@link #getExtension(String)} instead, it is better implemented
      */
     public static String getFileExtension(String filename) {
 
@@ -286,56 +321,6 @@ public final class CmsFileUtil {
         result.append(online ? CmsFlexCache.REPOSITORY_ONLINE : CmsFlexCache.REPOSITORY_OFFLINE);
         result.append(vfspath);
         return result.toString();
-    }
-
-    /**
-     * Returns the absolute path name for the given relative 
-     * path name if it was found by the context Classloader of the 
-     * current Thread.<p>
-     * 
-     * The argument has to denote a resource within the Classloaders 
-     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
-     * try to match a given path name to some resource under it's URL 
-     * entries.<p>
-     * 
-     * As the result is internally obtained as an URL it is reduced to 
-     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
-     * the returned String will start with a '/' (no problem for java.io).<p>
-     * 
-     * @param fileName the filename to return the path from the Classloader for
-     * 
-     * @return the absolute path name for the given relative 
-     *   path name if it was found by the context Classloader of the 
-     *   current Thread or an empty String if it was not found
-     * 
-     * @see Thread#getContextClassLoader()
-     */
-    public static String getResourcePathFromClassloader(String fileName) {
-
-        boolean isFolder = CmsResource.isFolder(fileName);
-        String result = "";
-        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
-        if (inputUrl != null) {
-            // decode name here to avoid url encodings in path name
-            result = normalizePath(inputUrl);
-            if (isFolder && !CmsResource.isFolder(result)) {
-                result = result + '/';
-            }
-        } else {
-            if (LOG.isErrorEnabled()) {
-                try {
-                    URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
-                    URL[] paths = cl.getURLs();
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
-                        fileName,
-                        Arrays.asList(paths)));
-                } catch (Throwable t) {
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
-                }
-            }
-        }
-        return result;
     }
 
     /**
@@ -537,7 +522,7 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads all bytes from the given input stream, closes it 
+     * Reads all bytes from the given input stream, closes it
      * and returns the result in an array.<p> 
      * 
      * @param in the input stream to read the bytes from 
@@ -547,9 +532,9 @@ public final class CmsFileUtil {
      */
     public static byte[] readFully(InputStream in) throws IOException {
 
-      return readFully(in, true);
+        return readFully(in, true);
     }
-    
+
     /**
      * Reads all bytes from the given input stream, conditionally closes the given input stream 
      * and returns the result in an array.<p> 
@@ -586,8 +571,7 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads the specified number of bytes from the given input stream, 
-     * closes it and returns the result in an array.<p> 
+     * Reads the specified number of bytes from the given input stream and returns the result in an array.<p> 
      * 
      * @param in the input stream to read the bytes from
      * @param size the number of bytes to read 
@@ -600,7 +584,7 @@ public final class CmsFileUtil {
 
         return readFully(in, size, true);
     }
-    
+
     /**
      * Reads the specified number of bytes from the given input stream, conditionally closes the stream 
      * and returns the result in an array.<p> 
@@ -639,11 +623,10 @@ public final class CmsFileUtil {
         if (offset < bytes.length) {
             throw new IOException("Could not read requested " + size + " bytes from input stream");
         }
-        
+
         return bytes;
     }
 
-    
     /** 
      * Removes all resource names in the given List that are "redundant" because the parent folder name 
      * is also contained in the List.<p> 
@@ -681,7 +664,7 @@ public final class CmsFileUtil {
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource name is indirectly contained because a parent folder name is contained
                 String check = (String)result.get(j);
-                if (resourcename.startsWith(check)) {
+                if ((CmsResource.isFolder(check) && resourcename.startsWith(check)) || resourcename.equals(check)) {
                     valid = false;
                     break;
                 }
@@ -726,8 +709,8 @@ public final class CmsFileUtil {
             boolean valid = true;
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource is indirectly contained because a parent folder is contained
-                String check = ((CmsResource)result.get(j)).getRootPath();
-                if (resource.getRootPath().startsWith(check)) {
+                CmsResource check = (CmsResource)result.get(j);
+                if ((check.isFolder() && resource.getRootPath().startsWith(check.getRootPath())) || resource.getRootPath().equals(check.getRootPath())) {
                     valid = false;
                     break;
                 }

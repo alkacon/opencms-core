@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/07/04 16:57:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.1
  */
@@ -202,7 +202,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** Method for setContentType(String) from the HttpServletResponse class. */
-    public static Method SET_CONTENT_TYPE = null;
+    static Method SET_CONTENT_TYPE = null;
     
     /** Flex controller to be used by the tests. */
     private CmsFlexController m_controller;
@@ -271,7 +271,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** 
-     * Convenience method to create a mock HttpServletRequest backed by the given invocation handler.<p>
+     * Convenience method to create a mock {@link HttpServletRequest} backed by the given invocation handler.<p>
+     * 
+     * @param recorder the mock recorder
+     *  
+     * @return the new created request
      */
     private static HttpServletRequest createMockRequest(RecordingMock recorder) {
 
@@ -279,7 +283,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** 
-     * Convenience method to create a mock HttpServletResponse backed by the given invocation handler.<p>
+     * Convenience method to create a mock {@link HttpServletResponse} backed by the given invocation handler.<p>
+     * 
+     * @param recorder the mock recorder
+     *  
+     * @return the new created response
      */
     private static HttpServletResponse createMockResponse(RecordingMock recorder) {
 
@@ -356,7 +364,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         super.setUp();
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())) {
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().currentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
         }
 
@@ -365,7 +373,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         m_resMock = new RecordingMock();
         m_response = createMockResponse(m_resMock);
 
-        m_controller = new CmsFlexController(cms, null, CmsFlexDummyLoader.m_flexCache, m_request, m_response, false, true);
+        m_controller = new CmsFlexController(cms, null, CmsFlexDummyLoader.getFlexCache(), m_request, m_response, false, true);
         CmsFlexController.setController(m_request, m_controller);
     }
 

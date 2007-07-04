@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,7 +46,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,5 +131,26 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
             }
         }
         return res;
+    }
+
+    /**
+     * Returns the list of columns to be searched.<p>
+     * 
+     * @return a list of {@link CmsListColumnDefinition} objects
+     */
+    public List getColumns() {
+
+        return Collections.unmodifiableList(m_columns);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        super.setWp(wp);
+        if (getShowAllAction() != null) {
+            getShowAllAction().setWp(wp);
+        }
     }
 }

@@ -1,9 +1,11 @@
-<%@ page import="org.opencms.workplace.commons.Messages,
-                 org.opencms.workplace.commons.*,
-                 org.opencms.file.*,
-                 org.opencms.main.*,
-                 org.opencms.site.CmsSiteManager"
-%><%
+<%@ page import="
+    org.opencms.file.CmsPropertyDefinition,
+    org.opencms.main.OpenCms,
+    org.opencms.site.CmsSiteManager,
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.commons.CmsSecure,
+    org.opencms.workplace.commons.Messages
+" %><%
         
         // initialize the workplace class
         CmsSecure wp = new CmsSecure(pageContext, request, response);
@@ -22,7 +24,7 @@ case CmsSecure.ACTION_CHSECEXP:
 break;
 
 
-case CmsSecure.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 
 //////////////////// ACTION: cancel button pressed
 
@@ -31,7 +33,7 @@ case CmsSecure.ACTION_CANCEL:
 break;
 
 
-case CmsSecure.ACTION_DEFAULT:
+case CmsDialog.ACTION_LOCKS_CONFIRMED:
 
 //////////////////// ACTION: show security and export settings dialog (default)
 wp.setParamAction("secure");
@@ -95,13 +97,13 @@ wp.setParamAction("secure");
   <%= wp.bodyStart("dialog") %>
   <%= wp.dialogStart() %>
 
-  <form name="secure" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'secure');" id="secure">
+  <form name="secure" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'secure');" id="secure">
   
     <%= wp.paramsAsHidden() %>
 
     <%= wp.dialogContentStart(wp.getParamTitle()) %>
     
-    <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value=""> 
+    <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value=""> 
     
     <%@ include file="includes/resourceinfo.txt" %>
     <%= wp.dialogSpacer() %>
@@ -197,5 +199,13 @@ wp.setParamAction("secure");
     <%= wp.bodyEnd() %>
     <%= wp.htmlEnd() %>
 
+<% 
+   break;
 
-<% } %>
+case CmsDialog.ACTION_DEFAULT:
+default:
+%>
+<%= wp.buildLockDialog() %>
+<% } 
+//////////////////// end of switch statement 
+%>

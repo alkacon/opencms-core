@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/03/12 15:59:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -79,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.2.4
  */
@@ -114,8 +116,8 @@ public class CmsObjectWrapper {
      * 
      * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      * 
-     * @see I_CmsResourceWrapper#copyResource(CmsObject, String, String, int)
-     * @see CmsObject#copyResource(String, String, int)
+     * @see I_CmsResourceWrapper#copyResource(CmsObject, String, String, CmsResource.CmsResourceCopyMode)
+     * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
      * 
      * @param source the name of the resource to copy (full path)
      * @param destination the name of the copy destination (full path)
@@ -124,7 +126,7 @@ public class CmsObjectWrapper {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      */
-    public void copyResource(String source, String destination, int siblingMode)
+    public void copyResource(String source, String destination, CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
         boolean exec = false;
@@ -212,15 +214,15 @@ public class CmsObjectWrapper {
      * 
      * Iterates through all configured resource wrappers till the first returns <code>true</code>.<p>
      * 
-     * @see I_CmsResourceWrapper#deleteResource(CmsObject, String, int)
-     * @see CmsObject#deleteResource(String, int)
+     * @see I_CmsResourceWrapper#deleteResource(CmsObject, String, CmsResource.CmsResourceDeleteMode)
+     * @see CmsObject#deleteResource(String, CmsResource.CmsResourceDeleteMode)
      * 
      * @param resourcename the name of the resource to delete (full path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
      *
      * @throws CmsException if something goes wrong
      */
-    public void deleteResource(String resourcename, int siblingMode) throws CmsException {
+    public void deleteResource(String resourcename, CmsResourceDeleteMode siblingMode) throws CmsException {
 
         boolean exec = false;
 
@@ -579,6 +581,23 @@ public class CmsObjectWrapper {
     }
 
     /**
+     * Delegate method for {@link CmsObject#readResource(CmsUUID, CmsResourceFilter)}.<p>
+     *
+     * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
+     * 
+     * @param structureID the ID of the structure to read
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     */
+    public CmsResource readResource(CmsUUID structureID, CmsResourceFilter filter) throws CmsException {
+
+        return m_cms.readResource(structureID, filter);
+    }
+
+    /**
      * Reads a resource from the VFS,
      * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
      * 
@@ -686,7 +705,7 @@ public class CmsObjectWrapper {
      * <code>/sites/default/index.html.jsp</code>, because it is a jsp page, the links
      * in pages where corrected so that they point to the new name (with extension "jsp").<p>
      * 
-     * Used for the link processing in the class {@link org.opencms.staticexport.CmsLinkProcessor}.<p>
+     * Used for the link processing in the class {@link org.opencms.relations.CmsLink}.<p>
      * 
      * Iterates through all configured resource wrappers till the first returns not <code>null</code>.<p>
      * 
@@ -783,7 +802,7 @@ public class CmsObjectWrapper {
         String resourcename = resource.getRootPath();
         if (!m_cms.existsResource(resourcename)) {
 
-            // iterate through all wrappers and call "readResource" till one does not return null
+            // iterate through all wrappers and call "writeFile" till one does not return null
             List wrappers = getWrappers();
             Iterator iter = wrappers.iterator();
             while (iter.hasNext()) {

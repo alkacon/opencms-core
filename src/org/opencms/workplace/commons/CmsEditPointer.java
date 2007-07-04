@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,13 +171,13 @@ public class CmsEditPointer extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to edit the pointer    
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 

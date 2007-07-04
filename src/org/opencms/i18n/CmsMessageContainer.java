@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessageContainer.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -44,13 +45,16 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  *   
  * @see org.opencms.i18n.I_CmsMessageBundle
  */
-public class CmsMessageContainer {
+public class CmsMessageContainer implements Serializable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 2844402574674092147L;
 
     /** The message arguments to use. */
     protected Object[] m_args;

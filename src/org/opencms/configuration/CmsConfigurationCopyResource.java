@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.configuration;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.util.CmsMacroResolver;
 
@@ -43,7 +44,7 @@ import org.opencms.util.CmsMacroResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -68,7 +69,7 @@ public class CmsConfigurationCopyResource {
     private boolean m_targetWasNull;
 
     /** The type of the copy, for example "as new", "as sibling" etc.*/
-    private int m_type;
+    private CmsResourceCopyMode m_type;
 
     /** Indicates that the original configured type setting was <code>null</code>.*/
     private boolean m_typeWasNull;
@@ -129,12 +130,13 @@ public class CmsConfigurationCopyResource {
     /**
      * Returns the type of the copy, for example "as new", "as sibling" etc.<p>
      * 
-     * Possible types are {@link org.opencms.file.CmsResource#COPY_AS_NEW}, {@link org.opencms.file.CmsResource#COPY_AS_SIBLING},
+     * Possible types are {@link org.opencms.file.CmsResource#COPY_AS_NEW}, 
+     * {@link org.opencms.file.CmsResource#COPY_AS_SIBLING} and
      * {@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}.<p>
      * 
      * @return the type of the copy, for example "as new", "as sibling" etc
      */
-    public int getType() {
+    public CmsResourceCopyMode getType() {
 
         return m_type;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,18 @@
 
 package org.opencms.security;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Common methods shared among user and group principals, 
@@ -47,7 +50,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -62,7 +65,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     /** The unique id of this principal. */
     protected CmsUUID m_id;
 
-    /** The name of this principal. */
+    /** The fully qualified name of this principal. */
     protected String m_name;
 
     /**
@@ -110,7 +113,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         Iterator it = principals.iterator();
         while (it.hasNext()) {
             CmsPrincipal p = (CmsPrincipal)it.next();
-            if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (p.getFlags() & flag) != flag) {
+            if ((p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) && ((p.getFlags() & flag) != flag)) {
                 it.remove();
             }
         }
@@ -198,7 +201,36 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             }
         }
         // invalid principal name was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
+    }
+
+    /**
+     * Utility function to read a principal by its id from the OpenCms database using the 
+     * provided OpenCms user context.<p>
+     * 
+     * @param cms the OpenCms user context to use when reading the principal
+     * @param id the id of the principal to read
+     * 
+     * @return the principal read from the OpenCms database
+     * 
+     * @throws CmsException in case the principal could not be read
+     */
+    public static I_CmsPrincipal readPrincipal(CmsObject cms, CmsUUID id) throws CmsException {
+
+        try {
+            // first try to read the principal as a user
+            return cms.readUser(id);
+        } catch (CmsException exc) {
+            // assume user does not exist
+        }
+        try {
+            // now try to read the principal as a group
+            return cms.readGroup(id);
+        } catch (CmsException exc) {
+            //  assume group does not exist
+        }
+        // invalid principal name was given
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**
@@ -229,7 +261,45 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             }
         }
         // invalid principal type was given
-        throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_TYPE_2, type, name));
+        throw new CmsDbEntryNotFoundException(Messages.get().container(
+            Messages.ERR_INVALID_PRINCIPAL_TYPE_2,
+            type,
+            name));
+    }
+
+    /**
+     * Utility function to read a principal by its id from the OpenCms database using the 
+     * provided OpenCms user context.<p>
+     * 
+     * @param cms the OpenCms user context to use when reading the principal
+     * @param id the id of the principal to read
+     * 
+     * @return the principal read from the OpenCms database
+     * 
+     * @throws CmsException in case the principal could not be read
+     */
+    public static I_CmsPrincipal readPrincipalIncludingHistory(CmsObject cms, CmsUUID id) throws CmsException {
+
+        try {
+            // first try to read the principal as a user
+            return cms.readUser(id);
+        } catch (CmsException exc) {
+            // assume user does not exist
+        }
+        try {
+            // now try to read the principal as a group
+            return cms.readGroup(id);
+        } catch (CmsException exc) {
+            //  assume group does not exist
+        }
+        try {
+            // at the end try to read the principal from the history
+            return cms.readHistoryPrincipal(id);
+        } catch (CmsException exc) {
+            //  assume the principal does not exist at all
+        }
+        // invalid principal name was given
+        throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
     }
 
     /**
@@ -257,6 +327,24 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * Returns the display name of this principal including the organizational unit.<p>
+     * 
+     * @param cms the cms context
+     * @param locale the locale
+     * 
+     * @return the display name of this principal including the organizational unit
+     * 
+     * @throws CmsException if the organizational unit could not be read 
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            getSimpleName(),
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+    }
+
+    /**
      * @see org.opencms.security.I_CmsPrincipal#getFlags()
      */
     public int getFlags() {
@@ -273,11 +361,25 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * Returns the fully qualified name of this principal.<p>
+     *
+     * @return the fully qualified name of this principal
+     * 
      * @see java.security.Principal#getName()
      */
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the fully qualified name of the associated organizational unit.<p>
+     *
+     * @return the fully qualified name of the associated organizational unit
+     */
+    public String getOuFqn() {
+
+        return CmsOrganizationalUnit.getParentFqn(m_name);
     }
 
     /**
@@ -291,6 +393,16 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
             return getPrefixedGroup(getName());
         }
         return getName();
+    }
+
+    /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    public String getSimpleName() {
+
+        return CmsOrganizationalUnit.getSimpleName(m_name);
     }
 
     /**
@@ -317,7 +429,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public boolean isGroup() {
 
-        return this instanceof CmsGroup;
+        return (this instanceof CmsGroup);
     }
 
     /**
@@ -325,7 +437,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public boolean isUser() {
 
-        return this instanceof CmsUser;
+        return (this instanceof CmsUser);
     }
 
     /**
@@ -360,7 +472,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
      */
     public void setName(String name) {
 
-        checkName(name);
+        checkName(CmsOrganizationalUnit.getSimpleName(name));
         m_name = name;
     }
 }

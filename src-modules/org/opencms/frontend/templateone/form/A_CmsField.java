@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Thomas Weckert
  * @author Jan Baudisch
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -56,13 +56,13 @@ public abstract class A_CmsField implements I_CmsField {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
 
+    private String m_errorMessage;
     private List m_items;
     private String m_label;
     private boolean m_mandatory;
     private String m_name;
     private String m_validationExpression;
     private String m_value;
-    private String m_errorMessage;
 
     /**
      * Default constructor.<p>
@@ -78,25 +78,11 @@ public abstract class A_CmsField implements I_CmsField {
     }
 
     /**
-     * @see java.lang.Object#finalize()
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getErrorMessage()
      */
-    protected void finalize() throws Throwable {
+    public String getErrorMessage() {
 
-        try {
-
-            if (m_items != null) {
-                m_items.clear();
-            }
-
-            m_label = null;
-            m_name = null;
-            m_validationExpression = null;
-            m_value = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-
-        super.finalize();
+        return m_errorMessage;
     }
 
     /**
@@ -154,6 +140,78 @@ public abstract class A_CmsField implements I_CmsField {
 
         return (CmsCheckboxField.class.isAssignableFrom(getClass())
             || CmsSelectionField.class.isAssignableFrom(getClass()) || CmsRadioButtonField.class.isAssignableFrom(getClass()));
+    }
+
+    /**
+     * Returns the field value as a String.<p>
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        String result;
+        if (needsItems()) {
+            // check which item has been selected
+            StringBuffer fieldValue = new StringBuffer(8);
+            Iterator k = getItems().iterator();
+            boolean isSelected = false;
+            while (k.hasNext()) {
+                CmsFieldItem currentItem = (CmsFieldItem)k.next();
+                if (currentItem.isSelected()) {
+                    if (isSelected) {
+                        fieldValue.append(", ");
+                    }
+                    fieldValue.append(currentItem.getLabel());
+                    isSelected = true;
+                }
+            }
+            result = fieldValue.toString();
+        } else {
+            // for other field types, append value
+            result = getValue();
+        }
+
+        return result;
+    }
+
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#validate(CmsFormHandler)
+     */
+    public String validate(CmsFormHandler formHandler) {
+
+        // validate the constraints
+        String validationError = validateConstraints();
+        if (CmsStringUtil.isEmpty(validationError)) {
+
+            // no constraint error- validate the input value
+            validationError = validateValue();
+        }
+
+        return validationError;
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+
+        try {
+            if (m_items != null) {
+                m_items.clear();
+            }
+        } catch (Throwable t) {
+            // ignore
+        }
+        super.finalize();
+    }
+
+    /**
+     * Sets the error message if validation failed.<p>
+     * 
+     * @param errorMessage the error message if validation failed
+     */
+    protected void setErrorMessage(String errorMessage) {
+
+        m_errorMessage = errorMessage;
     }
 
     /**
@@ -290,70 +348,5 @@ public abstract class A_CmsField implements I_CmsField {
         }
 
         return null;
-    }
-
-    /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#validate(CmsFormHandler)
-     */
-    public String validate(CmsFormHandler formHandler) {
-
-        // validate the constraints
-        String validationError = validateConstraints();
-        if (CmsStringUtil.isEmpty(validationError)) {
-
-            // no constraint error- validate the input value
-            validationError = validateValue();
-        }
-
-        return validationError;
-    }
-
-    /**
-     * Sets the error message if validation failed.<p>
-     * 
-     * @param errorMessage the error message if validation failed
-     */
-    protected void setErrorMessage(String errorMessage) {
-
-        m_errorMessage = errorMessage;
-    }
-
-    /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#getErrorMessage()
-     */
-    public String getErrorMessage() {
-
-        return m_errorMessage;
-    }
-
-    /**
-     * Returns the field value as a String.<p>
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-
-        String result;
-        if (needsItems()) {
-            // check which item has been selected
-            StringBuffer fieldValue = new StringBuffer(8);
-            Iterator k = getItems().iterator();
-            boolean isSelected = false;
-            while (k.hasNext()) {
-                CmsFieldItem currentItem = (CmsFieldItem)k.next();
-                if (currentItem.isSelected()) {
-                    if (isSelected) {
-                        fieldValue.append(", ");
-                    }
-                    fieldValue.append(currentItem.getLabel());
-                    isSelected = true;
-                }
-            }
-            result = fieldValue.toString();
-        } else {
-            // for other field types, append value
-            result = getValue();
-        }
-
-        return result;
     }
 }

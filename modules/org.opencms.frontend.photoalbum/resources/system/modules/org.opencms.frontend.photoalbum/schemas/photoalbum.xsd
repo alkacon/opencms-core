@@ -27,7 +27,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<resourcebundle name="org.opencms.frontend.photoalbum.messages"/>
 			<preview uri="${previewtempfile}" />
 			<layouts>
 				<layout element="AlignNavigation" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  * 
@@ -95,10 +95,10 @@ public class CmsShell {
      */
     private class CmsCommandObject {
 
-        /** The list of methods. */ 
+        /** The list of methods. */
         private Map m_methods;
 
-        /** The object to execute the methods on. */ 
+        /** The object to execute the methods on. */
         private Object m_object;
 
         /**
@@ -123,6 +123,9 @@ public class CmsShell {
          * @return true if a method was executed, false otherwise
          */
         protected boolean executeMethod(String command, List parameters) {
+
+            // TODO: ensure that publishmanager, oumanager and rolemanager methods are accessible
+            int todo;
 
             // build the method lookup
             String lookup = buildMethodLookup(command, parameters.size());
@@ -172,53 +175,10 @@ public class CmsShell {
                 boolean match = true;
                 for (int j = 0; j < clazz.length; j++) {
                     String value = (String)parameters.get(j);
-                    if (clazz[j].equals(String.class)) {
-                        // no conversion required for String
-                        converted[j] = value;
-                    } else if (clazz[j].equals(boolean.class)) {
-                        // try to convert to boolean
-                        if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
-                            converted[j] = Boolean.valueOf(value);
-                        } else {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(CmsUUID.class)) {
-                        // try to convert to CmsUUID
-                        try {
-                            converted[j] = new CmsUUID(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(int.class)) {
-                        // try to convert to int
-                        try {
-                            converted[j] = Integer.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(long.class)) {
-                        // try to convert to long
-                        try {
-                            converted[j] = Long.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(float.class)) {
-                        // try to convert to float
-                        try {
-                            converted[j] = Float.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    } else if (clazz[j].equals(double.class)) {
-                        // try to convert to double
-                        try {
-                            converted[j] = Double.valueOf(value);
-                        } catch (NumberFormatException e) {
-                            match = false;
-                        }
-                    }
-                    if (!match) {
+                    try {
+                        converted[j] = CmsDataTypeUtil.parse(value, clazz[j]);
+                    } catch (Throwable t) {
+                        match = false;
                         break;
                     }
                 }
@@ -237,7 +197,7 @@ public class CmsShell {
                 foundMethod = onlyStringMethod;
             }
 
-            if (params == null) {
+            if ((params == null) || (foundMethod == null)) {
                 // no match found at all
                 return false;
             }
@@ -252,10 +212,10 @@ public class CmsShell {
                         int count = 0;
                         if (result instanceof Map) {
                             Map m = (Map)result;
-                            Iterator j = m.keySet().iterator();
+                            Iterator j = m.entrySet().iterator();
                             while (j.hasNext()) {
-                                Object key = j.next();
-                                System.out.println(count++ + ": " + key + "= " + m.get(key));
+                                Map.Entry entry = (Map.Entry)j.next();
+                                System.out.println(count++ + ": " + entry.getKey() + "= " + entry.getValue());
                             }
                         } else {
                             Iterator j = c.iterator();
@@ -364,12 +324,7 @@ public class CmsShell {
                     boolean onlyPrimitive = true;
                     Class[] clazz = methods[i].getParameterTypes();
                     for (int j = 0; j < clazz.length; j++) {
-                        if (!((clazz[j].equals(String.class))
-                            || (clazz[j].equals(CmsUUID.class))
-                            || (clazz[j].equals(boolean.class))
-                            || (clazz[j].equals(int.class))
-                            || (clazz[j].equals(long.class))
-                            || (clazz[j].equals(double.class)) || (clazz[j].equals(float.class)))) {
+                        if (!CmsDataTypeUtil.isParseable(clazz[j])) {
                             // complex data type methods can not be called from the shell
                             onlyPrimitive = false;
                             break;
@@ -651,10 +606,14 @@ public class CmsShell {
     public void printPrompt() {
 
         String prompt = m_prompt;
-        prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
-        prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
-        prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        try {
+            prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
+            prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
+            prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
+        } catch (Throwable t) {
+            // ignore
+        }
         System.out.print(prompt);
     }
 
@@ -826,7 +785,7 @@ public class CmsShell {
                     }
                     break;
                 }
-                if ((line != null) && line.trim().startsWith("#")) {
+                if (line.trim().startsWith("#")) {
                     System.out.println(line);
                     continue;
                 }
@@ -846,7 +805,7 @@ public class CmsShell {
                 reader.close();
 
                 // extract command and arguments
-                if ((parameters == null) || (parameters.size() == 0)) {
+                if (parameters.size() == 0) {
                     if (m_echo) {
                         System.out.println();
                     }

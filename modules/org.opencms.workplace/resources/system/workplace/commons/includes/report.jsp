@@ -1,7 +1,11 @@
 <%@ page import="
-	org.opencms.workplace.*, 
+	org.opencms.workplace.CmsReport,
+	org.opencms.workplace.CmsDialog,
+	org.opencms.workplace.CmsMultiDialog, 
+	org.opencms.workplace.CmsWorkplace,
 	org.opencms.workplace.tools.CmsToolDialog, 
-	org.opencms.report.I_CmsReport
+	org.opencms.report.I_CmsReport,
+	org.opencms.report.Messages
 "%><%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
@@ -15,6 +19,11 @@
     	borderStyle = "1px solid ThreeDShadow";
     	borderSimpleStyle = borderStyle;
     }
+    String resourceParam = CmsDialog.PARAM_RESOURCE;
+    if(wp.isMultiOperation()) {
+      // resourceParam = CmsMultiDialog.PARAM_RESOURCELIST;
+	  resourceParam = null;
+    }
 
 
 //////////////////// start of switch statement 
@@ -22,8 +31,9 @@ switch (wp.getAction()) {
 
 //////////////////// ACTION: get report update
     case CmsDialog.ACTION_REPORT_UPDATE:
-%>
-    <%= wp.htmlStart(false) %>
+ %>
+
+<%= wp.htmlStart(false) %>
 
 <script language='JavaScript'>
 <!--
@@ -94,7 +104,7 @@ function init() {
 }
 
 function reload(actionParam) {
-	var resName = "<%= wp.getParamResource() %>";
+	var resName = "<%= wp.getResourceList().get(0) %>";
 	if (resName != "") {
 		resName = "&resource=" + encodeURIComponent(resName);
 	}
@@ -132,9 +142,9 @@ default:
 
 wp.setParamAction(CmsDialog.REPORT_END);
 
-%>
+ %>
 
-     <%= wp.htmlStart() %>
+<%= wp.htmlStart() %>
 
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -356,8 +366,8 @@ function updateReport() {
     		pageBody = 
     			pageStartSimple + 
     			"<span class='head'>" + lastHeadline + "</span><br>\n" +
-    			"<%= wp.key("report.error") %>" + lastError + "\n" +
-    			"<%= wp.key("report.error.details") %>" + 
+    			"<%= wp.key(Messages.RPT_ERROR_0) %> " + lastError + "<br>\n" +
+    			"<%= wp.key(Messages.RPT_ERROR_DETAILS_0) %>" + 
     			pageEndSimple;
     	} else {
 	    	pageBody = 
@@ -524,6 +534,7 @@ function submitActionRefresh(para1, para2, para3) {
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>
+<%= wp.reportIntroductionText() %>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%" height="400">
 <tr>
@@ -531,6 +542,7 @@ function submitActionRefresh(para1, para2, para3) {
 </tr>
 </table>
 
+<%= wp.reportConclusionText() %>
     <%= wp.dialogContentEnd() %>
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -543,7 +555,8 @@ function submitActionRefresh(para1, para2, para3) {
   <tr><td>
     <iframe src="<%= wp.getDialogRealUri() %>?<%= CmsToolDialog.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= CmsDialog.PARAM_ACTION %>=<%= CmsDialog.REPORT_UPDATE %>&<%= 
      CmsDialog.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= CmsReport.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= CmsDialog.PARAM_THREAD_HASNEXT %>=<%= 
-     wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
+     wp.getParamThreadHasNext() %><%=
+		(resourceParam != null) ? "&" + resourceParam + "=" + wp.getResourceListAsParam() : "" %>" name="updateWin" style="width:20px; height:20px; margin: 0px;" marginwidth="0" 
      marginheight="0" frameborder="0" framespacing="0" scrolling="no" class='hide'></iframe>
   </td></tr>
 </table>

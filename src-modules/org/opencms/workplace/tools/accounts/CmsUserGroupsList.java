@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -44,7 +43,6 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
-import org.opencms.workplace.list.I_CmsListDirectAction;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +78,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
     /** a set of action id's to use for removing. */
     protected static Set m_removeActionIds = new HashSet();
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -127,7 +125,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
                 String groupName = (String)listItem.get(LIST_COLUMN_NAME);
                 boolean directGroup = false;
                 try {
-                    Iterator it = getCms().getDirectGroupsOfUser(getParamUsername()).iterator();
+                    Iterator it = getCms().getGroupsOfUser(getParamUsername(), true).iterator();
                     while (it.hasNext()) {
                         CmsGroup group = (CmsGroup)it.next();
                         if (group.getName().equals(groupName)) {
@@ -168,43 +166,11 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups(boolean)
      */
-    public CmsHtmlList getList() {
+    protected List getGroups(boolean withOtherOus) throws CmsException {
 
-        // assure we have the right username
-        CmsHtmlList list = super.getList();
-        if (list != null) {
-            CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_STATE);
-            if (col != null) {
-                Iterator itDirectActions = col.getDirectActions().iterator();
-                while (itDirectActions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)itDirectActions.next();
-                    if (action != null && action instanceof CmsGroupRemoveAction) {
-                        ((CmsGroupRemoveAction)action).setUserName(getParamUsername());
-                    }
-                }
-            }
-            CmsListColumnDefinition col2 = list.getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
-            if (col2 != null) {
-                Iterator itDefaultActions = col2.getDefaultActions().iterator();
-                while (itDefaultActions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)itDefaultActions.next();
-                    if (action != null && action instanceof CmsGroupRemoveAction) {
-                        ((CmsGroupRemoveAction)action).setUserName(getParamUsername());
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
-     */
-    protected List getGroups() throws CmsException {
-
-        return getCms().getGroupsOfUser(getParamUsername());
+        return getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
     }
 
     /**
@@ -213,13 +179,13 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     protected void setDefaultAction(CmsListColumnDefinition nameCol) {
 
         // add default remove action for direct groups
-        CmsGroupRemoveAction removeAction = new CmsGroupRemoveAction(LIST_DEFACTION_REMOVE, getCms(), true);
+        CmsGroupRemoveAction removeAction = new CmsGroupRemoveAction(LIST_DEFACTION_REMOVE, true);
         removeAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
         nameCol.addDefaultAction(removeAction);
 
         // add default remove action for indirect groups
-        CmsGroupRemoveAction indirRemoveAction = new CmsGroupRemoveAction(LIST_DEFACTION_REMOVE + "i", getCms(), false);
+        CmsGroupRemoveAction indirRemoveAction = new CmsGroupRemoveAction(LIST_DEFACTION_REMOVE + "i", false);
         indirRemoveAction.setName(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_NAME_0));
         indirRemoveAction.setHelpText(Messages.get().container(
             Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
@@ -237,7 +203,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         // adds a direct group icon
-        CmsListDirectAction dirAction = new CmsGroupStateAction(LIST_ACTION_ICON_DIRECT, getCms(), true);
+        CmsListDirectAction dirAction = new CmsGroupStateAction(LIST_ACTION_ICON_DIRECT, true);
         dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
         dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
         dirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
@@ -245,7 +211,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         iconCol.addDirectAction(dirAction);
 
         // adds an indirect group icon
-        CmsListDirectAction indirAction = new CmsGroupStateAction(LIST_ACTION_ICON_INDIRECT, getCms(), false);
+        CmsListDirectAction indirAction = new CmsGroupStateAction(LIST_ACTION_ICON_INDIRECT, false);
         indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
         indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
         indirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group_indirect.png");
@@ -282,18 +248,16 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         stateCol.setWidth("20");
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
-        // add it to the list definition
-        metadata.addColumn(stateCol);
 
         // add remove action for direct groups
-        CmsGroupRemoveAction dirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE, getCms(), true);
+        CmsGroupRemoveAction dirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE, true);
         dirStateAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         dirStateAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
         dirStateAction.setIconPath(ICON_MINUS);
         stateCol.addDirectAction(dirStateAction);
 
         // add remove action for indirect groups
-        CmsGroupRemoveAction indirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE + "i", getCms(), false);
+        CmsGroupRemoveAction indirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE + "i", false);
         indirStateAction.setName(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_NAME_0));
         indirStateAction.setHelpText(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
         indirStateAction.setIconPath(A_CmsListDialog.ICON_DISABLED);

@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/package.html,v $
- Date   : $Date: 2006/03/27 14:53:03 $
- Version: $Revision: 1.2 $
+ Date   : $Date: 2007/07/04 16:57:36 $
+ Version: $Revision: 1.3 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,7 +36,7 @@
 </head>
 <body bgcolor="white">
 
-<p>Classes for the OpenCms 6.0 'layoutpage' resource type module.</p>
+<p>Classes for the OpenCms 6 'layoutpage' resource type module.</p>
 <p>
 The provided classes are used to generate a frontend layout page that provides an easy to use form based page layout for page editors.
 The XML content type 'layoutpage' configures the frontend appearance of text paragraphs together with images.
@@ -44,13 +44,14 @@ The XML content type 'layoutpage' configures the frontend appearance of text par
 
 <p>
 To modify the enclosing output HTML code, please edit the files in the <code>layouts/</code> subfolder of the module.
-You can use the following macros in the files:
+The used macros were developed using the FreeMarker template engine.
+You can use the following variables in the files:
 </p>
 <ul>
-	<li><code>${layout.headline}</code>: the optional headline of the paragraph</li>
-	<li><code>${layout.image}</code>: the image tag for the paragraph</li>
-	<li><code>${layout.description}</code>: the image description text</li>
-	<li><code>${layout.text}</code>: the text of the paragraph</li>
+	<li><code>${headline}</code>: the optional headline of the paragraph</li>
+	<li><code>${image}</code>: the image tag for the paragraph</li>
+	<li><code>${description}</code>: the image description text</li>
+	<li><code>${text}</code>: the text of the paragraph</li>
 </ul>
 
 <p>
@@ -58,13 +59,13 @@ To add your own predefined layout pattern, do the following:
 </p>
 <ul>
 	<li>Create a text file in the module subfolder <code>layouts/</code></li>
-	<li>You can use the following macros in the text file: ${layout.headline}, ${layout.image}, ${layout.description}, ${layout.text}</li>
-	<li>Use the method <code>addLayoutPattern</code> to make your layout file available in the bean with the image width as second argument</li>
+	<li>You can use the following variables in the text file: ${headline}, ${image}, ${description}, ${text}</li>
+	<li>Use the method <code>addLayoutPattern</code> to make your layout file available in the bean with the desired image width as second argument (large, medium or small)</li>
 	<li>Edit the schema appinfo node in <code>schemas/layoutimage.xsd</code> to add your layout to the alignment selector widget</li>
-	<li>Eventually enhance the CSS style sheet <code>resources/style.css</code></li>
+	<li>Eventually enhance the CSS style sheet <code>resources/style.css</code> and include it in your template</li>
 </ul>
 
-@version $Revision: 1.2 $ 
+@version $Revision: 1.3 $ 
 
 @since 6.1.9
 

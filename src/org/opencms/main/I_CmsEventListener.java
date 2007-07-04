@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2006/12/21 10:33:20 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  * 
@@ -92,6 +92,11 @@ public interface I_CmsEventListener {
     /** 
      * Event "user has logged in".<p>
      *
+     * Event data:
+     * <ul>
+     * <li>key "data" (mandatory): the user who was logged in</li>
+     * </ul>
+     *
      * @see org.opencms.file.CmsObject#loginUser(String, String) 
      */
     int EVENT_LOGIN_USER = 1;
@@ -107,7 +112,7 @@ public interface I_CmsEventListener {
      * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
      * 
-     * @see org.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
      * @see #EVENT_BEFORE_PUBLISH_PROJECT
      */
     int EVENT_PUBLISH_PROJECT = 2;
@@ -123,7 +128,7 @@ public interface I_CmsEventListener {
      * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
      * 
-     * @see org.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
      * @see #EVENT_PUBLISH_PROJECT
      */
     int EVENT_BEFORE_PUBLISH_PROJECT = 3;
@@ -262,6 +267,13 @@ public interface I_CmsEventListener {
     int EVENT_UPDATE_EXPORTS = 19;
 
     /**
+     * @see #EVENT_RESOURCE_CREATED
+     * @see #EVENT_RESOURCE_COPIED
+     * @see #EVENT_RESOURCE_DELETED
+     */
+    int EVENT_RESOURCE_MOVED = 22;
+
+    /**
      * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
      */
     int EVENT_RESOURCE_CREATED = 23;
@@ -306,7 +318,7 @@ public interface I_CmsEventListener {
      */
     int EVENT_PROPERTY_DEFINITION_CREATED = 28;
 
-    /**
+    /** 
      * Acknowledge the occurrence of the specified event, implement this 
      * method to check for CmsEvents in your class.
      *

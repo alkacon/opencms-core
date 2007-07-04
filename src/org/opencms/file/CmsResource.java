@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -45,11 +47,197 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 6.0.0 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
+
+    /**
+     *  Enumeration class for resource copy modes.<p>
+     */
+    public static final class CmsResourceCopyMode extends A_CmsModeIntEnumeration {
+
+        /** Copy mode for copy resources as new resource. */
+        protected static final CmsResourceCopyMode MODE_COPY_AS_NEW = new CmsResourceCopyMode(1);
+
+        /** Copy mode for copy resources as sibling. */
+        protected static final CmsResourceCopyMode MODE_COPY_AS_SIBLING = new CmsResourceCopyMode(2);
+
+        /** Copy mode to preserve siblings during copy. */
+        protected static final CmsResourceCopyMode MODE_COPY_PRESERVE_SIBLING = new CmsResourceCopyMode(3);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 9081630878178799137L;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param mode the copy mode integer representation
+         */
+        private CmsResourceCopyMode(int mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the copy mode object from the old copy mode integer.<p>
+         * 
+         * @param mode the old copy mode integer
+         * 
+         * @return the copy mode object
+         */
+        public static CmsResourceCopyMode valueOf(int mode) {
+
+            switch (mode) {
+                case 1:
+                    return CmsResourceCopyMode.MODE_COPY_AS_NEW;
+                case 2:
+                    return CmsResourceCopyMode.MODE_COPY_AS_SIBLING;
+                case 3:
+                default:
+                    return CmsResourceCopyMode.MODE_COPY_PRESERVE_SIBLING;
+            }
+        }
+    }
+
+    /**
+     *  Enumeration class for resource delete modes.<p>
+     */
+    public static final class CmsResourceDeleteMode extends A_CmsModeIntEnumeration {
+
+        /** Signals that siblings of this resource should not be deleted. */
+        protected static final CmsResourceDeleteMode MODE_DELETE_PRESERVE_SIBLINGS = new CmsResourceDeleteMode(1);
+
+        /** Signals that siblings of this resource should be deleted. */
+        protected static final CmsResourceDeleteMode MODE_DELETE_REMOVE_SIBLINGS = new CmsResourceDeleteMode(2);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 2010402524576925865L;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param mode the delete mode integer representation
+         */
+        private CmsResourceDeleteMode(int mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the delete mode object from the old delete mode integer.<p>
+         * 
+         * @param mode the old delete mode integer
+         * 
+         * @return the delete mode object
+         */
+        public static CmsResourceDeleteMode valueOf(int mode) {
+
+            switch (mode) {
+                case 1:
+                    return CmsResourceDeleteMode.MODE_DELETE_PRESERVE_SIBLINGS;
+                case 2:
+                default:
+                    return CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS;
+            }
+        }
+    }
+
+    /**
+     *  Enumeration class for resource undo changes modes.<p>
+     */
+    public static final class CmsResourceUndoMode extends A_CmsModeIntEnumeration {
+
+        /** Indicates that the undo method will only undo content changes. */
+        public static final CmsResourceUndoMode MODE_UNDO_CONTENT = new CmsResourceUndoMode(1);
+
+        /** Indicates that the undo method will only recursive undo content changes. */
+        public static final CmsResourceUndoMode MODE_UNDO_CONTENT_RECURSIVE = new CmsResourceUndoMode(2);
+
+        /** Indicates that the undo method will undo move operations and content changes. */
+        public static final CmsResourceUndoMode MODE_UNDO_MOVE_CONTENT = new CmsResourceUndoMode(3);
+
+        /** Indicates that the undo method will undo move operations and recursive content changes. */
+        public static final CmsResourceUndoMode MODE_UNDO_MOVE_CONTENT_RECURSIVE = new CmsResourceUndoMode(4);
+
+        /** Serializable version id. */
+        private static final long serialVersionUID = 3521620626485212068L;
+
+        /**
+         * private constructor.<p>
+         * 
+         * @param mode the undo changes mode integer representation
+         */
+        private CmsResourceUndoMode(int mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the undo mode object from the old undo mode integer.<p>
+         * 
+         * @param mode the old undo mode integer
+         * 
+         * @return the undo mode object
+         */
+        public static CmsResourceUndoMode valueOf(int mode) {
+
+            switch (mode) {
+                case 1:
+                    return CmsResourceUndoMode.MODE_UNDO_CONTENT;
+                case 2:
+                    return CmsResourceUndoMode.MODE_UNDO_CONTENT_RECURSIVE;
+                case 3:
+                    return CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT;
+                case 4:
+                default:
+                    return CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT_RECURSIVE;
+            }
+        }
+
+        /**
+         * Returns a mode that includes the move operation with the same semantic as this mode.<p>
+         * 
+         * @return a mode that includes the move operation with the same semantic as this mode
+         */
+        public CmsResourceUndoMode includeMove() {
+
+            if (!isUndoMove()) {
+                // keep the same semantic but including move 
+                return CmsResourceUndoMode.valueOf(getMode() + 2);
+            }
+            return this;
+        }
+
+        /**
+         * Returns <code>true</code> if this undo operation is recursive.<p>
+         * 
+         * @return <code>true</code> if this undo operation is recursive
+         */
+        public boolean isRecursive() {
+
+            return getMode() > CmsResource.UNDO_CONTENT.getMode();
+        }
+
+        /**
+         * Returns <code>true</code> if this undo mode will undo move operations.<p>
+         * 
+         * @return <code>true</code> if this undo mode will undo move operations
+         */
+        public boolean isUndoMove() {
+
+            return getMode() > CmsResource.UNDO_CONTENT_RECURSIVE.getMode();
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+
+            return String.valueOf(getMode());
+        }
+    }
 
     /**
      * A comparator for the release date of 2 resources.<p>
@@ -73,13 +261,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
             long date1 = r1.getDateReleased();
             if (date1 == CmsResource.DATE_RELEASED_DEFAULT) {
-                // use creation date if release date is not set
+                // use last modification date if release date is not set
                 date1 = r1.getDateLastModified();
             }
 
             long date2 = r2.getDateReleased();
             if (date2 == CmsResource.DATE_RELEASED_DEFAULT) {
-                // use creation date if release date is not set
+                // use last modification date if release date is not set
                 date2 = r2.getDateLastModified();
             }
 
@@ -157,13 +345,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     };
 
     /** Copy mode for copy resources as new resource. */
-    public static final int COPY_AS_NEW = 1;
+    public static final CmsResourceCopyMode COPY_AS_NEW = CmsResourceCopyMode.MODE_COPY_AS_NEW;
 
     /** Copy mode for copy resources as sibling. */
-    public static final int COPY_AS_SIBLING = 2;
+    public static final CmsResourceCopyMode COPY_AS_SIBLING = CmsResourceCopyMode.MODE_COPY_AS_SIBLING;
 
     /** Copy mode to preserve siblings during copy. */
-    public static final int COPY_PRESERVE_SIBLING = 3;
+    public static final CmsResourceCopyMode COPY_PRESERVE_SIBLING = CmsResourceCopyMode.MODE_COPY_PRESERVE_SIBLING;
 
     /** The default expiration date of a resource (which is: never expires). */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
@@ -171,11 +359,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The default release date of a resource (which is: always released). */
     public static final long DATE_RELEASED_DEFAULT = 0;
 
+    /** A special date that indicates release and expiration information are to be ignored. */
+    public static final long DATE_RELEASED_EXPIRED_IGNORE = Long.MIN_VALUE;
+
     /** Signals that siblings of this resource should not be deleted. */
-    public static final int DELETE_PRESERVE_SIBLINGS = 0;
+    public static final CmsResourceDeleteMode DELETE_PRESERVE_SIBLINGS = CmsResourceDeleteMode.MODE_DELETE_PRESERVE_SIBLINGS;
 
     /** Signals that siblings of this resource should be deleted. */
-    public static final int DELETE_REMOVE_SIBLINGS = 1;
+    public static final CmsResourceDeleteMode DELETE_REMOVE_SIBLINGS = CmsResourceDeleteMode.MODE_DELETE_REMOVE_SIBLINGS;
 
     /** Flag to indicate that this is an internal resource, that can't be accessed directly. */
     public static final int FLAG_INTERNAL = 512;
@@ -190,28 +381,37 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public static final String NAME_CONSTRAINTS = "-._~$";
 
     /** Indicates if a resource has been changed in the offline version when compared to the online version. */
-    public static final int STATE_CHANGED = 1;
+    public static final CmsResourceState STATE_CHANGED = CmsResourceState.STATE_CHANGED;
 
     /** Indicates if a resource has been deleted in the offline version when compared to the online version. */
-    public static final int STATE_DELETED = 3;
+    public static final CmsResourceState STATE_DELETED = CmsResourceState.STATE_DELETED;
 
     /**
      * Special state value that indicates the current state must be kept on a resource,
      * this value must never be written to the database.
      */
-    public static final int STATE_KEEP = 99;
+    public static final CmsResourceState STATE_KEEP = CmsResourceState.STATE_KEEP;
 
     /** Indicates if a resource is new in the offline version when compared to the online version. */
-    public static final int STATE_NEW = 2;
+    public static final CmsResourceState STATE_NEW = CmsResourceState.STATE_NEW;
 
     /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
-    public static final int STATE_UNCHANGED = 0;
+    public static final CmsResourceState STATE_UNCHANGED = CmsResourceState.STATE_UNCHANGED;
 
     /** Flag for leaving a date unchanged during a touch operation. */
     public static final long TOUCH_DATE_UNCHANGED = -1;
 
-    /** The vfs path of the channel folder. */
-    public static final String VFS_FOLDER_CHANNELS = "/channels";
+    /** Indicates that the undo method will only undo content changes. */
+    public static final CmsResourceUndoMode UNDO_CONTENT = CmsResourceUndoMode.MODE_UNDO_CONTENT;
+
+    /** Indicates that the undo method will only recursive undo content changes. */
+    public static final CmsResourceUndoMode UNDO_CONTENT_RECURSIVE = CmsResourceUndoMode.MODE_UNDO_CONTENT_RECURSIVE;
+
+    /** Indicates that the undo method will undo move operations and content changes. */
+    public static final CmsResourceUndoMode UNDO_MOVE_CONTENT = CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT;
+
+    /** Indicates that the undo method will undo move operations and recursive content changes. */
+    public static final CmsResourceUndoMode UNDO_MOVE_CONTENT_RECURSIVE = CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT_RECURSIVE;
 
     /** The vfs path of the sites master folder. */
     public static final String VFS_FOLDER_SITES = "/sites";
@@ -221,6 +421,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 257325098790850498L;
+
+    /** The date of the last modification of the content of this resource. */
+    protected long m_dateContent = System.currentTimeMillis();
 
     /** The size of the content. */
     protected int m_length;
@@ -247,7 +450,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     private boolean m_isTouched;
 
     /** The project id where this resource has been last modified in. */
-    private int m_projectLastModified;
+    private CmsUUID m_projectLastModified;
 
     /** The id of the resource database record. */
     private CmsUUID m_resourceId;
@@ -259,7 +462,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     private int m_siblingCount;
 
     /** The state of this resource. */
-    private int m_state;
+    private CmsResourceState m_state;
 
     /** The id of the structure database record. */
     private CmsUUID m_structureId;
@@ -272,6 +475,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The id of the user who modified this resource last. */
     private CmsUUID m_userLastModified;
+
+    /** The version number of this resource. */
+    private int m_version;
 
     /**
      * Constructor, creates a new CmsRecource object.<p>
@@ -291,7 +497,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
      * @param linkCount the count of all siblings of this resource 
-     * @param size the size of the file content of this resource
+     * @param size the size of the file content of this resource 
+     * @param dateContent the date of the last modification of the content of this resource 
+     * @param version the version number of this resource   
      */
     public CmsResource(
         CmsUUID structureId,
@@ -300,8 +508,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         int type,
         boolean isFolder,
         int flags,
-        int projectId,
-        int state,
+        CmsUUID projectId,
+        CmsResourceState state,
         long dateCreated,
         CmsUUID userCreated,
         long dateLastModified,
@@ -309,7 +517,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         long dateReleased,
         long dateExpired,
         int linkCount,
-        int size) {
+        int size,
+        long dateContent,
+        int version) {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -323,10 +533,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_userCreated = userCreated;
         m_dateLastModified = dateLastModified;
         m_userLastModified = userLastModified;
-        m_length = size;
-        m_siblingCount = linkCount;
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
+        m_siblingCount = linkCount;
+        m_length = size;
+        m_dateContent = dateContent;
+        m_version = version;
         m_isTouched = false;
     }
 
@@ -426,7 +638,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static String getParentFolder(String resource) {
 
-        if ("/".equals(resource)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource) || "/".equals(resource)) {
             return null;
         }
         // remove the last char, for a folder this will be "/", for a file it does not matter
@@ -529,7 +741,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_dateReleased,
             m_dateExpired,
             m_siblingCount,
-            m_length);
+            m_length,
+            m_dateContent,
+            m_version);
 
         if (isTouched()) {
             clone.setDateLastModified(m_dateLastModified);
@@ -564,6 +778,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return ((CmsResource)obj).m_structureId.equals(m_structureId);
         }
         return false;
+    }
+
+    /**
+     * Returns the date of the last modification of the content of this resource.<p>
+     *
+     * @return the date of the last modification of the content of this resource
+     */
+    public long getDateContent() {
+
+        return m_dateContent;
     }
 
     /**
@@ -648,9 +872,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the id of the project where the resource has been last modified.<p>
      *
-     * @return the id of the project where the resource has been last modified
+     * @return the id of the project where the resource has been last modified, or <code>null</code>
      */
-    public int getProjectLastModified() {
+    public CmsUUID getProjectLastModified() {
 
         return m_projectLastModified;
     }
@@ -702,11 +926,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the state of this resource.<p>
      *
-     * This may be STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.<p>
+     * This may be {@link CmsResource#STATE_UNCHANGED}, 
+     * {@link CmsResource#STATE_CHANGED}, {@link CmsResource#STATE_NEW} 
+     * or {@link CmsResource#STATE_DELETED}.<p>
      *
      * @return the state of this resource
      */
-    public int getState() {
+    public CmsResourceState getState() {
 
         return m_state;
     }
@@ -752,6 +978,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns the version number of this resource.<p>
+     *
+     * @return the version number of this resource
+     */
+    public int getVersion() {
+
+        return m_version;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -761,6 +997,25 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         }
 
         return CmsUUID.getNullUUID().hashCode();
+    }
+
+    /** 
+     * Returns <code>true</code> if this resource is expired at the given time according to the 
+     * information stored in {@link #getDateExpired()}.<p>
+     * 
+     * @param time the time to check the expiration date against
+     * 
+     * @return <code>true</code> if this resource is expired at the given time
+     *      
+     * @see #isReleased(long)
+     * @see #isReleasedAndNotExpired(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isExpired(long time) {
+
+        return (time > m_dateExpired) && (time != DATE_RELEASED_EXPIRED_IGNORE);
     }
 
     /**
@@ -805,6 +1060,46 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean isLabeled() {
 
         return ((m_flags & CmsResource.FLAG_LABELED) > 0);
+    }
+
+    /** 
+     * Returns <code>true</code> if this resource is released at the given time according to the 
+     * information stored in {@link #getDateReleased()}.<p>
+     * 
+     * @param time the time to check the release date against
+     * 
+     * @return <code>true</code> if this resource is released at the given time
+     *      
+     * @see #isExpired(long)
+     * @see #isReleasedAndNotExpired(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isReleased(long time) {
+
+        return (time > m_dateReleased) || (time == DATE_RELEASED_EXPIRED_IGNORE);
+    }
+
+    /** 
+     * Returns <code>true</code> if this resource is valid at the given time according to the 
+     * information stored in {@link #getDateReleased()} and {@link #getDateExpired()}.<p>
+     * 
+     * A resource is valid if it is released and not yet expired.<p>
+     * 
+     * @param time the time to check the release and expiration date against
+     * 
+     * @return <code>true</code> if this resource is valid at the given time
+     *      
+     * @see #isExpired(long)
+     * @see #isReleased(long)
+     * @see #DATE_RELEASED_EXPIRED_IGNORE
+     * @see CmsResource#getDateReleased()
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public boolean isReleasedAndNotExpired(long time) {
+
+        return ((time < m_dateExpired) && (time > m_dateReleased)) || (time == DATE_RELEASED_EXPIRED_IGNORE);
     }
 
     /**
@@ -863,7 +1158,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      *
      * @param state the state to set
      */
-    public void setState(int state) {
+    public void setState(CmsResourceState state) {
 
         m_state = state;
     }
@@ -925,13 +1220,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(new java.util.Date(m_dateReleased));
         result.append(", date expired: ");
         result.append(new java.util.Date(m_dateExpired));
+        result.append(", date content: ");
+        result.append(new java.util.Date(m_dateContent));
         result.append(", size: ");
         result.append(m_length);
-        result.append(" sibling count: ");
+        result.append(", sibling count: ");
         result.append(m_siblingCount);
+        result.append(", version: ");
+        result.append(m_version);
         result.append("]");
 
         return result.toString();
     }
-
 }

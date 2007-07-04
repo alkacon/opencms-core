@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.search.extractors;
 import org.opencms.i18n.CmsEncoder;
 
 import java.io.InputStream;
-import java.util.Map;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
@@ -47,7 +46,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,17 +82,14 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
         POIFSReader reader = new POIFSReader();
         reader.registerListener(this);
         reader.read(in);
-        
+
         // extract all information
-        Map metaInfo = extractMetaInformation();
-        String result = removeControlChars(m_buffer.toString());
-
-        // free some memory
+        String rawContent = removeControlChars(m_buffer.toString());
+        // free buffer memory
         m_buffer = new StringBuffer(4096);
-        cleanup();
 
-        // return the final result
-        return new CmsExtractionResult(result, metaInfo);
+        // combine the meta information with the content and create the result
+        return createExtractionResult(rawContent);
     }
 
     /**
@@ -139,9 +135,11 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
                         m_buffer.append(CmsEncoder.createString(buf, encoding));
                         i = end;
                     default:
-                // noop                                           
+                        // noop                                           
                 }
             }
+        } catch (RuntimeException e) {
+            // ignore
         } catch (Exception e) {
             // ignore
         }

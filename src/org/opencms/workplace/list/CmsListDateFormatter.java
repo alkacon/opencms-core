@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDateFormatter.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsListDateFormatter implements I_CmsListFormatter {
      */
     public String format(Object data, Locale locale) {
 
-        if (data == null || !(data instanceof Date)) {
+        if ((data == null) || !(data instanceof Date)) {
             return "";
         }
         DateFormat dateFormat = DateFormat.getDateTimeInstance(m_dateStyle, m_timeStyle);

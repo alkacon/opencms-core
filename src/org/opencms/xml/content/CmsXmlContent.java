@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2006/07/19 12:38:17 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -77,17 +79,23 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
+
+    /** The name of the XML content auto correction runtime attribute, this must always be a Boolean. */
+    public static final String AUTO_CORRECTION_ATTRIBUTE = CmsXmlContent.class.getName() + ".autoCorrectionEnabled";
 
     /** The property to set to enable xerces schema validation. */
     public static final String XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);
+
+    /** Flag to control if auto correction is enabled when saving this XML content. */
+    protected boolean m_autoCorrectionEnabled;
 
     /** The XML content definition object (i.e. XML schema) used by this content. */
     protected CmsXmlContentDefinition m_contentDefinition;
@@ -98,6 +106,66 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     protected CmsXmlContent() {
 
         // noop
+    }
+
+    /**
+     * Creates a new XML content based on the provided XML document.<p>
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param cms the cms context, if <code>null</code> no link validation is performed 
+     * @param document the document to create the xml content from
+     * @param encoding the encoding of the xml content
+     * @param resolver the XML entitiy resolver to use
+     */
+    protected CmsXmlContent(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
+
+        // must set document first to be able to get the content definition
+        m_document = document;
+        // for the next line to work the document must already be available
+        m_contentDefinition = getContentDefinition(resolver);
+        // initialize the XML content structure
+        initDocument(cms, m_document, encoding, m_contentDefinition);
+    }
+
+    /**
+     * Create a new XML content based on the given default content,
+     * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param cms the current users OpenCms content
+     * @param locale the locale to generate the default content for
+     * @param modelUri the absolute path to the XML content file acting as model
+     * 
+     * @throws CmsException in case the model file is not found or not valid
+     */
+    protected CmsXmlContent(CmsObject cms, Locale locale, String modelUri)
+    throws CmsException {
+
+        // init model from given modelUri
+        CmsFile modelFile = cms.readFile(modelUri);
+        CmsXmlContent model = CmsXmlContentFactory.unmarshal(cms, modelFile);
+
+        // initialize macro resolver to use on model file values
+        CmsMacroResolver macroResolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+
+        // content defition must be set here since it's used during document creation
+        m_contentDefinition = model.getContentDefinition();
+        // get the document from the default content
+        Document document = (Document)model.m_document.clone();
+        // initialize the XML content structure
+        initDocument(cms, document, model.getEncoding(), m_contentDefinition);
+        // resolve eventual macros in the nodes
+        visitAllValuesWith(new CmsXmlContentMacroVisitor(cms, macroResolver));
+        if (!hasLocale(locale)) {
+            // required locale not present, add it
+            try {
+                addLocale(cms, locale);
+            } catch (CmsXmlException e) {
+                // this can not happen since the locale does not exist
+            }
+        }
     }
 
     /**
@@ -116,28 +184,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // content defition must be set here since it's used during document creation
         m_contentDefinition = contentDefinition;
         // create the XML document according to the content definition
-        Document document = contentDefinition.createDocument(cms, this, locale);
+        Document document = m_contentDefinition.createDocument(cms, this, locale);
         // initialize the XML content structure
-        initDocument(document, encoding, m_contentDefinition);
-    }
-
-    /**
-     * Creates a new XML content based on the provided XML document.<p>
-     * 
-     * The given encoding is used when marshalling the XML again later.<p>
-     * 
-     * @param document the document to create the xml content from
-     * @param encoding the encoding of the xml content
-     * @param resolver the XML entitiy resolver to use
-     */
-    protected CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
-
-        // must set document first to be able to get the content definition
-        m_document = document;
-        // for the next line to work the document must already be available
-        m_contentDefinition = getContentDefinition(resolver);
-        // initialize the XML content structure
-        initDocument(m_document, encoding, m_contentDefinition);
+        initDocument(cms, document, encoding, m_contentDefinition);
     }
 
     /**
@@ -153,7 +202,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // add element node for Locale
         m_contentDefinition.createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
+        initDocument(cms, m_document, m_encoding, m_contentDefinition);
     }
 
     /**
@@ -328,6 +377,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
+     * @see org.opencms.xml.A_CmsXmlDocument#isAutoCorrectionEnabled()
+     */
+    public boolean isAutoCorrectionEnabled() {
+
+        return m_autoCorrectionEnabled;
+    }
+
+    /**
      * Removes an existing XML content value of the given element name and locale at the given index position
      * from this XML content document.<p> 
      * 
@@ -355,7 +412,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
-
     }
 
     /**
@@ -371,6 +427,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
+     * Sets the flag to control if auto correction is enabled when saving this XML content.<p>
+     *
+     * @param value the flag to control if auto correction is enabled when saving this XML content
+     */
+    public void setAutoCorrectionEnabled(boolean value) {
+
+        m_autoCorrectionEnabled = value;
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject)
      */
     public CmsXmlContentErrorHandler validate(CmsObject cms) {
@@ -383,7 +449,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     }
 
     /**
-     * Visists all values of this XML content with the given value visitor.<p>
+     * Visits all values of this XML content with the given value visitor.<p>
      * 
      * Please note that the order in which the values are visited may NOT be the
      * order they apper in the XML document. It is ensured that the the parent 
@@ -445,6 +511,26 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // language element was not found
         throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
+    }
+
+    /**
+     * Initializes an XML document based on the provided document, encoding and content definition.<p>
+     * 
+     * Checks the links and removes invalid ones in the initialized document.<p>
+     * 
+     * @param cms the current users OpenCms content
+     * @param document the base XML document to use for initializing
+     * @param encoding the encoding to use when marshalling the document later
+     * @param definition the content definition to use
+     */
+    protected void initDocument(CmsObject cms, Document document, String encoding, CmsXmlContentDefinition definition) {
+
+        initDocument(document, encoding, definition);
+        // check invalid links
+        if (cms != null) {
+            // this will remove all invalid links
+            getContentDefinition().getContentHandler().invalidateBrokenLinks(cms, this);
+        }
     }
 
     /**
@@ -545,16 +631,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
         }
 
-            try {
+        try {
             return CmsXmlContentDefinition.unmarshal(schemaLocation, resolver);
-            } catch (SAXException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
-            } catch (IOException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
-            } catch (CmsXmlException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
-            }
+        } catch (SAXException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
+        } catch (CmsXmlException e) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
         }
+    }
 
     /**
      * Processes a document node and extracts the values of the node according to the provided XML

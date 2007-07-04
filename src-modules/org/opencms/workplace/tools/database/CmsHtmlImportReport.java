@@ -1,7 +1,7 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportReport.java,v $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,29 +32,32 @@
 package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.workplace.CmsReport;
-import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.report.I_CmsReportThread;
+import org.opencms.workplace.list.A_CmsListReport;
+
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior 
+ * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsHtmlImportReport extends CmsReport {
+public class CmsHtmlImportReport extends A_CmsListReport {
 
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "imp";
+    /** Request parameter name for the class name to get the dialog object from. */
+    public static final String PARAM_CLASSNAME = "classname";
 
-    private CmsHtmlImport m_htmlImport;
+    /** Request parameter for the class name to get the dialog object from. */
+    private String m_paramClassname;
 
     /**
      * Public constructor.<p>
@@ -79,76 +82,35 @@ public class CmsHtmlImportReport extends CmsReport {
     }
 
     /**
-     * Performs the move report, will be called by the JSP page.<p>
+     * Returns the request parameter value for the class name to get the dialog object from.<p>
      * 
-     * @throws JspException if problems including sub-elements occur
+     * @return the request parameter value for the class name to get the dialog object from
      */
-    public void actionReport() throws JspException {
+    public String getParamClassname() {
 
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
-        switch (getAction()) {
-            case ACTION_REPORT_END:
-                actionCloseDialog();
-                break;
-            case ACTION_REPORT_UPDATE:
-                setParamAction(REPORT_UPDATE);
-                getJsp().include(FILE_REPORT_OUTPUT);
-                break;
-            case ACTION_REPORT_BEGIN:
-            case ACTION_CONFIRMED:
-            default:
-                CmsHtmlImportThread thread = new CmsHtmlImportThread(getCms(), m_htmlImport);
-                setParamAction(REPORT_BEGIN);
-                setParamThread(thread.getUUID().toString());
-                getJsp().include(FILE_REPORT_OUTPUT);
-                break;
-        }
+        return m_paramClassname;
     }
 
-    /**
-     * Sets the htmlImport.<p>
-     *
-     * @param htmlImport the htmlImport to set
+    /** 
+     * 
+     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
-    public void setHtmlImport(CmsHtmlImport htmlImport) {
+    public I_CmsReportThread initializeThread() {
 
-        m_htmlImport = htmlImport;
+        CmsHtmlImport htmlImport = (CmsHtmlImport)((Map)getSettings().getDialogObject()).get(getParamClassname());
+
+        I_CmsReportThread importThread = new CmsHtmlImportThread(getCms(), htmlImport);
+
+        return importThread;
     }
 
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+    /** 
+     * Sets the request parameter value for the class name to get the dialog object from.<p>
+     * 
+     * @param className the request parameter value for the class name to get the dialog object from
      */
-    protected void initMessages() {
+    public void setParamClassname(String className) {
 
-        addMessages(Messages.get().getBundleName());
-        super.initMessages();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_CONFIRMED.equals(getParamAction())) {
-            setAction(ACTION_CONFIRMED);
-        } else if (REPORT_UPDATE.equals(getParamAction())) {
-            setAction(ACTION_REPORT_UPDATE);
-        } else if (REPORT_BEGIN.equals(getParamAction())) {
-            setAction(ACTION_REPORT_BEGIN);
-        } else if (REPORT_END.equals(getParamAction())) {
-            setAction(ACTION_REPORT_END);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {
-            setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
-            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_HTMLIMPORT_DIALOG_TITLE_0));
-        }
+        m_paramClassname = className;
     }
 }

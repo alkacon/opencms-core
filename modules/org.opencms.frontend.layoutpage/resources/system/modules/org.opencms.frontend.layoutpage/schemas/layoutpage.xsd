@@ -14,7 +14,9 @@
 
 	<xsd:complexType name="OpenCmsLayoutPageDefinition">
 		<xsd:sequence>
-			<xsd:element name="Paragraph" type="OpenCmsLayoutPageParagraph" minOccurs="1" maxOccurs="8" />
+			<xsd:element name="ColumnsLayout" type="OpenCmsString" />
+			<xsd:element name="ImageOptions" type="OpenCmsString" />
+			<xsd:element name="Paragraph" type="OpenCmsLayoutPageParagraph" minOccurs="1" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -24,7 +26,10 @@
 			<resourcebundle name="org.opencms.frontend.layoutpage.workplace"/>
 			<preview uri="${previewtempfile}" />
 			<mappings/>
-			<layouts/>
+			<layouts>
+				<layout element="ColumnsLayout" widget="SelectorWidget" configuration="1col:${key.layoutpage.1col}|2col:${key.layoutpage.2col}" />
+				<layout element="ImageOptions" widget="SelectorWidget" configuration="nolink:${key.layoutpage.links.none}|linklarger:${key.layoutpage.links.original}" />
+			</layouts>
 			<validationrules/>
 			<defaults/>
 		</xsd:appinfo>

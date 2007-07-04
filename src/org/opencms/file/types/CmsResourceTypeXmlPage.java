@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,17 +35,15 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
-import org.opencms.validation.I_CmsXmlDocumentLinkValidatable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
@@ -53,9 +51,11 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -64,11 +64,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
+public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -113,75 +113,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    public List findLinks(CmsObject cms, CmsResource resource) {
-
-        List links = new ArrayList();
-        CmsFile file = null;
-        CmsXmlPage xmlPage = null;
-        List locales = null;
-        List elementNames = null;
-        String elementName = null;
-        CmsLinkTable linkTable = null;
-        CmsLink link = null;
-
-        try {
-            file = cms.readFile(
-                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-                CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(resource)), e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        try {
-            xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
-            locales = xmlPage.getLocales();
-
-            // iterate over all languages
-            Iterator i = locales.iterator();
-            while (i.hasNext()) {
-                Locale locale = (Locale)i.next();
-                elementNames = xmlPage.getNames(locale);
-
-                // iterate over all body elements per language
-                Iterator j = elementNames.iterator();
-                while (j.hasNext()) {
-                    elementName = (String)j.next();
-                    linkTable = xmlPage.getLinkTable(elementName, locale);
-
-                    // iterate over all links inside a body element
-                    Iterator k = linkTable.iterator();
-                    while (k.hasNext()) {
-                        link = (CmsLink)k.next();
-
-                        // external links are ommitted
-                        if (link.isInternal()) {
-                            links.add(link.getTarget());
-                        }
-                    }
-                }
-            }
-        } catch (CmsXmlException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)),
-                    e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        return links;
     }
 
     /**
@@ -232,11 +163,46 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
+     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public boolean isDirectEditable() {
+    public List parseLinks(CmsObject cms, CmsFile file) {
 
-        return true;
+        Set links = new HashSet();
+        try {
+            CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
+            List locales = xmlPage.getLocales();
+
+            // iterate over all languages
+            Iterator i = locales.iterator();
+            while (i.hasNext()) {
+                Locale locale = (Locale)i.next();
+                List elementNames = xmlPage.getNames(locale);
+
+                // iterate over all body elements per language
+                Iterator j = elementNames.iterator();
+                while (j.hasNext()) {
+                    String elementName = (String)j.next();
+                    CmsLinkTable linkTable = xmlPage.getLinkTable(elementName, locale);
+
+                    // iterate over all links inside a body element
+                    Iterator k = linkTable.iterator();
+                    while (k.hasNext()) {
+                        CmsLink link = (CmsLink)k.next();
+                        if (link.isInternal()) {
+                            link.checkConsistency(cms);
+                            links.add(link);
+                        }
+                    }
+                }
+            }
+        } catch (CmsXmlException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(file)), e);
+            }
+
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList(links);
     }
 
     /**
@@ -266,8 +232,8 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
             // correct the HTML structure 
             resource = xmlPage.correctXmlStructure(cms);
         }
+
         // xml is valid if no exception occured
         return super.writeFile(cms, securityManager, resource);
     }
-
 }

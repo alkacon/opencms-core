@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2007/02/28 13:10:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,12 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
     public static final String CONFIGURATION_SHOWSITESELECTOR = "showsiteselector";
 
+    /** Configuration parameter to set the flag to include files in popup resource tree. */
+    public static final String CONFIGURATION_INCLUDEFILES = "includefiles";
+
+    /** Configuration parameter to set the flag to include files in popup resource tree. */
+    public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
+    
     /** Configuration parameter to set start site of the popup resource tree. */
     public static final String CONFIGURATION_STARTSITE = "startsite";
 
@@ -62,6 +68,9 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     /** The start site used in the popup window. */
     private String m_startSite;
 
+    /** Flag to determine if files should be shown in popup window. */
+    private boolean m_includeFiles;
+    
     /**
      * Creates a new vfs file widget.<p>
      */
@@ -79,10 +88,23 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public CmsVfsFileWidget(boolean showSiteSelector, String startSite) {
 
-        m_showSiteSelector = showSiteSelector;
-        m_startSite = startSite;
+        this(showSiteSelector, startSite, true);
     }
 
+    /**
+     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
+     * 
+     * @param showSiteSelector true if the site selector should be shown in the popup window
+     * @param startSite the start site root for the popup window
+     * @param includeFiles true if files should be shown in the popup window
+     */
+    public CmsVfsFileWidget(boolean showSiteSelector, String startSite, boolean includeFiles) {
+
+        m_showSiteSelector = showSiteSelector;
+        m_startSite = startSite;
+        m_includeFiles = includeFiles;
+    }
+    
     /**
      * Creates a new vfs file widget with the given configuration.<p>
      * 
@@ -115,6 +137,14 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             result.append(m_startSite);
         }
 
+        // append flag for including files
+        result.append("|");
+        if (m_includeFiles) {
+            result.append(CONFIGURATION_INCLUDEFILES);
+        } else {
+            result.append(CONFIGURATION_EXCLUDEFILES);
+        }
+        
         return result.toString();
     }
 
@@ -198,7 +228,12 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         } else {
             buttonJs.append(cms.getRequestContext().getSiteRoot());
         }
+        buttonJs.append("','");
+        
+        // include files
+        buttonJs.append(m_includeFiles);
         buttonJs.append("'");
+        
         buttonJs.append(");return false;");
 
         result.append(widgetDialog.button(
@@ -254,6 +289,8 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public void setConfiguration(String configuration) {
 
         m_showSiteSelector = true;
+        m_includeFiles = true;
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
             if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
                 // site selector should be hidden
@@ -268,6 +305,10 @@ public class CmsVfsFileWidget extends A_CmsWidget {
                     site = site.substring(0, site.indexOf('|'));
                 }
                 m_startSite = site;
+            }
+            if (configuration.indexOf(CONFIGURATION_EXCLUDEFILES) != -1) {
+                // files should not be included
+                m_includeFiles = false;
             }
         }
         super.setConfiguration(configuration);

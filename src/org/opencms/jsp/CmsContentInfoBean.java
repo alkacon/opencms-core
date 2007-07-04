@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,7 +290,7 @@ public class CmsContentInfoBean {
     void initResultIndex() {
 
         int startIndex = 0;
-        if (m_pageIndex > 0 && m_pageSize > 0) {
+        if ((m_pageIndex > 0) && (m_pageSize > 0)) {
             startIndex = (m_pageIndex - 1) * m_pageSize;
         }
 

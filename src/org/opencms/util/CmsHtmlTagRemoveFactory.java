@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.util;
 
 import org.opencms.main.CmsLog;
 
-import java.util.Hashtable;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -54,47 +53,65 @@ import org.htmlparser.visitors.NodeVisitor;
 
 /**
  * 
- * A tag factory for htmlparser that is able to "remove tags".
- * <p>
+ * A tag factory for htmlparser that is able to "remove tags".<p>
  * 
  * Create an instance, add the {@link org.htmlparser.Tag} instances to remove and assign this
  * factory to the {@link org.htmlparser.Parser} before starting a visit. A demo usage is shown in
- * {@link org.opencms.workplace.tools.content.CmsTagReplaceParser}.
- * <p>
+ * <code>CmsTagReplaceParser</code>.<p>
  * 
  * The tags are not actually removed: They are linked in the document object model tree of the HTML
  * that the parser generates. They just will not accept any {@link NodeVisitor} instances and
- * therefore be invisible in any output a visitor will generate from the visited tree.
- * <p>
+ * therefore be invisible in any output a visitor will generate from the visited tree.<p> 
+ * 
+ * The decision whether a tag is removed can be controlled in two ways: 
+ * <ol>
+ *  <li>
+ *   <code>{@link #addTagRemoval(Tag)}</code><br/>
+ *   <p>
+ *   The given tag will be removed ("invisible in the DOM"). 
+ *   </p> 
+ *  </li>
+ *  <li>
+ *   <code>{@link #addTagPreserve(Tag)}</code><br/>
+ *   <p>
+ *    The given tag will be kept as-is. The following behaviour happens if this method is used: 
+ *    <ol>
+ *     <li>
+ *      Once <code>{@link #addTagPreserve(Tag)}</code> has been called all Tags that are not added 
+ *      to this method will be removed. <strong>We are in include mode then</strong>. 
+ *     </li>
+ *     <li>
+ *      The Tags provided to <code>{@link #addTagRemoval(Tag)}</code> will only have the 
+ *      power to hide exactly the same tags that are given to <code>{@link #addTagPreserve(Tag)}</code>: 
+ *      <strong>Deny is stronger than allow.</strong>
+ *     </li>
+ *    </ol>
+ *   </p>
+ *  </li>
+ * </ol>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.8
- * 
  */
 public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
     /**
-     * 
-     * A Tag implementation that will not accept any {@link NodeVisitor} stopping by.
-     * <p>
+     * A Tag implementation that will not accept any {@link NodeVisitor} stopping by.<p>
      * 
      * When visiting the corresponding tree of tags, this tag will be there but the visitor will not
      * see it as it is not accepted. This allows "elimination" of this tag in the output the visitor
-     * generates from the document object model (e.g. HTML code again).
-     * <p>
+     * generates from the document object model (e.g. HTML code again).<p>
      * 
-     * Potential child tags will be visible to visitors (unless they are instances of this class).
-     * <p>
+     * Potential child tags will be visible to visitors (unless they are instances of this class).<p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * 
      * @since 6.1.8
-     * 
      */
     private static final class CmsInvisibleTag implements Tag {
 
@@ -120,7 +137,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * @see org.htmlparser.nodes.TagNode#accept(org.htmlparser.visitors.NodeVisitor)
+         * @see org.htmlparser.Tag#accept(org.htmlparser.visitors.NodeVisitor)
          */
         public void accept(NodeVisitor visitor) {
 
@@ -185,15 +202,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * @deprecated
-         * @see org.htmlparser.Tag#getAttributes()
-         */
-        public Hashtable getAttributes() {
-
-            return m_decorated.getAttributes();
-        }
-
-        /**
          * @see org.htmlparser.Tag#getAttributesEx()
          */
         public Vector getAttributesEx() {
@@ -250,11 +258,35 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
+         * @see org.htmlparser.Node#getFirstChild()
+         */
+        public Node getFirstChild() {
+
+            return m_decorated.getFirstChild();
+        }
+
+        /**
          * @see org.htmlparser.Tag#getIds()
          */
         public String[] getIds() {
 
             return m_decorated.getIds();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getLastChild()
+         */
+        public Node getLastChild() {
+
+            return m_decorated.getLastChild();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getNextSibling()
+         */
+        public Node getNextSibling() {
+
+            return m_decorated.getNextSibling();
         }
 
         /**
@@ -271,6 +303,14 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         public Node getParent() {
 
             return m_decorated.getParent();
+        }
+
+        /**
+         * @see org.htmlparser.Node#getPreviousSibling()
+         */
+        public Node getPreviousSibling() {
+
+            return m_decorated.getPreviousSibling();
         }
 
         /**
@@ -370,17 +410,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
-         * 
-         * @deprecated
-         * 
-         * @see org.htmlparser.Tag#setAttributes(java.util.Hashtable)
-         */
-        public void setAttributes(Hashtable arg0) {
-
-            m_decorated.setAttributes(arg0);
-        }
-
-        /**
          * @see org.htmlparser.Tag#setAttributesEx(java.util.Vector)
          */
         public void setAttributesEx(Vector arg0) {
@@ -477,6 +506,14 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         }
 
         /**
+         * @see org.htmlparser.Node#toHtml(boolean)
+         */
+        public String toHtml(boolean value) {
+
+            return m_decorated.toHtml(value);
+        }
+
+        /**
          * @see org.htmlparser.Node#toPlainTextString()
          */
         public String toPlainTextString() {
@@ -491,7 +528,6 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
             return m_decorated.toString();
         }
-
     }
 
     /** The log object for this class. */
@@ -500,8 +536,11 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
     /** Generated serial version UID. */
     private static final long serialVersionUID = 6961158563666656633L;
 
-    /** The tags to hide from the node visitors. */
+    /** The tags to hide tothe node visitors. */
     private Set m_invisibleTags;
+
+    /** The tags to show to the node visitors. */
+    private Set m_visibleTags;
 
     /**
      * Create a new factory with all tags registered.
@@ -512,6 +551,46 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
 
         super();
         m_invisibleTags = new TreeSet();
+        m_visibleTags = new TreeSet();
+    }
+
+    /**
+     * Add a tag that will be visible for {@link NodeVisitor} instances.
+     * <p>
+     * 
+     * Not only "this" tag will be visible but all parsed Tags that have the same name (case
+     * insensitive).
+     * <p>
+     * 
+     * The given tag will be kept as-is. The following behaviour happens if this method is used: 
+     * <ol>
+     *  <li>
+     *   Once <code>{@link #addTagPreserve(Tag)}</code> has been called all Tags that are not added 
+     *   to this method will be removed. <strong>We are in include mode then</strong>. 
+     *  </li>
+     *  <li>
+     *   The Tags provided to <code>{@link #addTagRemoval(Tag)}</code> will only have the 
+     *   power to hide exactly the same tags that are given to <code>{@link #addTagPreserve(Tag)}</code>: 
+     *   <strong>Deny is stronger than allow.</strong>
+     *  </li>
+     * </ol>
+     * <p>
+     * 
+     * 
+     * @param tag the tag that will be visible for all {@link NodeVisitor} instances.
+     * 
+     * @return true if the tag was added to the internal set of tags to keep, false if not (was
+     *         contained before, has no name,...).
+     */
+    public boolean addTagPreserve(final Tag tag) {
+
+        boolean result = false;
+        String tagName = tag.getTagName();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tagName)) {
+            result = m_visibleTags.add(tagName.toLowerCase());
+        }
+        return result;
+
     }
 
     /**
@@ -522,12 +601,12 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * insensitive).
      * <p>
      * 
-     * @param tag the tag that will be invisible for all {@link NodeVisitor} instances.
+     * @param tag the tag that will be visible for all {@link NodeVisitor} instances.
      * 
      * @return true if the tag was added to the internal set of tags to remove, false if not (was
      *         contained before, has no name,...).
      */
-    public boolean addTagRemoval(Tag tag) {
+    public boolean addTagRemoval(final Tag tag) {
 
         boolean result = false;
         String tagName = tag.getTagName();
@@ -550,7 +629,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
                 tagName = tagName.substring(1);
             }
             Tag result = super.createTagNode(arg0, arg1, arg2, arg3);
-            if (m_invisibleTags.contains(tagName)) {
+            if (!keepTag(tagName)) {
                 result = new CmsInvisibleTag(result);
             }
             return result;
@@ -562,5 +641,32 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
             }
             throw rte;
         }
+    }
+
+    /**
+     * Encapsulation of the "preserve / remove" logic.<p>
+     * 
+     * @param tagName the lower case name of the tag to keep or hide 
+     * 
+     * @return if true the given Tag will be kept, if false it will be removed
+     */
+    private boolean keepTag(final String tagName) {
+
+        boolean result = true;
+        // include mode: 
+        if (m_visibleTags.size() > 0) {
+            if (m_visibleTags.contains(tagName)) {
+                result = true;
+            } else {
+                result = false;
+            }
+        }
+        // Power of hide: if no visible tags configured this works as a normal remove, 
+        // if visible tags are configured this can change a visible tag to be invisible 
+        if (m_invisibleTags.contains(tagName)) {
+            result = false;
+        }
+
+        return result;
     }
 }

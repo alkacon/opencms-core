@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Release Notes for OpenCms 7 RC 2</h1>
+<p>June 6, 2007: This is the release of OpenCms 7 RC&nbsp;2 (aka 6.9.2). OpenCms 7 is a major
+upgrade, and it vastly expands the features of OpenCms 6.</p>
+<h2>
+<strong>Features of the OpenCms 7 RC&nbsp;2 release</strong>
+</h2>
+<ul>
+<li>An experimental update Wizard for OpenCms 6 installations on MySQL is available [new in RC 2].</li>
+<li>Support for the PostgreSQL database now included [new in RC 2].</li>
+<li>Improved backward compatibility with OpenCms version 6 [new in RC 2].</li>
+<li>The internal link management has been greatly improved.</li>
+<li>If files (or folders) are moved / renamed, all links to these files are now kept intact.</li>
+<li>Deleting a resource that is linked by other resources does now display a warning / confirmation
+dialog.</li>
+<li>The new "Content Relationship Engine" (CRE) allows defining arbitrary relations between OpenCms
+resources.</li>
+<li>Native support for WebDAV access to the OpenCms VFS has been added.</li>
+<li>Publishing of resources is now done using a queue, so a user can continue to work after
+publishing has started.</li>
+<li>The concept of "Organization Units" (OUs) has been added to the internal user management.</li>
+<li>System permissions are now based on a complete new set of "Roles".</li>
+<li>It is now possible to delegate management of users / groups in OUs to Sub-Administrators.</li>
+<li>A "switch user" (su) function for Administrators in the OpenCms Workplace is now
+available.</li>
+<li>Many usability improvements for the OpenCms Workplace have been made, especially concerning the
+handling of other users locks.</li>
+<li>Many dialogs in the OpenCms Workplace are more responsive because of the use of Ajax
+technologies.</li>
+<li>The context menus in the Workplace are now cascading and can be configured individually based
+on the users permissions.</li>
+<li>A new "Undelete" function is available on the context menu to restore deleted resources,
+including complete deleted subtrees.</li>
+<li>The full text search has been greatly improved so that individual resource properties or fields
+from XML content can be searched directly.</li>
+<li>A "time warp" feature in the Workplace now allows users to view resources with date expired /
+date released settings.</li>
+<li>Auto correction for structured XML contents now allows changes to the XML schema of existing
+resources.</li>
+<li>A configurable search tool is now available for content managers in the Workplace.</li>
+<li>A "permalink" handler for resources is available for external references in case a resource is
+moved or renamed.</li>
+<li>Link management support has been added in editors for standard HTML tags 'area', 'object' &amp;
+'embed'.</li>
+<li>The core database structure has been optimized.</li>
+<li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
+</ul>
+<h2>Improved backward compatibility with version 6</h2>
+<p>OpenCms 7 RC 2 features much improved backward compatibility with version 6 compared to the 7 RC
+1 release. Most templates and other OpenCms developed code from version 6 should work "out of the
+box" with version 7. A number of API methods from OpenCms 6 have been marked as "deprecated". In
+case you have made extensive use of OpenCms internal classes and APIs from version 6, there may be
+some changes required in your code. However, in most cases this should not take longer than a
+couple of hours.</p>
+<p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have
+to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates run without
+change. You must edit the "web-app" node in the OpenCms web.xml file to do that.</p>
+<p>We are still very interested in feedback regarding backwards compatibility to OpenCms 6.2, since
+we want to improve the 7 API to be as compatible as possible.</p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 7 RC&nbsp;2 has been written and tested using Java 1.5 / 1.6. It works well with Java
+1.4 using the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have
+tested only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so
+it should in theory run with all compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine. OpenCms 7 RC&nbsp;2 works "out of the
+box" with Tomcat 5.5, which we recommend. Testing for other servlet containers like JBoss, BEA and
+Websphere has yet to be done for OpenCms 7. We appreciate any feedback regarding other servlet
+containers.</p>
+<p>On the database side, we have tested with MySQL 4.0, MySQL 4.1, MySQL 5.0, Oracle 9.x and Oracle
+10.x, as well as PostgreSQL 8.2.x and 7.4.x. Support for other DBs still needs to be updated for
+OpenCms 7. The automatic update wizard for OpenCms 7 RC 2 supports only MySQL.</p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
+tag for the 7 RC&nbsp;2 release is "build_7rc_2". Development of maintenance releases (like 6.2.3)
+is currently done in CVS HEAD. Development of the next major OpenCms 7.0 release is done in the
+"DEV_7_0" branch.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core
+development team on the 
+<a target="_self" href="%(link0)">opencms-dev</a> mailing list in case
+you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: 
+<a target="extern" href="%(link1)">http://www.opencms.org/bugzilla/
+<br /></a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 7 RC&nbsp;2 :-)</p>]]></content>
+    </element>
+  </page>
+</pages>

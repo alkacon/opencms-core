@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestSimapi.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,12 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-
 /**
  * Tests the image processing capabilities.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -67,12 +66,12 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
 
         return TEST_NAME;
     }
-    
+
     /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
     public CmsSetupTestResult execute(CmsSetupBean setupBean) {
-        
+
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
         boolean ok = true;
         Throwable ex = null;

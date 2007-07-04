@@ -9,6 +9,8 @@
 %><%
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 	CmsDialog wp = new CmsDialog(jsp);
+	// Added functionality to use localized message bundles 
+	((CmsMultiMessages)wp.getMessages()).addMessages(org.opencms.workplace.tools.cache.Messages.get().getBundle(wp.getLocale()));
         
 	if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
 		/////////////////// ACTION: cancel button pressed: redirect to closelink

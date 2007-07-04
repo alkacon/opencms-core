@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsMemoryObjectCache.java,v $
- * Date   : $Date: 2006/10/26 12:25:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.Messages;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 
 /**
@@ -49,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.3
  */
@@ -61,17 +58,11 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     /** A cache that maps VFS resource names to Objects. */
     private static CmsMemoryObjectCache m_instance;
 
-    /** The cache map. */
-    private Map m_cache;
-
     /**
      * Constructor, creates a new CmsVfsMemoryObjectCache.<p>
      */
     private CmsMemoryObjectCache() {
 
-        m_cache = new HashMap();
-        // register the cache in the memory monitor
-        OpenCms.getMemoryMonitor().register(CmsMemoryObjectCache.class.getName() + ".m_cache", m_cache);
         // register the event listeners
         registerEventListener();
     }
@@ -97,13 +88,13 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // flush cache   
-                m_cache.clear();
+                OpenCms.getMemoryMonitor().flushMemObjects();
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -118,7 +109,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     public Object getCachedObject(Class owner, String key) {
 
         key = owner.getName().concat(key);
-        return m_cache.get(key);
+        return OpenCms.getMemoryMonitor().getCachedMemObject(key);
     }
 
     /**
@@ -131,7 +122,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     public void putCachedObject(Class owner, String key, Object value) {
 
         key = owner.getName().concat(key);
-        m_cache.put(key, value);
+        OpenCms.getMemoryMonitor().cacheMemObject(key, value);
     }
 
     /**

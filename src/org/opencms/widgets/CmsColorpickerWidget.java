@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsColorpickerWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
                 color = "#" + color;
             }
             int colLength = color.length();
-            if (colLength == 4 || colLength == 7) {
+            if ((colLength == 4) || (colLength == 7)) {
                 return color;
             }
         }
@@ -200,7 +200,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
      */
     private String getInputFontColor(String backgroundColor) {
 
-        if (backgroundColor != null && backgroundColor.indexOf("#") == 0) {
+        if ((backgroundColor != null) && (backgroundColor.indexOf("#") == 0)) {
             // remove the "#" from the color string
             backgroundColor = backgroundColor.substring(1);
             int colorValue = 50001;

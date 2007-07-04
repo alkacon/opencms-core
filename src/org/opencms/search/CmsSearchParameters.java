@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package org.opencms.search;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -49,17 +50,14 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 
 /**
- * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsSearchIndex#search(org.opencms.file.CmsObject, CmsSearchParameters, int)}</code>.<p>
+ * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsSearchIndex#search(org.opencms.file.CmsObject, CmsSearchParameters)}</code>.<p>
  * 
  * Primary purpose is translation of search arguments to response parameters and from request parameters as 
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
- *   
- * @version $Revision: 1.8 $
- * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,12 +65,12 @@ public class CmsSearchParameters {
 
     /** Sort result documents by date of creation, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, SortField.STRING, true),
+        new SortField(CmsSearchField.FIELD_DATE_CREATED, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, SortField.STRING, true),
+        new SortField(CmsSearchField.FIELD_DATE_LASTMODIFIED, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Default sort order (by document score - for this <code>null</code> gave best performance). */
@@ -87,20 +85,17 @@ public class CmsSearchParameters {
 
     /** Sort result documents by title, then score. */
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_TITLE_KEY),
+        new SortField(CmsSearchField.FIELD_TITLE),
         SortField.FIELD_SCORE});
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchParameters.class);
 
-    /** The index to search. */
-    protected CmsSearchIndex m_index;
+    /** The number of displayed pages returned by getPageLinks(). */
+    protected int m_displayPages;
 
-    /** The current result page. */
-    protected int m_page;
-
-    /** The minimum length of the search query. */
-    protected int m_queryLength;
+    /** The number of matches per page. */
+    protected int m_matchesPerPage;
 
     /** If <code>true</code>, the category count is calculated for all search results. */
     private boolean m_calculateCategories;
@@ -108,11 +103,23 @@ public class CmsSearchParameters {
     /** The list of categories to limit the search to. */
     private List m_categories;
 
+    /** Indicates if all fields should be used for generating the excerpt, regardless if they have been searched or not. */
+    private boolean m_excerptOnlySearchedFields;
+
     /** The list of search index fields to search in. */
     private List m_fields;
 
+    /** The index to search. */
+    private CmsSearchIndex m_index;
+
+    /** The current result page. */
+    private int m_page;
+
     /** The search query to use. */
     private String m_query;
+
+    /** The minimum length of the search query. */
+    private int m_queryLength;
 
     /** Only resource that are sub-resource of one of the search roots are included in the search result. */
     private List m_roots;
@@ -188,6 +195,8 @@ public class CmsSearchParameters {
         m_sort = sort;
         m_page = 1;
         m_queryLength = -1;
+        m_matchesPerPage = 10;
+        m_displayPages = 10;
     }
 
     /**
@@ -211,9 +220,19 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns the list of search index fields to search in.<p>
+     * Returns the maximum number of pages which should be shown.<p> 
+     * 
+     * @return the maximum number of pages which should be shown
+     */
+    public int getDisplayPages() {
+
+        return m_displayPages;
+    }
+
+    /**
+     * Returns the list of search index field names (Strings) to search in.<p>
      *
-     * @return the list of search index fields to search in
+     * @return the list of search index field names (Strings) to search in
      */
     public List getFields() {
 
@@ -228,6 +247,16 @@ public class CmsSearchParameters {
     public String getIndex() {
 
         return m_index.getName();
+    }
+
+    /**
+     * Gets the number of matches displayed on each page.<p>
+     * 
+     * @return matches per result page
+     */
+    public int getMatchesPerPage() {
+
+        return m_matchesPerPage;
     }
 
     /**
@@ -270,66 +299,6 @@ public class CmsSearchParameters {
     public String getSearchCategories() {
 
         return toSeparatedString(getCategories(), ',');
-    }
-
-    /**
-     * Returns wether the content field will be searched or not. 
-     * 
-     * @return wether the content field will be searched or not 
-     * 
-     * @see I_CmsDocumentFactory#DOC_CONTENT
-     */
-    public boolean getSearchFieldContent() {
-
-        return m_fields.contains(I_CmsDocumentFactory.DOC_CONTENT);
-    }
-
-    /**
-     * Returns wether the description field will be searched or not. 
-     * 
-     * @return wether the description field will be searched or not 
-     * 
-     * @see I_CmsDocumentFactory#DOC_DESCRIPTION
-     */
-    public boolean getSearchFieldDescription() {
-
-        return m_fields.contains(I_CmsDocumentFactory.DOC_DESCRIPTION);
-    }
-
-    /**
-     * Returns wether the keywords field will be searched or not. 
-     * 
-     * @return wether the keywords field will be searched or not 
-     * 
-     * @see I_CmsDocumentFactory#DOC_KEYWORDS
-     */
-    public boolean getSearchFieldKeywords() {
-
-        return m_fields.contains(I_CmsDocumentFactory.DOC_KEYWORDS);
-    }
-
-    /**
-     * Returns wether the meta field will be searched or not. 
-     * 
-     * @return wether the meta field will be searched or not 
-     * 
-     * @see I_CmsDocumentFactory#DOC_META
-     */
-    public boolean getSearchFieldMeta() {
-
-        return m_fields.contains(I_CmsDocumentFactory.DOC_META);
-    }
-
-    /**
-     * Returns wether the title field will be searched or not. 
-     * 
-     * @return wether the title field will be searched or not 
-     * 
-     * @see I_CmsDocumentFactory#DOC_TITLE_INDEXED
-     */
-    public boolean getSearchFieldTitle() {
-
-        return m_fields.contains(I_CmsDocumentFactory.DOC_TITLE_INDEXED);
     }
 
     /**
@@ -408,6 +377,25 @@ public class CmsSearchParameters {
     public boolean isCalculateCategories() {
 
         return m_calculateCategories;
+    }
+
+    /**
+     * Returns <code>true</code> if fields configured for the excerpt should be used for generating the excerpt only 
+     * if they have been actually searched in.<p>
+     *
+     * The default setting is <code>false</code>, which means all text fields configured for the excerpt will
+     * be used to gernerate the excerpt, regardless if they have been searched in or not.<p>
+     *
+     * Please note: A field will only be included in the excerpt if it has been configured as <code>excerpt="true"</code>
+     * in <code>opencms-search.xml</code>. This method controls if so configured fields are used depending on the
+     * fields searched, see {@link #setFields(List)}.<p>
+     *
+     * @return <code>true</code> if fields configured for the excerpt should be used for generating the excerpt only 
+     * if they have been actually searched in
+     */
+    public boolean isExcerptOnlySearchedFields() {
+
+        return m_excerptOnlySearchedFields;
     }
 
     /**
@@ -526,6 +514,30 @@ public class CmsSearchParameters {
     }
 
     /**
+     * Sets the maximum number of pages which should be shown.<p>
+     * 
+     * Enter an odd value to achieve a nice, "symmetric" output.<p> 
+     * 
+     * @param value the maximum number of pages which should be shown
+     */
+    public void setDisplayPages(int value) {
+
+        m_displayPages = value;
+    }
+
+    /**
+     * Controls if the excerpt from a field is generated only for searched fields, or for all fields (the default).<p>
+     *
+     * @param excerptAllFields if <code>true</code>, the excerpt is generated only from the fields actually searched in
+     * 
+     * @see #isExcerptOnlySearchedFields()
+     */
+    public void setExcerptOnlySearchedFields(boolean excerptAllFields) {
+
+        m_excerptOnlySearchedFields = excerptAllFields;
+    }
+
+    /**
      * Sets the list of strings of names of fields to search in. <p>
      * 
      * @param fields the list of strings of names of fields to search in to set
@@ -557,6 +569,16 @@ public class CmsSearchParameters {
                 }
             }
         }
+    }
+
+    /**
+     * Sets the number of matches per page.<p>
+     * 
+     * @param matches the number of matches per page
+     */
+    public void setMatchesPerPage(int matches) {
+
+        m_matchesPerPage = matches;
     }
 
     /**
@@ -613,101 +635,6 @@ public class CmsSearchParameters {
     public void setSearchCategories(String categories) {
 
         setCategories(CmsStringUtil.splitAsList(categories, ','));
-    }
-
-    /**
-     * Set wether the content field should be searched.<p>
-     * 
-     * This method is a widget support for <code>{@link org.opencms.widgets.CmsCheckboxWidget}</code>.<p>
-     * 
-     * @param flag true if the field <code>{@link org.opencms.search.documents.I_CmsDocumentFactory#DOC_CONTENT}</code> 
-     *        shall be searched - false else
-     */
-    public void setSearchFieldContent(boolean flag) {
-
-        if (flag) {
-            if (!m_fields.contains(I_CmsDocumentFactory.DOC_CONTENT)) {
-                m_fields.add(I_CmsDocumentFactory.DOC_CONTENT);
-            }
-        } else {
-            m_fields.remove(I_CmsDocumentFactory.DOC_CONTENT);
-        }
-    }
-
-    /**
-     * Set wether the description field should be searched.<p>
-     * 
-     * This method is a widget support for <code>{@link org.opencms.widgets.CmsCheckboxWidget}</code>.<p>
-     * 
-     * @param flag true if the field <code>{@link org.opencms.search.documents.I_CmsDocumentFactory#DOC_DESCRIPTION}</code> 
-     *        shall be searched - false else
-     */
-    public void setSearchFieldDescription(boolean flag) {
-
-        if (flag) {
-            if (!m_fields.contains(I_CmsDocumentFactory.DOC_DESCRIPTION)) {
-                m_fields.add(I_CmsDocumentFactory.DOC_DESCRIPTION);
-            }
-        } else {
-            m_fields.remove(I_CmsDocumentFactory.DOC_DESCRIPTION);
-        }
-    }
-
-    /**
-     * Set wether the title field should be searched.<p>
-     * 
-     * This method is a widget support for <code>{@link org.opencms.widgets.CmsCheckboxWidget}</code>.<p>
-     * 
-     * @param flag true if the field <code>{@link org.opencms.search.documents.I_CmsDocumentFactory#DOC_KEYWORDS}</code> 
-     *        shall be searched - false else
-     */
-    public void setSearchFieldKeywords(boolean flag) {
-
-        if (flag) {
-            if (!m_fields.contains(I_CmsDocumentFactory.DOC_KEYWORDS)) {
-                m_fields.add(I_CmsDocumentFactory.DOC_KEYWORDS);
-            }
-        } else {
-            m_fields.remove(I_CmsDocumentFactory.DOC_KEYWORDS);
-        }
-    }
-
-    /**
-     * Set wether the meta field should be searched.<p>
-     * 
-     * This method is a widget support for <code>{@link org.opencms.widgets.CmsCheckboxWidget}</code>.<p>
-     * 
-     * @param flag true if the field <code>{@link org.opencms.search.documents.I_CmsDocumentFactory#DOC_META}</code> 
-     *        shall be searched - false else
-     */
-    public void setSearchFieldMeta(boolean flag) {
-
-        if (flag) {
-            if (!m_fields.contains(I_CmsDocumentFactory.DOC_META)) {
-                m_fields.add(I_CmsDocumentFactory.DOC_META);
-            }
-        } else {
-            m_fields.remove(I_CmsDocumentFactory.DOC_META);
-        }
-    }
-
-    /**
-     * Set wether the title field should be searched.<p>
-     * 
-     * This method is a widget support for <code>{@link org.opencms.widgets.CmsCheckboxWidget}</code>.<p>
-     * 
-     * @param flag true if the field <code>{@link org.opencms.search.documents.I_CmsDocumentFactory#DOC_TITLE_INDEXED}</code> 
-     *        shall be searched - false else
-     */
-    public void setSearchFieldTitle(boolean flag) {
-
-        if (flag) {
-            if (!m_fields.contains(I_CmsDocumentFactory.DOC_TITLE_INDEXED)) {
-                m_fields.add(I_CmsDocumentFactory.DOC_TITLE_INDEXED);
-            }
-        } else {
-            m_fields.remove(I_CmsDocumentFactory.DOC_TITLE_INDEXED);
-        }
     }
 
     /**
@@ -779,6 +706,65 @@ public class CmsSearchParameters {
     }
 
     /**
+     * Creates a query String build from this search parameters for HTML links.<p>
+     * 
+     * @return a query String build from this search parameters for HTML links
+     */
+    public String toQueryString() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("?action=search&query=");
+        result.append(CmsEncoder.encodeParameter(getQuery()));
+
+        result.append("&matchesPerPage=");
+        result.append(getMatchesPerPage());
+        result.append("&displayPages=");
+        result.append(getDisplayPages());
+        result.append("&index=");
+        result.append(CmsEncoder.encodeParameter(getIndex()));
+
+        Sort sort = getSort();
+        if (sort != CmsSearchParameters.SORT_DEFAULT) {
+            result.append("&sort=");
+            if (sort == CmsSearchParameters.SORT_TITLE) {
+                result.append("title");
+            } else if (sort == CmsSearchParameters.SORT_DATE_CREATED) {
+                result.append("date-created");
+            } else if (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED) {
+                result.append("date-lastmodified");
+            }
+        }
+
+        if ((getCategories() != null) && (getCategories().size() > 0)) {
+            result.append("&category=");
+            Iterator it = getCategories().iterator();
+            while (it.hasNext()) {
+                result.append(it.next());
+                if (it.hasNext()) {
+                    result.append(',');
+                }
+            }
+        }
+
+        if ((getRoots() != null) && (getRoots().size() > 0)) {
+            result.append("&searchRoots=");
+            Iterator it = getRoots().iterator();
+            while (it.hasNext()) {
+                result.append(CmsEncoder.encode((String)it.next()));
+                if (it.hasNext()) {
+                    result.append(',');
+                }
+            }
+        }
+
+        if (isExcerptOnlySearchedFields()) {
+            result.append("&excerptOnlySearchedFields=true");
+        }
+
+        return result.toString();
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -820,6 +806,9 @@ public class CmsSearchParameters {
         if (m_calculateCategories) {
             result.append("calculate-categories ");
         }
+        if (m_excerptOnlySearchedFields) {
+            result.append("excerpt-searched-fields-only ");
+        }
         result.append("sort:[");
         if (m_sort == CmsSearchParameters.SORT_DEFAULT) {
             result.append("default");
@@ -833,6 +822,7 @@ public class CmsSearchParameters {
             result.append("unknown");
         }
         result.append("]");
+
         return result.toString();
     }
 

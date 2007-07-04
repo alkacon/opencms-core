@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,17 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
 
-    /** the id of column to use for the link. */
+    /** The id of column to use for the link. */
     private String m_columnForLink;
+
+    /** The formatter to use for the link. */
+    private I_CmsListFormatter m_columnFormatter;
 
     /**
      * Default Constructor.<p>
@@ -60,13 +63,34 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     }
 
     /**
+     * Resturns the id of column to use for the link.<p>
+     * 
+     * @return the id of column to use for the link
+     */
+    public String getColumnForLink() {
+
+        return m_columnForLink;
+    }
+
+    /**
+     * Resturns the formatter to use for the link.<p>
+     * 
+     * @return the formatter to use for the link
+     */
+    public I_CmsListFormatter getColumnFormatter() {
+
+        return m_columnFormatter;
+    }
+
+    /**
      * Sets the id of column to use for the link.<p>
      *
-     * @param columnForLink the id of column to use for the link to set
+     * @param columnForLink the column to use for the link to set
      */
-    public void setColumnForLink(String columnForLink) {
+    public void setColumnForLink(CmsListColumnDefinition columnForLink) {
 
-        m_columnForLink = columnForLink;
+        m_columnForLink = columnForLink.getId();
+        m_columnFormatter = columnForLink.getFormatter();
     }
 
     /**
@@ -88,17 +112,11 @@ public class CmsListDefaultAction extends CmsListDirectAction {
         if (getColumnForLink() == null) {
             return super.resolveName(locale);
         }
-        return (getItem().get(getColumnForLink()) != null) ? getItem().get(getColumnForLink()).toString()
+        Object content = (getItem().get(getColumnForLink()) != null) ? getItem().get(getColumnForLink())
         : getName().key(locale);
-    }
-
-    /**
-     * Resturns the id of column to use for the link.<p>
-     * 
-     * @return the id of column to use for the link
-     */
-    private String getColumnForLink() {
-
-        return m_columnForLink;
+        if (getColumnFormatter() != null) {
+            return getColumnFormatter().format(content, locale);
+        }
+        return content.toString();
     }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Cascadetests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
+  <Cascadetest language="en">
+    <Title><![CDATA[This is a cascade test]]></Title>
+    <Cascade>
+      <MyString/>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/index.html]]></target>
+          <uuid>7d6c22cd-4e3a-11db-9016-5bf59c6009b3</uuid>
+        </link>
+      </VfsLink>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/test.html]]></target>
+        </link>
+      </VfsLink>
+      <Html>
+        <links>
+          <link name="link2" internal="true" type="A">
+            <target><![CDATA[/sites/default/noexist/folder1/index.html]]></target>
+            <anchor><![CDATA[anchor]]></anchor>
+            <query><![CDATA[a=b&c=d]]></query>
+          </link>
+          <link name="link0" internal="false" type="A">
+            <target><![CDATA[http://www.alkacon.com]]></target>
+          </link>
+          <link name="link1" internal="true" type="A">
+            <target><![CDATA[/sites/default/noexist/index.html]]></target>
+          </link>
+        </links>
+        <content><![CDATA[<a href="%(link0)">Alkacon</a> 
+<a href="%(link1)">Index page</a> 
+<a href="%(link2)">Index page</a> Please note:
+The internal link targets must not exist, because otherwise the link management will add nodes
+which are unknown in the test case.]]></content>
+      </Html>
+    </Cascade>
+    <Cascade>
+      <MyString/>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/index.jsp]]></target>
+        </link>
+      </VfsLink>
+      <Html>
+        <links/>
+        <content><![CDATA[This is Cascade 2]]></content>
+      </Html>
+    </Cascade>
+  </Cascadetest>
+</Cascadetests>

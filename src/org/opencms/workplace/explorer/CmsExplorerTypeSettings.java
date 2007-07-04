@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,12 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -50,11 +54,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorerTypeSettings implements Comparable {
+
+    /** The default order start value for context menu entries. */
+    public static final int ORDER_VALUE_DEFAULT_START = 100000;
+
+    /** The default order value for context menu separator entries without order attribute. */
+    public static final String ORDER_VALUE_SEPARATOR_DEFAULT = "999999";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class);
@@ -67,8 +77,10 @@ public class CmsExplorerTypeSettings implements Comparable {
     private boolean m_autoSetTitle;
     private CmsExplorerContextMenu m_contextMenu;
     private List m_contextMenuEntries;
+    private String m_descriptionImage;
     private boolean m_hasEditOptions;
     private String m_icon;
+    private String m_info;
     private String m_key;
     private String m_name;
 
@@ -81,6 +93,8 @@ public class CmsExplorerTypeSettings implements Comparable {
     private boolean m_propertiesEnabled;
     private String m_reference;
     private boolean m_showNavigation;
+
+    private String m_titleKey;
 
     /**
      * Default constructor.<p>
@@ -99,61 +113,30 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
-     * Adds a single context menu entry to the list of context menu items.<p>
+     * Adds a menu entry to the list of context menu items.<p>
      * 
-     * @param key the key of the current entry 
-     * @param uri the dialog URI to call with the current entry
-     * @param rules the display rules
-     * @param target the frame target of the menu entry
-     * @param order the sort order of the current entry
+     * @param item the entry item to add to the list
      */
-    public void addContextMenuEntry(String key, String uri, String rules, String target, String order) {
+    public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
 
-        Integer orderValue = new Integer(0);
-        try {
-            orderValue = Integer.valueOf(order);
-        } catch (Exception e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
-            }
-        }
-        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.TYPE_ENTRY,
-            key,
-            uri,
-            rules,
-            target,
-            orderValue);
-        
+        item.setType(CmsExplorerContextMenuItem.TYPE_ENTRY);
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, item.getKey(), item.getUri()));
         }
     }
 
     /**
      * Adds a menu separator to the list of context menu items.<p>
      * 
-     * @param order the sort order of the separator
+     * @param item the separator item to add to the list
      */
-    public void addContextMenuSeparator(String order) {
+    public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
 
-        Integer orderValue = new Integer(0);
-        try {
-            orderValue = Integer.valueOf(order);
-        } catch (Exception e) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
-        }
-        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.TYPE_SEPARATOR,
-            null,
-            null,
-            null,
-            null,
-            orderValue);
+        item.setType(CmsExplorerContextMenuItem.TYPE_SEPARATOR);
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_SEPARATOR_1, item.getType()));
         }
     }
 
@@ -267,6 +250,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
+     * Returns the descriptionImage.<p>
+     *
+     * @return the descriptionImage
+     */
+    public String getDescriptionImage() {
+
+        return m_descriptionImage;
+    }
+
+    /**
      * Returns the icon path and file name of the explorer type setting.<p>
      * 
      * @return the icon path and file name of the explorer type setting
@@ -274,6 +267,44 @@ public class CmsExplorerTypeSettings implements Comparable {
     public String getIcon() {
 
         return m_icon;
+    }
+
+    /**
+     * Returns the info.<p>
+     *
+     * @return the info
+     */
+    public String getInfo() {
+
+        return m_info;
+    }
+
+    /**
+     * Builds the Javascript to create the context menu.<p>
+     * 
+     * @param settings the explorer type settings for which the context menu is created
+     * @param resTypeId the id of the resource type which uses the context menu
+     * @param messages the messages to generate the context menu with (should be the workplace messages)
+     * 
+     * @return the JavaScript output to create the context menu
+     */
+    public String getJSEntries(CmsExplorerTypeSettings settings, int resTypeId, CmsMessages messages) {
+
+        // entries not yet in Map, so generate them
+        StringBuffer result = new StringBuffer(4096);
+
+        // create the JS for the resource object
+        result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append(
+            "\", ");
+        result.append("\"");
+        result.append(messages.key(settings.getKey()));
+        result.append("\", vi.skinPath + \"filetypes/");
+        result.append(settings.getIcon());
+        result.append("\", \"");
+        result.append(settings.getNewResourceUri());
+        result.append("\", true);\n");
+
+        return result.toString();
     }
 
     /**
@@ -356,6 +387,16 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
+     * Returns the titleKey.<p>
+     *
+     * @return the titleKey
+     */
+    public String getTitleKey() {
+
+        return m_titleKey;
+    }
+
+    /**
      * Returns true if this explorer type entry has explicit edit options set.<p>
      *  
      * @return true if this explorer type entry has explicit edit options set
@@ -401,6 +442,21 @@ public class CmsExplorerTypeSettings implements Comparable {
     public boolean isAutoSetTitle() {
 
         return m_autoSetTitle;
+    }
+
+    /**
+     * Checks if the current user has write permissions on the given resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> if the current user has write permissions on the given resource
+     */
+    public boolean isEditable(CmsObject cms, CmsResource resource) {
+
+        // determine if this resource type is editable for the current user
+        CmsPermissionSet permissions = getAccess().getPermissions(cms, resource);
+        return permissions.requiresWritePermission();
     }
 
     /**
@@ -479,6 +535,21 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_contextMenuEntries = entries;
     }
 
+    /**
+     * Sets the descriptionImage.<p>
+     *
+     * @param descriptionImage the descriptionImage to set
+     */
+    public void setDescriptionImage(String descriptionImage) {
+
+        m_descriptionImage = descriptionImage;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1,
+                descriptionImage));
+        }
+    }
+
     /** 
      * Sets the flag if this explorer type entry has explicit edit options set.<p>
      * 
@@ -499,6 +570,19 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_icon = icon;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_ICON_1, icon));
+        }
+    }
+
+    /**
+     * Sets the info.<p>
+     *
+     * @param info the info to set
+     */
+    public void setInfo(String info) {
+
+        m_info = info;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_INFO_1, info));
         }
     }
 
@@ -641,6 +725,19 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
+     * Sets the titleKey.<p>
+     *
+     * @param titleKey the titleKey to set
+     */
+    public void setTitleKey(String titleKey) {
+
+        m_titleKey = titleKey;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_TITLE_KEY_1, titleKey));
+        }
+    }
+
+    /**
      * Sets the basic attributes of the type settings.<p>
      * 
      * @param name the name of the type setting
@@ -669,4 +766,5 @@ public class CmsExplorerTypeSettings implements Comparable {
         setIcon(icon);
         setReference(reference);
     }
+
 }

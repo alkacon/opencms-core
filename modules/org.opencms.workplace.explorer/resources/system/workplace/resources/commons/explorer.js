@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2006/10/20 14:23:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ var buttonType=1;
 var link_newresource="/system/workplace/commons/newresource.jsp";
 var link_uploadresource="/system/workplace/commons/newresource_upload.jsp";
 var link_showresource="/system/workplace/commons/displayresource.jsp";
+var link_searchresource="/system/workplace/views/admin/admin-main.jsp?root=explorer&path=%2Fsearch";
 var last_id=-1;
 var active_mouse_id=-1;
 var active_from_text=false;
@@ -68,26 +69,17 @@ function windowStore(body, head, tree, files) {
 	this.fileswin = files;
 }
 
-
-function menuItem(name, link, target, rules){
-	this.name = name;
-	this.link = link;
-	this.target = target;
-	this.rules = rules;
-}
-
-
-//            1     2     3      4     5         6     7      8      9        10                11                   12           13              14            15           16           17        18        19                   20                 21
-function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
+//            1     2     3      4        5     6         7     8      9            10                11                   12           13              14            15           16           17        18                   19         20                      21           22
+function file(name, path, title, navtext, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, sysLockInfo, projectState){
 	this.name = name;
 	this.path = path;
-	this.title = title;
+	this.title = decodeURIComponent(title);
+	this.navtext = decodeURIComponent(navtext);
 	this.type = type;
 	this.linkType = linkType;
 	this.size = size;
 	this.state = state;
 	this.layoutstyle = layoutstyle;
-	this.project = project;
 	this.dateLastModified = dateLastModified;
 	this.userWhoLastModified = userWhoLastModified
 	this.dateCreated = dateCreated;
@@ -96,19 +88,20 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.dateExpired = dateExpired;
 	this.permissions = permissions;
 	this.lockedBy = lockedBy;
-	this.lockType = lockType;
 	this.lockedInProjectName = lockedInProjectName;
-	this.lockedInProjectId = lockedInProjectId;
-	this.isInsideCurrentProject = (isInsideCurrentProject=='I') ? true : false;
-	this.isFolder = (size < 0) ? true : false;
+	this.lockState = lockState;
+	this.isInsideCurrentProject = (isInsideCurrentProject=='I');
+	this.sysLockInfo = sysLockInfo;
+	this.projectState = projectState;
+	this.isFolder = (size < 0);
 }
 
 
-function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
+function aF(name, path, title, navtext, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, sysLockInfo, projectState) {
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject);
+	vi.liste[vi.liste.length] = new file(name, path, title, navtext, type, linkType, size, state, layoutstyle, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockedInProjectName, lockState, isInsideCurrentProject, sysLockInfo, projectState);
 }
 
 
@@ -123,6 +116,7 @@ function vars_index() {
 
 	this.check_name;
 	this.check_title;
+	this.check_navtext;
 	this.check_type;
 	this.check_size;
 	this.check_permissions;
@@ -137,26 +131,22 @@ function vars_index() {
 
 	this.userName;
 	this.resource = new Array();
-	this.menus = new Array();
 }
 
 
-function res(text, nicename, icon, createLink, isEditable){
+function res(text, nicename, icon, createLink) {
 	this.text = text;
 	this.nicename = nicename;
 	this.icon = icon;
 	this.createLink = createLink;
-	this.editable = isEditable;
 }
-
 
 function setDisplayResource(resource) {
 	displayResource = resource;
-	if (mode == "explorerview") {
+	if (win.head) {
 		win.head.forms.urlform.resource.value = displayResource.substring(getRootFolder().length - 1);
 	}
 }
-
 
 function getDisplayResource(param) {
 	if (param == "true") {
@@ -213,7 +203,7 @@ function dU(doc, pages, actpage) {
 	openfolderMethod="openFolder";
 	showCols(vr.viewcfg);
 	printList(doc);
-	if (mode == "explorerview") {
+	if (win.head) {
 		displayHead(win.head, pages, actpage);
 	}
 }
@@ -227,16 +217,26 @@ function updateWindowStore() {
 
 	if ((mode == "listview") || (mode == "galleryview")) {
                 var theDoc = null;
-                if (window.body.admin_content.tool_content) {
-                   theDoc = window.body.admin_content.tool_content;
+                if (window.body.admin_content) {
+                   if (window.body.admin_content.tool_content) {
+                      theDoc = window.body.admin_content.tool_content;
+                   } else {
+                      theDoc = window.body.admin_content;
+                   }
                 } else {
-                   theDoc = window.body.admin_content;
+                   if (window.body.explorer_body.explorer_files.tool_content) {
+                      theDoc = window.body.explorer_body.explorer_files.tool_content;
+                   } else {
+                      theDoc = window.body.explorer_body.explorer_files;
+                   }
                 }
-                if (window.body.admin_head) {
+        if (window.body.admin_head) {
  			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
-                } else {
+        } else if (window.body.explorer_head) {
+ 			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, theDoc);
+        } else {
  			win = new windowStore(window.body.document, null, theTree, theDoc);
-                }
+        }
 	} else {
 		try {
 			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files);
@@ -256,6 +256,7 @@ function showCols(cols) {
 
 	check[9] = 'vi.check_name';
 	check[0] = 'vi.check_title';
+	check[6] = 'vi.check_navtext';
 	check[1] = 'vi.check_type';
 	check[3] = 'vi.check_size';
 	check[7] = 'vi.check_permissions';
@@ -269,12 +270,10 @@ function showCols(cols) {
 	check[8] = 'vi.check_lockedBy';
 
 	for (i = 0; i <= 13; i++) {
-		if (i != 6) {
-			if ((cols & Math.pow(2, i)) > 0) {
-				eval(check[i] + "=true;");
-			} else {
-				eval(check[i] + "=false;");
-			}
+		if ((cols & Math.pow(2, i)) > 0) {
+			eval(check[i] + "=true;");
+		} else {
+			eval(check[i] + "=false;");
 		}
 	}
 }
@@ -299,11 +298,11 @@ function handleContext(e) {
 
 	if (selectedResources.length > 1) {
 		// multi context menu
-		showContext(win.files, "multi", false);
+		getContextMenu();
 	} else {
 		// single context menu
 		if (active_mouse_id >= 0) {
-			showContext(win.files, active_mouse_id, true);
+			getContextMenu();
 		}
 	}
 	// stop event bubbling
@@ -315,226 +314,64 @@ function handleContext(e) {
 }
 
 
-// builds the HTML for a context menu (single or multi context menu)
-function showContext(doc, i, isSingleContext) {
+// makes an ajax request to get the context menu for the selected resource(s)
+function getContextMenu() {
 
-	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
-	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
-	var spanend      = "</span>";
-
-	var menu = "";
-	// the type id of the current context menu
-	var typeId;
-	// the resource name needed for single context menu
-	var resourceName;
-
-	var access = true;
-	if (isSingleContext) {
-		resourceName = getResourceAbsolutePath(i);
-		typeId = vi.liste[i].type;
-		if ((typeof vi.resource[typeId] == 'undefined') || (vi.resource[typeId].editable == false)) {
-			// the user has no access to this resource type
-			access = false;
-		}
-	} else {
-		// multi context menu uses special menu type ID
-		typeId = "multi";
-		if (vi.menus[typeId] == null) {
-			// no multi context menu defined, do not show menu
-			return;
-		}
-		// set resource list in hidden form field value
-		var resourceList = "";
+	// the list of resources
+	var resourceList = "";
+	if (selectedResources.length == 1) {
+		resourceList = getResourceAbsolutePath(active_mouse_id);
+	} else if (selectedResources.length > 1) {
+		// concatenate all selected resources
 		var isFirst = true;
-		for (i=0; i<selectedResources.length; i++) {	
+		for (var i=0; i<selectedResources.length; i++) {
 			if (!isFirst) {
 				resourceList += "|";
 			}
 			resourceList += getResourceAbsolutePath(selectedResources[i]);
 			isFirst = false;
-
 		}
-		doc.forms["formmulti"].elements["resourcelist"].value = resourceList; 
+		// set resource list in hidden form field value
+   		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
-
-	if (access) {
-		menu += "<div class=\"cm2\">";
-		menu += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">";
-
-		var lastWasSeparator = false;
-		var firstEntryWritten = false;
-		for (a = 0; a < vi.menus[typeId].items.length; a++) {
-
-			// 0:unchanged, 1:changed, 2:new, 3:deleted
-			var result = -1;
-
-			if (vi.menus[typeId].items[a].name == "-") {
-				result = 1;
-			} else if (vr.actProject == vr.onlineProject) {
-				// online project
-				if (isSingleContext) {
-					if (vi.menus[typeId].items[a].rules.charAt(0) == 'i') {
-						result = 2;
-					} else {
-						if (vi.menus[typeId].items[a].rules.charAt(0) == 'a') {
-							if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-							&& (vi.liste[i].linkType == 0)) {
-								// special case: resource without siblings
-								result = 2;
-							} else {
-								result = (typeId == 0)?3:4;
-							}
-						}
-					}
-				} else {
-					// multi context menu
-					result = 2;
-				}
-			} else {
-				// offline project
-				if (isSingleContext) {
-					if (! vi.liste[i].isInsideCurrentProject) {
-						// resource is from online project
-						if (vi.menus[typeId].items[a].rules.charAt(1) == 'i') {
-							result = (vi.menus[typeId].items[a].name == "-")?1:2;
-						} else {
-							if (vi.menus[typeId].items[a].rules.charAt(1) == 'a') {
-								if (vi.menus[typeId].items[a].name == "-") {
-									result = 1;
-								} else {
-									if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-									&& (vi.liste[i].linkType == 0)) {
-										// special case: resource without siblings
-										result = 2;
-									} else {
-										result = (typeId == 0)?3:4;
-									}
-								}
-							}
-						}
-					} else {
-						// resource is in this project => we have to differ 4 cases
-						if (vi.liste[i].lockedBy == '') {
-							// resource is not locked...
-							if (autolock) {
-								// autolock is enabled
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 6);
-							} else {
-								// autolock is disabled
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 2);
-							}
-						} else {
-							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
-							if (vi.liste[i].lockedInProjectId == vr.actProject) {
-								// locked in this project from ...
-								if (vi.liste[i].lockedBy == vr.userName) {
-									// ... the current user ...
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-									} else {
-										// ... as exclusive lock
-										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 10);
-									}
-
-								} else {
-									// ... someone else
-									display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-								}
-							} else {
-								// locked in an other project ...
-								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
-							}
-						}
-						if (display == 'i') {
-							result = 2;
-						} else {
-							if (display == 'a') {
-								if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
-								&& (vi.liste[i].linkType == 0)) {
-									// special case: resource without siblings
-									result = 2;
-								} else {
-									result = (typeId == 0)?3:4;
-								}
-							}
-						}
-					}
-				} else {
-					// multi context menu
-					result = 3;
-				}
-			}
-			switch (result) {
-				case 1:
-					// separator line
-					if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[typeId].items.length - 1))) {
-						menu += "<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>";
-						lastWasSeparator = true;
-					}
-					break;
-				case 2:
-					// inactive entry
-					menu += "<tr><td>" + spanstartina + vi.menus[typeId].items[a].name + spanend + "</td></tr>";
-					lastWasSeparator = false;
-					firstEntryWritten = true;
-					break;
-				case 3:
-				case 4:
-					// active entry
-					var link;
-					if (isSingleContext) {
-						link = "href=\"" + vi.menus[typeId].items[a].link;
-						if (link.indexOf("?") > 0) {
-							link += "&";
-						} else {
-							link += "?";
-						}
-
-						link += "resource=" + resourceName + "\"";
-						if (vi.menus[typeId].items[a].target != null && vi.menus[typeId].items[a].target != "''") {
-							// href has a target set
-							link += " target=" + vi.menus[typeId].items[a].target;
-						}
-
-						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
-					} else {
-						// multi context menu
-						link = "href=\"javascript:top.submitMultiAction('" + vi.menus[typeId].items[a].link + "');\"";
-						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
-					}
-					lastWasSeparator = false;
-					firstEntryWritten = true;
-					break;
-				default:
-					// alert("Undefined result for menu " + a);
-					break;
-			}
-		} // end for ...
-		menu += "</table></div>";
-		
-		var el = doc.getElementById("contextmenu");
-		el.innerHTML = menu;
-		var x = 12;
-		el.style.left = x + "px";
-		el.style.visibility = "visible";
-		// calculate menu y position after setting visibility to avoid display errors
-		var y = getMenuPosY(doc, active_mouse_id);
-		el.style.top =  y + "px";
-	} // end if (access)
-	last_id = active_mouse_id;
-	contextOpen = true;
+	// ajax call
+    makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList + "&acttarget=" + top.active_target, 'showContextMenu');
 }
 
+// builds the HTML for a context menu (single or multi context menu)
+function showContextMenu(msg, state) {
+
+    if (state == 'ok') {
+        var menu = msg;
+		if (menu.length > 0) {
+			var cmouter = win.files.getElementById("contextmenuouter");
+			var cminner = win.files.getElementById("contextmenu");
+			cminner.innerHTML = menu;
+			// set menu x position
+			var x = 12;
+			cmouter.style.left = x + "px";
+			cmouter.style.display = "block";
+			// calculate menu y position before setting visibility to avoid display errors
+			var y = getMenuPosY(win.files, active_mouse_id);
+			cmouter.style.top =  y + "px";
+			cmouter.style.visibility = "visible";
+		} // end if (access)
+    	last_id = active_mouse_id;
+	    contextOpen = true;
+	} else if (state != 'wait') {
+		// an error occurred
+		alert('state:' + state + '\nmessage:' + msg);
+	}
+}
 
 // closes a context menu
 function closeContext() {
 
-	var cm = win.files.getElementById("contextmenu");
-	cm.style.visibility = "hidden";
+	var cmouter = win.files.getElementById("contextmenuouter");
+	cmouter.style.visibility = "hidden";
+	cmouter.style.display = "none";
 	contextOpen = false;
 }
-
 
 // submits a selected multi action
 function submitMultiAction(dialog) {
@@ -551,7 +388,7 @@ function handleOnClick(e) {
 	cancelNextOpen = (selectedResources.length > 0);
 	if (contextOpen) {
 		// close eventually open context menu
-		closeContext();	
+		closeContext();
 		if (active_mouse_id == last_id) {
 			// clicked on same icon again, leave handler
 			return false;
@@ -560,8 +397,8 @@ function handleOnClick(e) {
 	// unselect resources;
 	toggleSelectionStyle(false);
 	selectedStyles = new Array();
-	
-	var btp = e.button;	
+
+	var btp = e.button;
 	var keyHold = e.shiftKey || e.ctrlKey || e.altKey;
 	if (keyHold) {
 		// stop event bubbling
@@ -594,7 +431,7 @@ function handleOnClick(e) {
 
 			}
 		} else {
-			// first click, mark single resource	
+			// first click, mark single resource
 			selectedResources = new Array();
 			selectedResources[selectedResources.length] = active_mouse_id;
 		}
@@ -650,19 +487,19 @@ function handleOnClick(e) {
 
 
 // check if the event object is available and gets it if necessary
-function checkEvent(e) {
+function checkEvent(event) {
 
 	// fix for IE if window access is refused in some cases
 	try {
 		win.files.getElementById("contextmenu");
-	} catch (e) {
+	} catch (exc) {
 		updateWindowStore();
-	} 
-	// check event
-	if (!e) {
-		e = win.fileswin.event;
 	}
-	return e;
+	// check event
+	if (!event) {
+		event = win.fileswin.event;
+	}
+	return event;
 }
 
 // toggles the style of the selected resources
@@ -705,7 +542,7 @@ function toggleSelectionStyle(isSelected) {
 			} else {
 				td.className = ah.className;
 			}
-		}			
+		}
 
 		for (k=0; k<3; k++) {
 			// change style of columns 0 to 2
@@ -731,7 +568,7 @@ function linkOver(obj, id) {
 }
 
 function linkOut(obj) {
-	
+
 	var cls = obj.className;
 	if (cls.charAt(cls.length - 1) == 'i') {
 		cls = cls.substring(0, cls.length-1);
@@ -743,65 +580,26 @@ function linkOut(obj) {
 
 
 function printList(wo) {
-	var i;
-	var lockedBystring;
-	var ssclass;
+
+        top.active_target = '';
+        if ((win.fileswin.location.href.indexOf('list-explorer.jsp') >= 0) || (win.fileswin.location.href.indexOf('mode=galleryview') >= 0)) {
+           top.active_target = '_parent';
+        }
+
 	var temp =
-	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"
 	+ "<html><head>"
 	+ "<meta HTTP-EQUIV=\"content-type\" CONTENT=\"text/html; charset="
 	+ top.frames.head.encoding
 	+ "\">\n"
-	+ "<script language=\"JavaScript\">\n"
+	+ "<script type=\"text/javascript\" language=\"JavaScript\">\n"
 	+ "document.oncontextmenu = new Function('return false;');\n"
 	+ "document.onmousedown = new Function('return false;');\n"
 	+ "document.onmouseup = top.handleOnClick;\n"
-	+ "</script>"
-	+ "<style type='text/css'>\n"
-	+ "body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
-	+ "p, td { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; } "
-	+ "td.t { white-space: nowrap; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t125 { white-space: nowrap; width: 125px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t100 { white-space: nowrap; width: 100px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "td.t75 { white-space: nowrap; width: 75px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "a { text-decoration: none; cursor: pointer; } "
+	+ "</script>\n"
+	+ "<style type='text/css'> @import url(" + vi.skinPath + "commons/explorer.css); </style>\n"
+	+ "</head>\n";
 
-	+ "td.fc { color: #b40000; } "
-	+ "a.fc { color: #b40000; } "
-	+ "a.fci { text-decoration: underline; color: #000088; } "
-
-	+ "td.fn { color: #0000aa; } "
-	+ "a.fn { color: #0000aa; } "
-	+ "a.fni { text-decoration: underline; color: #000088; } "
-
-	+ "td.fd { color: #000000; text-decoration: line-through; } "
-	+ "a.fd { color: #000000; text-decoration: line-through; } "
-	+ "a.fdi { text-decoration: line-through underline; color: #000088; } "
-
-	+ "td.fp { color: #888888; } "
-	+ "a.fp { color: #888888; } "
-	+ "a.fpi { text-decoration: underline; color: #000088; } "
-
-	+ "td.nf { color:#000000; } "
-	+ "a.nf { color:#000000; } "
-	+ "a.nfi { text-decoration: underline; color: #000088; } "
-
-	+ "div.cm { position: absolute; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); } "
-	+ "div.cm2 { border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow; } "
-	+ "table.cm { width: 150px; } "
-	+ "span.cmsep { display: block; width: 100%; height: 1px; font-size: 0px; background-color: ThreeDShadow; padding: 0px; border-bottom: 1px solid ThreeDHighlight;} "
-	+ "td.cmsep { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; } "
-	+ "a.cme { color: MenuText; text-decoration: none;} "
-	+ "span.cmenorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; } "
-	+ "span.cmehigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: hand; display: block; width: 100%; padding: 2px 0px 2px 10px; color: CaptionText; background-color: ActiveCaption; } "
-	+ "span.inanorm { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: GrayText; } "
-	+ "span.inahigh { box-sizing: border-box; -moz-box-sizing: border-box; cursor: default; display: block; width: 100%; padding: 2px 0px 2px 10px; color: InactiveCaptionText; background-color: InactiveCaption; } "
-
-	+ ".selected { background: ActiveCaption; color: CaptionText; } "
-	+ ".unselected { background: Window; color:WindowText; } "
-
-	+ "</style></head>";
-	
 	var returnplace = wo.location.href;
 	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {
 		var pos = returnplace.indexOf("/commons/");
@@ -822,35 +620,37 @@ function printList(wo) {
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
 	returnplace = returnplace.replace(/\//g, "%2F");
+
 	wo.open();
 	wo.writeln(temp);
 
 	wo.write("<body unselectable=\"on\">");
 	wo.writeln("<table cellpadding=\"1\" cellspacing=\"0\" border=\"0\"><tr>");
 
-	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
-	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
-	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
+	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"16\">&nbsp;</td>");
+	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"16\">&nbsp;</td>");
+	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"16\">&nbsp;</td>");
 
-	if (vi.check_name)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
-	if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
-	if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
-	if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
-	if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
-	if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[5] + "&nbsp;</td>");
-	if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[6] + "&nbsp;</td>");
-	if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[7] + "&nbsp;</td>");
-	if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[8] + "&nbsp;</td>");
-	if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[9] + "&nbsp;</td>");
-	if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
-	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[11] + "&nbsp;</td>");
-	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
+	if (vi.check_name && ((mode != "listview") && (mode != "galleryview"))) wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_name && ((mode == "listview") || (mode == "galleryview"))) wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[14] + "&nbsp;</td>");
+	if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
+    if (vi.check_navtext)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[2] + "&nbsp;</td>");
+	if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
+	if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
+	if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[5] + "&nbsp;</td>");
+	if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[6] + "&nbsp;</td>");
+	if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[7] + "&nbsp;</td>");
+	if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[8] + "&nbsp;</td>");
+	if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[9] + "&nbsp;</td>");
+	if (vi.check_dateReleased)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
+	if (vi.check_dateExpired)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[11] + "&nbsp;</td>");
+	if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
+	if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[13] + "&nbsp;</td>");
 
 
 	wo.writeln("</tr>");
 
 	for (var i = 0; i < vi.liste.length; i++) {
-
 		var vi_icon;
 		var vi_text;
 		var noaccess = false;
@@ -860,18 +660,12 @@ function printList(wo) {
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
 			vi_text = vi.resource[plainresid].text;
-		} else if (vi.resource[vi.liste[i].type].editable == false) {
-			// type exists but the user has no access to this resource type
-			noaccess = true;
-			vi_icon = vi.resource[plainresid].icon;
-			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
-		ssclass = "class=\"";
-
+		var ssclass = "class=\"";
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
 			ssclass += "fp";
 		} else {
@@ -884,8 +678,6 @@ function printList(wo) {
 			if (vi.liste[i].state == 3)
 			ssclass += "fd";
 		}
-
-
 		ssclass += "\"";
 
 		if ((vi.liste[i].layoutstyle) == 1) ssclass += " style=\"font-style:italic;\"";
@@ -915,49 +707,54 @@ function printList(wo) {
 		}
 		wo.writeln("</td>");
 
-		if (vi.liste[i].isInsideCurrentProject) {
-			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the resource is in the current project, so display the lock and project state
+		wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
+		// the resource is in the current project, so display the lock and project state
 
-			var lockIcon;
-
-			if (vi.liste[i].lockedBy != "") {
-				if ((vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vr.actProject)) {
-					if (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2) {
-						lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
-					} else {
-						lockIcon = vi.skinPath + 'explorer/lock_user.gif';
-					}
-				} else {
-					lockIcon = vi.skinPath + 'explorer/lock_other.gif';
-				}
+		if (vi.liste[i].lockedBy != "") {
+			var lockIcon = '';
+			var lockedBystring;
+	        if (vi.liste[i].lockState == 1) {
+				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
-				wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+			} else if (vi.liste[i].lockState == 2) {
+				lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
+			} else if (vi.liste[i].lockState == 3) {
+				lockIcon = vi.skinPath + 'explorer/lock_user.gif';
+				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
 			}
-			wo.write("</td>");
-
-			wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
-			var projectIcon;
-			var projectAltText;
-			if (vi.liste[i].state != 0) {
-				if (vi.liste[i].project == vr.actProject) {
-					projectIcon = vi.skinPath + 'explorer/project_this.png';
-					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
-				} else {
-					projectIcon = vi.skinPath + 'explorer/project_other.png';
-					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
-				}
-			} else {
-				projectIcon = vi.skinPath + 'explorer/project_none.gif';
-				projectAltText = "";
+			if (vi.liste[i].projectState == 5) {
+				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 			}
-
-			wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
-			wo.write("</td>\n");
-		} else {
-			// nothing to do here
-			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\"></td>\n<td unselectable=\"on\" id=\"td2_" + i + "\"></td>\n");
+			if (lockIcon != '') {
+	        	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+	        }
 		}
+		wo.write("</td>");
+
+		wo.write("<td unselectable=\"on\" id=\"td2_" + i + "\">");
+		var projectIcon;
+		var projectAltText;
+
+        if (vi.liste[i].projectState == 5) {
+        	// locked for publish
+			projectIcon = vi.skinPath + 'explorer/project_publish.png';
+			projectAltText = vr.publishlock;
+		} else if (vi.liste[i].projectState == 2) {
+			// locked in other project
+			projectIcon = vi.skinPath + 'explorer/project_other.png';
+			projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+		} else if (vi.liste[i].projectState == 1) {
+			// locked in current project
+			projectIcon = vi.skinPath + 'explorer/project_this.png';
+			projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+		} else {
+			projectIcon = vi.skinPath + 'explorer/project_none.gif';
+			projectAltText = "";
+		}
+
+		wo.write("<img src=\"" + projectIcon + "\" alt=\"" + projectAltText + "\" title=\"" + projectAltText + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
+		wo.write("</td>\n");
 
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
@@ -1003,18 +800,19 @@ function printList(wo) {
 			wo.writeln("</td>");
 		}
 		var ressize = (vi.liste[i].isFolder) ? "" : "" + vi.liste[i].size;
-		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + decodeURIComponent(vi.liste[i].title) + "&nbsp;</td>");
-		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
-		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
-		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
+		if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
+		if (vi.check_navtext)				wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].navtext + "&nbsp;</td>");
+		if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
+		if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
+		if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
 		if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateLastModified + "</td>");
 		if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoLastModified + "</td>");
-		if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateCreated + "</td>");
+		if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateCreated + "</td>");
 		if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoCreated + "</td>");
-		if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateReleased + "</td>");
-		if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateExpired + "</td>");
-		if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
-		if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].lockedBy + "</td>");
+		if (vi.check_dateReleased)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateReleased + "</td>");
+		if (vi.check_dateExpired)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateExpired + "</td>");
+		if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
+		if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].lockedBy + "</td>");
 
 		wo.writeln("</td></tr>");
 	}
@@ -1027,10 +825,64 @@ function printList(wo) {
 	wo.writeln("</form>");
 
 	// create div for context menus
-	wo.writeln("<div id=\"contextmenu\" class=\"cm\"></div>");
+	wo.writeln("<div id=\"contextmenuouter\" class=\"cmwrapper\"><div id=\"contextmenu\" class=\"cmo\"></div></div>");
 
 	wo.write("<br></body></html>");
 	wo.close();
+}
+
+var openSubMenus = new Array();
+
+function oSubC(openID, keepIDs) {
+	// check the sub menus to keep open
+	var keepArray = new Array();
+	if (keepIDs != null) {
+		var keepArray = keepIDs.split(",");
+	}
+
+	var tempOpenMenus = new Array();
+	for (var i=openSubMenus.length - 1; i>=0; i--) {
+		var currOpenID = openSubMenus[i];
+		var keepOpen = currOpenID == openID;
+		for (var k=0; k<keepArray.length; k++) {
+			if (keepArray[k] == currOpenID) {
+				keepOpen = true;
+			}
+		}
+		if (!keepOpen) {
+			win.files.getElementById(currOpenID).style.visibility = "hidden";
+		} else if (currOpenID != openID) {
+			tempOpenMenus[tempOpenMenus.length] = currOpenID;
+		}
+
+	}
+
+	win.files.getElementById(openID).style.visibility = "visible";
+	tempOpenMenus[tempOpenMenus.length] = openID;
+	openSubMenus = tempOpenMenus;
+}
+
+function cSubC(keepIDs) {
+	var keepArray = new Array();
+	if (keepIDs != null) {
+		var keepArray = keepIDs.split(",");
+	}
+	var tempOpenMenus = new Array();
+	for (var i=openSubMenus.length - 1; i>=0; i--) {
+		var currOpenID = openSubMenus[i];
+		var keepOpen = false;
+		for (var k=0; k<keepArray.length; k++) {
+			if (keepArray[k] == currOpenID) {
+				keepOpen = true;
+			}
+		}
+		if (!keepOpen) {
+			win.files.getElementById(currOpenID).style.visibility = "hidden";
+		} else {
+			tempOpenMenus[tempOpenMenus.length] = currOpenID;
+		}
+	}
+	openSubMenus = tempOpenMenus;
 }
 
 
@@ -1044,7 +896,7 @@ function getResourceAbsolutePath(i) {
 		} else {
 			resourceName = vi.liste[i].path;
 		}
-	}	
+	}
 	return resourceName;
 }
 
@@ -1054,8 +906,11 @@ function simpleEscape(text) {
 }
 
 
-function openwinfull(url) {
-	if (cancelNextOpen) {
+function openwinfull(url, ignoreCancel) {
+	if (ignoreCancel == null) {
+		ignoreCancel = false;
+	}
+	if (cancelNextOpen && !ignoreCancel) {
 		return;
 	}
 	if (url != '#') {
@@ -1098,7 +953,8 @@ function openurl() {
 	if(win.head.forms.urlform && win.head.forms.urlform.pageSelect){
 		selectedpage = "&page=" + win.head.forms.urlform.pageSelect.value;
 	}
-	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
+	var selMode = "&mode=explorerview";
+	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage + selMode;
 }
 
 
@@ -1135,7 +991,7 @@ function dirUp(){
 
 
 function removeSiblingPrefix(directory) {
-	
+
 	if (directory.indexOf("siblings:") == 0) {
 		directory = directory.substring(9);
 		var lastSlashPos = directory.lastIndexOf("/");
@@ -1153,6 +1009,7 @@ function displayHead(doc, pages, actpage){
 	var btUp = "";
 	var btWizard = "";
 	var btUpload = "";
+	var btSearch = "";
 	var pageSelect = "";
 
 	if(vr.actDirectory == getRootFolder()) {
@@ -1163,13 +1020,19 @@ function displayHead(doc, pages, actpage){
 
 	if((vr.actProject != vr.onlineProject) && (vi.newButtonActive == true)) {
 		btWizard = button(vr.servpath + link_newresource, "explorer_files", "wizard.png", vr.langnew, buttonType);
-		btUpload = button(vr.servpath + link_uploadresource, "explorer_files", "upload.png", vr.langupload, buttonType);
+		if(vr.showUpload) {
+			btUpload = button(vr.servpath + link_uploadresource, "explorer_files", "upload.png", vr.langupload, buttonType);
+		}
 	} else {
 		btWizard = button(null, null, "wizard_in.png", vr.langnew, buttonType);
-		btUpload = button(null, null, "upload_in.png", vr.langupload, buttonType);
+		if(vr.showUpload) {
+			btUpload = button(null, null, "upload_in.png", vr.langupload, buttonType);
+		}
 	}
 
-	if(pages > 1){
+	btSearch = button(vr.servpath + link_searchresource, "explorer_files", "ex_search.png", vr.langsearch, buttonType);
+
+	if(pages > 1 && (mode != "listview")){
 		pageSelect=
 		"<td>&nbsp;&nbsp;"+vr.langpage+"&nbsp;</td>"
 		+ "<td class=menu>"
@@ -1212,6 +1075,7 @@ function displayHead(doc, pages, actpage){
 	+ buttonSep(0, 0, 0)
 	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
 	+ btUpload
+	+ btSearch
 	+ btWizard
 	+ btUp
 
@@ -1381,6 +1245,11 @@ function openFolder(folderName) {
 		folderName = getDisplayResource() + folderName + "/";
 	}
 	setDisplayResource(folderName);
+	if (mode != "explorerview") {
+		mode = "explorerview";
+		// reload explorer_files.jsp into the right frame
+		updateWindowStore();
+	}
 	openurl();
 }
 
@@ -1388,7 +1257,7 @@ function openFolder(folderName) {
 function openthisfolderflat(thisdir){
 	if (cancelNextOpen) {
 		return;
-	}	
+	}
 	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
 }
 
@@ -1432,13 +1301,15 @@ function findPosX(obj) {
 // returns the Y position of an object in the body
 function findPosY(obj) {
 	var curtop = 0;
-	if (obj.offsetParent) {
-		while (obj.offsetParent) {
-			curtop += obj.offsetTop;
-			obj = obj.offsetParent;
+	if (obj != null) {
+		if (obj.offsetParent) {
+			while (obj.offsetParent) {
+				curtop += obj.offsetTop;
+				obj = obj.offsetParent;
+			}
+		} else if (obj.y) {
+			curtop += obj.y;
 		}
-	} else if (obj.y) {
-		curtop += obj.y;
 	}
 	return curtop;
 }
@@ -1480,13 +1351,6 @@ function menu(nr) {
 	this.nr = nr;
 	this.items = new Array();
 }
-
-
-function addMenuEntry(nr,text,link,target,rules){
-	if(!vi.menus[nr])vi.menus[nr] = new menu(vi.menus.length);
-	vi.menus[nr].items[vi.menus[nr].items.length] = new menuItem(text,link,target,rules);
-}
-
 
 var treewin = null;
 var treeForm = null;

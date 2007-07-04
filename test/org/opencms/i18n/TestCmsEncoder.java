@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,15 +42,15 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
 public class TestCmsEncoder extends TestCase {
 
-    private static final String ENC_ISO_8859_1 = "ISO-8859-1";
+    private static final String ENC_ISO_8859_1 = CmsEncoder.ENCODING_ISO_8859_1;
     private static final String ENC_ISO_8859_15 = "ISO-8859-15";
-    private static final String ENC_US_ASCII = "US-ASCII";
+    private static final String ENC_US_ASCII = CmsEncoder.ENCODING_US_ASCII;
     private static final String ENC_UTF_8 = CmsEncoder.ENCODING_UTF_8;
     private static final String ENC_WINDOWS_1252 = "Cp1252";
 
@@ -61,6 +61,7 @@ public class TestCmsEncoder extends TestCase {
     private static final String STRING_3 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
     private static final String STRING_4 = "\u00e4\u00f6\u00fc\u20ac#|#12|&#12|&#;\u00c4\u00d6\u00dctest";
     private static final String STRING_5 = "&#228;&#246;&#252;&#8364;#|#12|&#12|&#;&#196;&#214;&#220;test";
+    private static final String STRING_6 = "Test: \\u00e4\\u00f6\\u00fc\\u00c4\\u00d6\\u00dc\\u00df\\u20ac";
 
     private static final String[][] TESTS_DECODE = {
         {STRING_3, STRING_2, ENC_ISO_8859_1},
@@ -94,8 +95,18 @@ public class TestCmsEncoder extends TestCase {
     }
 
     /**
+     * @see CmsEncoder#encodeJavaEntities(String, String) 
+     */
+    public void testEncodeNonIsoEntities() {
+        
+        String result = CmsEncoder.encodeJavaEntities(STRING_1, CmsEncoder.ENCODING_US_ASCII);
+        System.out.println("\n\n" + STRING_1);
+        System.out.println(result + "\n\n");
+        assertEquals(result, STRING_6);
+    }
+    
+    /**
      * Tests decoding german "umlaute".<p>
-     *
      */
     public void testDecodeUmlauts() {
 
@@ -225,5 +236,4 @@ public class TestCmsEncoder extends TestCase {
         String decoded = CmsEncoder.decode(encode2, ENC_UTF_8);
         assertEquals(encode1, decoded);
     }
-
 }

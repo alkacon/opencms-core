@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.tools.CmsToolUserData;
 
@@ -50,7 +51,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,17 +65,15 @@ public class CmsWorkplaceSettings {
     private String m_explorerMode;
     private int m_explorerPage;
     private String m_explorerProjectFilter;
-    private int m_explorerProjectId;
+    private CmsUUID m_explorerProjectId;
     private Map m_explorerResource;
-    private boolean m_explorerShowLinks;
     private Map m_frameUris;
     private String m_galleryType;
     private Map m_lastUsedGalleries;
     private Object m_listObject;
     private String m_permissionDetailView;
-    private int m_project;
+    private CmsUUID m_project;
     private CmsPublishList m_publishList;
-    private Map m_resourceTypes;
     private CmsToolUserData m_toolUserData;
     private Map m_treeSite;
     private Map m_treeType;
@@ -92,7 +91,6 @@ public class CmsWorkplaceSettings {
         m_explorerResource = new HashMap();
         m_treeType = new HashMap();
         m_treeSite = new HashMap();
-        m_resourceTypes = new HashMap();
         m_frameUris = new HashMap();
         m_lastUsedGalleries = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
@@ -186,7 +184,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the explorer project id
      */
-    public int getExplorerProjectId() {
+    public CmsUUID getExplorerProjectId() {
 
         return m_explorerProjectId;
     }
@@ -213,16 +211,6 @@ public class CmsWorkplaceSettings {
             resource = "/";
         }
         return resource;
-    }
-
-    /**
-     * Returns if the explorer should show VFS links of a resource.<p>
-     * 
-     * @return true, if VFS links should be shown, otherwise false
-     */
-    public boolean getExplorerShowLinks() {
-
-        return m_explorerShowLinks;
     }
 
     /**
@@ -288,7 +276,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the currently selected project of the workplace user
      */
-    public int getProject() {
+    public CmsUUID getProject() {
 
         return m_project;
     }
@@ -301,16 +289,6 @@ public class CmsWorkplaceSettings {
     public CmsPublishList getPublishList() {
 
         return m_publishList;
-    }
-
-    /**
-     * Returns a Map with all visible resource types for the current user, with the IDs as key values.<p>
-     * 
-     * @return Map with all visible resource types
-     */
-    public Map getResourceTypes() {
-
-        return m_resourceTypes;
     }
 
     /**
@@ -401,17 +379,6 @@ public class CmsWorkplaceSettings {
     public String getViewUri() {
 
         return m_viewUri;
-    }
-
-    /**
-     * Checks if the current view is the administration view.<p>
-     * 
-     * @return true if the current view is the administration view, otherwise false 
-     */
-    public boolean isViewAdministration() {
-
-        return (getViewUri().endsWith("/system/workplace/action/administration.html") || getViewUri().endsWith(
-            "/system/workplace/action/tasks.html"));
     }
 
     /**
@@ -506,7 +473,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the explorer project id
      */
-    public void setExplorerProjectId(int value) {
+    public void setExplorerProjectId(CmsUUID value) {
 
         m_explorerProjectId = value;
     }
@@ -516,7 +483,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the current resource to be displayed in the explorer
      */
-    public synchronized void setExplorerResource(String value) {
+    public void setExplorerResource(String value) {
 
         if (value == null) {
             return;
@@ -540,16 +507,6 @@ public class CmsWorkplaceSettings {
         } else {
             m_explorerResource.put(mode, value);
         }
-    }
-
-    /**
-     * Sets the explorer view to show VFS links of a resource.<p>
-     * 
-     * @param b true, if VFS links should be shown, otherwise false
-     */
-    public void setExplorerShowLinks(boolean b) {
-
-        m_explorerShowLinks = b;
     }
 
     /**
@@ -605,7 +562,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param project the currently selected project of thw workplace user
      */
-    public void setProject(int project) {
+    public void setProject(CmsUUID project) {
 
         m_project = project;
     }
@@ -618,16 +575,6 @@ public class CmsWorkplaceSettings {
     public void setPublishList(CmsPublishList publishList) {
 
         m_publishList = publishList;
-    }
-
-    /**
-     * Sets all visible resource types for the current user, with the IDs as key values.<p>
-     * 
-     * @param value Map with all visible resource types
-     */
-    public void setResourceTypes(Map value) {
-
-        m_resourceTypes = value;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/11/30 10:13:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,7 +256,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             values.add("");
 
             CmsResource resource;
-            CmsProperty titleProp = null;
+            CmsProperty titleProp = CmsProperty.getNullProperty();
 
             Iterator i = xsltFiles.iterator();
             while (i.hasNext()) {
@@ -325,7 +325,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             }
             long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
             // check file size
-            if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
+            if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                 throw new CmsWorkplaceException(Messages.get().container(
                     Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
                     new Long(maxFileSizeBytes / 1024)));
@@ -402,7 +402,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 }
             }
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return result;
 

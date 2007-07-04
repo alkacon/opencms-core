@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsHtmlNodeVisitor.java,v $
- * Date   : $Date: 2006/09/19 14:29:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.3
  * 

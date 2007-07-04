@@ -1,0 +1,70 @@
+td.galleryselector {
+	height: 22px;
+}
+
+td.galleryitemoutercontainer {
+	border: 1px solid WindowFrame;
+	background-color: Window;
+}
+
+div.galleryitemcontainer {
+	height: 100%;	
+}
+
+table.galleryarea {
+	width: 100%;
+}
+
+td.galleryitem, td.galleryitemactive {
+	padding: 3px 15px 0 15px;
+	text-align: center;
+	vertical-align: top;
+	width: 120px;
+	height: 120px;
+}
+
+td.galleryitem {
+	border: 1px solid Window;
+}
+
+td.galleryitemactive {
+	border: 1px solid Highlight;
+}
+
+div.imglayer {
+	margin: 0;
+	padding: 0;
+	display: block;
+	position: absolute;
+	z-index: 1000;
+}
+
+span.stateinfonew {
+	color: #00A;
+}
+
+span.stateinfochanged {
+	color: #B40000;
+}
+
+
+td.gallerynavigation {
+	padding: 3px 0 1px 0;
+	text-align: center;
+}
+
+td.imageinfoheadline {
+	font-weight: bold;
+}
+
+a.gallerypage, a.gallerypage:link, a.gallerypage:active, a.gallerypage:visited, a.gallerypage:hover {
+	text-decoration: none;
+	color: WindowText;
+	font-size: 16px;
+}
+
+span.gallerypageactive {
+	color: WindowText;
+	font-weight: bold;
+	font-size: 16px;
+}

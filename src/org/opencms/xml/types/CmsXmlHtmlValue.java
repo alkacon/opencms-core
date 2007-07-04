@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/04 16:57:28 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.staticexport.CmsLink;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
@@ -58,7 +59,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,31 +169,12 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     public CmsLinkTable getLinkTable() {
 
         CmsLinkTable linkTable = new CmsLinkTable();
-
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
-
         if (links != null) {
-            for (Iterator i = links.elementIterator(CmsXmlPage.NODE_LINK); i.hasNext();) {
-
-                Element lelem = (Element)i.next();
-                Attribute lname = lelem.attribute(CmsXmlPage.ATTRIBUTE_NAME);
-                Attribute type = lelem.attribute(CmsXmlPage.ATTRIBUTE_TYPE);
-                Attribute internal = lelem.attribute(CmsXmlPage.ATTRIBUTE_INTERNAL);
-
-                Element target = lelem.element(CmsXmlPage.NODE_TARGET);
-                Element anchor = lelem.element(CmsXmlPage.NODE_ANCHOR);
-                Element query = lelem.element(CmsXmlPage.NODE_QUERY);
-
-                CmsLink link = new CmsLink(
-                    lelem,
-                    lname.getValue(),
-                    type.getValue(),
-                    (target != null) ? target.getText() : null,
-                    (anchor != null) ? anchor.getText() : null,
-                    (query != null) ? query.getText() : null,
-                    Boolean.valueOf(internal.getValue()).booleanValue());
-
-                linkTable.addLink(link);
+            Iterator itLinks = links.elementIterator(CmsXmlPage.NODE_LINK);
+            while (itLinks.hasNext()) {
+                Element lelem = (Element)itLinks.next();
+                linkTable.addLink(new CmsLink(lelem));
             }
         }
         return linkTable;
@@ -262,22 +244,23 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         String encoding = m_document.getEncoding();
         linkProcessor = m_document.getLinkProcessor(cms, new CmsLinkTable());
 
+        String finalValue = value;
         if (encoding != null) {
             // ensure all chars in the given content are valid chars for the selected charset
-            value = CmsEncoder.adjustHtmlEncoding(value, encoding);
+            finalValue = CmsEncoder.adjustHtmlEncoding(finalValue, encoding);
         }
 
         // remove unnecessary tags if required
         String contentConversion = m_document.getConversion();
         if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
             CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
-            value = converter.convertToStringSilent(value);
+            finalValue = converter.convertToStringSilent(finalValue);
         }
 
         if (linkProcessor != null) {
             try {
                 // replace links in HTML by macros and fill link table      
-                value = linkProcessor.replaceLinks(value);
+                finalValue = linkProcessor.replaceLinks(finalValue);
             } catch (Exception exc) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0));
             }
@@ -286,30 +269,18 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         content.clearContent();
         links.clearContent();
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            content.addCDATA(value);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(finalValue)) {
+            content.addCDATA(finalValue);
             if (linkProcessor != null) {
                 // may be null in case of default value generation (i.e. setStringValue(String) was called)
 
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
                 for (Iterator i = linkTable.iterator(); i.hasNext();) {
                     CmsLink link = (CmsLink)i.next();
-
-                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK).addAttribute(
-                        CmsXmlPage.ATTRIBUTE_NAME,
-                        link.getName()).addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType()).addAttribute(
-                        CmsXmlPage.ATTRIBUTE_INTERNAL,
-                        Boolean.toString(link.isInternal()));
-
-                    linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
-
-                    if (link.getAnchor() != null) {
-                        linkElement.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(link.getAnchor());
-                    }
-
-                    if (link.getQuery() != null) {
-                        linkElement.addElement(CmsXmlPage.NODE_QUERY).addCDATA(link.getQuery());
-                    }
+                    CmsLinkUpdateUtil.updateXmlForHtmlValue(
+                        link,
+                        link.getName(),
+                        links.addElement(CmsXmlPage.NODE_LINK));
                 }
             }
         }
@@ -332,7 +303,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
 
         String content = "";
-        if (enabled == null || Boolean.valueOf(enabled.getText()).booleanValue()) {
+        if ((enabled == null) || Boolean.valueOf(enabled.getText()).booleanValue()) {
 
             content = data.getText();
 

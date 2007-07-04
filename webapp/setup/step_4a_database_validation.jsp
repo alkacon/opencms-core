@@ -17,6 +17,7 @@
 		db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 		if (!db.noErrors()) {
 			db.clearErrors();
+			db.closeConnection();
 			db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 		}
 		conErrors = new ArrayList(db.getErrors());
@@ -24,9 +25,11 @@
 		enableContinue = conErrors.isEmpty();
 		chkVars = db.checkVariables(Bean.getDatabase());
 		if (enableContinue && db.noErrors() && chkVars == null && Bean.validateJdbc()) {
+			db.closeConnection();
 			response.sendRedirect(nextPage);
 			return;
 		}
+		db.closeConnection();
 	}
 
 %><%= Bean.getHtmlPart("C_HTML_START") %>

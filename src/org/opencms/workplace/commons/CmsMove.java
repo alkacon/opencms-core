@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -68,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,14 +78,11 @@ public class CmsMove extends CmsMultiDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "move";
-    
-    /** Request parameter name for the overwrite flag. */
-    public static final String PARAM_OVERWRITE = "overwrite";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMove.class);
 
-    private String m_paramOverwrite;
+    /** The value for the 'target' parameter. */
     private String m_paramTarget;
 
     /**
@@ -120,19 +116,36 @@ public class CmsMove extends CmsMultiDialog {
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
-        CmsResource resource = null;
         try {
             boolean isFolder = false;
             String source = (String)getResourceList().get(0);
             String target = CmsLinkManager.getAbsoluteUri(getParamTarget(), CmsResource.getParentFolder(source));
-            if (! isMultiOperation()) {
-                resource = getCms().readResource(source, CmsResourceFilter.ALL);
+            if (!isMultiOperation()) {
+                CmsResource resource = getCms().readResource(source, CmsResourceFilter.ALL);
                 isFolder = resource.isFolder();
             } else {
-                resource = getCms().readResource(target, CmsResourceFilter.ALL);
-                if (! resource.isFolder()) {
+                String siteRootFolder = null;
+                CmsResource resource;
+                try {
+                    // check if a site root was added to the target name
+                    if (CmsSiteManager.getSiteRoot(target) != null) {
+                        siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                        if (siteRootFolder.endsWith("/")) {
+                            siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
+                        }
+                        getCms().getRequestContext().setSiteRoot("/");
+                    }
+                    resource = getCms().readResource(target, CmsResourceFilter.ALL);
+                } finally {
+                    if (siteRootFolder != null) {
+                        getCms().getRequestContext().setSiteRoot(siteRootFolder);
+                    }
+                }
+                if (!resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
-                    throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_MULTI_TARGET_NOFOLDER_1, target));
+                    throw new CmsVfsException(Messages.get().container(
+                        Messages.ERR_MOVE_MULTI_TARGET_NOFOLDER_1,
+                        target));
                 }
             }
             if (performDialogOperation()) {
@@ -141,12 +154,18 @@ public class CmsMove extends CmsMultiDialog {
                     // set request attribute to reload the explorer tree view
                     List folderList = new ArrayList(2);
                     String sourceParent = CmsResource.getParentFolder(source);
-                    String targetParent = CmsResource.getParentFolder(target);
-                    if (!targetParent.equals(sourceParent)) {
-                        // update target folder if its not the same as the source folder
-                        folderList.add(targetParent);
-                    }
                     folderList.add(sourceParent);
+                    try {
+                        String targetParent = CmsResource.getParentFolder(target);
+                        if (!targetParent.equals(sourceParent)) {
+                            // update target folder if its not the same as the source folder
+                            folderList.add(targetParent);
+                        }
+                    } catch (Exception e) {
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(e);
+                        }
+                    }
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
                 actionCloseDialog();
@@ -155,63 +174,9 @@ public class CmsMove extends CmsMultiDialog {
                 getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
-            // check if this exception requires a confirmation or error screen
-            if (! isMultiOperation() && (e instanceof CmsVfsResourceAlreadyExistsException) && !(resource.isFolder())) {
-                // file move but file already exists, now check target file type
-                int targetType = -1;
-                boolean restoreSiteRoot = false;
-                try {
-                    if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) {
-                        getCms().getRequestContext().saveSiteRoot();
-                        getCms().getRequestContext().setSiteRoot("/");
-                        restoreSiteRoot = true;
-                    }
-                    CmsResource targetRes = getCms().readResource(getParamTarget());
-                    targetType = targetRes.getTypeId();
-                } catch (CmsException e2) {
-                    // can usually be ignored
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e2.getLocalizedMessage());
-                    }
-                } finally {
-                    if (restoreSiteRoot) {
-                        getCms().getRequestContext().restoreSiteRoot();
-                    }
-                }
-                if (resource.getTypeId() == targetType) {
-                    // file type of target is the same as source, show confirmation dialog
-                    setParamMessage(CmsStringUtil.escapeHtml(key(Messages.GUI_COPY_CONFIRM_OVERWRITE_2, 
-                        new Object[] {getParamResource(), getParamTarget()})));
-                    getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
-                } else {
-                    // file type is different, create error message
-                    includeErrorpage(this, e);
-                }
-            } else {
-                // error during move, show error dialog
-                includeErrorpage(this, e);
-            }
+            // error during move, show error dialog
+            includeErrorpage(this, e);
         }
-    }
-    
-    /**
-     * Builds the available options when moving.<p>
-     * 
-     * @return the HTML code for the options
-     */
-    public String buildMoveOptions() {
-
-        StringBuffer retValue = new StringBuffer(256);
-        if (isMultiOperation()) {
-            // show overwrite option for multi resource moving
-            retValue.append("<input type=\"checkbox\" name=\"");
-            retValue.append(PARAM_OVERWRITE);
-            retValue.append("\" value=\"true\"> ");
-            retValue.append(key(Messages.GUI_COPY_MULTI_OVERWRITE_0));
-            retValue.append("<br>\n");
-            retValue.append(dialogSpacer());
-        }
-        return retValue.toString();
     }
 
     /**
@@ -232,16 +197,6 @@ public class CmsMove extends CmsMultiDialog {
         }
         return resourceName;
     }
-    
-    /**
-     * Returns the value of the overwrite parameter.<p>
-     * 
-     * @return the value of the overwrite parameter
-     */
-    public String getParamOverwrite() {
-
-        return m_paramOverwrite;
-    }
 
     /**
      * Returns the value of the target parameter, 
@@ -255,16 +210,6 @@ public class CmsMove extends CmsMultiDialog {
     public String getParamTarget() {
 
         return m_paramTarget;
-    }
-    
-    /**
-     * Sets the value of the overwrite parameter.<p>
-     * 
-     * @param paramOverwrite the value of the overwrite parameter
-     */
-    public void setParamOverwrite(String paramOverwrite) {
-
-        m_paramOverwrite = paramOverwrite;
     }
 
     /**
@@ -284,13 +229,13 @@ public class CmsMove extends CmsMultiDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to rename/move the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -300,6 +245,8 @@ public class CmsMove extends CmsMultiDialog {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
@@ -324,10 +271,6 @@ public class CmsMove extends CmsMultiDialog {
             // return false, this will trigger the "please wait" screen
             return false;
         }
-        
-        // check the overwrite options
-        boolean overwrite = Boolean.valueOf(getParamOverwrite()).booleanValue();
-        overwrite = ((isMultiOperation() && overwrite) || DIALOG_CONFIRMED.equals(getParamAction()));
 
         // get the target name
         String target = getParamTarget();
@@ -335,19 +278,17 @@ public class CmsMove extends CmsMultiDialog {
             target = "";
         }
 
-        boolean restoreSiteRoot = false;
+        String siteRootFolder = null;
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
             if (CmsSiteManager.getSiteRoot(target) != null) {
-                String siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                siteRootFolder = getCms().getRequestContext().getSiteRoot();
                 if (siteRootFolder.endsWith("/")) {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                 }
                 sitePrefix = siteRootFolder;
-                getCms().getRequestContext().saveSiteRoot();
                 getCms().getRequestContext().setSiteRoot("/");
-                restoreSiteRoot = true;
             }
 
             Iterator i = getResourceList().iterator();
@@ -355,7 +296,7 @@ public class CmsMove extends CmsMultiDialog {
             while (i.hasNext()) {
                 String resName = (String)i.next();
                 try {
-                    performSingleMoveOperation(resName, target, sitePrefix, overwrite);
+                    performSingleMoveOperation(resName, target, sitePrefix);
                 } catch (CmsException e) {
                     if (isMultiOperation()) {
                         // collect exceptions to create a detailed output
@@ -369,42 +310,42 @@ public class CmsMove extends CmsMultiDialog {
             // check if exceptions occured
             checkMultiOperationException(Messages.get(), Messages.ERR_MOVE_MULTI_0);
         } finally {
-            if (restoreSiteRoot) {
-                getCms().getRequestContext().restoreSiteRoot();
+            if (siteRootFolder != null) {
+                getCms().getRequestContext().setSiteRoot(siteRootFolder);
             }
         }
         return true;
     }
-    
+
     /**
      * Performs the move operation for a single VFS resource.<p>
      * 
      * @param source the source VFS path
      * @param target the target VFS path
      * @param sitePrefix the site prefix
-     * @param overwrite the overwrite flag
+     * 
      * @throws CmsException if moving the resource fails
      */
-    protected void performSingleMoveOperation(String source, String target, String sitePrefix, boolean overwrite)
-    throws CmsException {
+    protected void performSingleMoveOperation(String source, String target, String sitePrefix) throws CmsException {
 
         // calculate the target name
-        target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));
+        String finalTarget = getCms().getRequestContext().getFileTranslator().translateResource(target);
+        finalTarget = CmsLinkManager.getAbsoluteUri(finalTarget, CmsResource.getParentFolder(source));
 
-        if (target.equals(source) || (isMultiOperation() && target.startsWith(source))) {
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_ONTO_ITSELF_1, target));
+        if (finalTarget.equals(source) || (isMultiOperation() && finalTarget.startsWith(source))) {
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_ONTO_ITSELF_1, finalTarget));
         }
 
         try {
-            CmsResource res = getCms().readResource(target, CmsResourceFilter.ALL);
+            CmsResource res = getCms().readResource(finalTarget, CmsResourceFilter.ALL);
             if (res.isFolder()) {
                 // target folder already exists, so we add the current folder name
-                if (! target.endsWith("/")) {
-                    target += "/";
+                if (!finalTarget.endsWith("/")) {
+                    finalTarget += "/";
                 }
-                target = target + CmsResource.getName(source);
-                if (target.endsWith("/")) {
-                    target = target.substring(0, target.length() - 1);
+                finalTarget = finalTarget + CmsResource.getName(source);
+                if (finalTarget.endsWith("/")) {
+                    finalTarget = finalTarget.substring(0, finalTarget.length() - 1);
                 }
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -415,28 +356,20 @@ public class CmsMove extends CmsMultiDialog {
         }
 
         // set the target parameter value
-        setParamTarget(target);
-        
-        // set the target parameter value
-        setParamTarget(target);
+        setParamTarget(finalTarget);
 
-        // delete existing target resource if selected or confirmed by the user
-        if (getCms().existsResource(target, CmsResourceFilter.ALL)) {
-            if (overwrite) {
-                checkLock(target);
-                getCms().deleteResource(target, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            } else {
-                // throw exception to indicate that the target exists
-                throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                    Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
-                    source,
-                    getJsp().getRequestContext().removeSiteRoot(target)));
-            }
+        // could not overwrite a resource in a move operation
+        if (getCms().existsResource(finalTarget, CmsResourceFilter.ALL)) {
+            // throw exception to indicate that the target exists
+            throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
+                Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
+                source,
+                getJsp().getRequestContext().removeSiteRoot(finalTarget)));
         }
 
         // lock resource if autolock is enabled
         checkLock(sitePrefix + source);
         // move the resource
-        getCms().moveResource(sitePrefix + source, target);
+        getCms().moveResource(sitePrefix + source, finalTarget);
     }
 }

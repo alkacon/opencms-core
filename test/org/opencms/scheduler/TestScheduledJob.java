@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestScheduledJob.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,10 @@ import java.util.Map;
 public class TestScheduledJob implements I_CmsScheduledJob {
 
     /** Indicates if this class was run. */
-    public static int m_runCount = 0; 
+    static int m_runCount = 0; 
     
     /** Static copy of the instance run count for easy test access. */
-    public static int m_instanceCountCopy;
+    static int m_instanceCountCopy;
     
     /** Instance run count. */
     private int m_instanceRunCount;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/AllTests.java,v $
- * Date   : $Date: 2006/03/27 14:52:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:56:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.setup}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0
  */

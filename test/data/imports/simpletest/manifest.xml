@@ -3,20 +3,21 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>11/17/04 2:29 PM</createdate>
+		<opencms_version>6.5.3</opencms_version>
+		<createdate>Wed, 27 Sep 2006 15:13:25 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>5</export_version>
 	</info>
 	<files>
 		<file>
 			<source>index.html</source>
 			<destination>index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7d6c22cd-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>a7b5d298-b3ab-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:11:36 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:11:24 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:11:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -42,9 +43,10 @@
 		<file>
 			<destination>folder1</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:06:19 CEST</datelastmodified>
+			<uuidstructure>7dc454f4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:06:06 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:06:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -67,16 +69,21 @@
 			<source>folder1/image1.gif</source>
 			<destination>folder1/image1.gif</destination>
 			<type>image</type>
+			<uuidstructure>7dd2acd8-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>98a47bf8-b3ad-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:23 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:25:17 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:25:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -85,16 +92,21 @@
 			<source>folder1/image2.gif</source>
 			<destination>folder1/image2.gif</destination>
 			<type>image</type>
+			<uuidstructure>7df1a68c-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>a8c8425b-b3ad-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:31 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:25:44 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:25:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:109,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -103,10 +115,11 @@
 			<source>folder1/index.html</source>
 			<destination>folder1/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e04b960-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>f6b52b85-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:07:16 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:06:27 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:06:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -141,10 +154,11 @@
 			<source>folder1/page1.html</source>
 			<destination>folder1/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e23b318-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>0f8618fe-b3ad-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:51:06 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:21:27 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:21:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -179,10 +193,11 @@
 			<source>folder1/page2.html</source>
 			<destination>folder1/page2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e451dd0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>6726f581-b3ad-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:50:59 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:23:54 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:23:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -217,10 +232,11 @@
 			<source>folder1/page3.html</source>
 			<destination>folder1/page3.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e5ceb98-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:50:52 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:24:30 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:24:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -255,16 +271,21 @@
 			<source>folder1/page4.html</source>
 			<destination>folder1/page4.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e726f70-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35723fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:50:52 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:24:30 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:24:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>secure</name>
+					<value><![CDATA[true]]></value>
 				</property>
 				<property>
 					<name>Description</name>
@@ -286,19 +307,16 @@
 					<name>Title</name>
 					<value><![CDATA[Page4]]></value>
 				</property>
-				<property>
-					<name>secure</name>
-					<value><![CDATA[true]]></value>
-				</property>				
 			</properties>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<destination>folder1/subfolder11</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:35:53 CEST</datelastmodified>
+			<uuidstructure>7e8a3d3d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:35:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:28:47 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:28:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -321,10 +339,11 @@
 			<source>folder1/subfolder11/index.html</source>
 			<destination>folder1/subfolder11/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e8cae41-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>21b6f816-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:30:08 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:29:07 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:29:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -359,10 +378,11 @@
 			<source>folder1/subfolder11/page1.html</source>
 			<destination>folder1/subfolder11/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7e9adf19-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:18 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:30:23 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -397,10 +417,11 @@
 			<source>folder1/subfolder11/page2.html</source>
 			<destination>folder1/subfolder11/page2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>7eb2d3f1-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:36 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:31:51 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:31:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -434,9 +455,10 @@
 		<file>
 			<destination>folder1/subfolder11/subsubfolder111</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:32:49 CEST</datelastmodified>
+			<uuidstructure>7ec104ca-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:32:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:32:34 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:32:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -459,16 +481,21 @@
 			<source>folder1/subfolder11/subsubfolder111/image.gif</source>
 			<destination>folder1/subfolder11/subsubfolder111/image.gif</destination>
 			<type>image</type>
+			<uuidstructure>7ec830be-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:01:54 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:01:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:01:17 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:01:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[This is an image]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:49]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -477,10 +504,11 @@
 			<source>folder1/subfolder11/subsubfolder111/jsp.jsp</source>
 			<destination>folder1/subfolder11/subsubfolder111/jsp.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>7edb4392-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:00:06 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:00:01 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -503,10 +531,11 @@
 			<source>folder1/subfolder11/subsubfolder111/link</source>
 			<destination>folder1/subfolder11/subsubfolder111/link</destination>
 			<type>pointer</type>
+			<uuidstructure>7ee4e087-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:00:50 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:00:40 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:00:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -520,11 +549,12 @@
 		<file>
 			<source>folder1/subfolder11/subsubfolder111/testdata.zip</source>
 			<destination>folder1/subfolder11/subsubfolder111/testdata.zip</destination>
-			<type>plain</type>
+			<type>binary</type>
+			<uuidstructure>7ee99b7a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:26:32 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 10:26:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:25:32 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:25:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -539,10 +569,11 @@
 			<source>folder1/subfolder11/subsubfolder111/text.txt</source>
 			<destination>folder1/subfolder11/subsubfolder111/text.txt</destination>
 			<type>plain</type>
+			<uuidstructure>8297613d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 10:59:44 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 08:59:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 10:59:35 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 08:59:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -557,10 +588,11 @@
 			<source>folder1/subfolder11/subsubfolder111/xml.xml</source>
 			<destination>folder1/subfolder11/subsubfolder111/xml.xml</destination>
 			<type>XMLTemplate</type>
+			<uuidstructure>82bb15e0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:05:42 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:05:04 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:05:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -574,9 +606,10 @@
 		<file>
 			<destination>folder1/subfolder12</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:34:58 CEST</datelastmodified>
+			<uuidstructure>82d554a4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:34:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:34:44 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:34:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -599,10 +632,11 @@
 			<source>folder1/subfolder12/index.html</source>
 			<destination>folder1/subfolder12/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>82da0f98-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>f6cab2ee-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:36:04 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:35:05 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:35:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -636,10 +670,11 @@
 		<file>
 			<destination>folder1/subfolder12/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>82e86780-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:18 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:30:23 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -674,10 +709,11 @@
 			<source>folder1/subfolder12/page2.html</source>
 			<destination>folder1/subfolder12/page2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>82ef9377-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>3340c0c2-b3af-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:59 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:36:46 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:36:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -711,9 +747,10 @@
 		<file>
 			<destination>folder1/subfolder12/subsubfolder121</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:44:29 CEST</datelastmodified>
+			<uuidstructure>83051750-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:44:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:44:12 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:44:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -736,16 +773,25 @@
 			<source>folder1/subfolder12/subsubfolder121/image1.gif</source>
 			<destination>folder1/subfolder12/subsubfolder121/image1.gif</destination>
 			<type>image</type>
+			<uuidstructure>830c4344-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>7a234f2d-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:23 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:45:55 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:45:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Not a picture of Cologne]]></value>
+				</property>				
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -754,10 +800,11 @@
 			<source>folder1/subfolder12/subsubfolder121/index.html</source>
 			<destination>folder1/subfolder12/subsubfolder121/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>831f5618-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>49c653e7-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:45:05 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:44:34 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:44:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -792,10 +839,11 @@
 			<source>folder1/subfolder12/subsubfolder121/page1.html</source>
 			<destination>folder1/subfolder12/subsubfolder121/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>832d86f0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>6546bbaa-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:46:30 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:45:20 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:45:20 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -829,9 +877,10 @@
 		<file>
 			<destination>folder2</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:47:25 CEST</datelastmodified>
+			<uuidstructure>8347c4b9-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:47:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:47:13 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:47:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -854,16 +903,21 @@
 			<source>folder2/image1.gif</source>
 			<destination>folder2/image1.gif</destination>
 			<type>image</type>
+			<uuidstructure>835161ad-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>e913bb0e-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:23 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:49:01 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:49:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -872,16 +926,21 @@
 			<source>folder2/image2.gif</source>
 			<destination>folder2/image2.gif</destination>
 			<type>image</type>
+			<uuidstructure>83620381-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>efcac931-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:31 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:49:12 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:49:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:109,h:32]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -890,10 +949,11 @@
 			<source>folder2/index.html</source>
 			<destination>folder2/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>836ba075-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:53:19 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:47:32 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:47:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -945,10 +1005,11 @@
 			<source>folder2/page1.html</source>
 			<destination>folder2/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>8388292f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:53:30 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:50:16 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:50:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1008,10 +1069,11 @@
 			<source>folder2/page2.html</source>
 			<destination>folder2/page2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>8398cb0a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>193c5fe9-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:50:43 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:50:22 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:50:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1045,9 +1107,10 @@
 		<file>
 			<destination>folder2/subfolder21</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:51:46 CEST</datelastmodified>
+			<uuidstructure>83a993f3-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:51:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:51:35 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:51:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1070,10 +1133,11 @@
 			<source>folder2/subfolder21/image1.gif</source>
 			<destination>folder2/subfolder21/image1.gif</destination>
 			<type>image</type>
+			<uuidstructure>83b309d7-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>65e24310-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:26:23 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:26:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:52:30 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:52:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1081,16 +1145,21 @@
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:116,h:32]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>folder2/subfolder21/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>83ba35cb-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:53:19 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:47:32 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:47:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1141,10 +1210,11 @@
 		<file>
 			<destination>folder2/subfolder21/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>83c3d2c4-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:53:30 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:50:16 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:50:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1203,9 +1273,10 @@
 		<file>
 			<destination>folder2/subfolder21/subsubfolder211</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:53:58 CEST</datelastmodified>
+			<uuidstructure>83dba08f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:53:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:53:46 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:53:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1228,10 +1299,11 @@
 			<source>folder2/subfolder21/subsubfolder211/jsp1.jsp</source>
 			<destination>folder2/subfolder21/subsubfolder211/jsp1.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>83eeb363-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:09:04 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 10:09:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:54:07 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:54:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1254,10 +1326,11 @@
 			<source>folder2/subfolder21/subsubfolder211/jsp2.jsp</source>
 			<destination>folder2/subfolder21/subsubfolder211/jsp2.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>8408f228-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>ad2d25ab-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:54:43 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:54:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:54:30 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:54:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1283,9 +1356,10 @@
 		<file>
 			<destination>folder2/subfolder22</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 12:01:36 CEST</datelastmodified>
+			<uuidstructure>84174a0f-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 10:01:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:01:26 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:01:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1308,10 +1382,11 @@
 			<source>folder2/subfolder22/index.html</source>
 			<destination>folder2/subfolder22/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>841e4ef3-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>b82172e0-b3b2-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:02:10 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:01:58 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:01:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1345,10 +1420,11 @@
 		<file>
 			<destination>folder2/subfolder22/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>842a5ceb-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:18 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:30:23 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:30:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1382,10 +1458,11 @@
 		<file>
 			<destination>folder2/subfolder22/page2.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>842ca6e2-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:04:36 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:31:51 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:31:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1420,10 +1497,11 @@
 			<source>folder2/subfolder22/page3.html</source>
 			<destination>folder2/subfolder22/page3.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>842f17e9-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>441ba595-b3b3-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:06:14 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:05:53 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:05:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1457,9 +1535,10 @@
 		<file>
 			<destination>folder2/subfolder22/subsubfolder221</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 12:06:58 CEST</datelastmodified>
+			<uuidstructure>843d6fd2-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 10:06:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:06:58 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1499,10 +1578,11 @@
 			<source>folder2/subfolder22/subsubfolder221/index.html</source>
 			<destination>folder2/subfolder22/subsubfolder221/index.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>843fb9c8-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>6b4cc22d-b3b3-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:08:28 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:06:58 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1536,10 +1616,11 @@
 		<file>
 			<destination>folder2/subfolder22/subsubfolder221/jsp1.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>8446e5c0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:09:04 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 10:09:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:54:07 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:54:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1570,10 +1651,11 @@
 			<source>folder2/subfolder22/subsubfolder221/page1.html</source>
 			<destination>folder2/subfolder22/subsubfolder221/page1.html</destination>
 			<type>xmlpage</type>
+			<uuidstructure>844ba0b6-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>6b610d80-b3b3-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:08:40 CEST</datelastmodified>
+			<datelastmodified>Wed, 27 Sep 2006 15:12:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:06:58 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:06:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1607,9 +1689,10 @@
 		<file>
 			<destination>types</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 10:53:54 CEST</datelastmodified>
+			<uuidstructure>845082bf-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 08:53:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 10:53:38 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 08:53:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1623,10 +1706,11 @@
 		<file>
 			<destination>types/image.gif</destination>
 			<type>image</type>
+			<uuidstructure>84639591-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:01:54 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:01:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:01:17 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:01:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1634,16 +1718,21 @@
 					<name>Title</name>
 					<value><![CDATA[This is an image]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:50,h:49]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>types/jsp.jsp</destination>
 			<type>jsp</type>
+			<uuidstructure>84685083-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:00:06 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:00:01 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1665,10 +1754,11 @@
 		<file>
 			<destination>types/link</destination>
 			<type>pointer</type>
+			<uuidstructure>846a9a77-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:00:50 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:00:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:00:40 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:00:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1681,11 +1771,12 @@
 		</file>
 		<file>
 			<destination>types/testdata.zip</destination>
-			<type>plain</type>
+			<type>binary</type>
+			<uuidstructure>846f7c79-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 12:26:32 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 10:26:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 12:25:32 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 10:25:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1699,10 +1790,11 @@
 		<file>
 			<destination>types/text.txt</destination>
 			<type>plain</type>
+			<uuidstructure>8471c66b-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 10:59:44 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 08:59:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 10:59:35 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 08:59:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1716,10 +1808,11 @@
 		<file>
 			<destination>types/xml.xml</destination>
 			<type>XMLTemplate</type>
+			<uuidstructure>8474376d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
-			<datelastmodified>Tue, 01 Jun 2004 11:05:42 CEST</datelastmodified>
+			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:05:04 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:05:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1733,9 +1826,10 @@
 		<file>
 			<destination>xmlcontent</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 01 Jun 2004 11:06:19 CEST</datelastmodified>
+			<uuidstructure>8476a870-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
+			<datelastmodified>Tue, 01 Jun 2004 09:06:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 01 Jun 2004 11:06:06 CEST</datecreated>
+			<datecreated>Tue, 01 Jun 2004 09:06:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1743,6 +1837,10 @@
 					<name>Title</name>
 					<value><![CDATA[Xmlcontent]]></value>
 				</property>
+				<property>
+					<name>search.special</name>
+					<value><![CDATA[Cologne is a nice city]]></value>
+				</property>						
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -1750,10 +1848,11 @@
 			<source>xmlcontent/article.xsd</source>
 			<destination>xmlcontent/article.xsd</destination>
 			<type>plain</type>
+			<uuidstructure>84801e52-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>3416bed7-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 17:28:15 CEST</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 15:28:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1768,10 +1867,11 @@
 			<source>xmlcontent/article_0001.html</source>
 			<destination>xmlcontent/article_0001.html</destination>
 			<type>article</type>
+			<uuidstructure>84d12484-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 18 Oct 2004 18:59:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 18 Oct 2004 16:59:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:16:45 CEST</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1786,10 +1886,11 @@
 			<source>xmlcontent/article_0002.html</source>
 			<destination>xmlcontent/article_0002.html</destination>
 			<type>article</type>
+			<uuidstructure>84eb6346-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Tue, 19 Oct 2004 18:59:00 CEST</datelastmodified>
+			<datelastmodified>Tue, 19 Oct 2004 16:59:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:10:27 CEST</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1804,10 +1905,11 @@
 			<source>xmlcontent/article_0003.html</source>
 			<destination>xmlcontent/article_0003.html</destination>
 			<type>article</type>
+			<uuidstructure>84f01e38-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Wed, 20 Oct 2004 19:00:00 CEST</datelastmodified>
+			<datelastmodified>Wed, 20 Oct 2004 17:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:15:46 CEST</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1822,10 +1924,11 @@
 			<source>xmlcontent/article_0004.html</source>
 			<destination>xmlcontent/article_0004.html</destination>
 			<type>article</type>
+			<uuidstructure>8500e71a-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Thu, 21 Oct 2004 19:00:00 CEST</datelastmodified>
+			<datelastmodified>Thu, 21 Oct 2004 17:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:24:31 CEST</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1847,6 +1950,12 @@
 		<groupdata>
 			<name>group2</name>
 			<description><![CDATA[group2]]></description>
+			<flags>6</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>group3</name>
+			<description><![CDATA[group3]]></description>
 			<flags>6</flags>
 			<parentgroup/>
 		</groupdata>

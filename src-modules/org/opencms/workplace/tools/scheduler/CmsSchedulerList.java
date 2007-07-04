@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2007/05/07 10:24:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/07/04 16:57:13 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,46 +182,43 @@ public class CmsSchedulerList extends A_CmsListDialog {
      */
     public void executeListMultiActions() throws CmsRuntimeException {
 
-        CmsListItem listItem = null;
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
             List removedItems = new ArrayList();
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                while (itItems.hasNext()) {
-                    listItem = (CmsListItem)itItems.next();
+            Iterator itItems = getSelectedItems().iterator();
+            while (itItems.hasNext()) {
+                CmsListItem listItem = (CmsListItem)itItems.next();
+                try {
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     removedItems.add(listItem.getId());
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_UNSCHEDULE_JOB_1,
+                        listItem.getId()), e);
                 }
-                // update the XML configuration
-                writeConfiguration(false);
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_UNSCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
-            } finally {
-                getList().removeAllItems(removedItems, getLocale());
             }
+            // update the XML configuration
+            writeConfiguration(false);
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
             || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate or deactivate multiaction
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
-                while (itItems.hasNext()) {
-                    // toggle the active state of the selected item(s)
-                    listItem = (CmsListItem)itItems.next();
+            Iterator itItems = getSelectedItems().iterator();
+            boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
+            while (itItems.hasNext()) {
+                // toggle the active state of the selected item(s)
+                CmsListItem listItem = (CmsListItem)itItems.next();
+                try {
                     CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
                     job.setActive(activate);
                     OpenCms.getScheduleManager().scheduleJob(getCms(), job);
+                } catch (CmsException e) {
+                    throw new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_SCHEDULE_JOB_1,
+                        listItem.getId()), e);
                 }
-                // update the XML configuration
-                writeConfiguration(true);
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SCHEDULE_JOB_1,
-                    (listItem == null) ? (Object)"?" : listItem.getId()), e);
             }
+            // update the XML configuration
+            writeConfiguration(true);
         } else {
             throwListUnsupportedActionException();
         }
@@ -284,7 +281,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 OpenCms.getScheduleManager().unscheduleJob(getCms(), jobId);
                 // update the XML configuration
                 writeConfiguration(false);
-                getList().removeItem(jobId, getLocale());
             } catch (CmsRoleViolationException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_JOB_1, jobId), e);
@@ -336,7 +332,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         Iterator i = OpenCms.getScheduleManager().getJobs().iterator();
         while (i.hasNext()) {
             CmsScheduledJobInfo job = (CmsScheduledJobInfo)i.next();
-            CmsListItem item = getList().newItem(job.getId().toString());
+            CmsListItem item = getList().newItem(job.getId());
             // set the contents of the columns
             item.set(LIST_COLUMN_NAME, job.getJobName());
             item.set(LIST_COLUMN_CLASS, job.getClassName());

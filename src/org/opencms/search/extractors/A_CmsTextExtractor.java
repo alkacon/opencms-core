@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,14 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Base utility class that allows extraction of the indexable "plain" text from a given document format.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +114,24 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
     }
 
     /**
+     * Combines a meta information item extracted from the document with the main content buffer and 
+     * also stores the individual information as item in the Map of content items.<p>
+     * 
+     * @param itemValue the value of the item to store
+     * @param itemKey the key in the Map of content items
+     * @param content a buffer where to append the content item
+     * @param contentItems the Map of individual content items
+     */
+    protected void combineContentItem(String itemValue, String itemKey, StringBuffer content, Map contentItems) {
+
+        if (CmsStringUtil.isNotEmpty(itemValue)) {
+            contentItems.put(itemKey, itemValue);
+            content.append('\n');
+            content.append(itemValue);
+        }
+    }
+
+    /**
      * Removes "unwanted" control chars from the given content.<p>
      * 
      * @param content the content to remove the unwanted control chars from
@@ -144,15 +163,15 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
                 case Character.START_PUNCTUATION:
                 case Character.END_PUNCTUATION:
                 case Character.OTHER_PUNCTUATION:
-                // letters
+                    // letters
                 case Character.OTHER_LETTER:
                 case Character.MODIFIER_LETTER:
                 case Character.UPPERCASE_LETTER:
                 case Character.TITLECASE_LETTER:
                 case Character.LOWERCASE_LETTER:
-                // digits
+                    // digits
                 case Character.DECIMAL_DIGIT_NUMBER:
-                // spaces
+                    // spaces
                 case Character.SPACE_SEPARATOR:
                     result.append(ch);
                     wasUnwanted = false;
@@ -167,7 +186,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
                 // symbols
                 case Character.MATH_SYMBOL:
                 case Character.OTHER_SYMBOL:
-                // other stuff:
+                    // other stuff:
                 case Character.CONTROL:
                 case Character.COMBINING_SPACING_MARK:
                 case Character.ENCLOSING_MARK:

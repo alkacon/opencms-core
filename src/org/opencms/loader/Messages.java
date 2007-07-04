@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5 = "ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFLICTING_RESOURCE_TYPES_4 = "ERR_CONFLICTING_RESOURCE_TYPES_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFLICTING_RESTYPES_IN_MODULE_5 = "ERR_CONFLICTING_RESTYPES_IN_MODULE_5";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
@@ -197,6 +206,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IGNORING_EXC_1 = "LOG_IGNORING_EXC_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_JSP_PERMCHECK_4 = "LOG_JSP_PERMCHECK_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NAME_REAL_FS_1 = "LOG_NAME_REAL_FS_1";

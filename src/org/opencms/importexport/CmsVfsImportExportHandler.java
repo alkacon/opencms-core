@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2006/12/14 14:05:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
@@ -49,7 +50,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,9 +67,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** Boolean flag to decide whether user/group data should be exported or not.<p> */
     private boolean m_exportUserdata;
-
-    /** Boolean flag to decide whether webuser data should be exported or not.<p> */
-    private boolean m_exportWebusers;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
@@ -95,7 +93,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
         m_includeSystem = false;
         m_includeUnchanged = true;
         m_exportUserdata = true;
-        m_exportWebusers = false;
         m_exportPaths = Collections.EMPTY_LIST;
         m_recursive = true;
     }
@@ -115,7 +112,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
             isIncludeUnchanged(),
             null,
             isExportUserdata(),
-            isExportWebusers(),
             getContentAge(),
             report,
             isRecursive(),
@@ -186,16 +182,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * Returns the boolean flag to decide whether webusers should be exported or not.<p>
-     * 
-     * @return true, if webusers should be exported
-     */
-    public boolean isExportWebusers() {
-
-        return m_exportWebusers;
-    }
-
-    /**
      * Returns the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
      * 
      * @return true, if VFS resources under /system/ should not be exported
@@ -242,10 +228,12 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
         Element rootElement = manifest.getRootElement();
 
-        boolean hasModuleNode = (rootElement.selectNodes("./module/name").size() > 0);
-        boolean hasFileNodes = (rootElement.selectNodes("./files/file").size() > 0);
+        boolean hasModuleNode = (rootElement.selectNodes(
+            "./" + CmsModuleXmlHandler.N_MODULE + "/" + CmsModuleXmlHandler.N_NAME).size() > 0);
+        boolean hasFileNodes = (rootElement.selectNodes("./" + "files").size() == 1);
+        boolean hasUserData = (rootElement.selectNodes("./" + CmsImportExportManager.N_USERGROUPDATA).size() == 1);
 
-        return (!hasModuleNode && hasFileNodes);
+        return (!hasModuleNode && (hasFileNodes || hasUserData));
     }
 
     /**
@@ -290,16 +278,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void setExportUserdata(boolean exportUserdata) {
 
         m_exportUserdata = exportUserdata;
-    }
-
-    /**
-     * Sets the boolean flag to decide whether webusers should be exported or not.<p>
-     * 
-     * @param exportWebusers true, if webusers should not be exported
-     */
-    public void setExportWebusers(boolean exportWebusers) {
-
-        m_exportWebusers = exportWebusers;
     }
 
     /**
@@ -364,11 +342,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
             if (m_exportPaths != null) {
                 m_exportPaths.clear();
             }
-            m_exportPaths = null;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             // noop
-        } finally {
-            super.finalize();
         }
+        super.finalize();
     }
 }

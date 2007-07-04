@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,7 +337,7 @@ public class CmsModuleManager {
     throws CmsSecurityException, CmsConfigurationException {
 
         // check the role permissions
-        cms.checkRole(CmsRole.MODULE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         if (m_modules.containsKey(module.getName())) {
             // module is currently configured, no create possible
@@ -476,7 +477,7 @@ public class CmsModuleManager {
     throws CmsRoleViolationException, CmsConfigurationException {
 
         // check for module manager role permissions
-        cms.checkRole(CmsRole.MODULE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         if (!m_modules.containsKey(moduleName)) {
             // module is not currently configured, no update possible
@@ -489,19 +490,15 @@ public class CmsModuleManager {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_1, moduleName));
         }
 
-        CmsModule module;
-        boolean removeResourceTypes = false;
+        CmsModule module = (CmsModule)m_modules.get(moduleName);
+        boolean removeResourceTypes = !module.getResourceTypes().isEmpty();
+        if (removeResourceTypes) {
+            // mark the resource manager to reinitialize if necessary
+            OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
+        }
 
         if (!replace) {
             // module is deleted, not replaced
-            module = (CmsModule)m_modules.get(moduleName);
-            // makr the resource manager to reinitialize if nescessary
-            if (module.getResourceTypes() != Collections.EMPTY_LIST) {
-                removeResourceTypes = true;
-            }
-            if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
-                OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
-            }
 
             // perform dependency check
             List dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
@@ -532,7 +529,6 @@ public class CmsModuleManager {
 
         CmsProject previousProject = cms.getRequestContext().currentProject();
         try {
-
             CmsProject deleteProject = null;
 
             try {
@@ -587,18 +583,25 @@ public class CmsModuleManager {
                         LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                     }
                     if (cms.existsResource(currentResource)) {
-                        // lock the resource
-                        cms.lockResource(currentResource);
+                        CmsLock lock = cms.getLock(currentResource);
+                        if (lock.isUnlocked()) {
+                            // lock the resource
+                            cms.lockResource(currentResource);
+                        } if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+                            // steal the resource
+                            cms.changeLock(currentResource);
+                        }
                         // delete the resource
                         cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
                         // update the report
-
                         report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             currentResource));
-                        // unlock the resource (so it gets deleted with next publish)
-                        cms.unlockResource(currentResource);
+                        if (cms.existsResource(currentResource)) {
+                            // unlock the resource (so it gets deleted with next publish)
+                            cms.unlockResource(currentResource);
+                        }
                     }
                 } catch (CmsException e) {
                     // ignore the exception and delete the next resource
@@ -610,8 +613,9 @@ public class CmsModuleManager {
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
             // now unlock and publish the project
-            cms.unlockProject(deleteProject.getId());
-            cms.publishProject(report);
+            cms.unlockProject(deleteProject.getUuid());
+            OpenCms.getPublishManager().publishProject(cms, report);
+            OpenCms.getPublishManager().waitWhileRunning();
 
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
             report.println(Messages.get().container(Messages.RPT_DELETE_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
@@ -702,7 +706,7 @@ public class CmsModuleManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // certain test cases won't have an OpenCms context
-            cms.checkRole(CmsRole.MODULE_MANAGER);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
         Iterator it;
@@ -815,7 +819,7 @@ public class CmsModuleManager {
     throws CmsRoleViolationException, CmsConfigurationException {
 
         // check for module manager role permissions
-        cms.checkRole(CmsRole.MODULE_MANAGER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         CmsModule oldModule = (CmsModule)m_modules.get(module.getName());
 

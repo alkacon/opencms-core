@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -40,6 +39,7 @@ import org.opencms.main.CmsLog;
 import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,6 +183,27 @@ public final class CmsStringUtil {
                     contraints}));
             }
         }
+    }
+
+    /**
+     * Returns a string representation for the given collection using the given separator.<p>
+     * 
+     * @param collection the collection to print
+     * @param separator the item separator
+     * 
+     * @return the string representation for the given collection
+     */
+    public static String collectionAsString(Collection collection, String separator) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator it = collection.iterator();
+        while (it.hasNext()) {
+            string.append(it.next());
+            if (it.hasNext()) {
+                string.append(separator);
+            }
+        }
+        return string.toString();
     }
 
     /**
@@ -314,14 +335,14 @@ public final class CmsStringUtil {
         Map retValue = new HashMap();
         retValue.put("text", text);
         retValue.put("value", "'" + defValue + "'");
-        if (text != null && text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0) {
+        if ((text != null) && (text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0)) {
             // this doesnot work for things like "att=method()" without quotations.
             String quotation = "\'";
             int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
             // looking for the opening quotation mark
             int pos2 = text.indexOf(quotation, pos1);
             int test = text.indexOf("\"", pos1);
-            if (test > -1 && (pos2 == -1 || test < pos2)) {
+            if ((test > -1) && ((pos2 == -1) || (test < pos2))) {
                 quotation = "\"";
                 pos2 = test;
             }
@@ -406,8 +427,11 @@ public final class CmsStringUtil {
 
     /**
      * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, 
+     * starting with the second! folder. The first folder is removed as last.
      * 
-     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/.../subfolder/index.html</code>.<p>
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/myfolder/.../index.html</code>.<p>
+     * 
      * @param name the resource name to format
      * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
      * @return the formatted resource name
@@ -417,28 +441,40 @@ public final class CmsStringUtil {
         if (name == null) {
             return null;
         }
+
         if (name.length() <= maxLength) {
             return name;
         }
 
-        String result = CmsResource.getName(name);
-        name = CmsResource.getParentFolder(name);
-        while (name != null) {
-            String part = CmsResource.getName(name);
-
-            if ((part.length() + result.length()) <= maxLength) {
-                result = part + result;
-            } else {
-                result = "/" + result;
-                if (!part.equals("/")) {
-                    result = "/..." + result;
-                }
-                break;
+        int total = name.length();
+        String[] names = CmsStringUtil.splitAsArray(name, "/");
+        if (name.endsWith("/")) {
+            names[names.length - 1] = names[names.length - 1] + "/";
+        }
+        for (int i = 1; total > maxLength && i < names.length - 1; i++) {
+            if (i > 1) {
+                names[i - 1] = "";
             }
-            name = CmsResource.getParentFolder(name);
+            names[i] = "...";
+            total = 0;
+            for (int j = 0; j < names.length; j++) {
+                int l = names[j].length();
+                total += l + ((l > 0) ? 1 : 0);
+            }
+        }
+        if (total > maxLength) {
+            names[0] = (names.length > 2) ? "" : (names.length > 1) ? "..." : names[0];
         }
 
-        return result;
+        StringBuffer result = new StringBuffer();
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].length() > 0) {
+                result.append("/");
+                result.append(names[i]);
+            }
+        }
+
+        return result.toString();
     }
 
     /**
@@ -561,6 +597,24 @@ public final class CmsStringUtil {
     public static boolean isEmptyOrWhitespaceOnly(String value) {
 
         return isEmpty(value) || (value.trim().length() == 0);
+    }
+
+    /**
+     * Returns <code>true</code> if the provided Objects are either both <code>null</code> 
+     * or equal according to {@link Object#equals(Object)}.<p>
+     * 
+     * @param value1 the firt object to compare
+     * @param value2 the second object to compare
+     * 
+     * @return <code>true</code> if the provided Objects are either both <code>null</code> 
+     * or equal according to {@link Object#equals(Object)} 
+     */
+    public static boolean isEqual(Object value1, Object value2) {
+
+        if (value1 == null) {
+            return value2 == null;
+        }
+        return value1.equals(value2);
     }
 
     /**
@@ -711,7 +765,7 @@ public final class CmsStringUtil {
         int n = source.indexOf(delimiter);
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
             i = n + 1;
@@ -765,7 +819,7 @@ public final class CmsStringUtil {
         int n = source.indexOf(delimiter);
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
             i = n + dl;
@@ -782,6 +836,36 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Splits a String into substrings along the provided <code>paramDelim</code> delimiter,
+     * then each substring is treat as a key-value pair delimited by <code>keyValDelim</code>.
+     * 
+     * @param source the string to split
+     * @param paramDelim the string to delimit each key-value pair
+     * @param keyValDelim the string to delimit key and value
+     * 
+     * @return a map of splitted key-value pairs
+     */
+    public static Map splitAsMap(String source, String paramDelim, String keyValDelim) {
+
+        Map params = new HashMap();
+        Iterator itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
+        while (itParams.hasNext()) {
+            String param = (String)itParams.next();
+            int pos = param.indexOf(keyValDelim);
+            String key = param;
+            String value = "";
+            if (pos > 0) {
+                key = param.substring(0, pos);
+                if (pos + keyValDelim.length() < param.length()) {
+                    value = param.substring(pos + 1);
+                }
+            }
+            params.put(key, value);
+        }
+        return params;
+    }
+
+    /**
      * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
      * given by the <code>substitutions</code> Map parameter.<p>
      * 
@@ -795,10 +879,10 @@ public final class CmsStringUtil {
     public static String substitute(String source, Map substitions) {
 
         String result = source;
-        Iterator it = substitions.keySet().iterator();
+        Iterator it = substitions.entrySet().iterator();
         while (it.hasNext()) {
-            String key = it.next().toString();
-            result = substitute(result, key, substitions.get(key).toString());
+            Map.Entry entry = (Map.Entry)it.next();
+            result = substitute(result, (String)entry.getKey(), entry.getValue().toString());
         }
         return result;
     }
@@ -950,7 +1034,7 @@ public final class CmsStringUtil {
         int newend;
         while (true) {
             newend = source.indexOf(" ", end);
-            if (newend > length && end > 0) {
+            if ((newend > length) && (end > 0)) {
                 return source.substring(0, length - 3) + "...";
             } else if (newend == -1) {
                 if (length < source.length()) {
@@ -987,11 +1071,10 @@ public final class CmsStringUtil {
      * Checks if the provided name is a valid resource name, that is contains only
      * valid characters.<p>
      *
-     * PLEASE NOTE:
-     * This logic is NOT yet used in the current release.<p>
-     *
      * @param name the resource name to check
      * @return true if the resource name is vaild, false otherwise 
+     * 
+     * @deprecated use {@link org.opencms.file.CmsResource#checkResourceName(String)} instead
      */
     public static boolean validateResourceName(String name) {
 
@@ -1040,5 +1123,30 @@ public final class CmsStringUtil {
         }
 
         return true;
+    }
+
+    /**
+     * Returns a string representation for the given map using the given separators.<p>
+     * 
+     * @param map the map to write
+     * @param sepItem the item separator string
+     * @param sepKeyval the key-value pair separator string
+     * 
+     * @return the string representation for the given map
+     */
+    public static String mapAsString(Map map, String sepItem, String sepKeyval) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            string.append(entry.getKey());
+            string.append(sepKeyval);
+            string.append(entry.getValue());
+            if (it.hasNext()) {
+                string.append(sepItem);
+            }
+        }
+        return string.toString();
     }
 }

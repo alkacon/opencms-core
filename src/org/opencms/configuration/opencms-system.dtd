@@ -29,23 +29,35 @@
 	flexcache,
 	http-authentication,
 	resultcache,
-	content-notification?)>
+	content-notification?,
+	authorizationhandler?,
+	publishmanager?,
+	session-storageprovider?)>
 
 <!--
 # Version history settings.
 # The OpenCms VFS keeps a version history for old versions of files.
 # This is done as a binary 1:1 copy of the original file (i.e. no "diff").
+# 
+# The version history is enabled by default. You can enable / disable it with 
+# the "enabled" attribute. 
+#
 # Because of this the database would grow very large if unlimited versions
-# would be stored. The version history is enabled by default. You can
-# enable / disable it with the "enabled" attribute. The "count" attribute
-# controls the number of binary copies that are kept in the database per individual file. 
-# If a file has more versions, the oldest binary content is deleted (you can not re-create this 
-# version anymore). However, the basic information about the old version (i.e. who 
-# did the publish etc.) is still kept in the database.
+# would be stored. The "count" attribute controls the number of binary copies 
+# that are kept in the database per individual file. 
+# If a file has more versions, the oldest binary content is deleted (you can not 
+# re-create this version anymore). However, the basic information about the old 
+# version (i.e. who did the publish etc.) is still kept in the database.
+#
+# You can also set the optional "deleted" attribute to control the number of
+# versions for deleted files. Is ommitted the "count" attribute is used.
 -->
 <!ELEMENT versionhistory EMPTY>
-<!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED>
+<!ATTLIST versionhistory enabled (TRUE|true|FALSE|false) #REQUIRED count CDATA #REQUIRED deleted CDATA "-1">
 
+<!--
+# Internationalization settings.
+-->
 <!ELEMENT internationalization (localehandler, localesconfigured, localesdefault)>
 
 <!ELEMENT localehandler EMPTY>
@@ -56,6 +68,9 @@
 
 <!ELEMENT locale (#PCDATA)>
 
+<!--
+# Mail settings.
+-->
 <!ELEMENT mail (mailfrom, mailhost+)>
 <!ELEMENT mailfrom (#PCDATA)>
 <!ELEMENT mailhost EMPTY>
@@ -66,6 +81,9 @@
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>
 
+<!--
+# Resource initializer settings.
+-->
 <!ELEMENT resourceinit (resourceinithandler*)>
 <!ELEMENT resourceinithandler EMPTY>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
@@ -238,8 +256,8 @@ Each job can have an optional list of parameters.
 <!ELEMENT secure EMPTY>	
 <!ATTLIST secure
 	server CDATA #REQUIRED
-	exclusive (true|false) "false"
-	error (true|false) "false">
+	exclusive (true|false|TRUE|FALSE) "false"
+	error (true|false|TRUE|FALSE) "false">
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED>	
@@ -289,6 +307,7 @@ Each job can have an optional list of parameters.
 # MemoryMonitor configuration
 -->
 <!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval?, warning-interval, email-sender?, email-receiver?)>
+<!ATTLIST memorymonitor class CDATA "">
 
 <!ELEMENT maxusagepercent (#PCDATA)>
 <!ELEMENT log-interval (#PCDATA)>
@@ -355,20 +374,24 @@ Each job can have an optional list of parameters.
 
 
 <!--
-#
 # Driver manager cache settings.
+# These settings control the size of various internal caches in the OpenCms database layer.
 -->
 <!ELEMENT resultcache (
-	keygenerator,
+	keygenerator,	
 	size-users,
 	size-groups,
+	size-orgunits?,
 	size-usergroups,
 	size-projects,
+	size-projectresources?,
 	size-resources,
 	size-resourcelists,
 	size-properties,
+	size-propertylists?,
 	size-accesscontrollists,
-	size-permissions)>
+	size-permissions,
+	size-roles?)>
 
 <!--
 # The name of the class to generate cache keys.
@@ -386,6 +409,12 @@ Each job can have an optional list of parameters.
 <!ELEMENT size-groups (#PCDATA)>
 
 <!--
+# The size of the driver manager's cache for organizational units.
+# If not given, the size-groups is used.
+-->
+<!ELEMENT size-orgunits (#PCDATA)>
+
+<!--
 # The size of the driver manager's cache for user/group relations.
 -->
 <!ELEMENT size-usergroups (#PCDATA)>
@@ -394,6 +423,12 @@ Each job can have an optional list of parameters.
 # The size of the driver manager's cache for projects.
 -->
 <!ELEMENT size-projects (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for project resources.
+# If not given, the size-projects is used.
+-->
+<!ELEMENT size-projectresources (#PCDATA)>
 
 <!--
 # The size of the driver manager's cache for resources.
@@ -411,6 +446,12 @@ Each job can have an optional list of parameters.
 <!ELEMENT size-properties (#PCDATA)>
 
 <!--
+# The size of the driver manager's cache for property lists.
+# If not given, the size-properties is used.
+-->
+<!ELEMENT size-propertylists (#PCDATA)>
+
+<!--
 # The size of the driver manager's cache for ACLS.
 -->
 <!ELEMENT size-accesscontrollists (#PCDATA)>
@@ -419,6 +460,11 @@ Each job can have an optional list of parameters.
 # The size of the security manager's cache for permission checks.
 -->
 <!ELEMENT size-permissions (#PCDATA)>
+
+<!--
+# The size of the driver manager's cache for roles.
+-->
+<!ELEMENT size-roles (#PCDATA)>
 
 <!--
 # Content notification settings.
@@ -434,3 +480,47 @@ Each job can have an optional list of parameters.
 # The project in which timestamps for the content notification are read
 -->
 <!ELEMENT notification-project (#PCDATA)>
+
+<!--
+# Authorization handler:
+# Provides methods for SSO.
+# See the JavaDoc of interface org.opencms.security.I_CmsAuthorizationHandler for more details.
+-->
+<!ELEMENT authorizationhandler EMPTY>
+<!ATTLIST authorizationhandler class CDATA #REQUIRED>
+
+<!--
+# Publish manager:
+# Provides the configuration parameters for the publish history and queue.
+# See the package org.opencms.publish for more details.
+-->
+<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?)>
+
+<!--
+# The size of the publish queue
+-->
+<!ELEMENT history-size (#PCDATA)>
+
+<!--
+# Indicates if the publish queue is re-initialized on restart of the system.
+# The value is optional, the default is "false" if no value is provided.
+#
+# The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
+# If the result is "true", the class instance will be re-used. 
+-->
+<!ELEMENT queue-persistance (#PCDATA)>
+
+<!--
+# The amount of time in seconds the system waits for a publish job 
+# to be finished during shutdown.
+# The value is optional, the default is 1 second if no value is provided.
+-->
+<!ELEMENT queue-shutdowntime (#PCDATA)>
+
+<!--
+# Session storage provider:
+# Provides a storage implementation for the user session.
+# See the JavaDoc of interface org.opencms.main.I_CmsSessionStorageProvider for more details.
+-->
+<!ELEMENT session-storageprovider EMPTY>
+<!ATTLIST session-storageprovider class CDATA #REQUIRED>

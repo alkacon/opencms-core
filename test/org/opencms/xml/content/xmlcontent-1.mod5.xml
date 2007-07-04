@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Multitests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test1.xsd">
+  
+	<Multitest language="en">
+		<String><![CDATA[Multitest 1]]></String>
+		<DateTime>-58254180000</DateTime>
+		<Html name="Html0">
+			<links />
+			<content />
+		</Html>
+		<Locale>en_EN</Locale>
+		<NewString><![CDATA[Default NewString Data]]></NewString>		
+	</Multitest>
+</Multitests>

@@ -17,7 +17,12 @@
     <head.nav.border>#6666AA</head.nav.border>
     <navleft.bg>#BBBBCC</navleft.bg>
     <navleft.font>#333366</navleft.font>
-    <navleft.img.bg.uri>/system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg</navleft.img.bg.uri>
+    <navleft.img.bg.uri>
+      <link type="WEAK">
+        <target><![CDATA[/system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg]]></target>
+        <uuid>b3cc9d3c-11b7-11db-91cd-fdbae480bac9</uuid>
+      </link>
+    </navleft.img.bg.uri>
     <content.bg>#FFFFFF</content.bg>
     <content.border>#CCCCCC</content.border>
     <content.font>#000000</content.font>

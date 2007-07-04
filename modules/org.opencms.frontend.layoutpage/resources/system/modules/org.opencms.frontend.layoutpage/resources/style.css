@@ -12,11 +12,13 @@ h2.lp_headline {
 span.lp_imgleft {
 	float: left;
 	padding: 0 5px 5px 2px;
+	font-size: 10px;
 }
 
 span.lp_imgright {
 	float: right;
 	padding: 0 2px 5px 5px;
+	font-size: 10px;
 }
 
 div.lp_clearfloat {
@@ -37,4 +39,14 @@ td.lp_imgright {
 
 p.lp_imgdesc {
 	font-size: 10px;
+}
+
+span.lp_description {
+	display: block;
+	font-size: 10px;
+}
+
+.contentfont {
+	font-size: 10px;
+	text-decoration: none;
 }

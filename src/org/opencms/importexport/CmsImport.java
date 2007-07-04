@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,9 +92,6 @@ public class CmsImport {
 
     /** Stores all import interface implementations .*/
     protected List m_importImplementations;
-
-    /** Indicates if module data is being imported. */
-    protected boolean m_importingChannelData;
 
     /** The import-path to write resources into the cms. */
     protected String m_importPath;
@@ -143,14 +140,13 @@ public class CmsImport {
     throws CmsRoleViolationException {
 
         // check the role permissions
-        cms.checkRole(CmsRole.IMPORT_DATABASE);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         // set member variables
         m_cms = cms;
         m_importFile = importFile;
         m_importPath = importPath;
         m_report = report;
-        m_importingChannelData = false;
         m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();
     }
 
@@ -205,7 +201,7 @@ public class CmsImport {
                 boolean exists = true;
                 try {
                     CmsResource res = m_cms.readResource(m_importPath + destination);
-                    if (res.getState() == CmsResource.STATE_DELETED) {
+                    if (res.getState().isDeleted()) {
                         exists = false;
                     }
                 } catch (CmsException e) {
@@ -245,50 +241,37 @@ public class CmsImport {
      */
     public List getResourcesForProject() throws CmsImportExportException {
 
-        List fileNodes;
-        Element currentElement;
-        String destination;
         List resources = new ArrayList();
 
-        try {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().saveSiteRoot();
-                m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-            }
+        // get all file-nodes
+        List fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
 
-            // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
+        // walk through all files in manifest
+        for (int i = 0; i < fileNodes.size(); i++) {
+            Element currentElement = (Element)fileNodes.get(i);
+            String destination = CmsImport.getChildElementTextValue(
+                currentElement,
+                CmsImportExportManager.N_DESTINATION);
 
-            // walk through all files in manifest
-            for (int i = 0; i < fileNodes.size(); i++) {
-                currentElement = (Element)fileNodes.get(i);
-                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
-
-                // get the resources for a project
-                try {
-                    String resource = destination.substring(0, destination.indexOf("/", 1) + 1);
-                    resource = m_importPath + resource;
-                    // add the resource, if it dosen't already exist
-                    if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
-                        try {
-                            m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
-                            // this resource exists in the current project -> add it
-                            resources.add(resource);
-                        } catch (CmsException exc) {
-                            // this resource is missing - we need the root-folder
-                            resources.add("/");
-                        }
+            // get the resources for a project
+            try {
+                String resource = destination.substring(0, destination.indexOf("/", 1) + 1);
+                resource = m_importPath + resource;
+                // add the resource, if it dosen't already exist
+                if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
+                    try {
+                        m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
+                        // this resource exists in the current project -> add it
+                        resources.add(resource);
+                    } catch (CmsException exc) {
+                        // this resource is missing - we need the root-folder
+                        resources.add("/");
                     }
-                } catch (StringIndexOutOfBoundsException exc) {
-                    // this is a resource in root-folder: ignore the excpetion
                 }
-            }
-        } finally {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().restoreSiteRoot();
+            } catch (StringIndexOutOfBoundsException exc) {
+                // this is a resource in root-folder: ignore the excpetion
             }
         }
-
         closeImportFile();
 
         if (resources.contains("/")) {
@@ -322,13 +305,7 @@ public class CmsImport {
                 I_CmsImport imp = (I_CmsImport)i.next();
                 if (imp.getVersion() == m_importVersion) {
                     // this is the correct import version, so call it for the import process
-                    imp.importResources(
-                        m_cms,
-                        m_importPath,
-                        m_report,
-                        m_importResource,
-                        m_importZip,
-                        m_docXml);
+                    imp.importResources(m_cms, m_importPath, m_report, m_importResource, m_importZip, m_docXml);
                     run = true;
                     break;
                 }
@@ -448,7 +425,11 @@ public class CmsImport {
             m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + CmsImportExportManager.N_VERSION).get(
                 0)).getTextTrim());
         } catch (Exception e) {
-            //ignore the exception, the export file has no version nummber (version 0).
+            // ignore the exception, the export file has no version nummber (version 0)
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 }

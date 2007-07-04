@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2006/05/08 08:15:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,11 +54,14 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsExplorerInit extends CmsWorkplace {
+
+    /** Stores already generated javascript menu outputs with a Locale object as key. */
+    private HashMap m_generatedScripts;
 
     /**
      * Public constructor.<p>
@@ -67,8 +71,9 @@ public class CmsExplorerInit extends CmsWorkplace {
     public CmsExplorerInit(CmsJspActionElement jsp) {
 
         super(jsp);
+        m_generatedScripts = new HashMap();
     }
-    
+
     /**
      * Builds the Javascript for the Workplace context menus.<p>
      * 
@@ -76,32 +81,31 @@ public class CmsExplorerInit extends CmsWorkplace {
      */
     public String buildContextMenues() {
 
-        StringBuffer result = new StringBuffer();
-        // get all available resource types
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            int resTypeId = type.getTypeId();
-            // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(
-                    getCms(),
-                    settings,
-                    resTypeId,
-                    getMessages()));
-            }
-        }
-        
-        result.append("\n");
-        // add generic multi context menu to JS
-        result.append(OpenCms.getWorkplaceManager().getMultiContextMenu().getJSEntries(getCms(), null, -1, getMessages()));
+        // try to get the stored entries from the Map
+        String entries = (String)m_generatedScripts.get(getMessages().getLocale());
 
-        return result.toString();
+        if (entries == null) {
+            StringBuffer result = new StringBuffer();
+            // get all available resource types
+            List allResTypes = OpenCms.getResourceManager().getResourceTypesWithUnknown();
+            for (int i = 0; i < allResTypes.size(); i++) {
+                // loop through all types
+                I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+                // get explorer type settings for current resource type
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    type.getTypeName());
+                if (settings != null) {
+                    // append the context menu of the current resource type 
+                    result.append(settings.getJSEntries(settings, type.getTypeId(), getMessages()));
+                }
+            }
+            entries = result.toString();
+            // store the generated entries
+            m_generatedScripts.put(getMessages().getLocale(), entries);
+        }
+        return entries;
     }
-    
+
     /**
      * Returns the file settings for the Workplace explorer view.<p>
      * 
@@ -112,6 +116,46 @@ public class CmsExplorerInit extends CmsWorkplace {
         CmsUserSettings settings = new CmsUserSettings(getCms());
         int value = settings.getExplorerSettings();
         return value;
+    }
+
+    /**
+     * Returns the server name for initializing the explorer view.<p>
+     * 
+     * @return the server name
+     */
+    public String getServerName() {
+
+        return getJsp().getRequest().getServerName();
+    }
+
+    /**
+     * Returns the server path for initializing the explorer view.<p>
+     * 
+     * @return the server path
+     */
+    public String getServerPath() {
+
+        return OpenCms.getStaticExportManager().getVfsPrefix();
+    }
+
+    /**
+     * Returns the setting for the upload button for initializing the explorer view.<p>
+     * 
+     * @return the setting for the upload button
+     */
+    public String getShowFileUploadButtons() {
+
+        return OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowFileUploadButtonString();
+    }
+
+    /**
+     * Returns the name of the current user for initializing the explorer view.<p>
+     * 
+     * @return the name of the user
+     */
+    public String getUserName() {
+
+        return getSettings().getUser().getName();
     }
 
     /**

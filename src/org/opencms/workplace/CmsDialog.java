@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/10/06 14:02:20 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2007/07/04 16:57:10 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,15 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.commons.CmsLock;
+import org.opencms.workplace.editors.CmsPreEditorAction;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -61,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.97 $ 
+ * @version $Revision: 1.98 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,8 +82,14 @@ public class CmsDialog extends CmsToolDialog {
     /** Value for the action: confirmed. */
     public static final int ACTION_CONFIRMED = 1;
 
+    /** Value for the action: continue. */
+    public static final int ACTION_CONTINUE = 8;
+
     /** Value for the action: default (show initial dialog form). */
     public static final int ACTION_DEFAULT = 0;
+
+    /** Value for the action: locks confirmed. */
+    public static final int ACTION_LOCKS_CONFIRMED = 99;
 
     /** Value for the action: ok. */
     public static final int ACTION_OK = 3;
@@ -149,6 +158,9 @@ public class CmsDialog extends CmsToolDialog {
     /** Request parameter value for the action: initial call. */
     public static final String DIALOG_INITIAL = "initial";
 
+    /** Request parameter value for the action: dialog locks confirmed. */
+    public static final String DIALOG_LOCKS_CONFIRMED = "locksconfirmed";
+
     /** Request parameter value for the action: ok. */
     public static final String DIALOG_OK = "ok";
 
@@ -184,6 +196,12 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter name for the error message. */
     public static final String PARAM_MESSAGE = "message";
+
+    /** Request parameter name for the originalparams. */
+    public static final String PARAM_ORIGINALPARAMS = "originalparams";
+
+    /** Request parameter name for the preactiondone. */
+    public static final String PARAM_PREACTIONDONE = "preactiondone";
 
     /** Request parameter name for the redirect flag. */
     public static final String PARAM_REDIRECT = "redirect";
@@ -225,16 +243,17 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * It will be translated to a javascript variable called onlineHelpUriCustom. 
      * If it is set, the top.head javascript for the online help will use this value. <p> 
-     *  
-     * 
      */
     private String m_onlineHelpUriCustom;
+
     private String m_paramAction;
     private String m_paramCloseLink;
     private String m_paramDialogtype;
     private String m_paramFrameName;
     private String m_paramIsPopup;
     private String m_paramMessage;
+    private String m_paramOriginalParams;
+    private String m_paramPreActionDone;
     private String m_paramRedirect;
     private String m_paramResource;
     private String m_paramTitle;
@@ -336,9 +355,7 @@ public class CmsDialog extends CmsToolDialog {
                 throw new JspException(e.getMessage(), e);
             }
         } else if (getParamFramename() != null) {
-            // legacy backoffice mode 
-            // TODO: remove this if all JSP based pages have been fully ported to the new Administration
-
+            // non wp frame mode (currently used for galleries)
             // framename parameter found, get URI
             String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
@@ -347,27 +364,8 @@ public class CmsDialog extends CmsToolDialog {
                     // remove context path from URI before inclusion
                     frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                if (frameUri.endsWith("administration_content_top.html")) {
-                    String wpClass = this.getClass().getName();
-                    String wpPackage = this.getClass().getPackage().getName();
-                    if ((wpPackage.endsWith("commons") || wpPackage.endsWith("gallery"))
-                        && (!wpClass.endsWith("Report"))) {
-                        // for returning from common workplace action, show explorer filelist again (i.e. gallery & project views)
-                        getJsp().include(FILE_EXPLORER_FILELIST, null, params);
-                    } else {
-                        try {
-                            // redirect to administration body frame with "sender" parameter
-                            getJsp().getResponse().sendRedirect(
-                                getJsp().link(frameUri) + "?sender=/system/workplace/administration/");
-                        } catch (IOException e) {
-                            params.put("sender", "/system/workplace/administration/");
-                            getJsp().include(frameUri, null, params);
-                        }
-                    }
-                } else {
-                    // include the found frame URI
-                    getJsp().include(frameUri, null, params);
-                }
+                // include the found frame URI
+                getJsp().include(frameUri, null, params);
             } else {
                 // no URI found, include the explorer file list
                 getJsp().include(FILE_EXPLORER_FILELIST, null, params);
@@ -376,6 +374,171 @@ public class CmsDialog extends CmsToolDialog {
             // no framename parameter found, include the explorer file list
             getJsp().include(FILE_EXPLORER_FILELIST, null, params);
         }
+    }
+
+    /**
+     * Returns the html code to build the ajax report container.<p>
+     * 
+     * @param title the title of the report box
+     * 
+     * @return html code
+     */
+    public String buildAjaxResultContainer(String title) {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append(dialogBlockStart(title));
+        html.append(dialogWhiteBoxStart());
+        html.append("<div id='ajaxreport' >");
+        html.append(buildAjaxWaitMessage());
+        html.append("</div>\n");
+        html.append(dialogWhiteBoxEnd());
+        html.append(dialogBlockEnd());
+        html.append("&nbsp;<br>\n");
+        return html.toString();
+    }
+
+    /**
+     * Override to display additional options in the lock dialog.<p>
+     * 
+     * @return html code to display additional options
+     */
+    public String buildLockAdditionalOptions() {
+
+        return "";
+    }
+
+    /**
+     * Returns the html code to build the confirmation messages.<p>
+     * 
+     * @return html code
+     */
+    public String buildLockConfirmationMessageJS() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<script type='text/javascript'><!--\n");
+        html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
+        html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
+        html.append("\tif (locks > -1) {\n");
+        html.append("\t\tif (blockinglocks > '0') {\n");
+        html.append("\t\t\tshowAjaxReportContent();\n");
+        html.append("\t\t\tdocument.getElementById('lock-body-id').className = '';\n");
+        html.append("\t\t\tdocument.getElementById('butClose').className = '';\n");
+        html.append("\t\t\tdocument.getElementById('butContinue').className = 'hide';\n");
+        html.append("\t\t\tconfMsg.innerHTML = '");
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_OPERATION_BLOCKING_LOCKS_0));
+        html.append("';\n");
+        html.append("\t\t} else {\n");
+        html.append("\t\t\tsubmitAction('");
+        html.append(CmsDialog.DIALOG_OK);
+        html.append("', null, 'main');\n");
+        html.append("\t\t\tdocument.forms['main'].submit();\n");
+        html.append("\t\t}\n");
+        html.append("\t} else {\n");
+        html.append("\t\tdocument.getElementById('butClose').className = '';\n");
+        html.append("\t\tdocument.getElementById('butContinue').className = 'hide';\n");
+        html.append("\t\tconfMsg.innerHTML = '");
+        html.append(key(Messages.GUI_AJAX_REPORT_WAIT_0));
+        html.append("';\n");
+        html.append("\t}\n");
+        html.append("}\n");
+        html.append("// -->\n");
+        html.append("</script>\n");
+        return html.toString();
+    }
+
+    /**
+     * Returns the html code to build the lock dialog.<p>
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockDialog() throws CmsException {
+
+        return buildLockDialog(null, null, 2000, false);
+    }
+
+    /**
+     * Returns the html code to build the lock dialog.<p>
+     * 
+     * @param nonBlockingFilter the filter to get all non blocking locks
+     * @param blockingFilter the filter to get all blocking locks
+     * @param hiddenTimeout the maximal number of millis the dialog will be hidden
+     * @param includeRelated indicates if the report should include related resources
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockDialog(
+        CmsLockFilter nonBlockingFilter,
+        CmsLockFilter blockingFilter,
+        int hiddenTimeout,
+        boolean includeRelated) throws CmsException {
+
+        setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
+        CmsLock lockwp = new CmsLock(getJsp());
+        lockwp.setBlockingFilter(blockingFilter);
+        lockwp.setNonBlockingFilter(nonBlockingFilter);
+
+        StringBuffer html = new StringBuffer(512);
+        html.append(htmlStart("help.explorer.contextmenu.lock"));
+        html.append(lockwp.buildIncludeJs());
+        html.append(buildLockConfirmationMessageJS());
+        html.append(bodyStart("dialog"));
+        html.append("<div id='lock-body-id' class='hide'>\n");
+        html.append(dialogStart());
+        html.append(dialogContentStart(getParamTitle()));
+        html.append(buildLockHeaderBox());
+        html.append(dialogSpacer());
+        html.append("<form name='main' action='");
+        html.append(getDialogUri());
+        html.append("' method='post' class='nomargin' onsubmit=\"return submitAction('");
+        html.append(CmsDialog.DIALOG_OK);
+        html.append("', null, 'main');\">\n");
+        html.append(paramsAsHidden());
+        html.append("<input type='hidden' name='");
+        html.append(CmsDialog.PARAM_FRAMENAME);
+        html.append("' value=''>\n");
+        html.append(buildAjaxResultContainer(key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
+        html.append("<div id='conf-msg'></div>\n");
+        html.append(buildLockAdditionalOptions());
+        html.append(dialogContentEnd());
+        html.append(dialogLockButtons());
+        html.append("</form>\n");
+        html.append(dialogEnd());
+        html.append("</div>\n");
+        html.append(bodyEnd());
+        html.append(lockwp.buildLockRequest(hiddenTimeout, includeRelated));
+        html.append(htmlEnd());
+        return html.toString();
+    }
+
+    /**
+     * Returns the html code to build the header box.<p>
+     * 
+     * @return html code
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String buildLockHeaderBox() throws CmsException {
+
+        StringBuffer html = new StringBuffer(512);
+        // include resource info  
+        html.append(dialogBlockStart(null));
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_TITLE_0));
+        html.append(": ");
+        html.append(getJsp().property("Title", getParamResource(), ""));
+        html.append("<br>\n");
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_STATE_0));
+        html.append(": ");
+        html.append(getState());
+        html.append("<br>\n");
+        html.append(key(org.opencms.workplace.commons.Messages.GUI_LABEL_PERMALINK_0));
+        html.append(": ");
+        html.append(OpenCms.getLinkManager().getPermalink(getCms(), getParamResource()));
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**
@@ -693,6 +856,25 @@ public class CmsDialog extends CmsToolDialog {
     public String dialogHorizontalSpacer(int width) {
 
         return "<td><span style=\"display:block; height: 1px; width: " + width + "px;\"></span></td>";
+    }
+
+    /**
+     * Builds the necessary button row.<p>
+     * 
+     * @return the button row 
+     */
+    public String dialogLockButtons() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<div id='butClose' >\n");
+        html.append(dialogButtonsClose());
+        html.append("</div>\n");
+        html.append("<div id='butContinue' class='hide' >\n");
+        html.append(dialogButtons(new int[] {BUTTON_CONTINUE, BUTTON_CANCEL}, new String[] {
+            " onclick=\"submitAction('" + DIALOG_OK + "', form); form.submit();\"",
+            ""}));
+        html.append("</div>\n");
+        return html.toString();
     }
 
     /**
@@ -1021,7 +1203,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamFramename() {
 
-        if (m_paramFrameName != null && !"null".equals(m_paramFrameName)) {
+        if ((m_paramFrameName != null) && !"null".equals(m_paramFrameName)) {
             return m_paramFrameName;
         } else {
             return null;
@@ -1055,6 +1237,28 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Returns the value of the originalparams parameter.<p>
+     * 
+     * This stores the request parameter values from a previous dialog, if necessary.<p>
+     * 
+     * @return the value of the originalparams parameter
+     */
+    public String getParamOriginalParams() {
+
+        return m_paramOriginalParams;
+    }
+
+    /**
+     * Returns the value of the preactiondone parameter.<p>
+     * 
+     * @return the value of the preactiondone parameter
+     */
+    public String getParamPreActionDone() {
+
+        return m_paramPreActionDone;
+    }
+
+    /**
      * Returns the value of the redirect flag parameter.<p>
      * 
      * @return the value of the redirect flag parameter
@@ -1075,7 +1279,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamResource() {
 
-        if (m_paramResource != null && !"null".equals(m_paramResource)) {
+        if ((m_paramResource != null) && !"null".equals(m_paramResource)) {
             return m_paramResource;
         } else {
             return null;
@@ -1114,6 +1318,46 @@ public class CmsDialog extends CmsToolDialog {
             }
         }
         return "+++ resource parameter not found +++";
+    }
+
+    /**
+     * Checks if the current resource has lock state exclusive or inherited.<p>
+     * 
+     * This is used to determine whether the dialog shows the option to delete all
+     * siblings of the resource or not.
+     * 
+     * @return true if lock state is exclusive or inherited, otherwise false
+     */
+    public boolean hasCorrectLockstate() {
+
+        org.opencms.lock.CmsLock lock = null;
+        try {
+            // get the lock state for the current resource
+            lock = getCms().getLock(getParamResource());
+        } catch (CmsException e) {
+            // error getting lock state, log the error and return false
+            LOG.error(e.getLocalizedMessage(getLocale()), e);
+            return false;
+        }
+        // check if autolock feature is enabled
+        boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
+        return autoLockFeature || lock.isExclusive() || lock.isInherited();
+    }
+
+    /**
+     * Checks if this resource has siblings.<p>
+     * 
+     * @return true if this resource has siblings
+     */
+    public boolean hasSiblings() {
+
+        try {
+            return getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getSiblingCount() > 1;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(getLocale()), e);
+            return false;
+        }
+
     }
 
     /**
@@ -1190,6 +1434,16 @@ public class CmsDialog extends CmsToolDialog {
     public boolean isPopup() {
 
         return Boolean.valueOf(getParamIsPopup()).booleanValue();
+    }
+
+    /**
+     * Returns if the dialog is called in direct edit mode before the editor is opened.<p>
+     * 
+     * @return true if the dialog is called in direct edit mode before the editor is opened
+     */
+    public boolean isPreEditor() {
+
+        return CmsPreEditorAction.isPreEditorMode(this);
     }
 
     /**
@@ -1335,6 +1589,26 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Sets the value of the originalparams parameter.<p>
+     * 
+     * @param paramOriginalParams the value of the originalparams parameter
+     */
+    public void setParamOriginalParams(String paramOriginalParams) {
+
+        m_paramOriginalParams = paramOriginalParams;
+    }
+
+    /**
+     * Sets the value of the preactiondone parameter.<p>
+     * 
+     * @param paramPreActionDone the value of the preactiondone parameter
+     */
+    public void setParamPreActionDone(String paramPreActionDone) {
+
+        m_paramPreActionDone = paramPreActionDone;
+    }
+
+    /**
      * Sets the value of the redirect flag parameter.<p>
      * 
      * @param redirect the value of the redirect flag parameter
@@ -1382,6 +1656,24 @@ public class CmsDialog extends CmsToolDialog {
         }
 
         return "";
+    }
+
+    /**
+     * Returns ajax wait message.<p>
+     * 
+     * @return html code
+     */
+    protected String buildAjaxWaitMessage() {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' style='vertical-align:middle; height: 150px;'>\n");
+        html.append("<tr><td width='40' align='center' valign='middle'><img src='");
+        html.append(CmsWorkplace.getSkinUri());
+        html.append("commons/wait.gif' id='ajaxreport-img' width='32' height='32' alt=''></td>\n");
+        html.append("<td valign='middle'><span id='ajaxreport-txt' style='color: #000099; font-weight: bold;'>\n");
+        html.append(key(org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
+        html.append("</span><br></td></tr></table>\n");
+        return html.toString();
     }
 
     /**
@@ -1439,6 +1731,33 @@ public class CmsDialog extends CmsToolDialog {
         }
 
         return hasPermissions;
+    }
+
+    /**
+     * Returns the full path of the current workplace folder.<p>
+     * 
+     * @return the full path of the current workplace folder
+     */
+    protected String computeCurrentFolder() {
+
+        String currentFolder = getSettings().getExplorerResource();
+        if (currentFolder == null) {
+            // set current folder to root folder
+            try {
+                currentFolder = getCms().getSitePath(getCms().readFolder("/", CmsResourceFilter.IGNORE_EXPIRATION));
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+                currentFolder = "/";
+            }
+        }
+        if (!currentFolder.endsWith("/")) {
+            // add folder separator to currentFolder
+            currentFolder += "/";
+        }
+        return currentFolder;
     }
 
     /**

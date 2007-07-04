@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -39,7 +42,7 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,9 +80,10 @@ public class CmsLinkTable {
      * @param type type of the link
      * @param targetUri link destination
      * @param internal flag to indicate if the link is a local link
+     * 
      * @return the new link entry
      */
-    public CmsLink addLink(String type, String targetUri, boolean internal) {
+    public CmsLink addLink(CmsRelationType type, String targetUri, boolean internal) {
 
         CmsLink link = new CmsLink(LINK_PREFIX + m_linkTable.size(), type, targetUri, internal);
         m_linkTable.put(link.getName(), link);

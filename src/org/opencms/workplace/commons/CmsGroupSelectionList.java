@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -84,6 +85,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /** Stores the value of the request parameter for the user name. */
     private String m_paramUser;
@@ -168,6 +172,16 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the organizational unit fqn parameter.<p>
+     *
+     * @return the organizational unit fqn paramter
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
      * Returns the user name parameter.<p>
      *
      * @return the user name paramter
@@ -185,6 +199,19 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the organizational unit fqn.<p>
+     *
+     * @param ouFqn the organizational unit fqn to set
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -216,13 +243,22 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         if (getParamUser() != null) {
-            ret.addAll(getCms().getGroupsOfUser(getParamUser()));
+            ret.addAll(getCms().getGroupsOfUser(getParamUser(), false));
         } else {
-            ret.addAll(getCms().getGroups());
+            ret.addAll(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            return CmsPrincipal.filterFlag(ret, flags);
+            ret = CmsPrincipal.filterFlag(ret, flags);
+        }
+        if ((getParamOufqn() != null) && !getParamOufqn().equals("null")) {
+            Iterator itTempRet = ret.iterator();
+            while (itTempRet.hasNext()) {
+                CmsGroup group = (CmsGroup)itTempRet.next();
+                if (!group.getOuFqn().startsWith(getParamOufqn())) {
+                    itTempRet.remove();
+                }
+            }
         }
         return ret;
     }
@@ -245,7 +281,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         }
         return ret;
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */

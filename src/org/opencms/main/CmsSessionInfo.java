@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/05/29 13:56:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsUser;
+import org.opencms.util.CmsUUID;
+
+import java.io.Serializable;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
@@ -52,26 +54,35 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSessionInfo implements Comparable {
+public class CmsSessionInfo implements Comparable, Serializable {
+
+    /** Name of the http session attribute the OpenCms session id is stored in. */
+    public static final String ATTRIBUTE_SESSION_ID = "__org.opencms.main.CmsSessionInfo#m_sessionId";
 
     /** Maximum size of the broadcast queue for one user. */
     public static final int QUEUE_SIZE = 10;
 
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 927301527031117920L;
+
     /** The broadcast queue buffer for the user of this session info. */
-    private Buffer m_broadcastQueue;
+    private transient Buffer m_broadcastQueue;
 
     /** The maximum time, in seconds, this session info is allowed to be inactive. */
     private int m_maxInactiveInterval;
 
+    /** The fully qualified name of the organizational unit. */
+    private String m_ouFqn;
+
     /** The current project id of the user. */
-    private int m_projectId;
+    private CmsUUID m_projectId;
 
     /** The id of the (http) session this session info belongs to. */
-    private String m_sessionId;
+    private CmsUUID m_sessionId;
 
     /** The current site of the user. */
     private String m_siteRoot;
@@ -82,24 +93,23 @@ public class CmsSessionInfo implements Comparable {
     /** The time this session info was last updated. */
     private long m_timeUpdated;
 
-    /** The user to which this session info belongs. */
-    private CmsUser m_user;
+    /** The id of user to which this session info belongs. */
+    private CmsUUID m_userId;
 
     /**
      * Creates a new CmsSessionInfo object.<p>
      * 
      * @param context the user context to create this session info for
-     * @param sessionId id of the (http) session this session info belongs to
+     * @param sessionId OpenCms id of the (http) session this session info belongs to
      * @param maxInactiveInterval the maximum time, in seconds, this session info is allowed to be inactive
      */
-    public CmsSessionInfo(CmsRequestContext context, String sessionId, int maxInactiveInterval) {
+    public CmsSessionInfo(CmsRequestContext context, CmsUUID sessionId, int maxInactiveInterval) {
 
         m_timeCreated = System.currentTimeMillis();
         m_sessionId = sessionId;
         m_maxInactiveInterval = maxInactiveInterval;
-        m_user = context.currentUser();
+        m_userId = context.currentUser().getId();
         update(context);
-        m_broadcastQueue = BufferUtils.synchronizedBuffer(new UnboundedFifoBuffer(QUEUE_SIZE));
     }
 
     /**
@@ -112,10 +122,24 @@ public class CmsSessionInfo implements Comparable {
         if (obj == this) {
             return 0;
         }
-        if (!(obj instanceof CmsSessionInfo)) {
-            return m_user.getName().compareTo(((CmsSessionInfo)obj).getUser().getName());
+        if (obj instanceof CmsSessionInfo) {
+            return m_userId.compareTo(((CmsSessionInfo)obj).getUserId());
         }
         return 0;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSessionInfo) {
+            return m_userId.equals(((CmsSessionInfo)obj).getUserId());
+        }
+        return false;
     }
 
     /**
@@ -125,6 +149,9 @@ public class CmsSessionInfo implements Comparable {
      */
     public Buffer getBroadcastQueue() {
 
+        if (m_broadcastQueue == null) {
+            m_broadcastQueue = BufferUtils.synchronizedBuffer(new UnboundedFifoBuffer(QUEUE_SIZE));
+        }
         return m_broadcastQueue;
     }
 
@@ -145,23 +172,33 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
+     * Returns the fully qualified name of the organizational unit ofr this session.<p>
+     * 
+     * @return the fully qualified name of the organizational unit ofr this session
+     */
+    public String getOrganizationalUnitFqn() {
+
+        return m_ouFqn;
+    }
+
+    /**
      * Returns the id of the project of the user.<p>
      * 
      * @return the id of the project
      */
-    public int getProject() {
+    public CmsUUID getProject() {
 
         return m_projectId;
     }
 
     /**
-     * Returns the id of the (http) session this session info belongs to.<p>
+     * Returns the id of the OpenCms (http) session this session info belongs to.<p>
      *
-     * @return the id of the (http) session this session info belongs to
+     * @return the id of the OpenCms (http) session this session info belongs to
      * 
      * @see javax.servlet.http.HttpSession#getId()
      */
-    public String getSessionId() {
+    public CmsUUID getSessionId() {
 
         return m_sessionId;
     }
@@ -208,13 +245,21 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
-     * Returns the user to which this session info belongs.<p>
+     * Returns the id of the user to which this session info belongs.<p>
      * 
-     * @return the user to which this session info belongs
+     * @return the id of the user to which this session info belongs
      */
-    public CmsUser getUser() {
+    public CmsUUID getUserId() {
 
-        return m_user;
+        return m_userId;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_userId.hashCode();
     }
 
     /**
@@ -229,11 +274,30 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer str = new StringBuffer(64);
+        str.append("[");
+        str.append("sessionId: ").append(m_sessionId).append(", ");
+        str.append("userId: ").append(m_userId).append(", ");
+        str.append("projectId: ").append(m_projectId).append(", ");
+        str.append("siteRoot: ").append(m_siteRoot).append(", ");
+        str.append("timeCreated: ").append(m_timeCreated).append(", ");
+        str.append("timeUpdated: ").append(m_timeUpdated).append(", ");
+        str.append("maxInactiveInterval: ").append(m_maxInactiveInterval);
+        str.append("ouFqn: ").append(m_ouFqn);
+        str.append("]");
+        return str.toString();
+    }
+
+    /**
      * Sets the id of the current project of the user of this session info.<p>
      * 
      * @param projectId the project id to set
      */
-    public void setProject(int projectId) {
+    protected void setProject(CmsUUID projectId) {
 
         m_projectId = projectId;
     }
@@ -242,12 +306,13 @@ public class CmsSessionInfo implements Comparable {
      * Updates the session info object with the information from
      * the given request context.<p>
      * 
-     * @param context the requrest context to update the session with
+     * @param context the request context to update the session with
      */
     protected void update(CmsRequestContext context) {
 
         m_timeUpdated = System.currentTimeMillis();
         m_siteRoot = context.getSiteRoot();
-        setProject(context.currentProject().getId());
+        setProject(context.currentProject().getUuid());
+        m_ouFqn = context.getOuFqn();
     }
 }

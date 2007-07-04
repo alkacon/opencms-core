@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/12/12 14:49:23 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Cache-Control". */
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
+
+    /** HTTP Header "Connection". */
+    public static final String HEADER_CONNECTION = "Connection";
 
     /** The "Content-Disposition" http header. */
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
@@ -97,6 +100,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Last-Modified". */
     public static final String HEADER_LAST_MODIFIED = "Last-Modified";
+
+    /** HTTP Header "Location". */
+    public static final String HEADER_LOCATION = "Location";
 
     /** HTTP Header for internal requests used during static export. */
     public static final String HEADER_OPENCMS_EXPORT = "OpenCms-Export";
@@ -124,6 +130,15 @@ public final class CmsRequestUtil {
 
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
     public static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
+
+    /** Assignment char between parameter name and values. */
+    public static final String PARAMETER_ASSIGNMENT = "=";
+
+    /** Delimiter char between parameters. */
+    public static final String PARAMETER_DELIMITER = "&";
+
+    /** Delimiter char between url and query. */
+    public static final String URL_DELIMITER = "?";
 
     /** The prefix for &amp. */
     private static final String AMP = "amp;";
@@ -158,18 +173,18 @@ public final class CmsRequestUtil {
         if (CmsStringUtil.isEmpty(url)) {
             return null;
         }
-        int pos = url.indexOf('?');
+        int pos = url.indexOf(URL_DELIMITER);
         StringBuffer result = new StringBuffer(256);
         result.append(url);
         if (pos >= 0) {
             // url already has parameters
-            result.append('&');
+            result.append(PARAMETER_DELIMITER);
         } else {
             // url does not have parameters
-            result.append('?');
+            result.append(URL_DELIMITER);
         }
         result.append(paramName);
-        result.append('=');
+        result.append(PARAMETER_ASSIGNMENT);
         result.append(paramValue);
         return result.toString();
     }
@@ -198,22 +213,23 @@ public final class CmsRequestUtil {
         if ((params == null) || params.isEmpty()) {
             return url;
         }
-        int pos = url.indexOf('?');
+        int pos = url.indexOf(URL_DELIMITER);
         StringBuffer result = new StringBuffer(256);
         result.append(url);
         if (pos >= 0) {
             // url already has parameters
-            result.append('&');
+            result.append(PARAMETER_DELIMITER);
         } else {
             // url does not have parameters
-            result.append('?');
+            result.append(URL_DELIMITER);
         }
         // ensure all values are of type String[]
         Map newParams = createParameterMap(params);
-        Iterator i = newParams.keySet().iterator();
+        Iterator i = newParams.entrySet().iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
-            Object value = newParams.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            Object value = entry.getValue();
             String[] values = (String[])value;
             for (int j = 0; j < values.length; j++) {
                 String strValue = values[j];
@@ -221,14 +237,14 @@ public final class CmsRequestUtil {
                     strValue = CmsEncoder.encode(strValue);
                 }
                 result.append(key);
-                result.append('=');
+                result.append(PARAMETER_ASSIGNMENT);
                 result.append(strValue);
                 if ((j + 1) < values.length) {
-                    result.append('&');
+                    result.append(PARAMETER_DELIMITER);
                 }
             }
             if (i.hasNext()) {
-                result.append('&');
+                result.append(PARAMETER_DELIMITER);
             }
         }
         return result.toString();
@@ -250,10 +266,11 @@ public final class CmsRequestUtil {
             return null;
         }
         HashMap result = new HashMap();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String key = i.next().toString();
-            Object values = params.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            Object values = entry.getValue();
             if (values instanceof String[]) {
                 result.put(key, values);
             } else {
@@ -281,18 +298,18 @@ public final class CmsRequestUtil {
             // empty query
             return new HashMap();
         }
-        if (query.charAt(0) == '?') {
+        if (query.charAt(0) == URL_DELIMITER.charAt(0)) {
             // remove leading '?' if required
             query = query.substring(1);
         }
         HashMap parameters = new HashMap();
         // cut along the different parameters
-        String[] params = CmsStringUtil.splitAsArray(query, '&');
+        String[] params = CmsStringUtil.splitAsArray(query, PARAMETER_DELIMITER);
         for (int i = 0; i < params.length; i++) {
             String key = null;
             String value = null;
             // get key and value, separated by a '=' 
-            int pos = params[i].indexOf('=');
+            int pos = params[i].indexOf(PARAMETER_ASSIGNMENT);
             if (pos > 0) {
                 key = params[i].substring(0, pos);
                 value = params[i].substring(pos + 1);
@@ -338,10 +355,11 @@ public final class CmsRequestUtil {
 
         StringBuffer result = new StringBuffer(512);
         Map params = req.getParameterMap();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            String[] values = (String[])params.get(param);
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
+            String[] values = (String[])entry.getValue();
             for (int j = 0; j < values.length; j++) {
                 result.append(param);
                 result.append("=");
@@ -451,7 +469,7 @@ public final class CmsRequestUtil {
     public static String getCookieValue(CmsJspActionElement jsp, String name) {
 
         Cookie[] cookies = jsp.getRequest().getCookies();
-        for (int i = 0; cookies != null && i < cookies.length; i++) {
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 return cookies[i].getValue();
             }
@@ -568,7 +586,7 @@ public final class CmsRequestUtil {
             FileItem item = (FileItem)i.next();
             String name = item.getFieldName();
             String value = null;
-            if (name != null && item.getName() == null) {
+            if ((name != null) && (item.getName() == null)) {
                 // only put to map if current item is no file and not null
                 try {
                     value = item.getString(encoding);
@@ -576,10 +594,39 @@ public final class CmsRequestUtil {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
                     value = item.getString();
                 }
-                parameterMap.put(name, new String[] {value});
+                if (parameterMap.containsKey(name)) {
+
+                    // append value to parameter values array
+                    String[] oldValues = (String[])parameterMap.get(name);
+                    String[] newValues = new String[oldValues.length + 1];
+                    System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                    newValues[oldValues.length] = value;
+                    parameterMap.put(name, newValues);
+
+                } else {
+                    parameterMap.put(name, new String[] {value});
+                }
             }
         }
         return parameterMap;
+    }
+
+    /**
+     * Redirects the response to the target link using a "301 - Moved Permanently" header.<p>
+     * 
+     * This implementation will work only on JSP pages in OpenCms that use the default JSP loader implementation.<p>
+     * 
+     * @param jsp the jsp context
+     * @param target the target link
+     */
+    public static void redirectPermanently(CmsJspActionElement jsp, String target) {
+
+        String newTarget = OpenCms.getLinkManager().substituteLink(jsp.getCmsObject(), target, null, true);
+        jsp.getRequest().setAttribute(
+            CmsRequestUtil.ATTRIBUTE_ERRORCODE,
+            new Integer(HttpServletResponse.SC_MOVED_PERMANENTLY));
+        jsp.getResponse().setHeader(HEADER_LOCATION, newTarget);
+        jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
     }
 
     /**
@@ -624,7 +671,7 @@ public final class CmsRequestUtil {
     public static void setCookieValue(CmsJspActionElement jsp, String name, String value) {
 
         Cookie[] cookies = jsp.getRequest().getCookies();
-        for (int i = 0; cookies != null && i < cookies.length; i++) {
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 cookies[i].setValue(value);
                 return;

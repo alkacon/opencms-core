@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2006/10/20 10:36:51 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,15 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
-import org.opencms.lock.CmsLock;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,15 +215,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
-     */
-    public void changeLastModifiedProjectId(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException {
-
-        securityManager.changeLastModifiedProjectId(cms.getRequestContext(), resource);
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#changeLock(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLock(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource) throws CmsException {
@@ -245,23 +238,27 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     throws CmsException {
 
         securityManager.chtype(cms.getRequestContext(), resource, type);
+        // type may have changed from non link parseable to link parseable
+        createRelations(cms, securityManager, resource.getRootPath());
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        int siblingMode) throws CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsException {
 
         securityManager.copyResource(
             cms.getRequestContext(),
             source,
             cms.getRequestContext().addSiteRoot(destination),
             siblingMode);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
     }
 
     /**
@@ -283,17 +280,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         byte[] content,
         List properties) throws CmsException {
 
-        // check if the resource already exists by name
-        if (cms.existsResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
-            
-            int todo_v7;
-            // TODO: This should really be done in the securityManager#createResource() method!
-            
-            throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                resourcename));
-        }
- 
         // initialize a macroresolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
 
@@ -310,6 +296,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // process the (optional) copy resources from the configuration
         processCopyResources(cms, resourcename, resolver);
 
+        // create the relations for the new resource
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename));
+
         // return the created resource
         return result;
     }
@@ -317,27 +306,66 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createSibling(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, CmsResource, java.lang.String, java.util.List)
      */
-    public void createSibling(
+    public CmsResource createSibling(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
         List properties) throws CmsException {
 
-        securityManager.createSibling(
+        CmsResource sibling = securityManager.createSibling(
             cms.getRequestContext(),
             source,
             cms.getRequestContext().addSiteRoot(destination),
             properties);
+        // create the relations for the new resource, this could be improved by an sql query for copying relations
+        createRelations(cms, securityManager, sibling.getRootPath());
+        return sibling;
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
-    throws CmsException {
+    public void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException {
 
         securityManager.deleteResource(cms.getRequestContext(), resource, siblingMode);
+    }
+
+    /**
+     * Returns <code>true</code>, if this resource type is equal to the given Object.<p>
+     * 
+     * Please note: A resource type is identified by it's id {@link #getTypeId()} and it's name {@link #getTypeName()}.
+     * Two resource types are considered equal, if either their id or ther name is equal.
+     * This is to prevent issues in the configuration with multiple occurences of the same name or id.<p> 
+     * 
+     * @param obj the Object to compare this resource type with
+     * 
+     * @return <code>true</code>, if this resource type is equal to the given Object
+     * 
+     * @see #getTypeId()
+     * @see #getTypeName()
+     * @see #isIdentical(I_CmsResourceType)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof I_CmsResourceType) {
+            I_CmsResourceType other = (I_CmsResourceType)obj;
+            if (getTypeId() == other.getTypeId()) {
+                return true;
+            }
+            if ((getTypeName() != null) && (getTypeName().equals(other.getTypeName()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -419,6 +447,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * The hash code implementation simply returns the unique type id of this resource type.
+     * 
+     * @see #getTypeId()
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return getTypeId();
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], List)
      */
     public CmsResource importResource(
@@ -429,7 +468,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         byte[] content,
         List properties) throws CmsException {
 
-        // this triggers the interal "is touched" state
+        // this triggers the internal "is touched" state
         // and prevents the security manager from inserting the current time
         resource.setDateLastModified(resource.getDateLastModified());
         // ensure resource record is updated
@@ -480,7 +519,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
-
         }
 
         if (m_frozen) {
@@ -507,7 +545,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         }
 
         // check type id, type name and classs name
-        if ((getTypeId() < 0) || (getTypeName() == null) || (getClassName() == null)) {
+        if ((getTypeName() == null)
+            || (getClassName() == null)
+            || ((getTypeId() < 0) && (!m_typeName.equals(CmsResourceTypeUnknownFile.getStaticTypeName())) && (!m_typeName.equals(CmsResourceTypeUnknownFolder.getStaticTypeName())))) {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_3,
                 className,
@@ -556,60 +596,63 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#isIdentical(org.opencms.file.types.I_CmsResourceType)
      */
-    public void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int mode)
-    throws CmsException {
+    public boolean isIdentical(I_CmsResourceType type) {
 
-        securityManager.lockResource(cms.getRequestContext(), resource, mode);
+        if (type == null) {
+            return false;
+        }
+
+        return (getTypeId() == type.getTypeId()) && (getTypeName().equals(type.getTypeName()));
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.lock.CmsLockType)
      */
-    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
+    public void lockResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, CmsLockType type)
     throws CmsException {
 
-        String dest = cms.getRequestContext().addSiteRoot(destination);
+        securityManager.lockResource(cms.getRequestContext(), resource, type);
+    }
 
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
+     */
+    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
+    throws CmsException, CmsIllegalArgumentException {
+
+        String dest = cms.getRequestContext().addSiteRoot(destination);
         if (resource.getRootPath().equals(dest)) {
             // move to target with same name is not allowed
             throw new CmsVfsException(org.opencms.file.Messages.get().container(
                 org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1,
                 destination));
         }
-
-        // check if the user has write access and if resource is locked
-        // done here since copy is ok without lock, but delete is not
-        securityManager.checkPermissions(
-            cms.getRequestContext(),
-            resource,
-            CmsPermissionSet.ACCESS_WRITE,
-            true,
-            CmsResourceFilter.IGNORE_EXPIRATION);
-
-        // check if the resource to move is new or existing
-        boolean isNew = resource.getState() == CmsResource.STATE_NEW;
-
-        copyResource(cms, securityManager, resource, destination, CmsResource.COPY_AS_SIBLING);
-
-        deleteResource(cms, securityManager, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        // make sure lock is switched
-        CmsResource destinationResource = securityManager.readResource(
-            cms.getRequestContext(),
-            dest,
-            CmsResourceFilter.ALL);
-
-        if (isNew) {
-            // if the source was new, destination must get a new lock
-            securityManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.COMMON);
-        } else {
-            // if source existed, destination must "steal" the lock 
-            securityManager.changeLock(cms.getRequestContext(), destinationResource);
+        // check the destination
+        try {
+            securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
+                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                destination));
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
         }
+
+        // move
+        securityManager.moveResource(cms.getRequestContext(), resource, dest);
+
+        // create the relations for the new resource, this could be improved by an sql query for moving relations
+        createRelations(cms, securityManager, dest);
+        // touch
+        CmsResource file = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+        writeFile(cms, securityManager, CmsFile.upgrade(file, cms));
     }
 
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#removeResourceFromProject(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource)
+     */
     public void removeResourceFromProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
     throws CmsException {
 
@@ -628,15 +671,33 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List properties) throws CmsException {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
+        // type may have changed from non link parseable to link parseable
+        createRelations(cms, securityManager, resource.getRootPath());
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     */
+    public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
+    throws CmsException {
+
+        securityManager.restoreResource(cms.getRequestContext(), resource, version);
+        // type may have changed from non link parseable to link parseable
+        createRelations(cms, securityManager, resource.getRootPath());
     }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
      */
-    public void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int tag)
-    throws CmsException {
+    public void restoreResourceBackup(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        int version) throws CmsException {
 
-        securityManager.restoreResource(cms.getRequestContext(), resource, tag);
+        restoreResource(cms, securityManager, resource, version);
     }
 
     /**
@@ -704,12 +765,25 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undelete(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, boolean)
      */
-    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
     throws CmsException {
 
-        securityManager.undoChanges(cms.getRequestContext(), resource);
+        securityManager.undelete(cms.getRequestContext(), resource);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
+     */
+    public void undoChanges(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceUndoMode mode) throws CmsException {
+
+        securityManager.undoChanges(cms.getRequestContext(), resource, mode);
+        updateRelationForUndo(cms, securityManager, resource);
     }
 
     /**
@@ -724,11 +798,19 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
-    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
-    throws CmsException, CmsVfsException, CmsSecurityException {
+    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         if (resource.isFile()) {
-            return securityManager.writeFile(cms.getRequestContext(), resource);
+            CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
+            I_CmsResourceType type = getResourceType(file);
+            // update the relations after writing!!
+            List links = null;
+            if (type instanceof I_CmsLinkParseable) {
+                // if the new type is link parseable
+                links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
+            }
+            securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
+            return file;
         }
         // folders can never be written like a file
         throw new CmsVfsException(Messages.get().container(
@@ -761,6 +843,34 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * Creates the relation information for the resource with the given resource name.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the secutiry manager
+     * @param resourceName the resource name of the resource to update the relations for
+     * 
+     * @return the fresh read resource 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName)
+    throws CmsException {
+
+        CmsResource resource = securityManager.readResource(
+            cms.getRequestContext(),
+            resourceName,
+            CmsResourceFilter.ALL);
+        I_CmsResourceType resourceType = getResourceType(resource);
+        List links = null;
+        if (resourceType instanceof I_CmsLinkParseable) {
+            I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+            links = linkParseable.parseLinks(cms, CmsFile.upgrade(resource, cms));
+        }
+        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, links);
+        return resource;
+    }
+
+    /**
      * Creates a macro resolver based on the current users OpenCms context and the provided resource name.<p>
      * 
      * @param cms the current OpenCms user context
@@ -786,18 +896,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * Convenience method to return the initialized resource type 
-     * instance for the given id.<p>
+     * Convenience method to get the initialized resource type 
+     * instance for the given resource, including unknown resource types.<p>
      * 
-     * @param resourceType the id of the resource type to get
-     * @return the initialized resource type instance for the given id
-     * @throws CmsException if something goes wrong
+     * @param resource the resource to get the type for
+     * 
+     * @return the initialized resource type instance for the given resource
+     * 
+     * @throws CmsLoaderException if no resource type is available for the given resource
      * 
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
-    protected I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+    protected I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
 
-        return OpenCms.getResourceManager().getResourceType(resourceType);
+        return OpenCms.getResourceManager().getResourceType(resource);
     }
 
     /**
@@ -892,5 +1004,53 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // return the result
         return result;
+    }
+
+    /**
+     * Update the relations after an undo changes operation.<p>
+     * 
+     * @param cms the cms context
+     * @param securityManager the security manager
+     * @param resource the resource that has been undone
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void updateRelationForUndo(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
+    throws CmsException {
+
+        // type may have changed from non link parseable to link parseable        
+        CmsResource undoneResource1 = null;
+        try {
+            // first try to locate the resource by path
+            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath());
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ignore, undone move operation
+        }
+        // now, in case a move operation has been undone, locate the resource by id
+        CmsResource undoneResource2 = securityManager.readResource(
+            cms.getRequestContext(),
+            resource.getStructureId(),
+            CmsResourceFilter.ALL);
+        if (!undoneResource2.equals(undoneResource1)) {
+            I_CmsResourceType resourceType = getResourceType(resource);
+            List links = null;
+            if (resourceType instanceof I_CmsLinkParseable) {
+                I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
+                if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
+                    try {
+                        links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                    } catch (CmsException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e);
+                        }
+                    } catch (CmsRuntimeException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e);
+                        }
+                    }
+                }
+            }
+            securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
+        }
     }
 }

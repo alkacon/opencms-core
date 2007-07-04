@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:50 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,54 +31,63 @@
 
 package org.opencms.test;
 
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
 public final class OpenCmsTestProperties {
 
+    /** The log object for this class. */
+    public static final Log LOG = CmsLog.getLog(OpenCmsTestProperties.class);
+
+    /** Property / Environmant name for "db.product". */
+    public static final String PROP_DB_PRODUCT = "db.product";
+
+    /** Property / Environmant name for "test.data.path".  */
+    public static final String PROP_TEST_DATA_PATH = "test.data.path";
+
+    /** Property / Environmant name for "test.webapp.path". */
+    public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
+
+    /** The configuration from <code>opencms.properties</code>. */
     private static ExtendedProperties m_configuration;
 
-    /**
-     * the singleton instance.
-     */
+    /** The singleton instance. */
     private static OpenCmsTestProperties m_testSingleton;
 
-    /**
-     * the path to the test.properties file.
-     */
+    /** The path to the test.properties file. */
     private String m_basePath;
 
-    /**
-     * the database to use. 
-     */
+    /** The database to use. */
     private String m_dbProduct;
 
-    /**
-     * the path to the data test folder.
-     */
+    /** The path to the data test folder. */
     private String m_testDataPath;
 
-    /**
-     * the path to the webapp test folder.
-     */
+    /** The path to the webapp test folder. */
     private String m_testWebappPath;
 
     /**
-     * private default constructor.
+     * Private default constructor.
      */
     private OpenCmsTestProperties() {
 
@@ -94,6 +103,54 @@ public final class OpenCmsTestProperties {
             throw new RuntimeException("You have to initialize the test properties.");
         }
         return m_testSingleton;
+    }
+
+    /**
+     * Returns the absolute path name for the given relative 
+     * path name if it was found by the context Classloader of the 
+     * current Thread.<p>
+     * 
+     * The argument has to denote a resource within the Classloaders 
+     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
+     * try to match a given path name to some resource under it's URL 
+     * entries.<p>
+     * 
+     * As the result is internally obtained as an URL it is reduced to 
+     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
+     * the returned String will start with a '/' (no problem for java.io).<p>
+     * 
+     * @param fileName the filename to return the path from the Classloader for
+     * 
+     * @return the absolute path name for the given relative 
+     *   path name if it was found by the context Classloader of the 
+     *   current Thread or an empty String if it was not found
+     * 
+     * @see Thread#getContextClassLoader()
+     */
+    public static String getResourcePathFromClassloader(String fileName) {
+
+        boolean isFolder = CmsResource.isFolder(fileName);
+        String result = "";
+        URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
+        if (inputUrl != null) {
+            // decode name here to avoid url encodings in path name
+            result = CmsFileUtil.normalizePath(inputUrl);
+            if (isFolder && !CmsResource.isFolder(result)) {
+                result = result + '/';
+            }
+        } else {
+            try {
+                URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
+                URL[] paths = cl.getURLs();
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
+                    fileName,
+                    Arrays.asList(paths)));
+            } catch (Throwable t) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
+            }
+        }
+        return result;
     }
 
     /**
@@ -116,7 +173,7 @@ public final class OpenCmsTestProperties {
         }
 
         try {
-            testPropPath = CmsFileUtil.getResourcePathFromClassloader("test.properties");
+            testPropPath = OpenCmsTestProperties.getResourcePathFromClassloader("test.properties");
             if (testPropPath == null) {
                 throw new RuntimeException(
                     "Test property file ('test.properties') could not be found by context Classloader.");
@@ -133,10 +190,33 @@ public final class OpenCmsTestProperties {
             throw new RuntimeException(e);
         }
 
-        m_testSingleton.m_testDataPath = m_configuration.getString("test.data.path");
-        m_testSingleton.m_testWebappPath = m_configuration.getString("test.webapp.path");
-        m_testSingleton.m_dbProduct = m_configuration.getString("db.product");
+        try {
+            // for java 1.4, getenv is deprecated and raises an error,
+            // so prefer properties set with "-D"
+            // read environment and update configuration if required
+            if (System.getProperty(PROP_TEST_DATA_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getProperty(PROP_TEST_DATA_PATH));
+            } else if (System.getenv(PROP_TEST_DATA_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_DATA_PATH, System.getenv(PROP_TEST_DATA_PATH));
+            }
+            if (System.getProperty(PROP_TEST_WEBAPP_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getProperty(PROP_TEST_WEBAPP_PATH));
+            } else if (System.getenv(PROP_TEST_WEBAPP_PATH) != null) {
+                m_configuration.setProperty(PROP_TEST_WEBAPP_PATH, System.getenv(PROP_TEST_WEBAPP_PATH));
+            }
+            if (System.getProperty(PROP_DB_PRODUCT) != null) {
+                m_configuration.setProperty(PROP_DB_PRODUCT, System.getProperty(PROP_DB_PRODUCT));
+            } else if (System.getenv(PROP_DB_PRODUCT) != null) {
+                m_configuration.setProperty(PROP_DB_PRODUCT, System.getenv(PROP_DB_PRODUCT));
+            }
+        } catch (SecurityException e) {
+            // unable to read environment, use only properties from file
+            e.printStackTrace(System.out);
+        }
 
+        m_testSingleton.m_testDataPath = m_configuration.getString(PROP_TEST_DATA_PATH);
+        m_testSingleton.m_testWebappPath = m_configuration.getString(PROP_TEST_WEBAPP_PATH);
+        m_testSingleton.m_dbProduct = m_configuration.getString(PROP_DB_PRODUCT);
     }
 
     /**
@@ -157,8 +237,7 @@ public final class OpenCmsTestProperties {
     }
 
     /**
-     * 
-     * @return a String identifying the db.product property value of the 'test.properties' value.
+     * @return the name of the db product used
      */
     public String getDbProduct() {
 
@@ -180,5 +259,4 @@ public final class OpenCmsTestProperties {
 
         return m_testWebappPath;
     }
-
 }

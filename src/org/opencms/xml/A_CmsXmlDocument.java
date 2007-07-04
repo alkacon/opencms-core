@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,11 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -59,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +119,35 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * @see org.opencms.xml.I_CmsXmlDocument#copyLocale(java.util.List, java.util.Locale)
+     */
+    public void copyLocale(List possibleSources, Locale destination) throws CmsXmlException {
+
+        if (hasLocale(destination)) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
+        }
+        Iterator i = possibleSources.iterator();
+        Locale source = null;
+        while (i.hasNext() && (source == null)) {
+            // check all locales and try to find the first match
+            Locale candidate = (Locale)i.next();
+            if (hasLocale(candidate)) {
+                // locale has been found
+                source = candidate;
+            }
+        }
+        if (source != null) {
+            // found a locale, copy this to the destination
+            copyLocale(source, destination);
+        } else {
+            // no matching locale has been found
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+                CmsLocaleManager.getLocaleNames(possibleSources)));
+        }
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#copyLocale(java.util.Locale, java.util.Locale)
      */
     public void copyLocale(Locale source, Locale destination) throws CmsXmlException {
@@ -161,6 +192,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * Corrects the structure of this XML content.<p>
      * 
      * @param cms the current cms object
+     * 
      * @return the file that contains the corrected XML structure
      * 
      * @throws CmsXmlException if something goes wrong
@@ -172,6 +204,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         while (i.hasNext()) {
             Locale locale = (Locale)i.next();
             List names = getNames(locale);
+            List validValues = new ArrayList();
 
             // iterate over all nodes per language
             Iterator j = names.iterator();
@@ -185,11 +218,90 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     String content = value.getStringValue(cms);
                     value.setStringValue(cms, content);
                 }
+
+                // save valid elements for later check
+                validValues.add(value);
+            }
+
+            if (isAutoCorrectionEnabled()) {
+                // full correction of XML
+
+                ArrayList roots = new ArrayList();
+                ArrayList rootCds = new ArrayList();
+                ArrayList validElements = new ArrayList();
+
+                // gather all XML content definitions and their parent nodes                                
+                Iterator it = validValues.iterator();
+                while (it.hasNext()) {
+                    // collect all root elements, also for the nested content definitions
+                    I_CmsXmlContentValue value = (I_CmsXmlContentValue)it.next();
+                    Element element = value.getElement();
+                    validElements.add(element);
+                    if (element.supportsParent()) {
+                        // get the parent XML node
+                        Element root = element.getParent();
+                        if ((root != null) && !roots.contains(root)) {
+                            // this is a parent node we do not have already in our storage
+                            CmsXmlContentDefinition rcd = value.getContentDefinition();
+                            if (rcd != null) {
+                                // this value has a valid XML content definition
+                                roots.add(root);
+                                rootCds.add(rcd);
+                            } else {
+                                // no valid content definition for the XML value
+                                throw new CmsXmlException(Messages.get().container(
+                                    Messages.ERR_CORRECT_NO_CONTENT_DEF_3,
+                                    value.getName(),
+                                    value.getTypeName(),
+                                    value.getPath()));
+                            }
+                        }
+                    }
+                }
+
+                for (int le = 0; le < roots.size(); le++) {
+                    // iterate all XML content root nodes and correct each XML subtree
+
+                    Element root = (Element)roots.get(le);
+                    CmsXmlContentDefinition cd = (CmsXmlContentDefinition)rootCds.get(le);
+
+                    // step 1: first sort the nodes according to the schema, this takes care of re-ordered elements
+                    List nodeLists = new ArrayList();
+                    Iterator is = cd.getTypeSequence().iterator();
+                    while (is.hasNext()) {
+                        I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)is.next();
+                        String name = type.getName();
+                        List elements = root.elements(name);
+                        if (elements.size() > type.getMaxOccurs()) {
+                            // to many nodes of this type appear according to the current schema definition
+                            for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
+                                elements.remove(lo);
+                            }
+                        }
+                        nodeLists.add(elements);
+                    }
+
+                    // step 2: clear the list of nodes (this will remove all invalid nodes)
+                    List nodeList = root.elements();
+                    nodeList.clear();
+                    Iterator in = nodeLists.iterator();
+                    while (in.hasNext()) {
+                        // now add all valid nodes in the right order
+                        List elements = (List)in.next();
+                        nodeList.addAll(elements);
+                    }
+
+                    // step 3: now append the missing elements according to the XML content definition
+                    cd.addDefaultXml(cms, this, root, locale);
+                }
             }
         }
 
         // write the modifed xml back to the VFS file 
-        m_file.setContents(marshal());
+        if (m_file != null) {
+            // make sure the file object is available
+            m_file.setContents(marshal());
+        }
         return m_file;
     }
 
@@ -605,6 +717,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @param contentDefinition the content definition to use
      */
     protected abstract void initDocument(Document document, String encoding, CmsXmlContentDefinition contentDefinition);
+
+    /**
+     * Returns <code>true</code> if the auto correction feature is enabled for saving this XML content.<p>
+     * 
+     * @return <code>true</code> if the auto correction feature is enabled for saving this XML content
+     */
+    protected boolean isAutoCorrectionEnabled() {
+
+        // by default, this method always returns false
+        return false;
+    }
 
     /**
      * Marshals (writes) the content of the current XML document 

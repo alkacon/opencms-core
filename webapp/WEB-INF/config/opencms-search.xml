@@ -3,10 +3,11 @@
 
 <opencms>
 	<search>
-		<cache>8</cache>
 		<directory>index</directory>
-		<timeout>60000</timeout>	
+		<timeout>60000</timeout>
+		<forceunlock>onlyfull</forceunlock>		
 		<excerpt>1024</excerpt>
+		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>		
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>		
 		<documenttypes>		
 			<documenttype>
@@ -139,9 +140,8 @@
 				<locale>en</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-				<stemmer>French</stemmer>
-				<locale>fr</locale>
+                <class>org.apache.lucene.analysis.fr.FrenchAnalyzer</class>
+                <locale>fr</locale>
 			</analyzer>
 			<analyzer>
 				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
@@ -210,5 +210,33 @@
 				</documenttypes-indexed>
 			</indexsource>	
 		</indexsources>		
+		<fieldconfigurations>		
+			<fieldconfiguration>
+				<name>standard</name>
+				<description>The standard OpenCms 7.0 search index field configuration.</description>
+				<fields>
+					<field name="content" display="%(key.field.content)" store="true" index="true" excerpt="true">
+						<mapping type="content" />
+					</field>	
+					<field name="title-key" display="-" store="true" index="untokenized" boost="0.0">
+						<mapping type="property">Title</mapping>
+					</field>	
+					<field name="title" display="%(key.field.title)" store="false" index="true">
+						<mapping type="property">Title</mapping>
+					</field>	
+					<field name="keywords" display="%(key.field.keywords)" store="true" index="true">
+						<mapping type="property">Keywords</mapping>
+					</field>	
+					<field name="description" display="%(key.field.description)" store="true" index="true">
+						<mapping type="property">Description</mapping>
+					</field>					
+					<field name="meta" display="%(key.field.meta)" store="false" index="true">
+						<mapping type="property">Title</mapping>
+						<mapping type="property">Keywords</mapping>
+						<mapping type="property">Description</mapping>
+					</field>			
+				</fields>
+			</fieldconfiguration>			
+		</fieldconfigurations>				
 	</search>
 </opencms>

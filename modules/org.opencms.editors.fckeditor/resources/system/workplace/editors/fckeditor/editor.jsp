@@ -92,6 +92,9 @@ var dialogPropertyWindow = null;
 // OpenCms context prefix, required for page editor because no link replacement is done here
 var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 
+// Path to the style sheet used in the editor
+var cssPath = "<%= wp.getUriStyleSheet() %>";
+
 // saves the editors contents
 function saveContent() {
     document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(false));
@@ -212,7 +215,7 @@ function closeBrowserWindow() {
    }
    http_request.onreadystatechange = httpStateDummy;
    http_request.open("POST", "<%= wp.getDialogRealUri() %>?<%= CmsDialog.PARAM_ACTION %>=<%= CmsEditor.EDITOR_CLOSEBROWSER %>&<%= CmsDialog.PARAM_RESOURCE %>=<%= wp.getParamResource() %>&<%= CmsEditor.PARAM_TEMPFILE %>=<%= wp.getParamTempfile() %>", true);
-   http_request.send(null);
+   http_request.send('');
 }
 
 // dummy function for html request
@@ -267,7 +270,7 @@ if (elementSelection || elementLanguage) {
 	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_ELEMENT_0));
 	if (elementLanguage) {
 		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
-		out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletecontent", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
+		out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletelocale", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
 		out.println(wp.buttonBarSpacer(2));
 	} else {
 		%><input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><%

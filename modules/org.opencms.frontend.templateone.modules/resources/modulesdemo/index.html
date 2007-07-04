@@ -30,30 +30,34 @@ the contents to display.</P>]]></content>
     </element>
     <element name="text3">
       <links>
-        <link name="link3" type="A" internal="true">
+        <link name="link3" internal="true" type="A">
           <target><![CDATA[/sites/default/modulesdemo/news.html]]></target>
+          <uuid>a77c9a6d-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
-        <link name="link2" type="A" internal="true">
+        <link name="link2" internal="true" type="A">
           <target><![CDATA[/sites/default/modulesdemo/jobs.html]]></target>
+          <uuid>a7759579-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
-        <link name="link0" type="A" internal="true">
+        <link name="link0" internal="true" type="A">
           <target><![CDATA[/sites/default/modulesdemo/events.html]]></target>
+          <uuid>a76bf96c-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
-        <link name="link1" type="A" internal="true">
+        <link name="link1" internal="true" type="A">
           <target><![CDATA[/sites/default/modulesdemo/faq.html]]></target>
+          <uuid>a770b46a-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
       </links>
       <content><![CDATA[<H1>List variations</H1>
 <P>Check out the demo pages to see how different lists of XML contents can be 
 displayed on pages:</P>
 <UL>
-  <LI><A href="${link0}" target=_self>List of 
+  <LI><A href="%(link0)" target=_self>List of 
   latest events</A></LI>
-  <LI><A href="${link1}" target=_self>List of 
+  <LI><A href="%(link1)" target=_self>List of 
   categorized FAQ</A></LI>
-  <LI><A href="${link2}" target=_self>List of job 
+  <LI><A href="%(link2)" target=_self>List of job 
   offerings</A></LI>
-  <LI><A href="${link3}" target=_self>List of 
+  <LI><A href="%(link3)" target=_self>List of 
   latest news messages</A></LI></UL>]]></content>
     </element>
   </page>

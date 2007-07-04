@@ -15,14 +15,11 @@
 	boolean dropDb = false;
 
 	if (Bean.isInitialized()) {
-
 		String temp;
 		Object a;
-
 		if ((a = session.getAttribute("createDb")) != null) {
 			createDb = "true".equals(a.toString());
 		}
-
 		if (((a = session.getAttribute("createTables")) != null) && (a.toString().length() > 0)) {
 			createTables = "true".equals(a.toString());
 	    } else {
@@ -30,7 +27,6 @@
 			// tables when creating a new database
 	    	createTables = createDb;
 	    }
-
 		if(createDb || createTables)	{
 			db = new CmsSetupDb(Bean.getWebAppRfsPath());
 			temp = request.getParameter("dropDb");
@@ -52,6 +48,7 @@
 				}
 			}
 			if( !dbExists || dropDb)	{
+                db.closeConnection();
 				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 			}
 			else {
@@ -61,7 +58,6 @@
 			}
 		}
 	}
-
 	boolean dbError = false;
 	boolean enableContinue = false;
 	if(!createDb && !createTables && dbExists)	{
@@ -99,7 +95,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 						<%
 					}
 					else {
-						if (dbExists && createTables && !dropDb)	{
+						if (dbExists && createTables && !dropDb && db != null)	{
 							db.closeConnection(); %>
 							<%= Bean.getHtmlPart("C_BLOCK_START", "Create Database") %>
 							<table border="0" cellpadding="0" cellspacing="0">
@@ -123,7 +119,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 							<%
 						}
 						else	{
-							if (createDb && dropDb)	{
+							if (createDb && dropDb && db != null)	{
 								// Drop Database %>
 								<%= Bean.getHtmlPart("C_BLOCK_START", "Dropping database ...") %>
 								<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
@@ -140,8 +136,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 									</tr>									
 									<%
 									enableContinue = true;
-								}
-								else	{
+								} else {
 									enableContinue = false;
 									dbError = true;
 								 %>
@@ -173,7 +168,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 								<%
 							}
 
-							if (createDb) {
+							if (createDb && db != null) {
 								// Create Database %>
 								<%= Bean.getHtmlPart("C_BLOCK_START", "Creating database ...") %>
 								<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
@@ -188,12 +183,10 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 									</tr>									
 									<%
 									enableContinue = true;
-								}
-								else	{ 
+								} else { 
 									enableContinue = false;
 									dbError = true;
 								%>
-								
 									<tr>
 										<td><img src="resources/error.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
@@ -217,15 +210,12 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 								</table>
 								<%= Bean.getHtmlPart("C_BLOCK_END") %>
 								<div class="dialogspacer" unselectable="on">&nbsp;</div>
-								
 								<%
 							}
-
-							db.closeConnection();
-
-
-
-							if (createTables) {
+							if (db != null) {
+								db.closeConnection();
+							}
+							if (createTables && db != null) {
 								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 								//Drop Tables (intentionally quiet)
 								db.dropTables(Bean.getDatabase());
@@ -274,21 +264,16 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 											</div>
 										</td>
 									</tr>				
-								
 									<%
-									
 								}
-								
 								%>
 								</table>
 								<%= Bean.getHtmlPart("C_BLOCK_END") %>
 								<%
-								
 							}
 						}
 					}
 				%>
-
 	</td>
 </tr>
 </table>
@@ -299,7 +284,11 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 <input name="btcontinue" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled" id="btcontinue">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
-<% if (enableContinue && !dbError)	{
+<% 
+  if (db != null) {
+     db.closeConnection();
+  }
+  if (enableContinue && !dbError)	{
 	out.println("<script type=\"text/javascript\">\ndocument.getElementById(\"btcontinue\").disabled = false;\n</script>");
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>

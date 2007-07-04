@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,16 +76,24 @@ public class CmsDisplayWidget extends A_CmsWidget {
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
+        String value = param.getStringValue(cms);
+        if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
+            boolean booleanValue = Boolean.valueOf(value).booleanValue();
+            if (booleanValue) {
+                value = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_TRUE_0);
+            } else {
+                value = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_FALSE_0);
+            }
+        }
+
         String id = param.getId();
-
         StringBuffer result = new StringBuffer(16);
-
         result.append("<td class=\"xmlTd\">");
         result.append("<span class=\"xmlInput textInput\" style=\"border: 0px solid black;\">");
         if (CmsStringUtil.isNotEmpty(getConfiguration())) {
             result.append(getConfiguration());
         } else {
-            result.append(param.getStringValue(cms));
+            result.append(value);
         }
         result.append("</span>");
         result.append("<input type=\"hidden\"");
@@ -94,7 +102,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
         result.append("\" id=\"");
         result.append(id);
         result.append("\" value=\"");
-        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+        result.append(CmsEncoder.escapeXml(value));
         result.append("\">");
         result.append("</td>");
 
@@ -124,7 +132,9 @@ public class CmsDisplayWidget extends A_CmsWidget {
             if (widgetDialog.useNewStyle()) {
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
-                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(
+                    locValue,
+                    cms.getRequestContext().getEncoding())));
             }
             result.append("></td>");
             return result.toString();
@@ -143,7 +153,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
             return "";
         }
         helpIdsShown.add(helpId);
-        
+
         // calculate the key        
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {

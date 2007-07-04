@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchAnalyzer.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,27 @@
 
 package org.opencms.search;
 
+import org.opencms.i18n.CmsLocaleManager;
+
+import java.util.Locale;
+
 /**
  * An analyzer class is used by Lucene to reduce the content to be indexed
  * with trimmed endings etc.<p>
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchAnalyzer implements Cloneable {
+public class CmsSearchAnalyzer {
 
     /** The class name of the analyzer. */
     private String m_className;
 
     /** A locale as a key to select the analyzer. */
-    private String m_locale;
+    private Locale m_locale;
 
     /** The stemmer algorithm to be used. */
     private String m_stemmerAlgorithm;
@@ -67,9 +71,21 @@ public class CmsSearchAnalyzer implements Cloneable {
      *
      * @return the locale
      */
-    public String getLocale() {
+    public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the locale as a String.<p>
+     *
+     * @return the locale as a String
+     * 
+     * @see #getLocale()
+     */
+    public String getLocaleString() {
+
+        return getLocale().toString();
     }
 
     /**
@@ -97,9 +113,21 @@ public class CmsSearchAnalyzer implements Cloneable {
      *
      * @param locale the locale
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the locale as a String.<p>
+     *
+     * @param locale the locale
+     * 
+     * @see #setLocale(Locale)
+     */
+    public void setLocaleString(String locale) {
+
+        setLocale(CmsLocaleManager.getLocale(locale));
     }
 
     /**

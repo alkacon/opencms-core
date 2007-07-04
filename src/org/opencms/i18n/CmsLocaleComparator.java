@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleComparator.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -39,12 +40,15 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsLocaleComparator implements Comparator {
+public final class CmsLocaleComparator implements Serializable, Comparator {
 
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -690619562147670465L;
+    
     /** Static locale comparator. */
     private static final Comparator LOCALE_COMPARATOR = new CmsLocaleComparator();
 

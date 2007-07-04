@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-vfs.dtd">
 
-<opencms>	
+<opencms>
 	<vfs>
 		<resources>
 			<resourceloaders>
-				<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
 				<loader class="org.opencms.loader.CmsDumpLoader" />
 				<loader class="org.opencms.loader.CmsImageLoader">
 					<param name="image.scaling.enabled">true</param>		
@@ -16,7 +15,11 @@
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
 			</resourceloaders>
 			<resourcetypes>
-				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
+				<type class="org.opencms.file.types.CmsResourceTypeUnknownFile" name="unknown_file" id="-1" />
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
+					<param name="restypes.indexpage">none|xmlpage|layoutpage</param>
+				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
 					<mappings>
 						<mapping suffix=".txt" />
@@ -74,7 +77,6 @@
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
 				</type>
-				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>					
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
@@ -596,24 +598,27 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget" />				
-				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget" />
-				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget" />
-				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
+				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
+				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				
 				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
-				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
-				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget" />
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget" />			
-				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget" /> 
-				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
-				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
-				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
+				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
+                <widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
+				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
+                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext" alias="StringWidgetPlaintext" />                
+				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsLocalizationWidget" alias="LocalizationWidget"/>
+				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
+				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
+				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
+				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
+                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />                
+				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>     
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -622,8 +627,9 @@
 				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 			</schematypes>
-		</xmlcontent>			
+		</xmlcontent>
 	</vfs>
 </opencms>

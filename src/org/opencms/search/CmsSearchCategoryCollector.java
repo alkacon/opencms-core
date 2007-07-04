@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.search;
 
 import org.opencms.main.CmsLog;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ import org.apache.lucene.search.IndexSearcher;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,7 +66,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
      * Class with an increasable counter to avoid multiple look ups and 
      * object creations when dealing with the category count.<p>
      */
-    private class CmsCategroyCount {
+    private static class CmsCategroyCount {
 
         /** The category count. */
         int m_count;
@@ -145,10 +145,11 @@ public class CmsSearchCategoryCollector extends HitCollector {
         result.append("Total categories: ");
         result.append(categories.size());
         result.append('\n');
-        Iterator i = categories.keySet().iterator();
+        Iterator i = categories.entrySet().iterator();
         while (i.hasNext()) {
-            String category = (String)i.next();
-            Integer count = (Integer)categories.get(category);
+            Map.Entry entry = (Map.Entry)i.next();
+            String category = (String)entry.getKey();
+            Integer count = (Integer)entry.getValue();
             result.append(CmsStringUtil.padRight(category, 30));
             result.append(count.intValue());
             result.append('\n');
@@ -164,7 +165,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
         String category = null;
         try {
             Document doc = m_searcher.doc(id);
-            category = doc.get(I_CmsDocumentFactory.DOC_CATEGORY);
+            category = doc.get(CmsSearchField.FIELD_CATEGORY);
         } catch (IOException e) {
             // category will be null
             if (LOG.isDebugEnabled()) {

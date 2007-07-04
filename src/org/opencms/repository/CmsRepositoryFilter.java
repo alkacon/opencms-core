@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryFilter.java,v $
- * Date   : $Date: 2007/02/23 16:23:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:56:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.4
  */
@@ -189,7 +189,7 @@ public class CmsRepositoryFilter {
             matcher = pattern.matcher(path + "/");
             return matcher.matches();
         }
-        
+
         return false;
         // return matcher.hitEnd();
     }

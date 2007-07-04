@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsHtmlIconButtonStyleEnum.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,7 +101,7 @@ public final class CmsHtmlIconButtonStyleEnum {
         Iterator iter = VALUES.iterator();
         while (iter.hasNext()) {
             CmsHtmlIconButtonStyleEnum target = (CmsHtmlIconButtonStyleEnum)iter.next();
-            if (value == target.getStyle()) {
+            if (value.equals(target.getStyle())) {
                 return target;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/07/20 11:06:50 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,11 +110,11 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommands {
+public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -127,9 +127,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
     /** Folder constant name.<p> */
     public static final String FOLDER_SETUP = "setup" + File.separatorChar;
-
-    /** Folder constant name.<p> */
-    public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
@@ -150,7 +147,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     public static final String POSTGRESQL_PROVIDER = "postgresql";
 
     /** Required files per database server setup. */
-    public static final String[] REQUIRED_DB_SETUP_FILES = {
+    static final String[] REQUIRED_DB_SETUP_FILES = {
         "step_4_database_setup.jsp",
         "database.properties",
         "create_db.sql",
@@ -171,10 +168,10 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     protected List m_installModules;
 
     /** Location for log file.  */
-    protected String m_logFile = FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
+    protected String m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
 
     /** Location for logs relative to the webapp folder.  */
-    protected String m_logsFolder = FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
+    protected String m_logsFolder = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
 
     /** A map with lists of dependent module package names keyed by module package names. */
     protected Map m_moduleDependencies;
@@ -183,7 +180,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     protected Map m_moduleFilenames;
 
     /** Location for module archives relative to the webapp folder.  */
-    protected String m_modulesFolder = FOLDER_WEBINF + CmsSystemInfo.FOLDER_PACKAGES + CmsSystemInfo.FOLDER_MODULES;
+    protected String m_modulesFolder = CmsSystemInfo.FOLDER_WEBINF
+        + CmsSystemInfo.FOLDER_PACKAGES
+        + CmsSystemInfo.FOLDER_MODULES;
 
     /** The new logging offset in the workplace import thread. */
     protected int m_newLoggingOffset;
@@ -336,6 +335,47 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     }
 
     /**
+     * Returns html code to display the errors occured.<p> 
+     * 
+     * @param pathPrefix to adjust the path
+     * 
+     * @return html code
+     */
+    public String displayErrors(String pathPrefix) {
+
+        if (pathPrefix == null) {
+            pathPrefix = "";
+        }
+        StringBuffer html = new StringBuffer(512);
+        html.append("<table border='0' cellpadding='5' cellspacing='0' style='width: 100%; height: 100%;'>");
+        html.append("\t<tr>");
+        html.append("\t\t<td style='vertical-align: middle; height: 100%;'>");
+        html.append(getHtmlPart("C_BLOCK_START", "Error"));
+        html.append("\t\t\t<table border='0' cellpadding='0' cellspacing='0' style='width: 100%;'>");
+        html.append("\t\t\t\t<tr>");
+        html.append("\t\t\t\t\t<td><img src='").append(pathPrefix).append("resources/error.png' border='0'></td>");
+        html.append("\t\t\t\t\t<td>&nbsp;&nbsp;</td>");
+        html.append("\t\t\t\t\t<td style='width: 100%;'>");
+
+        Iterator iter = getErrors().iterator();
+        while (iter.hasNext()) {
+            String msg = (String)iter.next();
+            html.append("\t\t\t\t\t\t");
+            html.append(msg);
+            html.append("<br/>");
+        }
+
+        html.append("\t\t\t\t\t</td>");
+        html.append("\t\t\t\t</tr>");
+        html.append("\t\t\t</table>");
+        html.append(getHtmlPart("C_BLOCK_END"));
+        html.append("\t\t</td>");
+        html.append("\t</tr>");
+        html.append("</table>");
+        return html.toString();
+    }
+
+    /**
      * Returns a map with all available modules.<p>
      * 
      * The map contains maps keyed by module package names. Each of these maps contains various
@@ -347,19 +387,20 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public Map getAvailableModules() {
 
-        if (m_availableModules == null || m_availableModules.isEmpty()) {
+        if ((m_availableModules == null) || m_availableModules.isEmpty()) {
             m_availableModules = new HashMap();
             m_moduleDependencies = new HashMap();
             m_moduleFilenames = new HashMap();
 
             try {
                 Map modules = CmsModuleManager.getAllModulesFromPath(getModuleFolder());
-                Iterator itMods = modules.keySet().iterator();
+                Iterator itMods = modules.entrySet().iterator();
                 while (itMods.hasNext()) {
-                    CmsModule module = (CmsModule)itMods.next();
+                    Map.Entry entry = (Map.Entry)itMods.next();
+                    CmsModule module = (CmsModule)entry.getKey();
                     // put the module information into a map keyed by the module packages names
                     m_availableModules.put(module.getName(), module);
-                    m_moduleFilenames.put(module.getName(), modules.get(module));
+                    m_moduleFilenames.put(module.getName(), entry.getValue());
                 }
             } catch (CmsConfigurationException e) {
                 throw new CmsRuntimeException(e.getMessageContainer());
@@ -752,7 +793,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String getLibFolder() {
 
-        return getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
+        return getWebAppRfsPath() + CmsSystemInfo.FOLDER_WEBINF + FOLDER_LIB;
     }
 
     /**
@@ -772,7 +813,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public Map getModuleDependencies() {
 
-        if (m_moduleDependencies == null || m_moduleDependencies.isEmpty()) {
+        if ((m_moduleDependencies == null) || m_moduleDependencies.isEmpty()) {
             try {
                 // open the folder "/WEB-INF/packages/modules/"
                 m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(getModuleFolder(), true);
@@ -800,7 +841,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public List getModulesToInstall() {
 
-        if (m_installModules == null || m_installModules.isEmpty()) {
+        if ((m_installModules == null) || m_installModules.isEmpty()) {
             return Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(m_installModules);
@@ -1015,7 +1056,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
 
-        if (m_cms != null && m_installModules != null) {
+        if ((m_cms != null) && (m_installModules != null)) {
             for (int i = 0; i < m_installModules.size(); i++) {
                 String filename = (String)m_moduleFilenames.get(m_installModules.get(i));
                 try {
@@ -1141,7 +1182,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String isChecked(String value1, String value2) {
 
-        if (value1 == null || value2 == null) {
+        if ((value1 == null) || (value2 == null)) {
             return "";
         }
 
@@ -1439,8 +1480,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         String vfsDriver = getDbProperty(m_databaseKey + ".vfs.driver");
         String userDriver = getDbProperty(m_databaseKey + ".user.driver");
         String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
-        String workflowDriver = getDbProperty(m_databaseKey + ".workflow.driver");
-        String backupDriver = getDbProperty(m_databaseKey + ".backup.driver");
+        String historyDriver = getDbProperty(m_databaseKey + ".history.driver");
         String sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
 
         setExtProperty("db.name", m_databaseKey);
@@ -1450,10 +1490,8 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         setExtProperty("db.user.sqlmanager", sqlManager);
         setExtProperty("db.project.driver", projectDriver);
         setExtProperty("db.project.sqlmanager", sqlManager);
-        setExtProperty("db.workflow.driver", workflowDriver);
-        setExtProperty("db.workflow.sqlmanager", sqlManager);
-        setExtProperty("db.backup.driver", backupDriver);
-        setExtProperty("db.backup.sqlmanager", sqlManager);
+        setExtProperty("db.history.driver", historyDriver);
+        setExtProperty("db.history.sqlmanager", sqlManager);
     }
 
     /**
@@ -1530,7 +1568,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
         String conStr = request.getParameter("dbCreateConStr");
-
         // store the DB provider
         m_provider = provider;
 
@@ -2001,6 +2038,28 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     }
 
     /**
+     * Creates an string out of the given array to store back in the property file.<p>
+     * 
+     * @param values the array with the values to create a string from
+     * 
+     * @return a string with the values of the array which is ready to store in the property file
+     */
+    private String createValueString(String[] values) {
+
+        StringBuffer buf = new StringBuffer();
+
+        for (int i = 0; i < values.length; i++) {
+
+            // escape commas and equals in value
+            values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
+            values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
+
+            buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
+        }
+        return buf.toString();
+    }
+
+    /**
      * Saves the properties to a file.<p>
      * 
      * @param properties the properties to be saved
@@ -2034,7 +2093,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
                     int index = line.indexOf('=');
                     int index1 = line.indexOf("\\=");
-                    if (line.indexOf('=') > -1 && index1 != index - 1) {
+                    if ((line.indexOf('=') > -1) && (index1 != index - 1)) {
 
                         String key = line.substring(0, line.indexOf('=')).trim();
                         if (alreadyWritten.contains(key)) {
@@ -2046,34 +2105,33 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                             Object obj = properties.get(key);
                             String value = "";
 
-                            if (obj != null && obj instanceof Vector) {
-                                String[] values = {};
-                                values = (String[])((Vector)obj).toArray(values);
-                                StringBuffer buf = new StringBuffer();
+                            if (obj != null) {
+                                if (obj instanceof Vector) {
+                                    String[] values = {};
+                                    values = (String[])((Vector)obj).toArray(values);
 
-                                for (int i = 0; i < values.length; i++) {
+                                    // write it
+                                    fw.write("\\\n" + createValueString(values));
+
+                                } else if (obj instanceof List) {
+
+                                    String[] values = {};
+                                    values = (String[])((List)obj).toArray(values);
+
+                                    // write it
+                                    fw.write("\\\n" + createValueString(values));
+
+                                } else {
+
+                                    value = ((String)obj).trim();
 
                                     // escape commas and equals in value
-                                    values[i] = CmsStringUtil.substitute(values[i], ",", "\\,");
-                                    values[i] = CmsStringUtil.substitute(values[i], "=", "\\=");
+                                    value = CmsStringUtil.substitute(value, ",", "\\,");
+                                    value = CmsStringUtil.substitute(value, "=", "\\=");
 
-                                    buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
+                                    // write it
+                                    fw.write(value);
                                 }
-                                value = buf.toString();
-
-                                // write it
-                                fw.write("\\\n" + value);
-
-                            } else if (obj != null) {
-
-                                value = ((String)obj).trim();
-
-                                // escape commas and equals in value
-                                value = CmsStringUtil.substitute(value, ",", "\\,");
-                                value = CmsStringUtil.substitute(value, "=", "\\=");
-
-                                // write it
-                                fw.write(value);
                             }
 
                         } catch (NullPointerException e) {
@@ -2115,6 +2173,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             // all servlet runtimes
             m_webAppRfsPath += File.separator;
         }
-        m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
+        m_configRfsPath = m_webAppRfsPath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FOLDER_CONFIG;
     }
 }

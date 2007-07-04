@@ -13,6 +13,7 @@
 		<xsd:sequence>
 
 			<xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="StringPlaintext" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Locale" type="OpenCmsLocale" minOccurs="0" maxOccurs="2" />		
 			<xsd:element name="File" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
@@ -27,6 +28,7 @@
 			<xsd:element name="Selector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="MultiSelector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Textarea" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="TextareaPlaintext" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Combobox" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="DisplayWidget" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 		</xsd:sequence>
@@ -36,21 +38,25 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<defaults>
-				<default element="DateTime" value="${currenttime}" />
-				<default element="Locale" value="${request.locale}" />
-				<default element="DisplayWidget" value="Value that is simply displayed and not editable." />
+				<default element="DateTime" value="${currenttime}"/>
+				<default element="Locale" value="${request.locale}"/>
+				<default element="DisplayWidget" value="Value that is simply displayed and not editable."/>
+				<default element="StringPlaintext" value="&lt;h1&gt;HTML Tag&lt;h1&gt;"/>
+				<default element="TextareaPlaintext" value="&lt;h1&gt;HTML Tag&lt;h1&gt;"/>
 			</defaults>
 			<layouts>
-				<layout element="Image" widget="ImageGalleryWidget" />
-				<layout element="Download" widget="DownloadGalleryWidget" />
-				<layout element="Link" widget="LinkGalleryWidget" />
-				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
-				<layout element="TableSnippet" widget="TableGalleryWidget" />
+				<layout element="Image" widget="ImageGalleryWidget"/>
+				<layout element="StringPlaintext" widget="StringWidgetPlaintext"/>
+				<layout element="Download" widget="DownloadGalleryWidget"/>
+				<layout element="Link" widget="LinkGalleryWidget"/>
+				<layout element="HtmlSnippet" widget="HtmlGalleryWidget"/>
+				<layout element="TableSnippet" widget="TableGalleryWidget"/>
 				<layout element="Selector" widget="SelectorWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
 				<layout element="MultiSelector" widget="MultiSelectWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
-				<layout element="Textarea" widget="TextareaWidget" />
+				<layout element="Textarea" widget="TextareaWidget"/>
+				<layout element="TextareaPlaintext" widget="TextareaWidgetPlaintext"/>
 				<layout element="Combobox" widget="ComboWidget" configuration="value='Value 1' help='A help text for value 1'|value='Value 2' help='Another help text for the second value.'|value='Value 3' default='true' help='The help text vor value three.'|value='Value 4 which has a very long value text that needs to be displayed in the limited size input area' help='The is the help for value 4'" />
-				<layout element="DisplayWidget" widget="DisplayWidget" />
+				<layout element="DisplayWidget" widget="DisplayWidget"/>
 			</layouts>	
 		</xsd:appinfo>
 	</xsd:annotation>  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/07/04 16:57:06 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 6.0
  */
@@ -65,17 +65,20 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestChacc.suite());
+        suite.addTest(TestChangeProperties.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestChtype.suite());
-        suite.addTest(TestCmsResourceFilter.suite());
+        suite.addTest(TestConcurrentOperations.suite());
         suite.addTest(TestCreateWriteResource.suite());
         suite.addTest(TestDefaultResourceCollectors.suite());
         suite.addTest(TestDeletion.suite());
         suite.addTest(TestExists.suite());
+        suite.addTest(TestHistory.suite());
+        suite.addTest(TestLinkValidation.suite());
         suite.addTest(TestLock.suite());
         suite.addTest(TestMoveRename.suite());
+        suite.addTest(TestMoveRename2.suite());
         suite.addTest(TestPermissions.suite());
-        suite.addTest(TestPriorityResourceCollectors.suite());
         suite.addTest(TestProjects.suite());
         suite.addTest(TestProperty.suite());
         suite.addTest(TestPropertyDefinition.suite());
@@ -85,13 +88,14 @@ public final class AllTests {
         suite.addTest(TestReadResourceTree.suite());
         suite.addTest(TestReleaseExpire.suite());
         suite.addTest(TestReplace.suite());
+        suite.addTest(TestResourceFilter.suite());
         suite.addTest(TestResourceOperations.suite());
         suite.addTest(TestRestoreFromHistory.suite());
         suite.addTest(TestSiblings.suite());
         suite.addTest(TestTouch.suite());
+        suite.addTest(TestUndelete.suite());
         suite.addTest(TestUndoChanges.suite());
-        suite.addTest(TestBackup.suite());
-        suite.addTest(TestChangeProperties.suite());
+        suite.addTest(TestUser.suite());
         //$JUnit-END$
         return suite;
     }

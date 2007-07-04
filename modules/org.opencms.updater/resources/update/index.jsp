@@ -2,7 +2,7 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 // next page 
-String nextPage = "step_2_settings.jsp";
+String nextPage = "step_0_dbsettings.jsp";
 
 boolean isInitialized = false;
 boolean wizardEnabled = false;

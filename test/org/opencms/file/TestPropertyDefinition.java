@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestPropertyDefinition extends OpenCmsTestCase {
 
@@ -160,6 +160,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             propertyDefinition = cms.createPropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             fail("Error creating property definition " + propertyDefinitionName + ", " + e.toString());
+            return;
         }
 
         assertEquals(propertyDefinition.getName(), propertyDefinitionName);
@@ -172,6 +173,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             propertyDefinition = cms.readPropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             fail("Error reading property definition " + propertyDefinitionName + ", " + e.toString());
+            return;
         }
 
         assertEquals(propertyDefinition.getName(), propertyDefinitionName);
@@ -184,6 +186,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             allPropertyDefinitions = cms.readAllPropertyDefinitions();
         } catch (CmsException e) {
             fail("Error reading all property definitions, " + e.toString());
+            return;
         }
 
         boolean found = false;
@@ -227,6 +230,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             allPropertyDefinitions = cms.readAllPropertyDefinitions();
         } catch (CmsException e) {
             fail("Error reading all property definitions, " + e.toString());
+            return;
         }
 
         found = false;

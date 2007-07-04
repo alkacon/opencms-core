@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:56:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,19 +85,19 @@ public class CmsMergePages extends CmsReport {
 
     /** Key for pages found in both folders as siblings. */
     public static final int FOLDERS_SIBLING = 2;
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "mergepages";
 
     /** Request parameter name for the first folder to merge. */
     public static final String PARAM_FOLDER1 = "folder1";
-    
+
     /** Request parameter name for the second folder to merge. */
     public static final String PARAM_FOLDER2 = "folder2";
 
     /** the cms object. */
     private CmsObject m_cms;
-    
+
     /** the error message. */
     private String m_errorMessage;
 
@@ -118,10 +118,10 @@ public class CmsMergePages extends CmsReport {
 
     /** The first folder to merge. */
     private String m_paramFolder1;
-    
+
     /** The second folder to merge. */
     private String m_paramFolder2;
-    
+
     /** the report for the output. */
     private I_CmsReport m_report;
 
@@ -198,6 +198,7 @@ public class CmsMergePages extends CmsReport {
             case ACTION_CONFIRMED:
             default:
                 CmsMergePagesThread thread = new CmsMergePagesThread(getCms(), this);
+                thread.start();
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);
@@ -450,15 +451,11 @@ public class CmsMergePages extends CmsReport {
             switch (action) {
                 case FOLDER1_EXCLUSIVE:
                     m_folder1Exclusive.add(resName);
-                    m_report.println(
-                        Messages.get().container(Messages.RPT_FOLDER1_EXCLUSIVE_0),
-                        I_CmsReport.FORMAT_OK);
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDER1_EXCLUSIVE_0), I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDER2_EXCLUSIVE:
                     m_folder2Exclusive.add(resName);
-                    m_report.println(
-                        Messages.get().container(Messages.RPT_FOLDER2_EXCLUSIVE_0),
-                        I_CmsReport.FORMAT_OK);
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDER2_EXCLUSIVE_0), I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDERS_SIBLING:
                     if (!m_foldersSibling.contains(getResourceNameInOtherFolder(
@@ -476,9 +473,7 @@ public class CmsMergePages extends CmsReport {
                         targetMergefolder))) {
                         m_foldersEqualnames.add(resName);
                     }
-                    m_report.println(
-                        Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0),
-                        I_CmsReport.FORMAT_OK);
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0), I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDERS_DIFFERENTTYPES:
                     if (!m_foldersDifferenttypes.contains(getResourceNameInOtherFolder(
@@ -497,9 +492,7 @@ public class CmsMergePages extends CmsReport {
             res = null;
         }
         folderResources = null;
-        m_report.println(
-            Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_END_0),
-            I_CmsReport.FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_END_0), I_CmsReport.FORMAT_HEADLINE);
 
     }
 
@@ -731,17 +724,13 @@ public class CmsMergePages extends CmsReport {
 
             }
             // lock the source and the target folder
-            m_report.print(
-                Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder1()),
-                I_CmsReport.FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder1()), I_CmsReport.FORMAT_NOTE);
             m_cms.unlockResource(getParamFolder1());
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                 I_CmsReport.FORMAT_OK);
 
-            m_report.print(
-                Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder2()),
-                I_CmsReport.FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder2()), I_CmsReport.FORMAT_NOTE);
             m_cms.unlockResource(getParamFolder2());
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),

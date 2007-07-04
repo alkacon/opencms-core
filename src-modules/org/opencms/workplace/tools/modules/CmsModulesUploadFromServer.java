@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2006/03/28 13:54:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,7 +150,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 m_moduleupload), e));
         }
 
-        if (errors.isEmpty()) {
+        if ((module != null) && errors.isEmpty()) {
 
             // refresh the list
             Map objects = (Map)getSettings().getListObject();

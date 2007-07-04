@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2005/07/06 13:14:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Thomas Weckert 
  *   
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_REDIRECTWARNING_3 = "LOG_FLEXRESPONSE_REDIRECTWARNING_3";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1 = "LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1";
 

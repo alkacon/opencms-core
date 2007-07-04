@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2006/03/27 14:52:26 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,28 +47,72 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  * 
- * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
+ * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, CmsUUID)
  */
-public class CmsPublishedResource implements Serializable, Cloneable, Comparable {
+public class CmsPublishedResource implements Serializable, Comparable {
+
+    /**
+     * Add new resource states under consideration of the move operation.<p>
+     */
+    public static class CmsPublishedResourceState extends CmsResourceState {
+
+        private static final long serialVersionUID = -2901049208546972463L;
+
+        /**
+         * protected constructor.<p>
+         * 
+         * @param state an integer representing the state 
+         * @param abbrev an abbreviation character
+         */
+        protected CmsPublishedResourceState(int state, char abbrev) {
+
+            super(state, abbrev);
+        }
+
+        /**
+         * Returns the corresponding resource state for this publish resource state.<p>
+         * 
+         * @return the corresponding resource state
+         */
+        public CmsResourceState getResourceState() {
+
+            if (this == STATE_MOVED_SOURCE) {
+                return CmsResource.STATE_DELETED;
+            } else if (this == STATE_MOVED_DESTINATION) {
+                return CmsResource.STATE_NEW;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /** Additional state for moved resources, the (new) destination of the moved resource. */
+    public static final CmsPublishedResourceState STATE_MOVED_DESTINATION = new CmsPublishedResourceState(12, 'M');
+
+    /** Additional state for moved resources, the (deleted) source of the moved resource. */
+    public static final CmsPublishedResourceState STATE_MOVED_SOURCE = new CmsPublishedResourceState(11, ' ');
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1054065812825770479L;
 
-    /** The backup tag ID of the published resource. */
-    private int m_backupTagId;
-
     /** Indicates if the published resource is a folder or a file. */
     private boolean m_isFolder;
+
+    /** falg to signal if the resource was moved. */
+    private boolean m_isMoved;
+
+    /** The publish tag of the published resource. */
+    private int m_publishTag;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
 
     /** The state of the resource *before* it was published.<p> */
-    private int m_resourceState;
+    private CmsResourceState m_resourceState;
 
     /** The type of the published resource.<p> */
     private int m_resourceType;
@@ -85,38 +129,44 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     /**
      * Creates an object for published VFS resources.<p>
      * 
-     * Do not write objects created with this constructor to db, since the backup tag id is not set.<p>
+     * Do not write objects created with this constructor to db, since the publish tag is not set.<p>
      * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
      */
     public CmsPublishedResource(CmsResource resource) {
 
-        m_structureId = resource.getStructureId();
-        m_resourceId = resource.getResourceId();
-        m_backupTagId = -1;
-        m_rootPath = resource.getRootPath();
-        m_resourceType = resource.getTypeId();
-        m_resourceState = resource.getState();
-        m_siblingCount = resource.getSiblingCount();
-        m_isFolder = resource.isFolder();
+        this(resource, -1);
     }
 
     /**
      * Creates an object for published VFS resources.<p>
      * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
-     * @param backupTagId the backup tag id
+     * @param publishTag the publish Tag
      */
-    public CmsPublishedResource(CmsResource resource, int backupTagId) {
+    public CmsPublishedResource(CmsResource resource, int publishTag) {
 
-        m_structureId = resource.getStructureId();
-        m_resourceId = resource.getResourceId();
-        m_backupTagId = backupTagId;
-        m_rootPath = resource.getRootPath();
-        m_resourceType = resource.getTypeId();
-        m_resourceState = resource.getState();
-        m_siblingCount = resource.getSiblingCount();
-        m_isFolder = resource.isFolder();
+        this(resource, publishTag, resource.getState());
+    }
+
+    /**
+     * Creates an object for published VFS resources.<p>
+     * 
+     * @param resource an CmsResource object to create a CmsPublishedResource from
+     * @param state the resource state
+     * @param publishTag the publish tag
+     */
+    public CmsPublishedResource(CmsResource resource, int publishTag, CmsResourceState state) {
+
+        this(
+            resource.getStructureId(),
+            resource.getResourceId(),
+            publishTag,
+            resource.getRootPath(),
+            resource.getTypeId(),
+            resource.isFolder(),
+            state,
+            resource.getSiblingCount());
     }
 
     /**
@@ -124,7 +174,7 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
      * 
      * @param structureId the structure ID of the published resource
      * @param resourceId the resource ID of the published resource
-     * @param backupTagId the resource's tag ID in the backup tables
+     * @param publishTag the publish tag
      * @param rootPath the root path of the published resource
      * @param resourceType the type of the published resource
      * @param isFolder indicates if the published resource is a folder or a file
@@ -134,21 +184,26 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     public CmsPublishedResource(
         CmsUUID structureId,
         CmsUUID resourceId,
-        int backupTagId,
+        int publishTag,
         String rootPath,
         int resourceType,
         boolean isFolder,
-        int resourceState,
+        CmsResourceState resourceState,
         int siblingCount) {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
-        m_backupTagId = backupTagId;
+        m_publishTag = publishTag;
         m_rootPath = rootPath;
         m_resourceType = resourceType;
-        m_resourceState = resourceState;
-        m_siblingCount = siblingCount;
         m_isFolder = isFolder;
+        if (resourceState instanceof CmsPublishedResourceState) {
+            m_resourceState = ((CmsPublishedResourceState)resourceState).getResourceState();
+            m_isMoved = true;
+        } else {
+            m_resourceState = resourceState;
+        }
+        m_siblingCount = siblingCount;
     }
 
     /**
@@ -186,13 +241,44 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     }
 
     /**
-     * Returns the backup tag ID of the published resource.<p>
+     * Returns the publish tag of the published resource.<p>
      * 
-     * @return the backup tag ID of the published resource
+     * @return the publish tag of the published resource
+     * 
+     * @deprecated Use {@link #getPublishTag()} instead
      */
     public int getBackupTagId() {
 
-        return m_backupTagId;
+        return getPublishTag();
+    }
+
+    /**
+     * Returns the resource state including move operation information.<p>
+     * 
+     * @return the resource state including move operation information
+     */
+    public CmsResourceState getMovedState() {
+
+        if (!m_isMoved) {
+            return getState();
+        } else if (getState().isDeleted()) {
+            return STATE_MOVED_SOURCE;
+        } else if (getState().isNew()) {
+            return STATE_MOVED_DESTINATION;
+        } else {
+            // should never happen
+            return getState();
+        }
+    }
+
+    /**
+     * Returns the publish tag of the published resource.<p>
+     * 
+     * @return the publish tag of the published resource
+     */
+    public int getPublishTag() {
+
+        return m_publishTag;
     }
 
     /**
@@ -233,7 +319,7 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
      * 
      * @return the resource state of the published resource
      */
-    public int getState() {
+    public CmsResourceState getState() {
 
         return m_resourceState;
     }
@@ -267,26 +353,6 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     }
 
     /**
-     * Checks if the resource is changed.<p>
-     * 
-     * @return true if the resource is changed
-     */
-    public boolean isChanged() {
-
-        return getState() == CmsResource.STATE_CHANGED;
-    }
-
-    /**
-     * Checks if the resource is deleted.<p>
-     * 
-     * @return true if the resource is deleted
-     */
-    public boolean isDeleted() {
-
-        return getState() == CmsResource.STATE_DELETED;
-    }
-
-    /**
      * Determines if this resource is a file.<p>
      * 
      * @return true if this resource is a file, false otherwise
@@ -307,23 +373,13 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     }
 
     /**
-     * Checks if the resource is new.<p>
-     * 
-     * @return true if the resource is new
+     * Returns <code>true</code> if the resource has been moved.<p>
+     *
+     * @return <code>true</code> if the resource has been moved
      */
-    public boolean isNew() {
+    public boolean isMoved() {
 
-        return getState() == CmsResource.STATE_NEW;
-    }
-
-    /**
-     * Checks if the resource is unchanged.<p>
-     * 
-     * @return true if the resource is unchanged
-     */
-    public boolean isUnChanged() {
-
-        return getState() == CmsResource.STATE_UNCHANGED;
+        return m_isMoved;
     }
 
     /**
@@ -354,8 +410,8 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
         result.append(m_structureId);
         result.append(", resource ID: ");
         result.append(m_resourceId);
-        result.append(", backup tag ID: ");
-        result.append(m_backupTagId);
+        result.append(", publish tag: ");
+        result.append(m_publishTag);
         result.append(", siblings: ");
         result.append(m_siblingCount);
         result.append(", state: ");
@@ -365,20 +421,5 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
         result.append("]");
 
         return result.toString();
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            m_structureId = null;
-            m_resourceId = null;
-            m_rootPath = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
     }
 }

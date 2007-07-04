@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/I_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/02/23 16:23:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:56:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,12 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * A session for WebDAV to handle the actions.<p>
+ * A repository session which provides basic file and folder operations
+ * to the resources in the VFS of OpenCms.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -51,9 +52,9 @@ public interface I_CmsRepositorySession {
     /**
      * Copies the item found at the source path to the destination path.<p>
      * 
-     * @param src The path of the item which should be copied
-     * @param dest The destination path where to copy to
-     * @param overwrite Should any existing item be overwritten
+     * @param src the path of the item which should be copied
+     * @param dest the destination path where to copy to
+     * @param overwrite should any existing item be overwritten
      * 
      * @throws CmsException if something goes wrong
      */
@@ -64,7 +65,7 @@ public interface I_CmsRepositorySession {
      * 
      * In this case this should be a collection (directory).<p>
      * 
-     * @param path The complete path of the new collection
+     * @param path the complete path of the new collection
      * 
      * @throws CmsException if something goes wrong
      */
@@ -73,7 +74,7 @@ public interface I_CmsRepositorySession {
     /**
      * Deletes the item at the given path.<p>
      * 
-     * @param path The complete path of the item to delete
+     * @param path the complete path of the item to delete
      * 
      * @throws CmsException if something goes wrong
      */
@@ -82,7 +83,7 @@ public interface I_CmsRepositorySession {
     /**
      * Returns if an item exists at the given path.<p>
      * 
-     * @param path The complete path of the item to check existance
+     * @param path the complete path of the item to check existance
      * 
      * @return true if the item exists otherwise false
      */
@@ -91,7 +92,7 @@ public interface I_CmsRepositorySession {
     /**
      * Returns the item found at the given path.<p>
      * 
-     * @param path The complete path of the item to return
+     * @param path the complete path of the item to return
      * 
      * @return the item found at the path
      * 
@@ -102,7 +103,7 @@ public interface I_CmsRepositorySession {
     /**
      * Returns the lock for the resource at the given path.<p>
      * 
-     * @param path The complete path where to return the lock for
+     * @param path the complete path where to return the lock for
      * 
      * @return the found lock as CmsWebdavLockInfo or null if not found
      */
@@ -111,7 +112,7 @@ public interface I_CmsRepositorySession {
     /**
      * Returns a list with all items found directly in the given path.<p>
      * 
-     * @param path The complete path from which to return the items
+     * @param path the complete path from which to return the items
      * 
      * @return a list with {@link I_CmsRepositoryItem} found in the path
      * 
@@ -120,11 +121,11 @@ public interface I_CmsRepositorySession {
     List list(String path) throws CmsException;
 
     /**
-     * Creates a new lock on the item with the path with the given information 
+     * Creates a new lock on the item at the path with the given information 
      * in the lock info.<p>
      * 
-     * @param path The complete path of the item
-     * @param lock The information about the lock to create
+     * @param path the complete path of the item
+     * @param lock the information about the lock to create
      * 
      * @return if the lock was successfully
      * 
@@ -135,9 +136,9 @@ public interface I_CmsRepositorySession {
     /**
      * Moves an item from a source path to a destination path.<p>
      * 
-     * @param src The complete path to the item which should be copied
-     * @param dest The complete destination path where to copy to
-     * @param overwrite Should any existing item should be overwritten
+     * @param src the complete path to the item which should be copied
+     * @param dest the complete destination path where to copy to
+     * @param overwrite should any existing item should be overwritten
      * 
      * @throws CmsException if something goes wrong
      */
@@ -148,9 +149,9 @@ public interface I_CmsRepositorySession {
      * 
      * This creates a new single item (file) if it does not exist.<p>
      * 
-     * @param path The complete path of the new item
-     * @param inputStream The content of the item
-     * @param overwrite Should an existing item at the path be overwritten
+     * @param path the complete path of the new item
+     * @param inputStream the content of the item
+     * @param overwrite should an existing item at the path be overwritten
      * 
      * @throws CmsException if something goes wrong
      * @throws IOException if a write error occurs
@@ -159,8 +160,6 @@ public interface I_CmsRepositorySession {
 
     /**
      * Unlocks the item found at the path.<p>
-     * 
-     * Should remove the lock token from the existing lock found at the path.<p>
      * 
      * @param path The complete path of the item to unlock
      */

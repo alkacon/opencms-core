@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2006/09/21 09:34:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
+
+
 /**
  * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
  * 
@@ -45,7 +48,7 @@ package org.opencms.file;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0 
  */
@@ -184,7 +187,7 @@ public final class CmsResourceFilter {
     private long m_releaseBefore;
 
     /** The required/excluded state for filtering resources. */
-    private int m_state;
+    private CmsResourceState m_state;
 
     /** The required/excluded type for filtering resources. */
     private int m_type;
@@ -195,7 +198,7 @@ public final class CmsResourceFilter {
     private CmsResourceFilter() {
 
         m_filterState = IGNORED;
-        m_state = -1;
+        m_state = null;
 
         m_filterType = IGNORED;
         m_type = -1;
@@ -253,7 +256,7 @@ public final class CmsResourceFilter {
      * @param state the resource state to exclude
      * @return a filter excluding the given resource state
      */
-    public CmsResourceFilter addExcludeState(int state) {
+    public CmsResourceFilter addExcludeState(CmsResourceState state) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
@@ -453,7 +456,7 @@ public final class CmsResourceFilter {
      * @param state the required resource state
      * @return a filter requiring the given resource state
      */
-    public CmsResourceFilter addRequireState(int state) {
+    public CmsResourceFilter addRequireState(CmsResourceState state) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
@@ -668,7 +671,7 @@ public final class CmsResourceFilter {
      * 
      * @return the state for this filter
      */
-    public int getState() {
+    public CmsResourceState getState() {
 
         return m_state;
     }
@@ -691,8 +694,8 @@ public final class CmsResourceFilter {
     public boolean includeDeleted() {
 
         return (m_filterState == IGNORED)
-            || ((m_filterState == REQUIRED) && (m_state == CmsResource.STATE_DELETED))
-            || ((m_filterState == EXCLUDED) && (m_state != CmsResource.STATE_DELETED));
+            || ((m_filterState == REQUIRED) && m_state.isDeleted())
+            || ((m_filterState == EXCLUDED) && !m_state.isDeleted());
     }
 
     /**
@@ -717,17 +720,17 @@ public final class CmsResourceFilter {
         // check for required resource state
         switch (m_filterState) {
             case EXCLUDED:
-                if (resource.getState() == m_state) {
+                if (resource.getState().equals(m_state)) {
                     return false;
                 }
                 break;
             case REQUIRED:
-                if (resource.getState() != m_state) {
+                if (!resource.getState().equals(m_state)) {
                     return false;
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         // check for required resource state
@@ -743,7 +746,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         // check for required resource type
@@ -759,7 +762,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-        // ignored
+                // ignored
         }
 
         if (m_onlyFolders != null) {
@@ -778,37 +781,36 @@ public final class CmsResourceFilter {
 
         // check if the resource was last modified within the given time range
         if (m_filterLastModified) {
-            if (m_modifiedAfter > 0L && resource.getDateLastModified() < m_modifiedAfter) {
+            if ((m_modifiedAfter > 0L) && (resource.getDateLastModified() < m_modifiedAfter)) {
                 return false;
             }
-            if (m_modifiedBefore > 0L && resource.getDateLastModified() > m_modifiedBefore) {
+            if ((m_modifiedBefore > 0L) && (resource.getDateLastModified() > m_modifiedBefore)) {
                 return false;
             }
         }
 
         // check if the resource expires within the given time range
         if (m_filterExpire) {
-            if (m_expireAfter > 0L && resource.getDateExpired() < m_expireAfter) {
+            if ((m_expireAfter > 0L) && (resource.getDateExpired() < m_expireAfter)) {
                 return false;
             }
-            if (m_expireBefore > 0L && resource.getDateExpired() > m_expireBefore) {
+            if ((m_expireBefore > 0L) && (resource.getDateExpired() > m_expireBefore)) {
                 return false;
             }
         }
 
         // check if the resource is released within the given time range
         if (m_filterRelease) {
-            if (m_releaseAfter > 0L && resource.getDateReleased() < m_releaseAfter) {
+            if ((m_releaseAfter > 0L) && (resource.getDateReleased() < m_releaseAfter)) {
                 return false;
             }
-            if (m_releaseBefore > 0L && resource.getDateReleased() > m_releaseBefore) {
+            if ((m_releaseBefore > 0L) && (resource.getDateReleased() > m_releaseBefore)) {
                 return false;
             }
         }
 
         // check if the resource is currently released and not expired
-        if (m_filterTimerange
-            && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context.getRequestTime()))) {
+        if (m_filterTimerange && !resource.isReleasedAndNotExpired(context.getRequestTime())) {
             return false;
         }
 
@@ -917,7 +919,7 @@ public final class CmsResourceFilter {
                 result.append(m_state);
                 break;
             default:
-        // ignored
+                // ignored
         }
         switch (m_filterFlags) {
             case REQUIRED:
@@ -929,7 +931,7 @@ public final class CmsResourceFilter {
                 result.append(m_flags);
                 break;
             default:
-        // ignored
+                // ignored
         }
         switch (m_filterType) {
             case REQUIRED:
@@ -941,7 +943,7 @@ public final class CmsResourceFilter {
                 result.append(m_type);
                 break;
             default:
-        // ignored
+                // ignored
         }
         if (m_onlyFolders != null) {
             if (m_onlyFolders.booleanValue()) {

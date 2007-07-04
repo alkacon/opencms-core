@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,33 @@
 
 package org.opencms.i18n;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Tests all {@link org.opencms.i18n.I_CmsMessageBundle} instances for the OpenCms 
  * module classes (folder src-modules, org.* packages). <p>
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
 public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
+
+    /**
+     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
+     */
+    protected List getNotLocalizedBundles(Locale locale) {
+
+        List bundles = new ArrayList();
+        bundles.add(org.opencms.workplace.demos.Messages.get());
+        bundles.add(org.opencms.workplace.demos.list.Messages.get());
+        bundles.add(org.opencms.workplace.demos.widget.Messages.get());
+        return bundles;
+    }
 
     /**
      * @see org.opencms.i18n.TestCmsMessageBundles#getTestMessageBundles()
@@ -49,27 +65,28 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
         return new I_CmsMessageBundle[] {
+            org.opencms.editors.fckeditor.Messages.get(),
+            org.opencms.frontend.layoutpage.Messages.get(),
+            org.opencms.frontend.photoalbum.Messages.get(),
             org.opencms.frontend.templateone.Messages.get(),
             org.opencms.frontend.templateone.form.Messages.get(),
             org.opencms.frontend.templateone.modules.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
-            org.opencms.workplace.demos.Messages.get(),
-            org.opencms.workplace.demos.list.Messages.get(),
-            org.opencms.workplace.demos.widget.Messages.get(),
+            org.opencms.workplace.tools.accounts.Messages.get(),
+            org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
             org.opencms.workplace.tools.content.check.Messages.get(),
             org.opencms.workplace.tools.database.Messages.get(),
             org.opencms.workplace.tools.galleryoverview.Messages.get(),
             org.opencms.workplace.tools.history.Messages.get(),
+            org.opencms.workplace.tools.link.Messages.get(),
             org.opencms.workplace.tools.modules.Messages.get(),
+            org.opencms.workplace.tools.projects.Messages.get(),
+            org.opencms.workplace.tools.publishqueue.Messages.get(),
             org.opencms.workplace.tools.scheduler.Messages.get(),
             org.opencms.workplace.tools.searchindex.Messages.get(),
-            org.opencms.workplace.tools.accounts.Messages.get(),
-            org.opencms.workplace.tools.cache.Messages.get(),
-            org.opencms.workplace.tools.projects.Messages.get(),
             org.opencms.workplace.tools.workplace.Messages.get(),
-            org.opencms.workplace.tools.workplace.rfsfile.Messages.get(),
-            org.opencms.workplace.tools.workplace.broadcast.Messages.get()};
+            org.opencms.workplace.tools.workplace.broadcast.Messages.get(),
+            org.opencms.workplace.tools.workplace.rfsfile.Messages.get()};
     }
-
 }

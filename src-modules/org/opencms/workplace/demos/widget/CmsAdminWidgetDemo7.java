@@ -32,8 +32,6 @@
 package org.opencms.workplace.demos.widget;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsContextInfo;
-import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDownloadGalleryWidget;
@@ -71,12 +69,6 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo4";
-
-    /** The OpenCms context info object used for the job info. */
-    CmsContextInfo m_contextInfo;
-
-    /** The job info object that is edited on this dialog. */
-    CmsScheduledJobInfo m_jobInfo;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -124,7 +116,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             result.append(createDialogHtml());
 
         } catch (Throwable t) {
-            // TODO: Error handling
+            // ignore, it's just a demo
         }
         return result.toString();
     }
@@ -240,9 +232,6 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
-
-        m_jobInfo = new CmsScheduledJobInfo();
-        m_contextInfo = new CmsContextInfo();
 
         addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("textwidget", new CmsTextareaWidget(), 0, 5));

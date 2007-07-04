@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldValue.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,19 @@ import java.util.Iterator;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFieldValue {
 
+    /** The label of the field. */
     private String m_label;
+    
+    /** A flag indicating if the field is shown. */
     private boolean m_show;
+    
+    /** The value of the field. */
     private String m_value;
 
     /**

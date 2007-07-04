@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2006/03/28 18:46:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,10 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
                 out.println(diff);
             } else {
                 // print original source, if there are no differences
-                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(getOriginalSource()), "<br/>", ""))); 
+                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(
+                    CmsStringUtil.escapeHtml(getOriginalSource()),
+                    "<br/>",
+                    "")));
             }
         } catch (Exception e) {
             out.print(e);
@@ -135,9 +138,12 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             onClick1 += CmsDiffViewMode.ALL;
             onClick2 += CmsDiffViewMode.DIFF_ONLY;
             onClick1 += "'; document.forms['diff-form'].submit();";
-            onClick2 += "'; document.forms['diff-form'].submit();";  
-            result.append(getTwoButtonsHtml(CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()), 
-                CmsDiffViewMode.ALL.getName().key(getLocale()), onClick1, onClick2, 
+            onClick2 += "'; document.forms['diff-form'].submit();";
+            result.append(getTwoButtonsHtml(
+                CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()),
+                CmsDiffViewMode.ALL.getName().key(getLocale()),
+                onClick1,
+                onClick2,
                 getMode() == CmsDiffViewMode.DIFF_ONLY));
         } else {
             // display all text, if there are no differences
@@ -145,7 +151,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the html for two buttons, whereby the third parameter determines which one is active.<p>
      * 
@@ -158,10 +164,10 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
      * @return the html for two buttons, whereby the third parameter determines which one is active
      */
     public String getTwoButtonsHtml(String label1, String label2, String onClick1, String onClick2, boolean firstActive) {
+
         StringBuffer result = new StringBuffer();
         if (firstActive) {
             result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id",
                 label1,
@@ -170,18 +176,13 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
                 A_CmsListDialog.ICON_DETAILS_SHOW,
                 null,
                 onClick1));
-            result.append("&nbsp;&nbsp;"); 
-            result.append(deactivatedEmphasizedButtonHtml(
-                label2,
-                A_CmsListDialog.ICON_DETAILS_HIDE));  
+            result.append("&nbsp;&nbsp;");
+            result.append(deactivatedEmphasizedButtonHtml(label2, A_CmsListDialog.ICON_DETAILS_HIDE));
         } else {
-              
-            result.append(deactivatedEmphasizedButtonHtml(
-                label1,
-                A_CmsListDialog.ICON_DETAILS_HIDE));
-            result.append("&nbsp;&nbsp;"); 
+
+            result.append(deactivatedEmphasizedButtonHtml(label1, A_CmsListDialog.ICON_DETAILS_HIDE));
+            result.append("&nbsp;&nbsp;");
             result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id",
                 label2,
@@ -189,12 +190,12 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
                 true,
                 A_CmsListDialog.ICON_DETAILS_SHOW,
                 null,
-                onClick2)); 
+                onClick2));
         }
-        result.append("&nbsp;&nbsp;");        
+        result.append("&nbsp;&nbsp;");
         return result.toString();
     }
-    
+
     /**
      * Returns the html code for a deactivated empfasized button.<p>
      * 
@@ -204,7 +205,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
      * @return the html code for a deactivated empfasized button
      */
     public String deactivatedEmphasizedButtonHtml(String name, String iconPath) {
-        
+
         StringBuffer result = new StringBuffer();
         result.append("<span style='vertical-align:middle;'><img style='width:20px;height:20px;display:inline;vertical-align:middle;text-decoration:none;' src=\'");
         result.append(CmsWorkplace.getSkinUri());
@@ -218,7 +219,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         result.append("</b></span>");
         return result.toString();
     }
-    
+
     /**
      * Returns the mode.<p>
      *

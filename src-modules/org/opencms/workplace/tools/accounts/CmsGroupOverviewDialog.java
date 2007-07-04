@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,6 +110,41 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_group.getOuFqn()).getDisplayName(
+                getLocale());
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the localized description of the group if the description is a message key.<p>
+     * 
+     * @return the localized description of the group if the description is a message key
+     */
+    public String getDescription() {
+
+        return m_group.getDescription(getLocale());
+    }
+
+    /**
+     * Returns the simple name of the user object.<p>
+     * 
+     * @return the simple name of the user object
+     */
+    public String getName() {
+
+        return m_group.getSimpleName();
+    }
+
+    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -126,6 +162,36 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
     public String getParentGroup() {
 
         return m_parentGroup;
+    }
+
+    /**
+     * Setter for widget definition.<p>
+     * 
+     * @param assignedOu the ou description
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        assignedOu.length();
+    }
+
+    /**
+     * Sets the description of the group.<p>
+     * 
+     * @param description the description of the group
+     */
+    public void setDescription(String description) {
+
+        m_group.setDescription(description);
+    }
+
+    /**
+     * Sets the name of the user object.<p>
+     * 
+     * @param name the name of the user object
+     */
+    public void setName(String name) {
+
+        name.length();
     }
 
     /**
@@ -176,7 +242,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        int n = (!isOverview() ? 1 : 3);
+        int n = (!isOverview() ? 2 : 4);
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
@@ -184,15 +250,13 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(0, n));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (!isOverview()) {
+            if (isOverview()) {
+                result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(5, 6));
                 result.append(createWidgetTableEnd());
-                return result.toString();
+                result.append(dialogBlockEnd());
             }
-            result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(4, 6));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
         }
 
         // close widget table
@@ -221,14 +285,15 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
 
         // widgets to display
         if (!isOverview()) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
         }

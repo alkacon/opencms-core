@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2006/03/27 14:52:53 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,17 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
@@ -50,6 +54,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
@@ -68,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.88 $ 
  * 
  * @since 6.0.0 
  * 
@@ -81,6 +86,9 @@ public class CmsImportVersion4 extends A_CmsImport {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion4.class);
+
+    /** Stores all resource of type that implements the {@link I_CmsLinkParseable} interface. */
+    private List m_parseables;
 
     /**
      * Creates a new CmsImportVerion4 object.<p>
@@ -118,57 +126,43 @@ public class CmsImportVersion4 extends A_CmsImport {
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
-        m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
+        m_parseables = new ArrayList();
 
         try {
             // first import the user information
-            if (cms.hasRole(CmsRole.ACCOUNT_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }
             // now import the VFS resources
             readResourcesFromManifest();
             convertPointerToSiblings();
+            rewriteParseables();
         } finally {
             cleanUp();
         }
     }
 
     /**
-     * Imports a single user.<p>
-     * @param name user name
-     * @param description user description
-     * @param flags user flags
-     * @param password user password 
-     * @param firstname firstname of the user
-     * @param lastname lastname of the user
-     * @param email user email
-     * @param address user address 
-     * @param type user type
-     * @param userInfo user info
-     * @param userGroups user groups
-     * 
-     * @throws CmsImportExportException in case something goes wrong
+     * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
     protected void importUser(
         String name,
-        String description,
         String flags,
         String password,
         String firstname,
         String lastname,
         String email,
-        String address,
-        String type,
+        long dateCreated,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
         Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if (config != null && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
             convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
         }
 
@@ -176,18 +170,60 @@ public class CmsImportVersion4 extends A_CmsImport {
             password = convertDigestEncoding(password);
         }
 
-        super.importUser(
-            name,
-            description,
-            flags,
-            password,
-            firstname,
-            lastname,
-            email,
-            address,
-            type,
-            userInfo,
-            userGroups);
+        super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
+    }
+
+    /**
+     * Rewrites all parseable files, to assure link check.<p>
+     */
+    protected void rewriteParseables() {
+
+        if (m_parseables.isEmpty()) {
+            return;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+
+        int i = 0;
+        Iterator it = m_parseables.iterator();
+        while (it.hasNext()) {
+            CmsResource res = (CmsResource)it.next();
+
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i + 1),
+                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
+
+            m_report.print(
+                Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, m_cms.getSitePath(res)),
+                I_CmsReport.FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+            try {
+                // make sure the date last modified is kept...
+                CmsFile file = CmsFile.upgrade(res, m_cms);
+                file.setDateLastModified(res.getDateLastModified());
+                m_cms.writeFile(file);
+
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            } catch (Throwable e) {
+                m_report.addWarning(e);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_ERROR);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()));
+                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            i++;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -294,14 +330,13 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
 
             // create a new CmsResource                         
-            CmsResource resource = new CmsResource(
-                new CmsUUID(), // structure ID is always a new UUID
+            CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource,
                 destination,
                 type.getTypeId(),
                 type.isFolder(),
                 new Integer(flags).intValue(),
-                m_cms.getRequestContext().currentProject().getId(),
+                m_cms.getRequestContext().currentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,
                 newUsercreated,
@@ -310,7 +345,9 @@ public class CmsImportVersion4 extends A_CmsImport {
                 datereleased,
                 dateexpired,
                 1,
-                size);
+                size,
+                0,
+                0);
 
             // import this resource in the VFS
             result = m_cms.importResource(destination, resource, content, properties);
@@ -347,11 +384,6 @@ public class CmsImportVersion4 extends A_CmsImport {
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
         List properties = null;
-
-        if (m_importingChannelData) {
-            m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-        }
 
         // get list of immutable resources
         List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
@@ -393,7 +425,13 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                 // <type>
                 String typeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+                I_CmsResourceType type;
+                try {
+                    type = OpenCms.getResourceManager().getResourceType(typeName);
+                } catch (CmsLoaderException e) {
+                    // unknown resource type, import resource as type "plain"
+                    type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName());
+                }
 
                 if (!type.isFolder()) {
                     // <uuidresource>
@@ -547,7 +585,10 @@ public class CmsImportVersion4 extends A_CmsImport {
                         }
 
                         importAccessControlEntries(res, aceList);
-
+                        if (OpenCms.getResourceManager().getResourceType(res.getTypeId()) instanceof I_CmsLinkParseable) {
+                            // store for later use
+                            m_parseables.add(res);
+                        }
                         if (LOG.isInfoEnabled()) {
                             LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_IMPORTING_4,
@@ -572,10 +613,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                                 translatedName));
                         }
                     }
-
                 } else {
                     // skip the file import, just print out the information to the report
-
                     m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -591,20 +630,15 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
             }
         } catch (Exception e) {
-
             m_report.println(e);
+            m_report.addError(e);
 
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-
             throw new CmsImportExportException(message, e);
-        } finally {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().restoreSiteRoot();
-            }
         }
     }
 }

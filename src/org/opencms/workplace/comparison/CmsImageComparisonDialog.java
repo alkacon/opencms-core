@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2006/03/30 07:50:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -29,6 +29,7 @@
 package org.opencms.workplace.comparison;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.commons.CmsHistoryList;
 
@@ -39,23 +40,17 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImageComparisonDialog extends CmsDialog {
 
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
 
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
-
-    /** Parameter value for the tag id of the first file. */
-    private String m_paramTagId1;
-
-    /** Parameter value for the tag id of the second file. */
-    private String m_paramTagId2;
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
@@ -83,39 +78,35 @@ public class CmsImageComparisonDialog extends CmsDialog {
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
-        String link1 = "";
-        String link2 = "";
-        if ("-1".equals(m_paramTagId1)) {
-            // offline version
-            link1 = getParamResource();
-        } else {
-            link1 = CmsHistoryList.getBackupLink(m_paramPath1, m_paramTagId1);
-        }
-        if ("-1".equals(m_paramTagId2)) {
-            // offline version
-            link2 = getParamResource();
-        } else {
-            link2 = CmsHistoryList.getBackupLink(m_paramPath2, m_paramTagId2);
-        }
+        String link1 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId1), m_paramVersion1);
+        String link2 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId2), m_paramVersion2);
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
         out.println("<table cellpadding='0' cellspacing='0' border='0' class='maxwidth'><tr align='center'><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion1,
+            getLocale())}));
         out.println("</th><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion2,
+            getLocale())}));
         out.println("</th></tr>");
         out.println("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");
         out.println("\t<tr align='center'>\n");
         out.println("\t\t<td width='50%'><img src='");
         out.print(getJsp().link(link1));
         out.print("' alt='");
-        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
+        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion1,
+            getLocale())}));
         out.print("'/></td>\n");
         out.println("\t\t<td width='50%'><img src='");
         out.print(getJsp().link(link2));
         out.print("' alt='");
-        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
+        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
+            m_paramVersion2,
+            getLocale())}));
         out.print("'/></td>\n");
         out.println("\t</tr>");
         out.println("</table>");
@@ -127,43 +118,23 @@ public class CmsImageComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Returns the paramPath1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the paramPath1
+     * @return the paramId1
      */
-    public String getParamPath1() {
+    public String getParamId1() {
 
-        return m_paramPath1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the paramPath2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the paramPath2
+     * @return the paramId2
      */
-    public String getParamPath2() {
+    public String getParamId2() {
 
-        return m_paramPath2;
-    }
-
-    /**
-     * Returns the paramTagId1.<p>
-     *
-     * @return the paramTagId1
-     */
-    public String getParamTagId1() {
-
-        return m_paramTagId1;
-    }
-
-    /**
-     * Returns the paramTagId2.<p>
-     *
-     * @return the paramTagId2
-     */
-    public String getParamTagId2() {
-
-        return m_paramTagId2;
+        return m_paramId2;
     }
 
     /**
@@ -187,43 +158,23 @@ public class CmsImageComparisonDialog extends CmsDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
-    }
-
-    /**
-     * Sets the paramTagId1.<p>
-     *
-     * @param paramTagId1 the paramTagId1 to set
-     */
-    public void setParamTagId1(String paramTagId1) {
-
-        m_paramTagId1 = paramTagId1;
-    }
-
-    /**
-     * Sets the paramTagId2.<p>
-     *
-     * @param paramTagId2 the paramTagId2 to set
-     */
-    public void setParamTagId2(String paramTagId2) {
-
-        m_paramTagId2 = paramTagId2;
+        m_paramId2 = paramId2;
     }
 
     /**

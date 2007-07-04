@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2005/07/29 10:35:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.search.extractors;
 
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +91,8 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
                 m_documentSummary = (DocumentSummaryInformation)PropertySetFactory.create(event.getStream());
                 return;
             }
+        } catch (RuntimeException e) {
+            // ignore            
         } catch (Exception e) {
             // ignore
         }
@@ -107,70 +108,77 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
     }
 
     /**
-     * Returns a map with the extracted meta information from the document.<p>
+     * Creates the extraction result for this MS Office document.<p>
      * 
-     * @return a map with the extracted meta information from the document
+     * The extraction result contains the raw content, plus additional meta information 
+     * as content items read from the MS Office document properties.<p>
+     * 
+     * @param rawContent the raw content extracted from the document
+     * 
+     * @return the extraction result for this MS Office document
      */
-    protected Map extractMetaInformation() {
+    protected I_CmsExtractionResult createExtractionResult(String rawContent) {
 
-        Map metaInfo = new HashMap();
-        String meta;
+        Map contentItems = new HashMap();
+        if (CmsStringUtil.isNotEmpty(rawContent)) {
+            contentItems.put(I_CmsExtractionResult.ITEM_RAW, rawContent);
+        }
+
+        StringBuffer content = new StringBuffer(rawContent);
+
         if (m_summary != null) {
             // can't use convenience methods on summary since they can't deal with multiple sections
             Section section = (Section)m_summary.getSections().get(0);
-
-            meta = (String)section.getProperty(PropertyIDMap.PID_TITLE);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_TITLE, meta);
-            }
-            meta = (String)section.getProperty(PropertyIDMap.PID_KEYWORDS);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_KEYWORDS, meta);
-            }
-            meta = (String)section.getProperty(PropertyIDMap.PID_SUBJECT);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_SUBJECT, meta);
-            }
-            meta = (String)section.getProperty(PropertyIDMap.PID_COMMENTS);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_COMMENTS, meta);
-            }
-            // extract other available meta information
-            meta = (String)section.getProperty(PropertyIDMap.PID_AUTHOR);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_AUTHOR, meta);
-            }
-            Date date;
-            date = (Date)section.getProperty(PropertyIDMap.PID_CREATE_DTM);
-            if ((date != null) && (date.getTime() > 0)) {
-                // it's unlikley any PowerPoint documents where created before 1970, 
-                // and apparently POI contains an issue calculating the time correctly sometimes
-                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, date);
-            }
-            date = (Date)section.getProperty(PropertyIDMap.PID_LASTSAVE_DTM);
-            if ((date != null) && (date.getTime() > 0)) {
-                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, date);
-            }
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_TITLE),
+                I_CmsExtractionResult.ITEM_TITLE,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_KEYWORDS),
+                I_CmsExtractionResult.ITEM_KEYWORDS,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_SUBJECT),
+                I_CmsExtractionResult.ITEM_SUBJECT,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_COMMENTS),
+                I_CmsExtractionResult.ITEM_COMMENTS,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_AUTHOR),
+                I_CmsExtractionResult.ITEM_AUTHOR,
+                content,
+                contentItems);
         }
         if (m_documentSummary != null) {
             // can't use convenience methods on document since they can't deal with multiple sections
             Section section = (Section)m_documentSummary.getSections().get(0);
-
             // extract available meta information from document summary
-            meta = (String)section.getProperty(PropertyIDMap.PID_COMPANY);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_COMPANY, meta);
-            }
-            meta = (String)section.getProperty(PropertyIDMap.PID_MANAGER);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_MANAGER, meta);
-            }
-            meta = (String)section.getProperty(PropertyIDMap.PID_CATEGORY);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_CATEGORY, meta);
-            }
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_COMPANY),
+                I_CmsExtractionResult.ITEM_COMPANY,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_MANAGER),
+                I_CmsExtractionResult.ITEM_MANAGER,
+                content,
+                contentItems);
+            combineContentItem(
+                (String)section.getProperty(PropertyIDMap.PID_CATEGORY),
+                I_CmsExtractionResult.ITEM_CATEGORY,
+                content,
+                contentItems);
         }
 
-        return metaInfo;
+        // free some memory
+        cleanup();
+
+        return new CmsExtractionResult(content.toString(), contentItems);
     }
 }

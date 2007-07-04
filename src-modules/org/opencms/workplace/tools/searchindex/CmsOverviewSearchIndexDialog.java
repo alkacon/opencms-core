@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewSearchIndexDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +93,7 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_NAVTEXT_SEARCHINDEX_SHORT_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 3));
+            result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -122,5 +122,6 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         addWidget(new CmsWidgetDialogParameter(m_index, "rebuildMode", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_index, "locale", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_index, "project", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_index, "fieldConfigurationName", PAGES[0], new CmsDisplayWidget()));
     }
 }

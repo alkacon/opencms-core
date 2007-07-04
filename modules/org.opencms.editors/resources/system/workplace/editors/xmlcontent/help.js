@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2006/10/02 08:14:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System

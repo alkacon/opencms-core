@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -82,7 +83,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.85 $ 
  * 
  * @since 6.0.0 
  * 
@@ -123,9 +124,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** Groups to create during import are stored here. */
     protected Stack m_groupsToCreate;
-
-    /** Indicates if module data is being imported. */
-    protected boolean m_importingChannelData;
 
     /** The import-path to write resources into the cms. */
     protected String m_importPath;
@@ -182,7 +180,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     translatedName));
             }
             // this resource must not be modified by an import if it already exists
-            m_cms.getRequestContext().saveSiteRoot();
+            String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
                 m_cms.getRequestContext().setSiteRoot("/");
                 m_cms.readResource(translatedName);
@@ -200,7 +198,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         translatedName), e);
                 }
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return resourceNotImmutable;
@@ -228,47 +226,44 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void convertPointerToSiblings() {
 
-        Iterator keys = m_linkStorage.keySet().iterator();
-        int linksSize = m_linkStorage.size();
-        int i = 0;
-        CmsResource resource = null;
-        String link = null;
-        String key = null;
-
         try {
+            int linksSize = m_linkStorage.size();
+            int i = 0;
+            Iterator itEntries = m_linkStorage.entrySet().iterator();
             // loop through all links to convert
-            while (keys.hasNext()) {
+            while (itEntries.hasNext()) {
+                Map.Entry entry = (Map.Entry)itEntries.next();
+
+                String key = (String)entry.getKey();
+                String link = (String)entry.getValue();
+                List properties = (List)m_linkPropertyStorage.get(key);
+                CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
+
+                i++;
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i),
+                    String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
+                m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    key + " "));
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
-                    key = (String)keys.next();
-                    link = (String)m_linkStorage.get(key);
-                    List properties = (List)m_linkPropertyStorage.get(key);
-                    CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
-
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        String.valueOf(++i),
-                        String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        key + " "));
-                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
                     // check if this is an internal pointer
                     if (link.startsWith("/")) {
                         // check if the pointer target is existing
                         CmsResource target = m_cms.readResource(link);
 
                         // create a new sibling as CmsResource                         
-                        resource = new CmsResource(
-                            new CmsUUID(), // structure ID is always a new UUID
+                        CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                             target.getResourceId(),
                             key,
                             target.getTypeId(),
                             target.isFolder(),
                             0,
-                            m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
+                            m_cms.getRequestContext().currentProject().getUuid(), // TODO: pass flags from import 
                             CmsResource.STATE_NEW,
                             target.getDateCreated(),
                             target.getUserCreated(),
@@ -277,6 +272,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                             CmsResource.DATE_RELEASED_DEFAULT,
                             CmsResource.DATE_EXPIRED_DEFAULT,
                             1,
+                            0,
+                            target.getDateContent(),
                             0);
 
                         m_cms.importResource(key, resource, null, properties);
@@ -290,9 +287,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                                 String.valueOf(linksSize),
                                 key));
                         }
-
                     } else {
-
                         m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
@@ -304,7 +299,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                                 String.valueOf(linksSize),
                                 key));
                         }
-
                     }
                 } catch (CmsException e) {
                     m_report.println();
@@ -348,7 +342,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 ZipEntry entry = m_importZip.getEntry(filename);
 
                 // path to file might be relative, too
-                if (entry == null && filename.startsWith("/")) {
+                if ((entry == null) && filename.startsWith("/")) {
                     entry = m_importZip.getEntry(filename.substring(1));
                 }
                 if (entry == null) {
@@ -442,7 +436,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         try {
             m_cms.importAccessControlEntries(resource, aceList);
         } catch (CmsException exc) {
-
             m_report.println(
                 Messages.get().container(Messages.RPT_IMPORT_ACL_DATA_FAILED_0),
                 I_CmsReport.FORMAT_WARNING);
@@ -576,15 +569,14 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports a single user.<p>
+     * 
      * @param name user name
-     * @param description user description
      * @param flags user flags
      * @param password user password 
      * @param firstname firstname of the user
      * @param lastname lastname of the user
      * @param email user email
-     * @param address user address 
-     * @param type user type
+     * @param dateCreated creation date 
      * @param userInfo user info
      * @param userGroups user groups
      * 
@@ -592,14 +584,12 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void importUser(
         String name,
-        String description,
         String flags,
         String password,
         String firstname,
         String lastname,
         String email,
-        String address,
-        String type,
+        long dateCreated,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
@@ -616,20 +606,31 @@ public abstract class A_CmsImport implements I_CmsImport {
                     id,
                     name,
                     password,
-                    description,
                     firstname,
                     lastname,
                     email,
-                    address,
                     Integer.parseInt(flags),
-                    Integer.parseInt(type),
+                    dateCreated,
                     userInfo);
                 // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
+                    String groupName = (String)userGroups.get(i);
                     try {
-                        m_cms.addUserToGroup(name, (String)userGroups.get(i));
+                        CmsGroup group = m_cms.readGroup(groupName);
+                        if (group.isVirtual() || group.isRole()) {
+                            CmsRole role = CmsRole.valueOf(group);
+                            OpenCms.getRoleManager().addUserToRole(m_cms, role, name);
+                        } else {
+                            m_cms.addUserToGroup(name, groupName);
+                        }
                     } catch (CmsException exc) {
-                        // ignore
+                        m_report.println(Messages.get().container(
+                            Messages.RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2,
+                            name,
+                            groupName), I_CmsReport.FORMAT_WARNING);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(exc.getLocalizedMessage(), exc);
+                        }
                     }
                 }
                 m_report.println(
@@ -664,7 +665,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         List userGroups;
         Element currentElement, currentGroup;
         Map userInfo = new HashMap();
-        String name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
+        String name, description, flags, password, firstname, lastname, email, address, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
         try {
@@ -684,7 +685,6 @@ public abstract class A_CmsImport implements I_CmsImport {
                 lastname = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTNAME);
                 email = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_EMAIL);
                 address = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TAG_ADDRESS);
-                type = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 defaultGroup = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DEFAULTGROUP);
                 // get the userinfo and put it into the additional info map
                 infoNode = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERINFO);
@@ -697,6 +697,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo = (Map)oin.readObject();
                 } catch (IOException ioex) {
                     m_report.println(ioex);
+                } catch (ClassCastException ccex) {
+                    m_report.println(ccex);
+                } catch (ClassNotFoundException cnfex) {
+                    m_report.println(cnfex);
                 }
 
                 // get the groups of the user and put them into the list
@@ -713,32 +717,23 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                 }
 
+                if (description != null) {
+                    userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
+                }
+                if (address != null) {
+                    userInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
+                }
                 // import this user
-                importUser(
-                    name,
-                    description,
-                    flags,
-                    password,
-                    firstname,
-                    lastname,
-                    email,
-                    address,
-                    type,
-                    userInfo,
-                    userGroups);
+                importUser(name, flags, password, firstname, lastname, email, 0, userInfo, userGroups);
             }
         } catch (CmsImportExportException e) {
-
             throw e;
         } catch (Exception e) {
-
             m_report.println(e);
-
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USERS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-
             throw new CmsImportExportException(message, e);
         }
     }
@@ -780,7 +775,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             propertyElement = (Element)propertyElements.get(i);
             key = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_NAME);
 
-            if (key == null || ignoredPropertyKeys.contains(key)) {
+            if ((key == null) || ignoredPropertyKeys.contains(key)) {
                 // continue if the current property (key) should be ignored or is null
                 continue;
             }
@@ -811,4 +806,5 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         return new ArrayList(properties.values());
     }
+
 }

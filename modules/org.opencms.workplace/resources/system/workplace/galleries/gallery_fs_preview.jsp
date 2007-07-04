@@ -8,7 +8,7 @@
 	
 	String params = "?" + wp.paramsAsRequest();
 	
-%>
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <frameset rows="25,*" border="0" frameborder="0" framespacing="0">

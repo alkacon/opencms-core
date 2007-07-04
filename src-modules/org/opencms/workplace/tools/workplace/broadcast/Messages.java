@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/Messages.java,v $
- * Date   : $Date: 2006/07/21 10:08:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_EMPTY_STRING_0 = "ERR_EMPTY_STRING_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SELECTED_GROUP_0 = "ERR_NO_SELECTED_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SELECTED_RECEIVERS_0 = "ERR_NO_SELECTED_RECEIVERS_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NO_SELECTED_USER_WITH_EMAIL_0 = "ERR_NO_SELECTED_USER_WITH_EMAIL_0";
@@ -65,6 +71,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SELECT_EDITOR_LABEL_BLOCK_0 = "GUI_SELECT_EDITOR_LABEL_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_DETAIL_HIDE_EMAIL_HELP_0 = "GUI_SESSIONS_DETAIL_HIDE_EMAIL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_DETAIL_HIDE_EMAIL_NAME_0 = "GUI_SESSIONS_DETAIL_HIDE_EMAIL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_DETAIL_SHOW_EMAIL_HELP_0 = "GUI_SESSIONS_DETAIL_SHOW_EMAIL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_DETAIL_SHOW_EMAIL_NAME_0 = "GUI_SESSIONS_DETAIL_SHOW_EMAIL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_LABEL_EMAIL_0 = "GUI_SESSIONS_LABEL_EMAIL_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0 = "GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0";
@@ -88,9 +112,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SESSIONS_LIST_COLS_CREATION_0 = "GUI_SESSIONS_LIST_COLS_CREATION_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_COLS_EMAIL_0 = "GUI_SESSIONS_LIST_COLS_EMAIL_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_INACTIVE_0 = "GUI_SESSIONS_LIST_COLS_INACTIVE_0";
 
     /** Message contant for key in the resource bundle. */
@@ -98,6 +119,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_MESSAGE_HELP_0 = "GUI_SESSIONS_LIST_COLS_MESSAGE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_LIST_COLS_ORGUNIT_0 = "GUI_SESSIONS_LIST_COLS_ORGUNIT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_PENDING_0 = "GUI_SESSIONS_LIST_COLS_PENDING_0";
@@ -110,12 +134,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_USER_0 = "GUI_SESSIONS_LIST_COLS_USER_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0 = "GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0 = "GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0 = "GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0";

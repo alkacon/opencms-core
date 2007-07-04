@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/AllTests.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.file.types}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0
  */
@@ -65,6 +65,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestConfigurationOptions.suite());
+        suite.addTest(TestLinkParseableResourceTypes.suite());
         //$JUnit-END$
         return suite;
     }

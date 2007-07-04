@@ -2,7 +2,7 @@
 
 	org.opencms.main.*,
 	org.opencms.workplace.*,
-    org.opencms.validation.*
+    org.opencms.relations.*
 
 "%><%	
 
@@ -30,15 +30,7 @@ default:
 
 %><%= wp.htmlStart() %>
 
-<script language="JavaScript">
-function init() {
-	if (window.top.body.admin_head) {
-		window.top.body.admin_head.location.href="<%= wp.getJsp().link("/system/workplace/action/administration_head.html") %>";
-	}
-}
-</script>
-
-<%= wp.bodyStart("dialog", "onLoad=\"init();\"") %>
+<%= wp.bodyStart("dialog", "") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
@@ -48,7 +40,7 @@ function init() {
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <% 
-  CmsPointerLinkValidationResult result = OpenCms.getLinkManager().getPointerLinkValidationResult();
+  CmsExternalLinksValidationResult result = OpenCms.getLinkManager().getPointerLinkValidationResult();
   if (result != null) {
     out.println(result.toHtml(wp.getCms().getRequestContext().getLocale()));
     out.println(wp.dialogContentEnd());

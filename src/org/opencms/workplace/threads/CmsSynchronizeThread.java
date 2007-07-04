@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.threads;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronize;
@@ -44,7 +43,7 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,7 +67,6 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
             cms.getRequestContext().currentProject().getName()));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = new CmsUserSettings(cms).getSynchronizeSettings();
-        start();
     }
 
     /**
@@ -97,7 +95,8 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
         report.println(Messages.get().container(Messages.RPT_SYNCHRONIZE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         try {
             new CmsSynchronize(getCms(), m_settings, getReport());
-        } catch (CmsException e) {
+        } catch (Throwable e) {
+            m_error = e;
             report.println(e);
         }
         report.println(Messages.get().container(Messages.RPT_SYNCHRONIZE_END_0), I_CmsReport.FORMAT_HEADLINE);

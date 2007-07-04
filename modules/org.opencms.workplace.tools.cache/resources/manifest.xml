@@ -3,21 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.2.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>7RC2</opencms_version>
+		<createdate>Mon, 25 Jun 2007 14:18:05 GMT</createdate>
 		<project>Offline</project>
-		<export_version>4</export_version>
+		<export_version>6</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.cache</name>
-		<nicename><![CDATA[OpenCms 6 Cache administration tools]]></nicename>
+		<nicename><![CDATA[OpenCms 7 Cache administration tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms administration tools for managing the different internal caches.</p>
-<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.2.0</version>
+		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the different internal caches.</p>
+<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,51 +38,60 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
+			<uuidstructure>0a0c1bea-2325-11dc-8245-53aeb3024788</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.cache</destination>
 			<type>folder</type>
+			<uuidstructure>e743824c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.cache/lib</destination>
 			<type>folder</type>
+			<uuidstructure>e748644e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.cache/lib/org.opencms.workplace.tools.cache.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.cache/lib/org.opencms.workplace.tools.cache.jar</destination>
 			<type>plain</type>
+			<uuidstructure>e74aae3f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>a57aad0d-3b25-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -92,11 +99,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
-		</file>	
+		</file>
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -111,50 +120,63 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
 			</properties>
-			<accesscontrol/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
+			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/flexcache</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>e75b7722-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Fri, 20 Oct 2006 14:34:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.cache.CmsCacheAdminToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[100.0]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.jsp]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
 				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_HELP_0}]]></value>
@@ -164,126 +186,173 @@
 					<value><![CDATA[tools/cache/icons/big/flexcache.png:tools/cache/icons/small/flexcache.png]]></value>
 				</property>
 				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[100.0]]></value>
+				</property>
+				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_NAME_0}:${key.GUI_CACHE_ADMIN_TOOL_SHORT_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_SHORT_NAME_0}:${key.GUI_CACHE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Flex Cache]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.cache.CmsCacheAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.jsp]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/admin/flexcache/index.jsp</source>
 			<destination>system/workplace/admin/flexcache/index.jsp</destination>
 			<type>jsp</type>
-
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>e75dc11c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>e75dc11b-11b7-11db-91cd-fdbae480bac9</uuidresource>
+			<datelastmodified>Thu, 19 Oct 2006 09:33:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[FlexCache Administration page]]></value>
 				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
+			<uuidstructure>c3a8d33c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/cache</destination>
 			<type>folder</type>
+			<uuidstructure>e7fb39a3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/cache/icons</destination>
 			<type>folder</type>
+			<uuidstructure>e7fd8395-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/cache/icons/big</destination>
 			<type>folder</type>
+			<uuidstructure>e7fff497-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/cache/icons/big/flexcache.png</source>
 			<destination>system/workplace/resources/tools/cache/icons/big/flexcache.png</destination>
 			<type>image</type>
+			<uuidstructure>e804af89-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>e804af88-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/tools/cache/icons/small</destination>
 			<type>folder</type>
+			<uuidstructure>e8096a7d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/cache/icons/small/flexcache.png</source>
 			<destination>system/workplace/resources/tools/cache/icons/small/flexcache.png</destination>
 			<type>image</type>
+			<uuidstructure>e80bdb7f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>e80bdb7e-11b7-11db-91cd-fdbae480bac9</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceProjStateAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,11 +48,10 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param wp the workplace context
      */
-    public CmsListResourceProjStateAction(String id, A_CmsListExplorerDialog wp) {
+    public CmsListResourceProjStateAction(String id) {
 
-        super(id, wp);
+        super(id);
     }
 
     /**
@@ -60,7 +59,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
      */
     public CmsMessageContainer getHelpText() {
 
-        if (super.getHelpText() == null || super.getHelpText().equals(EMPTY_MESSAGE)) {
+        if ((super.getHelpText() == null) || super.getHelpText().equals(EMPTY_MESSAGE)) {
             return Messages.get().container(Messages.GUI_EXPLORER_LIST_ACTION_PROJECTSTATE_HELP_0);
         }
         return super.getHelpText();
@@ -80,16 +79,18 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {
-            if (getResourceUtil().getProjectState() == null) {
+            if (getResourceUtil().getProjectState().isUnlocked()) {
                 return EMPTY_MESSAGE;
-            } else if (getResourceUtil().getProjectState().booleanValue()) {
+            } else if (getResourceUtil().getProjectState().isLockedInCurrentProject()) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
                     getResourceUtil().getReferenceProject().getName());
-            } else {
+            } else if (getResourceUtil().getProjectState().isLockedInOtherProject()) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
                     getResourceUtil().getLockedInProjectName());
+            } else {
+                return new CmsMessageContainer(null, getResourceUtil().getSystemLockInfo(false));
             }
         }
         return super.getName();

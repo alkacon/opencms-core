@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -46,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0 
  */
@@ -54,6 +56,9 @@ public final class CmsRequestContext {
 
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";
+
+    /** Request context attribute for indicating the model file for a create resource operation. */
+    public static final String ATTRIBUTE_MODEL = "org.opencms.file.CmsRequestContext.ATTRIBUTE_MODEL";
 
     /** A map for storing (optional) request context attributes. */
     private Map m_attributeMap;
@@ -72,6 +77,9 @@ public final class CmsRequestContext {
 
     /** The locale for this request. */
     private Locale m_locale;
+
+    /** The fully qualified name of the organizational unit for this request. */
+    private String m_ouFqn;
 
     /** The remote ip address. */
     private String m_remoteAddr;
@@ -104,8 +112,10 @@ public final class CmsRequestContext {
      * @param locale the users current locale 
      * @param encoding the encoding to use for this request
      * @param remoteAddr the remote IP address of the user
+     * @param requestTime the time of the request (used for resource publication / expiration date)
      * @param directoryTranslator the directory translator
      * @param fileTranslator the file translator
+     * @param ouFqn the fully qualified name of the organizational unit
      */
     public CmsRequestContext(
         CmsUser user,
@@ -115,8 +125,10 @@ public final class CmsRequestContext {
         Locale locale,
         String encoding,
         String remoteAddr,
+        long requestTime,
         CmsResourceTranslator directoryTranslator,
-        CmsResourceTranslator fileTranslator) {
+        CmsResourceTranslator fileTranslator,
+        String ouFqn) {
 
         m_updateSession = true;
         m_user = user;
@@ -126,9 +138,10 @@ public final class CmsRequestContext {
         m_locale = locale;
         m_encoding = encoding;
         m_remoteAddr = remoteAddr;
+        m_requestTime = requestTime;
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
-        m_requestTime = System.currentTimeMillis();
+        setOuFqn(ouFqn);
     }
 
     /**
@@ -138,8 +151,9 @@ public final class CmsRequestContext {
      * However, if a resource from the <code>/system/</code> folder is requested,
      * this will be the empty String.<p>
      * 
-     * @param siteRoot the site root to use
+     * @param siteRoot the site root of the current site
      * @param resourcename the resource name to get the adjusted site root for
+     * 
      * @return the adjusted site root for the resoure
      */
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
@@ -293,6 +307,16 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     * 
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return m_ouFqn;
+    }
+
+    /**
      * Returns the remote ip address.<p>
      * 
      * @return the renote ip addresss as string
@@ -385,7 +409,9 @@ public final class CmsRequestContext {
     public String removeSiteRoot(String resourcename) {
 
         String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
-        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
+        if ((siteRoot == m_siteRoot)
+            && resourcename.startsWith(siteRoot)
+            && ((resourcename.length() == siteRoot.length()) || resourcename.charAt(siteRoot.length()) == '/')) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;
@@ -395,6 +421,18 @@ public final class CmsRequestContext {
      * Restores the saved site root.<p>
      *
      * @throws RuntimeException in case there is no site root saved
+     * 
+     * @deprecated store the current site root locally before switching
+     *             to another site, and set it back again at the end, like:
+     * <pre>
+     *             String storedSite = context.getSiteRoot();
+     *             try {
+     *                  context.setSiteRoot("");
+     *                  // do something with the context
+     *             } finally {
+     *                  context.setSiteRoot(storedSite);
+     *             }
+     * </pre>
      */
     public void restoreSiteRoot() throws RuntimeException {
 
@@ -409,6 +447,18 @@ public final class CmsRequestContext {
      * Saves the current site root.<p>
      *
      * @throws RuntimeException in case there is already a site root saved
+     * 
+     * @deprecated store the current site root locally before switching
+     *             to another site, and set it back again at the end, like:
+     * <pre>
+     *             String storedSite = context.getSiteRoot();
+     *             try {
+     *                  context.setSiteRoot("");
+     *                  // do something with the context
+     *             } finally {
+     *                  context.setSiteRoot(storedSite);
+     *             }
+     * </pre>
      */
     public void saveSiteRoot() throws RuntimeException {
 
@@ -511,10 +561,34 @@ public final class CmsRequestContext {
      * 
      * @param user the new user to use
      * @param project the new users current project
+     * @param ouFqn the organizational unit
      */
-    protected void switchUser(CmsUser user, CmsProject project) {
+    protected void switchUser(CmsUser user, CmsProject project, String ouFqn) {
 
         m_user = user;
         m_currentProject = project;
+        setOuFqn(ouFqn);
+    }
+
+    /**
+     * Sets the organizational unit fully qualified name.<p>
+     * 
+     * @param ouFqn the organizational unit fully qualified name
+     */
+    private void setOuFqn(String ouFqn) {
+
+        String userOu = CmsOrganizationalUnit.getParentFqn(m_user.getName());
+        if (ouFqn != null) {
+            if (!ouFqn.startsWith(userOu) && !ouFqn.substring(1).startsWith(userOu)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_BAD_ORGUNIT_2,
+                    ouFqn,
+                    userOu));
+            }
+            m_ouFqn = ouFqn;
+        } else {
+            m_ouFqn = userOu;
+        }
+        m_ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
     }
 }

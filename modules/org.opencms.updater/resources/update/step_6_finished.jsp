@@ -15,7 +15,7 @@ OpenCms Update Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Update Wizard - Finished
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (Bean.isInitialized()) { %>
+<% if (Bean.isInitialized() && Bean.getErrors().size() == 0) { %>
 
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
@@ -66,7 +66,10 @@ OpenCms Update Wizard - Finished
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" style="margin-left: 50px;" disabled="disabled">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
-<% } else	{ %>
+<% } else if (Bean.getErrors().size() > 0) { %>
+<%= Bean.displayErrors("")%>
+<%= Bean.getHtmlPart("C_CONTENT_END") %>
+<% } else { %>
 <%= Bean.displayError("")%>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>

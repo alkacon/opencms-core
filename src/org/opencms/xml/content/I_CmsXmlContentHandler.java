@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -54,17 +55,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsXmlContentHandler {
 
-    /** Array of all allowed attribute mapping names. */
-    String[] ATTRIBUTE_ARRAY = {"datereleased", "dateexpired"};
-
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(ATTRIBUTE_ARRAY));
+    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
@@ -128,6 +126,16 @@ public interface I_CmsXmlContentHandler {
     CmsMessages getMessages(Locale locale);
 
     /**
+     * Returns the folder that contains eventual XML content model files to use for this resource type.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param currentFolder the folder the user is currently working in
+     * 
+     * @return the folder containing eventual XML content master files
+     */
+    String getModelFolder(CmsObject cms, String currentFolder);
+
+    /**
      * Returns the preview URI for the given XML content value object to be displayed in the editor.<p> 
      * 
      * If <code>null</code> is returned, no preview is possible for contents using this handler.<p>
@@ -139,6 +147,15 @@ public interface I_CmsXmlContentHandler {
      * @return the preview URI for the given XML content value object to be displayed in the editor
      */
     String getPreview(CmsObject cms, CmsXmlContent content, String resourcename);
+
+    /**
+     * Returns the relation type for the given value.<p>
+     * 
+     * @param value the value to get the relation type for
+     * 
+     * @return the relation type for the given value
+     */
+    CmsRelationType getRelationType(I_CmsXmlContentValue value);
 
     /**
      * Returns the editor widget that should be used for the given XML content value.<p>
@@ -166,6 +183,17 @@ public interface I_CmsXmlContentHandler {
     void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
 
     /**
+     * Performs a check of the given XML document.<p>
+     * 
+     * The main difference to the {@link #resolveValidation(CmsObject, I_CmsXmlContentValue, CmsXmlContentErrorHandler)}
+     * method is that this method may silently remove some values, for instance, for broken links.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param document the document to resolve the check rules for
+     */
+    void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
+
+    /**
      * Prepares the given XML content to be written to the OpenCms VFS.<p>
      * 
      * This method is alway called before any content gets written.
@@ -176,12 +204,25 @@ public interface I_CmsXmlContentHandler {
      * @param content the XML content to be written
      * @param file the resource the XML content in it's current state was unmarshalled from 
      * 
-     * @return the file to write to the OpenCms VFS, this will be an updated vresion of the parameter file
+     * @return the file to write to the OpenCms VFS, this will be an updated version of the parameter file
      * 
      * @throws CmsException in case something goes wrong
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
 
+    /**
+     * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
+     * 
+     * This method is alway called after any content is unmarshalled.
+     * It can be used to perform customized actions on the given XML content.<p>  
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to be used as read from the VFS
+     * 
+     * @return the prepared content to be used
+     */
+    CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content);
+    
     /**
      * Resolves the value mappings of the given XML content value, according 
      * to the rules of this XML content handler.<p>

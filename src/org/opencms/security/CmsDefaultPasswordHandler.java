@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  *
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -238,7 +238,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void validatePassword(String password) throws CmsSecurityException {
 
-        if (password == null || password.length() < PASSWORD_MIN_LENGTH) {
+        if ((password == null) || (password.length() < PASSWORD_MIN_LENGTH)) {
             throw new CmsSecurityException(Messages.get().container(
                 Messages.ERR_PASSWORD_TOO_SHORT_1,
                 new Integer(PASSWORD_MIN_LENGTH)));

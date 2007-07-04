@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +68,9 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_REMOVE = "dr";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_ORGUNIT = "dou";
 
     /** list id constant. */
     public static final String LIST_ID = "lgu";
@@ -152,11 +156,11 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers()
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers(boolean)
      */
-    protected List getUsers() throws CmsException {
+    protected List getUsers(boolean withOtherOus) throws CmsException {
 
-        return getCms().getUsersOfGroup(getParamGroupname());
+        return getCms().getUsersOfGroup(getParamGroupname(), withOtherOus);
     }
 
     /**
@@ -178,7 +182,16 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDefaultAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return ((A_CmsGroupUsersList)getWp()).getIconPath(getItem());
+            }
+        };
         iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_HELP_0));
         iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
@@ -222,5 +235,16 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         metadata.addColumn(stateCol);
         // keep the id
         m_removeActionIds.add(stateAction.getId());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        super.validateParamaters();
+        if (getCms().readGroup(new CmsUUID(getParamGroupid())).isVirtual()) {
+            throw new Exception();
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsWrappedResource.java,v $
- * Date   : $Date: 2007/03/12 15:59:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.file.CmsResource;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.2.4
  */
@@ -93,7 +93,6 @@ public class CmsWrappedResource {
             return new CmsFile(
                 file.getStructureId(),
                 file.getResourceId(),
-                file.getContentId(),
                 m_rootPath,
                 m_typeId,
                 file.getFlags(),
@@ -107,6 +106,8 @@ public class CmsWrappedResource {
                 file.getDateExpired(),
                 file.getSiblingCount(),
                 file.getLength(),
+                file.getDateContent(),
+                file.getVersion(),
                 file.getContents());
         }
 
@@ -146,7 +147,9 @@ public class CmsWrappedResource {
             m_base.getDateReleased(),
             m_base.getDateExpired(),
             m_base.getSiblingCount(),
-            m_length);
+            m_length,
+            m_base.getDateContent(),
+            m_base.getVersion());
     }
 
     /**

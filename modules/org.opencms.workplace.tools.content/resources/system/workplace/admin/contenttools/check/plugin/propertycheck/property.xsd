@@ -27,7 +27,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.tools.content.workplace"/>
+			<resourcebundle name="org.opencms.workplace.tools.content.messages"/>
 			<layouts>
 				<layout element="type" widget="SelectorWidget" configuration="file*:${key.type.file}|folder:${key.type.folder}|both:${key.type.both}" />
 			</layouts>

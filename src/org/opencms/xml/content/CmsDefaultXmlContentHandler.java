@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,12 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
@@ -51,15 +55,21 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -70,8 +80,9 @@ import org.dom4j.Element;
  * provide their own handler.<p>
  * 
  * @author Alexander Kandzior 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +96,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
+
+    /** Constant for the "invalidate" appinfo attribute name. */
+    public static final String APPINFO_ATTR_INVALIDATE = "invalidate";
 
     /** Constant for the "mapto" appinfo attribute name. */
     public static final String APPINFO_ATTR_MAPTO = "mapto";
@@ -100,6 +114,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
+
+    /** Constant for the "node" appinfo attribute value. */
+    public static final String APPINFO_ATTR_TYPE_NODE = "node";
+
+    /** Constant for the "parent" appinfo attribute value. */
+    public static final String APPINFO_ATTR_TYPE_PARENT = "parent";
 
     /** Constant for the "warning" appinfo attribute value. */
     public static final String APPINFO_ATTR_TYPE_WARNING = "warning";
@@ -131,8 +151,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "mappings" appinfo element name. */
     public static final String APPINFO_MAPPINGS = "mappings";
 
+    /** Constant for the "modelfolder" appinfo element name. */
+    public static final String APPINFO_MODELFOLDER = "modelfolder";
+
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
+
+    /** Constant for the "relation" appinfo element name. */
+    public static final String APPINFO_RELATION = "relation";
+
+    /** Constant for the "relations" appinfo element name. */
+    public static final String APPINFO_RELATIONS = "relations";
 
     /** Constant for the "resourcebundle" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
@@ -147,6 +176,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public static final String APPINFO_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
         + APPINFO_SCHEMA_FILE;
 
+    /** Constant for the "validationrule" appinfo element name. */
+    public static final String APPINFO_VALIDATIONRULE = "validationrule";
+
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
@@ -155,11 +187,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
-        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2 + "|${validation.value}|[${validation.regex}]}";
+        + "${key."
+        + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2
+        + "|${validation.value}|[${validation.regex}]}";
 
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
-        + "${key." + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2 + "|${validation.value}|[${validation.regex}]}";
+        + "${key."
+        + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2
+        + "|${validation.value}|[${validation.regex}]}";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultXmlContentHandler.class);
+
+    /** Prefix to cache the checkrule relation types. */
+    private static final String RELATION_TYPE_PREFIX = "rt_";
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map m_configurationValues;
@@ -176,16 +218,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
 
+    /** The folder containing the model file(s) for the content. */
+    protected String m_modelFolder;
+
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
 
-    /** The messages for the error rules. */
+    /** The check rules. */
+    protected Map m_relations;
+
+    /** The messages for the error validation rules. */
     protected Map m_validationErrorMessages;
 
     /** The validation rules that cause an error (as defined in the annotations). */
     protected Map m_validationErrorRules;
 
-    /** The messages for the warning rules. */
+    /** The messages for the warning validation rules. */
     protected Map m_validationWarningMessages;
 
     /** The validation rules that cause a warning (as defined in the annotations). */
@@ -281,6 +329,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getModelFolder(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public String getModelFolder(CmsObject cms, String currentFolder) {
+
+        String result = m_modelFolder;
+        // store the original uri
+        String uri = cms.getRequestContext().getUri();
+        try {
+            // set uri to current folder
+            cms.getRequestContext().setUri(currentFolder);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+            // resolve eventual macros
+            result = resolver.resolveMacros(m_modelFolder);
+        } finally {
+            // switch back to stored uri
+            cms.getRequestContext().setUri(uri);
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
@@ -289,6 +358,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         resolver.addMacro(MACRO_PREVIEW_TEMPFILE, resourcename);
 
         return resolver.resolveMacros(m_previewLocation);
+    }
+
+    /**
+     * @see I_CmsXmlContentHandler#getRelationType(I_CmsXmlContentValue)
+     */
+    public CmsRelationType getRelationType(I_CmsXmlContentValue value) {
+
+        if (value == null) {
+            return null;
+        }
+        String xpath = value.getPath();
+        CmsRelationType relationType = null;
+        // look up the default from the configured mappings
+        relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + xpath);
+        if (relationType == null) {
+            // no value found, try default xpath
+            String path = CmsXmlUtils.removeXpathIndex(xpath);
+            // look up the default value again without indexes
+            relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + path);
+        }
+        if (relationType == null) {
+            // no value found, try the last simple type path
+            String path = CmsXmlUtils.getLastXpathElement(xpath);
+            // look up the default value again for the last simple type
+            relationType = (CmsRelationType)m_relations.get(RELATION_TYPE_PREFIX + path);
+        }
+        if (relationType == null) {
+            return CmsRelationType.XML_WEAK;
+        }
+        return relationType;
     }
 
     /**
@@ -316,36 +415,127 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public synchronized void initialize(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
     throws CmsXmlException {
 
-        if (appInfoElement == null) {
-            // no appinfo provided, so no initialization is required
-            return;
-        }
+        if (appInfoElement != null) {
+            // validate the appinfo element XML content with the default appinfo handler schema
+            validateAppinfoElement(appInfoElement);
 
-        // validate the appinfo element XML content with the default appinfo handler schema
-        validateAppinfoElement(appInfoElement);
+            // re-initialize the local variables
+            init();
 
-        // re-initialize the local variables
-        init();
-
-        Iterator i = appInfoElement.elements().iterator();
-        while (i.hasNext()) {
-            // iterate all elements in the appinfo node
-            Element element = (Element)i.next();
-            String nodeName = element.getName();
-            if (nodeName.equals(APPINFO_MAPPINGS)) {
-                initMappings(element, contentDefinition);
-            } else if (nodeName.equals(APPINFO_LAYOUTS)) {
-                initLayouts(element, contentDefinition);
-            } else if (nodeName.equals(APPINFO_VALIDATIONRULES)) {
-                initValidationRules(element, contentDefinition);
-            } else if (nodeName.equals(APPINFO_DEFAULTS)) {
-                initDefaultValues(element, contentDefinition);
-            } else if (nodeName.equals(APPINFO_PREVIEW)) {
-                initPreview(element, contentDefinition);
-            } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
-                initResourceBundle(element, contentDefinition);
+            Iterator i = appInfoElement.elements().iterator();
+            while (i.hasNext()) {
+                // iterate all elements in the appinfo node
+                Element element = (Element)i.next();
+                String nodeName = element.getName();
+                if (nodeName.equals(APPINFO_MAPPINGS)) {
+                    initMappings(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_LAYOUTS)) {
+                    initLayouts(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_VALIDATIONRULES)) {
+                    initValidationRules(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_RELATIONS)) {
+                    initRelations(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_DEFAULTS)) {
+                    initDefaultValues(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_MODELFOLDER)) {
+                    initModelFolder(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_PREVIEW)) {
+                    initPreview(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
+                    initResourceBundle(element, contentDefinition);
+                }
             }
         }
+
+        // at the end, add default check rules for optional file references
+        addDefaultCheckRules(contentDefinition, null, null);
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#invalidateBrokenLinks(CmsObject, CmsXmlContent)
+     */
+    public void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document) {
+
+        if ((cms == null) || (cms.getRequestContext().getRequestTime() == CmsResource.DATE_RELEASED_EXPIRED_IGNORE)) {
+            // do not check if the request comes the editor
+            return;
+        }
+        boolean needReinitialization = false;
+        // iterate the locales
+        Iterator itLocales = document.getLocales().iterator();
+        while (itLocales.hasNext()) {
+            Locale locale = (Locale)itLocales.next();
+            List removedNodes = new ArrayList();
+            // iterate the values
+            Iterator itValues = document.getValues(locale).iterator();
+            while (itValues.hasNext()) {
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)itValues.next();
+                String path = value.getPath();
+                // check if this value has already been deleted by parent rules 
+                boolean alreadyRemoved = false;
+                Iterator itRemNodes = removedNodes.iterator();
+                while (itRemNodes.hasNext()) {
+                    String remNode = (String)itRemNodes.next();
+                    if (path.startsWith(remNode)) {
+                        alreadyRemoved = true;
+                        break;
+                    }
+                }
+                // only continue if not already removed and if a rule match
+                if (alreadyRemoved
+                    || ((m_relations.get(path) == null) && (m_relations.get(CmsXmlUtils.removeXpath(path)) == null))) {
+                    continue;
+                }
+
+                // check rule matched
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_CHECK_RULE_MATCH_1, path));
+                }
+                if (validateLink(cms, value, null)) {
+                    // invalid link
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_XMLCONTENT_CHECK_WARNING_2,
+                            path,
+                            value.getStringValue(cms)));
+                    }
+                    // find the node to remove
+                    String parentPath = path;
+                    while (isInvalidateParent(parentPath)) {
+                        // check parent
+                        parentPath = CmsXmlUtils.removeLastXpathElement(parentPath);
+                        // log info
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_XMLCONTENT_CHECK_PARENT_2,
+                                path,
+                                parentPath));
+                        }
+                    }
+                    value = document.getValue(parentPath, locale);
+                    // detach the value node from the XML document
+                    value.getElement().detach();
+                    // mark node as deleted
+                    removedNodes.add(parentPath);
+                }
+            }
+            if (!removedNodes.isEmpty()) {
+                needReinitialization = true;
+            }
+        }
+        if (needReinitialization) {
+            // re-initialize the XML content 
+            document.initDocument();
+        }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForUse(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     */
+    public CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content) {
+
+        // noop, just return the unmodified content
+        return content;
     }
 
     /**
@@ -353,9 +543,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
 
-        // validate the xml structure before writing the file         
-        // an exception will be thrown if the structure is invalid
-        content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        if (!content.isAutoCorrectionEnabled()) {
+            // check if the XML should be corrected automatically (if not already set)
+            Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+            // set the auto correction mode as required
+            boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
+            content.setAutoCorrectionEnabled(autoCorrectionEnabled);
+        }
+        // validate the xml structure before writing the file if required                 
+        if (!content.isAutoCorrectionEnabled()) {
+            // an exception will be thrown if the structure is invalid
+            content.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        }
         // read the content-conversion property
         String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
@@ -363,14 +562,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             contentConversion = CmsHtmlConverter.PARAM_XHTML;
         }
         content.setConversion(contentConversion);
-        // correct the HTML structure 
+        // correct the HTML structure
         file = content.correctXmlStructure(cms);
         content.setFile(file);
         // resolve the file mappings
         content.resolveMappings(cms);
         // ensure all property mappings of deleted optional values are removed
         removeEmptyMappings(cms, content);
-
+        // return the result
         return file;
     }
 
@@ -399,10 +598,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
             // get root path of the file 
             String rootPath = content.getFile().getRootPath();
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
 
             try {
                 // try / catch to ensure site root is always restored
-                cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot("/");
 
                 // read all siblings of the file
@@ -510,29 +709,38 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
                         switch (ATTRIBUTES.indexOf(attribute)) {
                             case 0: // datereleased
-                                long date;
-                                date = Long.valueOf(stringValue).longValue();
+                                long date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
                                 if (date == 0) {
                                     date = CmsResource.DATE_RELEASED_DEFAULT;
                                 }
                                 file.setDateReleased(date);
                                 break;
                             case 1: // dateexpired
-                                date = Long.valueOf(stringValue).longValue();
+                                date = 0;
+                                try {
+                                    date = Long.valueOf(stringValue).longValue();
+                                } catch (NumberFormatException e) {
+                                    // ignore, value can be a macro
+                                }
                                 if (date == 0) {
                                     date = CmsResource.DATE_EXPIRED_DEFAULT;
                                 }
                                 file.setDateExpired(date);
                                 break;
                             default:
-                        // ignore invalid / other mappings                                
+                                // ignore invalid / other mappings                                
                         }
                     }
                 }
 
             } finally {
                 // restore the saved site root
-                cms.getRequestContext().restoreSiteRoot();
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
     }
@@ -564,6 +772,79 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         // return the result
         return errorHandler;
+    }
+
+    /**
+     * Adds a check rule for a specified element.<p> 
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to add the rule to 
+     * @param invalidate 
+     *              <code>false</code>, to disable link check
+     *              <code>true</code> or <code>node</code>, to invalidate just the single node if the link is broken 
+     *              <code>parent</code>, if this rule will invalidate the whole parent node in nested content
+     * @param type the relation type
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addCheckRule(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        String invalidate,
+        String type) throws CmsXmlException {
+
+        I_CmsXmlSchemaType schemaType = contentDefinition.getSchemaType(elementName);
+        if (schemaType == null) {
+            // no element with the given name
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_CHECK_INVALID_ELEM_1,
+                elementName));
+        }
+        if (!CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
+            && !CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName())) {
+            // element is not a OpenCmsVfsFile
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_CHECK_INVALID_TYPE_1,
+                elementName));
+        }
+
+        // cache the check rule data
+        Boolean invalidateParent = null;
+        if ((invalidate == null)
+            || invalidate.equalsIgnoreCase(Boolean.TRUE.toString())
+            || invalidate.equalsIgnoreCase(APPINFO_ATTR_TYPE_NODE)) {
+            invalidateParent = Boolean.FALSE;
+        } else if (invalidate.equalsIgnoreCase(APPINFO_ATTR_TYPE_PARENT)) {
+            invalidateParent = Boolean.TRUE;
+        }
+        if (invalidateParent != null) {
+            m_relations.put(elementName, invalidateParent);
+        }
+        CmsRelationType relationType = (type == null ? CmsRelationType.XML_WEAK : CmsRelationType.valueOfXml(type));
+        m_relations.put(RELATION_TYPE_PREFIX + elementName, relationType);
+
+        if (invalidateParent != null) {
+            // check the whole xpath hierarchy
+            String path = elementName;
+            while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)) {
+                if (!isInvalidateParent(path)) {
+                    // if invalidate type = node, then the node needs to be optional
+                    if (contentDefinition.getSchemaType(path).getMinOccurs() > 0) {
+                        // element is not optional
+                        throw new CmsXmlException(Messages.get().container(
+                            Messages.ERR_XMLCONTENT_CHECK_NOT_OPTIONAL_1,
+                            path));
+                    }
+                    // no need to further check
+                    break;
+                } else if (!CmsXmlUtils.isDeepXpath(path)) {
+                    // if invalidate type = parent, then the node needs to be nested
+                    // document root can not be invalidated
+                    throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_CHECK_NOT_EMPTY_DOC_0));
+                }
+                path = CmsXmlUtils.removeLastXpathElement(path);
+            }
+        }
     }
 
     /**
@@ -609,6 +890,44 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // store mappings as Xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         m_defaultValues.put(xpath, defaultValue);
+    }
+
+    /**
+     * Adds all needed default check rules recursively for the given schema type.<p> 
+     * 
+     * @param rootContentDefinition the root content definition
+     * @param schemaType the schema type to check
+     * @param elementPath the current element path
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void addDefaultCheckRules(
+        CmsXmlContentDefinition rootContentDefinition,
+        I_CmsXmlSchemaType schemaType,
+        String elementPath) throws CmsXmlException {
+
+        if ((schemaType != null) && schemaType.isSimpleType()) {
+            if ((schemaType.getMinOccurs() == 0)
+                && (CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName()) || CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName()))
+                && !m_relations.containsKey(elementPath)
+                && !m_relations.containsKey(RELATION_TYPE_PREFIX + elementPath)) {
+                // add default check rule for the element
+                addCheckRule(rootContentDefinition, elementPath, null, null);
+            }
+        } else {
+            // recursion required
+            CmsXmlContentDefinition nestedContentDefinition = rootContentDefinition;
+            if (schemaType != null) {
+                CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)schemaType;
+                nestedContentDefinition = nestedDefinition.getNestedContentDefinition();
+            }
+            Iterator itElems = nestedContentDefinition.getSchemaTypes().iterator();
+            while (itElems.hasNext()) {
+                String element = (String)itElems.next();
+                String path = (schemaType != null ? CmsXmlUtils.concatXpath(elementPath, element) : element);
+                addDefaultCheckRules(rootContentDefinition, nestedContentDefinition.getSchemaType(element), path);
+            }
+        }
     }
 
     /**
@@ -779,7 +1098,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_validationWarningMessages = new HashMap();
         m_defaultValues = new HashMap();
         m_configurationValues = new HashMap();
+        m_relations = new HashMap();
         m_previewLocation = null;
+        m_modelFolder = null;
     }
 
     /**
@@ -880,6 +1201,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Initializes the folder containing the model file(s) for this content handler.<p>
+     * 
+     * @param root the "modelfolder" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the model folder belongs to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initModelFolder(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        String master = root.attributeValue(APPINFO_ATTR_URI);
+        if (master == null) {
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2,
+                root.getName(),
+                contentDefinition.getSchemaLocation()));
+        }
+        m_modelFolder = master;
+    }
+
+    /**
      * Initializes the preview location for this content handler.<p>
      * 
      * @param root the "preview" element from the appinfo node of the XML content definition
@@ -896,6 +1236,43 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 contentDefinition.getSchemaLocation()));
         }
         m_previewLocation = preview;
+    }
+
+    /**
+     * Initializes the relation configuration for this content handler.<p>
+     * 
+     * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
+     * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
+     * over the link check process is required. For these cases, individual relation behaviour can 
+     * be defined for the appinfo node.<p>
+     * 
+     * Additional here can be defined an optional type for the relations, for instance.<p>
+     * 
+     * @param root the "relations" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the check rules belong to
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initRelations(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_RELATION);
+        while (i.hasNext()) {
+            // iterate all "checkrule" elements in the "checkrule" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String invalidate = element.attributeValue(APPINFO_ATTR_INVALIDATE);
+            if (invalidate != null) {
+                invalidate = invalidate.toUpperCase();
+            }
+            String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            if (type != null) {
+                type = type.toLowerCase();
+            }
+            if (elementName != null) {
+                // add a check rule for the element
+                addCheckRule(contentDefinition, elementName, invalidate, type);
+            }
+        }
     }
 
     /**
@@ -927,20 +1304,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @param root the "validationrules" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     protected void initValidationRules(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
-        Iterator i = root.elementIterator(APPINFO_RULE);
+        List elements = new ArrayList(root.elements(APPINFO_RULE));
+        elements.addAll(root.elements(APPINFO_VALIDATIONRULE));
+        Iterator i = elements.iterator();
         while (i.hasNext()) {
-            // iterate all "layout" elements in the "layouts" node
+            // iterate all "rule" or "validationrule" elements in the "validationrules" node
             Element element = (Element)i.next();
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String regex = element.attributeValue(APPINFO_ATTR_REGEX);
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            if (type != null) {
+                type = type.toLowerCase();
+            }
             String message = element.attributeValue(APPINFO_ATTR_MESSAGE);
             if ((elementName != null) && (regex != null)) {
-                // add a validation ruls for the element
+                // add a validation rule for the element
                 addValidationRule(
                     contentDefinition,
                     elementName,
@@ -949,6 +1332,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     APPINFO_ATTR_TYPE_WARNING.equals(type));
             }
         }
+    }
+
+    /**
+     * Returns the is-invalidate-parent flag for the given xpath.<p>
+     * 
+     * @param xpath the path to get the check rule for
+     * 
+     * @return the configured is-invalidate-parent flag for the given xpath
+     */
+    protected boolean isInvalidateParent(String xpath) {
+
+        if (!CmsXmlUtils.isDeepXpath(xpath)) {
+            return false;
+        }
+        Boolean isInvalidateParent = null;
+        // look up the default from the configured mappings
+        isInvalidateParent = (Boolean)m_relations.get(xpath);
+        if (isInvalidateParent == null) {
+            // no value found, try default xpath
+            String path = CmsXmlUtils.removeXpath(xpath);
+            // look up the default value again without indexes
+            isInvalidateParent = (Boolean)m_relations.get(path);
+        }
+        if (isInvalidateParent == null) {
+            return false;
+        }
+        return isInvalidateParent.booleanValue();
     }
 
     /**
@@ -986,15 +1396,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
 
-        Iterator mappings = m_elementMappings.keySet().iterator();
-
         String rootPath = null;
         List siblings = null;
 
+        Iterator mappings = m_elementMappings.entrySet().iterator();
         while (mappings.hasNext()) {
-            String path = (String)mappings.next();
-            String mapping = (String)m_elementMappings.get(path);
-
+            Map.Entry e = (Map.Entry)mappings.next();
+            String path = e.getKey().toString();
+            String mapping = e.getValue().toString();
             if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
                 // get root path of the file
@@ -1002,9 +1411,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     rootPath = content.getFile().getRootPath();
                 }
 
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
                 try {
                     // try / catch to ensure site root is always restored
-                    cms.getRequestContext().saveSiteRoot();
                     cms.getRequestContext().setSiteRoot("/");
 
                     // read all siblings of the file
@@ -1041,7 +1450,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                 } finally {
                     // restore the saved site root
-                    cms.getRequestContext().restoreSiteRoot();
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             }
         }
@@ -1075,6 +1484,73 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @param cms the current users OpenCms context
      * @param value the value to validate
      * @param errorHandler the error handler to use in case errors or warnings are detected
+     * 
+     * @return if a broken link has been found
+     */
+    protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
+
+        // if there is a value of type file ref
+        if ((value == null) || (!(value instanceof CmsXmlVfsFileValue) && !(value instanceof CmsXmlVarLinkValue))) {
+            return false;
+        }
+        // if the value has a link (this will automatically fix, for instance, the path of moved resources)
+        CmsLink link = null;
+        if (value instanceof CmsXmlVfsFileValue) {
+            link = ((CmsXmlVfsFileValue)value).getLink(cms);
+        } else if (value instanceof CmsXmlVarLinkValue) {
+            link = ((CmsXmlVarLinkValue)value).getLink(cms);
+        }
+        if ((link == null) || !link.isInternal()) {
+            return false;
+        }
+        String siteRoot = CmsSiteManager.getSiteRoot(link.getTarget());
+        String oldSite = cms.getRequestContext().getSiteRoot();
+        try {
+            if (siteRoot != null) {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }
+            String resName = cms.getRequestContext().removeSiteRoot(link.getTarget());
+            // validate the link for error
+            CmsResource res = cms.readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            // check the time range 
+            if (res != null) {
+                long time = System.currentTimeMillis();
+                if (!res.isReleased(time)) {
+                    if (errorHandler != null) {
+                        // generate warning message
+                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
+                            Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
+                    }
+                    return true;
+                } else if (res.isExpired(time)) {
+                    if (errorHandler != null) {
+                        // generate warning message
+                        errorHandler.addWarning(value, Messages.get().getBundle(value.getLocale()).key(
+                            Messages.GUI_XMLCONTENT_CHECK_WARNING_EXPIRED_0));
+                    }
+                    return true;
+                }
+            }
+        } catch (CmsException e) {
+            if (errorHandler != null) {
+                // generate error message
+                errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                    Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
+            }
+            return true;
+        } finally {
+            cms.getRequestContext().setSiteRoot(oldSite);
+        }
+        return false;
+    }
+
+    /**
+     * Validates the given rules against the given value.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param value the value to validate
+     * @param errorHandler the error handler to use in case errors or warnings are detected
      * @param rules the rules to validate the value against
      * @param isWarning if true, this validation should be stored as a warning, otherwise as an error
      * 
@@ -1086,6 +1562,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         CmsXmlContentErrorHandler errorHandler,
         Map rules,
         boolean isWarning) {
+
+        if (validateLink(cms, value, errorHandler)) {
+            return errorHandler;
+        }
 
         String valueStr;
         try {

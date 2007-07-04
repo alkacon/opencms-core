@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2006/09/21 09:34:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,14 +68,14 @@ import org.apache.commons.logging.Log;
  */
 public class CmsNotificationCandidates {
 
-    /** The resources which come into question for notifications of responsible users. */
-    private List m_resources;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNotificationCandidates.class);
 
     /** the CmsObject. */
     private CmsObject m_cms;
+
+    /** The resources which come into question for notifications of responsible users. */
+    private List m_resources;
 
     /**
      * Collects all resources that will expire in short time, or will become valid, or are not modified since a long time.<p>
@@ -115,7 +115,7 @@ public class CmsNotificationCandidates {
                 GregorianCalendar intervalAfter = (GregorianCalendar)intervalBefore.clone();
                 intervalAfter.add(Calendar.WEEK_OF_YEAR, -1);
 
-                for (int i = 0; i < 100 && intervalAfter.getTime().before(now.getTime()); i++) {
+                for (int i = 0; (i < 100) && intervalAfter.getTime().before(now.getTime()); i++) {
                     if (intervalBefore.getTime().after(now.getTime())) {
                         m_resources.add(new CmsExtendedNotificationCause(
                             resource,
@@ -170,6 +170,37 @@ public class CmsNotificationCandidates {
     }
 
     /**
+     * Sends all notifications to the responsible users.<p>
+     * 
+     * @return a string listing all responsibles that a notification was sent to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public String notifyResponsibles() throws CmsException {
+
+        Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
+        if (notifications.hasNext()) {
+            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
+            result.append(' ');
+            while (notifications.hasNext()) {
+                CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
+                result.append(contentNotification.getResponsible().getName());
+                if (notifications.hasNext()) {
+                    result.append(", ");
+                }
+                try {
+                    contentNotification.send();
+                } catch (MessagingException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return result.toString();
+        } else {
+            return Messages.get().getBundle().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
+        }
+    }
+
+    /**
      * Returns a collection of CmsContentNotifications, one for each responsible that receives a notification.<p>
      * 
      * @return the list of CmsContentNotifications, one for each responsible that receives a notification
@@ -213,7 +244,7 @@ public class CmsNotificationCandidates {
                     }
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -222,42 +253,11 @@ public class CmsNotificationCandidates {
     }
 
     /**
-     * Sends all notifications to the responsible users.<p>
-     * 
-     * @return a string listing all responsibles that a notification was sent to
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public String notifyResponsibles() throws CmsException {
-
-        Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
-        if (notifications.hasNext()) {
-            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
-            result.append(' ');
-            while (notifications.hasNext()) {
-                CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
-                result.append(contentNotification.getResponsible().getName());
-                if (notifications.hasNext()) {
-                    result.append(", ");
-                }
-                try {
-                    contentNotification.send();
-                } catch (MessagingException e) {
-                    LOG.error(e);
-                }
-            }
-            return result.toString();
-        } else {
-            return Messages.get().getBundle().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
-        }
-    }
-
-    /**
      * Updates the resources that were confirmed by the user. That means deletes the resources that need not a
      * notification any more.
      * removes all resources which do not occur in the candidate list.<p>
      * 
-     * @param resources the list of resources to remove from the set of confirmed resources
+     * @param contentNotifications the list of {@link CmsContentNotification} objects to remove from the set of confirmed resources
      * @return a new CmsConfirmedResources Object which all the resource removed
      */
     private Collection filterConfirmedResources(Collection contentNotifications) {
@@ -300,7 +300,7 @@ public class CmsNotificationCandidates {
             try {
                 m_cms.writeUser(responsible);
             } catch (CmsException e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return contentNotifications;

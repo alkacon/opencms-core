@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 2.0.0 
  */
@@ -181,7 +181,7 @@ public class CmsMultiException extends CmsException {
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the individual message (if set) or an empty String.<p>
      * 
@@ -222,7 +222,7 @@ public class CmsMultiException extends CmsException {
      * Sets an individual message for the multi exception base message.<p>
      * 
      * If no individual message has been set, a default message using the key
-     * <code>{@link Messages#ERR_MULTI_EXCEPTION_1}</code> will be used.<p>
+     * <code>{@link org.opencms.main.Messages#ERR_MULTI_EXCEPTION_1}</code> will be used.<p>
      * 
      * If <code>null</code> is given as parameter, any individual message that 
      * has been set is reset to the default message.<p>

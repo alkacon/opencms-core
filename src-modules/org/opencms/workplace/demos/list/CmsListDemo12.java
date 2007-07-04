@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -225,8 +226,6 @@ public class CmsListDemo12 extends A_CmsListDialog {
         } else if (LIST_ACTION_DELETE.equals(getParamListAction())) {
             // do not really delete the user in the demo
             //getCms().deleteUser(userId);
-            // but remove from the list
-            getList().removeItem(userId.toString(), getLocale());
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // execute the activate action
             try {
@@ -268,7 +267,7 @@ public class CmsListDemo12 extends A_CmsListDialog {
             try {
                 if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
-                    Iterator itGroups = getCms().getGroupsOfUser(userName).iterator();
+                    Iterator itGroups = getCms().getGroupsOfUser(userName, false).iterator();
                     while (itGroups.hasNext()) {
                         html.append(((CmsGroup)itGroups.next()).getName());
                         if (itGroups.hasNext()) {
@@ -293,7 +292,7 @@ public class CmsListDemo12 extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List users = getCms().getUsers(CmsUser.USER_TYPE_SYSTEMUSER);
+        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), "/", true);
         Iterator itUsers = users.iterator();
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();

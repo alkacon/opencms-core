@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestFolderPermissions.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,14 @@ import org.opencms.setup.CmsSetupBean;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Random;
 
 /**
  * Tests the permission on the target installation folders.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -71,8 +72,9 @@ public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
             basePath += File.separator;
         }
         File file1;
+        Random rnd = new Random();
         do {
-            file1 = new File(basePath + "test" + (int)(Math.random() * 1000));
+            file1 = new File(basePath + "test" + rnd.nextInt(1000));
         } while (file1.exists());
         boolean success = false;
         try {

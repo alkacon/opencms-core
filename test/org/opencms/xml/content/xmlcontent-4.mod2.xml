@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Cascadetests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/test4.xsd">
+  <Cascadetest language="en">
+    <Title><![CDATA[This is a cascade test]]></Title>
+    <Cascade>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/index.html]]></target>
+          <uuid>7d6c22cd-4e3a-11db-9016-5bf59c6009b3</uuid>
+        </link>
+      </VfsLink>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/test.html]]></target>
+        </link>
+      </VfsLink>
+    </Cascade>
+    <Cascade>
+      <VfsLink>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/index.jsp]]></target>
+        </link>
+      </VfsLink>
+    </Cascade>
+  </Cascadetest>
+</Cascadetests>

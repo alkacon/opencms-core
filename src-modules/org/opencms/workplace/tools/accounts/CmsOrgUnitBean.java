@@ -1,0 +1,187 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitBean.java,v $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.2 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.workplace.tools.accounts;
+
+import org.opencms.security.CmsOrganizationalUnit;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Organizational unit bean for use in new organizational unit dialog.<p>
+ * 
+ * @author Raphael Schnuck 
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 6.5.6
+ */
+public class CmsOrgUnitBean {
+
+    /** The description of this object.<p> */
+    private String m_description;
+
+    /** The fqn of this object.<p> */
+    private String m_fqn;
+
+    /** The name of this object.<p> */
+    private String m_name;
+
+    /** The parent ou of this object.<p> */
+    private String m_parentOu;
+
+    /** The resource list of this object.<p> */
+    private List m_resources;
+
+    /**
+     * Public constructor.<p>
+     */
+    public CmsOrgUnitBean() {
+
+        m_resources = new ArrayList();
+        m_name = null;
+        m_description = null;
+        m_fqn = null;
+        m_parentOu = null;
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Returns the fqn.<p>
+     *
+     * @return the fqn
+     */
+    public String getFqn() {
+
+        if (m_fqn != null) {
+            return m_fqn;
+        } else {
+            return m_parentOu + m_name;
+        }
+    }
+
+    /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Returns the parentOu.<p>
+     *
+     * @return the parentOu
+     */
+    public String getParentOu() {
+
+        if (m_parentOu == null) {
+            return "";
+        }
+        return CmsOrganizationalUnit.SEPARATOR + m_parentOu;
+    }
+
+    /**
+     * Returns the resources.<p>
+     *
+     * @return the resources
+     */
+    public List getResources() {
+
+        return m_resources;
+    }
+
+    /**
+     * Sets the description.<p>
+     *
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+
+        m_description = description;
+    }
+
+    /**
+     * Sets the fqn.<p>
+     *
+     * @param fqn the fqn to set
+     */
+    public void setFqn(String fqn) {
+
+        m_fqn = fqn;
+    }
+
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
+     * Sets the parentOu.<p>
+     *
+     * @param parentOu the parentOu to set
+     */
+    public void setParentOu(String parentOu) {
+
+        if (parentOu.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            parentOu = parentOu.substring(1);
+        }
+        m_parentOu = parentOu;
+    }
+
+    /**
+     * Sets the resources.<p>
+     *
+     * @param resources the resources to set
+     */
+    public void setResources(List resources) {
+
+        m_resources = resources;
+    }
+
+}

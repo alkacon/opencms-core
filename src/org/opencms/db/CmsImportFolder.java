@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2006/10/19 15:08:20 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0
  */
@@ -238,7 +238,7 @@ public class CmsImportFolder {
             String actImportPath = importPath;
             String title = CmsResource.getName(entry.getName());
             String filename = m_cms.getRequestContext().getFileTranslator().translateResource(entry.getName());
-            // separate path in directories and file name ...
+            // separate path in direcotries an file name ...
             StringTokenizer st = new StringTokenizer(filename, "/\\");
             int count = st.countTokens();
             String[] path = new String[count];

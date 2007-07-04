@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -178,17 +178,14 @@ public class CmsLoginManager {
      * Returns the key to use for looking up the user in the invalid login storage.<p>
      * 
      * @param userName the name of the user
-     * @param type the type of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      * 
      * @return the key to use for looking up the user in the invalid login storage
      */
-    private static String createStorageKey(String userName, int type, String remoteAddress) {
+    private static String createStorageKey(String userName, String remoteAddress) {
 
         StringBuffer result = new StringBuffer();
         result.append(userName);
-        result.append('_');
-        result.append(type);
         result.append('_');
         result.append(remoteAddress);
         return result.toString();
@@ -200,31 +197,25 @@ public class CmsLoginManager {
      * In case the configured threshold is reached, an Exception is thrown.<p>
      * 
      * @param userName the name of the user
-     * @param type the type of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      * 
      * @throws CmsAuthentificationException in case the threshold of invalid login attempts has been reached
      */
-    public void checkInvalidLogins(String userName, int type, String remoteAddress) throws CmsAuthentificationException {
+    public void checkInvalidLogins(String userName, String remoteAddress) throws CmsAuthentificationException {
 
         if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }
 
-        String key = createStorageKey(userName, type, remoteAddress);
+        String key = createStorageKey(userName, remoteAddress);
         // look up the user in the storage
         CmsUserData userData = (CmsUserData)m_storage.get(key);
         if ((userData != null) && (userData.isDisabled())) {
             // threshold of invalid logins is reached
             throw new CmsAuthentificationException(Messages.get().container(
-                Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5,
-                new Object[] {
-                    userName,
-                    new Integer(type),
-                    remoteAddress,
-                    userData.getReleaseDate(),
-                    userData.getInvalidLoginCount()}));
+                Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4,
+                new Object[] {userName, remoteAddress, userData.getReleaseDate(), userData.getInvalidLoginCount()}));
         }
     }
 
@@ -280,7 +271,7 @@ public class CmsLoginManager {
     /**
      * Removes the current login message.<p>
      * 
-     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
      * 
      * @param cms the current OpenCms user context
      * 
@@ -288,14 +279,14 @@ public class CmsLoginManager {
      */
     public void removeLoginMessage(CmsObject cms) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.ADMINISTRATOR);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         m_loginMessage = null;
     }
 
     /**
      * Sets the login message to display if a user logs in.<p>
      * 
-     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
      * 
      * @param cms the current OpenCms user context
      * @param message the message to set
@@ -306,7 +297,7 @@ public class CmsLoginManager {
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // during configuration phase no permission check id required
-            cms.checkRole(CmsRole.ADMINISTRATOR);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         }
         m_loginMessage = message;
         if (m_loginMessage != null) {
@@ -320,17 +311,16 @@ public class CmsLoginManager {
      * In case the configured threshold is reached, the user is disabled for the configured time.<p>
      * 
      * @param userName the name of the user
-     * @param type the type of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
-    protected void addInvalidLogin(String userName, int type, String remoteAddress) {
+    protected void addInvalidLogin(String userName, String remoteAddress) {
 
         if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }
 
-        String key = createStorageKey(userName, type, remoteAddress);
+        String key = createStorageKey(userName, remoteAddress);
         // look up the user in the storage
         CmsUserData userData = (CmsUserData)m_storage.get(key);
         if (userData != null) {
@@ -347,17 +337,16 @@ public class CmsLoginManager {
      * Removes all invalid attempts to login for the given user / IP.<p>
      * 
      * @param userName the name of the user
-     * @param type the type of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
-    protected void removeInvalidLogins(String userName, int type, String remoteAddress) {
+    protected void removeInvalidLogins(String userName, String remoteAddress) {
 
         if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }
 
-        String key = createStorageKey(userName, type, remoteAddress);
+        String key = createStorageKey(userName, remoteAddress);
         // just remove the user from the storage
         m_storage.remove(key);
     }

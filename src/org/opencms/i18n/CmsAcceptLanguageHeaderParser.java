@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Rall 
  * @author Alexander Kandzior
  *   
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
     /**
      * Struct representing an element of the HTTP <code>Accept-Language</code> header.
      */
-    class AcceptLanguage implements Comparable {
+    protected static class AcceptLanguage implements Comparable {
 
         /** The language and country. */
         Locale m_locale;
@@ -131,6 +131,29 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
         public final int compareTo(Object acceptLang) {
 
             return m_quality.compareTo(((AcceptLanguage)acceptLang).m_quality);
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj) {
+
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof AcceptLanguage) {
+                AcceptLanguage other = (AcceptLanguage)obj;
+                return m_locale.equals(other.m_locale) && (m_quality.floatValue() == other.m_quality.floatValue());
+            }
+            return false;
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+
+            return m_locale.hashCode() * (int)(m_quality.floatValue() * 1117.0);
         }
     }
 

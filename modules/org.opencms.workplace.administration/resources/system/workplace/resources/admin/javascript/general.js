@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -245,8 +245,8 @@ function sMHS(obj_id, help_id) {
 /*
  * This method is called everytime a new page is being loaded.
  * That is at unload, submit and links actions.
- * First it overlap a image so you will feel the page 
- * is disabled, and then it disables every combobox 
+ * First it overlap a image so you will feel the page
+ * is disabled, and then it disables every combobox
  * on the page.
  */
 function loadingOn(target) {
@@ -263,8 +263,9 @@ function loadingOn(target) {
     }
 
     // display an overlapped "disabled" image
-    target.document.getElementById("loaderContainer").style.display = "";
-
+    try {
+    	target.document.getElementById("loaderContainer").style.display = "";
+	} catch (e) {}
     // disable the combo boxes
     var comboArray = target.document.getElementsByTagName("select");
     for (var i = 0; i < comboArray.length; i++) {
@@ -289,7 +290,7 @@ function loadingOn(target) {
 /*
  * This method is called everytime a new page is ready to be used.
  * That is at body.onload event.
- * First it removes the overlapped "disabled" image, and then it 
+ * First it removes the overlapped "disabled" image, and then it
  * enables every combobox on the page.
  */
 function loadingOff(target) {

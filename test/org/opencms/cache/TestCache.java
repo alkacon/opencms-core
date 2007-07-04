@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/cache/TestCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.3
  */
@@ -129,10 +129,6 @@ public class TestCache extends OpenCmsTestCase {
         o = cache.getCachedObject(getCmsObject(), res1RootPath);
         // must be empty
         assertNull(o);
-
+        assertNotNull(res1);
     }
-    
- 
-    
-    
 }

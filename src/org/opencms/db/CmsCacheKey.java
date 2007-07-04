@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.security.CmsPermissionSet;
@@ -38,8 +39,11 @@ import org.opencms.security.CmsPermissionSet;
 /**
  * Generates the cache keys for the user and permission caches.<p>
  * 
- * @author Carsten Weinholz 
+ * @author Carsten Weinholz
  * 
+ * @version $Revision: 1.16 $
+ * 
+ * @since 6.0.0
  */
 public class CmsCacheKey implements I_CmsCacheKey {
 
@@ -58,6 +62,18 @@ public class CmsCacheKey implements I_CmsCacheKey {
     public CmsCacheKey() {
 
         // empty
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForGroupUsers(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
+     */
+    public String getCacheKeyForGroupUsers(String prefix, CmsDbContext context, CmsGroup group) {
+
+        StringBuffer cacheBuffer = new StringBuffer(64);
+        cacheBuffer.append(prefix);
+        cacheBuffer.append('_');
+        cacheBuffer.append(group.getName());
+        return cacheBuffer.toString();
     }
 
     /**

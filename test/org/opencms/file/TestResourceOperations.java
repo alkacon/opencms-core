@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -91,7 +92,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
-                setupOpenCms(null, null, false);
+                setupOpenCms(null, null, true);
             }
             
             protected void tearDown() {
@@ -355,7 +356,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
         cms.unlockResource("/file2");
         
         // now publish the file
-        cms.publishResource("/file2");
+        OpenCms.getPublishManager().publishResource(cms, "/file2");
+        OpenCms.getPublishManager().waitWhileRunning();
         
         // change the project to online
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));

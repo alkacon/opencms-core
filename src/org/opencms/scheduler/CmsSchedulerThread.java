@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,6 @@ public class CmsSchedulerThread extends Thread {
         m_runnable = runnable;
         setPriority(prio);
         setDaemon(isDaemon);
-        start();
     }
 
     /**

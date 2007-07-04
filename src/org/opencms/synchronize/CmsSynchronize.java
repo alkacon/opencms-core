@@ -1,9 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2006/07/20 11:03:27 $
- * Version: $Revision: 1.64 $
- * Date   : $Date: 2006/07/20 11:03:27 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2007/07/04 16:57:53 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +132,7 @@ public class CmsSynchronize {
 
             m_report = report;
             m_count = 1;
-            
+
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
@@ -273,8 +271,6 @@ public class CmsSynchronize {
                 }
             }
         }
-        // free mem
-        res = null;
     }
 
     /**
@@ -392,7 +388,7 @@ public class CmsSynchronize {
 
         try {
             // if the resource is marked for deletion, do not export it!
-            if (res.getState() != CmsResource.STATE_DELETED) {
+            if (!res.getState().isDeleted()) {
                 // if its a file, create export the file to the FS
                 m_report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
@@ -563,9 +559,6 @@ public class CmsSynchronize {
                 newRes.getDateLastModified(),
                 fsFile.lastModified());
             m_newSyncList.put(translate(resName), syncList);
-            // free mem  
-            newFile = null;
-            content = null;
 
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -608,18 +601,12 @@ public class CmsSynchronize {
                     //  from it
                     if (line != null) {
                         StringTokenizer tok = new StringTokenizer(line, ":");
-                        if (tok != null) {
-                            String resName = tok.nextToken();
-                            String tranResName = tok.nextToken();
-                            long modifiedVfs = new Long(tok.nextToken()).longValue();
-                            long modifiedFs = new Long(tok.nextToken()).longValue();
-                            CmsSynchronizeList sync = new CmsSynchronizeList(
-                                resName,
-                                tranResName,
-                                modifiedVfs,
-                                modifiedFs);
-                            syncList.put(translate(resName), sync);
-                        }
+                        String resName = tok.nextToken();
+                        String tranResName = tok.nextToken();
+                        long modifiedVfs = new Long(tok.nextToken()).longValue();
+                        long modifiedFs = new Long(tok.nextToken()).longValue();
+                        CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
+                        syncList.put(translate(resName), sync);
                     }
                 }
             } catch (IOException e) {
@@ -693,9 +680,6 @@ public class CmsSynchronize {
                     I_CmsReport.FORMAT_OK);
             }
         }
-        // free mem
-        res = null;
-        rfsFile = null;
     }
 
     /**
@@ -748,7 +732,7 @@ public class CmsSynchronize {
             CmsResource res = (CmsResource)resources.get(i);
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
-            if (res.getState() != CmsResource.STATE_DELETED) {
+            if (!res.getState().isDeleted()) {
                 // do a recursion if the current resource is a folder
                 if (res.isFolder()) {
                     // first check if this folder must be synchronised
@@ -990,6 +974,13 @@ public class CmsSynchronize {
             } catch (IOException e) {
                 // ignore
             }
+            try {
+                if (dOut != null) {
+                    dOut.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 
@@ -1028,12 +1019,12 @@ public class CmsSynchronize {
         } finally {
             // close all streams that were used
             try {
-                pOut.flush();
-                fOut.flush();
                 if (pOut != null) {
+                    pOut.flush();
                     pOut.close();
                 }
                 if (fOut != null) {
+                    fOut.flush();
                     fOut.close();
                 }
             } catch (IOException e) {

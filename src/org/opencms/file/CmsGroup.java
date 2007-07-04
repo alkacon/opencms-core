@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,10 @@ package org.opencms.file;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
+
+import java.util.Locale;
 
 /**
  * A group principal in the OpenCms permission system.<p>
@@ -42,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0 
  * 
@@ -66,7 +69,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @param id the unique id of the group
      * @param parentId the is of the parent group
-     * @param name the name of the group
+     * @param name the fully qualified name of the name of the group
      * @param description the description of the group
      * @param flags the flags of the group    
      */
@@ -103,6 +106,20 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * Returns the description of this organizational unit.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the description of this organizational unit
+     */
+    public String getDescription(Locale locale) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setMessages(org.opencms.db.generic.Messages.get().getBundle(locale));
+        return macroResolver.resolveMacros(m_description);
+    }
+
+    /**
      * Returns true if this group is disabled.<p>
      * 
      * @return true if this group is disabled
@@ -125,11 +142,19 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     }
 
     /**
+     * @see org.opencms.security.I_CmsPrincipal#isGroup()
+     */
+    public boolean isGroup() {
+
+        return true;
+    }
+
+    /**
      * Returns <code>true</code> if this group is enabled as a project user group.<p> 
      * 
      * @return <code>true</code> if this group is enabled as a project user group 
      */
-    public boolean getProjectCoWorker() {
+    public boolean isProjectCoWorker() {
 
         return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
     }
@@ -139,27 +164,19 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      * 
      * @return <code>true</code> if this group is enabled as a project manager group
      */
-    public boolean getProjectManager() {
+    public boolean isProjectManager() {
 
         return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
     }
 
     /**
-     * Returns <code>true</code> if this group is enabled as a role for tasks.<p>
+     * Checks if this group is a role group.<p>
      * 
-     * @return <code>true</code> if this group is enabled as a role for tasks
+     * @return <code>true</code> if this group is a role group
      */
-    public boolean getRole() {
+    public boolean isRole() {
 
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE) == I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE;
-    }
-
-    /**
-     * @see org.opencms.security.I_CmsPrincipal#isGroup()
-     */
-    public boolean isGroup() {
-
-        return true;
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_ROLE) == I_CmsPrincipal.FLAG_GROUP_ROLE;
     }
 
     /**
@@ -168,6 +185,16 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
     public boolean isUser() {
 
         return false;
+    }
+
+    /**
+     * Checks if this group is a virtual group, emulating a role.<p>
+     * 
+     * @return if this group is a virtual group
+     */
+    public boolean isVirtual() {
+
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_VIRTUAL) == I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
     }
 
     /**
@@ -207,7 +234,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      */
     public void setProjectCoWorker(boolean value) {
 
-        if (getProjectCoWorker() != value) {
+        if (isProjectCoWorker() != value) {
             setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_USER);
         }
     }
@@ -219,20 +246,8 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
      */
     public void setProjectManager(boolean value) {
 
-        if (getProjectManager() != value) {
+        if (isProjectManager() != value) {
             setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
-        }
-    }
-
-    /**
-     * Sets the "role for tasks" flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setRole(boolean value) {
-
-        if (getRole() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE);
         }
     }
 
@@ -244,7 +259,7 @@ public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
         StringBuffer result = new StringBuffer();
         result.append("[Group]");
         result.append(" name:");
-        result.append(m_name);
+        result.append(getName());
         result.append(" id:");
         result.append(m_id);
         result.append(" description:");

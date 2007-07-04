@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjectHistory.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -44,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the project history function of the CmsObject.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0 alpha 2
  */
 public class TestProjectHistory extends OpenCmsTestCase {
@@ -111,15 +112,14 @@ public class TestProjectHistory extends OpenCmsTestCase {
     public static void projectHistory(CmsObject cms) throws Throwable {
 
         List projectHistory = null;
-        CmsBackupProject backupProject = null;
+        CmsHistoryProject historyProject = null;
 
-        projectHistory = cms.getAllBackupProjects();
+        projectHistory = cms.getAllHistoricalProjects();
 
         // the project history should contain just the setup project here
         assertEquals(projectHistory.size(), 1);
-        backupProject = (CmsBackupProject)projectHistory.get(0);
-        assertEquals(backupProject.getId(), 2);
-        assertEquals(backupProject.getName(), "_setupProject");
+        historyProject = (CmsHistoryProject)projectHistory.get(0);
+        assertEquals(historyProject.getName(), "_setupProject");
     }
 
 }

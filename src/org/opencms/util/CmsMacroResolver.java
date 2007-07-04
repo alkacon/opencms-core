@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/10/20 10:36:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,7 +53,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Resolves macros in the form of <code>${key}</code> in an input String.<p>
+ * Resolves macros in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
+ * 
+ * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to 
+ * avoid conflicts / confusion with the JSP EL, which also uses the <code>${key}</code> syntax.<p>
  * 
  * The macro names that can be resolved depend of the context objects provided to the resolver
  * using the <code>set...</code> methods.<p>
@@ -60,11 +64,20 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
+
+    /** The prefix indicating that the key represents an OpenCms runtime attribute. */
+    public static final String KEY_ATTRIBUTE = "attribute.";
+
+    /** Key used to specify the description of the current organizational unit as macro value. */
+    public static final String KEY_CURRENT_ORGUNIT_DESCRIPTION = "currentou.description";
+
+    /** Key used to specify the full qualified name of the current organizational unit as macro value. */
+    public static final String KEY_CURRENT_ORGUNIT_FQN = "currentou.fqn";
 
     /** Key used to specify the current time as macro value. */
     public static final String KEY_CURRENT_TIME = "currenttime";
@@ -75,6 +88,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specify the country of the current user as macro value. */
     public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
 
+    /** Key used to specify the display name of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_DISPLAYNAME = "currentuser.displayname";
+
     /** Key used to specify the email address of the current user as macro value. */
     public static final String KEY_CURRENT_USER_EMAIL = "currentuser.email";
 
@@ -83,6 +99,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the full name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_FULLNAME = "currentuser.fullname";
+
+    /** Key used to specify the last login date of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_LASTLOGIN = "currentuser.lastlogin";
 
     /** Key used to specify the last name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_LASTNAME = "currentuser.lastname";
@@ -104,6 +123,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The prefix indicating that the key represents a page context object. */
     public static final String KEY_PAGE_CONTEXT = "pageContext.";
+
+    /** Key used to specifiy the project id as macro value. */
+    public static final String KEY_PROJECT_ID = "projectid";
 
     /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
     public static final String KEY_PROPERTY = "property.";
@@ -136,10 +158,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    public static final String[] VALUE_NAME_ARRAY = {"uri", "filename", "folder", "default.encoding"};
+    static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding", "remoteaddress"};
 
     /** The "magic" commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
@@ -173,18 +195,18 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static String formatMacro(String input) {
 
         StringBuffer result = new StringBuffer(input.length() + 4);
-        result.append(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
-        result.append(I_CmsMacroResolver.MACRO_START_NEW);
+        result.append(I_CmsMacroResolver.MACRO_DELIMITER);
+        result.append(I_CmsMacroResolver.MACRO_START);
         result.append(input);
-        result.append(I_CmsMacroResolver.MACRO_END_NEW);
+        result.append(I_CmsMacroResolver.MACRO_END);
         return result.toString();
     }
 
     /**
      * Returns <code>true</code> if the given input String if formatted like a macro,
-     * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER} +
-     * {@link I_CmsMacroResolver#MACRO_START}</code> and ends with 
-     * <code>{@link I_CmsMacroResolver#MACRO_END}</code>.<p>
+     * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER_OLD} +
+     * {@link I_CmsMacroResolver#MACRO_START_OLD}</code> and ends with 
+     * <code>{@link I_CmsMacroResolver#MACRO_END_OLD}</code>.<p>
      * 
      * @param input the input to check for a macro
      * @return <code>true</code> if the given input String if formatted like a macro
@@ -195,7 +217,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return false;
         }
 
-        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_NEW) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_NEW) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_NEW))));
+        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_OLD) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_OLD) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_OLD))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))));
     }
 
     /**
@@ -212,6 +234,33 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input.substring(2, input.length() - 1).equals(macroName);
         }
         return false;
+    }
+
+    /**
+     * Returns a macro for the given localization key with the given parameters.<p>
+     * 
+     * @param keyName the name of the localized key
+     * @param params the optional parameter array
+     * 
+     * @return a macro for the given localization key with the given parameters
+     */
+    public static String localizedKeyMacro(String keyName, Object[] params) {
+
+        String parameters = "";
+        if ((params != null) && (params.length > 0)) {
+            for (int i = 0; i < params.length; i++) {
+                if (params[i] != null) {
+                    parameters += "|" + params[i].toString();
+                }
+            }
+        }
+        return ""
+            + I_CmsMacroResolver.MACRO_DELIMITER
+            + I_CmsMacroResolver.MACRO_START
+            + CmsMacroResolver.KEY_LOCALIZED_PREFIX
+            + keyName
+            + parameters
+            + I_CmsMacroResolver.MACRO_END;
     }
 
     /**
@@ -272,8 +321,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input;
         }
 
-        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW);
-        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        int pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        int po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD);
 
         if ((po == -1) && (pn == -1)) {
             // no macro delimiter found in input
@@ -291,12 +340,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if ((po == -1) || ((pn > -1) && (pn < po))) {
             p = pn;
-            ds = I_CmsMacroResolver.MACRO_START_NEW;
-            de = I_CmsMacroResolver.MACRO_END_NEW;
-        } else {
-            p = po;
             ds = I_CmsMacroResolver.MACRO_START;
             de = I_CmsMacroResolver.MACRO_END;
+        } else {
+            p = po;
+            ds = I_CmsMacroResolver.MACRO_START_OLD;
+            de = I_CmsMacroResolver.MACRO_END_OLD;
         }
 
         // append chars before the first delimiter found
@@ -311,10 +360,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
             // get the next macro delimiter
             if ((pn > -1) && (pn < pp1)) {
-                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_NEW, pp1);
+                pn = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
             }
             if ((po > -1) && (po < pp1)) {
-                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
+                po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD, pp1);
             }
             if ((po == -1) && (pn == -1)) {
                 // none found, make sure remaining chars in this segement are appended
@@ -356,11 +405,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             }
             // adpot macro style for next delimiter found
             if (np == pn) {
-                ds = I_CmsMacroResolver.MACRO_START_NEW;
-                de = I_CmsMacroResolver.MACRO_END_NEW;
-            } else {
                 ds = I_CmsMacroResolver.MACRO_START;
                 de = I_CmsMacroResolver.MACRO_END;
+            } else {
+                ds = I_CmsMacroResolver.MACRO_START_OLD;
+                de = I_CmsMacroResolver.MACRO_END_OLD;
             }
             // append the remaining chars after the macro to the start of the next macro
             result.append(input.substring(e, np));
@@ -427,7 +476,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
                 // the key is a request parameter  
                 macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
-                return m_jspPageContext.getRequest().getParameter(macro);
+                String result = m_jspPageContext.getRequest().getParameter(macro);
+                if (result == null && macro.equals(KEY_PROJECT_ID)) {
+                    result = m_cms.getRequestContext().currentProject().getUuid().toString();
+                }
+                return result;
             }
 
             if (macro.startsWith(CmsMacroResolver.KEY_PAGE_CONTEXT)) {
@@ -481,7 +534,17 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         LOG.warn(message.key(), e);
                     }
                 }
+                return null;
+            }
 
+            if (macro.startsWith(CmsMacroResolver.KEY_ATTRIBUTE)) {
+                // the key is an OpenCms runtime attribute
+                macro = macro.substring(CmsMacroResolver.KEY_ATTRIBUTE.length());
+                Object attribute = m_cms.getRequestContext().getAttribute(macro);
+                if (attribute != null) {
+                    return attribute.toString();
+                }
+                return null;
             }
 
             if (macro.startsWith(CmsMacroResolver.KEY_OPENCMS)) {
@@ -510,6 +573,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         // default.encoding
                         value = OpenCms.getSystemInfo().getDefaultEncoding();
                         break;
+                    case 4:
+                        // remoteaddress
+                        value = m_cms.getRequestContext().getRemoteAddress();
+                        break;
                     default:
                         // return the key "as is"
                         value = originalKey;
@@ -532,6 +599,42 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_LASTNAME.equals(macro)) {
                 // the key is the current users last name
                 return m_cms.getRequestContext().currentUser().getLastname();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_DISPLAYNAME.equals(macro)) {
+                // the key is the current users display name
+                try {
+                    if (m_messages != null) {
+                        return m_cms.getRequestContext().currentUser().getDisplayName(m_cms, m_messages.getLocale());
+                    } else {
+                        return m_cms.getRequestContext().currentUser().getDisplayName(
+                            m_cms,
+                            m_cms.getRequestContext().getLocale());
+                    }
+                } catch (CmsException e) {
+                    // ignore, macro can not be resolved
+                }
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_ORGUNIT_FQN.equals(macro)) {
+                // the key is the current organizational unit fully qualified name
+                return m_cms.getRequestContext().getOuFqn();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_ORGUNIT_DESCRIPTION.equals(macro)) {
+                // the key is the current organizational unit description
+                try {
+                    CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                        m_cms,
+                        m_cms.getRequestContext().getOuFqn());
+                    if (m_messages != null) {
+                        return ou.getDescription(m_messages.getLocale());
+                    } else {
+                        return ou.getDescription(m_cms.getRequestContext().getLocale());
+                    }
+                } catch (CmsException e) {
+                    // ignore, macro can not be resolved
+                }
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_FULLNAME.equals(macro)) {
@@ -562,6 +665,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
                 return m_cms.getRequestContext().currentUser().getCity();
+            }
+
+            if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && m_messages != null) {
+                // the key is the current users last login timestamp
+                return m_messages.getDateTime(m_cms.getRequestContext().currentUser().getLastlogin());
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {

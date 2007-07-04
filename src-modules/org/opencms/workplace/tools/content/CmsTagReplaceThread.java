@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:56:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.1.8
  */
@@ -73,15 +73,12 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTagReplaceThread.class);
 
-    private Throwable m_error;
-
     private CmsProperty m_markerProperty;
 
     private CmsTagReplaceSettings m_settings;
 
     /**
-     * Creates a replace html tag Thread.
-     * <p>
+     * Creates a replace html tag Thread.<p>
      * 
      * @param cms the current cms context.
      * 
@@ -97,14 +94,6 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
             null,
             m_settings.getPropertyValueTagReplaceID(),
             true);
-    }
-
-    /**
-     * @see org.opencms.report.A_CmsReportThread#getError()
-     */
-    public Throwable getError() {
-
-        return m_error;
     }
 
     /**
@@ -155,8 +144,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
 
     /**
      * Checks the shared property {@link CmsTagReplaceSettings#PROPERTY_CONTENTOOLS_TAGREPLACE} if
-     * it has the value of this configuration ({@link CmsTagReplaceSettings#getPropertyValueTagReplaceID()}).
-     * <p>
+     * it has the value of this configuration ({@link CmsTagReplaceSettings#getPropertyValueTagReplaceID()}).<p>
      * 
      * @param resource the resource to test.
      * 
@@ -214,8 +202,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
 
     /**
      * Replaces all replacement mappings configured in the internal {@link CmsTagReplaceSettings}
-     * instance in the content of the given resource.
-     * <p>
+     * instance in the content of the given resource.<p>
      * 
      * No modifications will be done:
      * <ol>
@@ -240,7 +227,6 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
      * 
      * @throws CmsException if sth. goes wrong.
      */
-
     private void replaceTags(CmsResource resource, Integer totalJobCount, Integer actualJobCount) throws CmsException {
 
         I_CmsReport report = getReport();
@@ -285,7 +271,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
             }
 
             boolean myLock = !lock.isNullLock()
-                && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId());
+                && lock.isOwnedBy(getCms().getRequestContext().currentUser());
             if (lock.isNullLock() || myLock) {
                 if (!myLock) {
                     if (LOG.isDebugEnabled()) {
@@ -294,9 +280,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                             resource.getRootPath()));
                     }
                     // obtaining the lock:
-                    getCms().lockResource(
-                        getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
-                        CmsLock.TYPE_EXCLUSIVE);
+                    getCms().lockResource(getCms().getRequestContext().removeSiteRoot(resource.getRootPath()));
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_OK_1,

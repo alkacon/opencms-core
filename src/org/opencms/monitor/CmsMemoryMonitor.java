@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2007/07/04 16:57:49 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,12 @@
 package org.opencms.monitor;
 
 import org.opencms.cache.CmsLruCache;
+import org.opencms.cache.CmsMemoryObjectCache;
+import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.CmsCacheSettings;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -41,6 +47,9 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockManager;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsEvent;
@@ -48,13 +57,19 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishHistory;
+import org.opencms.publish.CmsPublishJobInfoBean;
+import org.opencms.publish.CmsPublishQueue;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,21 +79,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.collections.Buffer;
+import org.apache.commons.collections.buffer.SynchronizedBuffer;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
+ * The memory monitor also provides all kind of caches used in the OpenCms core.<p>
+ * 
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,8 +117,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Maximum depth for object size recursion. */
     private static final int MAX_DEPTH = 5;
 
+    /** Cache for access control lists. */
+    private Map m_accessControlListCache;
+
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
+
+    /** A temporary cache for XML content definitions. */
+    private Map m_contentDefinitionsCache;
+
+    /** Cache for groups. */
+    private Map m_groupCache;
 
     /** Interval in which emails are send. */
     private int m_intervalEmail;
@@ -123,11 +153,20 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** The time the last warning log was written. */
     private long m_lastLogWarning;
 
+    /** A cache for accelerated locale lookup. */
+    private Map m_localeCache;
+
+    /** Cache for the resource locks. */
+    private Map m_lockCache;
+
     /** The number of times the log entry was written. */
     private int m_logCount;
 
     /** Memory percentage to reach to go to warning level. */
     private int m_maxUsagePercent;
+
+    /** The memory object cache map. */
+    private Map m_memObjectCache;
 
     /** The average memory status. */
     private CmsMemoryStatus m_memoryAverage;
@@ -138,11 +177,62 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Contains the object to be monitored. */
     private Map m_monitoredObjects;
 
+    /** Cache for organizational units. */
+    private Map m_orgUnitCache;
+
+    /** Cache for permission checks. */
+    private Map m_permissionCache;
+
+    /** Cache for offline projects. */
+    private Map m_projectCache;
+
+    /** Cache for project resources. */
+    private Map m_projectResourcesCache;
+
+    /** Cache for properties. */
+    private Map m_propertyCache;
+
+    /** Cache for property lists. */
+    private Map m_propertyListCache;
+
+    /** Buffer for publish history. */
+    private Buffer m_publishHistory;
+
+    /** Buffer for publish jobs. */
+    private Buffer m_publishQueue;
+
+    /** Cache for resources. */
+    private Map m_resourceCache;
+
+    /** Cache for resource lists. */
+    private Map m_resourceListCache;
+
+    /** Cache for role lists. */
+    private Map m_roleListsCache;
+
+    /** Cache for roles. */
+    private Map m_rolesCache;
+
+    /** Cache for user data. */
+    private Map m_userCache;
+
+    /** Cache for user groups. */
+    private Map m_userGroupsCache;
+
+    /** The vfs memory cache map. */
+    private Map m_vfsObjectCache;
+
     /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
+
+    /** A permanent cache to avoid multiple readings of often used files from the VFS. */
+    private Map m_xmlPermanentEntityCache;
+
+    /** A temporary cache to avoid multiple readings of often used files from the VFS. */
+    private Map m_xmlTemporaryEntityCache;
 
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
@@ -206,7 +296,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (obj instanceof CmsProject) {
-            return 512;
+            return 512; // estimated size
         }
 
         if (obj instanceof Boolean) {
@@ -240,8 +330,262 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return size;
         }
 
-        // System.err.println("Unresolved: " + obj.getClass().getName());
         return 8;
+    }
+
+    /**
+     * Caches the given acl under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param acl the acl to cache
+     */
+    public void cacheACL(String key, CmsAccessControlList acl) {
+
+        m_accessControlListCache.put(key, acl);
+    }
+
+    /**
+     * Caches the given content definition under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param contentDefinition the content definition to cache
+     */
+    public void cacheContentDefinition(String key, CmsXmlContentDefinition contentDefinition) {
+
+        m_contentDefinitionsCache.put(key, contentDefinition);
+    }
+
+    /**
+     * Caches the given group under its id AND fully qualified name.<p>
+     * 
+     * @param group the group to cache
+     */
+    public void cacheGroup(CmsGroup group) {
+
+        m_groupCache.put(group.getId().toString(), group);
+        m_groupCache.put(group.getName(), group);
+    }
+
+    /**
+     * Caches the given locale under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param locale the locale to cache
+     */
+    public void cacheLocale(String key, Locale locale) {
+
+        if (m_localeCache != null) {
+            // this may be accessed before initialization
+            m_localeCache.put(key, locale);
+        }
+    }
+
+    /**
+     * Caches the given lock.<p>
+     *
+     * The lock is cached by it resource's root path.<p>
+     * 
+     * @param lock the lock to cache
+     */
+    public void cacheLock(CmsLock lock) {
+
+        m_lockCache.put(lock.getResourceName(), lock);
+    }
+
+    /**
+     * Caches the given object under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param obj the object to cache
+     */
+    public void cacheMemObject(String key, Object obj) {
+
+        m_memObjectCache.put(key, obj);
+    }
+
+    /**
+     * Caches the given organizational under its id AND the fully qualified name.<p>
+     * 
+     * @param orgUnit the organizational unit to cache
+     */
+    public void cacheOrgUnit(CmsOrganizationalUnit orgUnit) {
+
+        m_orgUnitCache.put(orgUnit.getId().toString(), orgUnit);
+        m_orgUnitCache.put(orgUnit.getName(), orgUnit);
+    }
+
+    /**
+     * Caches the given permission check result under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param permission the permission check result to cache
+     */
+    public void cachePermission(String key, int permission) {
+
+        m_permissionCache.put(key, new Integer(permission));
+    }
+
+    /**
+     * Caches the given project under its id AND the fully qualified name.<p>
+     * 
+     * @param project the project to cache
+     */
+    public void cacheProject(CmsProject project) {
+
+        m_projectCache.put(project.getUuid().toString(), project);
+        m_projectCache.put(project.getName(), project);
+    }
+
+    /**
+     * Caches the given project resource list under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param projectResources the project resources to cache
+     */
+    public void cacheProjectResources(String key, List projectResources) {
+
+        m_projectResourcesCache.put(key, projectResources);
+    }
+
+    /**
+     * Caches the given property under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param property the property to cache
+     */
+    public void cacheProperty(String key, CmsProperty property) {
+
+        m_propertyCache.put(key, property);
+    }
+
+    /**
+     * Caches the given property list under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param propertyList the property list to cache
+     */
+    public void cachePropertyList(String key, List propertyList) {
+
+        m_propertyListCache.put(key, propertyList);
+    }
+
+    /**
+     * Caches the given publish job.<p>
+     * 
+     * @param publishJob the publish job
+     */
+    public void cachePublishJob(CmsPublishJobInfoBean publishJob) {
+
+        m_publishQueue.add(publishJob);
+    }
+
+    /**
+     * Caches the given publish job in the publish job history.<p>
+     * 
+     * @param publishJob the publish job
+     */
+    public void cachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
+
+        m_publishHistory.add(publishJob);
+    }
+
+    /**
+     * Caches the given resource under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param resource the resource to cache
+     */
+    public void cacheResource(String key, CmsResource resource) {
+
+        m_resourceCache.put(key, resource);
+    }
+
+    /**
+     * Caches the given resource list under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param resourceList the resource list to cache
+     */
+    public void cacheResourceList(String key, List resourceList) {
+
+        m_resourceListCache.put(key, resourceList);
+    }
+
+    /**
+     * Caches the given value under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param hasRole if the user has the given role
+     */
+    public void cacheRole(String key, boolean hasRole) {
+
+        m_rolesCache.put(key, Boolean.valueOf(hasRole));
+    }
+
+    /**
+     * Caches the given value under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param roles the roles of the user
+     */
+    public void cacheRoleList(String key, List roles) {
+
+        m_roleListsCache.put(key, roles);
+    }
+
+    /**
+     * Caches the given user under its id AND the fully qualified name.<p>
+     * 
+     * @param user the user to cache
+     */
+    public void cacheUser(CmsUser user) {
+
+        m_userCache.put(user.getId().toString(), user);
+        m_userCache.put(user.getName(), user);
+    }
+
+    /**
+     * Caches the given list of user groups under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param userGroups the list of user groups to cache
+     */
+    public void cacheUserGroups(String key, List userGroups) {
+
+        m_userGroupsCache.put(key, userGroups);
+    }
+
+    /**
+     * Caches the given vfs object under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param obj the vfs object to cache
+     */
+    public void cacheVfsObject(String key, Object obj) {
+
+        m_vfsObjectCache.put(key, obj);
+    }
+
+    /**
+     * Caches the given xml entity under the given system id.<p>
+     * 
+     * @param systemId the cache key
+     * @param content the content to cache
+     */
+    public void cacheXmlPermanentEntity(String systemId, byte[] content) {
+
+        m_xmlPermanentEntityCache.put(systemId, content);
+    }
+
+    /**
+     * Caches the given xml entity under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param content the content to cache
+     */
+    public void cacheXmlTemporaryEntity(String key, byte[] content) {
+
+        m_xmlTemporaryEntityCache.put(key, content);
     }
 
     /**
@@ -255,6 +599,541 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes the ACL cache.<p>
+     */
+    public void flushACLs() {
+
+        m_accessControlListCache.clear();
+    }
+
+    /**
+     * Flushes the xml content definitions cache.<p>
+     */
+    public void flushContentDefinitions() {
+
+        m_contentDefinitionsCache.clear();
+    }
+
+    /**
+     * Flushes the group cache.<p>
+     */
+    public void flushGroups() {
+
+        m_groupCache.clear();
+    }
+
+    /**
+     * Flushes the locale cache.<p>
+     */
+    public void flushLocales() {
+
+        m_localeCache.clear();
+    }
+
+    /**
+     * Flushes the locks cache.<p>
+     * 
+     * @param newLocks if not <code>null</code> the lock cache is replaced by the given map 
+     */
+    public void flushLocks(Map newLocks) {
+
+        if ((newLocks == null) || newLocks.isEmpty()) {
+            m_lockCache.clear();
+            return;
+        }
+        // initialize new lock cache
+        Map newLockCache = Collections.synchronizedMap(newLocks);
+        // register it
+        register(CmsLockManager.class.getName(), newLockCache);
+        // save the old cache
+        Map oldCache = m_lockCache;
+        // replace the old by the new cache
+        m_lockCache = newLockCache;
+        // clean up the old cache
+        oldCache.clear();
+    }
+
+    /**
+     * Flushes the memory object cache.<p>
+     */
+    public void flushMemObjects() {
+
+        m_memObjectCache.clear();
+    }
+
+    /**
+     * Flushes the organizational unit cache.<p>
+     */
+    public void flushOrgUnits() {
+
+        m_orgUnitCache.clear();
+    }
+
+    /**
+     * Flushes the permission check result cache.<p>
+     */
+    public void flushPermissions() {
+
+        m_permissionCache.clear();
+    }
+
+    /**
+     * Flushes the project resources cache.<p>
+     */
+    public void flushProjectResources() {
+
+        m_projectResourcesCache.clear();
+    }
+
+    /**
+     * Flushes the project cache.<p>
+     */
+    public void flushProjects() {
+
+        m_projectCache.clear();
+    }
+
+    /**
+     * Flushes the property cache.<p>
+     */
+    public void flushProperties() {
+
+        m_propertyCache.clear();
+    }
+
+    /**
+     * Flushes the property list cache.<p>
+     */
+    public void flushPropertyLists() {
+
+        m_propertyListCache.clear();
+    }
+
+    /**
+     * Flushes the publish history.<p>
+     */
+    public void flushPublishJobHistory() {
+
+        m_publishHistory.clear();
+    }
+
+    /**
+     * Flushes the publish queue.<p>
+     */
+    public void flushPublishJobs() {
+
+        m_publishQueue.clear();
+    }
+
+    /**
+     * Flushes the resource list cache.<p>
+     */
+    public void flushResourceLists() {
+
+        m_resourceListCache.clear();
+    }
+
+    /**
+     * Flushes the resource cache.<p>
+     */
+    public void flushResources() {
+
+        m_resourceCache.clear();
+    }
+
+    /**
+     * Flushes the role lists cache.<p>
+     */
+    public void flushRoleLists() {
+
+        m_roleListsCache.clear();
+    }
+
+    /**
+     * Flushes the roles cache.<p>
+     */
+    public void flushRoles() {
+
+        m_rolesCache.clear();
+    }
+
+    /**
+     * Flushes the user groups cache.<p>
+     */
+    public void flushUserGroups() {
+
+        m_userGroupsCache.clear();
+    }
+
+    /**
+     * Flushes the users cache.<p>
+     */
+    public void flushUsers() {
+
+        m_userCache.clear();
+    }
+
+    /**
+     * Flushes the vfs object cache.<p>
+     */
+    public void flushVfsObjects() {
+
+        m_vfsObjectCache.clear();
+    }
+
+    /**
+     * Flushes the xml permanent entities cache.<p>
+     */
+    public void flushXmlPermanentEntities() {
+
+        m_xmlPermanentEntityCache.clear();
+
+    }
+
+    /**
+     * Flushes the xml temporary entities cache.<p>
+     */
+    public void flushXmlTemporaryEntities() {
+
+        m_xmlTemporaryEntityCache.clear();
+
+    }
+
+    /**
+     * Returns all cached lock root paths.<p>
+     * 
+     * @return a list of {@link String} objects
+     */
+    public List getAllCachedLockPaths() {
+
+        return new ArrayList(m_lockCache.keySet());
+    }
+
+    /**
+     * Returns all cached locks.<p>
+     * 
+     * @return a list of {@link CmsLock} objects
+     */
+    public List getAllCachedLocks() {
+
+        return new ArrayList(m_lockCache.values());
+    }
+
+    /**
+     * Returns all cached publish jobs in the queue as ordered list.<p>
+     * 
+     * @return all cached publish jobs
+     */
+    public List getAllCachedPublishJobs() {
+
+        return new ArrayList(m_publishQueue);
+    }
+
+    /**
+     * Returns all cached publish jobs in the history as ordered list.<p>
+     * 
+     * @return all cached publish jobs
+     */
+    public List getAllCachedPublishJobsInHistory() {
+
+        return new ArrayList(m_publishHistory);
+    }
+
+    /**
+     * Returns the ACL cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the ACL cached with the given cache key
+     */
+    public CmsAccessControlList getCachedACL(String key) {
+
+        return (CmsAccessControlList)m_accessControlListCache.get(key);
+    }
+
+    /**
+     * Returns the xml content definition cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the xml content definition cached with the given cache key
+     */
+    public CmsXmlContentDefinition getCachedContentDefinition(String key) {
+
+        return (CmsXmlContentDefinition)m_contentDefinitionsCache.get(key);
+    }
+
+    /**
+     * Returns the group cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the group's uuid or the fqn
+     * 
+     * @return the group cached with the given cache key
+     */
+    public CmsGroup getCachedGroup(String key) {
+
+        return (CmsGroup)m_groupCache.get(key);
+    }
+
+    /**
+     * Returns the locale cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the locale cached with the given cache key
+     */
+    public Locale getCachedLocale(String key) {
+
+        if (m_localeCache == null) {
+            // this may be accessed before initialization
+            return null;
+        }
+        return (Locale)m_localeCache.get(key);
+    }
+
+    /**
+     * Returns the lock cached with the given root path or <code>null</code> if not found.<p>
+     * 
+     * @param rootPath the root path to look for
+     * 
+     * @return the lock cached with the given root path
+     */
+    public CmsLock getCachedLock(String rootPath) {
+
+        return (CmsLock)m_lockCache.get(rootPath);
+    }
+
+    /**
+     * Returns the memory object cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the memory object cached with the given cache key
+     */
+    public Object getCachedMemObject(String key) {
+
+        return m_memObjectCache.get(key);
+    }
+
+    /**
+     * Returns the organizational unit cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the organizational unit's uuid or the fqn
+     * 
+     * @return the organizational unit cached with the given cache key
+     */
+    public CmsOrganizationalUnit getCachedOrgUnit(String key) {
+
+        return (CmsOrganizationalUnit)m_orgUnitCache.get(key);
+    }
+
+    /**
+     * Returns the permission check result cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the permission check result cached with the given cache key
+     */
+    public Integer getCachedPermission(String key) {
+
+        return (Integer)m_permissionCache.get(key);
+    }
+
+    /**
+     * Returns the project cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the project's uuid or the fqn
+     * 
+     * @return the project cached with the given cache key
+     */
+    public CmsProject getCachedProject(String key) {
+
+        return (CmsProject)m_projectCache.get(key);
+    }
+
+    /**
+     * Returns the project resources list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the project resources list cached with the given cache key
+     */
+    public List getCachedProjectResources(String key) {
+
+        return (List)m_projectResourcesCache.get(key);
+    }
+
+    /**
+     * Returns the property cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the property cached with the given cache key
+     */
+    public CmsProperty getCachedProperty(String key) {
+
+        return (CmsProperty)m_propertyCache.get(key);
+    }
+
+    /**
+     * Returns the property list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the property list cached with the given cache key
+     */
+    public List getCachedPropertyList(String key) {
+
+        return (List)m_propertyListCache.get(key);
+    }
+
+    /**
+     * Returns the publish job with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key  the cache key to look for
+     * 
+     * @return the publish job with the given cache key
+     */
+    public CmsPublishJobInfoBean getCachedPublishJob(String key) {
+
+        for (Iterator i = m_publishQueue.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+            if (publishJob.getPublishHistoryId().toString().equals(key)) {
+                return publishJob;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the publish job from the history with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key  the cache key to look for
+     * 
+     * @return the publish job with the given cache key
+     */
+    public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
+
+        for (Iterator i = m_publishHistory.iterator(); i.hasNext();) {
+            CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)i.next();
+            if (publishJob.getPublishHistoryId().toString().equals(key)) {
+                return publishJob;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the resource cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the resource cached with the given cache key
+     */
+    public CmsResource getCachedResource(String key) {
+
+        return (CmsResource)m_resourceCache.get(key);
+    }
+
+    /**
+     * Returns the resource list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the resource list cached with the given cache key
+     */
+    public List getCachedResourceList(String key) {
+
+        return (List)m_resourceListCache.get(key);
+    }
+
+    /**
+     * Returns the value cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return if the user has the given role
+     */
+    public Boolean getCachedRole(String key) {
+
+        return (Boolean)m_rolesCache.get(key);
+    }
+
+    /**
+     * Returns the value cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return list of roles
+     */
+    public List getCachedRoleList(String key) {
+
+        return (List)m_roleListsCache.get(key);
+    }
+
+    /**
+     * Returns the user cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the user's uuid or the fqn
+     * 
+     * @return the user cached with the given cache key
+     */
+    public CmsUser getCachedUser(String key) {
+
+        return (CmsUser)m_userCache.get(key);
+    }
+
+    /**
+     * Returns the user groups list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the user groups list cached with the given cache key
+     */
+    public List getCachedUserGroups(String key) {
+
+        return (List)m_userGroupsCache.get(key);
+    }
+
+    /**
+     * Returns the vfs object cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the vfs object cached with the given cache key
+     */
+    public Object getCachedVfsObject(String key) {
+
+        return m_vfsObjectCache.get(key);
+    }
+
+    /**
+     * Returns the xml permanent entity content cached with the given systemId or <code>null</code> if not found.<p>
+     * 
+     * @param systemId the cache key to look for
+     * 
+     * @return the xml permanent entity content cached with the given cache key
+     */
+    public byte[] getCachedXmlPermanentEntity(String systemId) {
+
+        return (byte[])m_xmlPermanentEntityCache.get(systemId);
+    }
+
+    /**
+     * Returns the xml temporary entity content cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the xml temporary entity content cached with the given cache key
+     */
+    public byte[] getCachedXmlTemporaryEntity(String key) {
+
+        return (byte[])m_xmlTemporaryEntityCache.get(key);
+    }
+
+    /**
      * Returns the configuration.<p>
      *
      * @return the configuration
@@ -262,6 +1141,20 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsMemoryMonitorConfiguration getConfiguration() {
 
         return m_configuration;
+    }
+
+    /**
+     * Returns the next publish job from the publish job queue.<p>
+     * 
+     * @return the next publish job
+     */
+    public CmsPublishJobInfoBean getFirstCachedPublishJob() {
+
+        if (!m_publishQueue.isEmpty()) {
+            return (CmsPublishJobInfoBean)m_publishQueue.get();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -279,7 +1172,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param configuration the configuration to use
      */
-    public void initialize(CmsMemoryMonitorConfiguration configuration) {
+    public void initialize(CmsSystemConfiguration configuration) {
+
+        CmsCacheSettings cacheSettings = configuration.getCacheSettings();
 
         m_memoryAverage = new CmsMemoryStatus();
         m_memoryCurrent = new CmsMemoryStatus();
@@ -291,7 +1186,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_lastLogStatus = 0;
         m_lastLogWarning = 0;
         m_lastClearCache = 0;
-        m_configuration = configuration;
+        m_configuration = configuration.getCmsMemoryMonitorConfiguration();
 
         m_intervalWarning = 720 * 60000;
         m_maxUsagePercent = 90;
@@ -309,7 +1204,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_INTERVAL_LOG_1,
                 new Integer(m_intervalLog / 1000)));
@@ -321,7 +1215,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 new Integer(m_intervalWarning / 1000)));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_INTERVAL_MAX_USAGE_1,
-                new Integer(m_intervalWarning / 1000)));
+                new Integer(m_maxUsagePercent)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_DISABLED_0));
@@ -341,12 +1235,140 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
         }
 
+        // create and register all system caches
+
+        // temporary xml entities cache
+        LRUMap xmlTemporaryCache = new LRUMap(128);
+        m_xmlTemporaryEntityCache = Collections.synchronizedMap(xmlTemporaryCache);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
+
+        // permanent xml entities cache
+        Map xmlPermanentCache = new HashMap(32);
+        m_xmlPermanentEntityCache = Collections.synchronizedMap(xmlPermanentCache);
+        register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
+
+        // xml content definitions cache
+        LRUMap contentDefinitionsCache = new LRUMap(64);
+        m_contentDefinitionsCache = Collections.synchronizedMap(contentDefinitionsCache);
+        register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
+
+        // lock cache
+        Map lockCache = new HashMap();
+        m_lockCache = Collections.synchronizedMap(lockCache);
+        register(CmsLockManager.class.getName(), lockCache);
+
+        // locale cache
+        Map map = new HashMap();
+        m_localeCache = Collections.synchronizedMap(map);
+        register(CmsLocaleManager.class.getName(), map);
+
+        // permissions cache
+        LRUMap lruMap = new LRUMap(cacheSettings.getPermissionCacheSize());
+        m_permissionCache = Collections.synchronizedMap(lruMap);
+        register(CmsSecurityManager.class.getName(), lruMap);
+
+        // user cache
+        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
+        m_userCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".userCache", lruMap);
+
+        // group cache
+        lruMap = new LRUMap(cacheSettings.getGroupCacheSize());
+        m_groupCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".groupCache", lruMap);
+
+        // organizational unit cache
+        lruMap = new LRUMap(cacheSettings.getOrgUnitCacheSize());
+        m_orgUnitCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".orgUnitCache", lruMap);
+
+        // user groups list cache
+        lruMap = new LRUMap(cacheSettings.getUserGroupsCacheSize());
+        m_userGroupsCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".userGroupsCache", lruMap);
+
+        // project cache
+        lruMap = new LRUMap(cacheSettings.getProjectCacheSize());
+        m_projectCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
+
+        // project resources cache cache
+        lruMap = new LRUMap(cacheSettings.getProjectResourcesCacheSize());
+        m_projectResourcesCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
+
+        // publish history
+        int size = configuration.getPublishManager().getPublishHistorySize();
+        Buffer buffer = CmsPublishHistory.getQueue(size);
+        m_publishHistory = SynchronizedBuffer.decorate(buffer);
+        register(CmsPublishHistory.class.getName() + ".publishHistory", buffer);
+
+        // publish queue
+        buffer = CmsPublishQueue.getQueue();
+        m_publishQueue = SynchronizedBuffer.decorate(buffer);
+        register(CmsPublishQueue.class.getName() + ".publishQueue", buffer);
+
+        // resource cache
+        lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
+        m_resourceCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".resourceCache", lruMap);
+
+        // roles cache
+        lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
+        m_rolesCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".rolesCache", lruMap);
+
+        // role lists cache
+        lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
+        m_roleListsCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".roleListsCache", lruMap);
+
+        // resource list cache
+        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
+        m_resourceListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".resourceListCache", lruMap);
+
+        // property cache
+        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
+        m_propertyCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
+
+        // property list cache
+        lruMap = new LRUMap(cacheSettings.getPropertyListsCacheSize());
+        m_propertyListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
+
+        // acl cache
+        lruMap = new LRUMap(cacheSettings.getAclCacheSize());
+        m_accessControlListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
+
+        // vfs object cache
+        Map vfsObjectCache = new HashMap();
+        m_vfsObjectCache = Collections.synchronizedMap(vfsObjectCache);
+        register(CmsVfsMemoryObjectCache.class.getName(), vfsObjectCache);
+
+        // memory object cache
+        Map memObjectCache = new HashMap();
+        m_memObjectCache = Collections.synchronizedMap(memObjectCache);
+        register(CmsMemoryObjectCache.class.getName(), memObjectCache);
+
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
-
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
+    }
 
+    /**
+     * Checks if there is a registered monitored object with the given key.<p>
+     * 
+     * @param key the key to look for
+     * 
+     * @return <code>true</code> if there is a registered monitored object with the given key
+     */
+    public boolean isMonitoring(String key) {
+
+        return (m_monitoredObjects.get(key) != null);
     }
 
     /**
@@ -413,7 +1435,163 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void register(String objectName, Object object) {
 
-        m_monitoredObjects.put(objectName, object);
+        if (enabled()) {
+            m_monitoredObjects.put(objectName, object);
+        }
+    }
+
+    /**
+     * Checks if some kind of persistency is required.<p>
+     * 
+     * This could be overwritten in a distributed environment.<p>
+     * 
+     * @return <code>true</code> if some kind of persistency is required
+     */
+    public boolean requiresPersistency() {
+
+        return true;
+    }
+
+    /**
+     * Flushes all cached objects.<p>
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public void shutdown() throws Exception {
+
+        flushACLs();
+        flushGroups();
+        flushLocales();
+        flushMemObjects();
+        flushOrgUnits();
+        flushPermissions();
+        flushProjectResources();
+        flushProjects();
+        flushProperties();
+        flushPropertyLists();
+        flushResourceLists();
+        flushResources();
+        flushUserGroups();
+        flushUsers();
+        flushVfsObjects();
+        flushLocks(null);
+        flushContentDefinitions();
+        flushXmlPermanentEntities();
+        flushXmlTemporaryEntities();
+        flushRoles();
+        flushRoleLists();
+    }
+
+    /**
+     * Removes the given xml content definition from the cache.<p>
+     * 
+     * @param key the cache key to remove from cache
+     */
+    public void uncacheContentDefinition(String key) {
+
+        m_contentDefinitionsCache.remove(key);
+    }
+
+    /**
+     * Removes the given group from the cache.<p>
+     * 
+     * The group is removed by name AND also by uuid.<p>
+     * 
+     * @param group the group to remove from cache
+     */
+    public void uncacheGroup(CmsGroup group) {
+
+        m_groupCache.remove(group.getId().toString());
+        m_groupCache.remove(group.getName());
+    }
+
+    /**
+     * Removes the cached lock for the given root path from the cache.<p>
+     * 
+     * @param rootPath the root path of the lock to remove from cache
+     */
+    public void uncacheLock(String rootPath) {
+
+        m_lockCache.remove(rootPath);
+    }
+
+    /**
+     * Removes the given organizational unit from the cache.<p>
+     * 
+     * The organizational unit is removed by name AND also by uuid.<p>
+     * 
+     * @param orgUnit the organizational unit to remove from cache
+     */
+    public void uncacheOrgUnit(CmsOrganizationalUnit orgUnit) {
+
+        m_orgUnitCache.remove(orgUnit.getId().toString());
+        m_orgUnitCache.remove(orgUnit.getName());
+    }
+
+    /**
+     * Removes the given project from the cache.<p>
+     * 
+     * The project is removed by name AND also by uuid.<p>
+     * 
+     * @param project the project to remove from cache
+     */
+    public void uncacheProject(CmsProject project) {
+
+        m_projectCache.remove(project.getUuid().toString());
+        m_projectCache.remove(project.getName());
+    }
+
+    /**
+     * Removes the given publish job from the cache.<p>
+     * 
+     * @param publishJob the publish job to remove
+     */
+    public void uncachePublishJob(CmsPublishJobInfoBean publishJob) {
+
+        m_publishQueue.remove(publishJob);
+    }
+
+    /**
+     * Removes the given publish job from the history.<p>
+     * 
+     * @param publishJob the publish job to remove
+     */
+    public void uncachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
+
+        m_publishHistory.remove(publishJob);
+    }
+
+    /**
+     * Removes the given user from the cache.<p>
+     * 
+     * The user is removed by name AND also by uuid.<p>
+     * 
+     * @param user the user to remove from cache
+     */
+    public void uncacheUser(CmsUser user) {
+
+        m_userCache.remove(user.getId().toString());
+        m_userCache.remove(user.getName());
+    }
+
+    /**
+     * Removes the given vfs object from the cache.<p>
+     * 
+     * @param key the cache key to remove from cache
+     */
+    public void uncacheVfsObject(String key) {
+
+        m_vfsObjectCache.remove(key);
+    }
+
+    /**
+     * Removes the given xml temporary entity from the cache.<p>
+     * 
+     * @param key the cache key to remove from cache
+     */
+    public void uncacheXmlTemporaryEntity(String key) {
+
+        m_xmlTemporaryEntityCache.remove(key);
     }
 
     /**
@@ -475,7 +1653,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored map.<p>
-     * the keys must be of type String.
+     * 
+     * the keys must be of type String.<p>
      * 
      * @param map the map
      * @param depth the max recursion depth for calculation the size
@@ -490,7 +1669,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
                 Object obj = values[i];
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     keySize += getKeySize((Map)obj, depth + 1);
                     continue;
                 }
@@ -521,9 +1700,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored object.<p>
-     * obj must be of type map, the keys must be of type String.
+     * 
+     * obj must be of type {@link Map}, the keys must be of type {@link String}.<p>
      * 
      * @param obj the object
+     * 
      * @return the total size of key strings
      */
     private long getKeySize(Object obj) {
@@ -537,9 +1718,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the max costs for all items within a monitored object.<p>
-     * obj must be of type CmsLruCache, CmsLruHashMap
+     * 
+     * obj must be of type {@link CmsLruCache} or {@link LRUMap}.<p>
      * 
      * @param obj the object
+     * 
      * @return max cost limit or "-"
      */
     private String getLimit(Object obj) {
@@ -559,6 +1742,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param listValue the list object
      * @param depth the max recursion depth for calculation the size
+     * 
      * @return the size of the list object
      */
     private long getValueSize(List listValue, int depth) {
@@ -578,12 +1762,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < MAX_DEPTH) {
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }
@@ -607,6 +1791,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @param mapValue the map object
      * @param depth the max recursion depth for calculation the size
+     * 
      * @return the size of the map object
      */
     private long getValueSize(Map mapValue, int depth) {
@@ -626,12 +1811,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < MAX_DEPTH) {
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < MAX_DEPTH) {
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }
@@ -652,9 +1837,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the value sizes of value objects within the monitored object.<p>
-     * obj must be of type map
      * 
      * @param obj the object 
+     * 
      * @return the value sizes of value objects or "-"-fields
      */
     private long getValueSize(Object obj) {
@@ -791,7 +1976,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         List receivers = new ArrayList();
         List receiverEmails = m_configuration.getEmailReceiver();
         try {
-            if (from != null && receiverEmails != null && !receiverEmails.isEmpty()) {
+            if ((from != null) && (receiverEmails != null) && !receiverEmails.isEmpty()) {
                 Iterator i = receiverEmails.iterator();
                 while (i.hasNext()) {
                     receivers.add(new InternetAddress((String)i.next()));
@@ -861,7 +2046,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     new Long(m_memoryCurrent.getUsage()),
                     new Integer(m_maxUsagePercent)}));
         } else {
-
             m_logCount++;
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_MM_LOG_INFO_2,
@@ -926,7 +2110,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             sm = null;
 
-            for (Iterator i = OpenCms.getSqlManager().getDbPoolNames().iterator(); i.hasNext();) {
+            for (Iterator i = OpenCms.getSqlManager().getDbPoolUrls().iterator(); i.hasNext();) {
                 String poolname = (String)i.next();
                 try {
                     LOG.info(Messages.get().getBundle().key(

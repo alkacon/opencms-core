@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2006/03/27 14:52:37 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,7 +213,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
-        if (res == null || res.isCommitted()) {
+        if ((res == null) || res.isCommitted()) {
             // nothing we can do
             return;
         }

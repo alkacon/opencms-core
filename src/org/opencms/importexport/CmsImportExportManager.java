@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsUserExportSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
@@ -68,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  * 
@@ -76,11 +77,17 @@ import org.dom4j.io.SAXReader;
  */
 public class CmsImportExportManager {
 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name. */
+    public static final String A_NAME = "name";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@type" attribute, contains the additional user info entry data type name. */
+    public static final String A_TYPE = "type";
+
     /** The name of the XML manifest file used for the description of exported OpenCms VFS properties and atributes. */
     public static final String EXPORT_MANIFEST = "manifest.xml";
 
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
-    public static final String EXPORT_VERSION = "4";
+    public static final String EXPORT_VERSION = "" + CmsImportVersion6.IMPORT_VERSION6;
 
     /** 
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and atributes.<p>
@@ -197,6 +204,21 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "shared" property type attribute value. */
     public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
+    /** Tag in the [@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
+    public static final String N_RELATION = "relation";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_ID = "id";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "path" relation attribute, contains the path to the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_PATH = "path";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" relation attribute, contains the type of relation. */
+    public static final String N_RELATION_ATTRIBUTE_TYPE = "type";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relations" node, starts the list of relations of a VFS resources. */
+    public static final String N_RELATIONS = "relations";
+
     /** Tag in the {@link #EXPORT_MANIFEST} for the "source" node, contains the source path of a VFS resource in the import zip (or folder). */
     public static final String N_SOURCE = "source";
 
@@ -223,6 +245,9 @@ public class CmsImportExportManager {
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo" node, contains the additional user info. */
     public static final String N_USERINFO = "userinfo";
+
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry" node, contains the additional user info entry value. */
+    public static final String N_USERINFO_ENTRY = "entry";
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "userlastmodified" node, contains the name of the user who last modified the VFS resource. */
     public static final String N_USERLASTMODIFIED = "userlastmodified";
@@ -266,6 +291,9 @@ public class CmsImportExportManager {
     /** Boolean flag whether colliding resources should be overwritten during the import. */
     private boolean m_overwriteCollidingResources;
 
+    /** The user export settings. */
+    private CmsUserExportSettings m_userExportSettings;
+
     /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
     private String m_webAppUrl;
 
@@ -295,17 +323,10 @@ public class CmsImportExportManager {
      * file resource.<p>
      * 
      * @param resource a File resource
-     * @return the "manifest.xml" as a dom4j document
+     * 
+     * @return the "manifest.xml" as a dom4j document, or <code>null</code> if not found
      */
     public static Document getManifest(File resource) {
-
-        Document manifest = null;
-        ZipFile zipFile = null;
-        ZipEntry zipFileEntry = null;
-        InputStream input = null;
-        Reader reader = null;
-        SAXReader saxReader = null;
-        File manifestFile = null;
 
         try {
             if (resource.isFile()) {
@@ -314,38 +335,58 @@ public class CmsImportExportManager {
                     return null;
                 }
                 // create a Reader for a ZIP file
-                zipFile = new ZipFile(resource);
-                zipFileEntry = zipFile.getEntry(EXPORT_MANIFEST);
-                input = zipFile.getInputStream(zipFileEntry);
-                // transform the manifest.xml file into a dom4j Document
-                saxReader = new SAXReader();
-                manifest = saxReader.read(input);
+                ZipFile zipFile = new ZipFile(resource);
+                ZipEntry zipFileEntry = zipFile.getEntry(EXPORT_MANIFEST);
+                if (zipFileEntry == null) {
+                    throw new CmsImportExportException(Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                        EXPORT_MANIFEST));
+                }
+                InputStream input = null;
+                try {
+                    input = zipFile.getInputStream(zipFileEntry);
+                    // transform the manifest.xml file into a dom4j Document
+                    return new SAXReader().read(input);
+                } finally {
+                    try {
+                        if (input != null) {
+                            input.close();
+                        }
+                    } catch (Exception e) {
+                        // noop
+                    }
+                }
             } else if (resource.isDirectory()) {
                 // create a Reader for a file in the file system
-                manifestFile = new File(resource, EXPORT_MANIFEST);
-                reader = new BufferedReader(new FileReader(manifestFile));
-                // transform the manifest.xml file into a dom4j Document
-                saxReader = new SAXReader();
-                manifest = saxReader.read(reader);
+                File manifestFile = new File(resource, EXPORT_MANIFEST);
+                if (!manifestFile.exists()) {
+                    throw new CmsImportExportException(Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                        EXPORT_MANIFEST));
+                }
+                Reader reader = null;
+                try {
+                    reader = new BufferedReader(new FileReader(manifestFile));
+                    // transform the manifest.xml file into a dom4j Document
+                    return new SAXReader().read(reader);
+                } finally {
+                    try {
+                        if (reader != null) {
+                            reader.close();
+                        }
+                    } catch (Exception e) {
+                        // noop
+                    }
+                }
             }
-        } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(
+        } catch (Throwable e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
                     Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource),
                     e);
             }
-            manifest = null;
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
         }
-
-        return manifest;
+        return null;
     }
 
     /**
@@ -459,7 +500,7 @@ public class CmsImportExportManager {
     public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report)
     throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.EXPORT_DATABASE);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         handler.exportData(cms, report);
     }
 
@@ -498,9 +539,6 @@ public class CmsImportExportManager {
      */
     public I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsImportExportException {
 
-        Document manifest = null;
-        I_CmsImportExportHandler handler = null;
-
         File file = new File(importFile);
         if (!file.exists()) {
             // file does not exist
@@ -514,29 +552,27 @@ public class CmsImportExportManager {
             throw new CmsImportExportException(message);
         }
 
-        manifest = getManifest(file);
+        Document manifest = getManifest(file);
+        if (manifest == null) {
+            throw new CmsImportExportException(Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
+                EXPORT_MANIFEST));
+        }
         for (int i = 0; i < m_importExportHandlers.size(); i++) {
-            handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);
+            I_CmsImportExportHandler handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);
             if (handler.matches(manifest)) {
                 return handler;
             }
-
-            handler = null;
         }
 
-        if (handler == null) {
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1,
-                importFile);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key());
-            }
-
-            throw new CmsImportExportException(message);
+        CmsMessageContainer message = Messages.get().container(
+            Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1,
+            importFile);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(message.key());
         }
 
-        return null;
+        throw new CmsImportExportException(message);
     }
 
     /**
@@ -593,6 +629,16 @@ public class CmsImportExportManager {
     }
 
     /**
+     * Returns the user settings for export.<p>
+     * 
+     * @return the user settings for export
+     */
+    public CmsUserExportSettings getUserExportSettings() {
+
+        return m_userExportSettings;
+    }
+
+    /**
      * Checks if the current user has permissions to import data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
      * 
@@ -612,7 +658,7 @@ public class CmsImportExportManager {
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException, CmsException {
 
         // check the required role permissions
-        cms.checkRole(CmsRole.IMPORT_DATABASE);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         try {
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
@@ -711,6 +757,16 @@ public class CmsImportExportManager {
     }
 
     /**
+     * Sets the user export settings.<p>
+     *
+     * @param userExportSettings the user export settings to set
+     */
+    public void setUserExportSettings(CmsUserExportSettings userExportSettings) {
+
+        m_userExportSettings = userExportSettings;
+    }
+
+    /**
      * Returns the translated name for the given group name.<p>
      * 
      * If no matching name is found, the given group name is returned.<p>
@@ -761,16 +817,12 @@ public class CmsImportExportManager {
             if (m_immutableResources != null) {
                 m_immutableResources.clear();
             }
-            m_immutableResources = null;
-
             if (m_ignoredProperties != null) {
                 m_ignoredProperties.clear();
             }
-            m_ignoredProperties = null;
         } catch (Throwable t) {
             // noop
-        } finally {
-            super.finalize();
         }
+        super.finalize();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsEvents.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsEvents extends OpenCmsTestCase {
 
@@ -102,9 +102,9 @@ public class TestCmsEvents extends OpenCmsTestCase {
 
         String projectName = "PublishEventTest";
 
-        cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
+            cms.getRequestContext().setSiteRoot("/");
             CmsProject project = cms.createProject(
                 projectName,
                 "Unit test project for publish events",
@@ -114,11 +114,11 @@ public class TestCmsEvents extends OpenCmsTestCase {
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/");
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
 
         // create and register the event listener
-        TestEventListener handler = new TestEventListener();
+        CmsTestEventListener handler = new CmsTestEventListener();
         OpenCms.addCmsEventListener(handler, new int[] {
             I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT});
@@ -126,7 +126,8 @@ public class TestCmsEvents extends OpenCmsTestCase {
         CmsProject current = cms.readProject(projectName);
         cms.getRequestContext().setCurrentProject(current);
 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
 
         assertTrue(handler.hasRecievedEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT));
         assertTrue(handler.hasRecievedEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT));

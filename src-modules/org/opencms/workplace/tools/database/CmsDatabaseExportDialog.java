@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2006/12/14 14:05:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:10 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,12 +146,12 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         // create export settings block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
-        result.append(createDialogRowsHtml(1, 7));
+        result.append(createDialogRowsHtml(1, 6));
         result.append(createWidgetBlockEnd());
 
         // create export resource(s) block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
-        result.append(createDialogRowsHtml(8, 8));
+        result.append(createDialogRowsHtml(7, 7));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -180,7 +180,6 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeUnchanged", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportUserdata", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportWebusers", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeSystem", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(
             m_exportHandler,
@@ -192,7 +191,6 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
             1));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "recursive", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "projectOnly", PAGES[0], new CmsCheckboxWidget()));
-
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportPaths", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));

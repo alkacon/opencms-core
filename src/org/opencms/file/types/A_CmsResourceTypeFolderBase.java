@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:57:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,30 +33,38 @@ package org.opencms.file.types;
 
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsMultiException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsResourceTypeFolderBase.class);
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -64,39 +72,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     public A_CmsResourceTypeFolderBase() {
 
         super();
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
-     */
-    public void changeLastModifiedProjectId(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
-    throws CmsException {
-
-        // collect all resources in the folder (include deleted ones)
-        List resources = securityManager.readChildResources(
-            cms.getRequestContext(),
-            resource,
-            CmsResourceFilter.ALL,
-            true,
-            true);
-
-        // handle the folder itself
-        super.changeLastModifiedProjectId(cms, securityManager, resource);
-
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource childResource = (CmsResource)resources.get(i);
-            if (childResource.isFolder()) {
-                // recurse into this method for subfolders
-                changeLastModifiedProjectId(cms, securityManager, childResource);
-            } else {
-                // handle child resources
-                getResourceType(childResource.getTypeId()).changeLastModifiedProjectId(
-                    cms,
-                    securityManager,
-                    childResource);
-            }
-        }
     }
 
     /**
@@ -115,14 +90,14 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        int siblingMode) throws CmsIllegalArgumentException, CmsException {
+        CmsResource.CmsResourceCopyMode siblingMode) throws CmsIllegalArgumentException, CmsException {
 
         // first validate the destination name
         destination = validateFoldername(destination);
@@ -142,18 +117,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         for (int i = 0; i < resources.size(); i++) {
             CmsResource childResource = (CmsResource)resources.get(i);
             String childDestination = destination.concat(childResource.getName());
-            if (childResource.isFolder()) {
-                // recurse into this method for subfolders
-                copyResource(cms, securityManager, childResource, childDestination, siblingMode);
-            } else {
-                // handle child resources
-                getResourceType(childResource.getTypeId()).copyResource(
-                    cms,
-                    securityManager,
-                    childResource,
-                    childDestination,
-                    siblingMode);
-            }
+            // handle child resources
+            getResourceType(childResource).copyResource(
+                cms,
+                securityManager,
+                childResource,
+                childDestination,
+                siblingMode);
         }
     }
 
@@ -169,54 +139,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         resourcename = validateFoldername(resourcename);
         return super.createResource(cms, securityManager, resourcename, content, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
-     */
-    public void deleteResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int siblingMode)
-    throws CmsException {
-
-        // collect all resources in the folder (but exclude deleted ones)
-        List resources = securityManager.readChildResources(
-            cms.getRequestContext(),
-            resource,
-            CmsResourceFilter.IGNORE_EXPIRATION,
-            true,
-            true);
-
-        Set deletedResources = new HashSet();
-
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource childResource = (CmsResource)resources.get(i);
-
-            if (siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS
-                && deletedResources.contains(childResource.getResourceId())) {
-                // sibling mode is "delete all siblings" and another sibling of the current child resource has already
-                // been deleted- do nothing and continue with the next child resource.
-                continue;
-            }
-
-            if (childResource.isFolder()) {
-                // recurse into this method for subfolders
-                deleteResource(cms, securityManager, childResource, siblingMode);
-            } else {
-                // handle child resources
-                getResourceType(childResource.getTypeId()).deleteResource(
-                    cms,
-                    securityManager,
-                    childResource,
-                    siblingMode);
-            }
-
-            deletedResources.add(childResource.getResourceId());
-        }
-
-        deletedResources.clear();
-
-        // handle the folder itself
-        super.deleteResource(cms, securityManager, resource, siblingMode);
     }
 
     /**
@@ -237,7 +159,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException {
@@ -261,18 +183,37 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 destination));
         }
 
-        // check if the user has write access and if resource is locked
-        // done here since copy is ok without lock, but delete is not
-        securityManager.checkPermissions(
-            cms.getRequestContext(),
-            resource,
-            CmsPermissionSet.ACCESS_WRITE,
-            true,
-            CmsResourceFilter.IGNORE_EXPIRATION);
+        // first validate the destination name
+        dest = validateFoldername(dest);
 
-        copyResource(cms, securityManager, resource, destination, CmsResource.COPY_AS_SIBLING);
+        securityManager.moveResource(cms.getRequestContext(), resource, dest);
 
-        deleteResource(cms, securityManager, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        // touch all resources, so each resource has the time to adapt it self to the new environment
+        CmsFolder folder = securityManager.readFolder(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+        List resources = securityManager.readResources(cms.getRequestContext(), folder, CmsResourceFilter.ALL, true);
+        if (resources != null) {
+            CmsMultiException me = new CmsMultiException();
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if (childResource.isFolder()) {
+                    continue;
+                }
+                try {
+                    // touch, collecting the errors
+                    getResourceType(childResource).writeFile(cms, securityManager, CmsFile.upgrade(childResource, cms));
+                } catch (CmsException e) {
+                    me.addException(e);
+                } catch (CmsRuntimeException e) {
+                    me.addException(new CmsException(e.getMessageContainer(), e));
+                }
+            }
+            if (!me.getExceptions().isEmpty()) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(me);
+                }
+            }
+        }
     }
 
     /**
@@ -298,17 +239,18 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * 
+     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
      */
     public void restoreResourceBackup(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resourename,
-        int tag) throws CmsException {
+        int version) throws CmsException {
 
-        // it is not possible to restore a folder from the backup
-        throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_0));
+        restoreResource(cms, securityManager, resourename, version);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
@@ -334,18 +276,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateExpired(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateExpired(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource).setDateExpired(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
@@ -375,22 +312,17 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateLastModified(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateLastModified(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource).setDateLastModified(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
@@ -416,30 +348,25 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    setDateReleased(cms, securityManager, childResource, dateLastModified, recursive);
-                } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).setDateReleased(
-                        cms,
-                        securityManager,
-                        childResource,
-                        dateLastModified,
-                        recursive);
-                }
+                // handle child resources
+                getResourceType(childResource).setDateReleased(
+                    cms,
+                    securityManager,
+                    childResource,
+                    dateLastModified,
+                    recursive);
             }
         }
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, boolean)
+     * @see org.opencms.file.types.A_CmsResourceType#undelete(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, boolean)
      */
-    public void undoChanges(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
+    public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
     throws CmsException {
 
         // handle the folder itself
-        super.undoChanges(cms, securityManager, resource, recursive);
+        super.undelete(cms, securityManager, resource, recursive);
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
@@ -453,17 +380,84 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = (CmsResource)resources.get(i);
+                // handle child resources
+                getResourceType(childResource).undelete(cms, securityManager, childResource, recursive);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
+     */
+    public void undoChanges(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResource.CmsResourceUndoMode mode) throws CmsException {
+
+        boolean recursive = mode.isRecursive();
+        if (mode == CmsResource.UNDO_MOVE_CONTENT) {
+            // undo move only?
+            String originalPath = securityManager.resourceOriginalPath(cms.getRequestContext(), resource);
+            if (originalPath.equals(resource.getRootPath())) {
+                // resource not moved
+                recursive = false;
+            }
+        }
+
+        List resources = null;
+        if (recursive) { // recursive?
+            // collect all resources in the folder (including deleted ones)
+            resources = securityManager.readChildResources(
+                cms.getRequestContext(),
+                resource,
+                CmsResourceFilter.ALL,
+                true,
+                true);
+        }
+
+        // handle the folder itself, undo move op
+        super.undoChanges(cms, securityManager, resource, mode);
+
+        // the folder may have been moved back to its original position        
+        CmsResource undoneResource2 = securityManager.readResource(
+            cms.getRequestContext(),
+            resource.getStructureId(),
+            CmsResourceFilter.ALL);
+        boolean isMoved = !undoneResource2.getRootPath().equals(resource.getRootPath());
+
+        if (recursive && (resources != null)) { // recursive?
+            // now walk through all sub-resources in the folder, and undo first
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                I_CmsResourceType type = getResourceType(childResource);
+                if (isMoved) {
+                    securityManager.lockResource(cms.getRequestContext(), childResource, CmsLockType.EXCLUSIVE);
+                }
                 if (childResource.isFolder()) {
                     // recurse into this method for subfolders
-                    undoChanges(cms, securityManager, childResource, recursive);
+                    type.undoChanges(cms, securityManager, childResource, mode);
+                } else if (!childResource.getState().isNew()) {
+                    // undo changes for changed files
+                    securityManager.undoChanges(cms.getRequestContext(), childResource, mode);
                 } else {
-                    // handle child resources
-                    getResourceType(childResource.getTypeId()).undoChanges(
-                        cms,
-                        securityManager,
-                        childResource,
-                        recursive);
+                    // undo move for new files? move with the folder
+                    if (mode.isUndoMove()) {
+                        String newPath = cms.getRequestContext().removeSiteRoot(
+                            securityManager.readResource(
+                                cms.getRequestContext(),
+                                resource.getStructureId(),
+                                CmsResourceFilter.ALL).getRootPath()
+                                + childResource.getName());
+                        type.moveResource(cms, securityManager, childResource, newPath);
+                    }
                 }
+            }
+
+            // now iterate again all sub-resources in the folder, and actualize the relations
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                updateRelationForUndo(cms, securityManager, childResource);
             }
         }
     }
@@ -473,8 +467,10 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
      * also ensures that it starts and ends with a '/'.<p>
      *
      * @param resourcename folder name to check (complete path)
+     * 
      * @return the validated folder name
-     * @throws CmsIllegalArgumentException if the folder name is empty or null
+     * 
+     * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
      */
     private String validateFoldername(String resourcename) throws CmsIllegalArgumentException {
 

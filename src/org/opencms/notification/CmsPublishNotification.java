@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsPublishNotification.java,v $
- * Date   : $Date: 2006/11/29 16:31:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.3
  */
@@ -60,8 +60,8 @@ public class CmsPublishNotification extends A_CmsNotification {
      * Creates a new CmsPublishNotification.<p>
      * 
      * @param cms the cms object to use
-     * @param receiver the cms user who should receive the message
-     * @param report the report of the publishing which should be included in the message
+     * @param receiver the notification receiver
+     * @param report the report to write the output to
      */
     public CmsPublishNotification(CmsObject cms, CmsUser receiver, I_CmsReport report) {
 

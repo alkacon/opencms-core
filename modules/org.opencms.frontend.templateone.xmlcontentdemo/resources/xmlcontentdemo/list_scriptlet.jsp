@@ -12,7 +12,7 @@
 <cms:include file="list_content-scriptlet.html" element="header" editable="true"/> 
 
 <%
-I_CmsXmlContentContainer container = cms.contentload("${property.collector}", "${property.xmlcontent-demo}article_${number}.html|article", true);
+I_CmsXmlContentContainer container = cms.contentload("%(property.collector)", "%(property.xmlcontent-demo)article_%(number).html|article", true);
 while (container.hasMoreContent()) {
 %>
 
@@ -24,7 +24,7 @@ while (container.hasMoreContent()) {
 <%= cms.contentshow(container, "Teaser") %></br>
 <small>
 By <%= cms.contentshow(container, "Author") %>
-<a href="<cms:link><%= cms.contentshow(container, "${opencms.filename}") %></cms:link>">read more...</a>
+<a href="<cms:link><%= cms.contentshow(container, "%(opencms.filename)") %></cms:link>">read more...</a>
 </small>
 </p>
 </div>

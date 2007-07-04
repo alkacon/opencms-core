@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2006/10/17 13:33:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.io.File;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,6 +100,30 @@ public final class FileUploadUtils {
     }
 
     /**
+     * Returns <code>true</code> in case the given extension is one of the known office file extensions.<p>
+     * 
+     * Known extensions are: <code>.pdf, .odt, .ods, .odp, .odg, .doc, .xls, .ppt, .vsd</code>.<p>
+     * 
+     * @param extension the extension to check, must start with a dot '.'
+     * @return <code>true</code> in case the given extension is one of the known office file extensions
+     */
+    public static boolean isOfficeExtension(String extension) {
+
+        if (extension != null) {
+            return (extension.equals(".odt")
+                || extension.equals(".ods")
+                || extension.equals(".odp")
+                || extension.equals(".odg")
+                || extension.equals(".pdf")
+                || extension.equals(".doc")
+                || extension.equals(".xls")
+                || extension.equals(".vsd") || extension.equals(".ppt"));
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Returns <code>true</code> in case the given extension is one of the known text file extensions.<p>
      * 
      * Known extensions are: <code>.txt, .ini, .bat, .cmd, .sh, .java, .log, .xml, .html, .sys</code>.<p>
@@ -127,22 +151,22 @@ public final class FileUploadUtils {
     /**
      * Returns <code>true</code> in case the given extension is one of the known office file extensions.<p>
      * 
-     * Known extensions are: <code>.pdf, .odt, .ods, .odp, .odg, .doc, .xls, .ppt, .vsd</code>.<p>
+     * Known extensions are: <code>.html, .htm, .shtml, .xml, .xhtml, .js, .css and .txt</code>.<p>
      * 
      * @param extension the extension to check, must start with a dot '.'
+     * 
      * @return <code>true</code> in case the given extension is one of the known office file extensions
      */
-    public static boolean isOfficeExtension(String extension) {
+    public static boolean isWebExtension(String extension) {
 
         if (extension != null) {
-            return (extension.equals(".odt")
-                || extension.equals(".ods")
-                || extension.equals(".odp")
-                || extension.equals(".odg")
-                || extension.equals(".pdf")
-                || extension.equals(".doc")
-                || extension.equals(".xls")
-                || extension.equals(".vsd") || extension.equals(".ppt"));
+            return (extension.equals(".html")
+                || extension.equals(".htm")
+                || extension.equals(".shtml")
+                || extension.equals(".xml")
+                || extension.equals(".xhtml")
+                || extension.equals(".js")
+                || extension.equals(".css") || extension.equals(".txt"));
         } else {
             return false;
         }

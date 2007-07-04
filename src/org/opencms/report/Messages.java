@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:56:59 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DOTS_0 = "RPT_DOTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_ERROR_0 = "RPT_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_ERROR_DETAILS_0 = "RPT_ERROR_DETAILS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXCEPTION_0 = "RPT_EXCEPTION_0";

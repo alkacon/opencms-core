@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  * 
@@ -124,12 +124,11 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
-        m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         try {
             // first import the user information
-            if (cms.hasRole(CmsRole.ACCOUNT_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }
@@ -142,38 +141,23 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
-     * Imports a single user.<p>
-     * @param name user name
-     * @param description user description
-     * @param flags user flags
-     * @param password user password 
-     * @param firstname firstname of the user
-     * @param lastname lastname of the user
-     * @param email user email
-     * @param address user address 
-     * @param type user type
-     * @param userInfo user info
-     * @param userGroups user groups
-     * 
-     * @throws CmsImportExportException in case something goes wrong
+     * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
     protected void importUser(
         String name,
-        String description,
         String flags,
         String password,
         String firstname,
         String lastname,
         String email,
-        String address,
-        String type,
+        long dateCreated,
         Map userInfo,
         List userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
         Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if (config != null && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
             convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
         }
 
@@ -181,18 +165,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             password = convertDigestEncoding(password);
         }
 
-        super.importUser(
-            name,
-            description,
-            flags,
-            password,
-            firstname,
-            lastname,
-            email,
-            address,
-            type,
-            userInfo,
-            userGroups);
+        super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
     }
 
     /**
@@ -209,10 +182,6 @@ public class CmsImportVersion3 extends A_CmsImport {
         Element currentElement, currentEntry;
         List properties = null;
 
-        if (m_importingChannelData) {
-            m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
-        }
         // get list of unwanted properties
         List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (deleteProperties == null) {
@@ -316,7 +285,6 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                     List aceList = new ArrayList();
                     if (res != null) {
-
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
@@ -378,20 +346,15 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
 
         } catch (Exception e) {
-
             m_report.println(e);
-
+            m_report.addError(e);
+            
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-
             throw new CmsImportExportException(message, e);
-        } finally {
-            if (m_importingChannelData) {
-                m_cms.getRequestContext().restoreSiteRoot();
-            }
         }
 
     }
@@ -498,14 +461,13 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
 
             // create a new CmsResource                         
-            CmsResource resource = new CmsResource(
-                new CmsUUID(), // structure ID is always a new UUID
+            CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource,
                 destination,
                 resType.getTypeId(),
                 resType.isFolder(),
                 new Integer(flags).intValue(),
-                m_cms.getRequestContext().currentProject().getId(),
+                m_cms.getRequestContext().currentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,
                 newUsercreated,
@@ -514,7 +476,9 @@ public class CmsImportVersion3 extends A_CmsImport {
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 1,
-                size);
+                size, 
+                0,
+                0);
 
             if (type.equals(RESOURCE_TYPE_LINK_NAME)) {
                 // store links for later conversion
@@ -535,6 +499,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);
+            m_report.addError(exc);
+            
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);

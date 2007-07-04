@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlErrorHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.xml;
 
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 
@@ -46,7 +47,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,12 +56,37 @@ public class CmsXmlErrorHandler implements ErrorHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlErrorHandler.class);
 
+    /** The name of the resource that is parsed, for logging (optional). */
+    private String m_resourceName;
+
+    /**
+     * Creates an OpenCms XML error handler.<p> 
+     */
+    public CmsXmlErrorHandler() {
+
+        this("");
+    }
+
+    /**
+     * Creates an OpenCms XML error handler with a resource name for error logging.<p> 
+     * 
+     * @param resourceName the name (path) of the XML resource that is handled, for logging
+     */
+    public CmsXmlErrorHandler(String resourceName) {
+
+        if (! CmsStringUtil.isEmptyOrWhitespaceOnly(resourceName)) {
+            m_resourceName = " " + resourceName;            
+        } else {
+            m_resourceName = "";
+        }
+    }
+
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
     public void error(SAXParseException exception) throws SAXException {
 
-        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_ERROR_0), exception);
+        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_ERROR_1, m_resourceName), exception);
         throw exception;
     }
 
@@ -69,7 +95,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
      */
     public void fatalError(SAXParseException exception) throws SAXException {
 
-        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0), exception);
+        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_FATAL_ERROR_1, m_resourceName), exception);
         throw exception;
     }
 
@@ -79,7 +105,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
     public void warning(SAXParseException exception) {
 
         if (LOG.isWarnEnabled()) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_WARNING_0), exception);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_WARNING_1, m_resourceName), exception);
         }
     }
 }

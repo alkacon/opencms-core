@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/07/13 10:06:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,11 +43,17 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsContextInfo {
+
+    /** Name of the http session attribute the request time is stored in. */
+    public static final String ATTRIBUTE_REQUEST_TIME = "__org.opencms.main.CmsContextInfo#m_requestTime";
+
+    /** Indicates the request time should always be the current time. */
+    public static final long CURRENT_TIME = -1L;
 
     /** Localhost ip used in fallback cases. */
     public static final String LOCALHOST = "127.0.0.1";
@@ -64,6 +70,9 @@ public class CmsContextInfo {
     /** The locale name to create the context with. */
     private String m_localeName;
 
+    /** The organizational unit to create the context with. */
+    private String m_ouFqn;
+
     /** The project to create the context with. */
     private CmsProject m_project;
 
@@ -75,6 +84,9 @@ public class CmsContextInfo {
 
     /** The request URI to create the context with. */
     private String m_requestedUri;
+
+    /** The time for the request, used for resource publication and expiration dates. */
+    private long m_requestTime;
 
     /** The site root to create the context with. */
     private String m_siteRoot;
@@ -96,6 +108,7 @@ public class CmsContextInfo {
      * <dt>Locale name</dt><dd>(configured default locale name)</dd>
      * <dt>Encoding</dt><dd>(configured default system encoding)</dd>
      * <dt>Remote address</dt><dd>127.0.0.1</dd>
+     * <dt>Organizational unit</dt><dd>/</dd>
      * </dl><p>
      */
     public CmsContextInfo() {
@@ -107,6 +120,8 @@ public class CmsContextInfo {
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);
+        setRequestTime(System.currentTimeMillis());
+        setOuFqn("");
     }
 
     /**
@@ -123,6 +138,8 @@ public class CmsContextInfo {
         setLocale(requestContext.getLocale());
         setEncoding(requestContext.getEncoding());
         setRemoteAddr(requestContext.getRemoteAddress());
+        setRequestTime(requestContext.getRequestTime());
+        setOuFqn(requestContext.getOuFqn());
     }
 
     /**
@@ -135,6 +152,8 @@ public class CmsContextInfo {
      * @param locale the locale to create the context with
      * @param encoding the encoding to create the context with
      * @param remoteAddr the remote ip address to create the context with
+     * @param requestTime the time of the request (used for resource publication / expiration date)
+     * @param ouFqn the fully qualified name of the organizational unit to create the context with
      */
     public CmsContextInfo(
         CmsUser user,
@@ -143,7 +162,9 @@ public class CmsContextInfo {
         String siteRoot,
         Locale locale,
         String encoding,
-        String remoteAddr) {
+        String remoteAddr,
+        long requestTime,
+        String ouFqn) {
 
         m_user = user;
         setUserName(m_user.getName());
@@ -154,6 +175,8 @@ public class CmsContextInfo {
         setLocale(locale);
         setEncoding(encoding);
         setRemoteAddr(remoteAddr);
+        setRequestTime(requestTime);
+        setOuFqn(ouFqn);
     }
 
     /**
@@ -168,36 +191,6 @@ public class CmsContextInfo {
 
         this();
         setUserName(userName);
-    }
-
-    /**
-     * Creates a new instance with all context variables initialized.<p>
-     *
-     * @param userName the user name to create the context with
-     * @param projectName the project name to create the context with
-     * @param requestedUri the request URI to create the context with
-     * @param siteRoot the site root to create the context with
-     * @param localeName the locale name to create the context with
-     * @param encoding the encoding to create the context with
-     * @param remoteAddr the remote ip address to create the context with
-     */
-    public CmsContextInfo(
-        String userName,
-        String projectName,
-        String requestedUri,
-        String siteRoot,
-        String localeName,
-        String encoding,
-        String remoteAddr) {
-
-        super();
-        setUserName(userName);
-        setProjectName(projectName);
-        setRequestedUri(requestedUri);
-        setSiteRoot(siteRoot);
-        setLocaleName(localeName);
-        setEncoding(encoding);
-        setRemoteAddr(remoteAddr);
     }
 
     /**
@@ -216,6 +209,7 @@ public class CmsContextInfo {
         result.m_projectName = m_projectName;
         result.m_remoteAddr = m_remoteAddr;
         result.m_requestedUri = m_requestedUri;
+        result.m_requestTime = m_requestTime;
         result.m_siteRoot = m_siteRoot;
         result.m_user = m_user;
         result.m_userName = m_userName;
@@ -238,6 +232,8 @@ public class CmsContextInfo {
      * Returns the encoding.<p>
      *
      * @return the encoding
+     * 
+     * @see CmsRequestContext#getEncoding()
      */
     public String getEncoding() {
 
@@ -248,6 +244,8 @@ public class CmsContextInfo {
      * Returns the locale.<p>
      *
      * @return the locale
+     * 
+     * @see CmsRequestContext#getLocale()
      */
     public Locale getLocale() {
 
@@ -258,10 +256,22 @@ public class CmsContextInfo {
      * Returns the locale name.<p>
      *
      * @return the locale name
+     * 
+     * @see CmsRequestContext#getLocale()
      */
     public String getLocaleName() {
 
         return m_localeName;
+    }
+
+    /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     * 
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return m_ouFqn;
     }
 
     /**
@@ -274,6 +284,7 @@ public class CmsContextInfo {
      * @return the project
      * 
      * @see #getProjectName()
+     * @see CmsRequestContext#currentProject()
      */
     public CmsProject getProject() {
 
@@ -286,6 +297,7 @@ public class CmsContextInfo {
      * @return the project name
      * 
      * @see #getProject()
+     * @see CmsRequestContext#currentProject()
      */
     public String getProjectName() {
 
@@ -296,6 +308,8 @@ public class CmsContextInfo {
      * Returns the remote ip address.<p>
      *
      * @return the remote ip address
+     * 
+     * @see CmsRequestContext#getRemoteAddress()
      */
     public String getRemoteAddr() {
 
@@ -306,6 +320,8 @@ public class CmsContextInfo {
      * Returns the requested uri.<p>
      *
      * @return the requested uri
+     * 
+     * @see CmsRequestContext#getUri()
      */
     public String getRequestedUri() {
 
@@ -313,9 +329,23 @@ public class CmsContextInfo {
     }
 
     /**
+     * Returns the request time used for validation of resource publication and expiration dates.<p>
+     *
+     * @return the request time used for validation of resource publication and expiration dates
+     * 
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public long getRequestTime() {
+
+        return m_requestTime;
+    }
+
+    /**
      * Returns the siteroot.<p>
      *
      * @return the siteroot
+     * 
+     * @see CmsRequestContext#getSiteRoot()
      */
     public String getSiteRoot() {
 
@@ -332,6 +362,7 @@ public class CmsContextInfo {
      * @return the user
      * 
      * @see #getUserName()
+     * @see CmsRequestContext#currentUser()
      */
     public CmsUser getUser() {
 
@@ -344,6 +375,7 @@ public class CmsContextInfo {
      * @return the username
      * 
      * @see #getUser()
+     * @see CmsRequestContext#currentUser()
      */
     public String getUserName() {
 
@@ -354,6 +386,8 @@ public class CmsContextInfo {
      * Sets the encoding.<p>
      *
      * @param encoding the encoding to set
+     * 
+     * @see CmsRequestContext#setEncoding(String)
      */
     public void setEncoding(String encoding) {
 
@@ -370,6 +404,7 @@ public class CmsContextInfo {
      * @param locale the locale to set
      * 
      * @see #setLocaleName(String)
+     * @see CmsRequestContext#getLocale()
      */
     public void setLocale(Locale locale) {
 
@@ -387,6 +422,7 @@ public class CmsContextInfo {
      * @param localeName the locale name to set
      * 
      * @see #setLocale(Locale)
+     * @see CmsRequestContext#getLocale()
      */
     public void setLocaleName(String localeName) {
 
@@ -396,9 +432,21 @@ public class CmsContextInfo {
     }
 
     /**
+     * Sets the fully qualified name of the organizational unit.<p>
+     * 
+     * @param ouFqn the fully qualified name of the organizational unit to set
+     */
+    public void setOuFqn(String ouFqn) {
+
+        m_ouFqn = ouFqn;
+    }
+
+    /**
      * Sets the project name.<p>
      *
      * @param projectName the project name to set
+     * 
+     * @see CmsRequestContext#currentProject()
      */
     public void setProjectName(String projectName) {
 
@@ -410,6 +458,8 @@ public class CmsContextInfo {
      * Sets the remote ip address.<p>
      *
      * @param remoteAddr the remote ip address
+     * 
+     * @see CmsRequestContext#getRemoteAddress()
      */
     public void setRemoteAddr(String remoteAddr) {
 
@@ -421,6 +471,8 @@ public class CmsContextInfo {
      * Sets the requested uri.<p>
      *
      * @param requestedUri the requested uri to set
+     * 
+     * @see CmsRequestContext#setUri(String)
      */
     public void setRequestedUri(String requestedUri) {
 
@@ -429,9 +481,28 @@ public class CmsContextInfo {
     }
 
     /**
+     * Sets the request time used for validation of resource publication and expiration dates.<p>
+     *
+     * @param requestTime the request time to set
+     * 
+     * @see CmsRequestContext#getRequestTime()
+     */
+    public void setRequestTime(long requestTime) {
+
+        checkFrozen();
+        if (requestTime == CURRENT_TIME) {
+            m_requestTime = System.currentTimeMillis();
+        } else {
+            m_requestTime = requestTime;
+        }
+    }
+
+    /**
      * Sets the siteroot.<p>
      *
      * @param siteRoot the siteroot to set
+     * 
+     * @see CmsRequestContext#setSiteRoot(String)
      */
     public void setSiteRoot(String siteRoot) {
 
@@ -443,6 +514,8 @@ public class CmsContextInfo {
      * Sets the username.<p>
      *
      * @param userName the username to set
+     * 
+     * @see CmsRequestContext#currentUser()
      */
     public void setUserName(String userName) {
 

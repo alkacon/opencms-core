@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2006/10/04 07:35:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.notification.CmsPublishNotification;
 import org.opencms.report.CmsLogReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,16 +97,20 @@ public class CmsPublishJob implements I_CmsScheduledJob {
 
             // check if the unlock parameter was given
             if (Boolean.valueOf(unlock).booleanValue()) {
-                cms.unlockProject(project.getId());
+                cms.unlockProject(project.getUuid());
             }
 
             // validate links if linkcheck parameter was given
             if (Boolean.valueOf(linkcheck).booleanValue()) {
-                cms.validateHtmlLinks(cms.getPublishList(), report);
+                OpenCms.getPublishManager().validateRelations(
+                    cms,
+                    OpenCms.getPublishManager().getPublishList(cms),
+                    report);
             }
 
             // publish the project, the publish output will be put in the logfile
-            cms.publishProject(report);
+            OpenCms.getPublishManager().publishProject(cms, report);
+            OpenCms.getPublishManager().waitWhileRunning();
             finishMessage = Messages.get().getBundle().key(Messages.LOG_PUBLISH_FINISHED_1, project.getName());
         } catch (CmsException e) {
             // there was an error, so create an output for the logfile

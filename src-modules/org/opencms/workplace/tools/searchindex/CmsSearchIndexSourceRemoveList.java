@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexSourceRemoveList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -199,7 +199,6 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
                 listItem = (CmsListItem)itItems.next();
                 if (idx.getSourceNames().size() > 1) {
                     idx.removeSourceName((String)listItem.get(LIST_COLUMN_NAME));
-                    getList().removeItem(listItem.getId(), getLocale());
                 } else {
                     break;
                 }
@@ -208,7 +207,7 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
                 idx.initialize();
             } catch (CmsSearchException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             refreshList();
@@ -233,12 +232,11 @@ public class CmsSearchIndexSourceRemoveList extends A_CmsEmbeddedListDialog {
             // Don't allow removing last index source, config file will become invalid: 
             if (idx.getSourceNames().size() > 1) {
                 idx.removeSourceName((String)item.get(LIST_COLUMN_NAME));
-                getList().removeItem(item.getId(), getLocale());
                 try {
                     idx.initialize();
                 } catch (CmsSearchException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 refreshList();

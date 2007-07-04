@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/09/21 09:34:48 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.85 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,22 +100,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     protected CmsShellCommands() {
 
         // noop
-    }
-
-    /**
-     * Adds a web user.<p>
-     *
-     * @param name the name of the new web user
-     * @param password the password 
-     * @param group the default group name
-     * @param description the description
-     * @return the created user
-     * @throws Exception if something goes wrong
-     * @see CmsObject#addWebUser(String, String, String, String, Hashtable)
-     */
-    public CmsUser addWebUser(String name, String password, String group, String description) throws Exception {
-
-        return m_cms.addWebUser(name, password, group, description, new Hashtable());
     }
 
     /**
@@ -199,9 +183,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void createDefaultProject(String name, String description) throws Exception {
 
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot("/");
             CmsProject project = m_cms.createProject(
                 name,
                 description,
@@ -211,9 +195,9 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
-        if (m_cms.hasRole(CmsRole.SEARCH_MANAGER)) {
+        if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.WORKPLACE_MANAGER)) {
             // re-initialize the search indexes after default project generation
             OpenCms.getSearchManager().initialize(m_cms);
         }
@@ -306,17 +290,38 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given weeks.<p>
+     * Deletes the versions from the backup tables that are older then the given number of versions.<p>
      * 
-     * @param weeks a numer of weeks, all older backups are deleted
+     * @param versionsToKeep number of versions to keep
+     * 
      * @throws Exception if something goes wrong
-     * @see CmsObject#deleteBackups(long, int, org.opencms.report.I_CmsReport)
+     * 
+     * @see CmsObject#deleteHistoricalVersions(String, int, int, long, I_CmsReport)
+     * 
+     * @deprecated Use {@link #deleteHistoricalVersions(String, int, int, long)} instead
      */
-    public void deleteBackups(int weeks) throws Exception {
+    public void deleteBackups(int versionsToKeep) throws Exception {
 
-        long oneWeek = 604800000;
-        long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
-        m_cms.deleteBackups(maxDate, 100, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+        deleteHistoricalVersions("/", versionsToKeep, versionsToKeep, -1);
+    }
+
+    /**
+     * Deletes the versions from the history tables that are older then the given number of versions.<p>
+     * 
+     * @param folderName the name of the folder (with subresources) to delete historical versions for 
+     * @param versionsToKeep number of versions to keep, is ignored if negative 
+     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
+     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see CmsObject#deleteHistoricalVersions(String, int, int, long, I_CmsReport)
+     */
+    public void deleteHistoricalVersions(String folderName, int versionsToKeep, int versionsDeleted, long timeDeleted)
+    throws Exception {
+
+        m_cms.deleteHistoricalVersions(folderName, versionsToKeep, versionsDeleted, timeDeleted, new CmsShellReport(
+            m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -341,18 +346,20 @@ class CmsShellCommands implements I_CmsShellCommands {
 
      * @throws Exception if something goes wrong
      * 
-     * @see CmsObject#deleteProject(int)
+     * @see CmsObject#deleteProject(CmsUUID)
      */
     public void deleteProject(String name) throws Exception {
 
-        m_cms.deleteProject(m_cms.readProject(name).getId());
+        m_cms.deleteProject(m_cms.readProject(name).getUuid());
     }
 
     /**
      * Delete a property definition for a resource.<p>
      *
      * @param name the name of the property definition to delete
+     * 
      * @throws Exception if something goes wrong
+     * 
      * @see CmsObject#deletePropertyDefinition(String)
      */
     public void deletepropertydefinition(String name) throws Exception {
@@ -526,7 +533,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Displays the access control list of a given resource.<p>
      * 
      * @param resourceName the name of the resource
+     * 
      * @throws Exception if something goes wrong
+     * 
      * @see CmsObject#getAccessControlList(String)
      */
     public void getAcl(String resourceName) throws Exception {
@@ -535,17 +544,16 @@ class CmsShellCommands implements I_CmsShellCommands {
         Iterator principals = acList.getPrincipals().iterator();
         while (principals.hasNext()) {
             I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next());
-            System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
+            System.out.println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
         }
     }
 
     /**
      * Returns the Locales available on the system ready to use on Method 
-     * {@link #setLocale(String)} from the <code>CmsShell</code>. <p>
+     * {@link #setLocale(String)} from the <code>{@link CmsShell}</code>. <p>
      * 
      * Note that the full name containing language, country and optional variant seperated 
      * by underscores is returned always but the latter two parts may be left out. <p>
-     *
      */
     public void getLocales() {
 
@@ -660,7 +668,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
-        int id = project.getId();
+        CmsUUID id = project.getUuid();
         m_cms.getRequestContext().setCurrentProject(project);
         m_cms.copyResourceToProject("/");
         OpenCms.getImportExportManager().importData(
@@ -669,7 +677,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             "/",
             new CmsShellReport(m_cms.getRequestContext().getLocale()));
         m_cms.unlockProject(id);
-        m_cms.publishProject();
+        OpenCms.getPublishManager().publishProject(m_cms);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -753,10 +762,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         for (int i = 0; i < acList.size(); i++) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-            if (true) {
-                String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
-            }
+            String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
+            System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
         }
     }
 
@@ -774,7 +781,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         for (int i = 0; i < acList.size(); i++) {
             CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-            if (acePrincipal.equals(principal)) {
+            if (principal.equals(acePrincipal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
                 System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
             }
@@ -789,9 +796,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void perf() throws Exception {
 
         int maxTests = 50000;
-        m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
         try {
+            m_cms.getRequestContext().setSiteRoot("/");
             Random random = new Random();
             // create a resource filter to get the resources with
             List testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
@@ -828,7 +835,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 + " ms");
 
         } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
     }
 
@@ -844,6 +851,17 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Publishes the current project and waits until it finishes.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void publishProjectAndWait() throws Exception {
+
+        OpenCms.getPublishManager().publishProject(m_cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
      * Purges the jsp repository.<p>
      * 
      * @throws Exception if something goes wrong
@@ -852,9 +870,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void purgeJspRepository() throws Exception {
 
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-            new HashMap(0)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap(0)));
     }
 
     /**
@@ -903,7 +919,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the users group of the project
      * @throws Exception if something goes wrong
      */
-    public CmsGroup readGroupOfProject(int project) throws Exception {
+    public CmsGroup readGroupOfProject(CmsUUID project) throws Exception {
 
         return m_cms.readGroup(m_cms.readProject(project));
     }
@@ -915,7 +931,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the manager group of the project
      * @throws Exception if something goes wrong
      */
-    public CmsGroup readManagerGroup(int project) throws Exception {
+    public CmsGroup readManagerGroup(CmsUUID project) throws Exception {
 
         return m_cms.readManagerGroup(m_cms.readProject(project));
     }
@@ -927,7 +943,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the owner of the project
      * @throws Exception if something goes wrong
      */
-    public CmsUser readOwnerOfProject(int project) throws Exception {
+    public CmsUser readOwnerOfProject(CmsUUID project) throws Exception {
 
         return m_cms.readOwner(m_cms.readProject(project));
     }
@@ -943,7 +959,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
         try {
-            OpenCms.getSearchManager().rebuildAllIndexes(report, true);
+            OpenCms.getSearchManager().rebuildAllIndexes(report);
         } catch (CmsException e) {
             report.println(e);
         }
@@ -1009,7 +1025,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @return the project set
      * @throws Exception if something goes wrong
      */
-    public CmsProject setCurrentProject(int id) throws Exception {
+    public CmsProject setCurrentProject(CmsUUID id) throws Exception {
 
         return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(id));
     }
@@ -1088,7 +1104,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void unlockCurrentProject() throws Exception {
 
-        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
+        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getUuid());
     }
 
     /**

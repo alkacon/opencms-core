@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,9 +79,6 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyCustom.class);
-
-    /** Holds all active properties for the current resource. */
-    private Map m_activeProperties;
 
     /** Helper object holding the information about the customized properties. */
     private CmsExplorerTypeSettings m_explorerTypeSettings;
@@ -155,8 +150,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append("\t<td class=\"textbold\">");
         result.append(key(Messages.GUI_PROPERTY_VALUE_0));
         result.append("</td>\n");
+        // empty column for the checkboxes 
         result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
-        result.append(key(Messages.GUI_PROPERTY_USED_0));
+        result.append("&nbsp;");
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -239,7 +235,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         if (isEditable()) {
             int okButton = BUTTON_OK;
-            if (getParamDialogmode() != null && getParamDialogmode().startsWith(MODE_WIZARD)) {
+            if ((getParamDialogmode() != null) && getParamDialogmode().startsWith(MODE_WIZARD)) {
                 // in wizard mode, display finish button instead of ok button
                 okButton = BUTTON_FINISH;
             }
@@ -325,7 +321,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowEnd());
 
         // create NavText input row
-        result.append(buildPropertyEntry(CmsPropertyDefinition.PROPERTY_NAVTEXT, key(Messages.GUI_LABEL_NAVTEXT_0), editable));
+        result.append(buildPropertyEntry(
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            key(Messages.GUI_LABEL_NAVTEXT_0),
+            editable));
 
         // create NavPos select box row
         result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
@@ -378,74 +377,65 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             disabled = " disabled=\"disabled\"";
         }
         result.append(buildTableRowStart(propertyTitle));
-        if (getActiveProperties().containsKey(propertyName)) {
-            // the property is used, so create text field with checkbox and hidden field
-            CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
-            String propValue = currentProperty.getValue();
-            if (propValue != null) {
-                propValue = propValue.trim();
-            }
-            propValue = CmsEncoder.escapeXml(propValue);
-            
-            // create text input field
-            result.append("<input type=\"text\" class=\"maxwidth\"");
-            result.append(" name=\"");
-            result.append(PREFIX_VALUE);
-            result.append(propertyName);
-            result.append("\" id=\"");
-            result.append(PREFIX_VALUE);
-            result.append(propertyName);
-            result.append("\"");
-            if (editable) {
-                result.append(" onKeyup=\"checkValue('");
-                result.append(propertyName);
-                result.append("');\"");
-            }
-            result.append(disabled);
-            result.append(">");
-            
-            // create hidden field for value
-            result.append("<input type=\"hidden\" name=\"");
-            result.append(PREFIX_HIDDEN);
-            result.append(propertyName);
-            result.append("\" id=\"");
-            result.append(PREFIX_HIDDEN);
-            result.append(propertyName);
-            result.append("\" value=\"");
-            result.append(propValue);
-            result.append("\">");
-            result.append("</td>\n");
-            result.append("\t<td class=\"textcenter\">");
-            
-            // create activate/deactivate checkbox
-            result.append("<input type=\"checkbox\" name=\"");
-            result.append(PREFIX_USEPROPERTY);
-            result.append(propertyName);
-            result.append("\" id=\"");
-            result.append(PREFIX_USEPROPERTY);
-            result.append(propertyName);
-            result.append("\" value=\"true\"");
-            result.append(" checked=\"checked\"");
-            if (editable) {
-                result.append(" onClick=\"toggleDelete('");
-                result.append(propertyName);
-                result.append("');\"");
-            }
-            result.append(disabled + ">");
-        } else {
-            // property is not used, create an empty text input field
-            result.append("<input type=\"text\" class=\"maxwidth\" ");
-            result.append("name=\"");
-            result.append(PREFIX_VALUE);
-            result.append(propertyName);
-            result.append("\" id=\"");
-            result.append(PREFIX_VALUE);
-            result.append(propertyName);
-            result.append("\"");
-            result.append(disabled);
-            result.append("></td>\n");
-            result.append("\t<td class=\"textcenter\">&nbsp;");
+        // the property is used, so create text field with checkbox and hidden field
+        CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
+        String propValue = "";
+        if (currentProperty != null) {
+            propValue = currentProperty.getValue();
         }
+        if (propValue != null) {
+            propValue = propValue.trim();
+        }
+        propValue = CmsEncoder.escapeXml(propValue);
+
+        // create text input field
+        result.append("<input type=\"text\" class=\"maxwidth\"");
+        result.append(" name=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propertyName);
+        result.append("\" id=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propertyName);
+        result.append("\"");
+        if (editable) {
+            result.append(" onKeyup=\"checkValue('");
+            result.append(propertyName);
+            result.append("');\"");
+        }
+        result.append(disabled);
+        result.append(">");
+
+        // create hidden field for value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_HIDDEN);
+        result.append(propertyName);
+        result.append("\" id=\"");
+        result.append(PREFIX_HIDDEN);
+        result.append(propertyName);
+        result.append("\" value=\"");
+        result.append(propValue);
+        result.append("\">");
+        result.append("</td>\n");
+        result.append("\t<td class=\"propertydialog-checkboxcell\">");
+
+        // create activate/deactivate checkbox
+        result.append("<input type=\"checkbox\" name=\"");
+        result.append(PREFIX_USEPROPERTY);
+        result.append(propertyName);
+        result.append("\" id=\"");
+        result.append(PREFIX_USEPROPERTY);
+        result.append(propertyName);
+        result.append("\" value=\"true\"");
+        if (CmsStringUtil.isNotEmpty(propValue)) {
+            result.append(" checked=\"checked\"");
+        }
+        if (editable) {
+            result.append(" onClick=\"toggleDelete('");
+            result.append(propertyName);
+            result.append("');\"");
+        }
+        result.append(disabled + ">");
+
         result.append(buildTableRowEnd());
         return result;
     }
@@ -496,30 +486,6 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     }
 
     /**
-     * Returns a map with CmsProperty object values keyed by property keys.<p>
-     * 
-     * @return a map with CmsProperty object values
-     */
-    protected Map getActiveProperties() {
-
-        // get all used properties for the resource
-        if (m_activeProperties == null) {
-            try {
-                m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(
-                    getParamResource(),
-                    false));
-            } catch (CmsException e) {
-                // create an empty list
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-                m_activeProperties = new HashMap();
-            }
-        }
-        return m_activeProperties;
-    }
-
-    /**
      * Initializes the explorer type settings for the current resource type.<p>
      */
     protected void initExplorerTypeSettings() {
@@ -535,7 +501,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             try {
                 includeErrorpage(this, e);
             } catch (JspException exc) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_ERROR_INCLUDE_FAILED_1,
+                    FILE_DIALOG_SCREEN_ERRORPAGE));
             }
         }
     }
@@ -582,7 +550,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             setAction(ACTION_EDIT);
             String resName = CmsResource.getName(getParamResource());
-            if (resName.startsWith(CmsWorkplace.TEMP_FILE_PREFIX)) {
+            if (CmsWorkplace.isTemporaryFileName(resName)) {
                 resName = resName.substring(1);
             }
             setParamTitle(key(Messages.GUI_PROPERTIES_1, new Object[] {resName}));
@@ -694,7 +662,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             if (!propValue.equals(oldValue)) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
-                if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                if ((currentProperty.getStructureValue() == null) && (currentProperty.getResourceValue() == null)) {
                     // new property, determine setting from OpenCms workplace configuration
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         currentProperty.setStructureValue(propValue);

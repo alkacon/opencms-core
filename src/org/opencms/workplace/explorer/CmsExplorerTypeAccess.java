@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -39,14 +41,18 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionSetCustom;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -54,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,8 +72,14 @@ public class CmsExplorerTypeAccess {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
 
+    /** The map of configured access control entries. */
     private Map m_accessControl;
+
+    /** The acl based on the map of configured access control entries. */
     private CmsAccessControlList m_accessControlList;
+
+    /** Cached permissions based on roles. */
+    private Map m_permissionsCache;
 
     /**
      * Constructor, creates an empty, CmsExplorerTypeAccess object.<p>
@@ -75,7 +87,6 @@ public class CmsExplorerTypeAccess {
     public CmsExplorerTypeAccess() {
 
         m_accessControl = new HashMap();
-        m_accessControlList = new CmsAccessControlList();
     }
 
     /** 
@@ -96,15 +107,24 @@ public class CmsExplorerTypeAccess {
     }
 
     /** 
-     * Creates the access control list from the temporary map.<p> 
+     * Creates the access control list from the temporary map.<p>
+     *  
+     * @param resourceType the name of the resource type 
      * 
-     * @throws CmsException if reading a group or user fails
+     * @throws CmsException if something goes wrong
      */
-    public void createAccessControlList() throws CmsException {
+    public void createAccessControlList(String resourceType) throws CmsException {
 
         if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_2_INITIALIZING) {
             // we don't need this for simple test cases
             return;
+        }
+        if (m_permissionsCache == null) {
+            LRUMap lruMap = new LRUMap(2048);
+            m_permissionsCache = Collections.synchronizedMap(lruMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + resourceType, lruMap);
+        } else {
+            m_permissionsCache.clear();
         }
 
         m_accessControlList = new CmsAccessControlList();
@@ -113,27 +133,59 @@ public class CmsExplorerTypeAccess {
             String key = (String)i.next();
             if (!PRINCIPAL_DEFAULT.equals(key)) {
                 String value = (String)m_accessControl.get(key);
-                CmsUUID principalId = new CmsUUID();
                 // get the principal name from the principal String
                 String principal = key.substring(key.indexOf('.') + 1, key.length());
 
                 // create an OpenCms user context with "Guest" permissions
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
+                CmsUUID principalId = null;
                 if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                     // read the group
                     principal = OpenCms.getImportExportManager().translateGroup(principal);
-                    principalId = cms.readGroup(principal).getId();
-                } else {
+                    try {
+                        principalId = cms.readGroup(principal).getId();
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else if (key.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
                     // read the user
                     principal = OpenCms.getImportExportManager().translateUser(principal);
-                    principalId = cms.readUser(principal).getId();
+                    try {
+                        principalId = cms.readUser(principal).getId();
+                    } catch (CmsException e) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else {
+                    // read the role with role name
+                    CmsRole role = CmsRole.valueOfRoleName(principal);
+                    if (role == null) {
+                        // try to read the role in the old fashion with group name
+                        role = CmsRole.valueOfGroupName(principal);
+                    }
+                    principalId = role.getId();
                 }
-                // create a new entry for the principal
-                CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId, value);
-                m_accessControlList.add(entry);
+                if (principalId != null) {
+                    // create a new entry for the principal
+                    CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId, value);
+                    m_accessControlList.add(entry);
+                }
             }
         }
+    }
+
+    /**
+     * Returns the computed access Control List.<p>
+     *
+     * @return the computed access Control List
+     */
+    public CmsAccessControlList getAccessControlList() {
+
+        return m_accessControlList;
     }
 
     /**
@@ -151,35 +203,63 @@ public class CmsExplorerTypeAccess {
      * for the user in the given OpenCms user context.<p>  
      *  
      * @param cms the OpenCms user context to calculate the permissions for
+     * @param resource the resource to check the permissions for
      * 
      * @return the permissions for this explorer type settings for the user in the given OpenCms user context 
      */
-    public CmsPermissionSet getPermissions(CmsObject cms) {
+    public CmsPermissionSet getPermissions(CmsObject cms, CmsResource resource) {
 
+        Object cacheKey = getPermissionsCacheKey(cms, resource);
+        CmsPermissionSetCustom permissions;
+        if (cacheKey != null) {
+            permissions = (CmsPermissionSetCustom)m_permissionsCache.get(cacheKey);
+            if (permissions != null) {
+                return permissions;
+            }
+        }
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlList.clone();
 
         CmsUser user = cms.getRequestContext().currentUser();
         List groups = null;
         try {
-            groups = cms.getGroupsOfUser(user.getName());
+            groups = cms.getGroupsOfUser(user.getName(), false);
         } catch (CmsException e) {
             // error reading the groups of the current user
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+        }
+        List roles = null;
+        try {
+            roles = OpenCms.getRoleManager().getRolesForResource(cms, user.getName(), cms.getSitePath(resource));
+        } catch (CmsException e) {
+            // error reading the roles of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
         }
         String defaultPermissions = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
         // add the default permissions to the acl
         if ((defaultPermissions != null) && !user.isGuestUser()) {
             boolean found = false;
-            if (acl.getPermissions(user) != null) {
+            if (acl.getPermissions(user.getId()) != null) {
                 // acl already contains the user, no need for default
                 found = true;
             }
             if (!found && (groups != null)) {
                 // look up all groups to see if we need the default
-                Iterator i = groups.iterator();
-                while (i.hasNext()) {
-                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
-                    if (acl.getPermissions(principal) != null) {
+                Iterator itGroups = groups.iterator();
+                while (itGroups.hasNext()) {
+                    CmsGroup group = (CmsGroup)itGroups.next();
+                    if (acl.getPermissions(group.getId()) != null) {
+                        // acl already contains the group, no need for default
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found && (roles != null)) {
+                // look up all roles to see if we need the default
+                Iterator itRoles = roles.iterator();
+                while (itRoles.hasNext()) {
+                    CmsRole role = (CmsRole)itRoles.next();
+                    if (acl.getPermissions(role.getId()) != null) {
                         // acl already contains the group, no need for default
                         found = true;
                         break;
@@ -192,17 +272,55 @@ public class CmsExplorerTypeAccess {
                 acl.add(entry);
             }
         }
+        permissions = acl.getPermissions(user, groups, roles);
 
-        // get permissions of the current user
-        return acl.getPermissions(user, groups);
+        if (cacheKey != null) {
+            m_permissionsCache.put(cacheKey, permissions);
+        }
+        return permissions;
     }
 
     /**
      * Tests if there are any access information stored.<p>
+     * 
      * @return true or false
      */
     public boolean isEmpty() {
 
         return m_accessControl.isEmpty();
+    }
+
+    /**
+     * Returns the cache key for the roles and groups of the current user and the given resource.<p>
+     * 
+     * In this way, it does not matter if the resource and/or user permissions changes, so we never need to clean the cache.<p>
+     * 
+     * And since the cache is a LRU map, old trash entries will be automatically removed.<p> 
+     * 
+     * @param cms the current cms context
+     * @param resource the resource
+     * 
+     * @return the cache key
+     */
+    private String getPermissionsCacheKey(CmsObject cms, CmsResource resource) {
+
+        try {
+            String userName = cms.getRequestContext().currentUser().getName();
+            StringBuffer key = new StringBuffer(256);
+            key.append(resource.getRootPath()).append("_");
+            Iterator itGroups = cms.getGroupsOfUser(userName, true).iterator();
+            while (itGroups.hasNext()) {
+                CmsGroup group = (CmsGroup)itGroups.next();
+                key.append(group.getName()).append("_");
+            }
+            Iterator itRoles = OpenCms.getRoleManager().getRolesOfUser(cms, userName, "", true, true, false).iterator();
+            while (itRoles.hasNext()) {
+                CmsRole role = (CmsRole)itRoles.next();
+                key.append(role.getGroupName()).append("_");
+            }
+            return key.toString();
+        } catch (CmsException e) {
+            return null;
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,7 +50,7 @@ public interface I_CmsPrincipal extends Principal {
 
     /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
     int FLAG_CORE_LIMIT = 65536; // 2^16
-    
+
     /** This flag is set for disabled principals in the database. */
     int FLAG_DISABLED = 1;
 
@@ -63,8 +63,17 @@ public interface I_CmsPrincipal extends Principal {
     /** Flag to indicate a group is a potential project user group. */
     int FLAG_GROUP_PROJECT_USER = 4;
 
-    /** Flag to indicate a group is used as a role in the workflow. */
-    int FLAG_GROUP_WORKFLOW_ROLE = 8;
+    /** Flag to indicate a role group. */
+    int FLAG_GROUP_ROLE = 1048576; // 2^20 >> FLAG_CORE_LIMIT 
+
+    /**
+     * Flag to indicate a virtual group role, after this bit we need to encode a number between 0 and 
+     * <code>{@link CmsRole#getSystemRoles()}.size()-1</code> so we will need up to 4 more bits. 
+     */
+    int FLAG_GROUP_VIRTUAL = 1024; // 2^10 << FLAG_CORE_LIMIT 
+
+    /** Flag to indicate a user is not able to manage himself. */
+    int FLAG_USER_MANAGED = 2;
 
     /** Identifier for group principals. */
     String PRINCIPAL_GROUP = "GROUP";
@@ -122,6 +131,13 @@ public interface I_CmsPrincipal extends Principal {
     String getName();
 
     /**
+     * Returns the fully qualified name of the associated organizational unit.<p>
+     *
+     * @return the fully qualified name of the associated organizational unit
+     */
+    String getOuFqn();
+
+    /**
      * Returns this principals unique name prefixed with it's type.<p>
      * 
      * The type prefix can either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code> 
@@ -130,6 +146,13 @@ public interface I_CmsPrincipal extends Principal {
      * @return this principals unique name prefixed with this principals type
      */
     String getPrefixedName();
+
+    /**
+     * Returns the simple name of this organizational unit.
+     *
+     * @return the simple name of this organizational unit.
+     */
+    String getSimpleName();
 
     /**
      * Returns the hash code of this object.<p>

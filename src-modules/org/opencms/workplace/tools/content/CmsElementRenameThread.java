@@ -1,7 +1,7 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRenameThread.java,v $
+ * Date   : $Date: 2007/07/04 16:56:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,7 +65,6 @@ public class CmsElementRenameThread extends A_CmsReportThread {
         cms.getRequestContext().setUpdateSessionEnabled(false);
         initHtmlReport(cms.getRequestContext().getLocale());
         m_elementRename = elementRename;
-        start();
     }
 
     /**

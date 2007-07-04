@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools;
 
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -44,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +75,7 @@ public class CmsToolGroup {
      * 
      * @param adminTool the admin tool
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addAdminTool(CmsTool adminTool) {
 
@@ -89,7 +88,7 @@ public class CmsToolGroup {
      * @param adminTool the admin tool
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addAdminTool(CmsTool adminTool, float position) {
 

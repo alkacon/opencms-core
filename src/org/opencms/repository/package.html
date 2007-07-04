@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/package.html,v $
- Date   : $Date: 2007/02/23 16:23:05 $
- Version: $Revision: 1.2 $
+ Date   : $Date: 2007/07/04 16:56:50 $
+ Version: $Revision: 1.3 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,12 +36,34 @@
 </head>
 <body bgcolor="white">
 
-Package contains all classes, exceptions and interfaces needed to get access to a repository.
-A repository can be OpenCms or a file repository with access to the hard drive.<p>
+Package contains all classes and interfaces needed to create or use a repository to
+access the resources in the VFS.<p>
 
-@version $Revision: 1.2 $ 
+A repository is an set of interfaces (and their implementations) to create a simple
+access to the resources in the VFS of OpenCms. The repositories are configured in the
+<code>opencms-importexport.xml</code>. The {@link org.opencms.file.wrapper.CmsObjectWrapper} 
+is used by the repositories for the access to the VFS. So it is possible to configure 
+the repositories to use one or more implementations of the 
+{@link org.opencms.file.wrapper.I_CmsResourceWrapper} to change the view to the resources
+in the VFS. Additionaly it is possible to define filters to include or exclude files and
+folders form being displayed.<p>
 
-@since 6.5.6
+Use the {@link org.opencms.repository.CmsRepositoryManager} to get a configured 
+{@link org.opencms.repository.I_CmsRepository}. There you get a
+{@link org.opencms.repository.I_CmsRepositorySession} through login in. With that session 
+you will get the basic file and folder operations to the resources in the VFS of OpenCms.<p>
 
+Example:<br/>
+<code>
+	I_CmsRepository repository = OpenCms.getRepositoryManager().getRepository(repository_name);<br/>
+	I_CmsRepositorySession session = repository.login(username, password);
+</code><p>
+
+@version $Revision: 1.3 $ 
+
+@since 6.2.4
+
+@see org.opencms.repository.I_CmsRepository
+@see org.opencms.repository.I_CmsRepositorySession
 </body>
 </html>

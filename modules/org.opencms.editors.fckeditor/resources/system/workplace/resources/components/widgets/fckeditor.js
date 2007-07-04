@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2007/05/18 14:42:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,16 +23,16 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 /*
  * These scripts are required for the FCKeditor widgets in the xml content editor
  */
- 
+
 // FCKeditor global objects
 var editorInstances = new Array();
 var contentFields = new Array();
@@ -59,7 +59,7 @@ function submitHtml(form) {
 function showToolbar(editorInstance) {
 		if (expandedToolbars[editorInstance.Name] == null) {
         	editorInstance.ToolbarSet.Expand();
-        	expandedToolbars[editorInstance.Name] = true;    
+        	expandedToolbars[editorInstance.Name] = true;
     	}
 }
 

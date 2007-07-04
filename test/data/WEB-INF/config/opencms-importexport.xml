@@ -4,7 +4,6 @@
 <opencms>
 	<importexport>
 		<importexporthandlers>
-			<importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
 			<importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
 			<importexporthandler class="org.opencms.module.CmsModuleImportExportHandler"/>
 		</importexporthandlers>
@@ -12,14 +11,14 @@
 			<overwrite>true</overwrite>
 			<convert>true</convert>
 			<importversions>
-				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion4"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion5"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion6"/>
 			</importversions>
 			<immutables>
 				<resource uri="/system/"/>
-				<resource uri="/system/bodies/"/>
 				<resource uri="/system/galleries/"/>
 				<resource uri="/system/galleries/download/"/>
 				<resource uri="/system/galleries/externallinks/"/>
@@ -29,7 +28,6 @@
 				<resource uri="/system/modules/"/>
 				<resource uri="/system/shared/"/>
 				<resource uri="/system/workplace/"/>
-				<resource uri="/system/workplace/action/"/>
 				<resource uri="/system/workplace/administration/"/>
 				<resource uri="/system/workplace/help/"/>
 				<resource uri="/system/workplace/locales/"/>
@@ -37,7 +35,6 @@
 				<resource uri="/system/workplace/restypes/"/>
 				<resource uri="/system/workplace/scripts/"/>
 				<resource uri="/system/workplace/templates/"/>
-				<resource uri="/channels/"/>
 				<resource uri="/sites/"/>
 			</immutables>
 			<principaltranslations/>
@@ -47,6 +44,8 @@
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
 		<exportpath>export</exportpath>
+		<exportworkpath>temp</exportworkpath>
+		<exportbackups>2</exportbackups>
 		<defaultpropertyvalue>false</defaultpropertyvalue>
 		<defaultsuffixes>
 			<suffix key=".jpg"/>
@@ -76,4 +75,62 @@
 			</resourcestorender>
 		</rendersettings>
 	</staticexport>
+	<usercsvexport>
+        <separator>;</separator>
+        <columns>
+        	<column>description</column>
+            <column>lastname</column>
+            <column>firstname</column>
+            <column>email</column>
+            <column>address</column>
+            <column>zipcode</column>
+            <column>city</column>
+            <column>country</column>
+            <column>USERPREFERENCES_workplace-startupsettingssite</column>
+            <column>USERPREFERENCES_workplace-startupsettingslocale</column>
+            <column>password</column>
+        </columns>
+	</usercsvexport>
+	<repositories>
+		<repository name="standard" class="org.opencms.repository.CmsRepository">
+			<params>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlPage</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+  				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
+			</params>
+			<filter type="include">
+				<regex>/</regex>
+				<regex>/__properties/.*</regex>
+				<regex>/sites/.*</regex>
+				<regex>/system/</regex>
+				<regex>/system/__properties/.*</regex>
+				<regex>/system/galleries/.*</regex>
+				<regex>/system/modules/.*</regex>
+				<regex>/system/workplace/.*</regex>
+			</filter>
+		</repository>
+		<repository name="extended" class="org.opencms.repository.CmsRepository">
+			<params>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperJsp</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceExtensionWrapperXmlContent</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperXmlPage</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperSystemFolder</param>
+				<param name="wrapper">org.opencms.file.wrapper.CmsResourceWrapperPropertyFile</param>
+			</params>
+			<filter type="include">
+				<regex>/</regex>
+				<regex>/__properties/.*</regex>
+				<regex>/sites/.*</regex>
+				<regex>/system/</regex>
+				<regex>/system/__properties/.*</regex>
+				<regex>/system/galleries/.*</regex>
+				<regex>/system/modules/</regex>
+				<regex>/system/modules/[^/]*/</regex>
+				<regex>/system/modules/[^/]*/__properties/.*</regex>
+				<regex>/system/modules/[^/]*/resources/.*</regex>
+			</filter>
+		</repository>
+	</repositories>
 </opencms>

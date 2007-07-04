@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2007/06/27 15:33:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     private static final long serialVersionUID = 981176995635225294L;
 
     /** The CmsObject for the current user. */
-    private CmsObject m_cms;
+    private transient CmsObject m_cms;
 
     /** The name of the collector to use for list building. */
     private String m_collector;
@@ -90,7 +90,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     private List m_collectorResult;
 
     /** Reference to the last loaded content element. */
-    private I_CmsXmlDocument m_content;
+    private transient I_CmsXmlDocument m_content;
 
     /** The bean to store information required to make the result list browsable. */
     private CmsContentInfoBean m_contentInfoBean;
@@ -742,7 +742,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             file = (CmsFile)resource;
             if ((file.getContents() == null) || (file.getContents().length <= 0)) {
                 // file has no contents available, force re-read
-                file = null;
+                file = CmsFile.upgrade(resource, m_cms);
             }
         }
         if (file == null) {
@@ -754,7 +754,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
         // will come from there!
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
-        
+
         // check if locale is available
         m_contentLocale = m_locale;
         if (!m_content.hasLocale(m_contentLocale)) {

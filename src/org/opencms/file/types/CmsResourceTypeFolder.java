@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,25 @@ package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsNewResourceFolder;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
+
+    /** Configuration key for the optional list of resource types to show as available index page types. */
+    public static final String CONFIGURATION_INDEX_PAGE_TYPE = CmsNewResourceFolder.PROPERTY_RESTYPES_INDEXPAGE;
 
     /** The type id of this resource. */
     public static final int RESOURCE_TYPE_ID = 0;
@@ -56,6 +64,9 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
+
+    /** The configured list of resource types to show as available index page types. */
+    private String m_indexPageTypes;
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -85,6 +96,45 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        super.addConfigurationParameter(paramName, paramValue);
+        if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
+            if (CONFIGURATION_INDEX_PAGE_TYPE.equalsIgnoreCase(paramName)) {
+                m_indexPageTypes = paramValue.trim();
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
+     */
+    public Map getConfiguration() {
+
+        Map result = new TreeMap();
+        if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
+            result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
+        }
+        Map additional = super.getConfiguration();
+        if ((additional != null) && (additional.size() > 0)) {
+            result.putAll(additional);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the indexPageTypes.<p>
+     *
+     * @return the indexPageTypes
+     */
+    public String getIndexPageTypes() {
+
+        return m_indexPageTypes;
     }
 
     /**

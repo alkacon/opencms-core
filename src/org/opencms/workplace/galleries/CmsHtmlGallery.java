@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2006/05/19 08:34:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,12 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
             content = CmsEncoder.escapeXml(content);
             // use javascript function call with content as parameter
-            return button("javascript:pasteContent('" + content + "')", null, "apply.png", Messages.GUI_BUTTON_PASTE_0, 0);
+            return button(
+                "javascript:pasteContent('" + content + "')",
+                null,
+                "apply.png",
+                Messages.GUI_BUTTON_PASTE_0,
+                0);
         } else {
             // in editor mode, use simple javascript function call
             return button("javascript:pasteContent()", null, "apply.png", Messages.GUI_BUTTON_PASTE_0, 0);
@@ -152,7 +157,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource failed
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return html.toString();
     }
@@ -180,7 +185,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
      */
     public String getPreviewBodyStyle() {
 
-        return new String(" class=\"dialog\" unselectable=\"on\"");
+        return " class=\"dialog\" unselectable=\"on\"";
     }
 
     /**
@@ -188,7 +193,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
      */
     public String getPreviewDivStyle() {
 
-        return new String("style=\"width: 100%; margin-top: 5px\"");
+        return "style=\"width: 100%; margin-top: 5px\"";
     }
 
     /**

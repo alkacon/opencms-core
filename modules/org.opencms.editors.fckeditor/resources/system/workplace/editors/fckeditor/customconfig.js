@@ -27,7 +27,12 @@ String cssPath = extConf.getUriStyleSheet();
 // An example for a style XML can be found in the VFS file "/system/workplace/resources/editors/fckeditor/fckstyles.xml". 
 boolean styleXMLPresent = false;
 if (CmsStringUtil.isNotEmpty(cssPath)) {
-	String styleXML = cssPath + CmsFCKEditor.SUFFIX_STYLESXML;
+	String pathUsed = cssPath;
+	int idx = pathUsed.indexOf('?');
+	if (idx != -1) {
+		pathUsed = cssPath.substring(0, idx);
+	}
+	String styleXML = pathUsed + CmsFCKEditor.SUFFIX_STYLESXML;
 	if (cms.getCmsObject().existsResource(styleXML)) {
 		styleXMLPresent = true;
 		%>FCKConfig.StylesXmlPath = "<%= cms.link(styleXML) %>";<%
@@ -49,6 +54,7 @@ FCKConfig.ToolbarCanCollapse = false;
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
 FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
+FCKConfig.Plugins.Add("ocmsimage", "en,de", "<%= cms.link("plugins/") %>");
 <%
 
 boolean showTableOptions = options.showElement("option.table", displayOptions);
@@ -101,7 +107,7 @@ if (options.showElement("option.flash", displayOptions)) {
 
 // determine if the insert/edit image button should be shown
 if (options.showElement("option.images", displayOptions)) {
-	toolbar.append(",'-','Image'");
+	toolbar.append(",'-', 'OcmsImage'");
 }
 
 // insert rule button
@@ -199,11 +205,15 @@ if (options.showElement("option.form", displayOptions)) {
 
 %>
 
+FCKConfig.ToolbarSets["OpenCms"] = [
+        <%= toolbar %>
+];
+
 FCKConfig.Keystrokes = [
 	[ CTRL + 65 /*A*/, true ],
 	[ CTRL + 67 /*C*/, true ],
 	[ CTRL + 70 /*F*/, true ],
-	[ CTRL + 83 /*S*/, true ],
+	[ CTRL + 83 /*S*/, 'oc-save' ],
 	[ CTRL + 88 /*X*/, true ],
 	[ CTRL + 86 /*V*/, 'Paste' ],
 	[ SHIFT + 45 /*INS*/, 'Paste' ],
@@ -214,15 +224,12 @@ FCKConfig.Keystrokes = [
 	[ CTRL + 66 /*B*/, 'Bold' ],
 	[ CTRL + 73 /*I*/, 'Italic' ],
 	[ CTRL + 85 /*U*/, 'Underline' ],
-	[ CTRL + SHIFT + 83 /*S*/, true ],
-	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ]<% 
+	[ CTRL + SHIFT + 88 /*X*/, 'oc-exit' ],
+	[ CTRL + SHIFT + 83 /*S*/, 'oc-save_exit' ],
+	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ]<%
 	if (options.showElement("option.sourcecode", displayOptions)) { %>,
 	[ CTRL + 9 /*TAB*/, 'Source' ]<%
 	} %>
-] ;
-
-FCKConfig.ToolbarSets["OpenCms"] = [
-        <%= toolbar %>
 ];
 
 FCKConfig.PreserveSessionOnFileBrowser = true;

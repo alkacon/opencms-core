@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestWarFileUnpacked.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.File;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -70,7 +70,7 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
             basePath += File.separator;
         }
         File file = new File(basePath
-            + CmsSetupBean.FOLDER_WEBINF
+            + CmsSystemInfo.FOLDER_WEBINF
             + CmsSystemInfo.FOLDER_CONFIG
             + CmsSystemInfo.FILE_PROPERTIES);
         if (file.exists() && file.canRead() && file.canWrite()) {

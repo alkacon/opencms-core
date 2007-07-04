@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import javax.servlet.jsp.tagext.Tag;
  *
  * @author Shawn Bayern
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,7 +157,7 @@ public class CmsJspTagParam extends BodyTagSupport {
         I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent)t;
         String value = m_value;
         if (value == null) {
-            if (bodyContent == null || bodyContent.getString() == null) {
+            if ((bodyContent == null) || (bodyContent.getString() == null)) {
                 value = "";
             } else {
                 value = bodyContent.getString().trim();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,24 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
 import org.opencms.module.CmsModuleXmlHandler;
+import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.setup.update6to7.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
+import org.opencms.workplace.threads.CmsXmlContentRepairThread;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
@@ -67,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +101,15 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
+    /** Static flag to indicate if all modules should be updated regardless of their version number. */
+    private static final boolean UPDATE_ALL_MODULES = false;
+
+    /** The new logging offset in the database update thread. */
+    protected int m_newLoggingDBOffset;
+
+    /** The lod logging offset in the database update thread. */
+    protected int m_oldLoggingDBOffset;
+
     /** The used admin user name. */
     private String m_adminGroup = "_tmpUpdateGroup" + (System.currentTimeMillis() % 1000);
 
@@ -102,6 +118,12 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** The used admin user name. */
     private String m_adminUser = "Admin";
+
+    /** The update database thread. */
+    private CmsUpdateDBThread m_dbUpdateThread;
+
+    /** Parameter for keeping the history. */
+    private boolean m_keepHistory;
 
     /** List of module to be updated. */
     private List m_modulesToUpdate;
@@ -125,7 +147,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
-        m_logFile = FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+        m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
     }
 
     /**
@@ -235,6 +257,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns the update database thread.<p>
+     * 
+     * @return the update database thread
+     */
+    public CmsUpdateDBThread getUpdateDBThread() {
+
+        return m_dbUpdateThread;
+    }
+
+    /**
      * Returns the update Project.<p>
      *
      * @return the update Project
@@ -266,12 +298,13 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_modulesToUpdate = new ArrayList();
             Map installedModules = getInstalledModules();
             Map availableModules = getAvailableModules();
-            Iterator itMods = availableModules.keySet().iterator();
+            Iterator itMods = availableModules.entrySet().iterator();
             while (itMods.hasNext()) {
-                String name = (String)itMods.next();
+                Map.Entry entry = (Map.Entry)itMods.next();
+                String name = (String)entry.getKey();
                 CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
-                CmsModuleVersion availVer = ((CmsModule)availableModules.get(name)).getVersion();
-                boolean uptodate = (instVer != null && instVer.compareTo(availVer) >= 0);
+                CmsModuleVersion availVer = ((CmsModule)entry.getValue()).getVersion();
+                boolean uptodate = (!UPDATE_ALL_MODULES) && ((instVer != null) && (instVer.compareTo(availVer) >= 0));
                 if (uptodate) {
                     m_uptodateModules.add(name);
                 } else {
@@ -313,7 +346,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         for (int i = 0; itModules.hasNext(); i++) {
             String moduleName = (String)itModules.next();
             CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
-            if (!uptodate.contains(moduleName)) {
+            if (UPDATE_ALL_MODULES || !uptodate.contains(moduleName)) {
                 html.append(htmlModule(module, i));
                 hasModules = true;
             } else {
@@ -338,7 +371,6 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param webAppRfsPath path to the OpenCms web application
      * @param servletMapping the OpenCms servlet mapping
      * @param defaultWebApplication the name of the default web application
-     * 
      */
     public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
@@ -351,6 +383,14 @@ public class CmsUpdateBean extends CmsSetupBean {
                 }
                 m_workplaceUpdateThread = null;
             }
+            if (m_dbUpdateThread != null) {
+                if (m_dbUpdateThread.isAlive()) {
+                    m_dbUpdateThread.kill();
+                }
+                m_dbUpdateThread = null;
+                m_newLoggingOffset = 0;
+                m_oldLoggingOffset = 0;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -358,7 +398,87 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Prepares step 4 of the update wizard.<p>
+     * Returns the keep History parameter value.<p>
+     *
+     * @return the keep History parameter value
+     */
+    public boolean isKeepHistory() {
+
+        return m_keepHistory;
+    }
+
+    /**
+     * Prepares step 1 of the update wizard.<p>
+     */
+    public void prepareUpdateStep1() {
+
+        // nothing to do jet
+    }
+
+    /**
+     * Prepares step 1 of the update wizard.<p>
+     */
+    public void prepareUpdateStep1b() {
+
+        if (!isInitialized()) {
+            return;
+        }
+
+        if ((m_dbUpdateThread != null) && (m_dbUpdateThread.isFinished())) {
+            // update is already finished, just wait for client to collect final data
+            return;
+        }
+
+        if (m_dbUpdateThread == null) {
+            m_dbUpdateThread = new CmsUpdateDBThread(this);
+        }
+
+        if (!m_dbUpdateThread.isAlive()) {
+            m_dbUpdateThread.start();
+        }
+    }
+
+    /**
+     * Generates the output for step 1 of the setup wizard.<p>
+     * 
+     * @param out the JSP print stream
+     * @throws IOException in case errors occur while writing to "out"
+     */
+    public void prepareUpdateStep1bOutput(JspWriter out) throws IOException {
+
+        m_oldLoggingDBOffset = m_newLoggingDBOffset;
+        m_newLoggingDBOffset = m_dbUpdateThread.getLoggingThread().getMessages().size();
+        if (isInitialized()) {
+            for (int i = m_oldLoggingDBOffset; i < m_newLoggingDBOffset; i++) {
+                String str = m_dbUpdateThread.getLoggingThread().getMessages().get(i).toString();
+                str = CmsEncoder.escapeWBlanks(str, CmsEncoder.ENCODING_UTF_8);
+                out.println("output[" + (i - m_oldLoggingDBOffset) + "] = \"" + str + "\";");
+            }
+        } else {
+            out.println("output[0] = 'ERROR';");
+        }
+
+        boolean threadFinished = m_dbUpdateThread.isFinished();
+        boolean allWritten = m_oldLoggingDBOffset >= m_dbUpdateThread.getLoggingThread().getMessages().size();
+
+        out.println("function initThread() {");
+        if (isInitialized()) {
+            out.print("send();");
+            if (threadFinished && allWritten) {
+                out.println("setTimeout('top.display.finish()', 1000);");
+            } else {
+                int timeout = 5000;
+                if (getUpdateDBThread().getLoggingThread().getMessages().size() < 20) {
+                    timeout = 2000;
+                }
+                out.println("setTimeout('location.reload()', " + timeout + ");");
+            }
+        }
+        out.println("}");
+    }
+
+    /**
+     * Prepares step 5 of the update wizard.<p>
      */
     public void prepareUpdateStep5() {
 
@@ -373,6 +493,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     script += (char)readChar;
                     readChar = fis.read();
                 }
+                fis.close();
                 // substitute macros
                 script = CmsStringUtil.substitute(script, C_ADMIN_USER, getAdminUser());
                 script = CmsStringUtil.substitute(script, C_ADMIN_PWD, getAdminPwd());
@@ -391,7 +512,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Prepares the update wizard.<p>
+     * Prepares step 5 of the update wizard.<p>
      */
     public void prepareUpdateStep5b() {
 
@@ -487,6 +608,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Sets the keep History parameter value.<p>
+     *
+     * @param keepHistory the keep History parameter value to set
+     */
+    public void setKeepHistory(boolean keepHistory) {
+
+        m_keepHistory = keepHistory;
+    }
+
+    /**
      * Sets the update Project.<p>
      *
      * @param updateProject the update Project to set
@@ -551,9 +682,10 @@ public class CmsUpdateBean extends CmsSetupBean {
         // 5) because the setup bean implements I_CmsShellCommands, the shell constructor can pass the shell's CmsObject back to the setup bean
         // 6) thus, the setup bean can do things with the Cms
 
-        if (m_cms != null && m_installModules != null) {
-            Set utdModules = new HashSet(getUptodateModules());
+        if ((m_cms != null) && (m_installModules != null)) {
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+
+            Set utdModules = new HashSet(getUptodateModules());
             for (int i = 0; i < m_installModules.size(); i++) {
                 String name = (String)m_installModules.get(i);
                 if (!utdModules.contains(name)) {
@@ -570,6 +702,105 @@ public class CmsUpdateBean extends CmsSetupBean {
                         I_CmsReport.FORMAT_HEADLINE);
                 }
             }
+        }
+    }
+
+    /**
+     * Fills the relations db tables during the update.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void updateRelations() throws Exception {
+
+        I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+
+        report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
+
+        String storedSite = m_cms.getRequestContext().getSiteRoot();
+        CmsProject project = null;
+        try {
+            String projectName = "Update relations project";
+            try {
+                // try to read a (leftover) unlock project
+                project = m_cms.readProject(projectName);
+            } catch (CmsException e) {
+                // create a Project to unlock the resources
+                project = m_cms.createProject(
+                    projectName,
+                    projectName,
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
+            }
+
+            m_cms.getRequestContext().setSiteRoot(""); // change to the root site
+            m_cms.getRequestContext().setCurrentProject(project);
+
+            List types = OpenCms.getResourceManager().getResourceTypes();
+            int n = types.size();
+            int m = 0;
+            Iterator itTypes = types.iterator();
+            while (itTypes.hasNext()) {
+                I_CmsResourceType type = (I_CmsResourceType)itTypes.next();
+                m++;
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    type.getTypeName()));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+                if (type instanceof I_CmsLinkParseable) {
+                    try {
+                        CmsXmlContentRepairSettings settings = new CmsXmlContentRepairSettings(m_cms);
+                        settings.setIncludeSubFolders(true);
+                        settings.setVfsFolder("/");
+                        settings.setResourceType(type.getTypeName());
+
+                        CmsXmlContentRepairThread t = new CmsXmlContentRepairThread(m_cms, settings);
+                        t.start();
+
+                        synchronized (this) {
+                            t.join();
+                        }
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.FORMAT_OK);
+                    } catch (Exception e) {
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ERROR_0), I_CmsReport.FORMAT_ERROR);
+                        report.addError(e);
+                        // log the error
+                        e.printStackTrace(System.err);
+                    }
+                } else {
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_WARNING);
+                }
+            }
+        } finally {
+            try {
+                if (project != null) {
+                    try {
+                        m_cms.unlockProject(project.getUuid()); // unlock everything
+                        OpenCms.getPublishManager().publishProject(
+                            m_cms,
+                            report,
+                            OpenCms.getPublishManager().getPublishList(m_cms));
+                        OpenCms.getPublishManager().waitWhileRunning();
+                    } finally {
+                        m_cms.getRequestContext().setCurrentProject(m_cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    }
+                }
+            } finally {
+                m_cms.getRequestContext().setSiteRoot(storedSite);
+            }
+            report.println(
+                Messages.get().container(Messages.RPT_FINISH_UPDATE_RELATIONS_0),
+                I_CmsReport.FORMAT_HEADLINE);
+
         }
     }
 

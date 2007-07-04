@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/10/26 10:22:11 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,17 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.CmsHighlightFinder;
+import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
@@ -49,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -74,16 +80,11 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
-
-    /** Constant for a field list that contains the "meta" field as well as the "content" field. */
-    public static final String[] DOC_META_FIELDS = new String[] {
-        I_CmsDocumentFactory.DOC_META,
-        I_CmsDocumentFactory.DOC_CONTENT};
 
     /** Constant for additional param to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
@@ -106,14 +107,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Special root path start token for optimized path queries. */
     public static final String ROOT_PATH_TOKEN = "root" + ROOT_PATH_SUFFIX;
 
-    /** Separator for the search excerpt fragments. */
-    private static final String EXCERPT_FRAGMENT_SEPARATOR = " ... ";
-
-    /** Size of the excerpt fragments in byte. */
-    private static final int EXCERPT_FRAGMENT_SIZE = 60;
-
-    /** Fragments required in excerpt. */
-    private static final int EXCERPT_REQUIRED_FRAGMENTS = 5;
+    /** Constant for a field list that contains the "meta" field as well as the "content" field. */
+    static final String[] DOC_META_FIELDS = new String[] {CmsSearchField.FIELD_META, CmsSearchField.FIELD_CONTENT};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
@@ -133,8 +128,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
     private boolean m_enabled;
 
-    /** The language filter of this index. */
-    private String m_locale;
+    /** The search field configuration of this index. */
+    private CmsSearchFieldConfiguration m_fieldConfiguration;
+
+    /** The name of the search field configuration used by this index. */
+    private String m_fieldConfigurationName;
+
+    /** The locale of this index. */
+    private Locale m_locale;
 
     /** The name of this index. */
     private String m_name;
@@ -188,7 +189,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Rewrites the a resource path for use in the {@link I_CmsDocumentFactory#DOC_ROOT} field.<p>
+     * Rewrites the a resource path for use in the {@link CmsSearchField#FIELD_ROOT} field.<p>
      * 
      * All "/" chars in the path are replaced with the {@link #ROOT_PATH_SUFFIX} token.
      * This is required in order to use a Lucene "phrase query" on the resource path.
@@ -223,7 +224,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Spits the a resource path into tokens for use in the <code>{@link I_CmsDocumentFactory#DOC_ROOT}</code> field
+     * Spits the a resource path into tokens for use in the <code>{@link CmsSearchField#FIELD_ROOT}</code> field
      * and with the <code>{@link #rootPathRewrite(String)}</code> method.<p>
      * 
      * @param path the path to split
@@ -356,32 +357,67 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             result.put(PRIORITY, new Integer(m_priority));
         }
         if (!m_createExcerpt) {
-            result.put(EXCERPT, new Boolean(m_createExcerpt));
+            result.put(EXCERPT, Boolean.valueOf(m_createExcerpt));
         }
         if (m_dontCheckPermissions) {
-            result.put(PERMISSIONS, new Boolean(!m_dontCheckPermissions));
+            result.put(PERMISSIONS, Boolean.valueOf(!m_dontCheckPermissions));
         }
         return result;
     }
 
     /**
-     * Returns the configured document types of this index for the given resource path.<p>
+     * Returns the document type factory used for the given resource in this index, or <code>null</code>  
+     * in case the resource is not indexed by this index.<p>
      * 
-     * The result List contains Strings with the names of the document types.<p>
+     * A resource is indexed if the following is all true: <ol>
+     * <li>The index contains at last one index source matching the root path of the given resource.
+     * <li>For this matching index source, the document type factory needed by the resource is also configured.
+     * </ol>
+     * 
+     * @param res the resource to check
+     * 
+     * @return he document type factory used for the given resource in this index, or <code>null</code>  
+     * in case the resource is not indexed by this index
+     */
+    public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
+
+        if ((res != null) && (m_sources != null)) {
+            // the result can only be null or the type configured for the resource
+            I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
+            if (result != null) {
+                // check the path of the resource if it matches with one (or more) of the configured index sources
+                Iterator i = m_sources.iterator();
+                while (i.hasNext()) {
+                    CmsSearchIndexSource source = (CmsSearchIndexSource)i.next();
+                    if (source.isIndexing(res.getRootPath(), result.getName())) {
+                        // we found an index source that indexes the resource
+                        return result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a list of names (Strings) of configured document type factorys for the given resource path.<p>
      * 
      * @param path path of the folder 
      * 
-     * @return the configured document types of this index for the given resource path
+     * @return a list of names (Strings) of configured document type factorys for the given resource path
+     * 
+     * @deprecated use {@link #getDocumentFactory(CmsResource)} instead to find out if this index is 'interested' in a resource
      */
     public List getDocumenttypes(String path) {
 
         List documenttypes = null;
         if (m_documenttypes != null) {
-            for (Iterator i = m_documenttypes.keySet().iterator(); i.hasNext();) {
-                String key = (String)i.next();
+            for (Iterator i = m_documenttypes.entrySet().iterator(); i.hasNext();) {
+                Map.Entry e = (Map.Entry)i.next();
+                String key = (String)e.getKey();
                 // NOTE: assumed that configured resource paths do not overlap, otherwise result is undefined
                 if (path.startsWith(key)) {
-                    documenttypes = (List)m_documenttypes.get(key);
+                    documenttypes = (List)e.getValue();
                     break;
                 }
             }
@@ -390,6 +426,26 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             documenttypes = OpenCms.getSearchManager().getDocumentTypes();
         }
         return documenttypes;
+    }
+
+    /**
+     * Returns the search field configuration of this index.<p>
+     * 
+     * @return the search field configuration of this index
+     */
+    public CmsSearchFieldConfiguration getFieldConfiguration() {
+
+        return m_fieldConfiguration;
+    }
+
+    /**
+     * Returns the name of the field configuration used for this index.<p>
+     * 
+     * @return the name of the field configuration used for this index
+     */
+    public String getFieldConfigurationName() {
+
+        return m_fieldConfigurationName;
     }
 
     /**
@@ -413,7 +469,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             } else {
                 // index does not exist yet
                 f = f.getParentFile();
-                if (f != null && !f.exists()) {
+                if ((f != null) && !f.exists()) {
                     // create the parent folders if required
                     f.mkdirs();
                 }
@@ -434,9 +490,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @return the language of the index, i.e. de
      */
-    public String getLocale() {
+    public Locale getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * Returns the locale of the index as a String.<p>
+     * 
+     * @return the locale of the index as a String
+     * 
+     * @see #getLocale()
+     */
+    public String getLocaleString() {
+
+        return getLocale().toString();
     }
 
     /**
@@ -559,6 +627,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     sourceName), e);
             }
         }
+
+        // initialize the search field configuration
+        if (m_fieldConfigurationName == null) {
+            // if not set, use standard field configuration
+            m_fieldConfigurationName = CmsSearchFieldConfiguration.STR_STANDARD;
+        }
+        m_fieldConfiguration = OpenCms.getSearchManager().getFieldConfiguration(m_fieldConfigurationName);
+        if (m_fieldConfiguration == null) {
+            // we must have a valid field configuration to continue
+            throw new CmsSearchException(Messages.get().container(
+                Messages.ERR_FIELD_CONFIGURATION_UNKNOWN_2,
+                m_name,
+                m_fieldConfigurationName));
+        }
     }
 
     /**
@@ -587,12 +669,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * The result is returned as List with entries of type I_CmsSearchResult.<p>
      * @param cms the current user's Cms object
      * @param params the parameters to use for the search
-     * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
      * @return the List of results found or an empty list
      * @throws CmsSearchException if something goes wrong
      */
-    public synchronized CmsSearchResultList search(CmsObject cms, CmsSearchParameters params, int matchesPerPage)
-    throws CmsSearchException {
+    public synchronized CmsSearchResultList search(CmsObject cms, CmsSearchParameters params) throws CmsSearchException {
 
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;
@@ -651,14 +731,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // implementation note: 
             // initially this was a simple PrefixQuery based on the DOC_PATH
             // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
-            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better    
+            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better 
             // cw/261006 - paths elements should not contain uppercase letters, otherwise searcher does not find the appropriate results
             BooleanQuery pathQuery = new BooleanQuery();
             for (int i = 0; i < roots.length; i++) {
                 String[] paths = rootPathSplit(roots[i]);
                 PhraseQuery phrase = new PhraseQuery();
                 for (int j = 0; j < paths.length; j++) {
-                    Term term = new Term(I_CmsDocumentFactory.DOC_ROOT, paths[j].toLowerCase());
+                    Term term = new Term(CmsSearchField.FIELD_ROOT, paths[j].toLowerCase());
                     phrase.add(term);
                 }
                 pathQuery.add(phrase, BooleanClause.Occur.SHOULD);
@@ -670,7 +750,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // add query categories (if required)
                 BooleanQuery categoryQuery = new BooleanQuery();
                 for (int i = 0; i < params.getCategories().size(); i++) {
-                    Term term = new Term(I_CmsDocumentFactory.DOC_CATEGORY, (String)params.getCategories().get(i));
+                    Term term = new Term(CmsSearchField.FIELD_CATEGORY, (String)params.getCategories().get(i));
                     TermQuery termQuery = new TermQuery(term);
                     categoryQuery.add(termQuery, BooleanClause.Occur.SHOULD);
                 }
@@ -689,7 +769,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 query.add(fieldsQuery, BooleanClause.Occur.MUST);
             } else {
                 // if no fields are provided, just use the "content" field by default
-                QueryParser p = new QueryParser(I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer);
+                QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, languageAnalyzer);
                 query.add(p.parse(params.getQuery()), BooleanClause.Occur.MUST);
             }
 
@@ -724,22 +804,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // perform the search operation          
             hits = searcher.search(finalQuery, params.getSort());
 
-            int hitCount = hits.length();
-
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
             Document doc;
             CmsSearchResult searchResult;
-            String excerpt = null;
 
             if (hits != null) {
+                int hitCount = hits.length();
                 int page = params.getSearchPage();
                 int start = -1, end = -1;
-                if (matchesPerPage > 0 && page > 0 && hitCount > 0) {
+                if ((params.getMatchesPerPage() > 0) && (page > 0) && (hitCount > 0)) {
                     // calculate the final size of the search result
-                    start = matchesPerPage * (page - 1);
-                    end = start + matchesPerPage;
+                    start = params.getMatchesPerPage() * (page - 1);
+                    end = start + params.getMatchesPerPage();
                     // ensure that both i and n are inside the range of foundDocuments.size()
                     start = (start > hitCount) ? hitCount : start;
                     end = (end > hitCount) ? hitCount : end;
@@ -750,19 +828,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 int visibleHitCount = hitCount;
-                for (int i = 0, cnt = 0; i < hitCount && cnt < end; i++) {
+                for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
                         doc = hits.doc(i);
                         if (hasReadPermission(cms, doc)) {
                             // user has read permission
                             if (cnt >= start) {
-                                // do not use the resource to obtain the raw content, read it from the lucene document !
+                                // do not use the resource to obtain the raw content, read it from the lucene document!
                                 // documents must not have content (i.e. images), so check if the content field exists
-                                if (m_createExcerpt && doc.getField(I_CmsDocumentFactory.DOC_CONTENT) != null) {
-                                    excerpt = getExcerpt(
-                                        doc.getField(I_CmsDocumentFactory.DOC_CONTENT).stringValue(),
-                                        finalQuery,
-                                        languageAnalyzer);
+                                String excerpt = null;
+                                if (m_createExcerpt) {
+                                    I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
+                                    excerpt = highlighter.getExcerpt(doc, this, params, finalQuery, languageAnalyzer);
                                 }
                                 searchResult = new CmsSearchResult(Math.round(hits.score(i) * 100f), doc, excerpt);
                                 searchResults.add(searchResult);
@@ -786,9 +863,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             timeResultProcessing += System.currentTimeMillis();
-
-        } catch (Exception exc) {
-            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), exc);
+        } catch (RuntimeException e) {    
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
+        } catch (Exception e) {
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
         } finally {
 
             // re-set thread to previous priority
@@ -809,7 +887,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         timeTotal += System.currentTimeMillis();
 
         Object[] logParams = new Object[] {
-            new Integer(hits.length()),
+            new Integer(hits == null ? 0 : hits.length()),
             new Long(timeTotal),
             new Long(timeLucene),
             new Long(timeResultProcessing)};
@@ -831,13 +909,45 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Sets the field configuration used for this index.<p>
+     * 
+     * @param fieldConfiguration the field configuration to set
+     */
+    public void setFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
+
+        m_fieldConfiguration = fieldConfiguration;
+    }
+
+    /**
+     * Sets the name of the field configuration used for this index.<p>
+     * 
+     * @param fieldConfigurationName the name of the field configuration to set
+     */
+    public void setFieldConfigurationName(String fieldConfigurationName) {
+
+        m_fieldConfigurationName = fieldConfigurationName;
+    }
+
+    /**
      * Sets the locale to index resources.<p>
      * 
      * @param locale the locale to index resources
      */
-    public void setLocale(String locale) {
+    public void setLocale(Locale locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the locale to index resources as a String.<p>
+     * 
+     * @param locale the locale to index resources
+     * 
+     * @see #setLocale(Locale)
+     */
+    public void setLocaleString(String locale) {
+
+        setLocale(CmsLocaleManager.getLocale(locale));
     }
 
     /**
@@ -855,13 +965,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_SEARCHINDEX_CREATE_MISSING_NAME_0));
         } else {
-
             // check if already used, but only if the name was modified: 
             // this is important as unmodifiable DisplayWidgets will also invoke this...
             if (!name.equals(m_name)) {
                 // don't mess with xml-configuration
                 if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
-                    // Not needed at startup and additionally getSearchManager may return null
+                    // not needed at startup and additionally getSearchManager may return null
                     Iterator itIdxNames = OpenCms.getSearchManager().getIndexNames().iterator();
                     while (itIdxNames.hasNext()) {
                         if (itIdxNames.next().equals(name)) {
@@ -873,9 +982,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
             }
         }
-
         m_name = name;
-
     }
 
     /**
@@ -925,48 +1032,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns an excerpt of the given content related to the given search query.<p>
-     * 
-     * @param content the content
-     * @param searchQuery the search query
-     * @param analyzer the analyzer used 
-     * 
-     * @return an excerpt of the content
-     * 
-     * @throws IOException if something goes wrong
-     */
-    protected String getExcerpt(String content, Query searchQuery, Analyzer analyzer) throws IOException {
-
-        if (content == null) {
-            return null;
-        }
-
-        CmsHighlightFinder highlighter = new CmsHighlightFinder(
-            OpenCms.getSearchManager().getHighlighter(),
-            searchQuery,
-            analyzer);
-
-        String excerpt = highlighter.getBestFragments(
-            content,
-            EXCERPT_FRAGMENT_SIZE,
-            EXCERPT_REQUIRED_FRAGMENTS,
-            EXCERPT_FRAGMENT_SEPARATOR);
-
-        // kill all unwanted chars in the excerpt
-        excerpt = excerpt.replace('\t', ' ');
-        excerpt = excerpt.replace('\n', ' ');
-        excerpt = excerpt.replace('\r', ' ');
-        excerpt = excerpt.replace('\f', ' ');
-
-        int maxLength = OpenCms.getSearchManager().getMaxExcerptLength();
-        if (excerpt != null && excerpt.length() > maxLength) {
-            excerpt = excerpt.substring(0, maxLength);
-        }
-
-        return excerpt;
-    }
-
-    /**
      * Checks if the OpenCms resource referenced by the result document can be read 
      * be the user of the given OpenCms context.<p>
      * 
@@ -981,16 +1046,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return true;
         }
 
-        Field typeField = doc.getField(I_CmsDocumentFactory.DOC_TYPE);
-        Field pathField = doc.getField(I_CmsDocumentFactory.DOC_PATH);
+        Field typeField = doc.getField(CmsSearchField.FIELD_TYPE);
+        Field pathField = doc.getField(CmsSearchField.FIELD_PATH);
         if ((typeField == null) || (pathField == null)) {
             // permission check needs only to be performed for VFS documents that contain both fields
             return true;
         }
+        
+        String type = typeField.stringValue();
+        if (!A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX.equals(type)
+            && !OpenCms.getResourceManager().hasResourceType(type)) {
+            // this is not a known VFS resource type (also not the generic "VFS" type of OpenCms before 7.0)
+            return true;
+        }
 
-        String rootPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
-
-        // check if the resource "exits", this will implicitly check read permission and if the resource was deleted
-        return cms.existsResource(rootPath);
+        // check if the resource exits in the VFS, 
+        // this will implicitly check read permission and if the resource was deleted
+        String contextPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
+        return cms.existsResource(contextPath);
     }
 }

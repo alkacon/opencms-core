@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2006/10/17 09:09:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,6 +137,10 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
             if (!m_searchManager.getSearchIndexes().contains(m_index)) {
                 // empty or null name and uniqueness check in add method 
                 m_searchManager.addSearchIndex(m_index);
+            }
+            // check if field configuration has been updated, if thus set field configuration to the now used
+            if (!m_index.getFieldConfigurationName().equals(m_index.getFieldConfiguration().getName())) {
+                m_index.setFieldConfiguration(m_searchManager.getFieldConfiguration(m_index.getFieldConfigurationName()));
             }
             writeConfiguration();
 
@@ -314,7 +319,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     private CmsSearchIndex createDummySearchIndex() {
 
         CmsSearchIndex result = new CmsSearchIndex();
-        result.setLocale("en");
+        result.setLocale(Locale.ENGLISH);
         result.setProjectName("Online");
         result.setRebuildMode("auto");
 

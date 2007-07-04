@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2006/09/21 09:34:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:45 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0
  */

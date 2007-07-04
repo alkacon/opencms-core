@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.workplace.administration;
 
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 import java.util.Iterator;
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsAdminMenuGroup {
      * 
      * @param item the item
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addMenuItem(CmsAdminMenuItem item) {
 
@@ -88,7 +88,7 @@ public class CmsAdminMenuGroup {
      * @param item the item
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addMenuItem(CmsAdminMenuItem item, float position) {
 

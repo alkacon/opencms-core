@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2006/03/27 14:52:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -102,16 +102,16 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "singleFile"
                 return null;
             case 1:
-            // "allInFolder"
+                // "allInFolder"
             case 2:
-            // "allInFolderDateReleasedDesc"
+                // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
                 return getCreateInFolder(cms, param);
             case 4:
-            // "allInSubTree"
+                // "allInSubTree"
             case 5:
-            // "allInSubTreeDateReleasedDesc"
+                // "allInSubTreeDateReleasedDesc"
             case 6:
                 // "allInSubTreeNavPos"
                 return null;
@@ -137,16 +137,16 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "singleFile"
                 return null;
             case 1:
-            // "allInFolder"
+                // "allInFolder"
             case 2:
-            // "allInFolderDateReleasedDesc"
+                // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
                 return param;
             case 4:
-            // "allInSubTree"
+                // "allInSubTree"
             case 5:
-            // "allInSubTreeDateReleasedDesc"
+                // "allInSubTreeDateReleasedDesc"
             case 6:
                 // "allInSubTreeNavPos"
                 return null;
@@ -252,12 +252,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             CmsJspNavElement navElement = CmsJspNavBuilder.getNavigationForResource(cms, cms.getSitePath(resource));
 
             // check if the resource has the NavPos property set or not
-            if (navElement != null && navElement.getNavPosition() != Float.MAX_VALUE) {
+            if ((navElement != null) && (navElement.getNavPosition() != Float.MAX_VALUE)) {
                 navElementMap.put(navElement, resource);
             } else if (LOG.isInfoEnabled()) {
                 // printing a log messages makes it a little easier to indentify 
                 // resources having not the NavPos property set
-                LOG.info(Messages.get().getBundle().key(Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1, navElement.getResourceName()));
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1,
+                    cms.getSitePath(resource)));
             }
         }
 

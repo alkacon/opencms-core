@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/10/26 12:25:35 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
@@ -39,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,7 +53,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WORKPLACE_DIALOG_0 = "ERR_WORKPLACE_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_WORKPLACE_DIALOG_PARAMS_1 = "ERR_WORKPLACE_DIALOG_PARAMS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKPLACE_LOCK_RESOURCE_1 = "ERR_WORKPLACE_LOCK_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AJAX_REPORT_ERROR_0 = "GUI_AJAX_REPORT_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AJAX_REPORT_GIVEUP_0 = "GUI_AJAX_REPORT_GIVEUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AJAX_REPORT_WAIT_0 = "GUI_AJAX_REPORT_WAIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_EXIT_0 = "GUI_BUTTON_EXIT_0";
@@ -65,6 +78,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_PUBLISH_0 = "GUI_BUTTON_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PUBLISHQUEUE_0 = "GUI_BUTTON_PUBLISHQUEUE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_RELOAD_0 = "GUI_BUTTON_RELOAD_0";
@@ -121,6 +137,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_BUTTON_OK_0 = "GUI_DIALOG_BUTTON_OK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_RESET_0 = "GUI_DIALOG_BUTTON_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_SEARCH_0 = "GUI_DIALOG_BUTTON_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
@@ -157,6 +176,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_STATENIP_0 = "GUI_EXPLORER_STATENIP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_BROADCAST_FROM_SYSTEM_0 = "GUI_LABEL_BROADCAST_FROM_SYSTEM_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_BROADCASTMESSAGEFROM_0 = "GUI_LABEL_BROADCASTMESSAGEFROM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -164,6 +186,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_LOGINTIME_0 = "GUI_LABEL_LOGINTIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_OU_0 = "GUI_LABEL_OU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_PROJECT_0 = "GUI_LABEL_PROJECT_0";
@@ -178,7 +203,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_VIEW_0 = "GUI_LABEL_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_WPTITLE_2 = "GUI_LABEL_WPTITLE_2";
+    public static final String GUI_LABEL_WPTITLE_1 = "GUI_LABEL_WPTITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_BUTTON_0 = "GUI_LOGIN_BUTTON_0";
@@ -211,6 +236,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_HEADLINE_ALREADY_IN_0 = "GUI_LOGIN_HEADLINE_ALREADY_IN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1 = "GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_0 = "GUI_LOGIN_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -230,6 +258,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0 = "GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_0 = "GUI_LOGIN_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SELECT_OFF_0 = "GUI_LOGIN_ORGUNIT_SELECT_OFF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_ORGUNIT_SELECT_ON_0 = "GUI_LOGIN_ORGUNIT_SELECT_ON_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_PASSWORD_0 = "GUI_LOGIN_PASSWORD_0";
@@ -253,13 +290,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKFLOW_NAME_0 = "GUI_WORKFLOW_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_DIALOG_HANDLER_2 = "INIT_ADD_DIALOG_HANDLER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_EXPORT_POINT_2 = "INIT_ADD_EXPORT_POINT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_MENURULE_1 = "INIT_ADD_MENURULE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_TYPE_SETTING_1 = "INIT_ADD_TYPE_SETTING_1";
@@ -292,10 +329,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EDITOR_ACTION_CLASS_1 = "INIT_EDITOR_ACTION_CLASS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_EDITOR_CSSHANDLER_CLASS_1 = "INIT_EDITOR_CSSHANDLER_CLASS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_EDITOR_DISPLAY_OPTS_1 = "INIT_EDITOR_DISPLAY_OPTS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EDITOR_HANDLER_CLASS_1 = "INIT_EDITOR_HANDLER_CLASS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_EDITOR_PRE_ACTION_2 = "INIT_EDITOR_PRE_ACTION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_LABEL_LINKS_IN_FOLDER_1 = "INIT_LABEL_LINKS_IN_FOLDER_1";
@@ -328,12 +371,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_VFS_ACCESS_INITIALIZED_0 = "INIT_VFS_ACCESS_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0 = "INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0 = "INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_INITIALIZE_START_0 = "INIT_WORKPLACE_INITIALIZE_START_0";
 
     /** Message constant for key in the resource bundle. */
@@ -343,6 +380,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_WORKPLACE_VIEW_1 = "INIT_WORKPLACE_VIEW_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_XMLCONTENT_AUTOCORRECT_DISABLED_0 = "INIT_XMLCONTENT_AUTOCORRECT_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0 = "INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DIALOG_HANDLER_CLASS_2 = "LOG_DIALOG_HANDLER_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
@@ -350,6 +393,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_ERRORPAGE_FAILED_0 = "LOG_INCLUDE_ERRORPAGE_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INVALID_EDITOR_CSSHANDLER_1 = "LOG_INVALID_EDITOR_CSSHANDLER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INVALID_EDITOR_PRE_ACTION_1 = "LOG_INVALID_EDITOR_PRE_ACTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_NO_STARTUP_PROJECT_2 = "LOG_LOGIN_NO_STARTUP_PROJECT_2";
@@ -413,7 +462,7 @@ public final class Messages extends A_CmsMessageBundle {
      * @param state  STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.
      * @return cconstanname as String
      */
-    public static String getStateKey(int state) {
+    public static String getStateKey(CmsResourceState state) {
 
         StringBuffer sb = new StringBuffer(STATE_PREFIX);
         sb.append(state);

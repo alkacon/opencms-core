@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,12 @@
 
 package org.opencms.jsp.util;
 
+import java.util.Locale;
+import java.util.Properties;
+
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -41,15 +46,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Locale;
-import java.util.Properties;
-
 /**
  * Class to display the error dialog.<p>
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +96,10 @@ public class CmsErrorBean {
     public CmsErrorBean(CmsObject cms, Throwable throwable) {
 
         m_cms = cms;
-        m_locale = cms.getRequestContext().getLocale();
+        // get the settings for system users to display errors in correct language
+        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUserSettings settings = new CmsUserSettings(user);
+        m_locale = settings.getLocale();
         m_throwable = throwable;
         m_messages = Messages.get().getBundle(m_locale);
     }
@@ -155,7 +160,7 @@ public class CmsErrorBean {
      */
     public String getMessage(Throwable t) {
 
-        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+        if ((t instanceof I_CmsThrowable) && (((I_CmsThrowable)t).getMessageContainer() != null)) {
             StringBuffer result = new StringBuffer(256);
             if (m_throwable instanceof CmsMultiException) {
                 CmsMultiException exc = (CmsMultiException)m_throwable;

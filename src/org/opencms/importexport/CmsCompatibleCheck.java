@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Node;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,13 +56,13 @@ public class CmsCompatibleCheck {
 
     /** Parameter for content body folder. */
     public static final String VFS_PATH_BODIES = "/system/bodies/";
-    
+
     /** Parameter for default module. */
     public static final String VFS_PATH_DEFAULTMODULE = CmsWorkplace.VFS_PATH_MODULES + "default/";
-    
+
     /** Path to content templates folder. */
     public static final String VFS_PATH_DEFAULT_TEMPLATES = VFS_PATH_DEFAULTMODULE + CmsWorkplace.VFS_DIR_TEMPLATES;
-    
+
     /** Default class for templates. */
     public static final String XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
 
@@ -102,7 +102,7 @@ public class CmsCompatibleCheck {
                 Document xmlDoc = DocumentHelper.parseText(new String(content));
                 for (Node n = (Node)xmlDoc.content().get(0); n != null; n = treeWalker(xmlDoc, n)) {
                     short ntype = n.getNodeType();
-                    if (((ntype > Node.CDATA_SECTION_NODE) && ntype < Node.DOCUMENT_TYPE_NODE)
+                    if (((ntype > Node.CDATA_SECTION_NODE) && (ntype < Node.DOCUMENT_TYPE_NODE))
                         || (ntype == Node.ATTRIBUTE_NODE)) {
                         return false;
                     }
@@ -118,7 +118,7 @@ public class CmsCompatibleCheck {
             }
 
         } else if (name.startsWith(CmsCompatibleCheck.VFS_PATH_DEFAULT_TEMPLATES)
-            || (name.startsWith(CmsWorkplace.VFS_PATH_MODULES) && name.indexOf("/" + CmsWorkplace.VFS_DIR_TEMPLATES) > -1)) {
+            || (name.startsWith(CmsWorkplace.VFS_PATH_MODULES) && (name.indexOf("/" + CmsWorkplace.VFS_DIR_TEMPLATES) > -1))) {
             // this is a template file
             if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain templates are allowed
@@ -168,7 +168,7 @@ public class CmsCompatibleCheck {
                         return false;
                     }
                 }
-                if (counterEldefs != 2 || counterTeplate != 1) {
+                if ((counterEldefs != 2) || (counterTeplate != 1)) {
                     // there have to be exactly two elementdefs and one template tag
                     return false;
                 }
@@ -200,7 +200,7 @@ public class CmsCompatibleCheck {
             return false;
         }
         String elTemplate = CmsImport.getChildElementTextValue(el, "TEMPLATE");
-        if (elTemplate == null || elTemplate.indexOf(elementName) < 1) {
+        if ((elTemplate == null) || (elTemplate.indexOf(elementName) < 1)) {
             // it must be in the path /content/"elementName"/ or in
             // the path /system/modules/"modulename"/"elementName"/
             return false;
@@ -306,7 +306,7 @@ public class CmsCompatibleCheck {
         Node parent = null;
         nextnode = getNextSibling(n);
         parent = n.getParent();
-        while (nextnode == null && parent != null && parent != root) {
+        while ((nextnode == null) && (parent != null) && (parent != root)) {
             // child has sibling
             // last chance: we take our parent's sibling
             // (or our grandparent's sibling...)

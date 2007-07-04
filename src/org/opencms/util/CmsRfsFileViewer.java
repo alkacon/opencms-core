@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2006/11/23 16:59:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -287,7 +287,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 // to save reading too much (this optimizes to read the first windows, much later windows will be slower...)
                 reader = new LineNumberReader(new BufferedReader(new InputStreamReader(
                     new FileInputStream(m_filePath),
-                    m_fileEncoding)), (int)m_windowSize * 200);
+                    m_fileEncoding)), m_windowSize * 200);
                 int currentLine = 0;
                 // skip the lines to the current window:
                 while (startLine > currentLine) {
@@ -332,7 +332,7 @@ public class CmsRfsFileViewer implements Cloneable {
                     try {
                         reader.close();
                     } catch (IOException e) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
 
                 }
@@ -372,7 +372,7 @@ public class CmsRfsFileViewer implements Cloneable {
                 }
                 reader.close();
                 // if 11.75 windows are available, we don't want to end on window nr. 10 
-                int availWindows = (int)Math.ceil(lines / m_windowSize);
+                int availWindows = (int)Math.ceil((double)lines / (double)m_windowSize);
                 // we start with window 0
                 m_windowPos = availWindows - 1;
             } catch (IOException ioex) {

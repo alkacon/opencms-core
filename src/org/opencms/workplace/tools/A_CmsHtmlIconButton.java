@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:08 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     /**
      * Generates a default html code for icon buttons.<p>
      * 
-     * @param jsp the jsp context 
      * @param style the style of the button
      * @param id the id
      * @param name the name
@@ -119,7 +118,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
-        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String name,
@@ -129,13 +127,23 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String confirmationMessage,
         String onClick) {
 
-        return defaultButtonHtml(jsp, style, id, id, name, helpText, enabled, iconPath, confirmationMessage, onClick, false);
+        return defaultButtonHtml(
+            style,
+            id,
+            id,
+            name,
+            helpText,
+            enabled,
+            iconPath,
+            confirmationMessage,
+            onClick,
+            false,
+            null);
     }
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
      * 
-     * @param jsp the cms context, can be null
      * @param style the style of the button
      * @param id the id
      * @param helpId the id of the helptext div tag
@@ -146,11 +154,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @param confirmationMessage the confirmation message
      * @param onClick the js code to execute, if empty no link is generated
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
+     * @param rightHtml optional html code that should come direct after the button
      * 
      * @return html code
      */
     public static String defaultButtonHtml(
-        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String helpId,
@@ -160,7 +168,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String iconPath,
         String confirmationMessage,
         String onClick,
-        boolean singleHelp) {
+        boolean singleHelp,
+        String rightHtml) {
 
         StringBuffer html = new StringBuffer(1024);
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
@@ -218,15 +227,10 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
-                        html.append(icon);
-                    } else {
-                        html.append(iconPath);
-                    }
+                String resourcesRoot = OpenCms.getSystemInfo().getWebApplicationRfsPath() + "resources/";
+                File test = new File(resourcesRoot + icon.toString());
+                if (test.exists()) {
+                    html.append(icon);
                 } else {
                     html.append(iconPath);
                 }
@@ -247,19 +251,33 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append("<br>");
             }
         }
-        if (style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath) && style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
+        if ((style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)
+                && (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT)) {
                 html.append("&nbsp;");
             }
             if (enabled) {
-                html.append("<a href='#'>");
+                if (style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT) {
+                    html.append("<a href='#'>");
+                } else {
+                    html.append("<a href='#' style='white-space: nowrap;'>");
+                }
             }
             html.append(name);
             if (enabled) {
                 html.append("</a>");
             }
+
+            // doesn't work in new dialog for the radio button cols
+            // couldn't find a place where this is needed
+            // if (style != CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT && name.length() > 1) {
+            //  html.append("&nbsp;");
+            // }
         }
         html.append("</span>");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rightHtml)) {
+            html.append(rightHtml);
+        }
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("</div>\n");
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperUtils.java,v $
- * Date   : $Date: 2007/03/12 15:59:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.4
  */
@@ -366,10 +366,11 @@ public final class CmsResourceWrapperUtils {
             properties.load(new ByteArrayInputStream(modContent));
 
             List propList = new ArrayList();
-            Iterator iter = properties.keySet().iterator();
-            while (iter.hasNext()) {
-                String key = (String)iter.next();
-                String value = (String)properties.get(key);
+            Iterator it = properties.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry e = (Map.Entry)it.next();
+                String key = (String)e.getKey();
+                String value = (String)e.getValue();
 
                 if (key.endsWith(SUFFIX_PROP_SHARED)) {
                     propList.add(new CmsProperty(

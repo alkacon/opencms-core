@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,8 @@
 
 package org.opencms.file;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -42,35 +40,18 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
+ * 
+ * @deprecated use {@link org.opencms.file.history.CmsHistoryProject}
  */
-public class CmsBackupProject extends CmsProject implements Cloneable {
+public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject {
 
-    /** The publishing date of this project. */
-    private long m_datePublished;
-
-    /** The name of the manager group. */
-    private String m_nameGroupManagers;
-
-    /** The name of the user group. */
-    private String m_nameGroupUsers;
-
-    /** The name, firstname and lastname of the project owner. */
     private String m_nameOwner;
-
-    /** The name, firstname and lastname of the user who has published the project. */
     private String m_namePublisher;
-
-    /** The resources belonging to the project. */
-    private List m_projectResources;
-
-    /** The user id of the publisher. */
-    private CmsUUID m_userPublished;
-
-    /** The version id of the published project. */
-    private int m_versionId;
+    private String m_nameGroupUsers;
+    private String m_nameGroupManagers;
 
     /**
      * Creates a new CmsBackupProject.<p>
@@ -79,7 +60,6 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      * @param projectId the id to use for this project
      * @param name the name for this project
      * @param description the description for this project
-     * @param taskId the task id for this project
      * @param ownerId the owner id for this project
      * @param groupId the group id for this project
      * @param managerGroupId the manager group id for this project
@@ -95,16 +75,15 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
      */
     public CmsBackupProject(
         int versionId,
-        int projectId,
+        CmsUUID projectId,
         String name,
         String description,
-        int taskId,
         CmsUUID ownerId,
         CmsUUID groupId,
         CmsUUID managerGroupId,
         long dateCreated,
-        int type,
-        Timestamp datePublished,
+        CmsProjectType type,
+        long datePublished,
         CmsUUID userPublished,
         String namePublisher,
         String nameOwner,
@@ -112,87 +91,29 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         String nameGroupManagers,
         List projectResources) {
 
-        super(projectId, name, description, taskId, ownerId, groupId, managerGroupId, 0, dateCreated, type);
+        super(
+            versionId,
+            projectId,
+            name,
+            description,
+            ownerId,
+            groupId,
+            managerGroupId,
+            dateCreated,
+            type,
+            datePublished,
+            userPublished,
+            projectResources);
 
-        m_versionId = versionId;
-        if (datePublished != null) {
-            m_datePublished = datePublished.getTime();
-        } else {
-            m_datePublished = CmsDbUtil.UNKNOWN_ID;
-        }
-        m_userPublished = userPublished;
         m_namePublisher = namePublisher;
         m_nameOwner = nameOwner;
         m_nameGroupUsers = nameGroupUsers;
         m_nameGroupManagers = nameGroupManagers;
-        m_projectResources = projectResources;
+
     }
 
     /**
-     * Returns a clone of this Objects instance.<p>
-     * 
-     * @return a clone of this instance
-     */
-    public Object clone() {
-
-        return new CmsBackupProject(
-            m_versionId,
-            getId(),
-            getName(),
-            getDescription(),
-            getTaskId(),
-            getOwnerId(),
-            getGroupId(),
-            getManagerGroupId(),
-            this.getDateCreated(),
-            getType(),
-            new Timestamp(this.m_datePublished),
-            m_userPublished,
-            m_namePublisher,
-            m_nameOwner,
-            m_nameGroupUsers,
-            m_nameGroupManagers,
-            m_projectResources);
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsBackupProject) {
-            return ((CmsBackupProject)obj).getId() == getId();
-        }
-        return false;
-    }
-
-    /**
-     * Returns the projects user group name.<p>
-     *
-     * @return the projects user group name
-     */
-    public String getGroupName() {
-
-        return m_nameGroupUsers;
-    }
-
-    /**
-     * Gets the project manager grou pname.<p>
-     *
-     * @return the projects manager group name
-     */
-    public String getManagerGroupName() {
-
-        return m_nameGroupManagers;
-    }
-
-    /**
-     * Gets the ownername.
-     *
-     * @return the ownername
+     * @see org.opencms.file.history.CmsHistoryProject#getOwnerName()
      */
     public String getOwnerName() {
 
@@ -200,29 +121,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     }
 
     /**
-     * Returns the project resources (i.e. the "view" of the project).<p>
-     * 
-     * @return the project resources 
-     */
-    public List getProjectResources() {
-
-        return m_projectResources;
-    }
-
-    /**
-     * Gets the published-by value.
-     *
-     * @return the published-by value
-     */
-    public CmsUUID getPublishedBy() {
-
-        return m_userPublished;
-    }
-
-    /**
-     * Gets the publishers name.
-     *
-     * @return the publishers name
+     * @see org.opencms.file.history.CmsHistoryProject#getPublishedByName()
      */
     public String getPublishedByName() {
 
@@ -230,30 +129,18 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     }
 
     /**
-     * Returns the publishing date of this project.
-     *
-     * @return the publishing date of this project
+     * @see org.opencms.file.history.CmsHistoryProject#getGroupName()
      */
-    public long getPublishingDate() {
+    public String getGroupName() {
 
-        return m_datePublished;
+        return m_nameGroupUsers;
     }
 
     /**
-     * Gets the versionId.
-     *
-     * @return the versionId
+     * @see org.opencms.file.history.CmsHistoryProject#getManagerGroupName()
      */
-    public int getVersionId() {
+    public String getManagerGroupName() {
 
-        return m_versionId;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-
-        return (new Long(m_datePublished)).hashCode();
+        return m_nameGroupManagers;
     }
 }

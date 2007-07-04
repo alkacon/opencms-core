@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1 = "ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1 = "ERR_IMPORTEXPORT_ERROR_ADDING_RELATION_TO_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_APPENDING_RESOURCE_TO_MANIFEST_1 = "ERR_IMPORTEXPORT_ERROR_APPENDING_RESOURCE_TO_MANIFEST_1";
@@ -218,6 +221,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1 = "LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMPORTEXPORT_REWRITING_1 = "LOG_IMPORTEXPORT_REWRITING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1 = "LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -240,6 +246,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1 = "LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle.<p> */
+    public static final String LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1 = "LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTING_4 = "LOG_IMPORTING_4";
@@ -264,6 +273,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELFOLDER_START_0 = "RPT_DELFOLDER_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_IMPORT_RELATIONS_0 = "RPT_END_IMPORT_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_END_PARSE_LINKS_0 = "RPT_END_PARSE_LINKS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_0 = "RPT_EXPORT_0";
@@ -305,6 +320,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_IMPORTING_0 = "RPT_IMPORTING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORTING_RELATIONS_FOR_2 = "RPT_IMPORTING_RELATIONS_FOR_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_MERGE_0 = "RPT_MERGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -317,10 +335,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_NOT_CREATED_0 = "RPT_NOT_CREATED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_PARSE_LINKS_FOR_1 = "RPT_PARSE_LINKS_FOR_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_SKIPPING_0 = "RPT_SKIPPING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_IMPORT_RELATIONS_0 = "RPT_START_IMPORT_RELATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_START_PARSE_LINKS_0 = "RPT_START_PARSE_LINKS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_STORING_LINK_0 = "RPT_STORING_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2 = "RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.importexport.messages";

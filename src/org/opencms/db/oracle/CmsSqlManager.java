@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,37 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.db.CmsDbContext;
+import org.opencms.db.generic.Messages;
+import org.opencms.main.CmsLog;
+
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Oracle implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -6823428215978645371L;
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.oracle.CmsSqlManager.class);
 
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/oracle/query.properties";
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -6823428215978645371L;
 
     /**
      * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
@@ -62,6 +73,83 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     }
 
     /**
+     * Attemts to close the connection, statement and result set after a statement has been executed.<p>
+     * 
+     * @param dbc the current database context
+     * @param con the JDBC connection
+     * @param stmnt the statement
+     * @param res the result set
+     * @param commit the additional statement for the 'commit' command
+     * @param wasInTransaction if using transactions
+     */
+    public synchronized void closeAllInTransaction(
+        CmsDbContext dbc,
+        Connection con,
+        PreparedStatement stmnt,
+        ResultSet res,
+        PreparedStatement commit,
+        boolean wasInTransaction) {
+
+        if (dbc == null) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NULL_DB_CONTEXT_0));
+        }
+
+        if (res != null) {
+            try {
+                res.close();
+            } catch (SQLException exc) {
+                // ignore
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(exc.getLocalizedMessage(), exc);
+                }
+            }
+        }
+        if (commit != null) {
+            try {
+                commit.close();
+            } catch (SQLException exc) {
+                // ignore
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(exc.getLocalizedMessage(), exc);
+                }
+            }
+        }
+        if (!wasInTransaction) {
+            if (stmnt != null) {
+                try {
+                    PreparedStatement rollback = getPreparedStatement(con, "C_ROLLBACK");
+                    rollback.execute();
+                    rollback.close();
+                } catch (SQLException se) {
+                    // ignore
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(se.getLocalizedMessage(), se);
+                    }
+                }
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                    // ignore
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(exc.getLocalizedMessage(), exc);
+                    }
+                }
+            }
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (SQLException se) {
+                    // ignore
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(se.getLocalizedMessage(), se);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.db.generic.CmsSqlManager#getBytes(java.sql.ResultSet, java.lang.String)
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
@@ -69,5 +157,4 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         Blob blob = res.getBlob(attributeName);
         return blob.getBytes(1, (int)blob.length());
     }
-
 }

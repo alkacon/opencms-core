@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/04/03 12:08:43 $
- * Version: $Revision: 1.223 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.224 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,12 +67,17 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
+import org.opencms.publish.CmsPublishEngine;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsOrgUnitManager;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
@@ -107,7 +112,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
@@ -134,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.223 $ 
+ * @version $Revision: 1.224 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,6 +155,9 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+
+    /** The configured authorization handler. */
+    private I_CmsAuthorizationHandler m_authorizationHandler;
 
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
@@ -176,9 +183,6 @@ public final class OpenCmsCore {
     /** The locale manager used for obtaining the current locale. */
     private CmsLocaleManager m_localeManager;
 
-    /** The lock manager used for the locking mechanism. */
-    private CmsLockManager m_lockManager;
-
     /** The login manager. */
     private CmsLoginManager m_loginManager;
 
@@ -188,8 +192,17 @@ public final class OpenCmsCore {
     /** The module manager. */
     private CmsModuleManager m_moduleManager;
 
+    /** The organizational unit manager. */
+    private CmsOrgUnitManager m_orgUnitManager;
+
     /** The password handler used to digest and validate passwords. */
     private I_CmsPasswordHandler m_passwordHandler;
+
+    /** The publish engine. */
+    private CmsPublishEngine m_publishEngine;
+
+    /** The publish manager instance. */
+    private CmsPublishManager m_publishManager;
 
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
@@ -208,6 +221,9 @@ public final class OpenCmsCore {
 
     /** The resource manager. */
     private CmsResourceManager m_resourceManager;
+
+    /** The role manager. */
+    private CmsRoleManager m_roleManager;
 
     /** The runlevel of this OpenCmsCore object instance. */
     private int m_runLevel;
@@ -258,7 +274,7 @@ public final class OpenCmsCore {
     throws CmsInitException {
 
         synchronized (LOCK) {
-            if (m_instance != null && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
+            if ((m_instance != null) && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_ALREADY_INITIALIZED_0));
             }
             initMembers();
@@ -306,7 +322,7 @@ public final class OpenCmsCore {
                     Messages.LOG_INIT_FAILURE_MESSAGE_1,
                     errorCondition.key()));
             }
-            LOG.error(errorCondition.key());
+            LOG.error(errorCondition.key(), new CmsException(errorCondition));
             m_instance = null;
         } else if (m_instance != null) {
             // OpenCms already was successfull initialized
@@ -345,6 +361,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the configured authorization handler.<p>
+     *
+     * @return the configured authorization handler
+     */
+    protected I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return m_authorizationHandler;
+    }
+
+    /**
      * Returns the initialized OpenCms configuration manager.<p>
      * 
      * @return the initialized OpenCms configuration manager
@@ -357,8 +383,6 @@ public final class OpenCmsCore {
     /**
      * Returns the configured list of default directory file names.<p>
      *  
-     * Caution: This list can not be modified.<p>
-     * 
      * @return the configured list of default directory file names
      */
     protected List getDefaultFiles() {
@@ -435,7 +459,7 @@ public final class OpenCmsCore {
      */
     protected CmsLockManager getLockManager() {
 
-        return m_lockManager;
+        return m_securityManager.getLockManager();
     }
 
     /**
@@ -466,6 +490,16 @@ public final class OpenCmsCore {
     protected CmsModuleManager getModuleManager() {
 
         return m_moduleManager;
+    }
+
+    /**
+     * Returns the organizational unit manager.<p>
+     * 
+     * @return the organizational unit manager
+     */
+    protected CmsOrgUnitManager getOrgUnitManager() {
+
+        return m_orgUnitManager;
     }
 
     /**
@@ -514,6 +548,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the publish manager instance.<p>
+     * 
+     * @return the publish manager instance
+     */
+    protected CmsPublishManager getPublishManager() {
+
+        return m_publishManager;
+    }
+
+    /**
      * Returns the repository manager.<p>
      * 
      * @return the repository manager
@@ -543,6 +587,16 @@ public final class OpenCmsCore {
     protected CmsResourceManager getResourceManager() {
 
         return m_resourceManager;
+    }
+
+    /**
+     * Returns the role manager.<p>
+     * 
+     * @return the role manager
+     */
+    protected CmsRoleManager getRoleManager() {
+
+        return m_roleManager;
     }
 
     /** 
@@ -751,9 +805,9 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if (adminCms == null || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
-            if (!userName.equals(getDefaultUsers().getUserGuest())
-                && !userName.equals(getDefaultUsers().getUserExport())) {
+        if ((adminCms == null) || !m_roleManager.hasRole(adminCms, CmsRole.ROOT_ADMIN)) {
+            if (!userName.endsWith(getDefaultUsers().getUserGuest())
+                && !userName.endsWith(getDefaultUsers().getUserExport())) {
 
                 // if no admin object is provided, only "Guest" or "Export" user can be generated
                 CmsMessageContainer message = Messages.get().container(
@@ -796,6 +850,52 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Initializes a new cms object from the session data of the request.<p>
+     * 
+     * If no session data is found, <code>null</code> is returned.<p>
+     * 
+     * @param req the request
+     * 
+     * @return the new initialized cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject initCmsObjectFromSession(HttpServletRequest req) throws CmsException {
+
+        // try to get an OpenCms user session info object for this request
+        CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
+
+        if (sessionInfo == null) {
+            return null;
+        }
+
+        // initialize the requested site root
+        CmsSite site = getSiteManager().matchRequest(req);
+
+        // a user name is found in the session manager, reuse this user information
+        CmsUUID project = sessionInfo.getProject();
+
+        // initialize site root from request
+        String siteroot = null;
+
+        // a dedicated workplace site is configured
+        if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
+            // if no dedicated workplace site is configured, 
+            // or for the dedicated workplace site, use the site root from the session attribute
+            siteroot = sessionInfo.getSiteRoot();
+        }
+        if (siteroot == null) {
+            siteroot = site.getSiteRoot();
+        }
+        return initCmsObject(
+            req,
+            m_securityManager.readUser(null, sessionInfo.getUserId()),
+            siteroot,
+            project,
+            sessionInfo.getOrganizationalUnitFqn());
+    }
+
+    /**
      * Constructor to create a new OpenCms object.<p>
      * 
      * It reads the configurations from the <code>opencms.properties</code>
@@ -831,9 +931,6 @@ public final class OpenCmsCore {
         String serverName = configuration.getString("server.name", "OpenCmsServer");
         getSystemInfo().setServerName(serverName);
 
-        // initialize the lock manager
-        m_lockManager = CmsLockManager.getInstance();
-
         // check the installed Java SDK
         try {
             if (CmsLog.INIT.isInfoEnabled()) {
@@ -851,9 +948,6 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
         }
 
-        // initialize the memory monitor
-        m_memoryMonitor = new CmsMemoryMonitor();
-
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             CmsSystemInfo.FOLDER_CONFIG));
@@ -869,6 +963,23 @@ public final class OpenCmsCore {
 
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
+
+        // initialize the memory monitor
+        CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
+        // initialize the memory monitor
+        try {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(memoryMonitorConfiguration.getClassName())) {
+                m_memoryMonitor = (CmsMemoryMonitor)Class.forName(memoryMonitorConfiguration.getClassName()).newInstance();
+            } else {
+                m_memoryMonitor = new CmsMemoryMonitor();
+            }
+        } catch (Exception e) {
+            // we can not start without a valid memory monitor
+            throw new CmsInitException(Messages.get().container(
+                Messages.ERR_CRITICAL_INIT_MEMORY_MONITOR_1,
+                memoryMonitorConfiguration.getClassName()), e);
+        }
+        m_memoryMonitor.initialize(systemConfiguration);
 
         // get the event manager from the configuration and initialize it with the events already registered
         CmsEventManager configuredEventManager = systemConfiguration.getEventManager();
@@ -887,14 +998,11 @@ public final class OpenCmsCore {
         }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
 
-        // initialize the memory monitor
-        CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration();
-        m_memoryMonitor.initialize(memoryMonitorConfiguration);
-
         // set version history information        
         getSystemInfo().setVersionHistorySettings(
-            systemConfiguration.isVersionHistoryEnabled(),
-            systemConfiguration.getVersionHistoryMaxCount());
+            systemConfiguration.isHistoryEnabled(),
+            systemConfiguration.getHistoryVersions(),
+            systemConfiguration.getHistoryVersionsAfterDeletion());
         // set mail configuration
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
@@ -921,16 +1029,6 @@ public final class OpenCmsCore {
 
         // read the default user configuration
         m_defaultUsers = systemConfiguration.getCmsDefaultUsers();
-
-        try {
-            // initialize the group names for the system roles 
-            CmsRole.initialize(m_defaultUsers);
-        } catch (CmsSecurityException e) {
-            // this should never happen
-            throw new CmsInitException(
-                Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
-                e);
-        }
 
         // get the site manager from the configuration
         m_siteManager = systemConfiguration.getSiteManager();
@@ -1001,16 +1099,32 @@ public final class OpenCmsCore {
         // get the validation handler
         m_validationHandler = systemConfiguration.getValidationHandler();
 
+        // get the authorization handler
+        m_authorizationHandler = systemConfiguration.getAuthorizationHandler();
+
         // get the login manager
         m_loginManager = systemConfiguration.getLoginManager();
+
+        // initialize the publish engine
+        m_publishEngine = new CmsPublishEngine(systemConfiguration.getRuntimeInfoFactory());
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
-            systemConfiguration.getRuntimeInfoFactory());
+            systemConfiguration.getRuntimeInfoFactory(),
+            m_publishEngine);
+
+        // get the publish manager
+        m_publishManager = systemConfiguration.getPublishManager();
+
+        // initialize the role manager
+        m_roleManager = new CmsRoleManager(m_securityManager);
+
+        // initialize the organizational unit manager
+        m_orgUnitManager = new CmsOrgUnitManager(m_securityManager);
 
         // initialize the Thread store
-        m_threadStore = new CmsThreadStore();
+        m_threadStore = new CmsThreadStore(m_securityManager);
 
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
@@ -1018,10 +1132,13 @@ public final class OpenCmsCore {
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
 
+        // initialize the session storage provider
+        I_CmsSessionStorageProvider sessionStorageProvider = systemConfiguration.getSessionStorageProvider();
+
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms;
         try {
-            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+            adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), (String)null, (String)null);
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
         }
@@ -1044,6 +1161,11 @@ public final class OpenCmsCore {
             // initialize the XML content type manager
             m_xmlContentTypeManager.initialize(initCmsObject(adminCms));
 
+            // initialize the publish manager
+            m_publishManager.setPublishEngine(m_publishEngine);
+            m_publishManager.setSecurityManager(m_securityManager);
+            m_publishManager.initialize(initCmsObject(adminCms));
+
             // intialize the module manager
             m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 
@@ -1055,6 +1177,12 @@ public final class OpenCmsCore {
 
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
+
+            // initialize the session manager
+            m_sessionManager.initialize(sessionStorageProvider);
+
+            // everything is initialized, now start publishing
+            m_publishManager.startPublishing();
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
@@ -1103,7 +1231,7 @@ public final class OpenCmsCore {
         getSystemInfo().init(webInfPath, servletMapping, webApplicationContext, defaultWebApplication);
 
         // Collect the configurations 
-        ExtendedProperties configuration = null;
+        ExtendedProperties configuration;
         try {
             configuration = CmsPropertyUtils.loadProperties(getSystemInfo().getConfigurationFileRfsPath());
         } catch (Exception e) {
@@ -1218,57 +1346,12 @@ public final class OpenCmsCore {
         HttpServletRequest req,
         HttpServletResponse res) throws CmsException {
 
-        CmsResource resource = null;
         CmsException tmpException = null;
+        CmsResource resource;
 
         try {
             // try to read the requested resource
-            resource = cms.readResource(resourceName);
-            // resource exists, lets check if we have a file or a folder
-            if (resource.isFolder()) {
-                // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
-                try {
-                    String defaultFileName = cms.readPropertyObject(
-                        CmsResource.getFolderPath(cms.getSitePath(resource)),
-                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                        false).getValue();
-                    if (defaultFileName != null) {
-                        // property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
-                        resource = cms.readResource(tmpResourceName);
-                        // no exception? so we have found the default file                         
-                        cms.getRequestContext().setUri(tmpResourceName);
-                    }
-                } catch (CmsSecurityException se) {
-                    // permissions deny access to the resource
-                    throw se;
-                } catch (CmsException e) {
-                    // ignore all other exceptions and continue the lookup process
-                }
-                if (resource.isFolder()) {
-                    // resource is (still) a folder, check default files specified in configuration
-                    for (int i = 0; i < m_defaultFiles.size(); i++) {
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource))
-                            + m_defaultFiles.get(i);
-                        try {
-                            resource = cms.readResource(tmpResourceName);
-                            // no exception? So we have found the default file                         
-                            cms.getRequestContext().setUri(tmpResourceName);
-                            // stop looking for default files   
-                            break;
-                        } catch (CmsSecurityException se) {
-                            // permissions deny access to the resource
-                            throw se;
-                        } catch (CmsException e) {
-                            // ignore all other exceptions and continue the lookup process
-                        }
-                    }
-                }
-            }
-            if (resource.isFolder()) {
-                // we only want files as a result for further processing
-                resource = null;
-            }
+            resource = cms.readDefaultFile(resourceName);
         } catch (CmsException e) {
             // file or folder with given name does not exist, store exception
             tmpException = e;
@@ -1276,6 +1359,8 @@ public final class OpenCmsCore {
         }
 
         if (resource != null) {
+            // set the request uri to the right file
+            cms.getRequestContext().setUri(cms.getSitePath(resource));
             // test if this file is only available for internal access operations
             if ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0) {
                 throw new CmsException(Messages.get().container(
@@ -1329,7 +1414,7 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if (resource == null && tmpException != null) {
+        if ((resource == null) && (tmpException != null)) {
             throw tmpException;
         }
 
@@ -1382,16 +1467,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Sets the session manager.<p>
-     * 
-     * @param sessionManager the session manager to set
-     */
-    protected void setSessionManager(CmsSessionManager sessionManager) {
-
-        m_sessionManager = sessionManager;
-    }
-
-    /**
      * Displays a resource from the OpenCms by writing the result to the provided 
      * Servlet response output stream.<p>
      * 
@@ -1408,7 +1483,7 @@ public final class OpenCmsCore {
             if (resource != null) {
                 // a file was read, go on process it
                 m_resourceManager.loadResource(cms, resource, req, res);
-                updateUserSessionData(cms, req);
+                m_sessionManager.updateSessionInfo(cms, req);
             }
 
         } catch (Throwable t) {
@@ -1423,7 +1498,6 @@ public final class OpenCmsCore {
 
         synchronized (LOCK) {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {
-
                 System.err.println(Messages.get().getBundle().key(
                     Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
                     getSystemInfo().getVersionName(),
@@ -1449,6 +1523,15 @@ public final class OpenCmsCore {
                 if (LOG.isDebugEnabled()) {
                     // log exception to see which method did call the shutdown
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
+                }
+
+                try {
+                    // the first thing we have to do is to wait until the current publish process finishes
+                    m_publishEngine.shutDown();
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1,
+                        e.getMessage()), e);
                 }
 
                 try {
@@ -1488,6 +1571,16 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
+                    // has to be stopped before the security manager, since this thread uses it
+                    if (m_threadStore != null) {
+                        m_threadStore.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_THREAD_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
@@ -1497,12 +1590,21 @@ public final class OpenCmsCore {
                         e.getMessage()), e);
                 }
                 try {
-                    if (m_threadStore != null) {
-                        m_threadStore.shutDown();
+                    if (m_sessionManager != null) {
+                        m_sessionManager.shutdown();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_THREAD_SHUTDOWN_1,
+                        Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_memoryMonitor != null) {
+                        m_memoryMonitor.shutdown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
@@ -1517,6 +1619,38 @@ public final class OpenCmsCore {
             }
             m_instance = null;
         }
+    }
+
+    /**
+     * This method updates the request context information.<p>
+     * 
+     * The update information is:<br>
+     * <ul>
+     *   <li>Requested Url</li>
+     *   <li>Locale</li>
+     *   <li>Encoding</li>
+     *   <li>Remote Address</li>
+     *   <li>Request Time</li>
+     * </ul>
+     * 
+     * @param request the current request
+     * @param cms the cms object to update the request context for
+     * 
+     * @return a new updated cms context
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject updateContext(HttpServletRequest request, CmsObject cms) throws CmsException {
+
+        // get the right site for the request
+        CmsSite site = OpenCms.getSiteManager().matchRequest(request);
+
+        return initCmsObject(
+            request,
+            cms.getRequestContext().currentUser(),
+            site.getSiteRoot(),
+            cms.getRequestContext().currentProject().getUuid(),
+            cms.getRequestContext().getOuFqn());
     }
 
     /**
@@ -1590,6 +1724,17 @@ public final class OpenCmsCore {
             // the runlevel will change from 2 directly to 4, this is on purpose
             setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
 
+            try {
+                // now read the persistent locks
+                m_instance.m_securityManager.readLocks();
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(
+                        org.opencms.lock.Messages.get().getBundle().key(org.opencms.lock.Messages.ERR_READ_LOCKS_0),
+                        e);
+                }
+            }
+            
             return m_instance;
         }
     }
@@ -1627,58 +1772,6 @@ public final class OpenCmsCore {
         newSet.addAll(exportPoints);
         newSet.addAll(m_exportPoints);
         m_exportPoints = Collections.unmodifiableSet(newSet);
-    }
-
-    /**
-     * Checks if the current request contains http basic authentication information in 
-     * the headers, if so tries to log in the user identified.<p>
-     *  
-     * @param cms the current cms context
-     * @param req the current http request
-     * @param res the current http response
-     * @throws IOException in case of errors reading from the streams
-     */
-    private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws IOException {
-
-        // no user identified from the session and basic authentication is enabled
-        String auth = req.getHeader("Authorization");
-
-        // user is authenticated, check password
-        if (auth != null) {
-
-            // only do basic authentification
-            if (auth.toUpperCase().startsWith("BASIC ")) {
-
-                // get encoded user and password, following after "BASIC "
-                String base64Token = auth.substring(6);
-
-                // decode it, using base 64 decoder
-                String token = new String(Base64.decodeBase64(base64Token.getBytes()));
-                String username = null;
-                String password = null;
-                int pos = token.indexOf(":");
-                if (pos != -1) {
-                    username = token.substring(0, pos);
-                    password = token.substring(pos + 1);
-                }
-                // authentication in the DB
-                try {
-                    try {
-                        // try to login as a user first ...
-                        cms.loginUser(username, password);
-                    } catch (CmsException exc) {
-                        // login as user failed, try as webuser ...
-                        cms.loginWebUser(username, password);
-                    }
-                    // authentification was successful create a session
-                    req.getSession(true);
-                } catch (CmsException e) {
-                    // authentification failed, so display a login screen
-                    requestAuthorization(req, res);
-                }
-            }
-        }
     }
 
     /**
@@ -1721,9 +1814,9 @@ public final class OpenCmsCore {
         // remove the controller attribute from the request
         CmsFlexController.removeController(req);
 
-        boolean canWrite = !res.isCommitted() && !res.containsHeader("Location");
+        boolean canWrite = (!res.isCommitted() && !res.containsHeader("Location"));
         int status = -1;
-        boolean isNotGuest = false;
+        boolean isGuest = true;
 
         if (t instanceof ServletException) {
             ServletException s = (ServletException)t;
@@ -1743,7 +1836,7 @@ public final class OpenCmsCore {
         } else if (t instanceof CmsDbEntryNotFoundException) {
             // user or group does not exist
             status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-            isNotGuest = true;
+            isGuest = false;
         } else if (t instanceof CmsVfsResourceNotFoundException) {
             // file not found - display 404 error.
             status = HttpServletResponse.SC_NOT_FOUND;
@@ -1760,18 +1853,12 @@ public final class OpenCmsCore {
         res.setStatus(status);
 
         try {
-            isNotGuest = isNotGuest
-                || (cms != null
-                    && cms.getRequestContext().currentUser() != null
-                    && (!OpenCms.getDefaultUsers().getUserGuest().equals(
-                        cms.getRequestContext().currentUser().getName())) && ((cms.userInGroup(
-                    cms.getRequestContext().currentUser().getName(),
-                    OpenCms.getDefaultUsers().getGroupUsers()))
-                    || (cms.userInGroup(
+            if ((cms != null) && (cms.getRequestContext().currentUser() != null)) {
+                isGuest = isGuest
+                    && (cms.getRequestContext().currentUser().isGuestUser() || cms.userInGroup(
                         cms.getRequestContext().currentUser().getName(),
-                        OpenCms.getDefaultUsers().getGroupProjectmanagers())) || (cms.userInGroup(
-                    cms.getRequestContext().currentUser().getName(),
-                    OpenCms.getDefaultUsers().getGroupAdministrators()))));
+                        OpenCms.getDefaultUsers().getGroupGuests()));
+            }
         } catch (CmsException e) {
             // result is false
         }
@@ -1779,7 +1866,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (isNotGuest && cms != null && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (!isGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
@@ -1809,7 +1896,7 @@ public final class OpenCmsCore {
 
         CmsUser user = contextInfo.getUser();
         if (user == null) {
-            user = m_securityManager.readUser(contextInfo.getUserName());
+            user = m_securityManager.readUser(null, contextInfo.getUserName());
         }
 
         CmsProject project = contextInfo.getProject();
@@ -1826,86 +1913,167 @@ public final class OpenCmsCore {
             contextInfo.getLocale(),
             contextInfo.getEncoding(),
             contextInfo.getRemoteAddr(),
+            contextInfo.getRequestTime(),
             m_resourceManager.getFolderTranslator(),
-            m_resourceManager.getFileTranslator());
+            m_resourceManager.getFileTranslator(),
+            contextInfo.getOuFqn());
 
         // now initialize and return the CmsObject
-        CmsObject cms = new CmsObject(m_securityManager, context);
-        return cms;
+        return new CmsObject(m_securityManager, context);
     }
 
     /**
-     * This method handled the user authentification for each request sent to the
-     * OpenCms. <p>
+     * Inits a CmsObject with the given users information.<p>
+     * 
+     * @param request the current http request (or <code>null</code>)
+     * @param user the initialized user
+     * @param siteRoot the users current site 
+     * @param projectId the id of the users current project
+     * @param ouFqn the organizational unit
+     * 
+     * @return the initialized CmsObject
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    private CmsObject initCmsObject(
+        HttpServletRequest request,
+        CmsUser user,
+        String siteRoot,
+        CmsUUID projectId,
+        String ouFqn) throws CmsException {
+
+        CmsProject project = null;
+        try {
+            project = m_securityManager.readProject(projectId);
+        } catch (CmsDbEntryNotFoundException e) {
+            // project not found, switch to online project
+            project = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
+        }
+
+        // get requested resource uri and remote IP address, as well as time for "time warp" browsing
+        String requestedResource = null;
+        Long requestTimeAttr = null;
+        String remoteAddr;
+
+        if (request != null) {
+            // get path info from request
+            requestedResource = getPathInfo(request);
+
+            // check for special header for remote address
+            remoteAddr = request.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
+            if (remoteAddr == null) {
+                // if header is not available, use default remote address
+                remoteAddr = request.getRemoteAddr();
+            }
+
+            // check for special "time warp" browsing
+            if (!CmsProject.isOnlineProject(project.getUuid())) {
+                // this feature is not available in the "online" project
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    // no new session must be created here
+                    requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+                }
+            }
+        } else {
+            // if no request is available, the IP is always set to localhost
+            remoteAddr = CmsContextInfo.LOCALHOST;
+        }
+        if (requestedResource == null) {
+            // path info can still be null
+            requestedResource = "/";
+        }
+
+        // calculate the request time
+        long requestTime;
+        if (requestTimeAttr == null) {
+            requestTime = System.currentTimeMillis();
+        } else {
+            requestTime = requestTimeAttr.longValue();
+        }
+
+        // get locale and encoding        
+        CmsI18nInfo i18nInfo;
+        if (m_localeManager.isInitialized()) {
+            // locale manager is initialized
+            // resolve locale and encoding
+            String resourceName;
+            if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                // add site root only if resource name does not start with "/system"
+                resourceName = requestedResource;
+            } else {
+                resourceName = siteRoot.concat(requestedResource);
+            }
+            i18nInfo = m_localeManager.getI18nInfo(request, user, project, resourceName);
+        } else {
+            // locale manager not initialized, this will be true _only_ during system startup
+            // the values set does not matter, no locale information form VFS is used on system startup
+            // this is just to protect against null pointer exceptions
+            i18nInfo = new CmsI18nInfo(Locale.ENGLISH, getSystemInfo().getDefaultEncoding());
+        }
+
+        // decode the requested resource, always using UTF-8
+        requestedResource = CmsEncoder.decode(requestedResource);
+
+        // initialize the context info
+        CmsContextInfo contextInfo = new CmsContextInfo(
+            user,
+            project,
+            requestedResource,
+            siteRoot,
+            i18nInfo.getLocale(),
+            i18nInfo.getEncoding(),
+            remoteAddr,
+            requestTime,
+            ouFqn);
+
+        // now generate and return the CmsObject
+        return initCmsObject(contextInfo);
+    }
+
+    /**
+     * Handles the user authentification for each request sent to OpenCms.<p>
      *
      * User authentification is done in three steps:
      * <ol>
-     * <li> Session authentification: OpenCms stores information of all authentificated
-     * users in an internal storage based on the users session.</li>
-     * <li> HTTP authentification: If the session authentification fails, it is checked if the current
-     * user is providing data for HTTP BASIC authentification. If this check is positive, the user 
-     * is tried to log in with this data, and on success a session is generated.</li>
-     * <li> Default user: When both authentification methods fail, the user is
-     * set to the default (Guest) user. </li>
+     * <li>Session authentification: OpenCms stores information of all authentificated
+     *      users in an internal storage based on the users session.</li>
+     * <li>Authorization handler authentification: If the session authentification fails, 
+     *      the current configured authorization handler is called.</li>
+     * <li>Default user: When both authentification methods fail, the user is set to 
+     *      the default (Guest) user.</li>
      * </ol>
      *
      * @param req the current http request
      * @param res the current http response
+     * 
      * @return the initialized cms context
+     * 
      * @throws IOException if user authentication fails
      * @throws CmsException in case something goes wrong
      */
     private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
 
-        CmsObject cms;
-
-        // try to get the current session
-        HttpSession session = req.getSession(false);
-        String sessionId;
-
-        // check if there is user data already stored in the session manager
-        if (session != null) {
-            // session exists, try to reuse the user from the session
-            sessionId = session.getId();
-        } else {
-            // special case for acessing a session from "outside" requests (e.g. upload applet)
-            sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
+        // first try to restore a stored session
+        CmsObject cms = initCmsObjectFromSession(req);
+        if (cms != null) {
+            return cms;
         }
-        CmsSessionInfo sessionInfo = null;
-        if (sessionId != null) {
-            sessionInfo = m_sessionManager.getSessionInfo(sessionId);
+        // if does not work, try to authorizate the request
+        cms = m_authorizationHandler.initCmsObject(req);
+        if (cms != null) {
+            return cms;
         }
-
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
-
-        if (sessionInfo != null) {
-            // a user name is found in the session manager, reuse this user information
-            int project = sessionInfo.getProject();
-
-            // initialize site root from request
-            String siteroot = null;
-            // a dedicated workplace site is configured
-            if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
-                // if no dedicated workplace site is configured, 
-                // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = sessionInfo.getSiteRoot();
-            }
-            if (siteroot == null) {
-                siteroot = site.getSiteRoot();
-            }
-            cms = initCmsObject(req, sessionInfo.getUser().getName(), siteroot, project);
-        } else {
-            // no user name found in session or no session, login the user as guest user
-            cms = initCmsObject(
-                req,
-                OpenCms.getDefaultUsers().getUserGuest(),
-                site.getSiteRoot(),
-                CmsProject.ONLINE_PROJECT_ID);
-            // check if "basic" authentification data is provided
-            checkBasicAuthorization(cms, req, res);
-        }
-
+        // authentification failed, so display a login screen
+        requestAuthorization(req, res);
+        cms = initCmsObject(
+            req,
+            m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
+            site.getSiteRoot(),
+            CmsProject.ONLINE_PROJECT_ID,
+            "");
         // return the initialized cms user context object
         return cms;
     }
@@ -1922,11 +2090,18 @@ public final class OpenCmsCore {
      * @param res the current response
      * @param user the user to initialize the CmsObject with
      * @param password the password of the user 
+     * @param ouFqn the organizational unit, if <code>null</code> the users ou is used
+     * 
      * @return a cms context that has been initialized with "Guest" permissions
+     * 
      * @throws CmsException in case the CmsObject could not be initialized
      */
-    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, String user, String password)
-    throws CmsException {
+    private CmsObject initCmsObject(
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String user,
+        String password,
+        String ouFqn) throws CmsException {
 
         String siteroot = null;
         // gather information from request / response if provided
@@ -1940,92 +2115,17 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = "/";
         }
-        CmsObject cms = initCmsObject(req, user, siteroot, CmsProject.ONLINE_PROJECT_ID);
+        CmsObject cms = initCmsObject(
+            req,
+            m_securityManager.readUser(null, user),
+            siteroot,
+            CmsProject.ONLINE_PROJECT_ID,
+            ouFqn);
         // login the user if different from Guest and password was provided
-        if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
+        if ((password != null) && !getDefaultUsers().isUserGuest(user)) {
             cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;
-    }
-
-    /**
-     * Inits a CmsObject with the given users information.<p>
-     * 
-     * @param req the current http request (or null)
-     * @param userName the name of the user to init
-     * @param currentSite the users current site 
-     * @param projectId the id of the users current project
-     * @return the initialized CmsObject
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsObject initCmsObject(HttpServletRequest req, String userName, String currentSite, int projectId)
-    throws CmsException {
-
-        CmsUser user = m_securityManager.readUser(userName);
-        CmsProject project = null;
-        try {
-            project = m_securityManager.readProject(projectId);
-        } catch (CmsDbEntryNotFoundException e) {
-            // project not found, switch to online project
-            project = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
-        }
-
-        // get requested resource uri
-        String requestedResource = null;
-        if (req != null) {
-            requestedResource = getPathInfo(req);
-        }
-        if (requestedResource == null) {
-            // path info can be null, so no 'else'
-            requestedResource = "/";
-        }
-
-        // get remote IP address
-        String remoteAddr;
-        if (req != null) {
-            remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
-            if (remoteAddr == null) {
-                remoteAddr = req.getRemoteAddr();
-            }
-        } else {
-            remoteAddr = CmsContextInfo.LOCALHOST;
-        }
-
-        // get locale and encoding        
-        CmsI18nInfo i18nInfo;
-        if (m_localeManager.isInitialized()) {
-            // locale manager is initialized
-            // resolve locale and encoding
-            String resourceName;
-            if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                // add site root only if resource name does not start with "/system"
-                resourceName = requestedResource;
-            } else {
-                resourceName = currentSite.concat(requestedResource);
-            }
-            i18nInfo = m_localeManager.getI18nInfo(req, user, project, resourceName);
-        } else {
-            // locale manager not initialized, this will be true _only_ during system startup
-            // the values set does not matter, no locale information form VFS is used on system startup
-            // this is just to protect against null pointer exceptions
-            i18nInfo = new CmsI18nInfo(Locale.ENGLISH, getSystemInfo().getDefaultEncoding());
-        }
-
-        // decode the requested resource, always using UTF-8
-        requestedResource = CmsEncoder.decode(requestedResource);
-
-        // initialize the context info
-        CmsContextInfo contextInfo = new CmsContextInfo(
-            user,
-            project,
-            requestedResource,
-            currentSite,
-            i18nInfo.getLocale(),
-            i18nInfo.getEncoding(),
-            remoteAddr);
-
-        // now generate and return the CmsObject
-        return initCmsObject(contextInfo);
     }
 
     /**
@@ -2041,7 +2141,7 @@ public final class OpenCmsCore {
         // this will create an admin user with the "right" site root already set
         CmsObject adminCms;
         try {
-            adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
+            adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null, null);
         } catch (CmsException e) {
             // this should never happen, if it does we can't continue
             throw new IOException(Messages.get().getBundle().key(
@@ -2066,8 +2166,8 @@ public final class OpenCmsCore {
 
         CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();
         String pathWithParams = CmsRequestUtil.encodeParamsWithUri(path, req);
-        if (propertyLoginForm != null
-            && propertyLoginForm != CmsProperty.getNullProperty()
+        if ((propertyLoginForm != null)
+            && (propertyLoginForm != CmsProperty.getNullProperty())
             && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
             // login form property value was found            
             // build a redirect URL using the value of the property
@@ -2130,46 +2230,4 @@ public final class OpenCmsCore {
         }
     }
 
-    /**
-     * Updates the the user data stored in the CmsSessionInfoManager after the requested document
-     * is processed.<p>
-     *
-     * This is required if the user data (current group or project) was changed in
-     * the requested document.<p>
-     *
-     * The user data is only updated if the user was authenticated to the system.
-     *
-     * @param cms the current CmsObject initialized with the user data
-     * @param req the current request
-     */
-    private void updateUserSessionData(CmsObject cms, HttpServletRequest req) {
-
-        if (!cms.getRequestContext().isUpdateSessionEnabled()) {
-            // this request must not update the user session info
-            // this is true for long running "thread" requests, e.g. during project publish
-            return;
-        }
-        // get the session if it is available
-        HttpSession session = req.getSession(false);
-        // if the user was authenticated via sessions, 
-        // update the information in the session info manager
-        if (session != null) {
-            if (!cms.getRequestContext().currentUser().isGuestUser()) {
-                // get the session info object for the user
-                CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(session.getId());
-                if (sessionInfo != null) {
-                    // update the users session information
-                    sessionInfo.update(cms.getRequestContext());
-                } else {
-                    // create a new session info for the user
-                    sessionInfo = new CmsSessionInfo(
-                        cms.getRequestContext(),
-                        session.getId(),
-                        session.getMaxInactiveInterval());
-                    // update the session info user data
-                    m_sessionManager.addSessionInfo(sessionInfo);
-                }
-            }
-        }
-    }
 }

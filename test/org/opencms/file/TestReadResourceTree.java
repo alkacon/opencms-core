@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:05 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
@@ -66,6 +66,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
@@ -96,43 +97,6 @@ public class TestReadResourceTree extends OpenCmsTestCase {
     }
 
     /**
-     * Test readResources for reading a subtree below a given path.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testReadSubtree() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing readResources: reading a subtree");
-
-        cms.getRequestContext().setSiteRoot("/");
-
-        String path = "/sites/default/folder1/subfolder12";
-
-        // store all resources of the expected result
-        // storeResources(cms, path, false);
-        storeResources(cms, path + "/subsubfolder121", false);
-        storeResources(cms, path + "/subsubfolder121/image1.gif", false);
-        storeResources(cms, path + "/subsubfolder121/index.html", false);
-        storeResources(cms, path + "/subsubfolder121/page1.html", false);
-        storeResources(cms, path + "/index.html", false);
-        storeResources(cms, path + "/page1.html", false);
-        storeResources(cms, path + "/page2.html", false);
-
-        // read each resource below folder1/subfolder12
-        List result = cms.readResources(path, CmsResourceFilter.ALL);
-
-        // check each resource in the result
-        int i;
-        for (i = 0; i < result.size(); i++) {
-            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
-        }
-
-        // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
-    }
-
-    /**
      * Test readResources for reading immediate child resources below a given path.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -155,40 +119,6 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
         // read each resource below folder1/subfolder12
         List result = cms.readResources(path, CmsResourceFilter.ALL, false);
-
-        // check each resource in the result
-        int i;
-        for (i = 0; i < result.size(); i++) {
-            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
-        }
-
-        // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
-    }
-
-    /**
-     * Test readResources for reading folder resources.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testReadFolders() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing readResources: reading folder resources");
-
-        cms.getRequestContext().setSiteRoot("/");
-
-        String path = "/sites/default/folder2";
-
-        // store all resources of the expected result
-        // storeResources(cms, path, false);
-        storeResources(cms, path + "/subfolder21", false);
-        storeResources(cms, path + "/subfolder21/subsubfolder211", false);
-        storeResources(cms, path + "/subfolder22", false);
-        storeResources(cms, path + "/subfolder22/subsubfolder221", false);
-
-        // read each resource below folder2
-        List result = cms.readResources(path, CmsResourceFilter.DEFAULT_FOLDERS);
 
         // check each resource in the result
         int i;
@@ -246,31 +176,39 @@ public class TestReadResourceTree extends OpenCmsTestCase {
     }
 
     /**
-     * Test the method that read the direct sub-resources of a folder.<p>
+     * Test readResources for reading folder resources.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testReadResources() throws Throwable {
+    public void testReadFolders() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing readResources: reading child resources");
+        echo("Testing readResources: reading folder resources");
 
         cms.getRequestContext().setSiteRoot("/");
 
-        String path = "/sites/default/";
+        String path = "/sites/default/folder2";
 
-        List result;
-        
-        result = cms.getResourcesInFolder(path, CmsResourceFilter.ALL);
-        assertEquals(5, result.size());
-        
-        result = cms.getSubFolders(path, CmsResourceFilter.ALL);
-        assertEquals(4, result.size());     
-        
-        result = cms.getFilesInFolder(path, CmsResourceFilter.ALL);
-        assertEquals(1, result.size());          
+        // store all resources of the expected result
+        // storeResources(cms, path, false);
+        storeResources(cms, path + "/subfolder21", false);
+        storeResources(cms, path + "/subfolder21/subsubfolder211", false);
+        storeResources(cms, path + "/subfolder22", false);
+        storeResources(cms, path + "/subfolder22/subsubfolder221", false);
+
+        // read each resource below folder2
+        List result = cms.readResources(path, CmsResourceFilter.DEFAULT_FOLDERS);
+
+        // check each resource in the result
+        int i;
+        for (i = 0; i < result.size(); i++) {
+            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
+        }
+
+        // check the number of resources
+        assertEquals(this.m_currentResourceStrorage.size(), i);
     }
-    
+
     /**
      * Test readResources for reading modified resources.<p>
      * 
@@ -328,6 +266,32 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
         // check the number of resources
         assertEquals(this.m_currentResourceStrorage.size(), i);
+    }
+
+    /**
+     * Test the method that read the direct sub-resources of a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadResources() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing readResources: reading child resources");
+
+        cms.getRequestContext().setSiteRoot("/");
+
+        String path = "/sites/default/";
+
+        List result;
+
+        result = cms.getResourcesInFolder(path, CmsResourceFilter.ALL);
+        assertEquals(5, result.size());
+
+        result = cms.getSubFolders(path, CmsResourceFilter.ALL);
+        assertEquals(4, result.size());
+
+        result = cms.getFilesInFolder(path, CmsResourceFilter.ALL);
+        assertEquals(1, result.size());
     }
 
     /**
@@ -394,6 +358,43 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedAfter(timestamp2));
 
         // check each resource in the result
+        for (i = 0; i < result.size(); i++) {
+            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
+        }
+
+        // check the number of resources
+        assertEquals(this.m_currentResourceStrorage.size(), i);
+    }
+
+    /**
+     * Test readResources for reading a subtree below a given path.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadSubtree() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing readResources: reading a subtree");
+
+        cms.getRequestContext().setSiteRoot("/");
+
+        String path = "/sites/default/folder1/subfolder12";
+
+        // store all resources of the expected result
+        // storeResources(cms, path, false);
+        storeResources(cms, path + "/subsubfolder121", false);
+        storeResources(cms, path + "/subsubfolder121/image1.gif", false);
+        storeResources(cms, path + "/subsubfolder121/index.html", false);
+        storeResources(cms, path + "/subsubfolder121/page1.html", false);
+        storeResources(cms, path + "/index.html", false);
+        storeResources(cms, path + "/page1.html", false);
+        storeResources(cms, path + "/page2.html", false);
+
+        // read each resource below folder1/subfolder12
+        List result = cms.readResources(path, CmsResourceFilter.ALL);
+
+        // check each resource in the result
+        int i;
         for (i = 0; i < result.size(); i++) {
             assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
         }

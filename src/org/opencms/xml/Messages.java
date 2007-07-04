@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_ROOT_ELEMENT_COUNT_1 = "ERR_CD_ROOT_ELEMENT_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CORRECT_NO_CONTENT_DEF_3 = "ERR_CORRECT_NO_CONTENT_DEF_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EL_ATTRIBUTE_TOOFEW_3 = "ERR_EL_ATTRIBUTE_TOOFEW_3";
@@ -95,6 +98,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_CONTENT_HANDLER_1 = "ERR_INVALID_CONTENT_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_INIT_USER_1 = "ERR_INVALID_INIT_USER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_XCC_TYPE_REGISTERED_0 = "ERR_INVALID_XCC_TYPE_REGISTERED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -108,6 +114,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MARSHALLING_XML_DOC_TO_STRING_0 = "ERR_MARSHALLING_XML_DOC_TO_STRING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NULL_CMSOBJECT_0 = "ERR_NULL_CMSOBJECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NULL_LOCALE_0 = "ERR_NULL_LOCALE_0";
@@ -188,13 +197,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_SAX_EXC_0 = "LOG_PARSE_SAX_EXC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_ERROR_0 = "LOG_PARSING_XML_RESOURCE_ERROR_0";
+    public static final String LOG_PARSING_XML_RESOURCE_ERROR_1 = "LOG_PARSING_XML_RESOURCE_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0 = "LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0";
+    public static final String LOG_PARSING_XML_RESOURCE_FATAL_ERROR_1 = "LOG_PARSING_XML_RESOURCE_FATAL_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSING_XML_RESOURCE_WARNING_0 = "LOG_PARSING_XML_RESOURCE_WARNING_0";
+    public static final String LOG_PARSING_XML_RESOURCE_WARNING_1 = "LOG_PARSING_XML_RESOURCE_WARNING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0 = "LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0";
@@ -225,7 +234,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_DTD_NOT_FOUND_1 = "LOG_XMLPAGE_DTD_NOT_FOUND_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_XSD_NOT_FOUND_1 = "LOG_XMLPAGE_XSD_NOT_FOUND_1";
 

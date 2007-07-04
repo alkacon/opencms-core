@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2006/03/28 12:14:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -40,11 +41,58 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable {
+
+    /**
+     *  Enumeration class for property types.<p>
+     */
+    public static final class CmsPropertyType extends A_CmsModeIntEnumeration {
+
+        /** Property value is treated as a link or list of links. */
+        protected static final CmsPropertyType LINK = new CmsPropertyType(1);
+
+        /** Property value is not a link. */
+        protected static final CmsPropertyType NORMAL = new CmsPropertyType(0);
+
+        /** serializable version id. */
+        private static final long serialVersionUID = 74746076708908673L;
+
+        /**
+         * Creates a new property type with the given identifier.<p>
+         * 
+         * @param type the mode id to use
+         */
+        private CmsPropertyType(int type) {
+
+            super(type);
+        }
+
+        /**
+         * Returns the property definition type for the given type id. <p>
+         * 
+         * If the given String matches no known type <code>{@link #NORMAL}</code> 
+         * will be returned as the default.<p>
+         * 
+         * @param type the type value to get the property type for
+         * 
+         * @return the property type for the given type value
+         */
+        public static CmsPropertyType valueOf(int type) {
+
+            switch (type) {
+                case 1:
+                    return LINK;
+                case 0:
+                default:
+                    return NORMAL;
+            }
+
+        }
+    }
 
     /** The name constraints when generating new properties. */
     public static final String NAME_CONSTRAINTS = "-._~$";
@@ -60,9 +108,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
-
-    /** Property for the channel id. */
-    public static final String PROPERTY_CHANNELID = "ChannelId";
 
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
@@ -94,17 +139,14 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
 
-    /** Property for internal use (e.g. delete). */
-    public static final String PROPERTY_INTERNAL = "internal";
-
     /** Property for the keywords. */
     public static final String PROPERTY_KEYWORDS = "Keywords";
 
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
 
-    /** Property for the current locale. */
-    public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
+    /** Property for the default locales. */
+    public static final String PROPERTY_LOCALES_DEFAULT = "locales.default";
 
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
@@ -133,8 +175,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property to sort search results in categories. */
     public static final String PROPERTY_SEARCH_CATEGORY = "category";
 
-    /** Property to define a bean for search content extraction. */
-    public static final String PROPERTY_SEARCH_EXTRACTIONCLASS = "search.extractionclass";
+    /** Property to exclude individual resources from search index generation. */
+    public static final String PROPERTY_SEARCH_EXCLUDE = "search.exclude";
 
     /** Property to boost certain search results. */
     public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
@@ -160,10 +202,17 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** The propertydefinitiontype for resources. */
     public static final int PROPERYDEFINITION_RESOURCE = 1;
 
+    /** Property value is treated as a link or list of links. */
+    public static final CmsPropertyType TYPE_LINK = CmsPropertyType.LINK;
+
+    /** Property value is not a link. */
+    public static final CmsPropertyType TYPE_NORMAL = CmsPropertyType.NORMAL;
+
     /** The null property definition object. */
     private static final CmsPropertyDefinition NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(
         CmsUUID.getNullUUID(),
-        "");
+        "",
+        TYPE_NORMAL);
 
     /** The id of this property definition. */
     private CmsUUID m_id;
@@ -171,15 +220,33 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** The name of this property definition. */
     private String m_name;
 
+    /** The type of this property definition.*/
+    private CmsPropertyType m_type;
+
     /**
-     * Creates a new CmsPropertydefinition.<p>
+     * Creates a new property definition object with the type 
+     * <code>{@link #TYPE_NORMAL}</code>.<p>
+     * 
      * @param id the id of the property definition
-     * @param name the name of the property definition
+     * @param name the name of the property definition 
      */
     public CmsPropertyDefinition(CmsUUID id, String name) {
 
+        this(id, name, TYPE_NORMAL);
+    }
+
+    /**
+     * Creates a new property definition object.<p>
+     * 
+     * @param id the id of the property definition
+     * @param name the name of the property definition 
+     * @param propertyType the type of the property
+     */
+    public CmsPropertyDefinition(CmsUUID id, String name, CmsPropertyType propertyType) {
+
         m_id = id;
         m_name = name;
+        m_type = propertyType;
     }
 
     /**
@@ -219,7 +286,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      */
     public Object clone() {
 
-        return new CmsPropertyDefinition(m_id, m_name);
+        return new CmsPropertyDefinition(m_id, m_name, m_type);
     }
 
     /**
@@ -271,6 +338,16 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     }
 
     /**
+     * Returns the the type of this property definition.<p> 
+     * 
+     * @return the type of this property definition
+     */
+    public CmsPropertyType getType() {
+
+        return m_type;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -279,6 +356,16 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
             return m_name.hashCode();
         }
         return 0;
+    }
+
+    /**
+     * Sets the type for this property definition.<p>
+     * 
+     * @param type the type to set
+     */
+    public void setType(CmsPropertyType type) {
+
+        m_type = type;
     }
 
     /**
@@ -292,6 +379,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
         result.append(m_name);
         result.append(" id:");
         result.append(m_id);
+        result.append(" type:");
+        result.append(m_type);
         return result.toString();
     }
 }

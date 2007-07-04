@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.fileupload.FileItem;
 
 /**
  * Represents an input form with all configured fields and options.<p>
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Thomas Weckert 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,6 +230,9 @@ public class CmsForm {
     /** Configuration node name for the optional captcha. */
     public static final String NODE_CAPTCHA_CHARACTERS = "Characters";
 
+    /** The map of request parameters. */
+    private Map m_parameterMap;
+    
     /**
      * Default constructor which parses the configuration file.<p>
      * 
@@ -238,7 +241,7 @@ public class CmsForm {
      * @param initial if true, field values are filled with values specified in the configuration file, otherwise from the request
      * @throws Exception if parsing the configuration fails
      */
-    public CmsForm(CmsJspActionElement jsp, CmsMessages messages, boolean initial)
+    public CmsForm(CmsFormHandler jsp, CmsMessages messages, boolean initial)
     throws Exception {
 
         init(jsp, messages, initial, null, null);
@@ -255,7 +258,7 @@ public class CmsForm {
      * 
      * @throws Exception if parsing the configuration fails
      */
-    public CmsForm(CmsJspActionElement jsp, CmsMessages messages, boolean initial, String formConfigUri, String formAction)
+    public CmsForm(CmsFormHandler jsp, CmsMessages messages, boolean initial, String formConfigUri, String formAction)
     throws Exception {
 
         init(jsp, messages, initial, formConfigUri, formAction);
@@ -596,13 +599,14 @@ public class CmsForm {
      * @param messages the localized messages
      * @param initial if true, field values are filled with values specified in the XML configuration
      * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
-     * @param formAction the desired action submiktted by the form
+     * @param formAction the desired action submitted by the form
      * 
      * @throws Exception if parsing the configuration fails
      */
-    public void init(CmsJspActionElement jsp, CmsMessages messages, boolean initial, String formConfigUri, String formAction)
+    public void init(CmsFormHandler jsp, CmsMessages messages, boolean initial, String formConfigUri, String formAction)
     throws Exception {
-
+ 
+        m_parameterMap = jsp.getParameterMap();
         // read the form configuration file from VFS
         if (CmsStringUtil.isEmpty(formConfigUri)) {
             formConfigUri = jsp.getRequestContext().getUri();
@@ -634,7 +638,7 @@ public class CmsForm {
             addField(m_captchaField);
         }
     }
-
+    
     /**
      * Tests if the check page was submitted.<p>
      * 
@@ -709,35 +713,28 @@ public class CmsForm {
     /**
      * Marks the individual items of checkboxes, selectboxes and radiobuttons as selected depending on the given request parameters.<p>
      * 
-     * @param request the current request
      * @param field the current field
      * @param value the value of the input field
      * 
      * @return <code>"true"</code> if the current item is selected or checked, otherwise false
      */
-    protected String readSelectedFromRequest(HttpServletRequest request, I_CmsField field, String value) {
+    protected String readSelectedFromRequest(I_CmsField field, String value) {
 
         String result = "";
-        if (CmsCheckboxField.class.isAssignableFrom(field.getClass())) {
-            // this is a checkbox
-            String[] values = request.getParameterValues(field.getName());
-            if (values != null) {
+        if (field.needsItems()) {
+            // select box or radio button or checkbox
+            try {
+                String[] values = (String[])m_parameterMap.get(field.getName());
                 for (int i = 0; i < values.length; i++) {
-                    if (value.equals(values[i])) {
-                        return Boolean.toString(true);
-                    }
+                    if (CmsStringUtil.isNotEmpty(values[i]) && values[i].equals(value)) {
+                        // mark this as selected
+                        result = Boolean.toString(true);
+                    } 
                 }
+            } catch (Exception e) {
+                // keep value null;
             }
-        } else if (CmsSelectionField.class.isAssignableFrom(field.getClass()) || CmsRadioButtonField.class.isAssignableFrom(field.getClass())) {
-            // select box or radio button
-            String fieldValue = request.getParameter(field.getName());
-            if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.equals(value) && !"".equals(value)) {
-                // mark this as selected
-                result = Boolean.toString(true);
-            } else {
-                // do not mark it as selected
-                result = "";
-            }
+
         } else {
             // always display fields value arrays
             result = Boolean.toString(true);
@@ -1013,19 +1010,18 @@ public class CmsForm {
     /**
      * Creates the checkbox field to activate the confirmation mail in the input form.<p>
      * 
-     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
      * @param messages the localized messages
      * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
      * @return the checkbox field to activate the confirmation mail in the input form
      */
-    private I_CmsField createConfirmationMailCheckbox(CmsJspActionElement jsp, CmsMessages messages, boolean initial) {
+    private I_CmsField createConfirmationMailCheckbox(CmsMessages messages, boolean initial) {
 
         A_CmsField field = new CmsCheckboxField();
         field.setName(PARAM_SENDCONFIRMATION);
         field.setLabel(messages.key("form.confirmation.label"));
         // check the field status
         boolean isChecked = false;
-        if (!initial && Boolean.valueOf(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION)).booleanValue()) {
+        if (!initial && Boolean.valueOf(getParameter(PARAM_SENDCONFIRMATION)).booleanValue()) {
             // checkbox is checked by user
             isChecked = true;
         }
@@ -1082,7 +1078,7 @@ public class CmsForm {
                 // get the field value
                 String fieldValue = "";
                 if (!initial) {
-                    fieldValue = jsp.getRequest().getParameter(CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE);
+                    fieldValue = getParameter(CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE);
                     if (fieldValue == null) {
                         fieldValue = "";
                     }
@@ -1249,6 +1245,7 @@ public class CmsForm {
         List fieldValues = content.getValues(NODE_INPUTFIELD, locale);
         int fieldValueSize = fieldValues.size();
         CmsFieldFactory fieldFactory = CmsFieldFactory.getSharedInstance();
+        Map fileUploads = (Map)jsp.getRequest().getSession().getAttribute(CmsFormHandler.ATTRIBUTE_FILEITEMS);
         
         for (int i = 0; i < fieldValueSize; i++) {
             I_CmsXmlContentValue inputField = (I_CmsXmlContentValue)fieldValues.get(i);
@@ -1268,7 +1265,7 @@ public class CmsForm {
             stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDERRORMESSAGE, locale);
             field.setErrorMessage(stringValue);
             // get the field value
-            if (initial && CmsStringUtil.isEmpty(jsp.getRequest().getParameter(field.getName()))) {
+            if (initial && CmsStringUtil.isEmpty(getParameter(field.getName()))) {
                 // only fill in values from configuration file if called initially
                 String fieldValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDDEFAULTVALUE, locale);
                 if (CmsStringUtil.isNotEmpty(fieldValue)) {
@@ -1278,19 +1275,17 @@ public class CmsForm {
                 }
             } else {
                 // get field value from request for standard fields
-                if (!CmsCheckboxField.class.isAssignableFrom(field.getClass())) {
-                    String[] parameterValues = jsp.getRequest().getParameterValues(field.getName());
-                    StringBuffer value = new StringBuffer();
-                    if (parameterValues != null) {
-                        for (int j = 0; j < parameterValues.length; j++) {
-                            if (j != 0) {
-                                value.append(", ");
-                            }
-                            value.append(parameterValues[j]);
+                String[] parameterValues = (String[])m_parameterMap.get(field.getName()); 
+                StringBuffer value = new StringBuffer();
+                if (parameterValues != null) {
+                    for (int j = 0; j < parameterValues.length; j++) {
+                        if (j != 0) {
+                            value.append(", ");
                         }
+                        value.append(parameterValues[j]);
                     }
-                    field.setValue(value.toString());
                 }
+                field.setValue(value.toString());
             }
 
             // fill object members in case this is no hidden field
@@ -1302,6 +1297,14 @@ public class CmsForm {
                     field.setValidationExpression(CmsEmailField.VALIDATION_REGEX);
                 } else {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
+                }
+                if (CmsFileUploadField.class.isAssignableFrom(field.getClass())) {
+                    if (fileUploads != null) {
+                        FileItem attachment = (FileItem)fileUploads.get(field.getName());
+                        if (attachment != null) {
+                            ((CmsFileUploadField)field).setFileSize(attachment.get().length);
+                        }
+                    }
                 }
                 // get the field mandatory flag
                 stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
@@ -1350,10 +1353,7 @@ public class CmsForm {
                                 }
                             } else {
                                 // get selected flag from request for current item
-                                selected = readSelectedFromRequest(
-                                    jsp.getRequest(),
-                                    field,
-                                    value);
+                                selected = readSelectedFromRequest(field, value);
                             }
                             // add new item object
                             items.add(new CmsFieldItem(value, label, Boolean.valueOf(selected).booleanValue()));
@@ -1378,8 +1378,24 @@ public class CmsForm {
         if (isConfirmationMailEnabled() && isConfirmationMailOptional()) {
             
             // add the checkbox to activate confirmation mail for customer
-            I_CmsField confirmationMailCheckbox = createConfirmationMailCheckbox(jsp, messages, initial);
+            I_CmsField confirmationMailCheckbox = createConfirmationMailCheckbox(messages, initial);
             addField(confirmationMailCheckbox);
+        }
+    }
+    
+    /**
+     * Returns the request parameter with the specified name.<p>
+     * 
+     * @param parameter the parameter to return
+     * 
+     * @return the parameter value
+     */
+    private String getParameter(String parameter) {
+        
+        try {
+            return ((String[])m_parameterMap.get(parameter))[0];
+        } catch (NullPointerException e) {
+            return "";
         }
     }
     
@@ -1416,7 +1432,7 @@ public class CmsForm {
 
         if (isConfirmationMailEnabled()) {
             // confirmation mail is enabled, make simple field check to avoid errors
-            I_CmsField confirmField = new CmsTextField();
+            I_CmsField confirmField;
             try {
                 // try to get the confirmation email field
                 confirmField = (I_CmsField)getFields().get(getConfirmationMailField());

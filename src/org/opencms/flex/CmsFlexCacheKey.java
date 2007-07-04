@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2006/07/12 08:13:38 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -371,13 +371,13 @@ public class CmsFlexCacheKey {
                     }
                 } else {
                     // match all request params
-                    Iterator i = keyParams.keySet().iterator();
+                    Iterator i = keyParams.entrySet().iterator();
                     while (i.hasNext()) {
-                        Object o = i.next();
-                        str.append(o);
+                        Map.Entry entry = (Map.Entry)i.next();
+                        str.append(entry.getKey());
                         str.append("=");
                         // TODO: handle multiple occurances of the same parameter value
-                        String[] values = (String[])keyParams.get(o);
+                        String[] values = (String[])entry.getValue();
                         str.append(values[0]);
                         if (i.hasNext()) {
                             str.append(",");
@@ -690,12 +690,12 @@ public class CmsFlexCacheKey {
                         m_user = IS_USED; // marks m_user as being used
                         break;
                     case 4: // params
-                        if (v!= null) {
+                        if (v != null) {
                             m_params = parseValueList(v);
                         } else {
                             m_params = Collections.EMPTY_SET;
                         }
-                        
+
                         if (m_params.contains(I_CmsResourceLoader.PARAMETER_ELEMENT)) {
                             // workaround for element setting by parameter in OpenCms < 6.0
                             m_element = IS_USED;

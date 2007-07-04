@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/09/12 09:57:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 
 /**
- * Warps context information to access the OpenCms database.<p> 
+ * Wraps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -55,6 +56,9 @@ public class CmsDbContext {
 
     /** The current Flex request context info (if available). */
     protected CmsFlexRequestContextInfo m_flexRequestContextInfo;
+
+    /** The id of the project for the context. */
+    protected CmsUUID m_projectId;
 
     /** The wrapped user request context. */
     protected CmsRequestContext m_requestContext;
@@ -75,6 +79,7 @@ public class CmsDbContext {
     public CmsDbContext(CmsRequestContext context) {
 
         m_requestContext = context;
+        m_projectId = CmsUUID.getNullUUID();
 
         if (m_requestContext != null) {
             m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(CmsRequestUtil.HEADER_LAST_MODIFIED);
@@ -118,6 +123,16 @@ public class CmsDbContext {
     public CmsFlexRequestContextInfo getFlexRequestContextInfo() {
 
         return m_flexRequestContextInfo;
+    }
+
+    /**
+     * Returns the project id of the context.<p>
+     *
+     * @return the project
+     */
+    public CmsUUID getProjectId() {
+
+        return m_projectId;
     }
 
     /**
@@ -165,7 +180,7 @@ public class CmsDbContext {
      */
     public String removeSiteRoot(String resourcename) {
 
-        if (m_requestContext != null) {
+        if ((m_requestContext != null) && (resourcename != null)) {
             return m_requestContext.removeSiteRoot(resourcename);
         }
 
@@ -195,6 +210,16 @@ public class CmsDbContext {
         }
 
         throwException(message, throwable);
+    }
+
+    /**
+     * Sets the project id of the context.<p>
+     *
+     * @param projectId the id of the project to set
+     */
+    public void setProjectId(CmsUUID projectId) {
+
+        m_projectId = projectId;
     }
 
     /**

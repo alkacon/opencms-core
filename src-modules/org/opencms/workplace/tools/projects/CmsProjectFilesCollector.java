@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,73 +31,63 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListResourceCollector;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Collector for receiving CmsResources from a project.<p>
+ * Collector for {@link org.opencms.file.CmsResource} objects from a project.<p>
  * 
+ * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.0 
  */
-public class CmsProjectFilesCollector implements I_CmsResourceCollector {
+public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "projectresources";
 
-    /** Parameter to get all changed resources. */
-    public static final String PARAM_CHANGED = "changed";
+    /** Project Parameter name constant. */
+    public static final String PARAM_PROJECT = "project";
 
-    /** Parameter to get all deleted resources. */
-    public static final String PARAM_DELETED = "deleted";
-
-    /** Parameter to get all modified resources. */
-    public static final String PARAM_MODIFIED = "modified";
-
-    /** Parameter to get all new resources. */
-    public static final String PARAM_NEW = "new";
+    /** Resource state Parameter name constant. */
+    public static final String PARAM_STATE = "state";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsProjectFilesCollector.class);
 
-    /** The collector name. */
-    private String m_collectorName;
-
-    /** The colelctor parameter. */
-    private String m_collectorParameter;
-
-    /** Sort order. Not used yet. */
-    private int m_order;
-
     /**
-     * Constructor, creates a new CmsProjectFilesCollector.<p>
+     * Constructor, creates a new instance.<p>
+     * 
+     * @param wp the workplace object
+     * @param projectId the id of the project 
+     * @param state the state of the resources to filter
      */
-    public CmsProjectFilesCollector() {
+    public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, CmsUUID projectId, CmsResourceState state) {
 
-        m_collectorName = COLLECTOR_NAME;
-        m_collectorParameter = PARAM_MODIFIED + "|0";
-        m_order = 0;
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object arg0) {
-
-        return 0;
+        super(wp);
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_STATE + I_CmsListResourceCollector.SEP_KEYVAL + state;
+        m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM + PARAM_PROJECT + I_CmsListResourceCollector.SEP_KEYVAL + projectId;
     }
 
     /**
@@ -111,131 +101,51 @@ public class CmsProjectFilesCollector implements I_CmsResourceCollector {
     }
 
     /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject)
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public String getCreateLink(CmsObject cms) {
+    public List getResources(CmsObject cms, Map params) throws CmsException {
 
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public String getCreateLink(CmsObject cms, String collectorName, String param) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject)
-     */
-    public String getCreateParam(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public String getCreateParam(CmsObject cms, String collectorName, String param) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorName()
-     */
-    public String getDefaultCollectorName() {
-
-        return m_collectorName;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorParam()
-     */
-    public String getDefaultCollectorParam() {
-
-        return m_collectorParameter;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getOrder()
-     */
-    public int getOrder() {
-
-        return m_order;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject)
-     */
-    public List getResults(CmsObject cms) {
-
-        return getResults(cms, COLLECTOR_NAME, m_collectorParameter);
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     * The parameter must follow the syntax "mode|projectId" where mode is either "new", "changed", "deleted" 
-     * or "modified" and projectId is the id of the project to be displayed.
-     */
-    public List getResults(CmsObject cms, String collectorName, String parameter) {
-
-        if (parameter == null) {
-            parameter = m_collectorParameter;
+        CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
+        try {
+            projectId = new CmsUUID((String)params.get(PARAM_PROJECT));
+        } catch (Throwable e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
+            }
         }
-
-        List params = CmsStringUtil.splitAsList(parameter, "|");
-        String param = (String)params.get(0);
-        String projectId = (String)params.get(1);
-
-        int state;
-        if (param.equals(PARAM_NEW)) {
-            state = CmsResource.STATE_NEW;
-        } else if (param.equals(PARAM_CHANGED)) {
-            state = CmsResource.STATE_CHANGED;
-        } else if (param.equals(PARAM_DELETED)) {
-            state = CmsResource.STATE_DELETED;
-        } else {
-            state = CmsResource.STATE_KEEP;
+        CmsResourceState state = CmsResource.STATE_KEEP;
+        try {
+            state = CmsResourceState.valueOf(Integer.parseInt((String)params.get(PARAM_STATE)));
+        } catch (Throwable e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
+            }
         }
 
         // show files in the selected project with the selected status
-        try {
-            return cms.readProjectView(new Integer(projectId).intValue(), state);
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+        List resources = cms.readProjectView(projectId, state);
+        
+        // remove not visible files
+        Iterator itRes = resources.iterator();
+        // dont's show resources that  are in a different site root
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        // this is not sufficient (startsWith) if one siteRoot is prefix of another as siteRoot ends without slash!
+        siteRoot += "/";
+        while (itRes.hasNext()) {
+            CmsResource resource = (CmsResource)itRes.next();
+            if (!resource.getRootPath().startsWith(siteRoot)
+                && !resource.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                itRes.remove();
             }
-            return Collections.EMPTY_LIST;
         }
+        return resources;
     }
 
     /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorName(java.lang.String)
+     * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
-    public void setDefaultCollectorName(String collectorName) {
+    protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-        m_collectorName = collectorName;
+        // no-op
     }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorParam(java.lang.String)
-     * The parameter must follow the syntax "mode|projectId" where mode is either "new", "changed", "deleted" 
-     * or "modified" and projectId is the id of the project to be displayed.
-     */
-    public void setDefaultCollectorParam(String param) {
-
-        m_collectorParameter = param;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setOrder(int)
-     */
-    public void setOrder(int order) {
-
-        m_order = order;
-    }
-
 }

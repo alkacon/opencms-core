@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/07/04 16:57:50 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.test;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -51,10 +52,10 @@ public class OpenCmsTestResourceStorage {
 
     /** the name of the default storage. */
     public static String GLOBAL_STORAGE = "global";
-    
+
     /** the name of the storage. */
     private String m_name;
-    
+
     /** storeage for precalculation of states. **/
     private Map m_precalcState;
 
@@ -66,7 +67,7 @@ public class OpenCmsTestResourceStorage {
 
     /** Prefix mapping for target name. */
     private String m_targetNameMapping;
-    
+
     /**
      * Creates a new OpenCmsTestResourceStorage.<p>
      * 
@@ -89,13 +90,12 @@ public class OpenCmsTestResourceStorage {
      * @param resource the resource to add
      * @throws CmsException if something goes wrong
      */
-    public void add(CmsObject cms, String resourceName, CmsResource resource)  throws CmsException {
+    public void add(CmsObject cms, String resourceName, CmsResource resource) throws CmsException {
 
         m_storage.put(resourceName, new OpenCmsTestResourceStorageEntry(cms, resourceName, resource));
         m_precalcState.put(resourceName, preCalculateState(resource));
     }
-    
-    
+
     /**
      * Gets an entry from the storage.<p>
      * 
@@ -111,31 +111,37 @@ public class OpenCmsTestResourceStorage {
         entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
 
         if (entry == null) {
-            throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
+            throw new Exception("resource "
+                + resourceName
+                + " -> "
+                + mappedResourceName
+                + " not found in storage "
+                + m_storage.keySet().toString());
         }
 
         return entry;
     }
-    
+
     /**
      * Gets the name of the storage.<p>
      * 
      * @return the name of the storage
      */
     public String getName() {
-        
+
         return m_name;
     }
-    
+
     /**
      * Returns the size of the storage.<p>
      * 
      * @return the size of the storage
      */
     public int size() {
+
         return m_storage.size();
     }
-    
+
     /**
      * Gets an precalculate resource state from the storage.<p>
      * 
@@ -143,19 +149,16 @@ public class OpenCmsTestResourceStorage {
      * @return precalculated resource state
      * @throws Exception in case something goes wrong
      */
-    public int getPreCalculatedState(String resourceName) throws Exception {
-        
-         String mappedResourceName = mapResourcename(resourceName);
-         
-         Integer state = null;
-         state = (Integer)m_precalcState.get(mappedResourceName);
-         if (state == null) {
+    public CmsResourceState getPreCalculatedState(String resourceName) throws Exception {
+
+        String mappedResourceName = mapResourcename(resourceName);
+
+        CmsResourceState state = (CmsResourceState)m_precalcState.get(mappedResourceName);
+        if (state == null) {
             throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
-        return state.intValue();
+        return state;
     }
-    
-    
 
     /**
      * Returns the source name mapping.<p>
@@ -188,7 +191,7 @@ public class OpenCmsTestResourceStorage {
         m_sourceNameMapping = source;
         m_targetNameMapping = target;
     }
-    
+
     /**
      * Resets the mapping for resourcenames.<p>
      */
@@ -197,7 +200,7 @@ public class OpenCmsTestResourceStorage {
         m_sourceNameMapping = null;
         m_targetNameMapping = null;
     }
-    
+
     /**
      * Does the name mapping of a resourceName.<p>
      * 
@@ -208,9 +211,9 @@ public class OpenCmsTestResourceStorage {
      * @return mapped resource name
      */
     public String mapResourcename(String resourceName) {
-        
+
         // only modify the name if we have set some kind of mapping
-        if (m_sourceNameMapping != null && m_targetNameMapping != null) {
+        if ((m_sourceNameMapping != null) && (m_targetNameMapping != null)) {
             // check if the resourcename starts with the source map name
             if (resourceName.startsWith(m_sourceNameMapping)) {
                 // exchange the prefix with the target map name
@@ -220,7 +223,6 @@ public class OpenCmsTestResourceStorage {
         return resourceName;
     }
 
-    
     /**
      * Precalculates the state of a resource after an operation based on its state before 
      * the operation is excecuted.<p>
@@ -235,27 +237,21 @@ public class OpenCmsTestResourceStorage {
      * @param res the resource 
      * @return new precalculated state
      */
-    private Integer preCalculateState(CmsResource res) {
-        
-        int newState = CmsResource.STATE_UNCHANGED;
-        int state = res.getState();
-        switch (state) {
-            case CmsResource.STATE_UNCHANGED:
-                newState = CmsResource.STATE_CHANGED;
-                break;
-            case CmsResource.STATE_CHANGED:
-                newState = CmsResource.STATE_CHANGED;
-                break;
-            case CmsResource.STATE_NEW:
-                newState = CmsResource.STATE_NEW;
-                break;  
-            case CmsResource.STATE_DELETED:
-                newState = CmsResource.STATE_DELETED;
-                break;   
-            default:
-                newState = CmsResource.STATE_UNCHANGED;
-                break;
-        }        
-        return new Integer(newState);
+    private CmsResourceState preCalculateState(CmsResource res) {
+
+        CmsResourceState newState = CmsResource.STATE_UNCHANGED;
+        CmsResourceState state = res.getState();
+        if (state.isUnchanged()) {
+            newState = CmsResource.STATE_CHANGED;
+        } else if (state.isChanged()) {
+            newState = CmsResource.STATE_CHANGED;
+        } else if (state.isNew()) {
+            newState = CmsResource.STATE_NEW;
+        } else if (state.isDeleted()) {
+            newState = CmsResource.STATE_DELETED;
+        } else {
+            newState = CmsResource.STATE_UNCHANGED;
+        }
+        return newState;
     }
 }

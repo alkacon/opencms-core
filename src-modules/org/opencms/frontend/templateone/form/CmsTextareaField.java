@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextareaField.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
@@ -38,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text area.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTextareaField extends A_CmsField {
 
@@ -104,7 +105,7 @@ public class CmsTextareaField extends A_CmsField {
         buf.append(messages.key("form.html.field.start"))
             .append("<textarea name=\"").append(getName()).append("\"")
             .append(formHandler.getFormConfiguration().getFormFieldAttributes())
-            .append(">").append(CmsStringUtil.escapeHtml(getValue())).append("</textarea>")
+            .append(">").append(CmsEncoder.escapeXml(getValue())).append("</textarea>")
             .append(errorMessage)
             .append(messages.key("form.html.field.end")).append("\n");
         

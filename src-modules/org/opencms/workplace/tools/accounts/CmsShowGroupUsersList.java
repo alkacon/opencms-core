@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2006/10/11 13:41:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,23 +31,18 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
-import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,20 +57,20 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
-
-    /** list id constant. */
-    public static final String LIST_ID = "lsgu";
 
     /** list action id constant. */
     public static final String LIST_ACTION_EDIT = "ae";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_LASTLOGIN = "cl";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lsgu";
 
     /**
      * Public constructor.<p>
@@ -114,7 +109,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
      */
     public String defaultActionHtmlStart() {
 
-        return getList().listJs(getLocale()) + dialogContentStart(getParamTitle());
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
 
     /**
@@ -131,24 +126,25 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
-        
+
         Map params = new HashMap();
-        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+        params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            getToolManager().jspForwardTool(this, "/accounts/users/edit/user", params);
+            getToolManager().jspForwardTool(this, "/accounts/orgunit/users/edit/user", params);
         } else {
             throwListUnsupportedActionException();
         }
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers()
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers(boolean)
      */
-    protected List getUsers() throws CmsException {
+    protected List getUsers(boolean withOtherOus) throws CmsException {
 
-        return getCms().getUsersOfGroup(getParamGroupname());
+        return getCms().getUsersOfGroup(getParamGroupname(), withOtherOus);
     }
 
     /**
@@ -156,7 +152,17 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void setDefaultAction(CmsListColumnDefinition loginCol) {
 
-        CmsListDefaultAction editAction = new CmsListDefaultAction(LIST_ACTION_EDIT);
+        CmsListDefaultAction editAction = new CmsListDefaultAction(LIST_ACTION_EDIT) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
+             */
+            public boolean isEnabled() {
+
+                return getItem().get(LIST_COLUMN_ORGUNIT).equals(
+                    CmsOrganizationalUnit.SEPARATOR + ((CmsShowGroupUsersList)getWp()).getParamOufqn());
+            }
+        };
         editAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_HELP_0));
         loginCol.addDefaultAction(editAction);
@@ -167,7 +173,16 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return ((A_CmsGroupUsersList)getWp()).getIconPath(getItem());
+            }
+        };
         iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_HELP_0));
         iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
@@ -183,50 +198,6 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
         // noop
     }
 
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        super.setColumns(metadata);
-        
-        // adjust colum widths
-        CmsListColumnDefinition loginCol = metadata.getColumnDefinition(LIST_COLUMN_LOGIN);
-        loginCol.setWidth("30%");
-        
-        CmsListColumnDefinition fullnameCol = metadata.getColumnDefinition(LIST_COLUMN_FULLNAME);
-        fullnameCol.setWidth("50%");
-        
-        // add column for last login date
-        CmsListColumnDefinition lastLoginCol = new CmsListColumnDefinition(LIST_COLUMN_LASTLOGIN);
-        lastLoginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0));
-        lastLoginCol.setWidth("20%");
-        lastLoginCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
-        metadata.addColumn(lastLoginCol);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        List ret = new ArrayList();
-
-        // get content        
-        List users = getUsers();
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
-            CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_FULLNAME, user.getFullName());
-            item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
-            ret.add(item);
-        }
-
-        return ret;
-    }
-    
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */

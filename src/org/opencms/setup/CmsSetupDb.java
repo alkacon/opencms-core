@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,21 +32,24 @@
 package org.opencms.setup;
 
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -57,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +90,72 @@ public class CmsSetupDb extends Object {
     }
 
     /**
+     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
+     * 
+     * @param db the selected database key
+     * 
+     * @return html warning, or <code>null</code> if no warning
+     */
+    public String checkVariables(String db) {
+
+        StringBuffer html = new StringBuffer(512);
+        if (m_con == null) {
+            return null; // prior error, trying to get a connection
+        }
+        SQLException exception = null;
+        if (db.equals("mysql")) { // just for 4.0, > is not needed, < is not supported.
+            String statement = "SELECT @@max_allowed_packet;";
+            Statement stmt = null;
+            ResultSet rs = null;
+            long map = 0;
+            try {
+                stmt = m_con.createStatement();
+                rs = stmt.executeQuery(statement);
+                if (rs.next()) {
+                    map = rs.getLong(1);
+                }
+            } catch (SQLException e) {
+                exception = e;
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        // ignore
+                    }
+                }
+            }
+            if (exception == null) {
+                if (map > 0) {
+                    html.append("MySQL system variable <code>'max_allowed_packet'</code> is set to ");
+                    html.append(map);
+                    html.append(" Bytes.<p>\n");
+                }
+                html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
+                if (map < 15 * 1024 * 1024) {
+                    m_errors.addElement("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
+                        + map
+                        + ").</b>\n"
+                        + "The recommended value for running OpenCms is 16Mb."
+                        + "Please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).\n");
+                }
+            }
+        }
+        if ((exception != null) || db.equals("mysql_3")) {
+            html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
+            html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
+            html.append("<b>The recommended value for running OpenCms is 16Mb, please set it in your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
+            if (exception != null) {
+                html.append(CmsException.getStackTraceAsString(exception));
+            }
+        }
+        if (html.length() == 0) {
+            return null;
+        }
+        return html.toString();
+    }
+
+    /**
      * Clears the error messages stored internally.<p>
      */
     public void clearErrors() {
@@ -100,10 +169,13 @@ public class CmsSetupDb extends Object {
     public void closeConnection() {
 
         try {
-            m_con.close();
+            if (m_con != null) {
+                m_con.close();
+            }
         } catch (Exception e) {
             // ignore
         }
+        m_con = null;
     }
 
     /**
@@ -218,6 +290,104 @@ public class CmsSetupDb extends Object {
     }
 
     /**
+     * Creates and executes a database statment from a String returning the result set.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public ResultSet executeSqlStatement(String query, Map replacer) throws SQLException {
+
+        Statement stmt = null;
+        ResultSet resultSet = null;
+
+        stmt = m_con.createStatement();
+        String queryToExecute = query;
+
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        // do the query
+        resultSet = stmt.executeQuery(queryToExecute);
+
+        return resultSet;
+    }
+
+    /** Creates and executes a database statment from a String returning the result set.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * @param params the list of parameters for the statement
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public ResultSet executeSqlStatement(String query, Map replacer, List params) throws SQLException {
+
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+
+        String queryToExecute = query;
+
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        stmt = m_con.prepareStatement(queryToExecute);
+
+        // Check the params
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                Object item = params.get(i);
+
+                // Check if the parameter is a string
+                if (item instanceof String) {
+                    stmt.setString(i + 1, (String)item);
+                }
+                if (item instanceof Integer) {
+                    Integer number = (Integer)item;
+                    stmt.setInt(i + 1, number.intValue());
+                }
+                if (item instanceof Long) {
+                    Long longNumber = (Long)item;
+                    stmt.setLong(i + 1, longNumber.longValue());
+                }
+
+                // If item is none of types above set the statement to use the bytes
+                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                    try {
+                        stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        // do the query
+        resultSet = stmt.executeQuery();
+
+        return resultSet;
+    }
+
+    /**
+     * Returns the connection.<p>
+     *
+     * @return the connection
+     */
+    public Connection getConnection() {
+
+        return m_con;
+    }
+
+    /**
      * Returns a Vector of Error messages.<p>
      * 
      * @return all error messages collected internally
@@ -225,6 +395,70 @@ public class CmsSetupDb extends Object {
     public Vector getErrors() {
 
         return m_errors;
+    }
+
+    /**
+     * Checks if the given table, column or combination of both is available in the database.<P>
+     * 
+     * @param table the sought table
+     * @param column the sought column
+     * 
+     * @return true if the requested table/column is available, false if not
+     */
+    public boolean hasTableOrColumn(String table, String column) {
+
+        boolean result = false;
+        ResultSet set = null;
+
+        try {
+
+            // Check the table 
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(table)) {
+                set = m_con.getMetaData().getTables(null, null, table, null);
+
+                while (set.next()) {
+                    String tablename = set.getString("TABLE_NAME");
+                    if (tablename.equalsIgnoreCase(table)) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                }
+
+                set.close();
+                set = null;
+            }
+
+            // Check if the column is given
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(column)) {
+                result = false; // reset the boolean value to false
+                set = m_con.getMetaData().getColumns(null, null, table, column);
+
+                while (set.next()) {
+                    String colname = set.getString("COLUMN_NAME");
+                    if (colname.equalsIgnoreCase(column)) {
+                        result = true; // The column is available
+                    } else {
+                        result = false;
+                    }
+                }
+                set.close();
+                set = null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            result = false;
+        } finally {
+            try {
+                if (set != null) {
+                    set.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -275,72 +509,6 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
-     * 
-     * @param db the selected database key
-     * 
-     * @return html warning, or <code>null</code> if no warning
-     */
-    public String checkVariables(String db) {
-
-        StringBuffer html = new StringBuffer(512);
-        if (m_con == null) {
-            return null; // prior error, trying to get a connection
-        }
-        SQLException exception = null;
-        if (db.equals("mysql")) { // just for 4.0, > is not needed, < is not supported.
-            String statement = "SELECT @@max_allowed_packet;";
-            Statement stmt = null;
-            ResultSet rs = null;
-            long map = 0;
-            try {
-                stmt = m_con.createStatement();
-                rs = stmt.executeQuery(statement);
-                if (rs.next()) {
-                    map = rs.getLong(1);
-                }
-            } catch (SQLException e) {
-                exception = e;
-            } finally {
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException e) {
-                        // ignore
-                    }
-                }
-            }
-            if (exception == null) {
-                if (map > 0) {
-                    html.append("MySQL system variable <code>'max_allowed_packet'</code> is set to ");
-                    html.append(map);
-                    html.append(" Bytes.<p>\n");
-                }
-                html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
-                if (map < 15 * 1024 * 1024) {
-                    m_errors.addElement("<b>Your <code>'max_allowed_packet'</code> variable is set to less than 16Mb ("
-                        + map
-                        + ").</b>\n"
-                        + "The recommended value for running OpenCms is 16Mb."
-                        + "Please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).\n");
-                }
-            }
-        } 
-        if (exception != null || db.equals("mysql_3")) {
-            html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
-            html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
-            html.append("<b>The recommended value for running OpenCms is 16Mb, please set it in your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
-            if (exception != null) {
-                html.append(CmsException.getStackTraceAsString(exception));
-            }
-        }
-        if (html.length() == 0) {
-            return null;
-        }
-        return html.toString();
-    }
-
-    /**
      * Calls an update script.<p>
      * 
      * @param updateScript the update script code
@@ -363,6 +531,73 @@ public class CmsSetupDb extends Object {
 
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, abortOnError);
+    }
+
+    /**
+     * Creates and executes a database statment from a String.<p>
+     * 
+     * @param query the query to execute
+     * @param replacer the replacements to perform in the script
+     * @param params the list of parameters for the statement
+     * 
+     * @return the result set of the query 
+     * 
+     * @throws SQLException if something goes wrong
+     */
+    public int updateSqlStatement(String query, Map replacer, List params) throws SQLException {
+
+        String queryToExecute = query;
+        // Check if a map of replacements is given
+        if (replacer != null) {
+            queryToExecute = replaceTokens(query, replacer);
+        }
+
+        int result;
+        PreparedStatement stmt = null;
+        stmt = m_con.prepareStatement(queryToExecute);
+        try {
+            // Check the params
+            if (params != null) {
+                for (int i = 0; i < params.size(); i++) {
+                    Object item = params.get(i);
+
+                    // Check if the parameter is a string
+                    if (item instanceof String) {
+                        stmt.setString(i + 1, (String)item);
+                    }
+                    if (item instanceof Integer) {
+                        Integer number = (Integer)item;
+                        stmt.setInt(i + 1, number.intValue());
+                    }
+                    if (item instanceof Long) {
+                        Long longNumber = (Long)item;
+                        stmt.setLong(i + 1, longNumber.longValue());
+                    }
+
+                    // If item is none of types above set the statement to use the bytes
+                    if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                        try {
+                            stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            if (!queryToExecute.startsWith("UPDATE CMS_ONLINE_STRUCTURE SET STRUCTURE_VERSION")
+                && !queryToExecute.startsWith("UPDATE CMS_OFFLINE_STRUCTURE SET STRUCTURE_VERSION")) {
+                System.out.println("executing query: " + queryToExecute);
+                if ((params != null) && !params.isEmpty()) {
+                    System.out.println("params: " + params);
+                }
+            }
+            result = stmt.executeUpdate();
+        } finally {
+            stmt.close();
+        }
+
+        return result;
     }
 
     /**
@@ -394,7 +629,6 @@ public class CmsSetupDb extends Object {
         // parse the setup script 
         try {
             reader = new LineNumberReader(inputReader);
-            line = null;
 
             while (true) {
                 line = reader.readLine();
@@ -482,7 +716,6 @@ public class CmsSetupDb extends Object {
     private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
 
         String filename = null;
-        InputStreamReader reader = null;
         try {
             filename = m_basePath
                 + "setup"
@@ -497,14 +730,6 @@ public class CmsSetupDb extends Object {
             if (m_errorLogging) {
                 m_errors.addElement("Database setup SQL script not found: " + filename);
                 m_errors.addElement(CmsException.getStackTraceAsString(e));
-            }
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
             }
         }
     }
@@ -539,11 +764,12 @@ public class CmsSetupDb extends Object {
      */
     private String replaceTokens(String sql, Map replacers) {
 
-        Iterator keys = replacers.keySet().iterator();
+        Iterator keys = replacers.entrySet().iterator();
         while (keys.hasNext()) {
+            Map.Entry entry = (Map.Entry)keys.next();
 
-            String key = (String)keys.next();
-            String value = (String)replacers.get(key);
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
 
             sql = CmsStringUtil.substitute(sql, key, value);
         }

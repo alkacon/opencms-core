@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/09/22 15:17:02 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,23 +39,28 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsBroadcast;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
@@ -84,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.161 $ 
+ * @version $Revision: 1.162 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,8 +138,16 @@ public abstract class CmsWorkplace {
     /** Path to exported system image folder. */
     public static final String RFS_PATH_RESOURCES = "/resources/";
 
-    /** Prefix for temporary files in the VFS. */
-    public static final String TEMP_FILE_PREFIX = "~";
+    /** Prefix char for temporary files in the VFS. */
+    private static final char TEMP_FILE_PREFIX_CHAR = '~';
+    
+    /** 
+     * Prefix for temporary files in the VFS. 
+     * 
+     * @deprecated use {@link #isTemporaryFile(CmsResource)}, {@link #isTemporaryFileName(String)} or 
+     * {@link #getTemporaryFileName(String)} instead
+     */
+    public static final String TEMP_FILE_PREFIX = String.valueOf(TEMP_FILE_PREFIX_CHAR);
 
     /** Directory name of content default_bodies folder. */
     public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
@@ -209,7 +222,7 @@ public abstract class CmsWorkplace {
     private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
-    private int m_currentProjectId = -1;
+    private CmsUUID m_currentProjectId = null;
 
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;
@@ -392,7 +405,6 @@ public abstract class CmsWorkplace {
     public static String getStyleUri(CmsJspActionElement jsp, String filename) {
 
         if (m_styleUri == null) {
-
             CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
@@ -405,6 +417,31 @@ public abstract class CmsWorkplace {
             }
         }
         return m_styleUri + filename;
+    }
+
+    /**
+     * Returns the temporary file name for the given resource name.<p>
+     * 
+     * To create a temporary file name of a resource name, the prefix {@link #TEMP_FILE_PREFIX_CHAR}
+     * is added to the file name after all parent folder names have been removed.<p>
+     * 
+     * @param resourceName the resource name to return the temporary file name for
+     * 
+     * @return the temporary file name for the given resource name
+     * 
+     * @see #isTemporaryFileName(String)
+     * @see #isTemporaryFile(CmsResource)
+     */
+    public static String getTemporaryFileName(String resourceName) {
+
+        if (resourceName == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(resourceName.length() + 2);
+        result.append(CmsResource.getFolderPath(resourceName));
+        result.append(TEMP_FILE_PREFIX_CHAR);
+        result.append(CmsResource.getName(resourceName));
+        return result.toString();
     }
 
     /**
@@ -443,7 +480,7 @@ public abstract class CmsWorkplace {
         }
         // store the user and it's settings in the Workplace settings
         settings.setUser(user);
-        settings.setUserSettings(new CmsUserSettings(cms, user));
+        settings.setUserSettings(new CmsUserSettings(user));
 
         // return the result settings
         return settings;
@@ -473,7 +510,7 @@ public abstract class CmsWorkplace {
         settings = initUserSettings(cms, settings, update);
 
         // save current project
-        settings.setProject(cms.getRequestContext().currentProject().getId());
+        settings.setProject(cms.getRequestContext().currentProject().getUuid());
 
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
@@ -518,10 +555,47 @@ public abstract class CmsWorkplace {
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
 
-        // save the editable resource types for the current user
-        settings.setResourceTypes(initWorkplaceResourceTypes(cms));
-
         return settings;
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource is a temporary file.<p>
+     * 
+     * A resource is considered a temporary file it is a file where the
+     * {@link CmsResource#FLAG_TEMPFILE} flag has been set, or if the file name (without parent folders)
+     * starts with the prefix char {@link #TEMP_FILE_PREFIX_CHAR}.<p>
+     * 
+     * @param resource the resource name to check
+     * 
+     * @return <code>true</code> if the given resource name is a temporary file
+     * 
+     * @see #getTemporaryFileName(String)
+     * @see #isTemporaryFileName(String)
+     */
+    public static boolean isTemporaryFile(CmsResource resource) {
+
+        return (resource != null)
+            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (resource.getName().charAt(
+                0) == TEMP_FILE_PREFIX_CHAR))));
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource name is a temporary file name.<p>
+     * 
+     * A resource name is considered a temporary file name if the name of the file 
+     * (without parent folders) starts with the prefix char {@link #TEMP_FILE_PREFIX_CHAR}.<p>
+     * 
+     * @param resourceName the resource name to check
+     * 
+     * @return <code>true</code> if the given resource name is a temporary file name
+     * 
+     * @see #getTemporaryFileName(String)
+     * @see #isTemporaryFile(CmsResource)
+     */
+    public static boolean isTemporaryFileName(String resourceName) {
+
+        return (resourceName != null)
+            && ((resourceName.indexOf(TEMP_FILE_PREFIX_CHAR) >= 0) && (CmsResource.getName(resourceName).charAt(0) == TEMP_FILE_PREFIX_CHAR));
     }
 
     /**
@@ -537,33 +611,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Initializes a Map with all editable resource types for the current user.<p>
-     * 
-     * @param cms the CmsObject
-     * @return all editable resource types in a map with the resource type id as key value
-     */
-    private static Map initWorkplaceResourceTypes(CmsObject cms) {
-
-        Map resourceTypes = new HashMap();
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types and check which types can be displayed and edited for the user
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            // get the settings for the resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // determine if this resource type is editable for the current user
-                CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
-                if (permissions.requiresWritePermission()) {
-                    // user is allowed to edit this resource type
-                    resourceTypes.put(new Integer(type.getTypeId()), type);
-                }
-            }
-        }
-        return resourceTypes;
-    }
-
-    /**
      * Returns all parameters of the current workplace class 
      * as hidden field tags that can be inserted in a form.<p>
      * 
@@ -574,14 +621,13 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = allParamValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            Object value = params.get(param);
+            Map.Entry entry = (Map.Entry)i.next();
             result.append("<input type=\"hidden\" name=\"");
-            result.append(param);
+            result.append(entry.getKey());
             result.append("\" value=\"");
-            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+            String encoded = CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding());
             result.append(encoded);
             result.append("\">\n");
         }
@@ -591,7 +637,7 @@ public abstract class CmsWorkplace {
     /**
      * Returns all present request parameters as String.<p>
      * 
-     * The String is formatted as a parameter String ("param1=val1&param2=val2") with UTF-8 encoded values.<p>
+     * The String is formatted as a parameter String (<code>param1=val1&amp;param2=val2</code>) with UTF-8 encoded values.<p>
      * 
      * @return all present request parameters as String
      */
@@ -692,7 +738,7 @@ public abstract class CmsWorkplace {
         StringBuffer result = new StringBuffer(256);
 
         String anchorStart = "<a href=\"";
-        if (href != null && href.toLowerCase().startsWith("javascript:")) {
+        if ((href != null) && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
 
@@ -721,7 +767,7 @@ public abstract class CmsWorkplace {
                 result.append("style=\"background-image: url('");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -784,7 +830,7 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -976,34 +1022,40 @@ public abstract class CmsWorkplace {
      */
     public void checkLock(String resource) throws CmsException {
 
-        checkLock(resource, org.opencms.lock.CmsLock.COMMON);
+        checkLock(resource, CmsLockType.EXCLUSIVE);
     }
 
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
      * @param resource the resource name which is checked
-     * @param mode flag indicating the mode (temporary or common) of a lock
+     * @param type indicates the mode {@link CmsLockType#EXCLUSIVE} or {@link CmsLockType#TEMPORARY}
+     * 
      * @throws CmsException if reading or locking the resource fails
      */
-    public void checkLock(String resource, int mode) throws CmsException {
+    public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
         CmsLock lock = getCms().getLock(res);
+        boolean lockable = lock.isLockableBy(getCms().getRequestContext().currentUser());
+
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // autolock is enabled, check the lock state of the resource
-            if (lock.isNullLock()) {
-                // resource is not locked, lock it automatically
-                getCms().lockResource(resource, mode);
-            } else if (!lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+            if (lockable) {
+                // resource is lockable, so lock it automatically
+                if (type == CmsLockType.TEMPORARY) {
+                    getCms().lockResourceTemporary(resource);
+                } else {
+                    getCms().lockResource(resource);
+                }
+            } else {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
             }
         } else {
-            if (lock.isNullLock()
-                || (!lock.isNullLock() && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId()))) {
+            if (!lockable) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
-        	}
-    	}
+            }
+        }
     }
 
     /**
@@ -1093,7 +1145,11 @@ public abstract class CmsWorkplace {
      */
     public String getBroadcastMessageString() {
 
-        String sessionId = getSession().getId();
+        CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getSession());
+        if (sessionInfo == null) {
+            return null;
+        }
+        String sessionId = sessionInfo.getSessionId().toString();
         Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
         if (!messageQueue.isEmpty()) {
             // create message String
@@ -1106,7 +1162,12 @@ public abstract class CmsWorkplace {
                 result.append("] ");
                 result.append(key(Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0));
                 result.append(' ');
-                result.append(message.getUser().getName());
+                if (message.getUser() != null) {
+                    result.append(message.getUser().getName());
+                } else {
+                    // system message
+                    result.append(key(Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0));
+                }
                 result.append(":\n");
                 result.append(message.getMessage());
                 result.append("\n\n");
@@ -1203,8 +1264,8 @@ public abstract class CmsWorkplace {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
             // initialize resolver with the objects available
-                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
-                    (m_jsp == null) ? null : m_jsp.getJspContext());
+            .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                (m_jsp == null) ? null : m_jsp.getJspContext());
         }
         return m_macroResolver;
     }
@@ -1319,19 +1380,19 @@ public abstract class CmsWorkplace {
         if (project != null) {
             reloadRequired = true;
             try {
-                getCms().readProject(Integer.parseInt(project));
+                getCms().readProject(new CmsUUID(project));
             } catch (Exception e) {
                 // project not found, set online project
                 project = String.valueOf(CmsProject.ONLINE_PROJECT_ID);
             }
             try {
-                m_cms.getRequestContext().setCurrentProject(getCms().readProject(Integer.parseInt(project)));
+                m_cms.getRequestContext().setCurrentProject(getCms().readProject(new CmsUUID(project)));
             } catch (Exception e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
             }
-            settings.setProject(Integer.parseInt(project));
+            settings.setProject(new CmsUUID(project));
         }
 
         // check if the user requested a site change
@@ -1476,16 +1537,6 @@ public abstract class CmsWorkplace {
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
-            if (getSettings().isViewAdministration()) {
-                if (className == null || "dialog".equals(className)) {
-                    className = "dialogadmin";
-                }
-                if (parameters == null) {
-                    result.append(" onLoad=\"window.top.body.admin_head.location.href='");
-                    result.append(getJsp().link(CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
-                    result.append("';\"");
-                }
-            }
             if (className != null) {
                 result.append(" class=\"");
                 result.append(className);
@@ -1573,15 +1624,17 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
             if ((excludes == null) || (!excludes.contains(param))) {
-                Object value = params.get(param);
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
                 result.append("\" value=\"");
-                String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
+                String encoded = CmsEncoder.encode(
+                    entry.getValue().toString(),
+                    getCms().getRequestContext().getEncoding());
                 result.append(encoded);
                 result.append("\">\n");
             }
@@ -1612,13 +1665,12 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
-        Iterator i = params.keySet().iterator();
+        Iterator i = params.entrySet().iterator();
         while (i.hasNext()) {
-            String param = (String)i.next();
-            Object value = params.get(param);
-            result.append(param);
+            Map.Entry entry = (Map.Entry)i.next();
+            result.append(entry.getKey());
             result.append("=");
-            result.append(CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()));
+            result.append(CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
             if (i.hasNext()) {
                 result.append("&");
             }
@@ -1654,8 +1706,7 @@ public abstract class CmsWorkplace {
      */
     public void sendCmsRedirect(String location) throws IOException {
 
-        // IBM Websphere patch: use forward here
-        int todo = 0;
+        // TOOD: IBM Websphere v5 has problems here, use forward instead (which has other problems)
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
     }
 
@@ -1759,6 +1810,16 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Checks that the current user is a workplace user.<p>
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role 
+     */
+    protected void checkRole() throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(m_cms, CmsRole.WORKPLACE_USER);
+    }
+
+    /**
      * Decodes an individual parameter value.<p>
      * 
      * In special cases some parameters might require a different-from-default
@@ -1807,6 +1868,37 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Sets the users time warp if configured and if the current timewarp setting is different or
+     * clears the current time warp setting if the user has no configured timewarp.<p>
+     * 
+     * Timwarping is controlled by the session attribute
+     * {@link CmsContextInfo#ATTRIBUTE_REQUEST_TIME} with a value of type <code>Long</code>.<p>
+     * 
+     * @param settings the user settings which are configured via the preferences dialog
+     * 
+     * @param session the session of the user
+     */
+    protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
+
+        long timeWarpConf = settings.getTimeWarp();
+        Long timeWarpSetLong = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+        long timeWarpSet = (timeWarpSetLong != null) ? timeWarpSetLong.longValue() : CmsContextInfo.CURRENT_TIME;
+
+        if (timeWarpConf == CmsContextInfo.CURRENT_TIME) {
+            // delete:
+            if (timeWarpSetLong != null) {
+                // we may come from direct_edit.jsp: don't remove attribute, this is
+                session.removeAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
+            }
+        } else {
+            // this is dominant: if configured we will use it
+            if (timeWarpSet != timeWarpConf) {
+                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
+            }
+        }
+    }
+
+    /**
      * Initializes this workplace class instance.<p>
      * 
      * This method can be used in case there a workplace class was generated using
@@ -1820,6 +1912,13 @@ public abstract class CmsWorkplace {
             m_jsp = jsp;
             m_cms = m_jsp.getCmsObject();
             m_session = m_jsp.getRequest().getSession();
+
+            // check role
+            try {
+                checkRole();
+            } catch (CmsRoleViolationException e) {
+                throw new CmsIllegalStateException(e.getMessageContainer(), e);
+            }
 
             // get / create the workplace settings 
             m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
@@ -1843,6 +1942,9 @@ public abstract class CmsWorkplace {
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
+
+            // timewarp reset logic
+            initTimeWarp(m_settings.getUserSettings(), m_session);
         }
     }
 
@@ -1895,7 +1997,7 @@ public abstract class CmsWorkplace {
      */
     protected void switchToCurrentProject() throws CmsException {
 
-        if (m_currentProjectId != -1) {
+        if (m_currentProjectId != null) {
             // switch back to the current users project
             getCms().getRequestContext().setCurrentProject(getCms().readProject(m_currentProjectId));
         }
@@ -1909,11 +2011,11 @@ public abstract class CmsWorkplace {
      * @return the id of the tempfileproject
      * @throws CmsException if getting the tempfileproject id fails
      */
-    protected int switchToTempProject() throws CmsException {
+    protected CmsUUID switchToTempProject() throws CmsException {
 
         // store the current project id in member variable
         m_currentProjectId = getSettings().getProject();
-        int tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
+        CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
         getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
         return tempProjectId;
     }
@@ -1930,7 +2032,7 @@ public abstract class CmsWorkplace {
         CmsRequestContext reqCont = cms.getRequestContext();
 
         // check project setting        
-        if (settings.getProject() != reqCont.currentProject().getId()) {
+        if (!settings.getProject().equals(reqCont.currentProject().getUuid())) {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
             } catch (CmsDbEntryNotFoundException e) {

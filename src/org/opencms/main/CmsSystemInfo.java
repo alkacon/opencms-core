@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
 /**
  * Provides access to system wide "read only" information.<p>
  * 
- * Regarding the naming conventions used, this comes straight from the Servlet Sepc v2.4:<p>
+ * Regarding the naming conventions used, this comes straight from the Servlet Spec v2.4:<p>
  *   
  * <i>SRV.3.1 Introduction to the ServletContext Interface<br>
  * [...] A ServletContext is rooted at a known path within a web server. For example
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,11 +69,14 @@ public class CmsSystemInfo {
     /** Path to the "packages" folder relative to the "WEB-INF" directory of the application. */
     public static final String FOLDER_PACKAGES = "packages" + File.separatorChar;
 
+    /** Path to the "WEB-INF" folder relative to the directory of the application. */
+    public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
+
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Static version number to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_NUMBER = "6.2.x";
+    private static final String DEFAULT_VERSION_NUMBER = "7.0 development";
 
     /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -86,6 +89,15 @@ public class CmsSystemInfo {
 
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
+
+    /** Indicates if the version history is enabled. */
+    private boolean m_historyEnabled;
+
+    /** The maximum number of entries in the version history (per resource). */
+    private int m_historyVersions;
+
+    /** The maximum number of versions in the VFS version history for deleted resources. */
+    private int m_historyVersionsAfterDeletion;
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
@@ -116,12 +128,6 @@ public class CmsSystemInfo {
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
-
-    /** Indicates if the version history is enabled. */
-    private boolean m_versionHistoryEnabled;
-
-    /** The maximum number of entries in the version history (per resource). */
-    private int m_versionHistoryMaxCount;
 
     /** The version number of this OpenCms installation. */
     private String m_versionNumber;
@@ -257,6 +263,30 @@ public class CmsSystemInfo {
     public String getDefaultWebApplicationName() {
 
         return m_defaultWebApplicationName;
+    }
+
+    /**
+     * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
+     * 
+     * If the version history is disabled, this setting has no effect.<p>
+     * 
+     * @return the maximum number of versions that are kept per file
+     * @see #isHistoryEnabled()
+     */
+    public int getHistoryVersions() {
+
+        return m_historyVersions;
+    }
+
+    /**
+     * Returns the number of versions in the VFS version history that should be 
+     * kept after a resource is deleted.<p>
+     * 
+     * @return the number versions in the VFS version history for deleted resources
+     */
+    public int getHistoryVersionsAfterDeletion() {
+
+        return m_historyVersionsAfterDeletion;
     }
 
     /**
@@ -407,19 +437,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
-     * 
-     * If the version history is disabled, this setting has no effect.<p>
-     * 
-     * @return the maximum number of versions that are kept per file
-     * @see #isVersionHistoryEnabled()
-     */
-    public int getVersionHistoryMaxCount() {
-
-        return m_versionHistoryMaxCount;
-    }
-
-    /**
      * Returns the version name (that is the version number) of this OpenCms system.<p>
      *
      * @return the version name (that is the version number) of this OpenCms system
@@ -471,21 +488,9 @@ public class CmsSystemInfo {
      * 
      * @return if the VFS version history is enabled
      */
-    public boolean isVersionHistoryEnabled() {
+    public boolean isHistoryEnabled() {
 
-        return m_versionHistoryEnabled;
-    }
-
-    /**
-     * Returns if versions in the VFS version history should be kept 
-     * after a resource is deleted.<p>
-     * 
-     * @return if versions in the VFS version history should be kept
-     */
-    public boolean keepVersionHistory() {
-
-        // TODO: make configurable
-        return true;
+        return m_historyEnabled;
     }
 
     /**
@@ -512,12 +517,18 @@ public class CmsSystemInfo {
      * VFS version history settings are set here.<p>
      * 
      * @param historyEnabled if true the history is enabled
-     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
+     * @param historyVersions the maximum number of versions that are kept per VFS resource
+     * @param historyVersionsAfterDeletion the maximum number of versions that are kept for deleted resources
      */
-    public void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
+    public void setVersionHistorySettings(boolean historyEnabled, int historyVersions, int historyVersionsAfterDeletion) {
 
-        m_versionHistoryEnabled = historyEnabled;
-        m_versionHistoryMaxCount = historyMaxCount;
+        m_historyEnabled = historyEnabled;
+        m_historyVersions = historyVersions;
+        if (historyVersionsAfterDeletion < 0) {
+            m_historyVersionsAfterDeletion = historyVersions;
+        } else {
+            m_historyVersionsAfterDeletion = historyVersionsAfterDeletion;
+        }
     }
 
     /** 

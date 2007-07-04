@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/07/04 16:56:39 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,15 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsLink;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -53,6 +57,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlStringValue;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
@@ -67,10 +72,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Tests the link resolver for XML contents.<p>
+ * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -106,7 +111,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlContentWithVfs.class.getName());
-        
+
+        suite.addTest(new TestCmsXmlContentWithVfs("testAutoXsd"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testContentHandler"));
         suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreation"));
@@ -118,6 +124,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testVarLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testEmptyLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testCopyMoveRemoveLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
@@ -126,9 +133,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));        
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -162,9 +171,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-7.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -290,6 +297,76 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     }
 
     /**
+     * Test adding a file reference value to an existing xmlcontent.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testAddFileReference() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing adding a file reference value to an existing xmlcontent");
+
+        String filename = "/xmlcontent/article_0001.html";
+        String filename2 = "/xmlcontent/article_0002.html";
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+        // now read the XML content
+        CmsFile file = cms.readFile(filename);
+        // needs to be written to assure link id correctness
+        cms.lockResource(filename);
+        file = cms.writeFile(file);
+        String content = new String(file.getContents());
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        xmlcontent.addValue(cms, "Homepage", Locale.ENGLISH, 0);
+        CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)xmlcontent.getValue("Homepage", Locale.ENGLISH);
+        value.setStringValue(cms, filename + "?a=b&c=d#e");
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        CmsLink link = value.getLink(cms);
+        assertEquals(link.getTarget(), cms.getRequestContext().addSiteRoot(filename));
+        assertTrue(link.isInternal());
+        assertEquals(link.getQuery(), "a=b&c=d");
+        assertEquals(link.getAnchor(), "e");
+        assertEquals(link.getStructureId(), file.getStructureId());
+        assertEquals(value.getStringValue(cms), filename + "?a=b&c=d#e");
+
+        CmsResource res2 = cms.readResource(filename2);
+        List links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
+        assertEquals(links.size(), 1);
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
+
+        file.setContents(xmlcontent.toString().getBytes());
+        cms.lockResource(filename);
+        cms.writeFile(file);
+
+        links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS);
+        assertEquals(links.size(), 2);
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(1));
+
+        links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.XML_WEAK));
+        assertEquals(links.size(), 1);
+        assertRelation(new CmsRelation(file, file, CmsRelationType.XML_WEAK), (CmsRelation)links.get(0));
+
+        links = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterType(CmsRelationType.HYPERLINK));
+        assertEquals(links.size(), 1);
+        assertRelation(new CmsRelation(file, res2, CmsRelationType.HYPERLINK), (CmsRelation)links.get(0));
+
+        file = cms.readFile(filename);
+        content = new String(file.getContents());
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        CmsXmlHtmlValue value2 = (CmsXmlHtmlValue)xmlcontent.getValue("Text", Locale.ENGLISH, 0);
+        link = value2.getLinkTable().getLink("link0");
+        assertEquals(link.getTarget(), res2.getRootPath());
+        assertTrue(link.isInternal());
+        assertNull(link.getQuery());
+        assertNull(link.getAnchor());
+        assertEquals(link.getStructureId(), res2.getStructureId());
+    }
+
+    /**
      * Test adding and removing elements from an XML content.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -305,9 +382,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-6.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-6.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_6, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -446,9 +521,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-7.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -516,6 +589,22 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     }
 
     /**
+     * Tests creation of the automatic XML schema XSD.
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testAutoXsd() throws Exception {
+
+        org.opencms.xml.CmsXmlEntityResolver resolver = new org.opencms.xml.CmsXmlEntityResolver(null);
+        org.xml.sax.InputSource source = resolver.resolveEntity(
+            null,
+            org.opencms.xml.CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS);
+        byte[] bytes = org.opencms.util.CmsFileUtil.readFully(source.getByteStream());
+        String string = org.opencms.i18n.CmsEncoder.createString(bytes, "UTF-8");
+        System.out.println(string);
+    }
+
+    /**
      * Test using a different XML content handler then the default handler.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -530,9 +619,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String content;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-3.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-3.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_3, resolver);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3, content.getBytes(CmsEncoder.ENCODING_UTF_8));
@@ -545,173 +632,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
     }
-    
-    /**
-     * Test default values in the appinfo node using a nested XML content schema.<p>
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testDefaultNested() throws Exception {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing for default values in nested XML content schemas");
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-
-        String content;
-
-        // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-4.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
-
-        // now create the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-        System.out.println(xmlcontent.toString());
-
-        // validate the XML structure
-        xmlcontent.validateXmlStructure(resolver);
-
-        I_CmsXmlContentValue value1;
-        
-        value1 = xmlcontent.addValue(cms, "Title", Locale.ENGLISH, 0);
-        assertEquals("Test", value1.getStringValue(cms));
-
-        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 0);
-        assertEquals("Default value from the XML", value1.getStringValue(cms));
-
-        // check exact default mappings for nested content
-        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 1);
-        assertEquals("Default value from outer content definition", value1.getStringValue(cms));
-        
-        // check generic default mappings for nested content
-        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 1);
-        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));
-        
-        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 2);
-        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));        
-        
-    }
-    
-    /**
-     * Test default values after a new XML content has been created.<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testDefaultOnCreation() throws Exception {
-        
-        CmsObject cms = getCmsObject();
-        echo("Testing default values when creating an XML content resource");
-        
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-        
-        // create a new xml content article
-        String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, 12);
-        
-        CmsFile file = cms.readFile(xmlContentFile);
-        String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-        
-        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
-        assertEquals("Default title value", value);
-        
-        value = xmlcontent.getStringValue(cms, "Release", Locale.ENGLISH);
-        assertEquals("1114525380000", value);
-    }
-    
-    /**
-     * Test default values in the appinfo node using a nested XML content schema when creating a new content.<p>
-     * 
-     * The nested content definition must be non-optional, and must have non-optional element.<p>
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testDefaultOnCreationWithNested() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing for default values in nested XML content schemas when creating a new content");
-        
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-
-        String content;
-
-        // unmarshal content definitions
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-3b.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-4b.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
-        
-        // create the content definition
-        CmsXmlContentDefinition cd = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4B, resolver);
-        
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, cd);
-        
-        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
-        assertEquals("Test", value);
-        
-        value = xmlcontent.getStringValue(cms, "Cascade/Option", Locale.ENGLISH);
-        assertEquals("Default value from outer content definition", value);
-        
-        value = xmlcontent.getStringValue(cms, "Cascade/Option[2]", Locale.ENGLISH);
-        assertEquals("Default value from outer content definition (for option node 2)", value);
-        
-        value = xmlcontent.getStringValue(cms, "Cascade/VfsLink", Locale.ENGLISH);
-        assertEquals("/default/for/all/from/outer.txt", value);
-    }    
-
-    /**
-     * Tests the Locale settings of XMLContents with only optional elements and no element present.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testEmptyLocale() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing handling of empty locale nodes in XML content");
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-
-        String iso = "ISO-8859-1";
-
-        String content;
-        CmsXmlContent xmlcontent;
-
-        // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
-        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_8, resolver);
-
-        // read an existing (empty) XML content with just one locale node
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
-        // validate the XML structure
-        xmlcontent.validateXmlStructure(resolver);
-        List locales = xmlcontent.getLocales();
-        assertEquals(1, locales.size());
-        assertEquals(Locale.ENGLISH, locales.get(0));
-
-        // create a fresh XML content based on the schema and try again  
-        xmlcontent = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8, cd1);
-        xmlcontent.validateXmlStructure(resolver);
-
-        locales = xmlcontent.getLocales();
-        assertEquals(1, locales.size());
-        assertEquals(Locale.ENGLISH, locales.get(0));
-    }
-    
     /**
      * Tests locale copy, move and remove operation on an XML content.<p>
      * 
@@ -772,6 +693,168 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     }
 
     /**
+     * Test default values in the appinfo node using a nested XML content schema.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testDefaultNested() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing for default values in nested XML content schemas");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-4.xsd", CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        System.out.println(xmlcontent.toString());
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        I_CmsXmlContentValue value1;
+
+        value1 = xmlcontent.addValue(cms, "Title", Locale.ENGLISH, 0);
+        assertEquals("Test", value1.getStringValue(cms));
+
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 0);
+        assertEquals("Default value from the XML", value1.getStringValue(cms));
+
+        // check exact default mappings for nested content
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 1);
+        assertEquals("Default value from outer content definition", value1.getStringValue(cms));
+
+        // check generic default mappings for nested content
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 1);
+        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));
+
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 2);
+        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));
+
+    }
+
+    /**
+     * Test default values after a new XML content has been created.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testDefaultOnCreation() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing default values when creating an XML content resource");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        // create a new xml content article
+        String xmlContentFile = "/xmlcontent/article_0005.html";
+        cms.createResource(xmlContentFile, OpenCmsTestCase.ARTICLE_TYPEID);
+
+        CmsFile file = cms.readFile(xmlContentFile);
+        String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
+        assertEquals("Default title value", value);
+
+        value = xmlcontent.getStringValue(cms, "Release", Locale.ENGLISH);
+        assertEquals("1114525380000", value);
+    }
+
+    /**
+     * Test default values in the appinfo node using a nested XML content schema when creating a new content.<p>
+     * 
+     * The nested content definition must be non-optional, and must have non-optional element.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testDefaultOnCreationWithNested() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing for default values in nested XML content schemas when creating a new content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definitions
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-3b.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-4b.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // create the content definition
+        CmsXmlContentDefinition cd = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4B, resolver);
+
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, cd);
+
+        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
+        assertEquals("Test", value);
+
+        value = xmlcontent.getStringValue(cms, "Cascade/Option", Locale.ENGLISH);
+        assertEquals("Default value from outer content definition", value);
+
+        value = xmlcontent.getStringValue(cms, "Cascade/Option[2]", Locale.ENGLISH);
+        assertEquals("Default value from outer content definition (for option node 2)", value);
+
+        value = xmlcontent.getStringValue(cms, "Cascade/VfsLink", Locale.ENGLISH);
+        assertEquals("/default/for/all/from/outer.txt", value);
+    }
+
+    /**
+     * Tests the Locale settings of XMLContents with only optional elements and no element present.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testEmptyLocale() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing handling of empty locale nodes in XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String iso = "ISO-8859-1";
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_8, resolver);
+
+        // read an existing (empty) XML content with just one locale node
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        List locales = xmlcontent.getLocales();
+        assertEquals(1, locales.size());
+        assertEquals(Locale.ENGLISH, locales.get(0));
+
+        // create a fresh XML content based on the schema and try again  
+        xmlcontent = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8, cd1);
+        xmlcontent.validateXmlStructure(resolver);
+
+        locales = xmlcontent.getLocales();
+        assertEquals(1, locales.size());
+        assertEquals(Locale.ENGLISH, locales.get(0));
+    }
+
+    /**
      * Test using the GUI widget mapping appinfo nodes.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -786,9 +869,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String content;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-5.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-5.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_5, resolver);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_5, content.getBytes(CmsEncoder.ENCODING_UTF_8));
@@ -821,7 +902,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(TestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Toast", handler.getConfiguration(xmlcontent.getValue("Toast", Locale.ENGLISH)));
         // custom widget configuration has extended the handler String
-        assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());        
+        assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());
     }
 
     /**
@@ -839,9 +920,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String content;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-2.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-2.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_2, resolver);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
@@ -870,11 +949,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             + "<a href=\"/data/opencms/folder1/index.html?a=b&amp;c=d#anchor\">Index page</a>\n"
             + "<a href=\"/data/opencms/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>",
         // note that the & in the links appear correctly escaped here
-        retranslatedOutput.trim());
+            retranslatedOutput.trim());
 
         table = htmlValue.getLinkTable();
         assertEquals(4, table.size());
-             
 
         i = table.iterator();
         int result = 0;
@@ -899,12 +977,122 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         assertEquals(4, result);
 
-        table = vfsValue.getLinkTable();
-        assertEquals(1, table.size());
-        CmsLink link = (CmsLink)table.iterator().next();
+        CmsLink link = vfsValue.getLink(cms);
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
         assertEquals("/index.html", vfsValue.getStringValue(cms));
+    }
+    
+    /**
+     * Test resolving a {@link CmsXmlVarLinkValue} in an XML content.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testVarLinkResolver() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing link CmsXmlVarLinkValue in an XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        String schemaId = "http://www.opencms.org/testVarLink1.xsd";
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, schemaId, resolver);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(schemaId, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasValue("VarLink", Locale.ENGLISH));
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        CmsXmlVfsFileValue vfsValue = (CmsXmlVfsFileValue)xmlcontent.getValue("VfsLink", Locale.ENGLISH);
+        CmsXmlVarLinkValue varValue1 = (CmsXmlVarLinkValue)xmlcontent.getValue("VarLink", Locale.ENGLISH, 0);
+        CmsXmlVarLinkValue varValue2 = (CmsXmlVarLinkValue)xmlcontent.getValue("VarLink", Locale.ENGLISH, 1);
+
+        // make sure the XML unmarshals as expected
+        CmsLink link = vfsValue.getLink(cms);
+        assertEquals("/sites/default/index.html", link.getTarget());
+        assertTrue(link.isInternal());
+        assertEquals("/index.html", vfsValue.getStringValue(cms));
+        
+        CmsLink varLink1 = varValue1.getLink(cms);
+        assertEquals("/sites/default/index.html", varLink1.getTarget());
+        assertTrue(varLink1.isInternal());
+        assertEquals("/index.html", varValue1.getStringValue(cms));
+        
+        CmsLink varLink2 = varValue2.getLink(cms);
+        assertEquals("http://www.alkacon.com", varLink2.getTarget());
+        assertFalse(varLink2.isInternal());
+        
+        // now set some VarLinks with different types of targets
+        
+        // simple external link
+        CmsXmlVarLinkValue varVal;
+        CmsLink varLink;
+        
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 2);
+        varVal.setStringValue(cms, "http://www.opencms.org");
+        varLink = varVal.getLink(cms);
+        assertEquals("http://www.opencms.org", varLink.getTarget());
+        assertFalse(varLink.isInternal());
+        
+        // internal link to an existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 3);
+        varVal.setStringValue(cms, "/folder1/page1.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder1/page1.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder1/page1.html", varVal.getStringValue(cms));
+        
+        // internal link to a not existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 4);
+        varVal.setStringValue(cms, "/folder_notexist/page_i_dont_exist.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder_notexist/page_i_dont_exist.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder_notexist/page_i_dont_exist.html", varVal.getStringValue(cms));
+        
+        // internal link using the server prefix to an existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 5);
+        varVal.setStringValue(cms, "http://localhost:8080/folder1/page1.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder1/page1.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder1/page1.html", varVal.getStringValue(cms));
+        
+        // internal link using the server prefix to a not existing file
+        varVal = (CmsXmlVarLinkValue)xmlcontent.addValue(cms, "VarLink", Locale.ENGLISH, 6);
+        varVal.setStringValue(cms, "http://localhost:8080/folder_notexist/page_i_dont_exist.html");
+        varLink = varVal.getLink(cms);
+        assertEquals("/sites/default/folder_notexist/page_i_dont_exist.html", varLink.getTarget());
+        assertTrue(varLink.isInternal());
+        assertEquals("/folder_notexist/page_i_dont_exist.html", varVal.getStringValue(cms));
+        
+        // output the XML content after modifications
+        echo("XML Content after VarLink modification:");
+        echo(xmlcontent.toString());
+        echo("-----------------");    
+        
+        // create the content definition
+        CmsXmlContentDefinition cd = CmsXmlContentDefinition.unmarshal(content, schemaId, resolver);
+        CmsXmlContent newContent = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8, cd);
+        
+        echo("New XML Content for VarLink:");
+        echo(newContent.toString());
+        echo("-----------------");    
+              
+        // validate the XML of the created XML content
+        xmlcontent.validateXmlStructure(resolver); 
+        
+        // validate the XML of the created XML content
+        newContent.validateXmlStructure(resolver);        
     }
 
     /**
@@ -930,9 +1118,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-9.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-9.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_9, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1008,9 +1194,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
 
@@ -1033,56 +1217,62 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         CmsProperty titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertSame(titleProperty, CmsProperty.getNullProperty());
-        
+
         CmsProperty localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
         assertSame(localeProperty, CmsProperty.getNullProperty());
-        
-        CmsProperty navImageProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVIMAGE, false);
+
+        CmsProperty navImageProperty = cms.readPropertyObject(
+            resourcename,
+            CmsPropertyDefinition.PROPERTY_NAVIMAGE,
+            false);
         assertSame(navImageProperty, CmsProperty.getNullProperty());
-        
-        CmsProperty navInfoProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVINFO, false);
+
+        CmsProperty navInfoProperty = cms.readPropertyObject(
+            resourcename,
+            CmsPropertyDefinition.PROPERTY_NAVINFO,
+            false);
         assertSame(navInfoProperty, CmsProperty.getNullProperty());
-        
+
         String titleStr = "This must be the Title";
         String navImageStr = "This is the String with xpath String[2]";
         String navInfoStr = "Here we have the String with xpath String[3]";
-        
+
         I_CmsXmlContentValue value;
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStr);
-        
+
         // set values for Title[2] and Title[3]
         CmsXmlContentValueSequence seq = xmlcontent.getValueSequence("String", Locale.ENGLISH);
-        assertEquals(1, seq.getElementCount());    
+        assertEquals(1, seq.getElementCount());
         value = seq.addValue(cms, 1);
         value.setStringValue(cms, navImageStr);
         value = seq.addValue(cms, 2);
         value.setStringValue(cms, navInfoStr);
-        
+
         String localeStr = "en";
         value = xmlcontent.addValue(cms, "Locale", Locale.ENGLISH, 0);
         value.setStringValue(cms, localeStr);
-        
+
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals(titleStr, titleProperty.getValue());       
+        assertEquals(titleStr, titleProperty.getValue());
         assertEquals(titleStr, titleProperty.getStructureValue());
         assertNull(titleProperty.getResourceValue());
-        
+
         navImageProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVIMAGE, false);
-        assertEquals(navImageStr, navImageProperty.getValue());       
+        assertEquals(navImageStr, navImageProperty.getValue());
         assertEquals(navImageStr, navImageProperty.getResourceValue());
         assertNull(navImageProperty.getStructureValue());
-        
+
         navInfoProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVINFO, false);
-        assertEquals(navInfoStr, navInfoProperty.getValue());       
+        assertEquals(navInfoStr, navInfoProperty.getValue());
         assertEquals(navInfoStr, navInfoProperty.getStructureValue());
         assertNull(navInfoProperty.getResourceValue());
-        
+
         localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
-        assertEquals(localeStr, localeProperty.getValue());       
+        assertEquals(localeStr, localeProperty.getValue());
         assertEquals(localeStr, localeProperty.getResourceValue());
         assertNull(localeProperty.getStructureValue());
     }
@@ -1103,7 +1293,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // please note: XML schema 8 already in the cache from previous tests
-        
+
         // now read the XML content
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
@@ -1123,20 +1313,20 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         CmsProperty prop;
         prop = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        assertSame(prop, CmsProperty.getNullProperty());               
+        assertSame(prop, CmsProperty.getNullProperty());
 
         I_CmsXmlContentValue value;
         CmsXmlContentValueSequence seq = xmlcontent.getValueSequence("VfsFile", Locale.ENGLISH);
         assertEquals(0, seq.getElementCount());
-        
+
         String res1 = "/index.html";
         String res2 = "/xmlcontent/";
         String res3 = "/xmlcontent/article_0001.html";
         String res4 = "/folder1/index.html";
-        
+
         String sr = cms.getRequestContext().getSiteRoot();
         String propValue = sr + res1 + "|" + sr + res2 + "|" + sr + res3 + "|" + sr + res4;
-        
+
         value = seq.addValue(cms, 0);
         value.setStringValue(cms, res1);
         value = seq.addValue(cms, 1);
@@ -1145,11 +1335,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value.setStringValue(cms, res3);
         value = seq.addValue(cms, 3);
         value.setStringValue(cms, res4);
-        
+
         assertEquals(4, seq.getElementCount());
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        
+
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
@@ -1161,14 +1351,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(sr + res1, list.get(0));
         assertEquals(sr + res2, list.get(1));
         assertEquals(sr + res3, list.get(2));
-        assertEquals(sr + res4, list.get(3));        
-        assertEquals(propValue, prop.getValue());     
-        assertEquals(propValue, prop.getStructureValue());  
-        assertNull(prop.getResourceValue());  
-        
+        assertEquals(sr + res4, list.get(3));
+        assertEquals(propValue, prop.getValue());
+        assertEquals(propValue, prop.getStructureValue());
+        assertNull(prop.getResourceValue());
+
         CmsProperty prop2;
         prop2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
-        assertSame(prop2, CmsProperty.getNullProperty());               
+        assertSame(prop2, CmsProperty.getNullProperty());
 
         I_CmsXmlContentValue value2;
         CmsXmlContentValueSequence seq2 = xmlcontent.getValueSequence("VfsFile2", Locale.ENGLISH);
@@ -1182,11 +1372,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value2.setStringValue(cms, res3);
         value2 = seq2.addValue(cms, 3);
         value2.setStringValue(cms, res4);
-        
+
         assertEquals(4, seq2.getElementCount());
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        
+
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
@@ -1198,15 +1388,15 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(sr + res1, list2.get(0));
         assertEquals(sr + res2, list2.get(1));
         assertEquals(sr + res3, list2.get(2));
-        assertEquals(sr + res4, list2.get(3));        
-        assertEquals(propValue, prop2.getValue());     
-        assertEquals(propValue, prop2.getResourceValue());  
-        assertNull(prop2.getStructureValue());  
-        
+        assertEquals(sr + res4, list2.get(3));
+        assertEquals(propValue, prop2.getValue());
+        assertEquals(propValue, prop2.getResourceValue());
+        assertNull(prop2.getStructureValue());
+
         CmsProperty prop3;
         prop3 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
-        assertSame(prop3, CmsProperty.getNullProperty());    
-        
+        assertSame(prop3, CmsProperty.getNullProperty());
+
         I_CmsXmlContentValue value3;
         CmsXmlContentValueSequence seq3 = xmlcontent.getValueSequence("VfsFile3", Locale.ENGLISH);
         assertEquals(0, seq3.getElementCount());
@@ -1219,11 +1409,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value3.setStringValue(cms, res3);
         value3 = seq3.addValue(cms, 3);
         value3.setStringValue(cms, res4);
-        
+
         assertEquals(4, seq3.getElementCount());
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        
+
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
@@ -1235,12 +1425,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(sr + res1, list3.get(0));
         assertEquals(sr + res2, list3.get(1));
         assertEquals(sr + res3, list3.get(2));
-        assertEquals(sr + res4, list3.get(3));        
-        assertEquals(propValue, prop3.getValue());     
-        assertEquals(propValue, prop3.getStructureValue());  
-        assertNull(prop3.getResourceValue());  
+        assertEquals(sr + res4, list3.get(3));
+        assertEquals(propValue, prop3.getValue());
+        assertEquals(propValue, prop3.getStructureValue());
+        assertNull(prop3.getResourceValue());
     }
-    
+
     /**
      * Tests the element mappings from the appinfo node for nested XML content.<p>
      * 
@@ -1257,9 +1447,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-7.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1318,9 +1506,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
 
@@ -1344,7 +1530,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             properties);
 
         // copy the resource as a sibling to "de"
-        cms.copyResource(resourcenameEn, resourcenameDe, org.opencms.file.CmsResource.COPY_AS_SIBLING);
+        cms.copyResource(resourcenameEn, resourcenameDe, CmsResource.COPY_AS_SIBLING);
         // now lock the "DE" sibling
         cms.changeLock(resourcenameDe);
         // add the "DE" locale property to the german version
@@ -1404,9 +1590,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String content;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-4.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-4.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4, resolver);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
@@ -1488,9 +1672,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContentDefinition definition;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-3.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-3.xsd", CmsEncoder.ENCODING_UTF_8);
         definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_3, resolver);
 
         I_CmsXmlContentHandler contentHandler;
@@ -1500,9 +1682,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertNull(contentHandler.getMessages(Locale.ENGLISH));
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
         definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_8, resolver);
 
         contentHandler = definition.getContentHandler();
@@ -1531,9 +1711,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-7.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1611,8 +1789,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         errorHandler = xmlcontent.validate(cms);
         assertTrue(errorHandler.hasErrors());
         assertTrue(errorHandler.hasWarnings());
-        assertEquals(2, errorHandler.getErrors(Locale.ENGLISH).size());
-        assertEquals(3, errorHandler.getWarnings(Locale.ENGLISH).size());
+        assertEquals(3, errorHandler.getErrors(Locale.ENGLISH).size());
+        assertEquals(2, errorHandler.getWarnings(Locale.ENGLISH).size());
     }
 
     /**
@@ -1631,9 +1809,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1783,9 +1959,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1845,9 +2019,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContent xmlcontent;
 
         // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-7.xsd", CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
@@ -1892,5 +2064,33 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(
             CmsDefaultXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
+    }
+
+    /**
+     * Tests creating a XMl page with the API.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlContentCreate() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creation of an XML Content:\n");
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String filename = "xmlcontent.html";
+        CmsResource res = cms.createResource(filename, OpenCmsTestCase.ARTICLE_TYPEID);
+        CmsFile file = CmsFile.upgrade(res, cms);
+        String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        assertTrue(xmlcontent.hasLocale(Locale.ENGLISH));
+        try {
+            xmlcontent.addLocale(cms, Locale.ENGLISH);
+            fail("where is the default locale!?");
+        } catch (Exception e) {
+            // should fail
+        }
+        xmlcontent.getValue("Author", Locale.ENGLISH).setStringValue(cms, "Alkacon Software GmbH");
+        file.setContents(xmlcontent.marshal());
+        cms.writeFile(file);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,16 +110,16 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /** Request parameter name for the releasedate. */
     public static final String PARAM_RELEASEDATE = "releasedate";
-    
+
     /** Request parameter name for the resetexpire. */
     public static final String PARAM_RESETEXPIRE = "resetexpire";
-    
+
     /** Request parameter name for the resetrelease. */
     public static final String PARAM_RESETRELEASE = "resetrelease";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailability.class);
-    
+
     private String m_paramEnablenotification;
     private String m_paramExpiredate;
     private String m_paramLeaveexpire;
@@ -150,22 +150,6 @@ public class CmsAvailability extends CmsMultiDialog {
     public CmsAvailability(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
-     * 
-     * @param flags the flags of the ACE
-     * 
-     * @return localization for "Group", if the flag belongs to a group ACE
-     */
-    protected String getLocalizedType(int flags) {
-
-        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
-            return key(Messages.GUI_LABEL_USER_0);
-        } else {
-            return key(Messages.GUI_LABEL_GROUP_0);
-        }
     }
 
     /**
@@ -248,7 +232,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
         StringBuffer result = new StringBuffer(254);
         try {
-            if (isMultiOperation() || getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1) {
+            if (isMultiOperation() || (getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1)) {
                 result.append("<tr>\n<td style=\"white-space:nowrap;\">");
                 result.append(key(Messages.GUI_AVAILABILITY_MODIFY_SIBLINGS_0));
                 result.append("</td>\n<td class=\"maxwidth\" style=\"padding-left: 5px;\">\n");
@@ -359,7 +343,9 @@ public class CmsAvailability extends CmsMultiDialog {
                         CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
                         if (ace.isResponsible()) {
                             I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                            responsibles.put(principal, resourceSitePath.equals(sitePath) ? null : sitePath);
+                            if (principal != null) {
+                                responsibles.put(principal, resourceSitePath.equals(sitePath) ? null : sitePath);
+                            }
                         }
                     }
                 } catch (CmsException e) {
@@ -386,9 +372,10 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("\" id=\"button\"/></td></tr></table>");
                 }
                 result.append(dialogWhiteBoxStart());
-                i = responsibles.keySet().iterator();
-                for (int j = 0; i.hasNext(); j++) {
-                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
+                Iterator it = responsibles.entrySet().iterator();
+                for (int j = 0; it.hasNext(); j++) {
+                    Map.Entry entry = (Map.Entry)it.next();
+                    I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
                     String image = "user.png";
                     String localizedType = getLocalizedType(CmsAccessControlEntry.ACCESS_FLAGS_USER);
                     if (principal instanceof CmsGroup) {
@@ -408,7 +395,7 @@ public class CmsAvailability extends CmsMultiDialog {
                     result.append("</span><div class=\"hide\" id=\"inheritinfo");
                     result.append(j);
                     result.append("\"><div class=\"dialogpermissioninherit\">");
-                    String resourceName = ((String)responsibles.get(principal));
+                    String resourceName = (String)entry.getValue();
                     if (CmsStringUtil.isNotEmpty(resourceName)) {
                         result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
                     }
@@ -729,6 +716,22 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
+     * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
+     * 
+     * @param flags the flags of the ACE
+     * 
+     * @return localization for "Group", if the flag belongs to a group ACE
+     */
+    protected String getLocalizedType(int flags) {
+
+        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
+            return key(Messages.GUI_LABEL_USER_0);
+        } else {
+            return key(Messages.GUI_LABEL_GROUP_0);
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -750,6 +753,8 @@ public class CmsAvailability extends CmsMultiDialog {
             setAction(ACTION_OK);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
@@ -760,7 +765,7 @@ public class CmsAvailability extends CmsMultiDialog {
                 Messages.GUI_AVAILABILITY_NOTIFICATION_MULTI_2);
         }
     }
-
+    
     /**
      * Modifies the release and expire date of a resource, and changes the notification interval. <p>
      * 
@@ -802,7 +807,7 @@ public class CmsAvailability extends CmsMultiDialog {
         boolean leaveExpireDate = false;
         if (!resetExpireDate) {
             try {
-                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate())) 
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate()))
                     && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
                     expireDate = CmsCalendarWidget.getCalendarDate(getMessages(), getParamExpiredate(), true);
                 } else {
@@ -886,10 +891,10 @@ public class CmsAvailability extends CmsMultiDialog {
                 }
             }
             // modify release and expire date of the resource if desired
-            if (! leaveRelease) {
+            if (!leaveRelease) {
                 getCms().setDateReleased(resourcePath, releaseDate, modifyRecursive);
-            } 
-            if (! leaveExpire) {
+            }
+            if (!leaveExpire) {
                 getCms().setDateExpired(resourcePath, expireDate, modifyRecursive);
             }
             // write notification settings

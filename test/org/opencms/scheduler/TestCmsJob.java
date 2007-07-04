@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsJob.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,10 @@ public class TestCmsJob implements Job {
     private int m_myCount;
 
     /** Current count. */
-    public static int m_count = 0;
+    static int m_count = 0;
 
     /** Currently running instances. */
-    public static int m_running = 0;
+    static int m_running = 0;
 
     /**
      * Default constructor.<p>
@@ -67,7 +67,6 @@ public class TestCmsJob implements Job {
         try {
             Thread.sleep(1000 + (long)(4000.0 * Math.random()));
         } catch (InterruptedException e) {
-            // TODO: Auto-generated catch block
             e.printStackTrace();
         }
         TestCmsJob.m_running--;

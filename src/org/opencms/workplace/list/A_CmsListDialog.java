@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,12 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,12 +54,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +160,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Request parameter key for the column to sort the list. */
     public static final String PARAM_SORT_COL = "sortcol";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsListDialog.class);
+
     /** metadata map for all used list metadata objects. */
     private static Map m_metadatas = new HashMap();
 
@@ -167,6 +174,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The id of the list. */
     private String m_listId;
+
+    /** Cached List state in case of {@link #refreshList()} method call. */
+    private CmsListState m_listState;
 
     /** The displayed page. */
     private String m_paramFormName;
@@ -191,6 +201,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
+     * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -207,6 +218,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String searchableColId) {
 
         super(jsp);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_INIT_LIST_1, listId));
+        }
         // set list id
         m_listId = listId;
         // set active flag for 2 lists dialog
@@ -226,14 +241,19 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
-            if (sortedColId != null && getList().getMetadata().getColumnDefinition(sortedColId) != null) {
-                getList().setSortedColumn(sortedColId, getLocale());
-                if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
-                    getList().setSortedColumn(sortedColId, getLocale());
+            if ((sortedColId != null) && (getList().getMetadata().getColumnDefinition(sortedColId) != null)) {
+                getList().setWp(this);
+                getList().setSortedColumn(sortedColId);
+                if ((sortOrder != null) && (sortOrder == CmsListOrderEnum.ORDER_DESCENDING)) {
+                    getList().setSortedColumn(sortedColId);
                 }
             }
             // save the current state of the list
             listSave();
+        }
+        getList().setWp(this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_INIT_LIST_1, listId));
         }
     }
 
@@ -249,6 +269,18 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public static CmsHtmlList getListObject(Class listDialog, CmsWorkplaceSettings settings) {
 
         return (CmsHtmlList)getListObjectMap(settings).get(listDialog.getName());
+    }
+
+    /**
+     * Returns the list metadata object for the given dialog.<p>
+     * 
+     * @param listDialogName the dialog class name
+     * 
+     * @return the list metadata object
+     */
+    public static CmsListMetadata getMetadata(String listDialogName) {
+
+        return (CmsListMetadata)m_metadatas.get(listDialogName);
     }
 
     /**
@@ -278,16 +310,21 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void actionDialog() throws JspException, ServletException, IOException {
 
+        if (isForwarded()) {
+            return;
+        }
         if (getAction() == ACTION_CANCEL) {
             // ACTION: cancel button pressed
             actionCloseDialog();
             return;
         }
-        if (isForwarded()) {
-            return;
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_START_ACTION_LIST_2,
+                getListId(),
+                new Integer(getAction())));
         }
-        // TODO: check the need for this, improve caching
-        refreshList();
         switch (getAction()) {
             //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
@@ -318,6 +355,33 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 // ACTION: show dialog (default)
                 setParamAction(DIALOG_INITIAL);
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_END_ACTION_LIST_2,
+                getListId(),
+                new Integer(getAction())));
+        }
+        refreshList();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtml() {
+
+        if ((getList() != null) && getList().getAllContent().isEmpty()) {
+            // TODO: check the need for this
+            refreshList();
+        }
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(customHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(customHtmlEnd());
+        result.append(defaultActionHtmlEnd());
+        return result.toString();
     }
 
     /**
@@ -368,7 +432,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 executeSelectPage();
                 break;
             default:
-        //noop
+                //noop
         }
         listSave();
     }
@@ -421,7 +485,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsHtmlList getList() {
 
-        if (m_list != null && m_list.getMetadata() == null) {
+        if ((m_list != null) && (m_list.getMetadata() == null)) {
             m_list.setMetadata(getMetadata(getClass().getName(), m_list.getId()));
         }
         return m_list;
@@ -508,7 +572,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
             return getList().getItem(
                 CmsStringUtil.splitAsArray(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR)[0].trim());
         } catch (Exception e) {
-            return null;
+            try {
+                return getList().getItem("");
+            } catch (Exception e1) {
+                return null;
+            }
         }
     }
 
@@ -552,11 +620,18 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (getList() == null) {
             return;
         }
-        CmsListState ls = getList().getState();
-        getList().clear(getLocale());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_REFRESH_LIST_1, getListId()));
+        }
+        m_listState = getList().getState();
+        getList().clear();
         fillList();
-        getList().setState(ls, getLocale());
+        getList().setState(m_listState);
+        m_listState = null;
         listSave();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_REFRESH_LIST_1, getListId()));
+        }
     }
 
     /**
@@ -592,7 +667,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // null object: remove the entry from the map
             getListObjectMap(getSettings()).remove(listDialog.getName());
         } else {
-            if (listObject.getMetadata() != null && listObject.getMetadata().isVolatile()) {
+            if ((listObject.getMetadata() != null) && listObject.getMetadata().isVolatile()) {
                 listObject.setMetadata(null);
             }
             getListObjectMap(getSettings()).put(listDialog.getName(), listObject);
@@ -669,8 +744,14 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_WRITE_LIST_1, getListId()));
+        }
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_WRITE_LIST_1, getListId()));
+        }
     }
 
     /**
@@ -691,25 +772,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected String customHtmlStart() {
 
         return "";
-    }
-
-    /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
-     */
-    protected String defaultActionHtml() {
-
-        if (getList() != null && getList().getAllContent().isEmpty()) {
-            refreshList();
-        }
-        StringBuffer result = new StringBuffer(2048);
-        result.append(defaultActionHtmlStart());
-        result.append(customHtmlStart());
-        result.append(defaultActionHtmlContent());
-        result.append(customHtmlEnd());
-        result.append(defaultActionHtmlEnd());
-        return result.toString();
     }
 
     /**
@@ -737,7 +799,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
         result.append(">\n");
         result.append(allParamsAsHidden());
         result.append("\n");
-        result.append(getList().listHtml(this));
+        getList().setWp(this);
+        result.append(getList().listHtml());
         result.append("\n</form>\n");
         return result.toString();
     }
@@ -765,7 +828,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
-        result.append(getList().listJs(getLocale()));
+        result.append(getList().listJs());
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         result.append(dialogContentStart(getParamTitle()));
@@ -778,7 +841,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSearch() {
 
-        getList().setSearchFilter(getParamSearchFilter(), getLocale());
+        getList().setSearchFilter(getParamSearchFilter());
     }
 
     /**
@@ -797,13 +860,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSort() {
 
-        getList().setSortedColumn(getParamSortCol(), getLocale());
+        getList().setSortedColumn(getParamSortCol());
     }
 
     /**
      * Lazy initialization for detail data.<p>
      * 
-     * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getAllContent()}</code>
+     * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getContent()}</code>
      * 
      * Should not throw any kind of exception.<p>
      * 
@@ -817,7 +880,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void fillList() {
 
         try {
-            getList().addAllItems(getListItems());
+            getList().setContent(getListItems());
             // initialize detail columns
             Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
             while (itDetails.hasNext()) {
@@ -841,6 +904,20 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected abstract List getListItems() throws CmsException;
 
     /**
+     * Returns the current list state.<p>
+     * 
+     * @return the current list state
+     */
+    protected CmsListState getListState() {
+
+        if (m_listState != null) {
+            // in case of refreshList call
+            return m_listState;
+        }
+        return getList().getState();
+    }
+
+    /**
      * Should generate the metadata definition for the list, and return the 
      * corresponding <code>{@link CmsListMetadata}</code> object.<p>
      * 
@@ -851,7 +928,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if (m_metadatas.get(listDialogName) == null || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+        if ((m_metadatas.get(listDialogName) == null)
+            || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
+            }
             CmsListMetadata metadata = new CmsListMetadata(listId);
 
             setColumns(metadata);
@@ -862,8 +943,39 @@ public abstract class A_CmsListDialog extends CmsDialog {
             setMultiActions(metadata);
             metadata.checkIds();
             m_metadatas.put(listDialogName, metadata);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
+            }
         }
-        return (CmsListMetadata)m_metadatas.get(listDialogName);
+        return getMetadata(listDialogName);
+    }
+
+    /**
+     * Lazzy details initialization.<p>
+     * 
+     * @param detailId the id of the detail column
+     */
+    protected void initializeDetail(String detailId) {
+
+        // if detail column visible
+        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
+            // if the list is not empty
+            if (getList().getTotalSize() > 0) {
+                // if the detail column has not been previously initialized
+                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_START_DETAILS_LIST_2,
+                            getListId(),
+                            detailId));
+                    }
+                    fillDetails(detailId);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -886,7 +998,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
             setAction(ACTION_LIST_MULTI_ACTION);
         }
-        setParamStyle("new");
+        setParamStyle(CmsToolDialog.STYLE_NEW);
         // test the needed parameters
         try {
             validateParamaters();
@@ -912,7 +1024,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized void listRecovery(String listId) {
 
         CmsHtmlList list = getListObject(this.getClass(), getSettings());
-        if (list != null && !list.getId().equals(listId)) {
+        if ((list != null) && !list.getId().equals(listId)) {
             list = null;
         }
         setList(list);
@@ -964,7 +1076,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void setSearchAction(CmsListMetadata metadata, String columnId) {
 
         CmsListColumnDefinition col = metadata.getColumnDefinition(columnId);
-        if (columnId != null && col != null) {
+        if ((columnId != null) && (col != null)) {
             if (metadata.getSearchAction() == null) {
                 // makes the list searchable
                 CmsListSearchAction searchAction = new CmsListSearchAction(col);
@@ -1000,24 +1112,5 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void validateParamaters() throws Exception {
 
         // valid by default
-    }
-
-    /**
-     * Lazzy details initialization.<p>
-     * 
-     * @param detailId the id of the detail column
-     */
-    private void initializeDetail(String detailId) {
-
-        // if detail column visible
-        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
-            // if the list is not empty
-            if (!getList().getAllContent().isEmpty()) {
-                // if the detail column has not been previously initialized
-                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
-                    fillDetails(detailId);
-                }
-            }
-        }
     }
 }

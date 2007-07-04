@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsRenameImages.java,v $
- * Date   : $Date: 2006/03/27 14:52:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.3
  */
@@ -317,6 +317,8 @@ public class CmsRenameImages extends CmsDialog {
             setAction(ACTION_RENAMEIMAGES);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {

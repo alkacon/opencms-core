@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2006/09/15 14:19:57 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,10 +129,6 @@ public class CmsChnav extends CmsDialog {
      */
     public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
 
-        List navList = new ArrayList();
-        List options = new ArrayList();
-        List values = new ArrayList();
-
         // get current file navigation element
         CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
 
@@ -140,7 +136,7 @@ public class CmsChnav extends CmsDialog {
         filename = CmsResource.getParentFolder(filename);
 
         // get navigation of the current folder
-        navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
+        List navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
         float maxValue = 0;
         float nextPos = 0;
 
@@ -159,6 +155,9 @@ public class CmsChnav extends CmsDialog {
         if (maxValue != 0) {
             firstValue = maxValue / 2;
         }
+        
+        List options = new ArrayList(navList.size() + 1);
+        List values = new ArrayList(navList.size() + 1);
 
         // add the first entry: before first element
         options.add(messages.key(Messages.GUI_CHNAV_POS_FIRST_0));
@@ -188,7 +187,7 @@ public class CmsChnav extends CmsDialog {
             }
 
             // if the element is the current file, mark it in selectbox
-            if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
+            if (curNav.getNavText().equals(navText) && (curNav.getNavPosition() == navPos)) {
                 options.add(CmsEncoder.escapeHtml(messages.key(
                     Messages.GUI_CHNAV_POS_CURRENT_1,
                     new Object[] {ne.getFileName()})));
@@ -439,6 +438,8 @@ public class CmsChnav extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_CHNAV);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {

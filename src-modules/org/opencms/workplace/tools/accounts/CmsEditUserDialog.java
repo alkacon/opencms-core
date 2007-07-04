@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +95,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected String getListRootPath() {
 
-        return "/accounts/users";
+        return "/accounts/orgunit/users";
     }
 
     /**

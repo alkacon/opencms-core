@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsSessionManager;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -53,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,15 +111,80 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Calls the switch user method of the SessionManager.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void actionSwitchUser() throws CmsException {
+
+        try {
+            CmsSessionManager sessionManager = OpenCms.getSessionManager();
+            sessionManager.switchUser(getCms(), getJsp().getRequest(), getCms().readUser(
+                new CmsUUID(getJsp().getRequest().getParameter("userid"))));
+        } catch (CmsException e) {
+            String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
+            getToolManager().setCurrentToolPath(this, toolPath);
+            throw e;
+        }
+    }
+
+    /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_user.getOuFqn()).getDisplayName(
+                getLocale());
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the creation date.<p>
+     *
+     * Auxiliary Property for better representation.<p>
+     * 
+     * @return the creation date
+     */
+    public String getCreated() {
+
+        return LAST_LOGIN_FORMATTER.format(new Date(m_user.getDateCreated()), getLocale());
+    }
+
+    /**
+     * Returns the localized description of the user.<p>
+     * 
+     * @return the localized description of the user
+     */
+    public String getDescription() {
+
+        return m_user.getDescription(getLocale());
+    }
+
+    /**
      * Returns the last login.<p>
      *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * Auxiliary Property for better representation.<p>
      * 
      * @return the last login
      */
     public String getLastlogin() {
 
         return LAST_LOGIN_FORMATTER.format(new Date(m_user.getLastlogin()), getLocale());
+    }
+
+    /**
+     * Returns the simple name of the user object.<p>
+     * 
+     * @return the simple name of the user object
+     */
+    public String getName() {
+
+        return m_user.getSimpleName();
     }
 
     /**
@@ -131,16 +198,71 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the selfManagement.<p>
+     *
+     * @return the selfManagement
+     */
+    public boolean isSelfManagement() {
+
+        return !m_user.isManaged();
+    }
+
+    /**
+     * Setter for widget definition.<p>
+     * 
+     * @param assignedOu the ou description
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        assignedOu.length(); // prevent warning
+    }
+
+    /**
+     * Sets the creation date.<p>
+     *
+     * Auxiliary Property for better representation.<p>
+     * 
+     * @param created the creation date to set
+     */
+    public void setCreated(String created) {
+
+        if (created == null) {
+            // just to avoid warnings
+        }
+    }
+
+    /**
+     * Sets the description of the user.<p>
+     * 
+     * @param description the user description
+     */
+    public void setDescription(String description) {
+
+        m_user.setDescription(description);
+    }
+
+    /**
      * Sets the last login.<p>
      *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * Auxiliary Property for better representation.<p>
      * 
      * @param lastlogin the last login to set
      */
     public void setLastlogin(String lastlogin) {
 
-        // never used
-        lastlogin.length();
+        if (lastlogin == null) {
+            // just to avoid warnings
+        }
+    }
+
+    /**
+     * Sets the name of the user object.<p>
+     * 
+     * @param name the name of the user object
+     */
+    public void setName(String name) {
+
+        name.length();
     }
 
     /**
@@ -151,6 +273,16 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
+    }
+
+    /**
+     * Sets the selfManagement.<p>
+     *
+     * @param selfManagement the selfManagement to set
+     */
+    public void setSelfManagement(boolean selfManagement) {
+
+        m_user.setManaged(!selfManagement);
     }
 
     /**
@@ -169,7 +301,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        int n = (!isOverview() ? 2 : 4);
+        int n = (!isOverview() ? 3 : 5);
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
@@ -183,12 +315,12 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
             }
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(5, 8));
+            result.append(createDialogRowsHtml(6, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(9, 10));
+            result.append(createDialogRowsHtml(10, 13));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -217,21 +349,25 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
         // widgets to display
         if (isOverview()) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "selfManagement", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "lastlogin", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "created", PAGES[0], new CmsDisplayWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         }
     }
 

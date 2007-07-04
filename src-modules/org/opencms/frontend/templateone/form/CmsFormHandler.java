@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,12 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsByteArrayDataSource;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 
 /**
@@ -65,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +94,9 @@ public class CmsFormHandler extends CmsJspActionElement {
     /** Request parameter name for the hidden form action parameter to determine the action. */
     public static final String PARAM_FORMACTION = "formaction";
 
+    /** Name of the file item session attribute. */
+    public static final String ATTRIBUTE_FILEITEMS = "fileitems";
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
 
@@ -107,8 +115,15 @@ public class CmsFormHandler extends CmsJspActionElement {
     /** The localized messages for the form handler. */
     private CmsMessages m_messages;
     
+    /** Boolean indicating if the form is validated correctly. */
     private Boolean m_isValidatedCorrect;
 
+    /** The map of request parameters. */
+    private Map m_parameterMap;
+    
+    /** The multipart file items. */
+    private List m_mulipartFileItems;
+    
     /**
      * Constructor, creates the necessary form configuration objects.<p>
      * 
@@ -281,10 +296,36 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
      * @throws Exception if creating the form configuration objects fails
      */
-    public void init(HttpServletRequest req, String formConfigUri) throws Exception {
-
-        String formAction = req.getParameter(PARAM_FORMACTION);
+    public void init(HttpServletRequest req, String formConfigUri) throws Exception { 
         
+        m_mulipartFileItems = CmsRequestUtil.readMultipartFileItems(req);  
+        
+        if (m_mulipartFileItems != null) {
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(getRequestContext().getEncoding(), m_mulipartFileItems);                 
+        } else {
+            m_parameterMap = new HashMap(); 
+        }   
+    
+        if (m_mulipartFileItems != null) {
+            Map fileUploads = (Map)req.getSession().getAttribute(ATTRIBUTE_FILEITEMS);
+            if (fileUploads == null) {
+                fileUploads = new HashMap();
+            }              
+            // check, if there are any attachments
+            Iterator i = m_mulipartFileItems.iterator();
+            while (i.hasNext()) {
+                FileItem fileItem = (FileItem)i.next();
+                if (CmsStringUtil.isNotEmpty(fileItem.getName())) {
+                    // append file upload to the map of file items
+                    fileUploads.put(fileItem.getFieldName(), fileItem);
+                    m_parameterMap.put(fileItem.getFieldName(), new String[] {fileItem.getName()});
+                }
+            }
+            req.getSession().setAttribute(ATTRIBUTE_FILEITEMS, fileUploads);
+        } else {
+            req.getSession().removeAttribute(ATTRIBUTE_FILEITEMS);
+        }
+        String formAction = getParameter(PARAM_FORMACTION);
         setErrors(new HashMap());
         m_isValidatedCorrect = null;
         setInitial(CmsStringUtil.isEmpty(formAction));
@@ -302,6 +343,16 @@ public class CmsFormHandler extends CmsJspActionElement {
     public boolean isInitial() {
 
         return m_initial;
+    }
+    
+    /** 
+     * Returns the map of request parameters.<p>
+     * 
+     * @return the map of request parameters
+     */
+    public Map getParameterMap() {
+     
+        return m_parameterMap;
     }
 
     /**
@@ -360,7 +411,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             // send optional confirmation mail
             if (getFormConfiguration().isConfirmationMailEnabled()) {
                 if (!getFormConfiguration().isConfirmationMailOptional()
-                    || Boolean.valueOf(getRequest().getParameter(CmsForm.PARAM_SENDCONFIRMATION)).booleanValue()) {
+                    || Boolean.valueOf(getParameter(CmsForm.PARAM_SENDCONFIRMATION)).booleanValue()) {
                     sendConfirmationMail();
                 }
             }
@@ -379,6 +430,25 @@ public class CmsFormHandler extends CmsJspActionElement {
                     + getFormConfiguration().getMailSubject());
                 theMail.setHtmlMsg(createMailTextFromFields(true, false));
                 theMail.setTextMsg(createMailTextFromFields(false, false));
+                
+                // attach file uploads
+                Map fileUploads = (Map)getRequest().getSession().getAttribute(ATTRIBUTE_FILEITEMS);
+                Iterator i = fileUploads.values().iterator();
+                while (i.hasNext()) {
+                    FileItem attachment = (FileItem)i.next();
+                    if (attachment != null) {
+                        String filename = attachment.getName().substring(
+                            attachment.getName().lastIndexOf(File.separator) + 1);
+                        theMail.attach(
+                            new CmsByteArrayDataSource(
+                                filename,
+                                attachment.get(),
+                                OpenCms.getResourceManager().getMimeType(filename, null, "application/octet-stream")),
+                            filename,
+                            filename);
+                    }
+                }
+                
                 // send the mail
                 theMail.send();
             } else {
@@ -400,7 +470,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         } catch (Exception e) {
             // an error occured during mail creation
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             m_errors.put("sendmail", e.getMessage());
             return false;
@@ -409,17 +479,33 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
 
     /**
+     * Returns the request parameter with the specified name.<p>
+     * 
+     * @param parameter the parameter to return
+     * 
+     * @return the parameter value
+     */
+    private String getParameter(String parameter) {
+        
+        try {
+            return ((String[])m_parameterMap.get(parameter))[0];
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+    
+    /**
      * Returns if the optional check page should be displayed.<p>
      * 
      * @return true if the optional check page should be displayed, otherwise false
      */
     public boolean showCheck() {
-        
+
         boolean result = false;
-        
-        if (getFormConfiguration().getShowCheck() && ACTION_SUBMIT.equals(getRequest().getParameter(PARAM_FORMACTION))) {
+
+        if (getFormConfiguration().getShowCheck() && ACTION_SUBMIT.equals(getParameter(PARAM_FORMACTION))) {
             result = true;
-        } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && ACTION_CONFIRMED.equals(getRequest().getParameter(PARAM_FORMACTION)) && !validate()) {
+        } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && ACTION_CONFIRMED.equals(getParameter(PARAM_FORMACTION)) && !validate()) {
             result = true;
         }
         
@@ -436,12 +522,12 @@ public class CmsFormHandler extends CmsJspActionElement {
         boolean result = false;
         
         if (isInitial()) {
-            // inital call
+            // initial call
             result = true;
-        } else if (ACTION_CORRECT_INPUT.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION))) {
+        } else if (ACTION_CORRECT_INPUT.equalsIgnoreCase(getParameter(PARAM_FORMACTION))) {
             // user decided to modify his inputs
             result = true;
-        } else if (ACTION_SUBMIT.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION)) && !validate()) {
+        } else if (ACTION_SUBMIT.equalsIgnoreCase(getParameter(PARAM_FORMACTION)) && !validate()) {
             // input field validation failed
             result = true;
             
@@ -452,7 +538,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 // to go back to the input form...
                 getFormConfiguration().removeCaptchaField();
             }
-        } else if (ACTION_CONFIRMED.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION)) && getFormConfiguration().captchaFieldIsOnCheckPage() && !validate()) {
+        } else if (ACTION_CONFIRMED.equalsIgnoreCase(getParameter(PARAM_FORMACTION)) && getFormConfiguration().captchaFieldIsOnCheckPage() && !validate()) {
             // captcha field validation on check page failed- redisplay the check page, not the input page!
             result = false;
         }
@@ -513,7 +599,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             }
         }
         
-        m_isValidatedCorrect = new Boolean(allOk);
+        m_isValidatedCorrect = Boolean.valueOf(allOk);
         return allOk;
     }
 

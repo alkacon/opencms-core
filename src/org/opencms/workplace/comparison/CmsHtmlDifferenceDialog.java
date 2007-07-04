@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/28 07:53:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,18 +105,20 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
         out.println("</form>");
         out.println("<p>");
         out.println(getDiffOnlyButtonsHtml());
-        
+
         String onClic1 = "javascript:document.forms['diff-form'].textmode.value = '";
-        onClic1 += MODE_TEXT; 
+        onClic1 += MODE_TEXT;
         onClic1 += "'; document.forms['diff-form'].submit();";
         String onClic2 = "javascript:document.forms['diff-form'].textmode.value = '";
-        onClic2 += MODE_HTML; 
+        onClic2 += MODE_HTML;
         onClic2 += "'; document.forms['diff-form'].submit();";
-        out.println(getTwoButtonsHtml(Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0).key(getLocale()),
-            Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0).key(getLocale()), onClic1, onClic2,
-            MODE_HTML.equals(getParamTextmode())
-        ));
-        
+        out.println(getTwoButtonsHtml(
+            Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0).key(getLocale()),
+            Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0).key(getLocale()),
+            onClic1,
+            onClic2,
+            MODE_HTML.equals(getParamTextmode())));
+
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");

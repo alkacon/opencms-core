@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2006/09/27 10:07:04 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,12 @@ package org.opencms.configuration;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsLog;
+import org.opencms.util.A_CmsModeStringEnumeration;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,17 +51,99 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
- * @since 6.0.0
+ * @since 6.0.0 
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
-    /**  Array of the possible "button styles". */
-    public static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
+    /**
+     * Enumeration class for defining the publish related resources mode.<p>
+     */
+    public static final class CmsPublishRelatedResourcesMode extends A_CmsModeStringEnumeration {
+
+        /** Constant for the publish related resources mode, checkbox disabled by default. */
+        protected static final CmsPublishRelatedResourcesMode MODE_FALSE = new CmsPublishRelatedResourcesMode(
+            CmsStringUtil.FALSE);
+
+        /** 
+         * Constant for the publish related resources mode, only {@link org.opencms.security.CmsRole#VFS_MANAGER}s 
+         * may publish resources without publishing the related resources.
+         */
+        protected static final CmsPublishRelatedResourcesMode MODE_FORCE = new CmsPublishRelatedResourcesMode("FORCE");
+
+        /** Constant for the publish related resources mode, checkbox enabled by default. */
+        protected static final CmsPublishRelatedResourcesMode MODE_TRUE = new CmsPublishRelatedResourcesMode(
+            CmsStringUtil.TRUE);
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -2665888243460791770L;
+
+        /**
+         * Default constructor.<p>
+         * 
+         * @param mode string representation
+         */
+        private CmsPublishRelatedResourcesMode(String mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the parsed mode object if the string representation matches, or <code>null</code> if not.<p>
+         * 
+         * @param publishRelatedResourcesMode the string representation to parse
+         * 
+         * @return the parsed mode object
+         */
+        public static CmsPublishRelatedResourcesMode valueOf(String publishRelatedResourcesMode) {
+
+            if (publishRelatedResourcesMode == null) {
+                return null;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_FALSE.getMode())) {
+                return MODE_FALSE;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_TRUE.getMode())) {
+                return MODE_TRUE;
+            }
+            if (publishRelatedResourcesMode.equalsIgnoreCase(MODE_FORCE.getMode())) {
+                return MODE_FORCE;
+            }
+            return null;
+        }
+    }
+
+    /** 
+     * Array of the possible "button styles".
+     * Must be private because of Findbugs rule "MS".
+     */
+    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
 
     /** Array list for fast lookup of "button styles". */
     public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+
+    /** Constant for the publish related resources mode, checkbox disabled by default. */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
+
+    /** 
+     * Constant for the publish related resources mode, only {@link org.opencms.security.CmsRole#VFS_MANAGER}s 
+     * may publish resources without publishing the related resources. 
+     */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FORCE = CmsPublishRelatedResourcesMode.MODE_FORCE;
+
+    /** Constant for the publish related resources mode, checkbox enabled by default. */
+    public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_TRUE = CmsPublishRelatedResourcesMode.MODE_TRUE;
+
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
+
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
+
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
+
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
 
@@ -75,47 +162,17 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** Value for preserving siblings in delete dialog settings. */
     private static final String DELETEMODE_PRESERVE = "preservesiblings";
 
-    /** Array of the "task startupfilter" nicenames. */
-    public static final String[] FILTER_NAMES = {
-        "mynewtasks",
-        "mytasksformyroles",
-        "alltasks",
-        "myactivetasks",
-        "myactivetasksformyroles",
-        "allactivetasks",
-        "mycompletedtasks",
-        "mycompletedtasksformyroles",
-        "allcompletedtasks",
-        "newtaskscreatedbyme",
-        "activetaskscreatedbyme",
-        "completedtaskscreatedbyme"};
-
-    /** Array list for fast lookup of "task startupfilter" nicenames. */
-    public static final List FILTER_NAMES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_NAMES));
-
-    /**  Array of the "task startupfilter" values. */
-    public static final String[] FILTER_VALUES = {
-        "a1",
-        "b1",
-        "c1",
-        "a2",
-        "b2",
-        "c2",
-        "a3",
-        "b3",
-        "c3",
-        "d1",
-        "d2",
-        "d3"};
-
-    /** Array list for fast lookup of "task startupfilter" values. */
-    public static final List FILTER_VALUES_LIST = Collections.unmodifiableList(Arrays.asList(FILTER_VALUES));
-
     /** Value for publishing only resources in publish dialog settings. */
     private static final String PUBLISHMODE_ONLYRESOURCE = "onlyresource";
 
     /** Value for publishing siblings in publish dialog settings. */
     private static final String PUBLISHMODE_SIBLINGS = "allsiblings";
+
+    /** The enable relation deletion flag. */
+    private boolean m_allowBrokenRelations = true;
+
+    /** The publish related resources mode. */
+    private CmsPublishRelatedResourcesMode m_publishRelatedResourcesMode;
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -129,7 +186,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         } else {
             return COPYMODE_SIBLING;
         }
-
     }
 
     /**
@@ -166,6 +222,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns the default setting for expanding inherited permissions in the dialog.<p>
      * 
      * @return true if inherited permissions should be expanded, otherwise false
+     * 
+     * @see #getDialogExpandInheritedPermissions()
      */
     public String getDialogExpandInheritedPermissionsString() {
 
@@ -176,6 +234,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns the default setting for expanding the users permissions in the dialog.<p>
      * 
      * @return true if the users permissions should be expanded, otherwise false
+     * 
+     * @see #getDialogExpandUserPermissions()
      */
     public String getDialogExpandUserPermissionsString() {
 
@@ -257,14 +317,13 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Checks if  a specific explorer setting depending is set.<p>
-     * 
-     * @param setting the settings constant value for the explorer settings
-     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
+     * Returns the publish related resources mode.<p>
+     *
+     * @return the publish related resources mode
      */
-    private String getExplorerSetting(int setting) {
+    public CmsPublishRelatedResourcesMode getPublishRelatedResources() {
 
-        return String.valueOf((getExplorerSettings() & setting) > 0);
+        return m_publishRelatedResourcesMode;
     }
 
     /**
@@ -325,6 +384,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowExplorerFileLockedBy() {
 
         return getExplorerSetting(CmsUserSettings.FILELIST_LOCKEDBY);
+    }
+
+    /**
+     * Gets if the file navtext should be shown in explorer view.<p>
+     * 
+     * @return <code>"true"</code> if the file navtext should be shown, otherwise <code>"false"</code>
+     */
+    public String getShowExplorerFileNavText() {
+
+        return getExplorerSetting(CmsUserSettings.FILELIST_NAVTEXT);
     }
 
     /**
@@ -390,7 +459,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file last modified by should be shown in explorer view.<p>
      * 
-     * @return <code>"true"</code> if the file last modified by should be shown, otherwise <code>"false"</code>
+     * @return <code>"true"</code> if the file last modified by should be shown, otherwise <code>"false"</code> 
      */
     public String getShowExplorerFileUserLastModified() {
 
@@ -398,70 +467,23 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Determines if a message should be sent if the task is accepted.<p>
+     * Returns a string representation of the show file upload button flag.<p>
      * 
-     * @return <code>"true"</code> if a message should be sent if the task is accepted, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageAcceptedString() {
-
-        return String.valueOf(getTaskMessageAccepted());
-    }
-
-    /**
-     * Determines if a message should be sent if the task is completed.<p>
+     * @return string representation of the show file upload button flag
      * 
-     * @return <code>"true"</code> if a message should be sent if the task is completed, otherwise <code>"false"</code>
+     * @see #getShowFileUploadButton()
      */
-    public String getTaskMessageCompletedString() {
+    public String getShowFileUploadButtonString() {
 
-        return String.valueOf(getTaskMessageCompleted());
-    }
-
-    /**
-     * Determines if a message should be sent if the task is forwarded.<p>
-     * 
-     * @return <code>"true"</code> if a message should be sent if the task is forwarded, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageForwardedString() {
-
-        return String.valueOf(getTaskMessageForwarded());
-    }
-
-    /**
-     * Determines if all role members should be informed about the task.<p>
-     * 
-     * @return <code>"true"</code> if all role members should be informed about the task, otherwise <code>"false"</code>
-     */
-    public String getTaskMessageMembersString() {
-
-        return String.valueOf(getTaskMessageMembers());
-    }
-
-    /**
-     * Determines if all projects should be shown in tasks view.<p>
-     * 
-     * @return <code>"true"</code> if all projects should be shown in tasks view, otherwise <code>"false"</code>
-     */
-    public String getTaskShowAllProjectsString() {
-
-        return String.valueOf(getTaskShowAllProjects());
-    }
-
-    /**
-     * Gets the startup filter for the tasks view.<p>
-     * 
-     * @return the startup filter for the tasks view
-     */
-    public String getTaskStartupFilterDefault() {
-
-        int defaultFilter = FILTER_VALUES_LIST.indexOf(getTaskStartupFilter());
-        return FILTER_NAMES[defaultFilter];
+        return String.valueOf(getShowFileUploadButton());
     }
 
     /**
      * Returns a string representation of the upload Applet flag.<p>
      * 
      * @return string representation of the uploadApplet flag
+     * 
+     * @see #useUploadApplet()
      */
     public String getUploadAppletString() {
 
@@ -472,10 +494,37 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Returns a string representation of the workplace button style.<p>
      * 
      * @return string representation of the workplace button style
+     * 
+     * @see #getWorkplaceButtonStyle()
      */
     public String getWorkplaceButtonStyleString() {
 
         return BUTTON_STYLES[getWorkplaceButtonStyle()];
+    }
+
+    /**
+     * Returns if the deletion of relation targets is enabled.<p>
+     *
+     * @return <code>true</code> if the deletion of relation targets is enabled, otherwise <code>false</code>
+     */
+    public boolean isAllowBrokenRelations() {
+
+        return m_allowBrokenRelations;
+    }
+
+    /**
+     * Sets if the deletion of relation targets is enabled.<p>
+     *
+     * @param allowBrokenRelations <code>true</code> if relation deletion should be enabled, otherwise <code>false</code>
+     */
+    public void setAllowBrokenRelations(String allowBrokenRelations) {
+
+        m_allowBrokenRelations = Boolean.valueOf(allowBrokenRelations).booleanValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                m_allowBrokenRelations ? Messages.INIT_RELATION_DELETION_ENABLED_0
+                : Messages.INIT_RELATION_DELETION_DISABLED_0));
+        }
     }
 
     /**
@@ -485,7 +534,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFileMode(String mode) {
 
-        int copyMode = CmsResource.COPY_AS_NEW;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = CmsResource.COPY_AS_SIBLING;
         }
@@ -499,7 +548,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFolderMode(String mode) {
 
-        int copyMode = CmsResource.COPY_AS_NEW;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
             copyMode = CmsResource.COPY_AS_SIBLING;
         } else if (mode.equalsIgnoreCase(COPYMODE_PRESERVE)) {
@@ -515,7 +564,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogDeleteFileMode(String mode) {
 
-        int deleteMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
+        CmsResourceDeleteMode deleteMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
         if (mode.equalsIgnoreCase(DELETEMODE_DELETE)) {
             deleteMode = CmsResource.DELETE_REMOVE_SIBLINGS;
         }
@@ -676,6 +725,21 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Sets the publish related resources mode.<p>
+     *
+     * @param publishRelatedResourcesMode the publish related resources mode to set
+     */
+    public void setPublishRelatedResourcesMode(String publishRelatedResourcesMode) {
+
+        m_publishRelatedResourcesMode = CmsPublishRelatedResourcesMode.valueOf(publishRelatedResourcesMode);
+        if ((m_publishRelatedResourcesMode != null) && CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_PUBLISH_RELATED_RESOURCES_MODE_1,
+                m_publishRelatedResourcesMode.toString()));
+        }
+    }
+
+    /**
      * Sets if the explorer view is restricted to the defined site and folder.<p>
      * 
      * @param restrict true if the explorer view is restricted, otherwise false
@@ -733,6 +797,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowExplorerFileLockedBy(String show) {
 
         setShowExplorerFileLockedBy(Boolean.valueOf(show).booleanValue());
+    }
+
+    /**
+     * Sets if the file navtext should be shown in explorer view.<p>
+     * 
+     * @param show true if the file locked by should be shown, otherwise false
+     */
+    public void setShowExplorerFileNavText(String show) {
+
+        setShowExplorerFileNavText(Boolean.valueOf(show).booleanValue());
     }
 
     /**
@@ -816,6 +890,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Controls whether to display a file upload icon or not.<p>
+     * 
+     * @param flag <code>"true"</code> or <code>"false"</code> to flag the use of the file upload button
+     */
+    public void setShowFileUploadButton(String flag) {
+
+        setShowFileUploadButton(Boolean.valueOf(flag).booleanValue());
+    }
+
+    /**
      *  Sets if the lock dialog should be shown.<p>
      * 
      * @param mode true if the lock dialog should be shown, otherwise false
@@ -826,72 +910,18 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Sets if a message should be sent if the task is accepted.<p>
+     * Digester support method for configuration if the resource type selection checkbox should 
+     * show up when uploading a new file in non-applet mode.<p>
      * 
-     * @param mode true if a message should be sent if the task is accepted, otherwise false
-     */
-    public void setTaskMessageAccepted(String mode) {
-
-        setTaskMessageAccepted(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if a message should be sent if the task is completed.<p>
+     * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
+     * of <code>{@link Boolean#valueOf(String)}</code>. <p>
      * 
-     * @param mode true if a message should be sent if the task is completed, otherwise false
+     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     *      of <code>{@link Boolean#valueOf(String)}</code> 
      */
-    public void setTaskMessageCompleted(String mode) {
+    public void setShowUploadTypeDialog(String booleanValue) {
 
-        setTaskMessageCompleted(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if a message should be sent if the task is forwarded.<p>
-     * 
-     * @param mode true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public void setTaskMessageForwarded(String mode) {
-
-        setTaskMessageForwarded(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if all role members should be informed about the task.<p>
-     * 
-     * @param mode true if all role members should be informed about the task, otherwise false
-     */
-    public void setTaskMessageMembers(String mode) {
-
-        setTaskMessageMembers(Boolean.valueOf(mode).booleanValue());
-    }
-
-    /**
-     * Sets if all projects should be shown in tasks view.<p>
-     * 
-     * @param mode true if all projects should be shown in tasks view, otherwise false
-     */
-    public void setTaskShowAllProjects(String mode) {
-
-        setTaskShowAllProjects(Boolean.valueOf(mode).booleanValue());
-
-    }
-
-    /**
-     * Sets the startup filter for the tasks view.<p>
-     * 
-     * @param filter the startup filter for the tasks view
-     */
-    public void setTaskStartupFilterDefault(String filter) {
-
-        int defaultFilter = 0;
-        try {
-            if (filter != null) {
-                defaultFilter = FILTER_NAMES_LIST.indexOf(filter);
-            }
-        } catch (Exception e) {
-            // do nothing, use the default value
-        }
-        setTaskStartupFilter(FILTER_VALUES[defaultFilter]);
+        setShowUploadTypeDialog(Boolean.valueOf(booleanValue));
     }
 
     /**
@@ -913,7 +943,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setWorkplaceButtonStyle(String buttonstyle) {
 
         int buttonstyleValue = BUTTONSTYLE_TEXTIMAGE;
-
         try {
             if (buttonstyle != null) {
                 buttonstyleValue = BUTTON_STYLES_LIST.indexOf(buttonstyle);
@@ -921,7 +950,27 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         } catch (Exception e) {
             // do nothing, use the default value
         }
-
         setWorkplaceButtonStyle(buttonstyleValue);
+    }
+
+    /**
+     * Sets the style of the workplace search default view.<p>
+     * 
+     * @param viewStyle the style of the workplace search default view 
+     */
+    public void setWorkplaceSearchViewStyle(String viewStyle) {
+
+        setWorkplaceSearchViewStyle(CmsSearchResultStyle.valueOf(viewStyle));
+    }
+
+    /**
+     * Checks if  a specific explorer setting depending is set.<p>
+     * 
+     * @param setting the settings constant value for the explorer settings
+     * @return <code>"true"</code> if the explorer setting is set, otherwise <code>"false"</code>
+     */
+    private String getExplorerSetting(int setting) {
+
+        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
 }

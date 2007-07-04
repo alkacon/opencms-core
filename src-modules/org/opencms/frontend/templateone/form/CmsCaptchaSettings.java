@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2007/03/29 15:40:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,26 +36,26 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Stores the settings to render captcha images.
- * <p>
+ * Stores the settings to render captcha images.<p>
  * 
  * @author Thomas Weckert
- * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public final class CmsCaptchaSettings implements Cloneable {
 
@@ -173,6 +173,9 @@ public final class CmsCaptchaSettings implements Cloneable {
     /** The minimum phrase length. */
     private int m_minPhraseLength = 5;
 
+    /** The map of request parameters. */
+    private Map m_parameterMap;
+
     /**
      * The path to the preset configuration (captchapreset) that has been used to initialize these
      * settings. This is read only, as the path is internally read from a nested CmsForm/FormCaptcha
@@ -184,12 +187,10 @@ public final class CmsCaptchaSettings implements Cloneable {
     private boolean m_useBackgroundImage = true;
 
     /**
-     * Private constructor for the clone method.
-     * <p>
+     * Private constructor for the clone method.<p>
      * 
      * May only be called from {@link #clone()} as that method guarantees to install the default
-     * value from the master captcha settings.
-     * <p>
+     * value from the master captcha settings.<p>
      */
     private CmsCaptchaSettings() {
 
@@ -197,11 +198,9 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Constructor that will use request parameters to init theses settings.
-     * <p>
+     * Constructor that will use request parameters to init theses settings.<p>
      * 
-     * @param jsp 
-     *      the action element to use
+     * @param jsp the jsp context object
      */
     private CmsCaptchaSettings(CmsJspActionElement jsp) {
 
@@ -211,18 +210,16 @@ public final class CmsCaptchaSettings implements Cloneable {
     /**
      * Returns a clone of the singleton instance of the
      * <em>"master"</em>  <code>CmsCaptchaSettings</code> and potential overridden values from
-     * the request context.
-     * <p>
+     * the request context.<p>
      * 
      * The <em>"master"</em>  <code>CmsCaptchaSettings</code> are read from an XML content that
-     * contains the global defaults.
-     * <p>
+     * contains the global defaults.<p>
      * 
      * @param jsp used to potentially access the XML content with the default captcha settings and
      *            to read overriden values from the request parameters.
      * 
      * @return a clone of the singleton instance of the
-     *         <em>"master"</em>  <code>CmsCaptchaSettings</code>.
+     *         <em>"master"</em> <code>CmsCaptchaSettings</code>.
      */
     public static CmsCaptchaSettings getInstance(CmsJspActionElement jsp) {
 
@@ -231,8 +228,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the background color.
-     * <p>
+     * Returns the background color.<p>
      * 
      * @return the background color
      */
@@ -242,8 +238,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the background color as a hex string.
-     * <p>
+     * Returns the background color as a hex string.<p>
      * 
      * @return the background color as a hex string
      */
@@ -260,8 +255,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the filter amplitude for the water filter that bends the text.
-     * <p>
+     * Returns the filter amplitude for the water filter that bends the text.<p>
      * 
      * @return the filter amplitude for the water filter that bends the text.
      */
@@ -271,8 +265,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the filter wave length for the water filter that bends the text.
-     * <p>
+     * Returns the filter wave length for the water filter that bends the text.<p>
      * 
      * @return the filter wave length for the water filter that bends the text.
      */
@@ -282,8 +275,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the font color.
-     * <p>
+     * Returns the font color.<p>
      * 
      * @return the font color
      */
@@ -293,8 +285,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the font color as a hex string.
-     * <p>
+     * Returns the font color as a hex string.<p>
      * 
      * @return the font color as a hex string
      */
@@ -311,7 +302,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the holes per glyph for a captcha image text (distortion).
+     * Returns the holes per glyph for a captcha image text (distortion).<p>
      * 
      * @return the holes per glyph for a captcha image text
      */
@@ -321,8 +312,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the image height.
-     * <p>
+     * Returns the image height.<p>
      * 
      * @return the image height
      */
@@ -332,8 +322,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the image width.
-     * <p>
+     * Returns the image width.<p>
      * 
      * @return the image width
      */
@@ -343,8 +332,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the max. font size.
-     * <p>
+     * Returns the max. font size.<p>
      * 
      * @return the max. font size
      */
@@ -354,8 +342,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the max. phrase length.
-     * <p>
+     * Returns the max. phrase length.<p>
      * 
      * @return the max. phrase length
      */
@@ -365,8 +352,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the min. font size.
-     * <p>
+     * Returns the min. font size.<p>
      * 
      * @return the min. font size
      */
@@ -376,8 +362,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the min. phrase length.
-     * <p>
+     * Returns the min. phrase length.<p>
      * 
      * @return the min. phrase length
      */
@@ -387,137 +372,134 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Configures the instance with values overridden from the the request parameters.
-     * <p>
+     * Configures the instance with values overridden from the the request parameters.<p>
      * 
      * @param jsp a Cms JSP page
      * 
      * @see #C_PARAM_BACKGROUND_COLOR
-     * 
      * @see #C_PARAM_FILTER_AMPLITUDE
-     * 
      */
     public void init(CmsJspActionElement jsp) {
 
-        HttpServletRequest request = jsp.getRequest();
+        List mulipartFileItems = CmsRequestUtil.readMultipartFileItems(jsp.getRequest());
+        m_parameterMap = new HashMap();
+        if (mulipartFileItems != null) {
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+                jsp.getRequestContext().getEncoding(),
+                mulipartFileItems);
+        }
 
         // image width
-        String stringValue = request.getParameter(C_PARAM_IMAGE_WIDTH);
+        String stringValue = getParameter(C_PARAM_IMAGE_WIDTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageWidth = Integer.parseInt(stringValue);
         }
 
         // image height
-        stringValue = request.getParameter(C_PARAM_IMAGE_HEIGHT);
+        stringValue = getParameter(C_PARAM_IMAGE_HEIGHT);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageHeight = Integer.parseInt(stringValue);
         }
 
         // min. phrase length
-        stringValue = request.getParameter(C_PARAM_MIN_PHRASE_LENGTH);
+        stringValue = getParameter(C_PARAM_MIN_PHRASE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_minPhraseLength = Integer.parseInt(stringValue);
         }
 
         // max. phrase length
-        stringValue = request.getParameter(C_PARAM_MAX_PHRASE_LENGTH);
+        stringValue = getParameter(C_PARAM_MAX_PHRASE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_maxPhraseLength = Integer.parseInt(stringValue);
         }
 
         // min. font size
-        stringValue = request.getParameter(C_PARAM_MIN_FONT_SIZE);
+        stringValue = getParameter(C_PARAM_MIN_FONT_SIZE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_minFontSize = Integer.parseInt(stringValue);
         }
 
         // max. font size
-        stringValue = request.getParameter(C_PARAM_MAX_FONT_SIZE);
+        stringValue = getParameter(C_PARAM_MAX_FONT_SIZE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_maxFontSize = Integer.parseInt(stringValue);
         }
 
         // font color
-        stringValue = request.getParameter(C_PARAM_FONT_COLOR);
+        stringValue = getParameter(C_PARAM_FONT_COLOR);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
             setFontColor(stringValue);
         }
 
         // background color
-        stringValue = request.getParameter(C_PARAM_BACKGROUND_COLOR);
+        stringValue = getParameter(C_PARAM_BACKGROUND_COLOR);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
         }
         setBackgroundColor(stringValue);
 
         // holes per glyph
-        stringValue = request.getParameter(C_PARAM_HOLES_PER_GLYPH);
+        stringValue = getParameter(C_PARAM_HOLES_PER_GLYPH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setHolesPerGlyph(Integer.parseInt(stringValue));
         }
 
         // filter amplitude
-        stringValue = request.getParameter(C_PARAM_FILTER_AMPLITUDE);
+        stringValue = getParameter(C_PARAM_FILTER_AMPLITUDE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFilterAmplitude(Integer.parseInt(stringValue));
         }
 
         // filter wave length
-        stringValue = request.getParameter(C_PARAM_FILTER_WAVE_LENGTH);
+        stringValue = getParameter(C_PARAM_FILTER_WAVE_LENGTH);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFilterWaveLength(Integer.parseInt(stringValue));
         }
         // flag for generation of background image (vs. background color)
-        stringValue = request.getParameter(C_PARAM_USE_BACKGROUND_IMAGE);
+        stringValue = getParameter(C_PARAM_USE_BACKGROUND_IMAGE);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setUseBackgroundImage(Boolean.valueOf(stringValue).booleanValue());
         }
 
         // characters to use for word generation:
-        stringValue = request.getParameter(C_PARAM_CHARACTERS);
+        stringValue = getParameter(C_PARAM_CHARACTERS);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setCharacterPool(stringValue);
         }
         // characters to use for word generation:
-        stringValue = request.getParameter(C_PARAM_CHARACTERS);
+        stringValue = getParameter(C_PARAM_CHARACTERS);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setCharacterPool(stringValue);
         }
 
         // just for logging comfort (find misconfigured presets):
-        stringValue = request.getParameter(C_PARAM_PRESET);
+        stringValue = getParameter(C_PARAM_PRESET);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_presetPath = stringValue;
         }
-
     }
 
     /**
-     * Configures the instance with overridden values from the given XML content.
-     * <p>
+     * Configures the instance with overridden values from the given XML content.<p>
      * 
      * <h3>Xmlcontent configuration notes</h3>
      * <ol>
-     * <li>
-     * <ul>
-     * <li> If the xmlcontent contains no node for BackgroundColor ({@link CmsCaptchaSettings#NODE_CAPTCHAPRESET_BACKGROUNDCOLOR}),
-     * a background image will be used. </li>
-     * <li> If the xmlcontent node contains an empty node (trimmable to the empty String), the
-     * default background colour {@link Color#WHITE}) will be used as background. </li>
-     * <li> Else the chosen background color will be used. </li>
-     * </ul>
-     * </li>
+     *   <li>
+     *     <ul>
+     *       <li> If the xmlcontent contains no node for BackgroundColor ({@link CmsCaptchaSettings#NODE_CAPTCHAPRESET_BACKGROUNDCOLOR}),
+     *          a background image will be used. </li>
+     *       <li> If the xmlcontent node contains an empty node (trimmable to the empty String), the
+     *          default background colour {@link Color#WHITE}) will be used as background. </li>
+     *       <li> Else the chosen background color will be used. </li>
+     *     </ul>
+     *   </li>
      * </ol>
      * <p>
      * 
-     * 
      * @param cms the current user's Cms object
-     * 
      * @param content the XML content of the form
-     * 
      * @param locale the current locale
-     * 
      */
     public void init(CmsObject cms, CmsXmlContent content, Locale locale) {
 
@@ -651,12 +633,10 @@ public final class CmsCaptchaSettings implements Cloneable {
             }
 
         }
-
     }
 
     /**
-     * Returns the flag that decides wethter a background image or a background color is used.
-     * <p>
+     * Returns the flag that decides wethter a background image or a background color is used.<p>
      * 
      * @return the flag that decides wethter a background image or a background color is used
      */
@@ -666,8 +646,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the background color.
-     * <p>
+     * Sets the background color.<p>
      * 
      * @param backgroundColor the background color to set
      */
@@ -677,8 +656,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the background color as a hex string.
-     * <p>
+     * Sets the background color as a hex string.<p>
      * 
      * @param backgroundColor the background color to set as a hex string
      */
@@ -688,7 +666,6 @@ public final class CmsCaptchaSettings implements Cloneable {
             if (backgroundColor.startsWith("#")) {
                 backgroundColor = backgroundColor.substring(1);
             }
-
             m_backgroundColor = new Color(Integer.valueOf(backgroundColor, 16).intValue());
             m_useBackgroundImage = false;
         } else if (backgroundColor != null) {
@@ -708,7 +685,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the filter amplitude for the water filter that will bend the text.
+     * Sets the filter amplitude for the water filter that will bend the text.<p>
      * 
      * @param i the filter amplitude for the water filter that will bend the text to set.
      */
@@ -719,11 +696,9 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the filter wave length for the water filter that bends the text.
-     * <p>
+     * Sets the filter wave length for the water filter that bends the text.<p>
      * 
-     * @param filterWaveLength the filter wave length for the water filter that bends the text to
-     *            set
+     * @param filterWaveLength the filter wave length for the water filter that bends the text to  set
      */
     public void setFilterWaveLength(int filterWaveLength) {
 
@@ -731,8 +706,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the font color.
-     * <p>
+     * Sets the font color.<p>
      * 
      * @param fontColor the font color to set
      */
@@ -742,8 +716,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the font color as a hex string.
-     * <p>
+     * Sets the font color as a hex string.<p>
      * 
      * @param fontColor the font color to set as a hex string
      */
@@ -753,7 +726,6 @@ public final class CmsCaptchaSettings implements Cloneable {
             if (fontColor.startsWith("#")) {
                 fontColor = fontColor.substring(1);
             }
-
             m_fontColor = new Color(Integer.valueOf(fontColor, 16).intValue());
         } else {
             m_fontColor = Color.BLACK;
@@ -761,7 +733,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the holes per glyph for a captcha image text (distortion).
+     * Sets the holes per glyph for a captcha image text (distortion).<p>
      * 
      * @param holes the holes per glyph for a captcha image text to set.
      */
@@ -771,8 +743,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the image height.
-     * <p>
+     * Sets the image height.<p>
      * 
      * @param imageHeight the image height to set
      */
@@ -782,8 +753,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the image width.
-     * <p>
+     * Sets the image width.<p>
      * 
      * @param imageWidth the image width to set
      */
@@ -793,8 +763,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the max. font size.
-     * <p>
+     * Sets the max. font size.<p>
      * 
      * @param maxFontSize the max. font size to set
      */
@@ -804,8 +773,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the max. phrase length.
-     * <p>
+     * Sets the max. phrase length.<p>
      * 
      * @param maxPhraseLength the max. phrase length to set
      */
@@ -815,8 +783,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the min. font size.
-     * <p>
+     * Sets the min. font size.<p>
      * 
      * @param minFontSize the min. font size to set
      */
@@ -826,8 +793,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the min. phrase length.
-     * <p>
+     * Sets the min. phrase length.<p>
      * 
      * @param minPhraseLength the min. phrase length to set
      */
@@ -837,8 +803,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the flag that decides wethter a background image or a background color is used.
-     * <p>
+     * Returns the flag that decides wethter a background image or a background color is used.<p>
      * 
      * @param useBackgroundImage the flag that decides wethter a background image or a background
      *            color is used.
@@ -849,8 +814,7 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Creates a request parameter string from including all captcha settings.
-     * <p>
+     * Creates a request parameter string from including all captcha settings.<p>
      * 
      * @param cms needed for the context / encoding
      * @return a request parameter string from including all captcha settings
@@ -903,10 +867,9 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the characterPool.
-     * <p>
+     * Returns the character Pool.<p>
      * 
-     * @return the characterPool
+     * @return the character Pool
      */
     String getCharacterPool() {
 
@@ -914,12 +877,10 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Returns the preset path that was used to configure these settings.
-     * <p>
+     * Returns the preset path that was used to configure these settings.<p>
      * 
      * This is read only, as the path is internally read from a nested CmsForm/FormCaptcha XML
-     * content.
-     * <p>
+     * content.<p>
      * 
      * @return the preset path that was used to configure these settings
      */
@@ -929,10 +890,9 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Sets the characterPool.
-     * <p>
+     * Sets the character Pool.<p>
      * 
-     * @param characterPool the characterPool to set
+     * @param characterPool the character Pool to set
      */
     void setCharacterPool(String characterPool) {
 
@@ -940,8 +900,23 @@ public final class CmsCaptchaSettings implements Cloneable {
     }
 
     /**
-     * Converts a color range of a color into a hex string.
-     * <p>
+     * Returns the request parameter with the specified name.<p>
+     * 
+     * @param parameter the parameter to return
+     * 
+     * @return the parameter value
+     */
+    private String getParameter(String parameter) {
+
+        try {
+            return ((String[])m_parameterMap.get(parameter))[0];
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Converts a color range of a color into a hex string.<p>
      * 
      * @param colorRange the color range of a color
      * @return the hex string of the color range

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,13 +149,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         }
 
         CmsFlexController controller = CmsFlexController.getController(req);
-        CmsObject cms = controller.getCmsObject();
         CmsResource resource = null;
 
         if ((m_extTarget == null) && (controller != null)) {
             // check if the file exists in the VFS, if not set external target
             try {
-                resource = cms.readResource(m_vfsTarget);
+                resource = controller.getCmsObject().readResource(m_vfsTarget);
             } catch (CmsVfsResourceNotFoundException e) {
                 // file not found in VFS, treat it as external file
                 m_extTarget = m_vfsTarget;
@@ -169,9 +168,9 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         if ((m_extTarget != null) || (controller == null)) {
             includeExternal(req, res);
         } else if (controller.isForwardMode()) {
-            includeInternalNoCache(req, res, controller, cms, resource);
+            includeInternalNoCache(req, res, controller, controller.getCmsObject(), resource);
         } else {
-            includeInternalWithCache(req, res, controller, cms, resource);
+            includeInternalWithCache(req, res, controller, controller.getCmsObject(), resource);
         }
     }
 
@@ -186,8 +185,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     private void includeExternal(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 
         // This is an external include, probably to a JSP page, dispatch with system dispatcher
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1,
                 m_extTarget));
         }

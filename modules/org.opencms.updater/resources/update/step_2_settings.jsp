@@ -4,8 +4,6 @@
 
 	// next page
 	String nextPage = "step_3_xmlupdate.jsp";		
-	// previous page
-	String prevPage = "index.jsp";
 	
     boolean isFormSubmitted = (request.getParameter("submit") != null);
 %>
@@ -114,7 +112,7 @@ OpenCms Update Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" disabled="disabled">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

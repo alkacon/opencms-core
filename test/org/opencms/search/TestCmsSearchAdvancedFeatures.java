@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -54,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -142,7 +141,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             String[] rootList = roots[i];
             searchBean.setSearchRoots(rootList);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + i
                 + " (found "
@@ -150,12 +148,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
     }
@@ -202,14 +195,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // first run is default sort order
         searchResult = searchBean.getSearchResult();
-        Iterator i = searchResult.iterator();
         System.out.println("Result sorted by relevance:");
-        while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-            System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-            System.out.println("  score: " + res.getScore());
-        }
+        TestCmsSearch.printResults(searchResult, cms);               
 
         Map categories = searchBean.getSearchResultCategories();
         // make sure categories where found
@@ -248,7 +235,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             String[] catList = cats[k];
             searchBean.setCategories(catList);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + k
                 + " (found "
@@ -256,12 +242,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
     }
@@ -302,7 +283,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             String[] rootList = roots[i];
             searchBean.setSearchRoots(rootList);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + i
                 + " (found "
@@ -310,12 +290,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
 
@@ -331,7 +306,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             searchBean.setSearchRoots(rootList);
             searchBean.setResultRestriction(restriction);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + i
                 + " (found "
@@ -339,12 +313,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
 
@@ -359,7 +328,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             searchBean.setSearchRoots(rootList);
             searchBean.setResultRestriction(restriction);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + i
                 + " (found "
@@ -367,12 +335,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
 
@@ -399,7 +362,6 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             searchBean.setSearchRoots(rootList);
             searchBean.setResultRestriction(restriction);
             searchResult = searchBean.getSearchResult();
-            Iterator j = searchResult.iterator();
             System.out.println("Result for search "
                 + i
                 + " (found "
@@ -407,12 +369,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
                 + ", expected "
                 + expect
                 + ")");
-            while (j.hasNext()) {
-                CmsSearchResult res = (CmsSearchResult)j.next();
-                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-                System.out.println("  score: " + res.getScore());
-            }
+            TestCmsSearch.printResults(searchResult, cms);
             assertEquals(expect, searchResult.size());
         }
     }
@@ -441,47 +398,36 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // first run is default sort order
         searchResult = searchBean.getSearchResult();
-        Iterator i = searchResult.iterator();
         System.out.println("Result sorted by relevance:");
-        while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-            System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-            System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));
-            System.out.println("  score: " + res.getScore());
-        }
-
+        TestCmsSearch.printResults(searchResult, cms);
+        
         // second run use Title sort order
         String lastTitle = null;
         searchBean.setSortOrder(CmsSearchParameters.SORT_TITLE);
         searchResult = searchBean.getSearchResult();
-        i = searchResult.iterator();
         System.out.println("Result sorted by title:");
+        TestCmsSearch.printResults(searchResult, cms);
+        
+        Iterator i = searchResult.iterator();        
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-            System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-            System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));
-            System.out.println("  score: " + res.getScore());
             if (lastTitle != null) {
                 // make sure result is sorted correctly
-                assertTrue(lastTitle.compareTo(res.getTitle()) <= 0);
+                assertTrue(lastTitle.compareTo(res.getField(CmsSearchField.FIELD_TITLE)) <= 0);
             }
-            lastTitle = res.getTitle();
+            lastTitle = res.getField(CmsSearchField.FIELD_TITLE);
         }
 
         // third run use date last modified
         long lastTime = 0;
         searchBean.setSortOrder(CmsSearchParameters.SORT_DATE_LASTMODIFIED);
         searchResult = searchBean.getSearchResult();
-        i = searchResult.iterator();
         System.out.println("Result sorted by date last modified:");
+        TestCmsSearch.printResults(searchResult, cms);
+        
+        i = searchResult.iterator();
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
-            System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
-            System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));
-            System.out.println("  score: " + res.getScore());
             if (lastTime > 0) {
                 // make sure result is sorted correctly
                 assertTrue(lastTime >= res.getDateLastModified().getTime());

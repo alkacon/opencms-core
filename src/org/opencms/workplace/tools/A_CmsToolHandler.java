@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +80,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Property for the confirmation message arg.<p> */
     private static final String ARG_CONFIRMATION_NAME = "confirmation";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
 
     /** Confirmation message. */
     private String m_confirmationMessage;
@@ -115,9 +119,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Small icon path (16x16). */
     private String m_smallIconPath;
-
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsToolHandler.class);
 
     /**
      * Returns the confirmation Message.<p>
@@ -184,7 +185,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         Map argMap = new HashMap();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parameters)) {
-            String toolParams = wp.resolveMacros(m_parameters);
+            String toolParams = CmsEncoder.decode(wp.resolveMacros(m_parameters));
             Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
             while (itArgs.hasNext()) {
                 String arg = (String)itArgs.next();
@@ -227,6 +228,22 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getSmallIconPath() {
 
         return m_smallIconPath;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isEnabled(CmsWorkplace wp) {
+
+        return isEnabled(wp.getCms());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    public boolean isVisible(CmsWorkplace wp) {
+
+        return isVisible(wp.getCms());
     }
 
     /**
@@ -374,7 +391,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * ${name}_disabled.${ext}<p>
      * 
      * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key 
-     * <code>{@link #ARG_CONFIRMATION_NAME}</code>
+     * <code>#ARG_CONFIRMATION_NAME</code>
      * 
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, CmsToolRootHandler, java.lang.String)
      */
@@ -391,8 +408,8 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         }
         String shortName = name;
         if (name.indexOf(VALUE_SEPARATOR) >= 0) {
-            shortName = name.substring(name.indexOf(VALUE_SEPARATOR) + 1);
-            name = name.substring(0, name.indexOf(VALUE_SEPARATOR));
+            shortName = name.substring(0, name.indexOf(VALUE_SEPARATOR));
+            name = name.substring(name.indexOf(VALUE_SEPARATOR) + 1);
         }
         setName(name);
         setShortName(shortName);
@@ -435,8 +452,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                         root.getUri().length(),
                         resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
             } else {
-                path = CmsToolManager.TOOLPATH_SEPARATOR
-                    + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
+                if (resourcePath.lastIndexOf('.') > -1) {
+                    path = CmsToolManager.TOOLPATH_SEPARATOR
+                        + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
+                } else {
+                    path = CmsToolManager.TOOLPATH_SEPARATOR + resourcePath.substring(root.getUri().length());
+                }
             }
         } catch (CmsException e) {
             // ignore

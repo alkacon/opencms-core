@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentHtml.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractorHtml;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
@@ -49,7 +49,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,26 +66,41 @@ public class CmsDocumentHtml extends A_CmsVfsDocument {
     }
 
     /**
-     * Returns the raw text content of a given vfs resource containing HTML data.<p>
+     * Returns the raw text content of a given VFS resource containing HTML data.<p>
      * 
-     * @see org.opencms.search.documents.A_CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
     throws CmsIndexException, CmsException {
 
-        CmsResource resource = (CmsResource)indexResource.getData();
         CmsFile file = readFile(cms, resource);
-
         try {
-            String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            CmsProperty encProp = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
+            CmsProperty encProp = cms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                true);
             String encoding = encProp.getValue(OpenCms.getSystemInfo().getDefaultEncoding());
-
             return CmsExtractorHtml.getExtractor().extractText(file.getContents(), encoding);
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);
         }
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isLocaleDependend()
+     */
+    public boolean isLocaleDependend() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
+     */
+    public boolean isUsingCache() {
+
+        return true;
     }
 }

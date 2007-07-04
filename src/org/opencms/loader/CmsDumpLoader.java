@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2007/03/08 09:16:05 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2007/07/04 16:57:46 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -300,8 +300,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     protected boolean canSendLastModifiedHeader(CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
 
         // resource state must be unchanged
-        if ((resource.getState() == CmsResource.STATE_UNCHANGED)
-            // the request must not have been send by a workplace user (we can't use "304 - not modified" in workplace
+        if (resource.getState().isUnchanged()
+        // the request must not have been send by a workplace user (we can't use "304 - not modified" in workplace
             && !CmsWorkplaceManager.isWorkplaceUser(req)
             // last modified header must match the time form the resource
             && CmsFlexController.isNotModifiedSince(req, resource.getDateLastModified())) {

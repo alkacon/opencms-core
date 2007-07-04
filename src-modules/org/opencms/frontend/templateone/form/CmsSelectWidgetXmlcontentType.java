@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/04/12 15:50:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.3
  * 
@@ -153,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * 
      * @since 6.1.6
      * 
@@ -252,12 +253,15 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * 
      * @since 6.1.6
      * 
      */
-    private final class CmsResourceSelectWidgetOptionComparator implements Comparator {
+    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator, Serializable {
+
+        /** Serival UID required for safe serialization. */
+        private static final long serialVersionUID = -4078389792834878256L;
 
         /** The {@link CmsMacroResolver} compatible macro to resolve for comparison. * */
         private String m_comparatorMacro;
@@ -281,7 +285,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * 
          * @see CmsMacroResolver
          */
-        private CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
+        CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
         throws CmsException {
 
             if (CmsStringUtil.isEmpty(comparatorMacro)) {
@@ -454,6 +458,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      */
     protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
     throws CmsIllegalArgumentException {
+
         Locale dialogContentLocale = ((I_CmsXmlContentValue)param).getLocale();
         Locale resourceLocale;
         if (m_macroCmsObject == null) {
@@ -519,7 +524,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 while (itResources.hasNext()) {
 
                     resource = (CmsResource)itResources.next();
-                    // don't make resources selectable that have a different locale than the 
+                    // don't make resources selectable that have a different locale than the current editor language. 
                     // we read the locale node of the xmlcontent instance matching the resources
                     // locale property (or top level locale).
                     resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(
@@ -527,6 +532,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                         CmsPropertyDefinition.PROPERTY_LOCALE,
                         true).getValue());
 
+                    // Only show select options for resources that are in the same locale as the current 
+                    // editor locale (e.g. when switching to german, offer the german siblings)
                     if (dialogContentLocale.equals(resourceLocale)) {
                         // macro resolvation within hasFilterProperty will resolve values to the
                         // current request
@@ -540,8 +547,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             // implant the messages
                             m_macroResolver.setMessages(widgetDialog.getMessages());
                             // filter out unwanted resources - if no filter properties are defined,
-                            // every
-                            // resource collected here is ok:
+                            // every resource collected here is ok:
                             displayName = m_macroResolver.resolveMacros(getDisplayOptionMacro());
                             // deal with a bug of the macro resolver: it will return "" if it gets
                             // "${unknown.thing}":
@@ -581,7 +587,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
             }
 
-            if (selectOptions == Collections.EMPTY_LIST) {
+            if (selectOptions == Collections.EMPTY_LIST || selectOptions == null) {
                 selectOptions = new ArrayList();
             }
 
@@ -597,6 +603,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 addSelectOption((CmsSelectWidgetOption)it.next());
             }
         }
+
         return selectOptions;
     }
 
@@ -814,15 +821,13 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * File laoding and unmarshalling is only done if the given String contains xpath macros.
      * <p>
      * 
-     * @param cms to access values in the cmsobject.
+     * @param cms to access values in the cmsobject
+     * @param resource the resource pointing to an xmlcontent containing the macro values to resolve
+     * @param value the unresolved macro string
      * 
-     * @param resource the resource pointing to an xmlcontent containing the macro values to resolve.
+     * @return a String with resolved xpath macros that have been read from the xmlcontent
      * 
-     * @param value the unresolved macro string.
-     * 
-     * @return a String with resolved xpath macros that have been read from the xmlcontent.
-     * 
-     * @throws CmsException if sth. goes wrong
+     * @throws CmsException if somehting goes wrong
      */
     private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value) throws CmsException {
 

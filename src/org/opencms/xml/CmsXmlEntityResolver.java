@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT,
             I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_MOVED,
             I_CmsEventListener.EVENT_RESOURCE_DELETED});
 
         // cache the base widget type XML schema definitions
@@ -157,7 +158,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static void initCaches() {
 
         if (m_cacheTemporary == null) {
-
             LRUMap cacheTemporary = new LRUMap(128);
             m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
 
@@ -166,22 +166,34 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
             LRUMap cacheContentDefinitions = new LRUMap(64);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
+        }
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+            if ((OpenCms.getMemoryMonitor() != null)
+                && !OpenCms.getMemoryMonitor().isMonitoring(CmsXmlEntityResolver.class.getName() + ".cacheTemporary")) {
+                // reinitialize the caches after the memory monitor is set up                
+                LRUMap cacheTemporary = new LRUMap(128);
+                cacheTemporary.putAll(m_cacheTemporary);
+                m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cacheTemporary",
+                    cacheTemporary);
 
-            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                    // map must be of type "LRUMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cacheTemporary",
-                        cacheTemporary);
-                    // map must be of type "HashMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cachePermanent",
-                        cachePermanent);
-                    // map must be of type "LRUMap" so that memory monitor can acecss all information
-                    OpenCms.getMemoryMonitor().register(
-                        CmsXmlEntityResolver.class.getName() + ".m_cacheContentDefinitions",
-                        cacheContentDefinitions);
-                }
+                HashMap cachePermanent = new HashMap(32);
+                cachePermanent.putAll(m_cachePermanent);
+                m_cachePermanent = Collections.synchronizedMap(cachePermanent);
+                // map must be of type "HashMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cachePermanent",
+                    cachePermanent);
+
+                LRUMap cacheContentDefinitions = new LRUMap(64);
+                cacheContentDefinitions.putAll(m_cacheContentDefinitions);
+                m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsXmlEntityResolver.class.getName() + ".cacheContentDefinitions",
+                    cacheContentDefinitions);
             }
         }
     }
@@ -223,6 +235,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 uncacheSystemId(resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
+            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 List resources = (List)event.getData().get("resources");
                 for (int i = 0; i < resources.size(); i++) {
                     resource = (CmsResource)resources.get(i);
@@ -230,7 +243,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -300,9 +313,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             if (content != null) {
                 return new InputSource(new ByteArrayInputStream(content));
             }
+            String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
             try {
                 // content not cached, read from VFS
-                m_cms.getRequestContext().saveSiteRoot();
                 m_cms.getRequestContext().setSiteRoot("/");
                 CmsFile file = m_cms.readFile(cacheSystemId);
                 content = file.getContents();
@@ -315,7 +328,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
             } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
+                m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
             CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {

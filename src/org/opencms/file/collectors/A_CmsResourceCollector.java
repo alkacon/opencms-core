@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2006/10/18 09:20:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -238,26 +238,18 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         }
 
         String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
-        int fileNameLength = fileName.length();
-        String checkFileName;
-        String checkName;
-        StringBuffer checkTempFileName;
-        String number;
+        String checkFileName, checkTempFileName, number;
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
 
         int j = 0;
         do {
             number = NUMBER_FORMAT.sprintf(++j);
             resolver.addMacro(MACRO_NUMBER, number);
+            // resolve macros in file name
             checkFileName = resolver.resolveMacros(fileName);
-            // get new resource name without path information
-            checkName = CmsResource.getName(checkFileName);
-            // create temporary file name to check for additionally
-            checkTempFileName = new StringBuffer(fileNameLength);
-            checkTempFileName.append(CmsResource.getFolderPath(checkFileName));
-            checkTempFileName.append(CmsWorkplace.TEMP_FILE_PREFIX);
-            checkTempFileName.append(checkName);
-        } while (result.contains(checkFileName) || result.contains(checkTempFileName.toString()));
+            // get name of the resolved temp file
+            checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
+        } while (result.contains(checkFileName) || result.contains(checkTempFileName));
 
         return cms.getRequestContext().removeSiteRoot(checkFileName);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/24 16:27:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,24 +62,33 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_BASIC_GROUP_0 = "GUI_WORKPLACE_BASIC_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_EMAIL_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_EMAIL_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_EMAIL_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_EMAIL_GROUPS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGINMESSAGE_HELP_0 = "GUI_WORKPLACE_LOGINMESSAGE_HELP_0";
@@ -98,34 +107,43 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_NAME_0 = "GUI_WORKPLACE_LOGVIEW_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_WORKPLACE_POPUP_GROUPS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_REINIT_HELP_0 = "GUI_WORKPLACE_REINIT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_REINIT_NAME_0 = "GUI_WORKPLACE_REINIT_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_GROUP_0 = "GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_HELP_0 = "GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_HELP_0";
 
@@ -149,7 +167,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.messages";
-    
+
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,15 +56,32 @@ import java.util.Map;
  * Image size information is stored in the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property 
  * of an image file must have the format "h:x,w:y" with x and y being positive Integer vaulues.<p>
  * 
- * This job does not have any parameters.<p>
+ * Job parameters:<p>
+ * <dl>
+ * <dt><code>downscale=true|false</code></dt>
+ * <dd>Controls if images are automatically downscaled according to the configured image
+ * downscale settings, by default this is <code>false</code>.</dd>
+ * </dl>
  * 
  * @author Michael Emmerich
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.2 
  */
 public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
+
+    /** 
+     * This job parameter controls if images are automatically downscaled according to the configured image
+     * downscale settings, by default this is <code>false</code>.
+     * 
+     * Possible values are <code>true</code> or <code>false</code> (default).
+     * If this is set to <code>true</code>, then all images are checked against the 
+     * configured image downscale settings (see {@link CmsImageLoader#CONFIGURATION_DOWNSCALE}). 
+     * If the image is too large, it is automatically downscaled.<p>
+     */
+    public static final String PARAM_DOWNSCALE = "downscale";
 
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
@@ -75,6 +92,9 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
             // scaling functions are not available
             return Messages.get().getBundle().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
         }
+
+        // read the downscale parameter
+        boolean downscale = Boolean.valueOf((String)parameters.get(PARAM_DOWNSCALE)).booleanValue();
 
         I_CmsReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsCreateImageSizeJob.class);
         report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_START_0), I_CmsReport.FORMAT_HEADLINE);
@@ -107,47 +127,65 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                 // check if the resource is locked by another user
                 // we cannot process resources that are locked by someone else
                 CmsLock lock = cms.getLock(res);
-                if (lock.isNullLock() || lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                if (lock.isNullLock() || lock.isOwnedBy(cms.getRequestContext().currentUser())) {
 
-                    // get the size info property
-                    CmsProperty prop = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, false);
-                    if (prop == null) {
-                        prop = CmsProperty.getNullProperty();
-                    }
                     // read the file content
                     CmsFile file = CmsFile.upgrade(res, cms);
                     // get the image size information
                     CmsImageScaler scaler = new CmsImageScaler(file.getContents(), file.getRootPath());
 
                     if (scaler.isValid()) {
-                        // update the property if it does not exist or it is different than the newly calculated one
-                        if (prop.isNullProperty() || !prop.getValue().equals(scaler.toString())) {
+                        // the image can be scaled, width and height are known
+                        boolean updated = false;
 
-                            boolean unlockFlag = false;
-                            // lock the resource if not locked so far
-                            if (lock.isNullLock()) {
-                                cms.lockResource(res.getRootPath());
-                                unlockFlag = true;
+                        // check if the image must be downscaled
+                        CmsImageScaler downScaler = null;
+                        if (downscale) {
+                            // scheduled job parameter is set for downscaling
+                            downScaler = CmsResourceTypeImage.getDownScaler(cms, res.getRootPath());
+                        }
+
+                        if (scaler.isDownScaleRequired(downScaler)) {
+                            // downscaling is required - just write the file again, in this case everything is updated                            
+                            lockResource(cms, lock, res);
+                            cms.writeFile(file);
+                            // calculate the downscaled image size (only used for the output report)
+                            scaler = scaler.getDownScaler(downScaler);
+                            // the resource was updated
+                            updated = true;
+                        } else {
+                            // check if the "image.size" property must be updated                            
+                            CmsProperty prop = cms.readPropertyObject(
+                                res,
+                                CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                                false);
+                            // update the property if it does not exist or it is different than the newly calculated one
+                            if (prop.isNullProperty() || !prop.getValue().equals(scaler.toString())) {
+                                // lock resource
+                                lockResource(cms, lock, res);
+                                // set the shared value of the property or create a new one if required
+                                if (prop.isNullProperty()) {
+                                    prop = new CmsProperty(
+                                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                                        null,
+                                        scaler.toString());
+                                } else {
+                                    // delete any individual proprety value (just in case)
+                                    prop.setStructureValue(CmsProperty.DELETE_VALUE);
+                                    // set the calculated value as shared property
+                                    prop.setResourceValue(scaler.toString());
+                                }
+                                // write the property
+                                cms.writePropertyObject(res.getRootPath(), prop);
+                                // the resource was updated                                
+                                updated = true;
                             }
-                            // set the shared value of the property or create a new one if required
-                            if (prop.isNullProperty()) {
-                                prop = new CmsProperty(
-                                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                                    null,
-                                    scaler.toString());
-                            } else {
-                                // delete any individual proprety value (just in case)
-                                prop.setStructureValue(CmsProperty.DELETE_VALUE);
-                                // set the calculated value as shared property
-                                prop.setResourceValue(scaler.toString());
-                            }
-                            // write the property
-                            cms.writePropertyObject(res.getRootPath(), prop);
-                            // unlock the resource if it was not locked before
-                            if (unlockFlag) {
-                                cms.unlockResource(res.getRootPath());
-                            }
-                            // increase conter 
+                        }
+
+                        if (updated) {
+                            // the resource was updated
+                            unlockResource(cms, lock, res);
+                            // increase counter 
                             count++;
                             // write report information
                             report.println(
@@ -155,23 +193,23 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                                 I_CmsReport.FORMAT_DEFAULT);
 
                         } else {
+                            // no changes have been made to the resource
                             report.println(
                                 Messages.get().container(Messages.RPT_IMAGE_SIZE_SKIP_1, scaler.toString()),
                                 I_CmsReport.FORMAT_DEFAULT);
                         }
                     } else {
+                        // no valid image scaler
                         report.println(
                             Messages.get().container(Messages.RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0),
                             I_CmsReport.FORMAT_DEFAULT);
                     }
-
                 } else {
                     // the resource is locked by someone else
                     report.println(
                         Messages.get().container(Messages.RPT_IMAGE_SIZE_LOCKED_0),
                         I_CmsReport.FORMAT_DEFAULT);
                 }
-
             } catch (CmsException e) {
                 report.println(e);
             }
@@ -180,5 +218,37 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
         report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_END_0), I_CmsReport.FORMAT_HEADLINE);
 
         return Messages.get().getBundle().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, new Integer(count));
+    }
+
+    /**
+     * Locks the given resource (if required).<p>
+     * 
+     * @param cms the OpenCms user context
+     * @param lock the previous lock status of the resource
+     * @param res the resource to lock
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    private void lockResource(CmsObject cms, CmsLock lock, CmsResource res) throws CmsException {
+
+        if (lock.isNullLock()) {
+            cms.lockResource(res.getRootPath());
+        }
+    }
+
+    /**
+     * Unlocks the given resource (if required).<p>
+     * 
+     * @param cms the OpenCms user context
+     * @param lock the lock of the resource
+     * @param res the resource to lock
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    private void unlockResource(CmsObject cms, CmsLock lock, CmsResource res) throws CmsException {
+
+        if (lock.isNullLock()) {
+            cms.unlockResource(res.getRootPath());
+        }
     }
 }

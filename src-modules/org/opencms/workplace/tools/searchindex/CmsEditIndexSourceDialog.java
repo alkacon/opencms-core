@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditIndexSourceDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,8 +124,6 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
             // existing indexsource
             addWidget(new CmsWidgetDialogParameter(m_indexsource, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        //        m_indexsource.getIndexerClassName();
-        //        m_indexsource.setIndexerClassName(null);
         addWidget(new CmsWidgetDialogParameter(m_indexsource, "indexerClassName", "", PAGES[0], new CmsComboWidget(
             getIndexerClassWidgetConfiguration()), 1, 1));
 
@@ -133,7 +131,7 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     private List getIndexerClassWidgetConfiguration() {
 
-        List result = new LinkedList();
+        List result = new ArrayList();
         result.add(new CmsSelectWidgetOption(CmsVfsIndexer.class.getName(), true));
         return result;
     }

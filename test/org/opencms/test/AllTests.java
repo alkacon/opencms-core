@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/AllTests.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/07/04 16:57:50 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.test;
 
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import junit.extensions.TestSetup;
@@ -42,14 +41,14 @@ import junit.framework.TestSuite;
  * OpenCms main test suite, executes the individual test suites of all core packages.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0
  */
 public final class AllTests {
 
     /** Path for the test.properties file. */
-    public static final String TEST_PROPERTIES_PATH = CmsFileUtil.getResourcePathFromClassloader("");
+    public static final String TEST_PROPERTIES_PATH = OpenCmsTestProperties.getResourcePathFromClassloader("");
 
     /** Stopwatch for the time the test run. */
     private static long m_startTime;
@@ -100,10 +99,12 @@ public final class AllTests {
         suite.addTest(org.opencms.i18n.AllTests.suite());
         suite.addTest(org.opencms.importexport.AllTests.suite());
         suite.addTest(org.opencms.jsp.decorator.AllTests.suite());
+        suite.addTest(org.opencms.loader.AllTests.suite());
         suite.addTest(org.opencms.main.AllTests.suite());
         suite.addTest(org.opencms.module.AllTests.suite());
         suite.addTest(org.opencms.monitor.AllTests.suite());
         suite.addTest(org.opencms.notification.AllTests.suite());
+        suite.addTest(org.opencms.publish.AllTests.suite());        
         suite.addTest(org.opencms.scheduler.AllTests.suite());
         suite.addTest(org.opencms.search.AllTests.suite());
         suite.addTest(org.opencms.search.extractors.AllTests.suite());

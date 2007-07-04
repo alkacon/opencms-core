@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsXmlSaxWriter.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.io.SAXWriter;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -131,7 +131,9 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
             error = e;
         }
         assertNotNull("Expected Exception was not thrown", error);
-        assertSame(org.opencms.xml.Messages.ERR_UNMARSHALLING_XML_DOC_0, error.getMessageContainer().getKey());
+        if (error != null) {
+            assertSame(org.opencms.xml.Messages.ERR_UNMARSHALLING_XML_DOC_0, error.getMessageContainer().getKey());
+        }
     }
 
     /**

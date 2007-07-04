@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, repositories?)>
+<!ELEMENT opencms (importexport, staticexport, usercsvexport?, repositories?)>
 
 <!--
 # <importexport> configuration:
@@ -114,6 +114,8 @@
 <!ELEMENT staticexport (
 	staticexporthandler, 
 	exportpath,
+	exportworkpath?,
+	exportbackups?,
 	defaultpropertyvalue,
 	defaultsuffixes?,
 	exportheaders?,
@@ -143,6 +145,18 @@
 # This is relative to the web application root path.
 -->	
 <!ELEMENT exportpath (#PCDATA)>
+
+<!--
+# The path in the "real" FS to write the static exported pages to
+# during the full static export is working.
+# This is relative to the web application root path.
+-->	
+<!ELEMENT exportworkpath (#PCDATA)>
+
+<!--
+# The number of backup folders in the real "FS".
+-->	
+<!ELEMENT exportbackups (#PCDATA)>
 
 <!--
 # The default value of the "export" property for resources where searching for
@@ -302,7 +316,16 @@
 <!--
 # A rfs-prefix definition for a single site.
 -->
-<!ELEMENT rfs-rule (name, description, source, rfs-prefix, exportpath, userelativelinks?, related-system-res)>
+<!ELEMENT rfs-rule (
+	name, 
+	description, 
+	source, 
+	rfs-prefix, 
+	exportpath, 
+	exportworkpath?, 
+	exportbackups?, 
+	userelativelinks?, 
+	related-system-res)>
 
 <!--
 # the source resources to be configured by a rfs-rule.
@@ -326,6 +349,25 @@
 <!ELEMENT related-system-res (regex*)>
 
 <!--
+# In this node the import and export values for the im- / export of user data are configured.
+-->
+<!ELEMENT usercsvexport (
+	separator,
+	columns)>
+
+<!--
+# The separator used in the im- / export csv file.
+-->
+<!ELEMENT separator (#PCDATA)>
+
+<!--
+# List of values how data is ordered inside the import list or 
+# what user data will be exported and this data is ordered inside the export file.
+-->
+<!ELEMENT columns (column*)>
+<!ELEMENT column (#PCDATA)>
+
+<!--
 # <repositories> configuration:
 #
 # In this node repositories to access OpenCms are configured.
@@ -338,7 +380,7 @@
 <!ELEMENT params (param*)>
 
 <!ELEMENT param (#PCDATA)>
-<!ATTLIST param name CDATA #REQUIRED>
+<!ATTLIST param name CDATA #REQUIRED><!ATTLIST param name CDATA #REQUIRED>
 
 <!ELEMENT filter (regex*)>
 <!ATTLIST filter type CDATA #REQUIRED>

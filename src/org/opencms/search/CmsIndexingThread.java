@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -48,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,8 +61,8 @@ public class CmsIndexingThread extends Thread {
     /** The cms object. */
     private CmsObject m_cms;
 
-    /** The document factory to use. */
-    private I_CmsDocumentFactory m_factory;
+    /** The document type factory to index the resource with. */
+    private I_CmsDocumentFactory m_documentType;
 
     /** The current index. */
     private CmsSearchIndex m_index;
@@ -70,10 +71,7 @@ public class CmsIndexingThread extends Thread {
     private I_CmsReport m_report;
 
     /** The resource to index. */
-    private A_CmsIndexResource m_res;
-
-    /** The thread manager. */
-    private CmsIndexingThreadManager m_threadManager;
+    private CmsResource m_res;
 
     /** The index writer. */
     private IndexWriter m_writer;
@@ -84,29 +82,26 @@ public class CmsIndexingThread extends Thread {
      * @param cms the cms object
      * @param writer the writer
      * @param res the resource to index
-     * @param factory the document factory to index the resource with
+     * @param documentType the document type factory to index the resource with
      * @param index the index
      * @param report the report to write out progress information
-     * @param threadManager the thread manager
      */
     public CmsIndexingThread(
         CmsObject cms,
         IndexWriter writer,
-        A_CmsIndexResource res,
-        I_CmsDocumentFactory factory,
+        CmsResource res,
+        I_CmsDocumentFactory documentType,
         CmsSearchIndex index,
-        I_CmsReport report,
-        CmsIndexingThreadManager threadManager) {
+        I_CmsReport report) {
 
         super("OpenCms: Indexing '" + res.getName() + "'");
 
         m_cms = cms;
         m_writer = writer;
         m_res = res;
-        m_factory = factory;
+        m_documentType = documentType;
         m_index = index;
         m_report = report;
-        m_threadManager = threadManager;
     }
 
     /**
@@ -120,15 +115,18 @@ public class CmsIndexingThread extends Thread {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_INDEXING_WITH_FACTORY_2,
                 m_res.getRootPath(),
-                m_factory.getName()));
+                m_documentType.getName()));
         }
+
+        // flag for logging in the "final" block
+        boolean docOk = false;
 
         try {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATING_INDEX_DOC_0));
             }
-            Document doc = m_factory.newInstance(m_cms, m_res, m_index.getLocale());
+            Document doc = m_documentType.createDocument(m_cms, m_res, m_index);
 
             if (doc == null) {
                 throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));
@@ -143,11 +141,12 @@ public class CmsIndexingThread extends Thread {
             if (!isInterrupted()) {
                 // write the document to the index
                 m_writer.addDocument(doc);
-                // store the document in the thread manager cache
-                m_threadManager.addDocument(m_res, m_index.getLocale(), doc);
             }
 
-            if (m_report != null && !isInterrupted()) {
+            // indicate that the document was correctly handled
+            docOk = true;
+
+            if ((m_report != null) && !isInterrupted()) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
@@ -163,22 +162,20 @@ public class CmsIndexingThread extends Thread {
         } catch (Exception exc) {
             // Ignore exception caused by empty documents, so that the report is not messed up with error message
             Throwable cause = exc.getCause();
-            if ((cause != null && cause instanceof CmsIndexException && ((CmsIndexException)cause).getMessageContainer().getKey().equals(
+            if (((cause != null) && (cause instanceof CmsIndexException) && ((CmsIndexException)cause).getMessageContainer().getKey().equals(
                 org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))
-                || (exc instanceof CmsIndexException && ((CmsIndexException)exc).getMessageContainer().getKey().equals(
+                || ((exc instanceof CmsIndexException) && ((CmsIndexException)exc).getMessageContainer().getKey().equals(
                     org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                     I_CmsReport.FORMAT_OK);
-                m_threadManager.finished();
             } else {
                 if (m_report != null) {
-                    m_report.println();
-                    m_report.print(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                        I_CmsReport.FORMAT_WARNING);
-                    m_report.println(exc);
-
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        exc.toString()), I_CmsReport.FORMAT_ERROR);
                 }
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
@@ -187,8 +184,28 @@ public class CmsIndexingThread extends Thread {
                         m_index.getName()), exc);
                 }
             }
-        }
 
-        m_threadManager.finished();
+            // set flag to avoid logging in finally block
+            docOk = true;
+
+        } finally {
+            if (!docOk) {
+                // apparently there was a Throwable that causes an issue
+                if (m_report != null) {
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_ERROR);
+                    m_report.println(Messages.get().container(
+                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                        m_res.getRootPath(),
+                        m_index.getName()), I_CmsReport.FORMAT_ERROR);
+                }
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                        m_res.getRootPath(),
+                        m_index.getName()));
+                }
+            }
+        }
     }
 }

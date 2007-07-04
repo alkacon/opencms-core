@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,19 @@ package org.opencms.frontend.templateone.form;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFieldItem {
 
+    /** A flag indicating if the item is selected. */
     private boolean m_isSelected;
+    
+    /** The label of the item. */
     private String m_label;
+    
+    /** The value of the item. */
     private String m_value;
 
     /**

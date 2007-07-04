@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,9 +313,6 @@ public class CmsXmlContentTypeManager {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
         }
 
-        int todo = 0;
-        // TODO: Use validation methods from CmsXmlContentDefinition here
-
         String elementName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME);
         String typeName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE);
         String defaultValue = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_DEFAULT);
@@ -347,7 +344,7 @@ public class CmsXmlContentTypeManager {
             }
         }
 
-        if (simpleType) {
+        if (simpleType && (schemaType != null)) {
             schemaType = schemaType.newInstance(elementName, minOccrs, maxOccrs);
 
             if (CmsStringUtil.isNotEmpty(defaultValue)) {
@@ -467,7 +464,7 @@ public class CmsXmlContentTypeManager {
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
 
             // simple test cases don't require this check
-            cms.checkRole(CmsRole.ADMINISTRATOR);
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         }
 
         // initilaize the special entity resolver

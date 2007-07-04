@@ -19,7 +19,8 @@
 	resourceloaders, 
 	resourcetypes,
 	collectors?,
-	mimetypes?)>
+	mimetypes?,
+	relationtypes?)>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>
@@ -27,6 +28,20 @@
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Relation types configuration.
+#
+# This node defines new relation types that could be used by the API 
+# to complement the internal system defined relation types.
+#
+# A relation type has a name which should only contain (uppercase) letters, numbers and underscores.
+# (if you want to localize the name you can define a GUI_RELATIONTYPE_ localization key)
+# and a type which may be weak or strong, strong related resources will be published together.
+-->
+<!ELEMENT relationtypes (relationtype*)>
+<!ELEMENT relationtype EMPTY>
+<!ATTLIST relationtype name CDATA #REQUIRED type CDATA #REQUIRED>
 
 <!--
 # Collectors for gathering Lists of resources from the VFS.	
@@ -121,9 +136,7 @@
 <!--
 # Name for the property node (see below), this node already exists in opencms-modules.xml
 -->
-
 <!ELEMENT name (#PCDATA)>
-
 
 <!--
 # Include the resource types DTD.

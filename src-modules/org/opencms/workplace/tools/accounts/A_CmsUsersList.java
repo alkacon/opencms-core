@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -71,7 +73,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +95,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     public static final String LIST_ACTION_GROUPS = "ag";
 
     /** list action id constant. */
+    public static final String LIST_ACTION_ROLE = "ar";
+
+    /** list action id constant. */
     public static final String LIST_ACTION_ROLES = "ar";
 
     /** list column id constant. */
@@ -100,6 +105,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DELETE = "cd";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdn";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_EDIT = "ce";
@@ -119,8 +127,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
 
-    /** list column id constant. */
-    public static final String LIST_COLUMN_ROLES = "cr";
+    /** list action id constant. */
+    public static final String LIST_COLUMN_ROLE = "cr";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_EDIT = "de";
@@ -152,6 +160,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /** a set of action id's to use for edition. */
     private static Set m_editActionIds = new HashSet();
 
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
+
     /**
      * Public constructor.<p>
      * 
@@ -161,7 +172,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
      */
     public A_CmsUsersList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, null);
+        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, null);
     }
 
     /**
@@ -236,18 +247,19 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         Map params = new HashMap();
         params.put(A_CmsEditUserDialog.PARAM_USERID, userId);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
-        if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
+        if (getParamListAction().equals(LIST_ACTION_ROLE)) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/role", params);
+        } else if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
         } else if (m_editActionIds.contains(getParamListAction())) {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/user", params);
         } else if (getParamListAction().equals(LIST_ACTION_GROUPS)) {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/groups", params);
-        } else if (getParamListAction().equals(LIST_ACTION_ROLES)) {
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/roles", params);
         } else if (m_deleteActionIds.contains(getParamListAction())) {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/delete", params);
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
@@ -272,6 +284,29 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -305,10 +340,41 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
-                    Iterator itGroups = getCms().getGroupsOfUser(userName).iterator();
+                    List groups = getCms().getGroupsOfUser(userName, true, true);
+                    Iterator itGroups = groups.iterator();
                     while (itGroups.hasNext()) {
-                        html.append(((CmsGroup)itGroups.next()).getName());
+                        CmsGroup group = (CmsGroup)itGroups.next();
+                        if (group.getOuFqn().equals(getParamOufqn())) {
+                            html.append(group.getSimpleName());
+                        } else {
+                            html.append(group.getDisplayName(getCms(), getLocale()));
+                        }
                         if (itGroups.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                } else if (detailId.equals(LIST_DETAIL_ROLES)) {
+                    // roles
+                    boolean otherOuRole = false;
+                    List roles = OpenCms.getRoleManager().getRolesOfUser(getCms(), userName, "/", true, true, false);
+                    Iterator itRoles = roles.iterator();
+                    while (itRoles.hasNext()) {
+                        CmsRole role = (CmsRole)itRoles.next();
+                        if (!role.getOuFqn().equals(getParamOufqn())) {
+                            otherOuRole = true;
+                            break;
+                        }
+                    }
+                    itRoles = roles.iterator();
+                    while (itRoles.hasNext()) {
+                        CmsRole role = (CmsRole)itRoles.next();
+                        if (!otherOuRole) {
+                            html.append(role.getName(getLocale()));
+                        } else {
+                            html.append(role.getDisplayName(getCms(), getLocale()));
+                        }
+                        if (itRoles.hasNext()) {
                             html.append("<br>");
                         }
                         html.append("\n");
@@ -343,12 +409,33 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
             item.set(LIST_COLUMN_LOGIN, user.getName());
+            item.set(LIST_COLUMN_DISPLAY, user.getSimpleName());
             item.set(LIST_COLUMN_NAME, user.getFullName());
             item.set(LIST_COLUMN_EMAIL, user.getEmail());
             item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
             ret.add(item);
         }
         return ret;
+    }
+
+    /**
+     * Returns the path the role edit icon.<p>
+     * 
+     * @return the path to the role edit icon
+     */
+    protected String getRoleIcon() {
+
+        return PATH_BUTTONS + "role.png";
+    }
+
+    /**
+     * Returns the path the switch user icon.<p>
+     * 
+     * @return the path to the switch user icon
+     */
+    protected String getSwitchIcon() {
+
+        return PATH_BUTTONS + "user_switch.png";
     }
 
     /**
@@ -416,6 +503,22 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         groupCol.addDirectAction(groupAction);
         // add it to the list definition
         metadata.addColumn(groupCol);
+
+        // create column for edit role
+        CmsListColumnDefinition roleCol = new CmsListColumnDefinition(LIST_COLUMN_ROLE);
+        roleCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ROLE_0));
+        roleCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ROLE_HELP_0));
+        roleCol.setWidth("20");
+        roleCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        roleCol.setSorteable(false);
+        // add switch action
+        CmsListDirectAction roleAction = new CmsListDirectAction(LIST_ACTION_ROLE);
+        roleAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLE_NAME_0));
+        roleAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLE_HELP_0));
+        roleAction.setIconPath(getRoleIcon());
+        roleCol.addDirectAction(roleAction);
+        // add it to the list definition
+        metadata.addColumn(roleCol);
 
         // create column for activation/deactivation
         CmsListColumnDefinition actCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
@@ -494,17 +597,22 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
-        loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
-        loginCol.setWidth("20%");
+        metadata.addColumn(loginCol);
+        loginCol.setVisible(false);
+
+        // create column for display name
+        CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
+        displayCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
+        displayCol.setWidth("20%");
 
         // create default edit action
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         defEditAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_HELP_0));
-        loginCol.addDefaultAction(defEditAction);
+        displayCol.addDefaultAction(defEditAction);
 
         // add it to the list definition
-        metadata.addColumn(loginCol);
+        metadata.addColumn(displayCol);
 
         // add column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
@@ -547,7 +655,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         // add user address details
         CmsListItemDetails userAddressDetails = new CmsListItemDetails(LIST_DETAIL_ADDRESS);
-        userAddressDetails.setAtColumn(LIST_COLUMN_LOGIN);
+        userAddressDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         userAddressDetails.setVisible(false);
         userAddressDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0));
         userAddressDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0));
@@ -560,7 +668,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         // add user groups details
         CmsListItemDetails userGroupsDetails = new CmsListItemDetails(LIST_DETAIL_GROUPS);
-        userGroupsDetails.setAtColumn(LIST_COLUMN_LOGIN);
+        userGroupsDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         userGroupsDetails.setVisible(false);
         userGroupsDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0));
         userGroupsDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_HELP_0));
@@ -571,8 +679,21 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
 
+        // add user roles details
+        CmsListItemDetails userRolesDetails = new CmsListItemDetails(LIST_DETAIL_ROLES);
+        userRolesDetails.setAtColumn(LIST_COLUMN_DISPLAY);
+        userRolesDetails.setVisible(false);
+        userRolesDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ROLES_NAME_0));
+        userRolesDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ROLES_HELP_0));
+        userRolesDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_NAME_0));
+        userRolesDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_HELP_0));
+        userRolesDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ROLES_NAME_0));
+        userRolesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_USERS_DETAIL_ROLES_NAME_0)));
+        metadata.addItemDetails(userRolesDetails);
+
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         metadata.setSearchAction(searchAction);
     }
@@ -606,5 +727,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
+        OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getName();
     }
 }

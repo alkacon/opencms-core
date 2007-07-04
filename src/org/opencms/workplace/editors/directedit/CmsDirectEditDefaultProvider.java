@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditDefaultProvider.java,v $
- * Date   : $Date: 2006/10/26 12:25:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.cache.CmsMemoryObjectCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsEncoder;
@@ -60,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.3 
  */
@@ -244,14 +243,9 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
         result.append(" [");
         result.append(resourceInfo.getResource().getState());
         result.append("] ");
-        if (!resourceInfo.getLock().isNullLock()) {
+        if (!resourceInfo.getLock().isUnlocked()) {
             result.append(" locked ");
-            try {
-                CmsProject project = m_cms.readProject(resourceInfo.getLock().getProjectId());
-                result.append(project.getName());
-            } catch (CmsException e) {
-                result.append(resourceInfo.getLock().getProjectId());
-            }           
+            result.append(resourceInfo.getLock().getProject().getName());
         }
         result.append(" -->\n");
 
@@ -309,14 +303,9 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
         result.append(" [");
         result.append(resourceInfo.getResource().getState());
         result.append("]");
-        if (!resourceInfo.getLock().isNullLock()) {
+        if (!resourceInfo.getLock().isUnlocked()) {
             result.append(" locked ");
-            try {
-                CmsProject project = m_cms.readProject(resourceInfo.getLock().getProjectId());
-                result.append(project.getName());
-            } catch (CmsException e) {
-                result.append(resourceInfo.getLock().getProjectId());
-            }           
+            result.append(resourceInfo.getLock().getProject().getName());
         }
         result.append(" -->\n");
 

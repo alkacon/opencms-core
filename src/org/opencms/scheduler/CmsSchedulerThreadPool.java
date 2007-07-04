@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,13 +173,13 @@ public class CmsSchedulerThreadPool implements ThreadPool {
      */
     public void initialize() throws SchedulerConfigException {
 
-        if (m_maxThreadCount <= 0 || m_maxThreadCount > 200) {
+        if ((m_maxThreadCount <= 0) || (m_maxThreadCount > 200)) {
             throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_MAX_THREAD_COUNT_BOUNDS_0));
         }
-        if (m_initialThreadCount < 0 || m_initialThreadCount > m_maxThreadCount) {
+        if ((m_initialThreadCount < 0) || (m_initialThreadCount > m_maxThreadCount)) {
             throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
         }
-        if (m_threadPriority <= 0 || m_threadPriority > 9) {
+        if ((m_threadPriority <= 0) || (m_threadPriority > 9)) {
             throw new SchedulerConfigException(Messages.get().getBundle().key(Messages.ERR_SCHEDULER_PRIORITY_BOUNDS_0));
         }
 
@@ -231,7 +231,13 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             return false;
         }
 
-        if ((m_currentThreadCount == 0) || (m_nextRunnable != null)) {
+        boolean hasNextRunnable;
+        synchronized (m_nextRunnableLock) {
+            // must synchronize here to avoid potential double checked locking
+            hasNextRunnable = (m_nextRunnable != null);
+        }
+
+        if (hasNextRunnable || (m_currentThreadCount == 0)) {
             // try to grow the thread pool since other runnables are already waiting
             growThreadPool();
         }
@@ -261,13 +267,14 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         // note: the synchronized section should be as short (time) as
         // possible as starting a new thread is not a quick action
         if (m_isShutdown) {
-            new CmsSchedulerThread(
+            CmsSchedulerThread thread = new CmsSchedulerThread(
                 this,
                 m_threadGroup,
                 m_threadNamePrefix + "(final)",
                 m_threadPriority,
                 false,
                 runnable);
+            thread.start();
         }
 
         return true;
@@ -333,7 +340,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             }
 
             int activeCount = m_threadGroup.activeCount();
-            if (activeCount > 0 && LOG.isInfoEnabled()) {
+            if ((activeCount > 0) && LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_THREAD_POOL_STILL_ACTIVE_1,
                     new Integer(activeCount)));
@@ -382,6 +389,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             synchronized (m_nextRunnableLock) {
                 m_workers[m_currentThreadCount] = new CmsSchedulerThread(this, m_threadGroup, m_threadNamePrefix
                     + m_currentThreadCount, m_threadPriority, m_makeThreadsDaemons);
+                m_workers[m_currentThreadCount].start();
                 if (m_inheritLoader) {
                     m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread().getContextClassLoader());
                 }

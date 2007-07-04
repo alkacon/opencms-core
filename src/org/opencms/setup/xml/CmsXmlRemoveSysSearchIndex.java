@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlRemoveSysSearchIndex.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -69,7 +69,7 @@ public class CmsXmlRemoveSysSearchIndex extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
      */
     protected List getXPathsToRemove() {
 

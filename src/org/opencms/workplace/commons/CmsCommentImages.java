@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2006/10/06 15:33:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3
  */
@@ -300,6 +300,8 @@ public class CmsCommentImages extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_COMMENTIMAGES);
+        } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
@@ -383,7 +385,7 @@ public class CmsCommentImages extends CmsDialog {
         } else {
             // parameter is not empty, check if the value has changed
             if (!propValue.equals(currentProperty.getValue())) {
-                if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                if ((currentProperty.getStructureValue() == null) && (currentProperty.getResourceValue() == null)) {
                     // new property, determine setting from OpenCms workplace configuration
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         currentProperty.setStructureValue(propValue);

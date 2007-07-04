@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -116,7 +117,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     private boolean m_partialTag;
 
     /** The given image scaler parameters. */
-    private CmsImageScaler m_scaler;
+    private transient CmsImageScaler m_scaler;
 
     /** The image source. */
     private String m_src;
@@ -152,6 +153,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
+        
+        // resolve possible relative URI
+        src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
         CmsResource imageRes = cms.readResource(src);
 
         // calculate target scale dimensions (if required)  
@@ -171,11 +175,12 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         // append the image source              
         result.append(" src=\"");
+
         String imageLink = cms.getSitePath(imageRes);
         if (scaler.isValid()) {
             // now append the scaler parameters
             imageLink += scaler.toRequestParam();
-        }        
+        }
         result.append(OpenCms.getLinkManager().substituteLink(cms, imageLink));
         result.append("\"");
 
@@ -191,10 +196,11 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         if (attributes != null) {
             // append the HTML attributes
-            Iterator i = attributes.keySet().iterator();
+            Iterator i = attributes.entrySet().iterator();
             while (i.hasNext()) {
-                String attr = (String)i.next();
-                String value = (String)attributes.get(attr);
+                Map.Entry entry = (Map.Entry)i.next();
+                String attr = (String)entry.getKey();
+                String value = (String)entry.getValue();
                 result.append(" ");
                 result.append(attr);
                 result.append("=\"");

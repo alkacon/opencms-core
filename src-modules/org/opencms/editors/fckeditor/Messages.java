@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,23 +39,29 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
 public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
-
     public static final String GUI_EDITOR_TITLE_FCKEDITOR_0 = "GUI_EDITOR_TITLE_FCKEDITOR_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_TITLE_MSDHTML_0 = "GUI_EDITOR_TITLE_MSDHTML_0";
-
+    public static final String GUI_AJAX_STATE_WAIT_0 = "GUI_AJAX_STATE_WAIT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AJAX_STATE_ERROR_0 = "GUI_AJAX_STATE_ERROR_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AJAX_STATE_GIVEUP_0 = "GUI_AJAX_STATE_GIVEUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_WRITE_OUT_0 = "LOG_ERR_WRITE_OUT_0";
 
     /** Name of the used resource bundle. */
-
-    private static final String BUNDLE_NAME = "org.opencms.workplace.editors.fckeditor.messages";
+    private static final String BUNDLE_NAME = "org.opencms.editors.fckeditor.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

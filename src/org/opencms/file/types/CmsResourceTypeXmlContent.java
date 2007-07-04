@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/01/03 10:05:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/07/04 16:57:35 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,30 +34,32 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.validation.I_CmsXmlDocumentLinkValidatable;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.CmsXmlHtmlValue;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -67,11 +69,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
+public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
@@ -103,6 +105,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_Cm
         byte[] content,
         List properties) throws CmsException {
 
+        boolean hasModelUri = false;
+        CmsXmlContent newContent = null;
         if ((m_schema != null) && ((content == null) || (content.length == 0))) {
             // unmarshal the content definition for the new resource
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
@@ -112,105 +116,34 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_Cm
                 cms,
                 CmsResource.getParentFolder(resourcename)).get(0);
 
-            // create the new content from the content defintion
-            CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
-                cms,
-                locale,
-                OpenCms.getSystemInfo().getDefaultEncoding(),
-                contentDefinition);
+            String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
+            if (modelUri != null) {
+                // create the new content from the model file
+                newContent = CmsXmlContentFactory.createDocument(cms, locale, modelUri);
+                hasModelUri = true;
+            } else {
+                // create the new content from the content definition
+                newContent = CmsXmlContentFactory.createDocument(
+                    cms,
+                    locale,
+                    OpenCms.getSystemInfo().getDefaultEncoding(),
+                    contentDefinition);
+            }
             // get the bytes from the created content
             content = newContent.marshal();
         }
 
         // now create the resource using the super class
-        return super.createResource(cms, securityManager, resourcename, content, properties);
-    }
+        CmsResource resource = super.createResource(cms, securityManager, resourcename, content, properties);
 
-    /**
-     * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
-     */
-    public List findLinks(CmsObject cms, CmsResource resource) {
-
-        List links = new ArrayList();
-        CmsFile file = null;
-        CmsXmlContent xmlcontent = null;
-        List locales = null;
-        List elementNames = null;
-        CmsLinkTable linkTable = null;
-        CmsLink link = null;
-
-        try {
-            file = cms.readFile(
-                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-                CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
-                    cms.getSitePath(resource)), e);
-            }
-
-            return Collections.EMPTY_LIST;
+        // a model file was used, call the content handler for post-processing
+        if (hasModelUri) {
+            CmsFile file = CmsFile.upgrade(resource, cms);
+            newContent = CmsXmlContentFactory.unmarshal(cms, file);
+            resource = newContent.getContentDefinition().getContentHandler().prepareForWrite(cms, newContent, file);
         }
 
-        try {
-            xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
-            locales = xmlcontent.getLocales();
-
-            // iterate over all languages
-            Iterator i = locales.iterator();
-            while (i.hasNext()) {
-                Locale locale = (Locale)i.next();
-                elementNames = xmlcontent.getValues(locale);
-
-                // iterate over all body elements per language
-                Iterator j = elementNames.iterator();
-                while (j.hasNext()) {
-                    I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
-
-                    if (value instanceof CmsXmlHtmlValue) {
-                        CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
-                        linkTable = htmlValue.getLinkTable();
-
-                        // iterate over all links inside a body element
-                        Iterator k = linkTable.iterator();
-                        while (k.hasNext()) {
-                            link = (CmsLink)k.next();
-
-                            // external links are ommitted
-                            if (link.isInternal()) {
-                                links.add(link.getTarget());
-                            }
-                        }
-                    } else if (value instanceof CmsXmlVfsFileValue) {
-                        CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
-
-                        linkTable = refValue.getLinkTable();
-
-                        // iterate over all links inside a body element
-                        Iterator k = linkTable.iterator();
-                        while (k.hasNext()) {
-                            link = (CmsLink)k.next();
-
-                            // external links are ommitted
-                            if (link.isInternal()) {
-                                links.add(link.getTarget());
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (CmsXmlException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().getBundle().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)),
-                    e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        return links;
+        return resource;
     }
 
     /**
@@ -246,11 +179,74 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_Cm
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
+     * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public boolean isDirectEditable() {
+    public List parseLinks(CmsObject cms, CmsFile file) {
 
-        return true;
+        if (file.getLength() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        CmsXmlContent xmlContent;
+        long requestTime = cms.getRequestContext().getRequestTime();
+        try {
+            // prevent the check rules to remove the broken links
+            cms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+            xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(file)), e);
+            }
+            return Collections.EMPTY_LIST;
+        } finally {
+            cms.getRequestContext().setRequestTime(requestTime);
+        }
+
+        Set links = new HashSet();
+        List locales = xmlContent.getLocales();
+
+        // iterate over all languages
+        Iterator i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            List values = xmlContent.getValues(locale);
+
+            // iterate over all body elements per language
+            Iterator j = values.iterator();
+            while (j.hasNext()) {
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
+                if (value instanceof CmsXmlHtmlValue) {
+                    CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
+                    CmsLinkTable linkTable = htmlValue.getLinkTable();
+
+                    // iterate over all links inside a body element
+                    Iterator k = linkTable.iterator();
+                    while (k.hasNext()) {
+                        CmsLink link = (CmsLink)k.next();
+
+                        // external links are ommitted
+                        if (link.isInternal()) {
+                            link.checkConsistency(cms);
+                            links.add(link);
+                        }
+                    }
+                } else if (value instanceof CmsXmlVfsFileValue) {
+                    CmsXmlVfsFileValue refValue = (CmsXmlVfsFileValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if (link != null) {
+                        links.add(link);
+                    }
+                } else if (value instanceof CmsXmlVarLinkValue) {
+                    CmsXmlVarLinkValue refValue = (CmsXmlVarLinkValue)value;
+                    CmsLink link = refValue.getLink(cms);
+                    if ((link != null) && link.isInternal()) {
+                        links.add(link);
+                    }
+                }
+            }
+        }
+        return new ArrayList(links);
     }
 
     /**
@@ -270,8 +266,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType implements I_Cm
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
         resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
+
         // now write the file
         return super.writeFile(cms, securityManager, resource);
     }
-
 }

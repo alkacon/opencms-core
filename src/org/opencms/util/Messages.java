@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2006/03/31 15:25:39 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,15 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.util.messages";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHARSET_ILLEGAL_NAME_1 = "ERR_CHARSET_ILLEGAL_NAME_1";
 
@@ -97,12 +100,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IOERROR_0 = "ERR_IOERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_MISSING_CLASSLOADER_RESOURCE_1 = "ERR_MISSING_CLASSLOADER_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MISSING_CLASSLOADER_RESOURCE_2 = "ERR_MISSING_CLASSLOADER_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_RESOURCES_1 = "ERR_MISSING_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
@@ -125,6 +122,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEUTIL_FILESIZE_MBYTES_1 = "GUI_FILEUTIL_FILESIZE_MBYTES_1";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONVERSION_BYTE_FAILED_0 = "LOG_CONVERSION_BYTE_FAILED_0";
@@ -166,13 +166,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_TRANSLATION_MATCH_3 = "LOG_TRANSLATION_MATCH_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_TIDY_FAILURE_0 = "LOG_WARN_TIDY_FAILURE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_UUID_1 = "LOG_WRITE_UUID_1";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.util.messages";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

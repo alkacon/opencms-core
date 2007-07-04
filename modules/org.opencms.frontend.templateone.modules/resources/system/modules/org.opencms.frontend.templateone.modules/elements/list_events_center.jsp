@@ -1,7 +1,7 @@
 <%@ page session="false" buffer="none" import="org.opencms.util.*, org.opencms.frontend.templateone.modules.*" %><%--
 --%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
---%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%--
---%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%
 
 CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
@@ -12,7 +12,7 @@ pageContext.setAttribute("locale", locale);
 boolean showNumber = Integer.parseInt(request.getParameter("elementcount")) == Integer.MAX_VALUE;
 pageContext.setAttribute("shownumber", "" + showNumber);
 
-%><cms:contentload collector="${param.collector}" param="${param.folder}event_${number}.html|event|${param.elementcount}" preload="true"><%--
+%><cms:contentload collector="%(param.collector)" param="%(param.folder)event_%(number).html|event|%(param.elementcount)" preload="true"><%--
 
 --%><cms:contentinfo var="contentInfoOuter" scope="request" /><%--
 --%><c:if test="${! contentInfoOuter.emptyResult}"><%--
@@ -20,7 +20,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 --%><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:contentload editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
+--%><cms:contentload editable="true" pageSize="%(param.count)" pageIndex="%(param.pageIndex)" pageNavLength="10"><%--
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 
 --%><c:if test="${(contentInfo.resultIndex % contentInfo.pageSize) == 1}"><%--
@@ -48,7 +48,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
 <p style="margin-top: 8px; padding-top: 0px;">
-<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
+<a href="<cms:link><cms:contentshow element="%(opencms.filename)" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
 <cms:contentcheck ifexists="ShortDescription"><cms:contentshow element="ShortDescription" /><br></cms:contentcheck>
 <c:set var="dateString">
 	<cms:contentshow element="EventDates/EventDate" />
@@ -66,7 +66,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 %>
 <fmt:message key="eventarticle.registrationclose" />: <fmt:formatDate value="${date}" /><br>
 </cms:contentcheck>
-<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
+<small><a href="<cms:link><cms:contentshow element="%(opencms.filename)" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
 --%></fmt:bundle></c:if></cms:contentload>

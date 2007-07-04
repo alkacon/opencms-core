@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:52 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
@@ -98,11 +98,6 @@ public class CmsLruCache extends java.lang.Object {
         m_maxCacheCosts = theMaxCacheCosts;
         m_avgCacheCosts = theAvgCacheCosts;
         m_maxObjectCosts = theMaxObjectCosts;
-
-        m_objectCosts = 0;
-        m_objectCount = 0;
-        m_listHead = null;
-        m_listTail = null;
     }
 
     /**
@@ -150,7 +145,7 @@ public class CmsLruCache extends java.lang.Object {
     /**
      * Removes all cached objects in this cache.<p>
      */
-    public void clear() {
+    public synchronized void clear() {
 
         // remove all objects from the linked list from the tail to the head:
         I_CmsLruCacheObject currentObject = m_listTail;
@@ -164,7 +159,6 @@ public class CmsLruCache extends java.lang.Object {
         m_objectCount = 0;
         m_listHead = null;
         m_listTail = null;
-
     }
 
     /**
@@ -411,7 +405,6 @@ public class CmsLruCache extends java.lang.Object {
             currentObject = currentObject.getNextLruObject();
             removeTail();
         }
-
     }
 
     /**
@@ -439,7 +432,7 @@ public class CmsLruCache extends java.lang.Object {
      */
     private boolean isCached(I_CmsLruCacheObject theCacheObject) {
 
-        if (theCacheObject == null || m_objectCount == 0) {
+        if ((theCacheObject == null) || (m_objectCount == 0)) {
             // the cache is empty or the object is null (which is never cached)
             return false;
         }
@@ -453,15 +446,14 @@ public class CmsLruCache extends java.lang.Object {
             return true;
         }
 
-        if ((nextObj == null) && (prevObj == null)) {
-            if ((m_objectCount == 1)
-                && (m_listHead != null)
-                && (m_listTail != null)
-                && m_listHead.equals(theCacheObject)
-                && m_listTail.equals(theCacheObject)) {
-                // the object is the one and only object in the cache
-                return true;
-            }
+        // both nextObj and preObj are null
+        if ((m_objectCount == 1)
+            && (m_listHead != null)
+            && (m_listTail != null)
+            && m_listHead.equals(theCacheObject)
+            && m_listTail.equals(theCacheObject)) {
+            // the object is the one and only object in the cache
+            return true;
         }
 
         return false;

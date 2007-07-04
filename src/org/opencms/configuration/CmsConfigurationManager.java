@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/07/04 16:57:35 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 
@@ -68,7 +69,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0
  */
@@ -119,8 +120,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The digester for reading the XML configuration. */
     private Digester m_digester;
 
-    /** The legacy configuration based on "opencms.properties". */
-    private Map m_legacyConfiguration;
+    /** The configuration based on <code>opencms.properties</code>. */
+    private ExtendedProperties m_propertyConfiguration;
 
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -242,11 +243,16 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the properties read from <code>opencms.properties</code>.<p> 
+     * 
+     * This is assured to be an instance of {@link org.apache.commons.collections.ExtendedProperties}.<p>
+     *
+     * @see #setConfiguration(ExtendedProperties)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public Map getConfiguration() {
 
-        return m_legacyConfiguration;
+        return m_propertyConfiguration;
     }
 
     /**
@@ -327,7 +333,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public void loadXmlConfiguration() throws SAXException, IOException {
 
-        URL baseUrl = m_baseFolder.toURL();
+        URL baseUrl = m_baseFolder.toURI().toURL();
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_URL_1, baseUrl));
         }
@@ -347,13 +353,15 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
-     * Sets the configuration read from the legacy "opencms.properties".<p>
+     * Sets the configuration read from the <code>opencms.properties</code>.<p>
      * 
-     * @param legacyConfiguration the configuration read from the legacy "opencms.properties"
+     * @param propertyConfiguration the configuration read from the <code>opencms.properties</code>
+     * 
+     * @see #getConfiguration()
      */
-    public void setConfiguration(Map legacyConfiguration) {
+    public void setConfiguration(ExtendedProperties propertyConfiguration) {
 
-        m_legacyConfiguration = legacyConfiguration;
+        m_propertyConfiguration = propertyConfiguration;
     }
 
     /**
@@ -488,7 +496,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsXmlEntityResolver(null));
         m_digester.setRuleNamespaceURI(null);
-        m_digester.setErrorHandler(new CmsXmlErrorHandler());
+        m_digester.setErrorHandler(new CmsXmlErrorHandler(fileUrl.getFile()));
 
         // add this class to the Digester
         m_digester.push(configuration);

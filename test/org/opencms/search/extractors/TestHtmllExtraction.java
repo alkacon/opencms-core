@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestHtmllExtraction.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -51,7 +52,7 @@ public class TestHtmllExtraction extends TestCase {
     }
 
     /**
-     * Tests the basic Excel extraction.<p>
+     * Tests the basic Html extraction.<p>
      *
      * @throws Exception if the test fails
      */
@@ -62,7 +63,13 @@ public class TestHtmllExtraction extends TestCase {
 
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorHtml.getExtractor().extractText(in);
+        
+        Map items = extractionResult.getContentItems();
+        assertEquals(2, items.size());
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
         
         System.out.println("---------------------------------------------------------------");
         System.out.println("Extracted from HTML:");

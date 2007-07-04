@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitorConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,14 @@ import java.util.List;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMemoryMonitorConfiguration {
+
+    /** The memory monitor class name. */
+    private String m_className;
 
     /** The interval to use for sending emails. */
     private int m_emailInterval;
@@ -80,6 +83,16 @@ public class CmsMemoryMonitorConfiguration {
     public void addEmailReceiver(String emailReceiver) {
 
         m_emailReceiver.add(emailReceiver);
+    }
+
+    /**
+     * Returns the name of the memory monitor class.<p>
+     *
+     * @return the name of the memory monitor class
+     */
+    public String getClassName() {
+
+        return m_className;
     }
 
     /**
@@ -146,13 +159,20 @@ public class CmsMemoryMonitorConfiguration {
     /**
      * Initializes the configuration with the required parameters.<p>
      * 
+     * @param className the name of the memory monitor class
      * @param maxUsagePercent the max usage percent value
      * @param logInterval the interval to log
      * @param emailInterval the interval to send email
      * @param warningInterval the interval to warn
      */
-    public void initialize(String maxUsagePercent, String logInterval, String emailInterval, String warningInterval) {
+    public void initialize(
+        String className,
+        String maxUsagePercent,
+        String logInterval,
+        String emailInterval,
+        String warningInterval) {
 
+        m_className = className;
         m_maxUsagePercent = Integer.parseInt(maxUsagePercent);
         m_logInterval = Integer.parseInt(logInterval);
         m_emailInterval = Integer.parseInt(emailInterval);

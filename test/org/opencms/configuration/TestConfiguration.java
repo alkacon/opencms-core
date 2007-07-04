@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.util.CmsFileUtil;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -50,7 +50,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -76,7 +76,7 @@ public class TestConfiguration extends OpenCmsTestCase {
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource
-        String inputFile = CmsFileUtil.getResourcePathFromClassloader("org/opencms/configuration/");
+        String inputFile = OpenCmsTestProperties.getResourcePathFromClassloader("org/opencms/configuration/");
 
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);

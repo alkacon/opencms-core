@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2006/11/07 10:58:26 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2007/07/04 16:57:10 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
@@ -60,12 +61,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Base class for dialogs that use the OpenCms widgets without XML content.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +97,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
 
     /** The errors thrown by commit actions. */
     protected List m_commitErrors;
@@ -331,7 +337,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         }
         boolean onlyDisplay = true;
-        Iterator it = m_widgets.iterator();
+        Iterator it = getWidgets().iterator();
         while (it.hasNext()) {
             CmsWidgetDialogParameter wdp = (CmsWidgetDialogParameter)it.next();
             if (!(wdp.getWidget() instanceof CmsDisplayWidget)) {
@@ -1114,6 +1120,34 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             }
+            if (hasValidationErrors()) {
+                result.append(dialogBlockStart(""));
+                result.append(createWidgetTableStart());
+                Iterator i = getValidationErrorList().iterator();
+                while (i.hasNext()) {
+                    Throwable t = (Throwable)i.next();
+                    result.append("<tr><td><img src=\"");
+                    result.append(getSkinUri()).append("editors/xmlcontent/");
+                    result.append("error.png");
+                    result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
+                    while (t != null) {
+                        String message = "";
+                        if (t instanceof I_CmsThrowable) {
+                            message = ((I_CmsThrowable)t).getLocalizedMessage(getLocale());
+                        } else {
+                            message = t.getLocalizedMessage();
+                        }
+                        result.append(CmsStringUtil.escapeHtml(message));
+                        t = t.getCause();
+                        if (t != null) {
+                            result.append("<br>");
+                        }
+                    }
+                    result.append("</td></tr>\n");
+                }
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            }
         }
         return result.toString();
     }
@@ -1247,12 +1281,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters = request.getParameterMap();
-        Map processedParamters = new HashMap();
-        Iterator p = parameters.keySet().iterator();
+        Map processedParameters = new HashMap();
+        Iterator p = parameters.entrySet().iterator();
         // make sure all "hidden" widget parameters are decoded
         while (p.hasNext()) {
-            String key = (String)p.next();
-            String[] values = (String[])parameters.get(key);
+            Map.Entry entry = (Map.Entry)p.next();
+            String key = (String)entry.getKey();
+            String[] values = (String[])entry.getValue();
             if (key.startsWith(HIDDEN_PARAM_PREFIX)) {
                 // this is an encoded hidden parameter
                 key = key.substring(HIDDEN_PARAM_PREFIX.length());
@@ -1262,7 +1297,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 }
                 values = newValues;
             }
-            processedParamters.put(key, values);
+            processedParameters.put(key, values);
         }
 
         // now process the parameters
@@ -1297,13 +1332,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 String id = CmsWidgetDialogParameter.createId(base.getName(), j);
 
                 boolean required = (params.size() < base.getMinOccurs())
-                    || (processedParamters.get(id) != null)
+                    || (processedParameters.get(id) != null)
                     || (!onPage && base.hasValue(j));
 
                 if (required) {
                     CmsWidgetDialogParameter param = new CmsWidgetDialogParameter(base, params.size(), j);
                     param.setKeyPrefix(m_prefix);
-                    base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
+                    base.getWidget().setEditorValue(getCms(), processedParameters, this, param);
                     params.add(param);
                 }
             }
@@ -1455,6 +1490,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         try {
             validateParamaters();
         } catch (Exception e) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().container(Messages.ERR_WORKPLACE_DIALOG_PARAMS_1, getCurrentToolPath()), e);
+            }
             // close if parameters not available
             setAction(ACTION_CANCEL);
             try {
@@ -1472,7 +1510,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // set the action for the JSP switch 
         if (DIALOG_SAVE.equals(getParamAction())) {
             // ok button pressed, save    
-            List errors = commitWidgetValues();
+            List errors = commitWidgetValues(null);
             if (errors.size() > 0) {
                 setAction(ACTION_DEFAULT);
                 // found validation errors, redisplay page

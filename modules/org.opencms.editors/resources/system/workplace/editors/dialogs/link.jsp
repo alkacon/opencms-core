@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.*, org.opencms.workplace.explorer.*" %><%	
+<%@ page import="org.opencms.main.*, org.opencms.workplace.*, org.opencms.workplace.explorer.*" %><%	
 
 	// initialize the workplace class
 	CmsDialog wp = new CmsDialog(pageContext, request, response);
@@ -9,7 +9,7 @@
 <!--
 
 var linkEditorStyleInputs = <%= request.getParameter("showCss") %>;
-var linkEditorPrefix = null;
+var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 
 /**
 * Extends Javascript String to have a trim() function.
@@ -70,7 +70,7 @@ function init() {
 	}
 	var anchor = "<%= request.getParameter("href") %>";
 	if (anchor != "null") {
-		document.forms["NEU"].elements["neulink"].value = anchor;
+		document.forms["NEU"].elements["neulink"].value = checkContext(decodeURIComponent(anchor), false);
 	}
 	var title= "<%= request.getParameter("title") %>";
 	if (title != "null") {

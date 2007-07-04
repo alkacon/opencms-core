@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2006/11/16 13:40:28 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,13 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
@@ -68,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,7 +132,7 @@ public class CmsCopy extends CmsMultiDialog {
             boolean isFolder = false;
             String source = (String)getResourceList().get(0);
             String target = CmsLinkManager.getAbsoluteUri(getParamTarget(), CmsResource.getParentFolder(source));
-            if (! isMultiOperation()) {
+            if (!isMultiOperation()) {
                 resource = getCms().readResource(source, CmsResourceFilter.ALL);
                 isFolder = resource.isFolder();
             } else {
@@ -150,9 +152,11 @@ public class CmsCopy extends CmsMultiDialog {
                         getCms().getRequestContext().setSiteRoot(siteRootFolder);
                     }
                 }
-                if (! resource.isFolder()) {
+                if (!resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
-                    throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, target));
+                    throw new CmsVfsException(Messages.get().container(
+                        Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
+                        target));
                 }
             }
             if (performDialogOperation()) {
@@ -171,15 +175,17 @@ public class CmsCopy extends CmsMultiDialog {
             }
         } catch (Throwable e) {
             // check if this exception requires a confirmation or error screen for single resource operations
-            if (! isMultiOperation() && (e instanceof CmsVfsResourceAlreadyExistsException) && !(resource.isFolder())) {
+            if (!isMultiOperation()
+                && ((e instanceof CmsVfsResourceAlreadyExistsException) || (e instanceof CmsLockException))
+                && (resource != null)
+                && !(resource.isFolder())) {
                 // file copy but file already exists, now check target file type
                 int targetType = -1;
-                boolean restoreSiteRoot = false;
+                String storedSiteRoot = null;
                 try {
                     if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) {
-                        getCms().getRequestContext().saveSiteRoot();
+                        storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                         getCms().getRequestContext().setSiteRoot("/");
-                        restoreSiteRoot = true;
                     }
                     CmsResource targetRes = getCms().readResource(getParamTarget());
                     targetType = targetRes.getTypeId();
@@ -189,8 +195,8 @@ public class CmsCopy extends CmsMultiDialog {
                         LOG.info(e2.getLocalizedMessage());
                     }
                 } finally {
-                    if (restoreSiteRoot) {
-                        getCms().getRequestContext().restoreSiteRoot();
+                    if (storedSiteRoot != null) {
+                        getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                     }
                 }
                 if (resource.getTypeId() == targetType) {
@@ -225,9 +231,9 @@ public class CmsCopy extends CmsMultiDialog {
 
         if (isMultiOperation() || isFolder) {
             // for multi resource operations or folders, show an additional option "preserve links"
-            int defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
+            CmsResourceCopyMode defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_SIBLING);
+            retValue.append(CmsResource.COPY_AS_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
@@ -242,7 +248,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(msgKey));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_PRESERVE_SIBLING);
+            retValue.append(CmsResource.COPY_PRESERVE_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_PRESERVE_SIBLING) {
                 retValue.append(checkedAttr);
@@ -251,7 +257,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(Messages.GUI_COPY_ALL_NO_SIBLINGS_0));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_NEW);
+            retValue.append(CmsResource.COPY_AS_NEW.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
@@ -271,9 +277,9 @@ public class CmsCopy extends CmsMultiDialog {
             }
         } else {
             // for files, show copy option "copy as sibling" and "copy as new resource"
-            int defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
+            CmsResourceCopyMode defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_SIBLING);
+            retValue.append(CmsResource.COPY_AS_SIBLING.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
@@ -282,7 +288,7 @@ public class CmsCopy extends CmsMultiDialog {
             retValue.append(key(Messages.GUI_CREATE_SIBLING_0));
             retValue.append("<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"");
-            retValue.append(CmsResource.COPY_AS_NEW);
+            retValue.append(CmsResource.COPY_AS_NEW.getMode());
             retValue.append("\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
@@ -388,7 +394,7 @@ public class CmsCopy extends CmsMultiDialog {
         fillParamValues(request);
 
         // check the required permissions to copy the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
@@ -429,9 +435,9 @@ public class CmsCopy extends CmsMultiDialog {
         }
 
         // get the copy mode from request parameter value
-        int copyMode = CmsResource.COPY_PRESERVE_SIBLING;
+        CmsResourceCopyMode copyMode = CmsResource.COPY_PRESERVE_SIBLING;
         try {
-            copyMode = Integer.parseInt(getParamCopymode());
+            copyMode = CmsResourceCopyMode.valueOf(Integer.parseInt(getParamCopymode()));
         } catch (Exception e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -449,7 +455,7 @@ public class CmsCopy extends CmsMultiDialog {
             target = "";
         }
 
-        boolean restoreSiteRoot = false;
+        String storedSiteRoot = null;
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
@@ -459,9 +465,8 @@ public class CmsCopy extends CmsMultiDialog {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                 }
                 sitePrefix = siteRootFolder;
-                getCms().getRequestContext().saveSiteRoot();
+                storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                 getCms().getRequestContext().setSiteRoot("/");
-                restoreSiteRoot = true;
             }
 
             Iterator i = getResourceList().iterator();
@@ -484,8 +489,8 @@ public class CmsCopy extends CmsMultiDialog {
             checkMultiOperationException(Messages.get(), Messages.ERR_COPY_MULTI_0);
         } finally {
             // restore the site root
-            if (restoreSiteRoot) {
-                getCms().getRequestContext().restoreSiteRoot();
+            if (storedSiteRoot != null) {
+                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
         return true;
@@ -499,30 +504,31 @@ public class CmsCopy extends CmsMultiDialog {
      * @param sitePrefix the site prefix
      * @param copyMode the copy mode for siblings
      * @param overwrite the overwrite flag
+     * 
      * @throws CmsException if copying the resource fails
      */
     protected void performSingleCopyOperation(
         String source,
         String target,
         String sitePrefix,
-        int copyMode,
+        CmsResourceCopyMode copyMode,
         boolean overwrite) throws CmsException {
 
         // calculate the target name
-        target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));
+        String finalTarget = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));
 
-        if (target.equals(source) || (isMultiOperation() && target.startsWith(source))) {
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_ONTO_ITSELF_1, target));
+        if (finalTarget.equals(source) || (isMultiOperation() && finalTarget.startsWith(source))) {
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_ONTO_ITSELF_1, finalTarget));
         }
 
         try {
-            CmsResource res = getCms().readResource(target, CmsResourceFilter.ALL);
+            CmsResource res = getCms().readResource(finalTarget, CmsResourceFilter.ALL);
             if (res.isFolder()) {
                 // target folder already exists, so we add the current folder name
-                if (! target.endsWith("/")) {
-                    target += "/";
+                if (!finalTarget.endsWith("/")) {
+                    finalTarget += "/";
                 }
-                target = target + CmsResource.getName(source);
+                finalTarget = finalTarget + CmsResource.getName(source);
             }
         } catch (CmsVfsResourceNotFoundException e) {
             // target folder does not already exist, so target name is o.k.
@@ -532,15 +538,14 @@ public class CmsCopy extends CmsMultiDialog {
         }
 
         // set the target parameter value
-        setParamTarget(target);
+        setParamTarget(finalTarget);
 
         // delete existing target resource if selected or confirmed by the user
-        if (overwrite && getCms().existsResource(target)) {
-            checkLock(target);
-            getCms().deleteResource(target, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        if (overwrite && getCms().existsResource(finalTarget)) {
+            checkLock(finalTarget);
+            getCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
-
         // copy the resource       
-        getCms().copyResource(sitePrefix + source, target, copyMode);
+        getCms().copyResource(sitePrefix + source, finalTarget, copyMode);
     }
 }

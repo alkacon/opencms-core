@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspXmlContentBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -115,6 +115,40 @@ public class CmsJspXmlContentBean extends CmsJspActionElement {
         boolean editable) throws JspException {
 
         return new CmsJspTagContentLoad(null, getJspContext(), collectorName, collectorParam, locale, editable);
+    }
+
+    /**
+     * Loads a set of <code>{@link org.opencms.xml.I_CmsXmlDocument}</code>, same as
+     * using the <code>&lt;cms:contentload collector="***" param="***" locale="***" editable="***" /&gt;</code> tag.<p>
+     * 
+     * @param collectorName the collector name to use
+     * @param collectorParam the collector param to use
+     * @param pageIndex the display page index (may contain macros)
+     * @param pageSize the display page size (may contain macros)
+     * @param locale the locale to use to access the content
+     * @param editable indicates if "direct edit" support is required (will insert additional HTML)
+     * 
+     * @return an XML content container loaded with the selected content
+     * 
+     * @throws JspException in case something goes wrong
+     */
+    public I_CmsXmlContentContainer contentload(
+        String collectorName,
+        String collectorParam,
+        String pageIndex,
+        String pageSize,
+        Locale locale,
+        boolean editable) throws JspException {
+
+        return new CmsJspTagContentLoad(
+            null,
+            getJspContext(),
+            collectorName,
+            collectorParam,
+            pageIndex,
+            pageSize,
+            locale,
+            editable);
     }
 
     /**

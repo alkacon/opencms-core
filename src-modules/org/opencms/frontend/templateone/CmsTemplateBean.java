@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -538,7 +537,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
                 } catch (Exception e) {
                     // problem extracting information from property
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,7 +49,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXTERNAL_LINK_VALIDATION_0 = "ERR_EXTERNAL_LINK_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_DETAIL_HIDE_LINKS_HELP_0 = "GUI_BROKENLINKS_DETAIL_HIDE_LINKS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_DETAIL_HIDE_LINKS_NAME_0 = "GUI_BROKENLINKS_DETAIL_HIDE_LINKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_DETAIL_LINKS_NAME_0 = "GUI_BROKENLINKS_DETAIL_LINKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_DETAIL_SHOW_LINKS_HELP_0 = "GUI_BROKENLINKS_DETAIL_SHOW_LINKS_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_DETAIL_SHOW_LINKS_NAME_0 = "GUI_BROKENLINKS_DETAIL_SHOW_LINKS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_LIST_NAME_0 = "GUI_BROKENLINKS_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1 = "GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKENLINKS_NOTICE_0 = "GUI_BROKENLINKS_NOTICE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECK_INTERNAL_LINK_HELP_0 = "GUI_CHECK_INTERNAL_LINK_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_LIST_HELP_0 = "GUI_CHECK_INTERNAL_LINK_LIST_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_LIST_NAME_0 = "GUI_CHECK_INTERNAL_LINK_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECK_INTERNAL_LINK_NAME_0 = "GUI_CHECK_INTERNAL_LINK_NAME_0";
@@ -73,6 +103,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0 = "GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_INTERNALLINK_EDITOR_LABEL_BLOCK_0 = "GUI_INTERNALLINK_EDITOR_LABEL_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_ADMIN_TOOL_GROUP_0 = "GUI_LINK_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -80,9 +113,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_ADMIN_TOOL_NAME_0 = "GUI_LINK_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0 = "GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0";
@@ -97,13 +127,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NO_VALIDATION_YET_0 = "GUI_NO_VALIDATION_YET_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_TITLE_HTML_LINK_VALIDATOR_0 = "GUI_TITLE_HTML_LINK_VALIDATOR_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_VALIDATE_INTERNAL_LINKS_CONFIRMATION_0 = "GUI_VALIDATE_INTERNAL_LINKS_CONFIRMATION_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.link.messages";

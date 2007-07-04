@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2005 Alkacon Software GmbH",
+        "Copyright (c) 2007 Alkacon Software GmbH",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",
@@ -84,6 +84,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_INIT_MANAGERS_0 = "ERR_CRITICAL_INIT_MANAGERS_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_CRITICAL_INIT_MEMORY_MONITOR_1 = "ERR_CRITICAL_INIT_MEMORY_MONITOR_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_INIT_PROP_0 = "ERR_CRITICAL_INIT_PROP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -111,10 +114,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MULTI_EXCEPTION_1 = "ERR_MULTI_EXCEPTION_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SESSIONINFO_SESSION_0 = "ERR_NO_SESSIONINFO_SESSION_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_WORKPLACE_PERMISSIONS_0 = "ERR_NO_WORKPLACE_PERMISSIONS_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_OPENCMS_NOT_INITIALIZED_2 = "ERR_OPENCMS_NOT_INITIALIZED_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_PERMALINK_1 = "ERR_PERMALINK_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
@@ -354,7 +366,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_GENERIC_0 = "LOG_ERROR_GENERIC_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1 = "LOG_ERROR_MEMORY_MONITOR_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_MODULE_SHUTDOWN_1 = "LOG_ERROR_MODULE_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_PUBLISH_SHUTDOWN_1 = "LOG_ERROR_PUBLISH_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_READING_AUTH_PROP_2 = "LOG_ERROR_READING_AUTH_PROP_2";
@@ -367,6 +385,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_SECURITY_SHUTDOWN_1 = "LOG_ERROR_SECURITY_SHUTDOWN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1 = "LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";
@@ -411,6 +432,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_STARTUP_CONSOLE_NOTE_2 = "LOG_STARTUP_CONSOLE_NOTE_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0 = "LOG_THREADSTORE_CHECK_PUBLISH_THREAD_ERROR_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0 = "LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0";
 
     /** Message contant for key in the resource bundle. */
@@ -421,6 +445,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_THREADSTORE_POOL_CONTENT_2 = "LOG_THREADSTORE_POOL_CONTENT_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2 = "LOG_THREADSTORE_PUBLISH_THREAD_INTERRUPT_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_WRONG_INIT_SEQUENCE_2 = "LOG_WRONG_INIT_SEQUENCE_2";

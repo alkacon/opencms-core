@@ -13,6 +13,10 @@
 <a href="/folder1/index.html?a=b&c=d#anchor">Index page</a>
 ]]></content>
 		</Html>
-		<VfsLink>/index.html</VfsLink>
+		<VfsLink>
+			<link>
+				<target><![CDATA[/sites/default/index.html]]></target>
+			</link>
+		</VfsLink>
 	</Handlertest>
 </Handlertests>

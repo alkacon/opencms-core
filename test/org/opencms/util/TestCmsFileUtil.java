@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsFileUtil.java,v $
- * Date   : $Date: 2006/07/19 14:53:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/07/04 16:57:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 /** 
  * @author Jason Trump 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.2.2
  */
@@ -140,7 +140,7 @@ public class TestCmsFileUtil extends TestCase {
     }
 
     /**
-     * Test the behavior of {@link CmsFileUtil#readFully()} 
+     * Test the behavior of {@link CmsFileUtil#readFully(InputStream)}
      * when the read takes more than one iteration to complete.<p>  
      *  
      * @throws IOException in case the test fails

@@ -23,7 +23,7 @@ function runConfirmValues() {
 
 //-->
 </script>
-<form name="captcha">
+<form name="captcha" method="post" enctype="multipart/form-data">
 <%
 }
 %>
@@ -77,7 +77,7 @@ if (captchaField != null) {
 
 <table border="0" style="margin-top: 14px;">
 <tr>
-<form name="confirmvalues" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>" onSubmit="return runConfirmValues();">
+<form name="confirmvalues" method="post" enctype="multipart/form-data" action="<%= cms.link(cms.getRequestContext().getUri()) %>" onSubmit="return runConfirmValues();">
 <input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_CONFIRMED %>">
 <input type="hidden" name="<%= CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE %>" value="">
 <%= formHandler.createHiddenFields() %>
@@ -85,7 +85,7 @@ if (captchaField != null) {
 </form>
 
 
-<form name="displayvalues" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
+<form name="displayvalues" method="post" enctype="multipart/form-data" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
 <input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_CORRECT_INPUT %>">
 <%= formHandler.createHiddenFields() %>
 <td><input type="submit" value="<%= messages.key("form.button.correct") %>" class="formbutton"></td>

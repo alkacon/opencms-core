@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             }
 
             // create the sibling                        
-            boolean restoreSiteRoot = false;
+            String storedSiteRoot = null;
             try {
                 if (CmsSiteManager.getSiteRoot(targetName) != null) {
                     // add site root to new resource path
@@ -127,9 +127,8 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
                     }
                     fullResourceName = siteRootFolder + fullResourceName;
-                    getCms().getRequestContext().saveSiteRoot();
+                    storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                     getCms().getRequestContext().setSiteRoot("/");
-                    restoreSiteRoot = true;
                 }
 
                 // check if the link target is a file or a folder
@@ -153,7 +152,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         try {
                             targetProperties = getCms().readPropertyObjects(targetName, false);
                         } catch (Exception e) {
-                            LOG.error(e);
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                     getCms().createSibling(targetName, fullResourceName, targetProperties);
@@ -161,8 +160,8 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
             } finally {
                 // restore the site root
-                if (restoreSiteRoot) {
-                    getCms().getRequestContext().restoreSiteRoot();
+                if (storedSiteRoot != null) {
+                    getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             }
 
@@ -197,7 +196,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         try {
             CmsLock lock = getCms().getLock(newRes);
             // if the new resource has no exclusive lock, set the editProps flag to false
-            if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
+            if (! lock.isExclusive()) {
                 editProps = false;
             }
         } catch (CmsException e) {

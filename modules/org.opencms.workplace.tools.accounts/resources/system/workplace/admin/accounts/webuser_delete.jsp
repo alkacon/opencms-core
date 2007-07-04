@@ -1,5 +1,0 @@
-<%@ page import="org.opencms.workplace.tools.accounts.*"%><%
-
-	CmsWebusersList wp = new CmsWebusersList(pageContext, request, response);
-	wp.actionDeleteUser();	
-%>

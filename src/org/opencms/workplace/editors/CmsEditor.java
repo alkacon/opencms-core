@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/06/26 10:24:17 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,13 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
@@ -69,11 +69,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
-public abstract class CmsEditor extends CmsDialog {
+public abstract class CmsEditor extends CmsEditorBase {
 
     /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
@@ -138,9 +138,6 @@ public abstract class CmsEditor extends CmsDialog {
     /** Marker for empty locale in locale selection. */
     public static final String EMPTY_LOCALE = " [-]";
 
-    /** Stores the VFS editor path. */
-    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
-
     /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";
 
@@ -171,12 +168,17 @@ public abstract class CmsEditor extends CmsDialog {
     /** Parameter name for the request parameter "tempfile". */
     public static final String PARAM_TEMPFILE = "tempfile";
 
+    /** Stores the VFS editor path. */
+    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditor.class);
 
+    /** A cloned cms instance that prevents the broken link remotion during unmarshalling. */
+    private CmsObject m_cloneCms;
+
     /** The encoding to use (will be read from the file property). */
     private String m_fileEncoding;
-
     // some private members for parameter storage
     private String m_paramBackLink;
     private String m_paramContent;
@@ -187,6 +189,7 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramLoadDefault;
     private String m_paramModified;
     private String m_paramOldelementlanguage;
+
     private String m_paramTempFile;
 
     /** Helper variable to store the uri to the editors pictures. */
@@ -231,29 +234,24 @@ public abstract class CmsEditor extends CmsDialog {
      * Builds the html String for the element language selector.<p>
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * @param resource the name of the resource to edit
+     * @param resourceName the name of the resource to edit
      * @param selectedLocale the currently selected Locale
      * @return the html for the element language selectbox
      */
-    public String buildSelectElementLanguage(String attributes, String resource, Locale selectedLocale) {
+    public String buildSelectElementLanguage(String attributes, String resourceName, Locale selectedLocale) {
 
         // get locale names based on properties and global settings
-        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), resource);
+        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), resourceName);
         List options = new ArrayList(locales.size());
         List selectList = new ArrayList(locales.size());
         int currentIndex = -1;
-
-        String filename = resource;
 
         //get the locales already used in the resource
         List contentLocales = new ArrayList();
         try {
 
-            CmsResource res = getCms().readResource(filename);
-
-            String temporaryFilename = CmsResource.getFolderPath(resource)
-                + CmsWorkplace.TEMP_FILE_PREFIX
-                + res.getName();
+            CmsResource res = getCms().readResource(resourceName);
+            String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName);
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
@@ -263,7 +261,7 @@ public abstract class CmsEditor extends CmsDialog {
         } catch (CmsException e) {
             // to nothing here in case the resource could not be opened
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, filename), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_GET_LOCALES_1, resourceName), e);
             }
         }
 
@@ -386,15 +384,24 @@ public abstract class CmsEditor extends CmsDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#checkLock(java.lang.String, int)
+     * @see org.opencms.workplace.CmsWorkplace#checkLock(String, CmsLockType)
      */
-    public void checkLock(String resource, int mode) throws CmsException {
+    public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-        if (!getCms().getLock(res).isNullLock()) {
+        CmsLock lock = getCms().getLock(res); 
+        if (!lock.isNullLock()) {
+
             setParamModified(Boolean.TRUE.toString());
         }
-        super.checkLock(resource, mode);
+
+        // for resources with siblings make sure all sibling have at least a
+        // temporary lock
+        if ((res.getSiblingCount() > 1) && (lock.isInherited())) {
+            super.checkLock(resource, CmsLockType.TEMPORARY);
+        } else {
+            super.checkLock(resource, type);
+        }
     }
 
     /**
@@ -415,9 +422,7 @@ public abstract class CmsEditor extends CmsDialog {
         try {
             CmsResource res = getCms().readResource(filename);
 
-            String temporaryFilename = CmsResource.getFolderPath(filename)
-                + CmsWorkplace.TEMP_FILE_PREFIX
-                + res.getName();
+            String temporaryFilename = CmsWorkplace.getTemporaryFileName(filename);
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
@@ -743,7 +748,7 @@ public abstract class CmsEditor extends CmsDialog {
             // now replace the content of the original file
             CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             orgFile.setContents(tempFile.getContents());
-            getCms().writeFile(orgFile);
+            getCloneCms().writeFile(orgFile);
         } else {
             // original file does not exist, remove visibility permission entries and copy temporary file
             if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
@@ -754,7 +759,7 @@ public abstract class CmsEditor extends CmsDialog {
                 getCms().rmacc(
                     getParamTempfile(),
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupProjectmanagers());
+                    OpenCms.getDefaultUsers().getGroupUsers());
             }
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
@@ -774,18 +779,13 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String createTempFile() throws CmsException {
 
-        // read the selected file
-        CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-
         // create the filename of the temporary file
-        String temporaryFilename = CmsResource.getFolderPath(getCms().getSitePath(file))
-            + CmsWorkplace.TEMP_FILE_PREFIX
-            + file.getName();
+        String temporaryFilename = CmsWorkplace.getTemporaryFileName(getParamResource());
 
         // check if the temporary file is already present
         if (getCms().existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
             // delete old temporary file
-            if (!getCms().getLock(temporaryFilename).equals(CmsLock.getNullLock())) {
+            if (!getCms().getLock(temporaryFilename).isUnlocked()) {
                 // steal lock
                 getCms().changeLock(temporaryFilename);
             } else {
@@ -800,7 +800,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         // copy the file to edit to a temporary file
         try {
-            getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
+            getCms().copyResource(getParamResource(), temporaryFilename, CmsResource.COPY_AS_NEW);
             getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
             // set the temporary file flag
             CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
@@ -822,7 +822,7 @@ public abstract class CmsEditor extends CmsDialog {
                 getCms().chacc(
                     temporaryFilename,
                     I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                    OpenCms.getDefaultUsers().getGroupUsers(),
                     "-v");
             }
         } catch (CmsException e) {
@@ -916,6 +916,24 @@ public abstract class CmsEditor extends CmsDialog {
         return CmsEncoder.escapeWBlanks(content, CmsEncoder.ENCODING_UTF_8);
     }
 
+    /** 
+     * Returns a cloned cms instance that prevents the time range resource filter check.<p> 
+     * 
+     * Use it always for unmarschalling and file writing.<p>
+     * 
+     * @return a cloned cms instance that prevents the time range resource filter check
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsObject getCloneCms() throws CmsException {
+
+        if (m_cloneCms == null) {
+            m_cloneCms = OpenCms.initCmsObject(getCms());
+            m_cloneCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        }
+        return m_cloneCms;
+    }
+
     /**
      * Returns the encoding parameter.<p>
      *
@@ -989,7 +1007,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
-        setParamTitle(key("title.edit") + ": " + CmsResource.getName(getParamResource()));
+        setParamTitle(key(Messages.GUI_TITLE_EDIT_1, new Object[] {CmsResource.getName(getParamResource())}));
         if (exception != null) {
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, exception);
             if (CmsLog.getLog(editor).isWarnEnabled()) {

@@ -53,17 +53,11 @@ public class CmsUserWidget extends A_CmsWidget {
     /** Configuration parameter to set the group of users to display, optional. */
     public static final String CONFIGURATION_GROUP = "group";
 
-    /** Configuration parameter to set the user type to select in the popup user selection dialog. */
-    public static final String CONFIGURATION_USERTYPE = "usertype";
-
     /** The the flags used in the popup window. */
     private Integer m_flags;
 
     /** The the group used in the popup window. */
     private String m_groupName;
-
-    /** The user type used in the popup window. */
-    private Integer m_userType;
 
     /**
      * Creates a new user selection widget.<p>
@@ -78,13 +72,11 @@ public class CmsUserWidget extends A_CmsWidget {
      * Creates a new user selection widget with the parameters to configure the popup window behaviour.<p>
      * 
      * @param flags the group flags to restrict the group selection, can be <code>null</code>
-     * @param userType the type of the users to display, can be <code>null</code>
      * @param groupName the group to restrict the user selection, can be <code>null</code>
      */
-    public CmsUserWidget(Integer flags, Integer userType, String groupName) {
+    public CmsUserWidget(Integer flags, String groupName) {
 
         m_flags = flags;
-        m_userType = userType;
         m_groupName = groupName;
     }
 
@@ -113,15 +105,6 @@ public class CmsUserWidget extends A_CmsWidget {
             result.append(CONFIGURATION_FLAGS);
             result.append("=");
             result.append(m_flags);
-        }
-        // append user type to configuration
-        if (m_userType != null) {
-            if (result.length() > 0) {
-                result.append("|");
-            }
-            result.append(CONFIGURATION_USERTYPE);
-            result.append("=");
-            result.append(m_userType.intValue());
         }
         // append group to configuration
         if (m_groupName != null) {
@@ -176,25 +159,22 @@ public class CmsUserWidget extends A_CmsWidget {
         buttonJs.append("/system/workplace/commons/user_selection.jsp");
         buttonJs.append("','EDITOR',  '");
         buttonJs.append(id);
-        buttonJs.append("', document, '");
+        buttonJs.append("', document, ");
         if (m_flags != null) {
+            buttonJs.append("'");
             buttonJs.append(m_flags);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
+        buttonJs.append(", ");
         if (m_groupName != null) {
+            buttonJs.append("'");
             buttonJs.append(m_groupName);
+            buttonJs.append("'");
         } else {
             buttonJs.append("null");
         }
-        buttonJs.append("', '");
-        if (m_userType != null) {
-            buttonJs.append(m_userType.intValue());
-        } else {
-            buttonJs.append("null");
-        }
-        buttonJs.append("'");
         buttonJs.append(");");
 
         result.append(widgetDialog.button(
@@ -232,16 +212,6 @@ public class CmsUserWidget extends A_CmsWidget {
     }
 
     /**
-     * Returns the user Type, or <code>null</code> if all.<p>
-     *
-     * @return the user Type, or <code>null</code> if all
-     */
-    public Integer getUserType() {
-
-        return m_userType;
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
@@ -255,7 +225,6 @@ public class CmsUserWidget extends A_CmsWidget {
     public void setConfiguration(String configuration) {
 
         m_groupName = null;
-        m_userType = null;
         m_flags = null;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
             int flagsIndex = configuration.indexOf(CONFIGURATION_FLAGS);
@@ -268,20 +237,6 @@ public class CmsUserWidget extends A_CmsWidget {
                 }
                 try {
                     m_flags = Integer.valueOf(flags);
-                } catch (Throwable t) {
-                    // invalid flags
-                }
-            }
-            int typeIndex = configuration.indexOf(CONFIGURATION_USERTYPE);
-            if (typeIndex != -1) {
-                // user type is given
-                String type = configuration.substring(CONFIGURATION_USERTYPE.length() + 1);
-                if (type.indexOf('|') != -1) {
-                    // cut eventual following configuration values
-                    type = type.substring(0, type.indexOf('|'));
-                }
-                try {
-                    m_userType = Integer.valueOf(type);
                 } catch (Throwable t) {
                     // invalid flags
                 }

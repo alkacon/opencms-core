@@ -6,4 +6,4 @@ setCurrentProject "_setupProject"
 
 # Publish the project
 unlockCurrentProject
-publishProject
+publishProjectAndWait

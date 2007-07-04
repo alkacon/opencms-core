@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2006/10/04 07:35:21 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/07/04 16:56:59 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,20 +48,20 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlReport extends A_CmsReport {
 
     /** Constant for a HTML linebreak with added "real" line break. */
-    private static final String LINEBREAK = "<br>";
+    protected static final String LINEBREAK = "<br>";
 
     /** 
      * Constant for a HTML linebreak with added "real" line break- 
      * traditional style for report threads that still use XML templates for their output.
      */
-    private static final String LINEBREAK_TRADITIONAL = "<br>\\n";
+    protected static final String LINEBREAK_TRADITIONAL = "<br>\\n";
 
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List m_content;
@@ -73,7 +73,10 @@ public class CmsHtmlReport extends A_CmsReport {
     private int m_indexNext;
 
     /** Flag to indicate if an exception should be displayed long or short. */
-    private boolean m_showExceptionStackTracke;
+    private boolean m_showExceptionStackTrace;
+
+    /** If set to <code>true</code> nothing is kept in memory. */
+    private boolean m_transient;
 
     /** Boolean flag indicating whether this report should generate HTML or JavaScript output. */
     private boolean m_writeHtml;
@@ -86,7 +89,7 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     public CmsHtmlReport(Locale locale, String siteRoot) {
 
-        this(locale, siteRoot, false);
+        this(locale, siteRoot, false, false);
     }
 
     /**
@@ -95,13 +98,15 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param locale the locale to use for the output language
      * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      * @param writeHtml if <code>true</code>, this report should generate HTML instead of JavaScript output
+     * @param isTransient If set to <code>true</code> nothing is kept in memory
      */
-    protected CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml) {
+    protected CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml, boolean isTransient) {
 
         init(locale, siteRoot);
         m_content = new ArrayList(256);
-        m_showExceptionStackTracke = true;
+        m_showExceptionStackTrace = true;
         m_writeHtml = writeHtml;
+        m_transient = isTransient;
     }
 
     /**
@@ -112,15 +117,18 @@ public class CmsHtmlReport extends A_CmsReport {
         StringBuffer result = new StringBuffer();
         int indexEnd = m_content.size();
         for (int i = m_indexNext; i < indexEnd; i++) {
-            Object obj = m_content.get(i);
-            if (obj instanceof String || obj instanceof StringBuffer) {
+            int pos = m_transient ? 0 : i;
+            Object obj = m_content.get(pos);
+            if ((obj instanceof String) || (obj instanceof StringBuffer)) {
                 result.append(obj);
             } else if (obj instanceof Throwable) {
                 result.append(getExceptionElement((Throwable)obj));
             }
+            if (m_transient) {
+                m_content.remove(m_indexNext);
+            }
         }
-        m_indexNext = indexEnd;
-
+        m_indexNext = m_transient ? 0 : indexEnd;
         return result.toString();
     }
 
@@ -129,24 +137,22 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     public synchronized void print(String value, int format) {
 
-        value = CmsStringUtil.escapeJavaScript(value);
-        StringBuffer buf;
+        StringBuffer buf = null;
 
         if (!m_writeHtml) {
+            value = CmsStringUtil.escapeJavaScript(value);
             switch (format) {
                 case FORMAT_HEADLINE:
                     buf = new StringBuffer();
                     buf.append("aH('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
                     break;
                 case FORMAT_WARNING:
                     buf = new StringBuffer();
                     buf.append("aW('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
                     addWarning(value);
                     break;
                 case FORMAT_ERROR:
@@ -154,7 +160,6 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("aE('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
                     addError(value);
                     break;
                 case FORMAT_NOTE:
@@ -162,14 +167,12 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("aN('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
                     break;
                 case FORMAT_OK:
                     buf = new StringBuffer();
                     buf.append("aO('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
                     break;
                 case FORMAT_DEFAULT:
                 default:
@@ -177,31 +180,27 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("a('");
                     buf.append(value);
                     buf.append("'); ");
-                    m_content.add(buf);
             }
-
             // the output lines get split back into single lines on the client-side.
             // thus, a separate JavaScript call has to be added here to tell the
             // client that we want a linebreak here...
             if (value.trim().endsWith(getLineBreak())) {
                 buf.append("aB(); ");
             }
+            m_content.add(buf.toString());
         } else {
-            // TODO remove this code when all reports are switched from XML templates to JSP pages
             switch (format) {
                 case FORMAT_HEADLINE:
                     buf = new StringBuffer();
                     buf.append("<span class='head'>");
                     buf.append(value);
                     buf.append("</span>");
-                    m_content.add(buf);
                     break;
                 case FORMAT_WARNING:
                     buf = new StringBuffer();
                     buf.append("<span class='warn'>");
                     buf.append(value);
                     buf.append("</span>");
-                    m_content.add(buf);
                     addWarning(value);
                     break;
                 case FORMAT_ERROR:
@@ -209,7 +208,6 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("<span class='err'>");
                     buf.append(value);
                     buf.append("</span>");
-                    m_content.add(buf);
                     addError(value);
                     break;
                 case FORMAT_NOTE:
@@ -217,19 +215,21 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append("<span class='note'>");
                     buf.append(value);
                     buf.append("</span>");
-                    m_content.add(buf);
                     break;
                 case FORMAT_OK:
                     buf = new StringBuffer();
                     buf.append("<span class='ok'>");
                     buf.append(value);
                     buf.append("</span>");
-                    m_content.add(buf);
                     break;
                 case FORMAT_DEFAULT:
                 default:
-                    m_content.add(value);
+                    buf = new StringBuffer(value);
             }
+            if (value.trim().endsWith(getLineBreak())) {
+                buf.append("\n");
+            }
+            m_content.add(buf.toString());
         }
     }
 
@@ -266,7 +266,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * This method ensures that exception stack traces are properly escaped
      * when they are added to the report.<p>
      * 
-     * There is a member variable {@link #m_showExceptionStackTracke} in this
+     * There is a member variable {@link #m_showExceptionStackTrace} in this
      * class that controls if the stack track is shown or not.
      * In a later version this might be configurable on a per-user basis.<p>
      *      
@@ -278,7 +278,7 @@ public class CmsHtmlReport extends A_CmsReport {
         StringBuffer buf = new StringBuffer(256);
 
         if (!m_writeHtml) {
-            if (m_showExceptionStackTracke) {
+            if (m_showExceptionStackTrace) {
                 buf.append("aT('");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
@@ -290,16 +290,15 @@ public class CmsHtmlReport extends A_CmsReport {
                 }
                 buf.append(CmsStringUtil.escapeJavaScript(excBuffer.toString()));
                 buf.append("'); ");
-                m_content.add(buf);
             } else {
                 buf.append("aT('");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 buf.append(CmsStringUtil.escapeJavaScript(throwable.toString()));
                 buf.append("'); ");
-                m_content.add(buf);
             }
+            m_content.add(buf);
         } else {
-            if (m_showExceptionStackTracke) {
+            if (m_showExceptionStackTrace) {
                 buf.append("<span class='throw'>");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
@@ -309,17 +308,16 @@ public class CmsHtmlReport extends A_CmsReport {
                     excBuffer.append(tok.nextToken());
                     excBuffer.append(getLineBreak());
                 }
-                buf.append(CmsStringUtil.escapeJavaScript(excBuffer.toString()));
+                buf.append(excBuffer.toString());
                 buf.append("</span>");
             } else {
                 buf.append("<span class='throw'>");
                 buf.append(getMessages().key(Messages.RPT_EXCEPTION_0));
-                buf.append(CmsStringUtil.escapeJavaScript(throwable.toString()));
+                buf.append(throwable.toString());
                 buf.append("</span>");
                 buf.append(getLineBreak());
             }
         }
-
         return buf;
     }
 }

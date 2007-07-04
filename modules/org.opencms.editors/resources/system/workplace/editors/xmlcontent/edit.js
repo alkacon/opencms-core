@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2007/02/28 17:11:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,40 @@ var buttonTimer = null;
 // mouse up & resize event closes open element operation buttons
 document.onmouseup = hideElementButtons;
 window.onresize = hideElementButtons;
+document.onkeydown = handleKeyDownEvents;
+
+// adds common shortcuts to the editor
+function handleKeyDownEvents(ev) {
+
+	if (!ev) {
+		ev = window.event;
+	}
+	if (ev.ctrlKey) {
+		var key;
+		if (ev.which) {
+			key = ev.which;
+		} else {
+			key = ev.keyCode;
+		}
+		if (key == 83) {
+			// 's' pressed
+			if (ev.shiftKey) {
+				// save content and exit
+				buttonAction(2);
+			} else {
+				// save content without exiting
+				buttonAction(3);
+			}
+			return false;
+		}
+		if (ev.shiftKey && key == 88) {
+			// 'x' pressed, exit editor
+			confirmExit();
+			return false;
+		}
+	}
+	return true;
+}
 
 // function action on button click
 function buttonAction(para) {
@@ -113,6 +147,11 @@ function buttonAction(para) {
 	case 11:
 		// move element up
 		_form.action.value = actionMoveElementUp;
+		_form.submit();
+		break;
+	case 12:
+		// correct the XML structure
+		_form.action.value = actionCorrectXml;
 		_form.submit();
 		break;
 	case 14:

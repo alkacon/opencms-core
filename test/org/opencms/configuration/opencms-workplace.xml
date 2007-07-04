@@ -15,14 +15,18 @@
     </dialoghandlers>
     <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
     <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>
-		<directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider">
-			<param name="aParam">aParamValue</param>
-			<param name="bParam">bParamValue</param>
-		</directeditprovider>
+    <editorcsshandlers>
+    	<editorcsshandler class="org.opencms.workplace.editors.CmsEditorCssHandlerDefault"/>
+    </editorcsshandlers>
+    <editorpreconditions>
+    	<editorprecondition name="xmlcontent" class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
+    </editorpreconditions>
+    <directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
     <exportpoints>
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>
     <autolock>true</autolock>
+	<xmlcontentautocorrection>true</xmlcontentautocorrection>
     <enableusermanagement>true</enableusermanagement>
     <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
     <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
@@ -35,34 +39,128 @@
       <windowSize>200</windowSize>
     </rfsfileviewsettings>
     <explorertypes>
+      <explorertype name="unknown_folder" key="fileicon.unknown_folder" icon="unknown_folder.png">
+        <newresource uri="" order="0" autosetnavigation="false" autosettitle="false"/>
+        <accesscontrol>
+          <accessentry principal="DEFAULT" permissions="+r+v"/>
+          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+          <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+        <editoptions>
+          <defaultproperties enabled="false" shownavigation="false" />
+          <contextmenu>
+			<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+          </contextmenu>
+        </editoptions>
+      </explorertype>
+      <explorertype name="unknown_file" key="fileicon.unknown_file" icon="unknown_file.png">
+        <newresource uri="" order="0" autosetnavigation="false" autosettitle="false"/>
+        <accesscontrol>
+          <accessentry principal="DEFAULT" permissions="+r+v"/>
+          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+          <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+		<editoptions>
+          <defaultproperties enabled="false" shownavigation="false" />
+          <contextmenu>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
+          </contextmenu>
+        </editoptions>
+      </explorertype>
       <explorertype name="folder" key="fileicon.folder" icon="folder.gif">
         <newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+			<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -76,40 +174,52 @@
         <newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="Keywords"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Keywords"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PAGEEDIT_0" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp?editormode=edit" target="_top" rules="d d iiii aaai dddd" order="90"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="330"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_PAGEEDIT_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp?editormode=edit" target="_top" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -117,36 +227,47 @@
         <newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="export"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="export"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -154,35 +275,46 @@
         <newresource uri="" order="40" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -190,43 +322,54 @@
         <newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
-          <accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
           <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+          <accessentry principal="ROLE.RoleDevelopers" permissions="+r+v+w+c"/>
         </accesscontrol>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
-            <property name="cache"/>
-            <property name="content-encoding"/>
-            <property name="export"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="cache"/>
+            <defaultproperty name="content-encoding"/>
+            <defaultproperty name="export"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -234,34 +377,45 @@
         <newresource uri="" order="60" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="false">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -269,69 +423,43 @@
         <newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0" uri="commons/editpointer.jsp" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
-          </contextmenu>
-        </editoptions>
-      </explorertype>
-      <explorertype name="XMLTemplate" key="fileicon.xmltemplate" icon="xmltemplate.gif">
-        <newresource uri="" order="80" autosetnavigation="false" autosettitle="false"/>
-        <accesscontrol>
-          <accessentry principal="DEFAULT" permissions="+r+v"/>
-          <accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-          <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-        </accesscontrol>
-        <editoptions>
-          <defaultproperties enabled="false" shownavigation="false"/>
-          <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0" uri="commons/editpointer.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -345,34 +473,48 @@
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
-            <entry key="GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0" uri="commons/renameimages.jsp" rules="d d iiii aaai dddd" order="85"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COMMENTIMAGES_0" uri="commons/commentimages.jsp" rules="d d iiii aaai dddd" order="90"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0" uri="commons/renameimages.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_COMMENTIMAGES_0" uri="commons/commentimages.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -380,32 +522,46 @@
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
+            <defaultproperty name="Title"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOW_DELETED_0" uri="commons/show_deleted.jsp" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
@@ -422,62 +578,159 @@
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
         <editoptions>
           <defaultproperties enabled="true" shownavigation="true">
-            <property name="Title"/>
-            <property name="Keywords"/>
-            <property name="Description"/>
+            <defaultproperty name="Title"/>
+            <defaultproperty name="Keywords"/>
+            <defaultproperty name="Description"/>
           </defaultproperties>
           <contextmenu>
-            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-            <separator order="40"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-            <separator order="70"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-            <separator order="100"/>
-            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-            <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-            <separator order="240"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-            <separator order="260"/>
-            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-            <entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-            <separator order="330"/>
-            <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
-            <separator order="340"/>
-            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+            <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="lock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp" rule="changelock"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
+            <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="undochanges"/>
+            <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="undelete"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings" rule="showsiblings"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp" rule="permissions"/>
+            <entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp" rule="standard"/>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="standard">
+            	<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp" rule="standard"/>
+            	<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp" rule="standard"/>
+            	<separator/>
+            	<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true" target="_top" rule="standard"/>
+            </entry>
+            <separator/>
+            <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
+            <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="commons/property.jsp" rule="nondeleted"/>
           </contextmenu>
         </editoptions>
       </explorertype>
       <defaultaccesscontrol>
         <accesscontrol>
-          <accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
+          <accessentry principal="DEFAULT" permissions="+r+v"/>
           <accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+          <accessentry principal="ROLE.RoleWorkplaceUsers" permissions="+r+v+w+c"/>
         </accesscontrol>
       </defaultaccesscontrol>
       <multicontextmenu>
-        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rules="" order="10"/>
-        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rules="" order="20"/>
-        <separator order="30"/>
-        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rules="" order="40"/>
-        <separator order="50"/>
-        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="" order="60"/>
-        <entry key="GUI_EXPLORER_CONTEXT_MOVE_MULTI_0" uri="commons/move.jsp" rules="" order="70"/>
-        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="" order="80"/>
-        <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="" order="90"/>
-        <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="" order="100"/>
-        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="" order="110"/>
-        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rules="" order="120"/>
+        <entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="multistandard"/>
+        <separator/>
+        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="multistandard"/>
+        <separator/>
+        <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_MOVE_MULTI_0" uri="commons/move.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp" rule="multistandard"/>
       </multicontextmenu>
+	  <menurules>
+    	<menurule name="standard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+    	</menurule>
+    	<menurule name="copy">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveNotDeletedNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+    	</menurule>
+    	<menurule name="copytoproject">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
+    	<menurule name="undelete">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActiveDeletedNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveDeletedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+    	</menurule>
+    	<menurule name="undochanges">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNotDeletedNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveChangedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+    	</menurule>
+    	<menurule name="permissions">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAl" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+    	</menurule>
+    	<menurule name="directpublish">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirDirectPublish" />
+    	</menurule>
+    	<menurule name="lock">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
+    	<menurule name="unlock">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActive" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+    	</menurule>
+    	<menurule name="changelock">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockActiveNoPublish" />
+    	</menurule>
+    	<menurule name="showlocks">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOnlineInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible" />
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirAlwaysActive" />
+    	</menurule>
+    	<menurule name="showsiblings">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirShowSiblings" />
+    	</menurule>
+    	<menurule name="nondeleted">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirActiveNonDeleted" />
+    	</menurule>
+    	<menurule name="multistandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiStandard" />
+    	</menurule>
+    	<menurule name="substandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSubStandard" />
+    	</menurule>
+   	  </menurules>
     </explorertypes>
     <default-preferences>
       <workplace-preferences>
@@ -486,8 +739,12 @@
           <reporttype>extended</reporttype>
           <uploadapplet>true</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
+          <show-fileuploadbutton>true</show-fileuploadbutton>
+          <allowbrokenrelations>false</allowbrokenrelations>
+          <publishrelatedresources>true</publishrelatedresources>
  		  <newfolder-editproperties>true</newfolder-editproperties>
  		  <newfolder-createindexpage>true</newfolder-createindexpage>
+    	  <show-uploadtypedialog>true</show-uploadtypedialog>
         </workplace-generaloptions>
         <workplace-startupsettings>
           <locale>en</locale>
@@ -497,6 +754,10 @@
           <site>/sites/default/</site>
           <restrictexplorerview>false</restrictexplorerview>
         </workplace-startupsettings>
+        <workplace-search>
+        	<searchindex-name>Offline project (VFS)</searchindex-name>
+        	<searchview-style>explorer</searchview-style>
+        </workplace-search>
       </workplace-preferences>
       <explorer-preferences>
         <explorer-generaloptions>
@@ -505,6 +766,7 @@
         </explorer-generaloptions>
         <explorer-displayoptions>
           <show-title>true</show-title>
+          <show-navtext>false</show-navtext>
           <show-type>true</show-type>
           <show-datelastmodified>true</show-datelastmodified>
           <show-datecreated>false</show-datecreated>
@@ -541,19 +803,12 @@
           <editor type="xmlpage" value="bestavailable"/>
         </editors-preferrededitors>
       </editors-preferences>
-      <workflow-preferences>
-        <workflow-generaloptions>
-          <startupfilter>mynewtasks</startupfilter>
-          <showprojects>false</showprojects>
-        </workflow-generaloptions>
-        <workflow-defaultsettings>
-          <message-accepted>false</message-accepted>
-          <message-forwarded>false</message-forwarded>
-          <message-completed>false</message-completed>
-          <informrolemembers>false</informrolemembers>
-        </workflow-defaultsettings>
-      </workflow-preferences>
     </default-preferences>
+    <workplace-customfoot>
+    	<color>InfoText</color>
+    	<background-color>InfoBackground</background-color>
+    	<text replace="true">[Custom] (%(key.GUI_LABEL_USER_0) %(currentuser.name))</text>
+    </workplace-customfoot>
     <tool-manager>
       <roots>
         <root>

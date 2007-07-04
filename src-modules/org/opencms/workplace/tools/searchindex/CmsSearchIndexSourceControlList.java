@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexSourceControlList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -218,7 +218,6 @@ public class CmsSearchIndexSourceControlList extends A_CmsListDialog {
                 listItem = (CmsListItem)itItems.next();
                 idxsource = searchManager.getIndexSource((String)listItem.get(LIST_COLUMN_NAME));
                 searchManager.removeSearchIndexSource(idxsource);
-                getList().removeItem(listItem.getId(), getLocale());
             }
             refreshList();
             writeConfiguration(false);

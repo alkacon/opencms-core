@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
- * Date   : $Date: 2006/12/21 10:33:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.ServletException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,27 +65,36 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
 
-        I_CmsReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsStaticExportJob.class);
+        I_CmsReport report = null;
 
         try {
+            report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
             Map eventData = new HashMap();
-            eventData.put("purge", new Boolean(true));
+            eventData.put("purge", Boolean.TRUE);
             eventData.put(I_CmsEventListener.KEY_REPORT, report);
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FULLSTATIC_EXPORT, eventData));
         } catch (CmsException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } catch (IOException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } catch (ServletException e) {
-            report.println(e);
+            if (report != null) {
+                report.println(e);
+            }
         } finally {
             // append runtime statistics to the report
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
-            report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_STAT_DURATION_1,
-                report.formatRuntime()));
-            report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            if (report != null) {
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_STAT_DURATION_1,
+                    report.formatRuntime()));
+                report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            }
         }
 
         return null;

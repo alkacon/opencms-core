@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2006/03/27 14:53:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,18 +39,19 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchCategoryCollector;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.DateTools;
@@ -60,17 +61,29 @@ import org.apache.lucene.document.Field;
 /**
  * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
  * just requires a specialized implementation of 
- * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, A_CmsIndexResource, String)}</code>
+ * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, CmsSearchIndex)}</code>
  * for text extraction from the binary document content.<p>
  * 
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
+
+    /** Value for "high" search priority. */
+    public static final String SEARCH_PRIORITY_HIGH_VALUE = "high";
+
+    /** Value for "low" search priority. */
+    public static final String SEARCH_PRIORITY_LOW_VALUE = "low";
+
+    /** Value for "maximum" search priority. */
+    public static final String SEARCH_PRIORITY_MAX_VALUE = "max";
+
+    /** Value for "normal" search priority. */
+    public static final String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
 
     /** The vfs prefix for document keys. */
     public static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
@@ -83,6 +96,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      */
     protected String m_name;
 
+    /** The cache used for storing extracted documents. */
+    private CmsExtractionResultCache m_cache;
+
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
@@ -94,17 +110,178 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
+     * Creates a document factory lookup key for the given resource type name / MIME type configuration.<p>
+     * 
+     * If the given <code>mimeType</code> is <code>null</code>, this indicates that the key should 
+     * match all VFS resource of the given resource type regardless of the MIME type.<p>
+     * 
+     * @param type the resource type name to use
+     * @param mimeType the MIME type to use
+     * 
+     * @return a document factory lookup key for the given resource id / MIME type configuration
      */
-    public String getDocumentKey(String resourceType) throws CmsIndexException {
+    public static String getDocumentKey(String type, String mimeType) {
 
-        try {
-            return VFS_DOCUMENT_KEY_PREFIX + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
-        } catch (Exception exc) {
-            throw new CmsIndexException(Messages.get().container(
-                Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1,
-                resourceType), exc);
+        StringBuffer result = new StringBuffer(16);
+        result.append(A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX);
+        result.append('_');
+        result.append(type);
+        if (mimeType != null) {
+            result.append(':');
+            result.append(mimeType);
         }
+        return result.toString();
+    }
+
+    /**
+     * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
+     * 
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
+     */
+    public Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException {
+
+        String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+
+        // extract the content from the resource
+        I_CmsExtractionResult content = null;
+
+        // check if caching is enabled for this document type
+        String cacheName = null;
+        CmsExtractionResultCache cache = getCache();
+        if (cache != null) {
+            cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
+            content = (I_CmsExtractionResult)cache.getCacheObject(cacheName);
+        }
+
+        if (content == null) {
+            // extraction result has not been found in the cache
+            try {
+                content = extractContent(cms, resource, index);
+                if (cache != null) {
+                    // save extracted content to the cache
+                    cache.saveCacheObject(cacheName, content);
+                }
+            } catch (Exception e) {
+                // text extraction failed for document - continue indexing meta information only
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+            }
+        }
+
+        // create the Lucene document according to the index field configuration
+        Document document = new Document();
+        CmsSearchFieldConfiguration fieldConfiguration = index.getFieldConfiguration();
+        Iterator fieldConfigs = fieldConfiguration.getFields().iterator();
+        while (fieldConfigs.hasNext()) {
+            // check all field configurations 
+            CmsSearchField fieldConfig = (CmsSearchField)fieldConfigs.next();
+            // generate the content for the field mappings
+            StringBuffer text = new StringBuffer();
+            Iterator mappings = fieldConfig.getMappings().iterator();
+            while (mappings.hasNext()) {
+                // walk through all mappings and check if content for this is available
+                CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
+                String mapResult = mapping.getStringValue(cms, resource, content);
+                if (mapResult != null) {
+                    // content is available for the mapping
+                    // append the result of the mapping to the main result
+                    text.append(mapResult);
+                    text.append('\n');
+                }
+            }
+            if (text.length() > 0) {
+                // content is available for this field
+                Field field = fieldConfig.createField(text.toString());
+                document.add(field);
+            }
+        }
+
+        // now add the special OpenCms default search fields
+        String value;
+        Field field;
+        // add the category of the file (this is searched so the value can also be attached on a folder)
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, true).getValue();
+        if (CmsStringUtil.isNotEmpty(value)) {
+            // all categorys are internally stored lower case
+            value = value.trim().toLowerCase();
+            if (value.length() > 0) {
+                field = new Field(CmsSearchField.FIELD_CATEGORY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
+                field.setBoost(0);
+                document.add(field);
+            }
+        } else {
+            // synthetic "unknown" category if no category property defined for resource
+            field = new Field(
+                CmsSearchField.FIELD_CATEGORY,
+                CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
+                Field.Store.YES,
+                Field.Index.UN_TOKENIZED);
+            document.add(field);
+        }
+
+        // add the document root path, optimized for use with a phrase query
+        String rootPath = CmsSearchIndex.rootPathRewrite(resource.getRootPath());
+        field = new Field(CmsSearchField.FIELD_ROOT, rootPath, Field.Store.YES, Field.Index.TOKENIZED);
+        // set boost of 0 to root path field, since root path should have no effect on search result score 
+        field.setBoost(0);
+        document.add(field);
+        // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
+        // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
+        document.add(new Field(
+            CmsSearchField.FIELD_PATH,
+            resource.getRootPath(),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED));
+
+        // add date of creation and last modification as keywords (for sorting)
+        field = new Field(CmsSearchField.FIELD_DATE_CREATED, DateTools.dateToString(
+            new Date(resource.getDateCreated()),
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
+        field.setBoost(0);
+        document.add(field);
+        field = new Field(
+            CmsSearchField.FIELD_DATE_LASTMODIFIED,
+            DateTools.dateToString(new Date(resource.getDateLastModified()), DateTools.Resolution.MILLISECOND),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED);
+        field.setBoost(0);
+        document.add(field);
+
+        // special field for VFS documents - add a marker so that the document can be identified as VFS resource
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        String typeName = VFS_DOCUMENT_KEY_PREFIX;
+        if (type != null) {
+            typeName = type.getTypeName();
+        }
+        document.add(new Field(CmsSearchField.FIELD_TYPE, typeName, Field.Store.YES, Field.Index.UN_TOKENIZED));
+
+        // set individual document boost factor for the search
+        float boost = CmsSearchField.BOOST_DEFAULT;
+        // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue();
+        if (value != null) {
+            value = value.trim().toLowerCase();
+            if (value.equals(SEARCH_PRIORITY_MAX_VALUE)) {
+                boost = 2.0f;
+            } else if (value.equals(SEARCH_PRIORITY_HIGH_VALUE)) {
+                boost = 1.5f;
+            } else if (value.equals(SEARCH_PRIORITY_LOW_VALUE)) {
+                boost = 0.5f;
+            }
+        }
+        if (boost != CmsSearchField.BOOST_DEFAULT) {
+            // set individual document boost factor if required
+            document.setBoost(boost);
+        }
+
+        return document;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getCache()
+     */
+    public CmsExtractionResultCache getCache() {
+
+        return m_cache;
     }
 
     /**
@@ -126,12 +303,12 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         try {
             for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
 
-                int id = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeId();
+                String typeName = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeName();
                 for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
-                    keys.add(VFS_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
+                    keys.add(getDocumentKey(typeName, (String)j.next()));
                 }
                 if (mimeTypes.isEmpty()) {
-                    keys.add(VFS_DOCUMENT_KEY_PREFIX + id);
+                    keys.add(getDocumentKey(typeName, null));
                 }
             }
         } catch (Exception exc) {
@@ -150,191 +327,11 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Generates a new lucene document instance from contents of the given resource.<p>
-     * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#setCache(org.opencms.search.documents.CmsExtractionResultCache)
      */
-    public Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+    public void setCache(CmsExtractionResultCache cache) {
 
-        Document document = new Document();
-        CmsResource res = (CmsResource)resource.getData();
-        String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-
-        // extract the content from the resource
-        String text = null;
-        try {
-            I_CmsExtractionResult content = extractContent(cms, resource, language);
-            text = mergeMetaInfo(content);
-            content.release();
-        } catch (Exception e) {
-            // text extraction failed for document - continue indexing meta information only
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
-        }
-        if (text != null) {
-            document.add(new Field(I_CmsDocumentFactory.DOC_CONTENT, text, Field.Store.YES, Field.Index.TOKENIZED));
-        }
-
-        StringBuffer meta = new StringBuffer(512);
-        String value;
-        Field field;
-
-        // add the title from the property
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-        if (CmsStringUtil.isNotEmpty(value)) {
-            value = value.trim();
-            if (value.length() > 0) {
-                // add title as keyword, required for sorting
-                field = new Field(I_CmsDocumentFactory.DOC_TITLE_KEY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
-                // title keyword field should not affect the boost factor
-                field.setBoost(0);
-                document.add(field);
-                // add title again as indexed field for searching
-                document.add(new Field(
-                    I_CmsDocumentFactory.DOC_TITLE_INDEXED,
-                    value,
-                    Field.Store.NO,
-                    Field.Index.TOKENIZED));
-                meta.append(value);
-                meta.append(" ");
-            }
-        }
-        // add the keywords from the property
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_KEYWORDS, false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            document.add(new Field(I_CmsDocumentFactory.DOC_KEYWORDS, value, Field.Store.YES, Field.Index.TOKENIZED));
-            meta.append(value);
-            meta.append(" ");
-        }
-        // add the description from the property
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            document.add(new Field(I_CmsDocumentFactory.DOC_DESCRIPTION, value, Field.Store.YES, Field.Index.TOKENIZED));
-            meta.append(value);
-            meta.append(" ");
-        }
-        // add the collected meta information
-        String metaInf = meta.toString();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(metaInf)) {
-            document.add(new Field(I_CmsDocumentFactory.DOC_META, metaInf, Field.Store.NO, Field.Index.TOKENIZED));
-        }
-
-        // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, true).getValue();
-        if (CmsStringUtil.isNotEmpty(value)) {
-            // all categorys are internally stored lower case
-            value = value.trim().toLowerCase();
-            if (value.length() > 0) {
-                field = new Field(I_CmsDocumentFactory.DOC_CATEGORY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
-                field.setBoost(0);
-                document.add(field);
-            }
-        } else {
-            // synthetic "unknown" category if no category property defined for resource
-            field = new Field(
-                I_CmsDocumentFactory.DOC_CATEGORY,
-                CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
-                Field.Store.YES,
-                Field.Index.UN_TOKENIZED);
-            document.add(field);
-        }
-
-        // add the document root path, optimized for use with a phrase query
-        String rootPath = CmsSearchIndex.rootPathRewrite(resource.getRootPath());
-        field = new Field(I_CmsDocumentFactory.DOC_ROOT, rootPath, Field.Store.YES, Field.Index.TOKENIZED);
-        // set boost of 0 to root path field, since root path should have no effect on search result score 
-        field.setBoost(0);
-        document.add(field);
-        // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
-        // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
-        document.add(new Field(
-            I_CmsDocumentFactory.DOC_PATH,
-            resource.getRootPath(),
-            Field.Store.YES,
-            Field.Index.UN_TOKENIZED));
-
-        // add date of creation and last modification as keywords (for sorting)
-        field = new Field(I_CmsDocumentFactory.DOC_DATE_CREATED, DateTools.dateToString(
-            new Date(res.getDateCreated()),
-            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
-        field.setBoost(0);
-        document.add(field);
-        field = new Field(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateTools.dateToString(new Date(
-            res.getDateLastModified()), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
-        field.setBoost(0);
-        document.add(field);
-
-        // special field for VFS documents - add a marker so that the document can be identified as VFS resource
-        document.add(new Field(I_CmsDocumentFactory.DOC_TYPE, VFS_DOCUMENT_KEY_PREFIX, Field.Store.YES, Field.Index.NO));
-
-        float boost = 1.0f;
-        // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue();
-        if (value != null) {
-            value = value.trim().toLowerCase();
-            if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
-                boost = 2.0f;
-            } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_HIGH_VALUE)) {
-                boost = 1.5f;
-            } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_LOW_VALUE)) {
-                boost = 0.5f;
-            }
-        }
-        // set document boost factor
-        document.setBoost(boost);
-
-        return document;
-    }
-
-    /**
-     * Returns a String created out of the content and the most important meta information in the given 
-     * extraction result.<p>
-     * 
-     * OpenCms uses it's own properties for the text "Title" etc. field, this method ensures
-     * the most important document meta information can still be found as part of the content.<p> 
-     * 
-     * @param extractedContent the extraction result to merge
-     * 
-     * @return a String created out of the most important meta information in the given map and the content
-     */
-    protected String mergeMetaInfo(I_CmsExtractionResult extractedContent) {
-
-        Map metaInfo = extractedContent.getMetaInfo();
-        String content = extractedContent.getContent();
-
-        if (((metaInfo == null) || (metaInfo.size() == 0)) && (CmsStringUtil.isEmpty(content))) {
-            return null;
-        }
-
-        StringBuffer result = new StringBuffer(4096);
-        if (metaInfo != null) {
-            String meta;
-            meta = (String)metaInfo.get(I_CmsExtractionResult.META_TITLE);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
-            }
-            meta = (String)metaInfo.get(I_CmsExtractionResult.META_SUBJECT);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
-            }
-            meta = (String)metaInfo.get(I_CmsExtractionResult.META_KEYWORDS);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
-            }
-            meta = (String)metaInfo.get(I_CmsExtractionResult.META_COMMENTS);
-            if (CmsStringUtil.isNotEmpty(meta)) {
-                result.append(meta);
-                result.append('\n');
-            }
-        }
-
-        if (content != null) {
-            result.append(content);
-        }
-
-        return result.toString();
+        m_cache = cache;
     }
 
     /**

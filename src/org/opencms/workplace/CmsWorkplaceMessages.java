@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2006/07/20 13:46:39 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,8 +144,8 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
      * Gathers all localization files for the workplace from the different modules.<p>
      * 
      * For a module named "my.module.name" the locale file must be named 
-     * "my.module.name.workplace" and be located in the classpath so that the resource loader
-     * can find it.<p>
+     * "my.module.name.workplace" or "my.module.name.messages" and 
+     * be located in the classpath so that the resource loader can find it.<p>
      * 
      * @param locale the selected locale
      * 

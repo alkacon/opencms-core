@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsTwoListsDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,6 @@ public class CmsTwoListsDialog {
         displayDialog(false);
     }
 
-    
     /**
      * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
      * 
@@ -157,7 +156,7 @@ public class CmsTwoListsDialog {
         JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());
     }
-    
+
     /**
      * Display method for two list dialogs, executes actions, but only displays if needed.<p>
      * 

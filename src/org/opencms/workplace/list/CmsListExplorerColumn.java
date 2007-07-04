@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,15 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * For adding text style to the columns in the explorer list.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,24 +56,24 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.CmsWorkplace, boolean)
+     * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
-    public String htmlCell(CmsListItem item, CmsWorkplace wp, boolean isPrintable) {
+    public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         if (isPrintable) {
-            return super.htmlCell(item, wp, isPrintable);
+            return super.htmlCell(item, isPrintable);
         }
-        CmsResourceUtil resUtil = ((A_CmsListExplorerDialog)wp).getResourceUtil(item);
+        CmsResourceUtil resUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
         StringBuffer html = new StringBuffer(128);
         html.append("<table cellpadding='0' cellspacing='0' border='0'><tr><td class='");
         html.append(resUtil.getStyleClassName());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resUtil.getStyleRange())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resUtil.getTimeWindowLayoutStyle())) {
             html.append(" ' style='");
-            html.append(resUtil.getStyleRange());
+            html.append(resUtil.getTimeWindowLayoutStyle());
             html.append("'");
         }
         html.append("'>");
-        html.append(super.htmlCell(item, wp, isPrintable));
+        html.append(super.htmlCell(item, isPrintable));
         html.append("</td></tr></table>");
         return html.toString();
     }
@@ -89,10 +88,10 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
         StringBuffer result = new StringBuffer(256);
         result.append("<style type='text/css'>\n");
         result.append(".fc, .fc .link a { color: #b40000; }\n");
-        result.append(".fn, .fn .link a  { color: #0000aa; }\n");
-        result.append(".fd, .fd .link a  { color: #000000; text-decoration: line-through; }\n");
-        result.append(".fp, .fp .link a  { color: #888888; }\n");
-        result.append(".nf, .nf .link a  { color:#000000; }\n");
+        result.append(".fn, .fn .link a { color: #0000aa; }\n");
+        result.append(".fd, .fd .link a { color: #000000; text-decoration: line-through; }\n");
+        result.append(".fp, .fp .link a { color: #888888; }\n");
+        result.append(".nf, .nf .link a { color:#000000; }\n");
         result.append("</style>");
         return result.toString();
     }

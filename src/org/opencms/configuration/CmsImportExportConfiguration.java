@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/03/02 11:43:27 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.CmsUserExportSettings;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
@@ -57,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0
  */
@@ -69,155 +70,173 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
+    /**  The node name of the column node. */
+    public static final String N_COLUMN = "column";
+
+    /**  The node name of the columns node. */
+    public static final String N_COLUMNS = "columns";
+
     /** Node that indicates page conversion. */
-    protected static final String N_CONVERT = "convert";
-
-    /** Node that contains a list of properties ignored during import. */
-    protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
-
-    /** The import immutable resources node. */
-    protected static final String N_IMMUTABLES = "immutables";
-
-    /** The node name of the import subconfiguration. */
-    protected static final String N_IMPORT = "import";
-
-    /** The main configuration node name. */
-    protected static final String N_IMPORTEXPORT = "importexport";
-
-    /** The node name of an individual import/export handler. */
-    protected static final String N_IMPORTEXPORTHANDLER = "importexporthandler";
-
-    /** Master node for import/export handlers. */
-    protected static final String N_IMPORTEXPORTHANDLERS = "importexporthandlers";
-
-    /** The node name of an individual import version class. */
-    protected static final String N_IMPORTVERSION = "importversion";
-
-    /** Master node for import version class names. */
-    protected static final String N_IMPORTVERSIONS = "importversions";
-
-    /** Node the contains an optional URL of old web application. */
-    protected static final String N_OLDWEBAPPURL = "oldwebappurl";
-
-    /** The import overwrite node name. */
-    protected static final String N_OVERWRITE = "overwrite";
-
-    /** The node name of the repository params node. */
-    protected static final String N_PARAMS = "params";
+    public static final String N_CONVERT = "convert";
 
     /** The node name of the repository filter node. */
-    protected static final String N_FILTER = "filter";
+    public static final String N_FILTER = "filter";
 
-    /** The node name of the repository filter regex node. */
-    protected static final String N_REGEX = "regex";
+    /** Node that contains a list of properties ignored during import. */
+    public static final String N_IGNOREDPROPERTIES = "ignoredproperties";
+
+    /** The import immutable resources node. */
+    public static final String N_IMMUTABLES = "immutables";
+
+    /** The node name of the import subconfiguration. */
+    public static final String N_IMPORT = "import";
+
+    /** The main configuration node name. */
+    public static final String N_IMPORTEXPORT = "importexport";
+
+    /** The node name of an individual import/export handler. */
+    public static final String N_IMPORTEXPORTHANDLER = "importexporthandler";
+
+    /** Master node for import/export handlers. */
+    public static final String N_IMPORTEXPORTHANDLERS = "importexporthandlers";
+
+    /** The node name of an individual import version class. */
+    public static final String N_IMPORTVERSION = "importversion";
+
+    /** Master node for import version class names. */
+    public static final String N_IMPORTVERSIONS = "importversions";
+
+    /** Node the contains an optional URL of old web application. */
+    public static final String N_OLDWEBAPPURL = "oldwebappurl";
+
+    /** The import overwrite node name. */
+    public static final String N_OVERWRITE = "overwrite";
+
+    /** The node name of the repository params node. */
+    public static final String N_PARAMS = "params";
 
     /** An individual principal translation node. */
-    protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
+    public static final String N_PRINCIPALTRANSLATION = "principaltranslation";
 
     /** The principal translation node. */
-    protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
+    public static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
+
+    /** The node name of the repository filter regex node. */
+    public static final String N_REGEX = "regex";
 
     /** The node name of the repositories node. */
-    protected static final String N_REPOSITORIES = "repositories";
+    public static final String N_REPOSITORIES = "repositories";
 
     /** The node name of the repository node. */
-    protected static final String N_REPOSITORY = "repository";
+    public static final String N_REPOSITORY = "repository";
+
+    /**  The node name of the separator node. */
+    public static final String N_SEPARATOR = "separator";
 
     /**  The main configuration node for static export name. */
-    protected static final String N_STATICEXPORT = "staticexport";
+    public static final String N_STATICEXPORT = "staticexport";
 
     /**  The node name of the static export acceptcharset node. */
-    protected static final String N_STATICEXPORT_ACCEPTCHARSET = "acceptcharset";
+    public static final String N_STATICEXPORT_ACCEPTCHARSET = "acceptcharset";
 
     /**  The node name of the static export acceptlanguage node. */
-    protected static final String N_STATICEXPORT_ACCEPTLANGUAGE = "acceptlanguage";
+    public static final String N_STATICEXPORT_ACCEPTLANGUAGE = "acceptlanguage";
 
     /**  The node name of the static export default node. */
-    protected static final String N_STATICEXPORT_DEFAULT = "defaultpropertyvalue";
+    public static final String N_STATICEXPORT_DEFAULT = "defaultpropertyvalue";
 
     /**  The node name of the static export defualtsuffix node. */
-    protected static final String N_STATICEXPORT_DEFAULTSUFFIXES = "defaultsuffixes";
+    public static final String N_STATICEXPORT_DEFAULTSUFFIXES = "defaultsuffixes";
 
     /**  The node name of the static export rule description nodes. */
-    protected static final String N_STATICEXPORT_DESCRIPTION = "description";
+    public static final String N_STATICEXPORT_DESCRIPTION = "description";
 
     /**  The node name of the static export export-rule export node. */
-    protected static final String N_STATICEXPORT_EXPORT = "export-resources";
+    public static final String N_STATICEXPORT_EXPORT = "export-resources";
+
+    /**  The node name of the static export exportbackups node. */
+    public static final String N_STATICEXPORT_EXPORTBACKUPS = "exportbackups";
 
     /**  The node name of the static export exportheaders node. */
-    protected static final String N_STATICEXPORT_EXPORTHEADERS = "exportheaders";
+    public static final String N_STATICEXPORT_EXPORTHEADERS = "exportheaders";
 
     /**  The node name of the static export exportpath node. */
-    protected static final String N_STATICEXPORT_EXPORTPATH = "exportpath";
+    public static final String N_STATICEXPORT_EXPORTPATH = "exportpath";
 
     /**  The node name of the static export export-rule node. */
-    protected static final String N_STATICEXPORT_EXPORTRULE = "export-rule";
+    public static final String N_STATICEXPORT_EXPORTRULE = "export-rule";
 
     /**  The node name of the static export export-rules node. */
-    protected static final String N_STATICEXPORT_EXPORTRULES = "export-rules";
+    public static final String N_STATICEXPORT_EXPORTRULES = "export-rules";
 
     /**  The node name of the static export exporturl node. */
-    protected static final String N_STATICEXPORT_EXPORTURL = "exporturl";
+    public static final String N_STATICEXPORT_EXPORTURL = "exporturl";
+
+    /**  The node name of the static export exportworkpath node. */
+    public static final String N_STATICEXPORT_EXPORTWORKPATH = "exportworkpath";
 
     /**  The node name of the static export handler node. */
-    protected static final String N_STATICEXPORT_HANDLER = "staticexporthandler";
+    public static final String N_STATICEXPORT_HANDLER = "staticexporthandler";
 
     /**  The node name of the static export header node. */
-    protected static final String N_STATICEXPORT_HEADER = "header";
+    public static final String N_STATICEXPORT_HEADER = "header";
 
     /**  The node name of the static export export-rule modified node. */
-    protected static final String N_STATICEXPORT_MODIFIED = "modified-resources";
+    public static final String N_STATICEXPORT_MODIFIED = "modified-resources";
 
     /**  The node name of the static export rule name nodes. */
-    protected static final String N_STATICEXPORT_NAME = "name";
+    public static final String N_STATICEXPORT_NAME = "name";
 
     /**  The node name of the static export plainoptimization node. */
-    protected static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
+    public static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
 
     /**  The node name of the static export regex node. */
-    protected static final String N_STATICEXPORT_REGEX = "regex";
+    public static final String N_STATICEXPORT_REGEX = "regex";
 
     /**  The node name of the static export related-system-res node. */
-    protected static final String N_STATICEXPORT_RELATED_SYSTEM_RES = "related-system-res";
+    public static final String N_STATICEXPORT_RELATED_SYSTEM_RES = "related-system-res";
 
     /**  The node name of the static export relativelinks node. */
-    protected static final String N_STATICEXPORT_RELATIVELINKS = "userelativelinks";
+    public static final String N_STATICEXPORT_RELATIVELINKS = "userelativelinks";
 
     /**  The node name of the static export remoteaddr node. */
-    protected static final String N_STATICEXPORT_REMOTEADDR = "remoteaddr";
+    public static final String N_STATICEXPORT_REMOTEADDR = "remoteaddr";
 
     /**  The node name of the static export rendersettings node. */
-    protected static final String N_STATICEXPORT_RENDERSETTINGS = "rendersettings";
+    public static final String N_STATICEXPORT_RENDERSETTINGS = "rendersettings";
 
     /**  The node name of the static export requestheaders node. */
-    protected static final String N_STATICEXPORT_REQUESTHEADERS = "requestheaders";
+    public static final String N_STATICEXPORT_REQUESTHEADERS = "requestheaders";
 
     /**  The node name of the static export resourcestorender node. */
-    protected static final String N_STATICEXPORT_RESOURCESTORENDER = "resourcestorender";
+    public static final String N_STATICEXPORT_RESOURCESTORENDER = "resourcestorender";
 
     /**  The node name of the static export rfx-prefix node. */
-    protected static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
+    public static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
 
     /**  The node name of the static export rfx-rule node. */
-    protected static final String N_STATICEXPORT_RFS_RULE = "rfs-rule";
+    public static final String N_STATICEXPORT_RFS_RULE = "rfs-rule";
 
     /**  The node name of the static export rfx-rules node. */
-    protected static final String N_STATICEXPORT_RFS_RULES = "rfs-rules";
+    public static final String N_STATICEXPORT_RFS_RULES = "rfs-rules";
 
     /**  The node name of the static export rfx-rule source node. */
-    protected static final String N_STATICEXPORT_SOURCE = "source";
+    public static final String N_STATICEXPORT_SOURCE = "source";
 
     /**  The node name of the static export suffix node. */
-    protected static final String N_STATICEXPORT_SUFFIX = "suffix";
+    public static final String N_STATICEXPORT_SUFFIX = "suffix";
 
     /**  The node name of the static export testresource node. */
-    protected static final String N_STATICEXPORT_TESTRESOURCE = "testresource";
+    public static final String N_STATICEXPORT_TESTRESOURCE = "testresource";
 
     /**  The node name of the static export export-rule export uri node. */
-    protected static final String N_STATICEXPORT_URI = "uri";
+    public static final String N_STATICEXPORT_URI = "uri";
 
     /**  The node name of the static export vfx-prefix node. */
-    protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
+    public static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
+
+    /**  The node name of the user csv export node. */
+    public static final String N_USERCSVEXPORT = "usercsvexport";
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
@@ -348,6 +367,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_HANDLER, "setHandler", 0);
         // exportpath rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH, "setExportPath", 0);
+        // exportworkpath rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTWORKPATH, "setExportWorkPath", 0);
+        // exportbackups rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTBACKUPS, "setExportBackups", 0);
         // default property rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULT, "setDefault", 0);
         // export suffix rule
@@ -481,19 +504,27 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + N_STATICEXPORT_RFS_RULES
             + "/"
             + N_STATICEXPORT_RFS_RULE;
-        digester.addCallMethod(rfsRulePath, "addRfsRule", 6);
+        digester.addCallMethod(rfsRulePath, "addRfsRule", 8);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_NAME, 0);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_DESCRIPTION, 1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_SOURCE, 2);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RFS_PREFIX, 3);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTPATH, 4);
-        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATIVELINKS, 5);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTWORKPATH, 5);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTBACKUPS, 6);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATIVELINKS, 7);
         // rfs-rule related system resources
         digester.addCallMethod(
             rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX,
             "addRfsRuleSystemRes",
             1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
+
+        // add rules for the user data export
+        digester.addObjectCreate("*/" + N_USERCSVEXPORT, CmsUserExportSettings.class);
+        digester.addCallMethod("*/" + N_USERCSVEXPORT + "/" + N_SEPARATOR, "setSeparator", 0);
+        digester.addCallMethod("*/" + N_USERCSVEXPORT + "/" + N_COLUMNS + "/" + N_COLUMN, "addColumn", 0);
+        digester.addSetNext("*/" + N_USERCSVEXPORT, "setUserExportSettings");
 
         // creation of the static repository manager        
         digester.addObjectCreate("*/" + N_REPOSITORIES, CmsRepositoryManager.class);
@@ -564,10 +595,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         // <overwrite> node
         importElement.addElement(N_OVERWRITE).setText(
-            (new Boolean(m_importExportManager.overwriteCollidingResources())).toString());
+            String.valueOf(m_importExportManager.overwriteCollidingResources()));
 
         // <convert> node
-        importElement.addElement(N_CONVERT).setText((new Boolean(m_importExportManager.convertToXmlPage())).toString());
+        importElement.addElement(N_CONVERT).setText(String.valueOf(m_importExportManager.convertToXmlPage()));
 
         // <oldwebappurl> node
         if (m_importExportManager.getOldWebAppUrl() != null) {
@@ -631,6 +662,22 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             exportPathUnmodified = exportPathUnmodified.substring(0, exportPathUnmodified.length() - 1);
         }
         staticexportElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(exportPathUnmodified);
+
+        // <exportworkpath> node
+        String exportWorkPathUnmodified = m_staticExportManager.getExportWorkPathForConfiguration();
+        if (exportWorkPathUnmodified != null) {
+            // cut path seperator        
+            if (exportWorkPathUnmodified.endsWith(File.separator)) {
+                exportWorkPathUnmodified = exportWorkPathUnmodified.substring(0, exportWorkPathUnmodified.length() - 1);
+            }
+            staticexportElement.addElement(N_STATICEXPORT_EXPORTWORKPATH).addText(exportWorkPathUnmodified);
+        }
+
+        // <exportbackups> node
+        if (m_staticExportManager.getExportBackups() != null) {
+            String exportBackupsUnmodified = String.valueOf(m_staticExportManager.getExportBackups());
+            staticexportElement.addElement(N_STATICEXPORT_EXPORTBACKUPS).addText(exportBackupsUnmodified);
+        }
 
         // <defaultpropertyvalue> node
         staticexportElement.addElement(N_STATICEXPORT_DEFAULT).addText(m_staticExportManager.getDefault());
@@ -748,6 +795,13 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 rfsRuleElement.addElement(N_STATICEXPORT_SOURCE).addText(rule.getSource().pattern());
                 rfsRuleElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(rule.getRfsPrefixConfigured());
                 rfsRuleElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(rule.getExportPathConfigured());
+                if (rule.getExportWorkPathConfigured() != null) {
+                    rfsRuleElement.addElement(N_STATICEXPORT_EXPORTWORKPATH).addText(rule.getExportWorkPathConfigured());
+                }
+                if (rule.getExportBackups() != null) {
+                    rfsRuleElement.addElement(N_STATICEXPORT_EXPORTBACKUPS).addText(
+                        String.valueOf(rule.getExportBackups()));
+                }
                 if (rule.getUseRelativeLinks() != null) {
                     rfsRuleElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(
                         rule.getUseRelativeLinks().toString());
@@ -761,6 +815,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             }
 
         }
+
+        // <usercsvexport>
+        Element userExportElement = parent.addElement(N_USERCSVEXPORT);
+
+        userExportElement.addElement(N_SEPARATOR).setText(m_importExportManager.getUserExportSettings().getSeparator());
+        Element exportColumns = userExportElement.addElement(N_COLUMNS);
+        List exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
+        Iterator itExportColumnList = exportColumnList.iterator();
+        while (itExportColumnList.hasNext()) {
+            exportColumns.addElement(N_COLUMN).setText((String)itExportColumnList.next());
+        }
+        // </usercsvexport>
 
         if (m_repositoryManager.isConfigured()) {
             List repositories = m_repositoryManager.getRepositories();
@@ -783,10 +849,11 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                     if ((config != null) && (config.size() > 0)) {
                         Element paramsElement = repositoryElement.addElement(N_PARAMS);
 
-                        Iterator it = config.keySet().iterator();
+                        Iterator it = config.entrySet().iterator();
                         while (it.hasNext()) {
-                            String key = (String)it.next();
-                            String[] value = (String[])config.get(key);
+                            Map.Entry e = (Map.Entry)it.next();
+                            String key = (String)e.getKey();
+                            String[] value = (String[])e.getValue();
 
                             // <param> nodes
                             for (int j = 0; j < value.length; j++) {
@@ -903,5 +970,15 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATEXP_MANAGER_0));
         }
+    }
+
+    /**
+     * Sets the user settings for export and import.<p>
+     * 
+     * @param userExportSettings the user settings for export and import
+     */
+    public void setUserExportSettings(CmsUserExportSettings userExportSettings) {
+
+        m_importExportManager.setUserExportSettings(userExportSettings);
     }
 }

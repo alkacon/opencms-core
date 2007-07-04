@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2006/03/31 13:59:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/04 16:56:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,10 +138,11 @@ public class CmsPropertyDelete extends CmsDialog {
             // do the following operations only if all of the resources are not locked by another user
             if (resourcesLockedByOtherUser.isEmpty()) {
                 // save the site root
-                getCms().getRequestContext().saveSiteRoot();
-                // change to the root site
-                getCms().getRequestContext().setSiteRoot("/");
+                String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                 try {
+                    // change to the root site
+                    getCms().getRequestContext().setSiteRoot("/");
+                    
                     Iterator i = resourcesWithProperty.iterator();
                     while (i.hasNext()) {
                         CmsResource resource = (CmsResource)i.next();
@@ -155,7 +156,7 @@ public class CmsPropertyDelete extends CmsDialog {
                         // value which was deleted at a sibling which was already processed
                         if (!property.isNullProperty()) {
                             CmsLock lock = getCms().getLock(resource);
-                            if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
+                            if (lock.isUnlocked()) {
                                 // lock the resource for the current (Admin) user
                                 getCms().lockResource(resource.getRootPath());
                             }
@@ -171,7 +172,7 @@ public class CmsPropertyDelete extends CmsDialog {
                     getCms().deletePropertyDefinition(getParamPropertyName());
                 } finally {
                     // restore the siteroot
-                    getCms().getRequestContext().restoreSiteRoot();
+                    getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                     // close the dialog
                     actionCloseDialog();
                 }
@@ -252,9 +253,9 @@ public class CmsPropertyDelete extends CmsDialog {
         result.append("</tr>\n");
         result.append("<tr><td colspan=\"4\"><span style=\"height: 6px;\">&nbsp;</span></td></tr>\n");
 
-        getCms().getRequestContext().saveSiteRoot();
-        getCms().getRequestContext().setSiteRoot("/");
+        String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
+            getCms().getRequestContext().setSiteRoot("/");
             Iterator i = resourceList.iterator();
             while (i.hasNext()) {
                 CmsResource resource = (CmsResource)i.next();
@@ -293,7 +294,7 @@ public class CmsPropertyDelete extends CmsDialog {
             }
             result.append("</table>\n");
         } finally {
-            getCms().getRequestContext().restoreSiteRoot();
+            getCms().getRequestContext().setSiteRoot(storedSiteRoot);
         }
 
         return result.toString();
@@ -372,8 +373,8 @@ public class CmsPropertyDelete extends CmsDialog {
             // get the lock state for the resource
             CmsLock lock = getCms().getLock(resource);
             // add this resource to the list if this is locked by another user
-            if (lock.getType() != CmsLock.TYPE_UNLOCKED
-                && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+            if (!lock.isUnlocked()
+                && !lock.isOwnedBy(getCms().getRequestContext().currentUser())) {
                 lockedResourcesByOtherUser.add(resource);
             }
         }

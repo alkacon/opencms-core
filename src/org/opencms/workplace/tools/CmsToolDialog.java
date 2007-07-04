@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/10/06 14:02:20 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRoleViolationException;
@@ -50,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,13 +148,12 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t<table width='100%' cellspacing='0'>\n");
         html.append("\t\t<tr>\n");
         html.append("\t\t\t<td>\n");
-        html.append(getAdminTool().getHandler().getName());
+        html.append(CmsEncoder.decode(CmsToolMacroResolver.resolveMacros(getAdminTool().getHandler().getName(), this)));
         html.append("\n\t\t\t</td>");
         // uplevel button only if needed
-        if (getParentPath() != toolPath) {
+        if (!getParentPath().equals(toolPath)) {
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
                 Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_VIEW_UPLEVEL_0),
@@ -344,7 +344,7 @@ public class CmsToolDialog extends CmsWorkplace {
             // ignore
         }
 
-        if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(getCms())) {
+        if (!getToolManager().getCurrentTool(this).getHandler().isEnabled(this)) {
             throw new CmsRoleViolationException(Messages.get().container(Messages.ERR_ADMIN_INSUFFICIENT_RIGHTS_0));
         }
 
@@ -404,7 +404,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
 
-        if (!useNewStyle() || segment != HTML_START) {
+        if (!useNewStyle() || (segment != HTML_START)) {
             return super.pageHtmlStyle(segment, title, stylesheet);
         }
 
@@ -501,7 +501,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public boolean useNewStyle() {
 
-        return getParamStyle() != null && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
+        return (getParamStyle() != null) && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
     }
 
     /**

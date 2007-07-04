@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestExists.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.file;
 
+import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -44,7 +45,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestExists extends OpenCmsTestCase {
   
@@ -136,7 +137,8 @@ public class TestExists extends OpenCmsTestCase {
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "-r-w-v-c-i");
         cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName(), "-r-w-v-c-i");
         cms.unlockResource(resName);
-        cms.publishProject(); 
+        OpenCms.getPublishManager().publishProject(cms); 
+        OpenCms.getPublishManager().waitWhileRunning();
         
         cms.loginUser("testuser", "test");
         assertEquals(false, cms.existsResource(resName));

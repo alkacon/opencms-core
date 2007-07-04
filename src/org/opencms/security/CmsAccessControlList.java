@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,13 @@
 package org.opencms.security;
 
 import org.opencms.file.CmsUser;
+import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.RandomAccess;
-import java.util.Set;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
@@ -56,7 +57,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,36 +123,46 @@ public class CmsAccessControlList {
      *  
      * @param user the user
      * @param groups the groups of this user
+     * @param roles the roles of this user
      * 
      * @return the summarized permission set of the user
      */
-    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups) {
+    public CmsPermissionSetCustom getPermissions(CmsUser user, List groups, List roles) {
 
         CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
+        boolean hasPermissions = false;
         CmsPermissionSet p = (CmsPermissionSet)m_permissions.get(user.getId());
         if (p != null) {
             sum.addPermissions(p);
+            hasPermissions = true;
         }
         if (groups != null) {
-            I_CmsPrincipal principal;
-            if (groups instanceof RandomAccess) {
-                int size = groups.size();
-                for (int i = 0; i < size; i++) {
-                    principal = (I_CmsPrincipal)groups.get(i);
-                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
-                    if (p != null) {
-                        sum.addPermissions(p);
-                    }
+            int size = groups.size();
+            for (int i = 0; i < size; i++) {
+                I_CmsPrincipal principal = (I_CmsPrincipal)groups.get(i);
+                p = (CmsPermissionSet)m_permissions.get(principal.getId());
+                if (p != null) {
+                    sum.addPermissions(p);
+                    hasPermissions = true;
                 }
-            } else {
-                Iterator it = groups.iterator();
-                while (it.hasNext()) {
-                    principal = (I_CmsPrincipal)it.next();
-                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
-                    if (p != null) {
-                        sum.addPermissions(p);
-                    }
+            }
+        }
+        if (roles != null) {
+            int size = roles.size();
+            for (int i = 0; i < size; i++) {
+                CmsRole role = (CmsRole)roles.get(i);
+                p = (CmsPermissionSet)m_permissions.get(role.getId());
+                if (p != null) {
+                    sum.addPermissions(p);
+                    hasPermissions = true;
                 }
+            }
+        }
+        if (!hasPermissions) {
+            // if no applicable entry is found check the 'all others' entry
+            p = (CmsPermissionSet)m_permissions.get(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID);
+            if (p != null) {
+                sum.addPermissions(p);
             }
         }
         return sum;
@@ -160,13 +171,13 @@ public class CmsAccessControlList {
     /**
      * Returns the permission set of a principal as stored in the access control list.<p>
      * 
-     * @param principal the principal (group or user)
+     * @param principalId the id of the principal (group or user)
      * 
      * @return the current permissions of this single principal
      */
-    public CmsPermissionSetCustom getPermissions(I_CmsPrincipal principal) {
+    public CmsPermissionSetCustom getPermissions(CmsUUID principalId) {
 
-        return (CmsPermissionSetCustom)m_permissions.get(principal.getId());
+        return (CmsPermissionSetCustom)m_permissions.get(principalId);
     }
 
     /**
@@ -174,13 +185,14 @@ public class CmsAccessControlList {
      * The permissions are returned as permission string in the format {{+|-}{r|w|v|c|i}}*.
      * 
      * @param user the user
-     * @param groups the groups oft this user
+     * @param groups the groups of this user
+     * @param roles the roles of this user
      * 
      * @return a string that displays the permissions
      */
-    public String getPermissionString(CmsUser user, List groups) {
+    public String getPermissionString(CmsUser user, List groups, List roles) {
 
-        return getPermissions(user, groups).getPermissionString();
+        return getPermissions(user, groups, roles).getPermissionString();
     }
 
     /**
@@ -188,9 +200,11 @@ public class CmsAccessControlList {
      * 
      * @return enumeration of principals (each group or user)
      */
-    public Set getPrincipals() {
+    public List getPrincipals() {
 
-        return m_permissions.keySet();
+        List principals = new ArrayList(m_permissions.keySet());
+        Collections.sort(principals, CmsAccessControlEntry.COMPARATOR_PRINCIPALS);
+        return principals;
     }
 
     /**

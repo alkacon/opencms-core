@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.search.extractors;
 
-import java.util.Collections;
+import org.opencms.util.CmsStringUtil;
+
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,41 +45,44 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsExtractionResult implements I_CmsExtractionResult {
+public class CmsExtractionResult implements I_CmsExtractionResult, Serializable {
 
-    /** The extracted content. */
-    private String m_content;
+    /** UID rerquired for safe serialization. */
+    private static final long serialVersionUID = 1465447302192195154L;
 
-    /** The extracted meta information. */
-    private Map m_metaInfo;
+    /** The extracted individual content items. */
+    private Map m_contentItems;
 
     /**
-     * Creates a new extration result without meta information.<p>
+     * Creates a new extration result without meta information and without additional fields.<p>
      * 
      * @param content the extracted content
      */
     public CmsExtractionResult(String content) {
 
         this(content, null);
+        m_contentItems.put(ITEM_RAW, content);
     }
 
     /**
      * Creates a new extration result.<p>
      * 
      * @param content the extracted content
-     * @param metaInfo the extracted documnet meta information
+     * @param contentItems the individual extracted content items
      */
-    public CmsExtractionResult(String content, Map metaInfo) {
+    public CmsExtractionResult(String content, Map contentItems) {
 
-        m_content = content;
-        m_metaInfo = metaInfo;
-
-        if (m_metaInfo == null) {
-            m_metaInfo = Collections.EMPTY_MAP;
+        if (contentItems != null) {
+            m_contentItems = contentItems;
+        } else {
+            m_contentItems = new HashMap();
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
+            m_contentItems.put(ITEM_CONTENT, content);
         }
     }
 
@@ -85,15 +91,15 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      */
     public String getContent() {
 
-        return m_content;
+        return (String)m_contentItems.get(ITEM_CONTENT);
     }
 
     /**
-     * @see org.opencms.search.extractors.I_CmsExtractionResult#getMetaInfo()
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#getContentItems()
      */
-    public Map getMetaInfo() {
+    public Map getContentItems() {
 
-        return m_metaInfo;
+        return m_contentItems;
     }
 
     /**
@@ -101,10 +107,9 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
      */
     public void release() {
 
-        if (!m_metaInfo.isEmpty()) {
-            m_metaInfo.clear();
+        if (!m_contentItems.isEmpty()) {
+            m_contentItems.clear();
         }
-        m_metaInfo = null;
-        m_content = null;
+        m_contentItems = null;
     }
 }

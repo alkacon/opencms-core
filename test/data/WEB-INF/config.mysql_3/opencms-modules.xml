@@ -24,7 +24,7 @@
 				<param name="param2">value2</param>
 			</parameters>
             <resourcetypes>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="12">
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="27">
 					<properties>
 						<property>
 							<name>Title</name>

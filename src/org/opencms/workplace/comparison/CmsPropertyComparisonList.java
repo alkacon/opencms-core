@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/03/30 09:31:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,13 @@
 
 package org.opencms.workplace.comparison;
 
-import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,29 +117,23 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
 
-    /** The first file to compare. */
-    private CmsFile m_file1;
+    /** Parameter value for the structure id of the first file. */
+    private String m_paramId1;
 
-    /** The second file to compare. */
-    private CmsFile m_file2;
-
-    /** Parameter value for the path of the first file. */
-    private String m_paramPath1;
-
-    /** Parameter value for the path of the second file. */
-    private String m_paramPath2;
-
-    /** Parameter value for the tag id of the first file. */
-    private String m_paramTagId1;
-
-    /** Parameter value for the tag id of the second file. */
-    private String m_paramTagId2;
+    /** Parameter value for the structure id of the second file. */
+    private String m_paramId2;
 
     /** Parameter value for the version of the first file. */
     private String m_paramVersion1;
 
     /** Parameter value for the version of the second file. */
     private String m_paramVersion2;
+
+    /** The first resource to compare. */
+    private CmsResource m_resource1;
+
+    /** The second resource to compare. */
+    private CmsResource m_resource2;
 
     /** The type of the files. */
     private int m_resourceType;
@@ -167,6 +162,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
+     * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -183,7 +179,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         String searchableColId) {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
-
     }
 
     /**
@@ -218,12 +213,10 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // forward to the edit module screen  
         Map params = new HashMap();
-        params.put(CmsHistoryList.PARAM_TAGID_1, getParamTagId1());
-        params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
-        params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
-        params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
+        params.put(CmsHistoryList.PARAM_ID_1, getParamId1());
+        params.put(CmsHistoryList.PARAM_ID_2, getParamId2());
         params.put(PARAM_COMPARE, "properties");
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
@@ -231,63 +224,23 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the file1.<p>
+     * Returns the paramId1.<p>
      *
-     * @return the file1
+     * @return the paramId1
      */
-    public CmsFile getFile1() {
+    public String getParamId1() {
 
-        return m_file1;
+        return m_paramId1;
     }
 
     /**
-     * Returns the file2.<p>
+     * Returns the paramId2.<p>
      *
-     * @return the file2
+     * @return the paramId2
      */
-    public CmsFile getFile2() {
+    public String getParamId2() {
 
-        return m_file2;
-    }
-
-    /**
-     * Returns the paramPath1.<p>
-     *
-     * @return the paramPath1
-     */
-    public String getParamPath1() {
-
-        return m_paramPath1;
-    }
-
-    /**
-     * Returns the paramPath2.<p>
-     *
-     * @return the paramPath2
-     */
-    public String getParamPath2() {
-
-        return m_paramPath2;
-    }
-
-    /**
-     * Returns the paramTagId1.<p>
-     *
-     * @return the paramTagId1
-     */
-    public String getParamTagId1() {
-
-        return m_paramTagId1;
-    }
-
-    /**
-     * Returns the paramTagId2.<p>
-     *
-     * @return the paramTagId2
-     */
-    public String getParamTagId2() {
-
-        return m_paramTagId2;
+        return m_paramId2;
     }
 
     /**
@@ -311,6 +264,26 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the resource 1.<p>
+     *
+     * @return the resource 1
+     */
+    public CmsResource getResource1() {
+
+        return m_resource1;
+    }
+
+    /**
+     * Returns the resource 2.<p>
+     *
+     * @return the resource 2
+     */
+    public CmsResource getResource2() {
+
+        return m_resource2;
+    }
+
+    /**
      * Returns the resourceType.<p>
      *
      * @return the resourceType
@@ -321,43 +294,23 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the paramPath1.<p>
+     * Sets the paramId1.<p>
      *
-     * @param paramPath1 the paramPath1 to set
+     * @param paramId1 the paramId1 to set
      */
-    public void setParamPath1(String paramPath1) {
+    public void setParamId1(String paramId1) {
 
-        m_paramPath1 = paramPath1;
+        m_paramId1 = paramId1;
     }
 
     /**
-     * Sets the paramPath2.<p>
+     * Sets the paramId2.<p>
      *
-     * @param paramPath2 the paramPath2 to set
+     * @param paramId2 the paramId2 to set
      */
-    public void setParamPath2(String paramPath2) {
+    public void setParamId2(String paramId2) {
 
-        m_paramPath2 = paramPath2;
-    }
-
-    /**
-     * Sets the paramTagId1.<p>
-     *
-     * @param paramTagId1 the paramTagId1 to set
-     */
-    public void setParamTagId1(String paramTagId1) {
-
-        m_paramTagId1 = paramTagId1;
-    }
-
-    /**
-     * Sets the paramTagId2.<p>
-     *
-     * @param paramTagId2 the paramTagId2 to set
-     */
-    public void setParamTagId2(String paramTagId2) {
-
-        m_paramTagId2 = paramTagId2;
+        m_paramId2 = paramId2;
     }
 
     /**
@@ -394,7 +347,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getFile1(), getFile2()).iterator();
+        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getResource1(), getResource2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
@@ -418,9 +371,13 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             ret.add(item);
         }
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         return ret;
     }
 
@@ -430,17 +387,20 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);     
+        super.initWorkplaceRequestValues(settings, request);
         try {
-            m_file1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
-                getParamVersion1(), Integer.parseInt(getParamTagId1()));
-            m_file2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
-                getParamVersion2(), Integer.parseInt(getParamTagId2()));
+            m_resource1 = CmsResourceComparisonDialog.readResource(
+                getCms(),
+                new CmsUUID(getParamId1()),
+                getParamVersion1());
+            m_resource2 = CmsResourceComparisonDialog.readResource(
+                getCms(),
+                new CmsUUID(getParamId2()),
+                getParamVersion2());
         } catch (CmsException e) {
-
-            LOG.error(e.getStackTrace(), e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        m_resourceType = m_file1.getTypeId();
+        m_resourceType = m_resource1.getTypeId();
     }
 
     /**
@@ -546,7 +506,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add column for first value
         CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
-        version1Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        version1Col.setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -554,7 +516,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add column for second value
         CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
-        version2Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+        version2Col.setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);

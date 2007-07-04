@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -45,7 +44,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +88,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
 
         try {
             OpenCms.getImportExportManager().importData(getCms(), m_importFile, "/", getReport());
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_DB_IMPORT_0), e);

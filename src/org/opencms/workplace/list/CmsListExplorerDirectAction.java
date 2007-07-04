@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerDirectAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.util.CmsResourceUtil;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.io.File;
 
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,19 +52,14 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     /** The current resource util object. */
     private CmsResourceUtil m_resourceUtil;
 
-    /** The current workplace context. */
-    private A_CmsListExplorerDialog m_wp;
-
     /**
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param wp the current workplace context
      */
-    public CmsListExplorerDirectAction(String id, A_CmsListExplorerDialog wp) {
+    public CmsListExplorerDirectAction(String id) {
 
         super(id);
-        m_wp = wp;
     }
 
     /**
@@ -76,7 +71,6 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
             return "";
         }
         return defButtonHtml(
-            wp.getJsp(),
             getId() + getItem().getId(),
             getId(),
             resolveName(wp.getLocale()),
@@ -89,41 +83,20 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     }
 
     /**
-     * Returns used the dialog.<p>
-     * 
-     * @return the used dialog
-     */
-    public A_CmsListExplorerDialog getWp() {
-
-        return m_wp;
-    }
-
-    /**
      * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
      */
     public void setItem(CmsListItem item) {
 
-        m_resourceUtil = m_wp.getResourceUtil(item);
+        m_resourceUtil = ((A_CmsListExplorerDialog)getWp()).getResourceUtil(item);
         super.setItem(item);
-    }
-
-    /**
-     * Sets the workplace dialog.<p>
-     * 
-     * @param wp the workplace dialog
-     */
-    public void setWp(A_CmsListExplorerDialog wp) {
-
-        m_wp = wp;
     }
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
      * 
-     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
+     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
      * is that the icons are 16x16.<p>
      * 
-     * @param jsp the cms context, can be null
      * @param id the id
      * @param helpId the id of the helptext div tag
      * @param name the name, if empty only the icon is displayed
@@ -136,10 +109,9 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
      * 
      * @return html code
      * 
-     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
      */
     protected String defButtonHtml(
-        CmsJspActionElement jsp,
         String id,
         String helpId,
         String name,
@@ -199,15 +171,10 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
-                        html.append(icon);
-                    } else {
-                        html.append(iconPath);
-                    }
+                String resourcesRoot = OpenCms.getSystemInfo().getWebApplicationRfsPath() + "resources/";
+                File test = new File(resourcesRoot + icon.toString());
+                if (test.exists()) {
+                    html.append(icon);
                 } else {
                     html.append(iconPath);
                 }

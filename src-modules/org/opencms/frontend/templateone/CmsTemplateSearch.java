@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.search.Messages;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -264,7 +265,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             result.append("<a href=\"");
             result.append(link(path));
             result.append("\">");
-            String title = entry.getTitle();
+            String title = entry.getField(CmsSearchField.FIELD_TITLE);
             if (CmsStringUtil.isEmpty(title)) {
                 // title is not set, show file name instead
                 title = CmsResource.getName(path);
@@ -277,19 +278,19 @@ public class CmsTemplateSearch extends CmsTemplateBean {
                 // add the excerpt
                 result.append(entry.getExcerpt());
             }
-            if (entry.getKeywords() != null) {
+            if (entry.getField(CmsSearchField.FIELD_KEYWORDS) != null) {
                 // add the keywords
                 result.append("<br>");
                 result.append(key("search.keywords"));
                 result.append(": ");
-                result.append(entry.getKeywords());
-            }
-            if (entry.getDescription() != null) {
+                result.append(entry.getField(CmsSearchField.FIELD_KEYWORDS));
+            }            
+            if (entry.getField(CmsSearchField.FIELD_DESCRIPTION) != null) {
                 // add the file description
                 result.append("<br>");
                 result.append(key("search.description"));
                 result.append(": ");
-                result.append(entry.getDescription());
+                result.append(entry.getField(CmsSearchField.FIELD_DESCRIPTION));
             }
             // add the last modification date of the result
             result.append("<br>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsDialogElements extends CmsDialog {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
-        if (currentTemplate != null && currentTemplate.length() > 0) {
+        if ((currentTemplate != null) && (currentTemplate.length() > 0)) {
             // template found, check template-elements property
             String elements = null;
             try {
@@ -178,7 +178,7 @@ public class CmsDialogElements extends CmsDialog {
             }
             if (elements != null) {
                 // elements are defined on template file, merge with available elements
-                List tokens = CmsStringUtil.splitAsList(elements, ',');
+                List tokens = CmsStringUtil.splitAsList(elements, ',', true);
                 Iterator it = tokens.iterator();
                 while (it.hasNext()) {
                     String currentElement = (String)it.next();

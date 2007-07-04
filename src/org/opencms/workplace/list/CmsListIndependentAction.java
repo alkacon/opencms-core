@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,7 +59,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
         super(id);
     }
-    
+
     /**
      * Help method to resolve the on clic text to use.<p>
      * 
@@ -68,7 +68,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
      * @return the on clic text
      */
     protected String resolveOnClic(CmsWorkplace wp) {
-        
+
         return "listIndepAction('"
             + getListId()
             + "','"
@@ -85,9 +85,8 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
         if (!isVisible()) {
             return "";
-        } 
+        }
         return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             getId(),
             getName().key(wp.getLocale()),
@@ -97,14 +96,14 @@ public class CmsListIndependentAction extends A_CmsListAction {
             null,
             resolveOnClic(wp));
     }
-    
+
     /**
      * Returns the default explorer switch action for explorer list dialogs.<p>
      * 
      * @return the default explorer switch action
      */
     public static CmsListIndependentAction getDefaultExplorerSwitchAction() {
-        
+
         CmsListIndependentAction defAction = new CmsListIndependentAction(ACTION_EXPLORER_SWITCH_ID);
         defAction.setName(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0));
         defAction.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0));

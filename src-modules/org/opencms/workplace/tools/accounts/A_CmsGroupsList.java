@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2006/10/11 13:41:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -54,6 +56,7 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +75,7 @@ import javax.servlet.ServletException;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,13 +106,13 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     public static final String LIST_COLUMN_DESCRIPTION = "cc";
 
     /** list column id constant. */
+    public static final String LIST_COLUMN_DISPLAY = "cdn";
+
+    /** list column id constant. */
     public static final String LIST_COLUMN_EDIT = "ce";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_PARENT = "cp";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_USERS = "cu";
@@ -118,7 +121,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     public static final String LIST_DEFACTION_EDIT = "de";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_CHILDS = "dc";
+    public static final String LIST_DETAIL_CHILDREN = "dc";
+
+    /** list item detail id constant. */
+    public static final String LIST_DETAIL_PARENT = "dp";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_SET_PERM = "dsp";
@@ -141,6 +147,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     /** a set of action id's to use for edition. */
     private static Set m_editActionIds = new HashSet();
 
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
+
     /**
      * Public constructor.<p>
      * 
@@ -150,7 +159,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
      */
     public A_CmsGroupsList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
-        super(jsp, listId, listName, LIST_COLUMN_NAME, CmsListOrderEnum.ORDER_ASCENDING, LIST_COLUMN_NAME);
+        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, null);
     }
 
     /**
@@ -224,6 +233,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
         Map params = new HashMap();
         params.put(A_CmsEditGroupDialog.PARAM_GROUPID, groupId);
+        params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, m_paramOufqn);
+        params.put(A_CmsEditGroupDialog.PARAM_GROUPNAME, groupName);
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
@@ -261,6 +272,29 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
@@ -275,51 +309,69 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             try {
                 if (detailId.equals(LIST_DETAIL_USERS)) {
                     // users
-                    Iterator itUsers = getCms().getUsersOfGroup(groupName).iterator();
+                    List users = getCms().getUsersOfGroup(groupName, true);
+                    Iterator itUsers = users.iterator();
                     while (itUsers.hasNext()) {
-                        html.append(((CmsUser)itUsers.next()).getFullName());
+                        CmsUser user = (CmsUser)itUsers.next();
+                        if (user.getOuFqn().equals(getParamOufqn())) {
+                            html.append(user.getFullName());
+                        } else {
+                            html.append(user.getDisplayName(getCms(), getLocale()));
+                        }
                         if (itUsers.hasNext()) {
                             html.append("<br>");
                         }
                         html.append("\n");
                     }
-                } else if (detailId.equals(LIST_DETAIL_CHILDS)) {
-                    // childs
-                    Iterator itChilds = getCms().getChild(groupName).iterator();
-                    while (itChilds.hasNext()) {
-                        html.append(((CmsGroup)itChilds.next()).getName());
-                        if (itChilds.hasNext()) {
+                } else if (detailId.equals(LIST_DETAIL_CHILDREN)) {
+                    // childen
+                    Iterator itChildren = getCms().getChildren(groupName, false).iterator();
+                    while (itChildren.hasNext()) {
+                        CmsGroup group = (CmsGroup)itChildren.next();
+                        if (group.getOuFqn().equals(getParamOufqn())) {
+                            html.append(group.getSimpleName());
+                        } else {
+                            html.append(group.getDisplayName(getCms(), getLocale()));
+                        }
+                        if (itChildren.hasNext()) {
                             html.append("<br>");
                         }
                         html.append("\n");
                     }
+                } else if (detailId.equals(LIST_DETAIL_PARENT)) {
+                    // parent
+                    CmsGroup parent = getCms().readGroup(getCms().readGroup(groupName).getParentId());
+                    html.append(parent.getName());
                 } else if (detailId.equals(LIST_DETAIL_SET_PERM)) {
                     // folder permissions
-                    getCms().getRequestContext().saveSiteRoot();
-                    getCms().getRequestContext().setSiteRoot("/");
-                    CmsGroup group = getCms().readGroup(groupName);
-                    Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
-                    while (itRes.hasNext()) {
-                        CmsResource resource = (CmsResource)itRes.next();
-                        html.append(resource.getRootPath());
-                        
-                        Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
-                        while (itAces.hasNext()) {
-                            CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
-                            if (ace.getPrincipal().equals(group.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    html.append(" (" + ace.getPermissions().getPermissionString() + ")");
+                    String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
+                    try {
+                        getCms().getRequestContext().setSiteRoot("/");
+                        CmsGroup group = getCms().readGroup(groupName);
+                        Iterator itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
+                        while (itRes.hasNext()) {
+                            CmsResource resource = (CmsResource)itRes.next();
+                            html.append(resource.getRootPath());
+
+                            Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
+                            while (itAces.hasNext()) {
+                                CmsAccessControlEntry ace = (CmsAccessControlEntry)itAces.next();
+                                if (ace.getPrincipal().equals(group.getId())) {
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                        html.append(" (" + ace.getPermissions().getPermissionString() + ")");
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+
+                            if (itRes.hasNext()) {
+                                html.append("<br>");
+                            }
+                            html.append("\n");
                         }
-                        
-                        if (itRes.hasNext()) {
-                            html.append("<br>");
-                        }
-                        html.append("\n");
+                    } finally {
+                        getCms().getRequestContext().setSiteRoot(storedSiteRoot);
                     }
-                    getCms().getRequestContext().restoreSiteRoot();
                 } else {
                     continue;
                 }
@@ -352,12 +404,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             CmsGroup group = (CmsGroup)itGroups.next();
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
-            try {
-                item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
-            } catch (Exception e) {
-                // ignore
-            }
+            item.set(LIST_COLUMN_DISPLAY, group.getSimpleName());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             ret.add(item);
         }
 
@@ -485,29 +533,29 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
         // create column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
-        nameCol.setWidth("20%");
+        // add it to the list definition
+        metadata.addColumn(nameCol);
+        nameCol.setVisible(false);
+
+        // create column for display name
+        CmsListColumnDefinition displayCol = new CmsListColumnDefinition(LIST_COLUMN_DISPLAY);
+        displayCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
+        displayCol.setWidth("35%");
 
         // create default edit action
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         defEditAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_EDIT_HELP_0));
-        nameCol.addDefaultAction(defEditAction);
+        displayCol.addDefaultAction(defEditAction);
 
         // add it to the list definition
-        metadata.addColumn(nameCol);
+        metadata.addColumn(displayCol);
 
         // add column for description
         CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
         descriptionCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_DESCRIPTION_0));
-        descriptionCol.setWidth("60%");
+        descriptionCol.setWidth("65%");
         metadata.addColumn(descriptionCol);
-
-        // add column for parent
-        CmsListColumnDefinition parentCol = new CmsListColumnDefinition(LIST_COLUMN_PARENT);
-        parentCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_PARENT_0));
-        parentCol.setWidth("20%");
-        metadata.addColumn(parentCol);
     }
 
     /**
@@ -531,7 +579,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
         // add user users details
         CmsListItemDetails usersDetails = new CmsListItemDetails(LIST_DETAIL_USERS);
-        usersDetails.setAtColumn(LIST_COLUMN_NAME);
+        usersDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         usersDetails.setVisible(false);
         usersDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_USERS_NAME_0));
         usersDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_USERS_HELP_0));
@@ -542,22 +590,35 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
-        // add user childs details
-        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDS);
-        childDetails.setAtColumn(LIST_COLUMN_NAME);
+        // add user children details
+        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDREN);
+        childDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         childDetails.setVisible(false);
-        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0));
-        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0));
-        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0));
-        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_HELP_0));
-        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0));
+        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0));
+        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0));
+        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0));
+        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0));
+        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0));
         childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0)));
+            Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
         metadata.addItemDetails(childDetails);
+
+        // add parent group details
+        CmsListItemDetails parentDetails = new CmsListItemDetails(LIST_DETAIL_PARENT);
+        parentDetails.setAtColumn(LIST_COLUMN_DISPLAY);
+        parentDetails.setVisible(false);
+        parentDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_PARENT_NAME_0));
+        parentDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_PARENT_HELP_0));
+        parentDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_NAME_0));
+        parentDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_HELP_0));
+        parentDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0));
+        parentDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0)));
+        metadata.addItemDetails(parentDetails);
 
         // add folder permission details
         CmsListItemDetails setPermDetails = new CmsListItemDetails(LIST_DETAIL_SET_PERM);
-        setPermDetails.setAtColumn(LIST_COLUMN_NAME);
+        setPermDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         setPermDetails.setVisible(false);
         setPermDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_SET_PERM_NAME_0));
         setPermDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_SET_PERM_HELP_0));
@@ -567,6 +628,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         setPermDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0)));
         metadata.addItemDetails(setPermDetails);
+
+        // makes the list searchable
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_DISPLAY));
+        metadata.setSearchAction(searchAction);
     }
 
     /**
@@ -599,5 +664,15 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
+        OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getName();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2006/07/20 13:51:41 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,20 +91,11 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /** Name of the name attribute of the elements node. */
     public static final String ATTRIBUTE_ENABLED = "enabled";
 
-    /** Name of the internal attribute of the link node. */
-    public static final String ATTRIBUTE_INTERNAL = "internal";
-
     /** Name of the language attribute of the elements node. */
     public static final String ATTRIBUTE_LANGUAGE = "language";
 
     /** Name of the name attribute of the elements node. */
     public static final String ATTRIBUTE_NAME = "name";
-
-    /** Name of the type attribute of the elements node. */
-    public static final String ATTRIBUTE_TYPE = "type";
-
-    /** Name of the anchor node. */
-    public static final String NODE_ANCHOR = "anchor";
 
     /** Name of the element node. */
     public static final String NODE_CONTENT = "content";
@@ -123,12 +114,6 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /** Name of the page node. */
     public static final String NODE_PAGES = "pages";
-
-    /** Name of the query node. */
-    public static final String NODE_QUERY = "query";
-
-    /** Name of the target node. */
-    public static final String NODE_TARGET = "target";
 
     /** Property to check if relative links are allowed. */
     public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
@@ -342,7 +327,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         if (value != null) {
             Element element = value.getElement();
             Attribute enabled = element.attribute(ATTRIBUTE_ENABLED);
-            return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
+            return ((enabled == null) || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
 
         return false;
@@ -551,37 +536,39 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         Map pages = new HashMap();
 
-        for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
-
-            Element elem = (Element)i.next();
-            try {
-                String elementName = elem.attributeValue(ATTRIBUTE_NAME);
-                String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
-                String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
-                boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
-
-                Element page = (Element)pages.get(elementLang);
-                if (page == null) {
-                    // no page available for the language, add one
-                    page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
-                    pages.put(elementLang, page);
+        if (m_document.getRootElement() != null && m_document.getRootElement().element(NODE_ELEMENTS) != null) {
+            for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
+    
+                Element elem = (Element)i.next();
+                try {
+                    String elementName = elem.attributeValue(ATTRIBUTE_NAME);
+                    String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
+                    String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
+                    boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
+    
+                    Element page = (Element)pages.get(elementLang);
+                    if (page == null) {
+                        // no page available for the language, add one
+                        page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
+                        pages.put(elementLang, page);
+                    }
+    
+                    Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
+                    if (!enabled) {
+                        newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
+                    }
+                    Element links = elem.element(NODE_LINKS);
+                    if (links != null) {
+                        newElement.add(links.createCopy());
+                    }
+                    Element content = elem.element(NODE_CONTENT);
+                    if (content != null) {
+                        newElement.add(content.createCopy());
+                    }
+    
+                } catch (NullPointerException e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
                 }
-
-                Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
-                if (!enabled) {
-                    newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
-                }
-                Element links = elem.element(NODE_LINKS);
-                if (links != null) {
-                    newElement.add(links.createCopy());
-                }
-                Element content = elem.element(NODE_CONTENT);
-                if (content != null) {
-                    newElement.add(content.createCopy());
-                }
-
-            } catch (NullPointerException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
             }
         }
 

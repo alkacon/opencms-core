@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsWordExtraction.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:56:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -62,11 +63,22 @@ public class TestMsWordExtraction extends TestCase {
         
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorMsWord.getExtractor().extractText(in);
-        String result = extractionResult.getContent();        
+        Map items = extractionResult.getContentItems();
         
-        System.out.println("---------------------------------------------------------------");
+        System.out.println("\n\n---------------------------------------------------------------");
         System.out.println("Extracted from MS Word:");
-        System.out.println(result);
+        Iterator i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry e = (Map.Entry)i.next();
+            System.out.println("\nKey: " + e.getKey());            
+            System.out.println("Value: " + e.getValue());            
+        }
+
+        assertEquals(10, items.size());
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));     
         
         assertTrue(result.indexOf("Alkacon Software") > -1);
         assertTrue(result.indexOf("The OpenCms experts") > -1);
@@ -76,12 +88,13 @@ public class TestMsWordExtraction extends TestCase {
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
         
-        Map meta = extractionResult.getMetaInfo();
-        assertEquals("Alkacon Software - The OpenCms experts", meta.get(I_CmsExtractionResult.META_TITLE));
-        assertEquals("This is the subject", meta.get(I_CmsExtractionResult.META_SUBJECT));
-        assertEquals("Alexander Kandzior", meta.get(I_CmsExtractionResult.META_AUTHOR));
-        assertEquals("Alkacon Software", meta.get(I_CmsExtractionResult.META_COMPANY));
-        assertEquals("This is the comment", meta.get(I_CmsExtractionResult.META_COMMENTS));
-        assertEquals("Key1, Key2", meta.get(I_CmsExtractionResult.META_KEYWORDS));
+        assertEquals("Alkacon Software - The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
+        assertEquals("This is the subject", items.get(I_CmsExtractionResult.ITEM_SUBJECT));
+        assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
+        assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
+        assertEquals("Key1, Key2", items.get(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertEquals("M. Manager", items.get(I_CmsExtractionResult.ITEM_MANAGER));
+        assertEquals("Category", items.get(I_CmsExtractionResult.ITEM_CATEGORY));        
     }    
 }

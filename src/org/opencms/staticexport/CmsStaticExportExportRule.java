@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportExportRule.java,v $
- * Date   : $Date: 2006/09/21 09:34:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Help class for storing of export-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -140,10 +140,10 @@ public class CmsStaticExportExportRule {
     }
 
     /**
-     * Returns a set of <code>{@link CmsPublishedResource}</code> containing all resources specified by the
+     * Returns a set of <code>{@link CmsPublishedResource}</code> objects containing all resources specified by the
      * <code>&lt;export-resources&gt;</code> node of this rule.<p>  
      * 
-     * @param cms the cms context
+     * @param cms the current OpenCms context
      * 
      * @return a set of matching resources
      * 
@@ -155,16 +155,18 @@ public class CmsStaticExportExportRule {
         Iterator itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = (String)itExpRes.next();
-			// read all from the configured node path, exclude resources flagged as internal        
-            List vfsResources = cms.readResources(
-                exportRes,
-                CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
-            // loop through the list and create the list of CmsPublishedResources
-            Iterator itRes = vfsResources.iterator();
-            while (itRes.hasNext()) {
-                CmsResource vfsResource = (CmsResource)itRes.next();
-                CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
-                resources.add(resource);
+            // read all from the configured node path, exclude resources flagged as internal  
+            if (cms.existsResource(exportRes)) {
+                List vfsResources = cms.readResources(
+                    exportRes,
+                    CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
+                // loop through the list and create the list of CmsPublishedResources
+                Iterator itRes = vfsResources.iterator();
+                while (itRes.hasNext()) {
+                    CmsResource vfsResource = (CmsResource)itRes.next();
+                    CmsPublishedResource resource = new CmsPublishedResource(vfsResource);
+                    resources.add(resource);
+                }
             }
         }
         return resources;

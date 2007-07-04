@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,19 +43,31 @@ import java.util.regex.Pattern;
  * Help class for storing of rfs-rules..<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0.0
  */
 public class CmsStaticExportRfsRule {
 
+    /** Name for the default work path. */
+    public static final Integer EXPORT_DEFAULT_BACKUPS = new Integer(0);
+
     /** Description of the rule. */
     private String m_description;
+
+    /** Number of export backup folders. */
+    private Integer m_exportBackups;
 
     /** Rfs export path. */
     private String m_exportPath;
 
     /** configured Rfs export path. */
     private final String m_exportPathConfigured;
+
+    /** Rfs export work path. */
+    private String m_exportWorkPath;
+
+    /** configured Rfs export work path. */
+    private final String m_exportWorkPathConfigured;
 
     /** Name of rule. */
     private String m_name;
@@ -83,6 +95,8 @@ public class CmsStaticExportRfsRule {
      * @param source the source regex
      * @param rfsPrefix the url prefix
      * @param exportPath the rfs export path
+     * @param exportWorkPath the rfs export work path
+     * @param exportBackups the number of backups
      * @param useRelativeLinks Relative links value
      */
     public CmsStaticExportRfsRule(
@@ -91,6 +105,8 @@ public class CmsStaticExportRfsRule {
         String source,
         String rfsPrefix,
         String exportPath,
+        String exportWorkPath,
+        Integer exportBackups,
         Boolean useRelativeLinks) {
 
         m_name = name;
@@ -98,6 +114,8 @@ public class CmsStaticExportRfsRule {
         m_source = Pattern.compile(source);
         m_rfsPreConfigured = rfsPrefix;
         m_exportPathConfigured = exportPath;
+        m_exportWorkPathConfigured = exportWorkPath;
+        m_exportBackups = exportBackups;
         m_useRelativeLinks = useRelativeLinks;
         m_relatedSystemResources = new ArrayList();
     }
@@ -110,6 +128,8 @@ public class CmsStaticExportRfsRule {
      * @param source the source regex
      * @param rfsPrefix the url prefix
      * @param exportPath the rfs export path
+     * @param exportWorkPath the rfs export work path
+     * @param exportBackups the number of backups
      * @param useRelativeLinks Relative links value
      * @param relatedSystemRes list of <code>{@link Pattern}</code>s
      */
@@ -119,10 +139,12 @@ public class CmsStaticExportRfsRule {
         String source,
         String rfsPrefix,
         String exportPath,
+        String exportWorkPath,
+        Integer exportBackups,
         Boolean useRelativeLinks,
         List relatedSystemRes) {
 
-        this(name, description, source, rfsPrefix, exportPath, useRelativeLinks);
+        this(name, description, source, rfsPrefix, exportPath, exportWorkPath, exportBackups, useRelativeLinks);
         m_relatedSystemResources.addAll(relatedSystemRes);
     }
 
@@ -147,12 +169,29 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
+     * Returns the number of backups.<p>
+     * 
+     * @return the number of backups
+     */
+    public Integer getExportBackups() {
+
+        if (m_exportBackups != null) {
+            return m_exportBackups;
+        }
+        // if backups not configured set to default value
+        return EXPORT_DEFAULT_BACKUPS;
+    }
+
+    /**
      * Returns the rfs export Path.<p>
      *
      * @return the rfs export Path
      */
     public String getExportPath() {
 
+        if (OpenCms.getStaticExportManager().isFullStaticExport()) {
+            return getExportWorkPath();
+        }
         return m_exportPath;
     }
 
@@ -164,6 +203,32 @@ public class CmsStaticExportRfsRule {
     public String getExportPathConfigured() {
 
         return m_exportPathConfigured;
+    }
+
+    /**
+     * Returns the rfs export Work Path.<p>
+     * 
+     * @return the rfs export Work Path
+     */
+    public String getExportWorkPath() {
+
+        return m_exportWorkPath;
+    }
+
+    /**
+     * Returns the configured rfs export Work Path with unstubstituted context values.<p>
+     * 
+     * @return the configured rfs export Work Path
+     */
+    public String getExportWorkPathConfigured() {
+
+        if (m_exportWorkPathConfigured != null) {
+            return m_exportWorkPathConfigured;
+        }
+
+        // if work path not configured set to default value
+        return CmsStaticExportManager.EXPORT_DEFAULT_WORKPATH
+            + OpenCms.getResourceManager().getFileTranslator().translateResource(m_name);
     }
 
     /**
@@ -255,6 +320,20 @@ public class CmsStaticExportRfsRule {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_EXPORT_PATH_1, m_name));
         }
         m_exportPath = exportPath;
+    }
+
+    /**
+     * Sets the rfs export work Path after normalizing.<p>
+     *
+     * @param exportWorkPath the rfs export Work Path to set
+     */
+    public void setExportWorkPath(String exportWorkPath) {
+
+        if (exportWorkPath.equals(OpenCms.getSystemInfo().getWebApplicationRfsPath())) {
+            // not allowed because a full static export would delete the opencms directory
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_EXPORT_PATH_1, m_name));
+        }
+        m_exportWorkPath = exportWorkPath;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,10 +107,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_BUTTON_TABLELIST_0 = "GUI_EDITOR_BUTTON_TABLELIST_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_FALSE_0 = "GUI_LABEL_FALSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_TRUE_0 = "GUI_LABEL_TRUE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1 = "LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_WIDGETCOLLECTOR_ADD_1 = "LOG_DEBUG_WIDGETCOLLECTOR_ADD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1 = "LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";

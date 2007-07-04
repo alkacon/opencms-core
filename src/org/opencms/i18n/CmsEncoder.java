@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2007/02/28 16:11:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,12 +165,13 @@ public final class CmsEncoder {
      */
     public static String createString(byte[] bytes, String encoding) {
 
-        if (encoding.intern() != OpenCms.getSystemInfo().getDefaultEncoding()) {
-            encoding = lookupEncoding(encoding, null);
+        String enc = encoding.intern();
+        if (enc != OpenCms.getSystemInfo().getDefaultEncoding()) {
+            enc = lookupEncoding(enc, null);
         }
-        if (encoding != null) {
+        if (enc != null) {
             try {
-                return new String(bytes, encoding);
+                return new String(bytes, enc);
             } catch (UnsupportedEncodingException e) {
                 // this can _never_ happen since the charset was looked up first 
             }
@@ -178,9 +179,9 @@ public final class CmsEncoder {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.ERR_UNSUPPORTED_VM_ENCODING_1, encoding));
             }
-            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            enc = OpenCms.getSystemInfo().getDefaultEncoding();
             try {
-                return new String(bytes, encoding);
+                return new String(bytes, enc);
             } catch (UnsupportedEncodingException e) {
                 // this can also _never_ happen since the default encoding is always valid
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsSchedulerInSystem.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms scheduler in a running system.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
   
@@ -69,7 +69,8 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
         suite.setName(TestCmsSchedulerInSystem.class.getName());
                 
         suite.addTest(new TestCmsSchedulerInSystem("testDefaultConfiguration"));
-               
+        suite.addTest(new TestCmsSchedulerInSystem("testAccessToCmsObject"));
+        
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -115,7 +116,9 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
             }
             seconds++;
         } while ((seconds < TestCmsScheduler.SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
-
+        
+        // unschedule the job from the manager (to avoid confilcts with other test cases)
+        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
 
         if (TestScheduledJob.m_runCount == 5) {
             System.out.println("Test job was correctly run 5 times in OpenCms scheduler.");
@@ -128,5 +131,40 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
         } else {
             fail("Instance counter was not incremented!");
         }         
+    }
+    
+    /**
+     * Test case for accessing the {@link org.opencms.file.CmsObject} in a scheduled job.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testAccessToCmsObject() throws Exception {
+        
+        System.out.println("Trying to run an OpenCms job with access to the CmsObject the OpenCms system scheduler.");
+
+        // generate job description 
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setJobName("Test job for CmsObject access");
+        jobInfo.setClassName(TestScheduledJobWithCmsAccess.class.getName());
+        jobInfo.setReuseInstance(false);
+        jobInfo.setCronExpression("0/2 * * * * ?");
+        
+        // add the job to the manager
+        OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            fail("Something caused the waiting test thread to interrupt!");
+        }
+        
+        // unschedule the job from the manager (to avoid confilcts with other test cases)
+        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
+        
+        if (! TestScheduledJobWithCmsAccess.m_success) {
+            fail("CmsObject in scheduled job was null!");
+        }
     }
 }

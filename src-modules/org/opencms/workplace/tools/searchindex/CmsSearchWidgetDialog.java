@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/12/08 13:39:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/04 16:57:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,17 @@ package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsIllegalStateException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsMultiSelectWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsVfsFileWidget;
@@ -46,6 +51,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -113,7 +119,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * has been added to a widget parameter 
      * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_ADD}</code>) 
      * or removed 
-     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_ADD}</code>) or removed 
+     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_REMOVE}</code>) 
      * from a widget parameter to additionally commit these values to the 
      * underlying lists.<p>
      * 
@@ -166,6 +172,50 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
+     * Returns the fields parameter value.<p>
+     *
+     * @return the fields parameter value
+     */
+    public String getFields() {
+
+        return CmsStringUtil.collectionAsString(m_searchParams.getFields(), ",");
+    }
+
+    /**
+     * Returns the list of searchable fields used in the workplace search index.<p> 
+     * 
+     * @return the list of searchable fields used in the workplace search index
+     */
+    public List getSearchFields() {
+
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(getParamIndexName());
+        List result = new ArrayList();
+        Iterator i = index.getFieldConfiguration().getFields().iterator();
+        while (i.hasNext()) {
+            CmsSearchField field = (CmsSearchField)i.next();
+            if (field.isIndexed() && field.isDisplayed()) {
+                // only include indexed (ie. searchable) fields
+                result.add(field);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Sets the fields parameter value.<p>
+     *
+     * @param fields the fields parameter value to set
+     */
+    public void setFields(String fields) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(fields)) {
+            throw new CmsIllegalStateException(org.opencms.workplace.search.Messages.get().container(
+                org.opencms.workplace.search.Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
+        }
+        m_searchParams.setFields(CmsStringUtil.splitAsList(fields, ","));
+    }
+
+    /**
      * This dialog does not return on commit but stay for many search requests until it is 
      * exited with cancel or up in the workplace. <p>
      * 
@@ -201,7 +251,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             // 2nd block "Fields to search in"
             result.append(dialogBlockStart(key(Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_FIELDS_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 10));
+            result.append(createDialogRowsHtml(6, 6));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -288,12 +338,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         addWidget(new CmsWidgetDialogParameter(m_searchParams, "calculateCategories", new CmsCheckboxWidget()));
 
         // 2nd block "fields to search in"
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "searchFieldContent", new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "searchFieldMeta", new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "searchFieldTitle", new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "searchFieldKeywords", new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "searchFieldDescription", new CmsCheckboxWidget()));
-
+        addWidget(new CmsWidgetDialogParameter(this, "fields", PAGES[0], new CmsMultiSelectWidget(getFieldList(), true)));
     }
 
     /**
@@ -348,8 +393,6 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      * Note that a valid search (<code>{@link CmsSearch#getSearchResult()}</code> with 
      * correct settings and inited) has to be triggered before this call or an empty 
      * String will be returned. <p>
-     * 
-     * @param search the preconfigured search bean 
      * 
      * @return the hmtl for the category search results
      */
@@ -458,6 +501,27 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         result.append("  }\n");
         result.append("</script>\n");
         return result.toString();
+    }
+
+    /**
+     * Returns a list of <code>{@link CmsSelectWidgetOption}</code> objects for field list selection.<p>
+     * 
+     * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
+     */
+    private List getFieldList() {
+
+        List retVal = new ArrayList();
+        try {
+            Iterator i = getSearchFields().iterator();
+            while (i.hasNext()) {
+                CmsSearchField field = (CmsSearchField)i.next();
+                retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
+                    field.getDisplayName())));
+            }
+        } catch (Exception e) {
+            // noop
+        }
+        return retVal;
     }
 
     /**

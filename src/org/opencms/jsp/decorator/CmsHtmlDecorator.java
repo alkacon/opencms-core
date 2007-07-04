@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2007/03/27 13:32:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.3 
  */
@@ -141,7 +141,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     public static List splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
 
         List result = new ArrayList();
-        String delimiter = new String();
+        String delimiter = "";
         int i = 0;
         int l = source.length();
         int n = -1;
@@ -274,7 +274,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
                         word,
-                        new Boolean(mustDecode(word, wordList, i))));
+                        Boolean.valueOf(mustDecode(word, wordList, i))));
                 }
 
                 // test if the word must be decoded
@@ -402,10 +402,12 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /**
      * Checks if a word must be decoded.<p>
      * 
-     * The given word is compated to a negative list of words which must not be decoded.
+     * The given word is compared to a negative list of words which must not be decoded.<p>
+     * 
      * @param word the word to test
-     * @param wordList the wordlist to test against
-     * @param count the position in the word list
+     * @param wordList the list of words which must not be decoded
+     * @param count the count in the list
+     * 
      * @return true if the word must be decoded, false otherweise
      */
     private boolean mustDecode(String word, List wordList, int count) {

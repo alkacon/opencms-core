@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.workplace.galleries.*" session="false" %>
+<%@ page import="org.opencms.jsp.*, org.opencms.util.*, org.opencms.workplace.galleries.*" session="false" %>
 <%	
 	
 	// initialize action element for link substitution
@@ -8,10 +8,20 @@
 	
 	String params = "?" + wp.paramsAsRequest();
 	
-%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+ %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
 	<title><%= wp.getKeyTitle() %></title>
+	<script type="text/javascript">
+	var cssPath = "";
+	<%
+
+	if (CmsStringUtil.isNotEmpty(wp.getParamCssPath())) {
+		%>	cssPath = "<%= cms.link(wp.getParamCssPath()) %>";<%
+	}
+
+	%>
+	</script>
 </head>
 
 <frameset rows="<%=wp.getHeadFrameSetHeight()%>,*" framespacing="0">

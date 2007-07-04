@@ -1,4 +1,5 @@
 <%@ page import="
+	org.opencms.workplace.*,
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
 %><%
@@ -10,8 +11,15 @@
 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
-<script language="JavaScript">
+<script type="text/javascript">
 <%
+
+if (request.getParameter("reload") != null) {
+	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
+	CmsFrameset wp2 = new CmsFrameset(jsp);
+    // reload only the first time
+	%>top.body.location.href = '<%=wp2.getStartupUri()%>';<%
+}
 	String files = wp.getFileList();
 	// System.err.println(files);
 	out.println(files);

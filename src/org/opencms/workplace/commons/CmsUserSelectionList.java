@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
@@ -85,14 +86,11 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /** list id constant. */
     public static final String LIST_ID = "lus";
 
-    /** Stores the value of the request parameter for the group name. */
-    private String m_paramGroup;
-
-    /** Stores the value of the request parameter for the user type. */
-    private String m_paramUsertype;
-
     /** Stores the value of the request parameter for the flags. */
     private String m_paramFlags;
+
+    /** Stores the value of the request parameter for the group name. */
+    private String m_paramGroup;
 
     /**
      * Public constructor.<p>
@@ -136,12 +134,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         String param = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroup())) {
             param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_GROUP_BLOCK_1, getParamGroup());
-        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamUsertype())) {
-            if (Integer.parseInt(getParamUsertype()) == CmsUser.USER_TYPE_WEBUSER) {
-                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_WEB_0);
-            } else {
-                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_SYSTEM_0);
-            }
         }
         html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
         html.append("\n\t\t\t</td>");
@@ -168,26 +160,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the Group name parameter value.<p>
-     *
-     * @return the Group name parameter value
-     */
-    public String getParamGroup() {
-
-        return m_paramGroup;
-    }
-
-    /**
-     * Returns the user type parameter value.<p>
-     *
-     * @return the user type parameter value
-     */
-    public String getParamUsertype() {
-
-        return m_paramUsertype;
-    }
-
-    /**
      * Returns the flags parameter value.<p>
      *
      * @return the flags parameter value
@@ -198,23 +170,13 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the group name parameter value.<p>
+     * Returns the Group name parameter value.<p>
      *
-     * @param groupName the group name parameter value to set
+     * @return the Group name parameter value
      */
-    public void setParamGroup(String groupName) {
+    public String getParamGroup() {
 
-        m_paramGroup = groupName;
-    }
-
-    /**
-     * Sets the user type parameter value.<p>
-     *
-     * @param userType the user type parameter value to set
-     */
-    public void setParamUsertype(String userType) {
-
-        m_paramUsertype = userType;
+        return m_paramGroup;
     }
 
     /**
@@ -225,6 +187,16 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     public void setParamFlags(String flags) {
 
         m_paramFlags = flags;
+    }
+
+    /**
+     * Sets the group name parameter value.<p>
+     *
+     * @param groupName the group name parameter value to set
+     */
+    public void setParamGroup(String groupName) {
+
+        m_paramGroup = groupName;
     }
 
     /**
@@ -268,10 +240,8 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         List ret = new ArrayList();
         if (getParamGroup() != null) {
             ret.addAll(getCms().getUsersOfGroup(getParamGroup()));
-        } else if (getParamUsertype() == null) {
-            ret.addAll(getCms().getUsers());
         } else {
-            ret.addAll(getCms().getUsers(Integer.parseInt(getParamUsertype())));
+            ret.addAll(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
@@ -279,7 +249,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         }
         return ret;
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -305,7 +275,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
         loginCol.setName(Messages.get().container(Messages.GUI_USERSELECTION_LIST_COLS_LOGIN_0));
-        loginCol.setWidth("35%");
+        loginCol.setWidth("60%");
         CmsListDefaultAction selectAction = new A_CmsListDefaultJsAction(LIST_ACTION_SELECT) {
 
             /**
@@ -327,7 +297,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         // create column for fullname
         CmsListColumnDefinition fullnameCol = new CmsListColumnDefinition(LIST_COLUMN_FULLNAME);
         fullnameCol.setName(Messages.get().container(Messages.GUI_USERSELECTION_LIST_COLS_FULLNAME_0));
-        fullnameCol.setWidth("65%");
+        fullnameCol.setWidth("40%");
         fullnameCol.setTextWrapping(true);
         // add it to the list definition
         metadata.addColumn(fullnameCol);
@@ -358,11 +328,6 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             getCms().readGroup(getParamGroup()).getName();
         } catch (Exception e) {
             setParamGroup(null);
-        }
-        try {
-            Integer.valueOf(getParamUsertype());
-        } catch (Throwable e) {
-            setParamUsertype(null);
         }
         try {
             Integer.valueOf(getParamFlags());

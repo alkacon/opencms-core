@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,6 @@ import org.apache.commons.logging.Log;
 /**
  * Creates the output for editing a resource (text or JSP files).<p> 
  * 
- * This class is extended by the LEdit class, so be careful when changing anything.<p>
- * 
  * The following files use this class:
  * <ul>
  * <li>/editors/simple/editor.jsp</li>
@@ -62,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,13 +142,7 @@ public class CmsSimpleEditor extends CmsEditor {
             }
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
-            try {
-                decodedContent = new String(writtenFile.getContents(), getFileEncoding());
-            } catch (UnsupportedEncodingException e) {
-                throw new CmsException(
-                    Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
-                    e);
-            }
+            decodedContent = CmsEncoder.createString(writtenFile.getContents(), getFileEncoding());
             setParamContent(encodeContent(decodedContent));
             // set the modified parameter
             setParamModified(Boolean.TRUE.toString());
@@ -193,13 +185,7 @@ public class CmsSimpleEditor extends CmsEditor {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
             CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-            try {
-                content = new String(editFile.getContents(), getFileEncoding());
-            } catch (UnsupportedEncodingException e) {
-                throw new CmsException(
-                    Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
-                    e);
-            }
+            content = CmsEncoder.createString(editFile.getContents(), getFileEncoding());
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
             try {

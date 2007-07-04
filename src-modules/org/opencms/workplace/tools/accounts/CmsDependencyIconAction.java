@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,6 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
             return super.buttonHtml(wp);
         } else {
             return A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
                 resolveButtonStyle(),
                 getId() + getItem().getId(),
                 getId(),
@@ -90,7 +89,8 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
                 getIconPath(),
                 null,
                 resolveOnClic(wp.getLocale()),
-                getColumnForTexts() == null);
+                getColumnForTexts() == null,
+                null);
         }
     }
 
@@ -143,7 +143,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
                 } else if (m_type == CmsDependencyIconActionType.GROUP) {
                     getCms().readGroup(id);
                     visible = true;
-                } 
+                }
             } catch (CmsException e) {
                 // not visible
             }

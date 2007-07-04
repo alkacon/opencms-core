@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2006/05/12 16:05:48 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/07/04 16:57:34 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,22 +41,28 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsDefaultSessionStorageProvider;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,11 +79,11 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * VFS master configuration class.<p>
+ * System master configuration class.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0
  */
@@ -103,6 +109,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the alias node. */
     public static final String N_ALIAS = "alias";
+
+    /** The node name for the authorization handler. */
+    public static final String N_AUTHORIZATIONHANDLER = "authorizationhandler";
 
     /** The node name for the avgcachebytes node. */
     public static final String N_AVGCACHEBYTES = "avgcachebytes";
@@ -184,6 +193,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the group-users node. */
     public static final String N_GROUP_USERS = "group-users";
+
+    /** The node name for the publish "history-size" value. */
+    public static final String N_HISTORYSIZE = "history-size";
 
     /** The node name for the http-authentication node. */
     public static final String N_HTTP_AUTHENTICATION = "http-authentication";
@@ -269,6 +281,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the context project name. */
     public static final String N_PROJECT = "project";
 
+    /** The node name for the "publishhistory" section. */
+    public static final String N_PUBLISHMANAGER = "publishmanager";
+
+    /** The node name for the "publishhistory" section. */
+    public static final String N_QUEUEPERSISTANCE = "queue-persistance";
+
+    /** The node name for the "publishhistory" section. */
+    public static final String N_QUEUESHUTDOWNTIME = "queue-shutdowntime";
+
     /** The node name for the memory email receiver. */
     public static final String N_RECEIVER = "receiver";
 
@@ -308,6 +329,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the secure site. */
     public static final String N_SECURE = "secure";
 
+    /** The node name for the session-storageprovider node. */
+    public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
+
     /** The node name for the context site root. */
     public static final String N_SITEROOT = "siteroot";
 
@@ -320,8 +344,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The size of the driver manager's cache for groups. */
     public static final String N_SIZE_GROUPS = "size-groups";
 
+    /** The size of the driver manager's cache for organizational units. */
+    public static final String N_SIZE_ORGUNITS = "size-orgunits";
+
     /** The size of the security manager's cache for permission checks. */
     public static final String N_SIZE_PERMISSIONS = "size-permissions";
+
+    /** The size of the driver manager's cache for project resources. */
+    public static final String N_SIZE_PROJECTRESOURCES = "size-projectresources";
 
     /** The size of the driver manager's cache for projects. */
     public static final String N_SIZE_PROJECTS = "size-projects";
@@ -329,11 +359,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The size of the driver manager's cache for properties. */
     public static final String N_SIZE_PROPERTIES = "size-properties";
 
+    /** The size of the driver manager's cache for property lists. */
+    public static final String N_SIZE_PROPERTYLISTS = "size-propertylists";
+
     /** The size of the driver manager's cache for lists of resources. */
     public static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
 
     /** The size of the driver manager's cache for resources. */
     public static final String N_SIZE_RESOURCES = "size-resources";
+
+    /** The size of the driver manager's cache for roles. */
+    public static final String N_SIZE_ROLES = "size-roles";
 
     /** The size of the driver manager's cache for user/group relations. */
     public static final String N_SIZE_USERGROUPS = "size-usergroups";
@@ -377,8 +413,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the workplace-server node. */
     public static final String N_WORKPLACE_SERVER = "workplace-server";
 
+    /** The attribute name for the deleted node. */
+    private static final String A_DELETED = "deleted";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
+    /** The authorization handler. */
+    private String m_authorizationHandler;
 
     /** The settings of the driver manager. */
     private CmsCacheSettings m_cacheSettings;
@@ -400,6 +442,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The configured OpenCms event manager. */
     private CmsEventManager m_eventManager;
+
+    /** Indicates if the version history is enabled. */
+    private boolean m_historyEnabled;
+
+    /** The maximum number of historical versions per resource. */
+    private int m_historyVersions;
+
+    /** The maximum number of historical versions for deleted resources. */
+    private int m_historyVersionsAfterDeletion;
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
@@ -426,6 +477,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
 
+    /** The configured publish manager. */
+    private CmsPublishManager m_publishManager;
+
     /** A list of instanciated request handler classes. */
     private List m_requestHandlers;
 
@@ -441,6 +495,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
 
+    /** The configured session storage provider class name. */
+    private String m_sessionStorageProvider;
+
     /** The configured site manager. */
     private CmsSiteManager m_siteManager;
 
@@ -448,13 +505,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     private int m_tempFileProjectId;
 
     /** The configured validation handler. */
-    private I_CmsValidationHandler m_validationHandler;
-
-    /** Indicates if the version history is enabled. */
-    private boolean m_versionHistoryEnabled;
-
-    /** The maximum number of entries in the version history (per resource). */
-    private int m_versionHistoryMaxCount;
+    private String m_validationHandler;
 
     /**
      * Public constructor, will be called by configuration manager.<p> 
@@ -462,14 +513,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsSystemConfiguration() {
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
-        m_versionHistoryEnabled = true;
-        m_versionHistoryMaxCount = 10;
+        m_historyEnabled = true;
+        m_historyVersions = 10;
+        m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
         m_resourceInitHandlers = new ArrayList();
         m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
         m_eventManager = new CmsEventManager();
-        m_validationHandler = new CmsDefaultValidationHandler();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }
@@ -490,28 +541,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void addEventManager(String clazz) {
 
-        Object initClass;
         try {
-            initClass = Class.forName(clazz).newInstance();
-        } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(
-                Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
-                clazz,
-                m_resourceInitHandlers.getClass().getName()), t);
-            return;
-        }
-        if (initClass instanceof CmsEventManager) {
-            m_eventManager = (CmsEventManager)initClass;
+            m_eventManager = (CmsEventManager)Class.forName(clazz).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1, initClass));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1,
+                    m_eventManager));
             }
-        } else {
-            if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(
-                    Messages.INIT_EVENTMANAGER_CLASS_INVALID_2,
-                    initClass,
-                    m_resourceInitHandlers.getClass().getName()));
-            }
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_INVALID_1, clazz), t);
+            return;
         }
     }
 
@@ -623,9 +662,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             0);
 
         // add version history rules
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, "setVersionHistorySettings", 2);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, "setHistorySettings", 3);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, 0, A_ENABLED);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, 1, A_COUNT);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, 2, A_DELETED);
 
         // add mail configuration rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_MAIL, CmsMailSettings.class);
@@ -770,8 +810,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
 
         // add validation handler creation rules
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, A_CLASS, CmsDefaultValidationHandler.class);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler");
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, "setValidationHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
         digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 2);
@@ -843,11 +883,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add memorymonitor configuration rule        
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, CmsMemoryMonitorConfiguration.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "initialize", 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_MAXUSAGE_PERCENT, 0);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_LOG_INTERVAL, 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_INTERVAL, 2);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_WARNING_INTERVAL, 3);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "initialize", 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, 0, A_CLASS);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_MAXUSAGE_PERCENT, 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_LOG_INTERVAL, 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_INTERVAL, 3);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_WARNING_INTERVAL, 4);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_SENDER, "setEmailSender", 0);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_RECEIVER + "/" + N_RECEIVER,
@@ -887,14 +928,24 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_KEYGENERATOR, "setCacheKeyGenerator", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERS, "setUserCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_GROUPS, "setGroupCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ORGUNITS, "setOrgUnitCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_USERGROUPS, "setUserGroupsCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTS, "setProjectCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROJECTRESOURCES,
+            "setProjectResourcesCacheSize",
+            0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCES, "setResourceCacheSize", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ROLES, "setRolesCacheSize", 0);
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_RESOURCELISTS,
             "setResourcelistCacheSize",
             0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTIES, "setPropertyCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTYLISTS,
+            "setPropertyListsCacheSize",
+            0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");
@@ -912,6 +963,30 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             "setNotificationProject",
             1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, 0);
+
+        // add authorization handler creation rules
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
+
+        // add publish manager configuration rule        
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, CmsPublishManager.class);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_HISTORYSIZE,
+            "setPublishHistorySize",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_QUEUEPERSISTANCE,
+            "setPublishQueuePersistance",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER + "/" + N_QUEUESHUTDOWNTIME,
+            "setPublishQueueShutdowntime",
+            0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_PUBLISHMANAGER, "setPublishManager");
+
+        // add rule for session storage provider
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, "setSessionStorageProvider", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, 0, A_CLASS);
     }
 
     /**
@@ -927,8 +1002,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_localeManager = OpenCms.getLocaleManager();
             m_mailSettings = OpenCms.getSystemInfo().getMailSettings();
             m_configuredJobs = OpenCms.getScheduleManager().getJobs();
-            m_versionHistoryEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
-            m_versionHistoryMaxCount = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+            m_historyEnabled = OpenCms.getSystemInfo().isHistoryEnabled();
+            m_historyVersions = OpenCms.getSystemInfo().getHistoryVersions();
+            m_historyVersionsAfterDeletion = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
             m_siteManager = OpenCms.getSiteManager();
@@ -992,10 +1068,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             Map jobParameters = jobInfo.getConfiguration();
             if ((jobParameters != null) && (jobParameters.size() > 0)) {
                 Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                Iterator it = jobParameters.keySet().iterator();
+                Iterator it = jobParameters.entrySet().iterator();
                 while (it.hasNext()) {
-                    String name = (String)it.next();
-                    String value = jobParameters.get(name).toString();
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String name = (String)entry.getKey();
+                    String value = (String)entry.getValue();
                     Element paramNode = parameterElement.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -1009,11 +1086,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         eventManagerElement.addAttribute(A_CLASS, m_eventManager.getClass().getName());
 
         // version history
-        systemElement.addElement(N_VERSIONHISTORY).addAttribute(
-            A_ENABLED,
-            new Boolean(m_versionHistoryEnabled).toString()).addAttribute(
-            A_COUNT,
-            new Integer(m_versionHistoryMaxCount).toString());
+        Element historyElement = systemElement.addElement(N_VERSIONHISTORY);
+        historyElement.addAttribute(A_ENABLED, String.valueOf(m_historyEnabled));
+        historyElement.addAttribute(A_COUNT, new Integer(m_historyVersions).toString());
+        historyElement.addAttribute(A_DELETED, new Integer(m_historyVersionsAfterDeletion).toString());
 
         // resourceinit
         Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);
@@ -1041,10 +1117,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
         Map handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator it = handlerParameters.keySet().iterator();
+            Iterator it = handlerParameters.entrySet().iterator();
             while (it.hasNext()) {
-                String name = (String)it.next();
-                String value = handlerParameters.get(name).toString();
+                Map.Entry entry = (Map.Entry)it.next();
+                String name = (String)entry.getKey();
+                String value = (String)entry.getValue();
                 Element paramNode = passwordhandlerElement.addElement(N_PARAM);
                 paramNode.addAttribute(A_NAME, name);
                 paramNode.addText(value);
@@ -1054,7 +1131,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // validation handler
         if (m_validationHandler != null) {
             Element valHandlerElem = systemElement.addElement(N_VALIDATIONHANDLER);
-            valHandlerElem.addAttribute(A_CLASS, m_validationHandler.getClass().getName());
+            valHandlerElem.addAttribute(A_CLASS, m_validationHandler);
         }
 
         // login manager
@@ -1103,7 +1180,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 String aliasServerName = ((CmsSiteMatcher)aliasIterator.next()).getUrl();
                 siteElement.addElement(N_ALIAS).addAttribute(A_SERVER, aliasServerName);
             }
-
         }
 
         // create <runtimeproperties> node
@@ -1152,6 +1228,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // create <memorymonitor> node
         if (m_cmsMemoryMonitorConfiguration != null) {
             Element memorymonitorElement = systemElement.addElement(N_MEMORYMONITOR);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_cmsMemoryMonitorConfiguration.getClassName())) {
+                memorymonitorElement.addAttribute(A_CLASS, m_cmsMemoryMonitorConfiguration.getClassName());
+            }
             if (m_cmsMemoryMonitorConfiguration.getMaxUsagePercent() > 0) {
                 memorymonitorElement.addElement(N_MAXUSAGE_PERCENT).addText(
                     String.valueOf(m_cmsMemoryMonitorConfiguration.getMaxUsagePercent()));
@@ -1185,17 +1264,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // create <flexcache> node
         Element flexcacheElement = systemElement.addElement(N_FLEXCACHE);
         flexcacheElement.addElement(N_CACHE_ENABLED).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.isCacheEnabled()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.isCacheEnabled()));
         flexcacheElement.addElement(N_CACHE_OFFLINE).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.isCacheOffline()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.isCacheOffline()));
         flexcacheElement.addElement(N_MAXCACHEBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxCacheBytes()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getMaxCacheBytes()));
         flexcacheElement.addElement(N_AVGCACHEBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()));
         flexcacheElement.addElement(N_MAXENTRYBYTES).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()).toString());
-        flexcacheElement.addElement(N_MAXKEYS).addText(
-            String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()).toString());
+            String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()));
+        flexcacheElement.addElement(N_MAXKEYS).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()));
 
         // create <http-authentication> node
         Element httpAuthenticationElement = systemElement.addElement(N_HTTP_AUTHENTICATION);
@@ -1211,28 +1289,94 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         cacheElement.addElement(N_KEYGENERATOR).setText(m_cacheSettings.getCacheKeyGenerator());
         cacheElement.addElement(N_SIZE_USERS).setText(Integer.toString(m_cacheSettings.getUserCacheSize()));
         cacheElement.addElement(N_SIZE_GROUPS).setText(Integer.toString(m_cacheSettings.getGroupCacheSize()));
+        if (m_cacheSettings.getConfiguredOrgUnitCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_ORGUNITS).setText(
+                Integer.toString(m_cacheSettings.getConfiguredOrgUnitCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_USERGROUPS).setText(Integer.toString(m_cacheSettings.getUserGroupsCacheSize()));
         cacheElement.addElement(N_SIZE_PROJECTS).setText(Integer.toString(m_cacheSettings.getProjectCacheSize()));
+        if (m_cacheSettings.getConfiguredProjectResourcesCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_PROJECTRESOURCES).setText(
+                Integer.toString(m_cacheSettings.getConfiguredProjectResourcesCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_RESOURCES).setText(Integer.toString(m_cacheSettings.getResourceCacheSize()));
+        if (m_cacheSettings.getConfiguredRolesCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_ROLES).setText(
+                Integer.toString(m_cacheSettings.getConfiguredRolesCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_RESOURCELISTS).setText(
             Integer.toString(m_cacheSettings.getResourcelistCacheSize()));
         cacheElement.addElement(N_SIZE_PROPERTIES).setText(Integer.toString(m_cacheSettings.getPropertyCacheSize()));
+        if (m_cacheSettings.getConfiguredPropertyListsCacheSize() > -1) {
+            cacheElement.addElement(N_SIZE_PROPERTYLISTS).setText(
+                Integer.toString(m_cacheSettings.getConfiguredPropertyListsCacheSize()));
+        }
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
 
         // content notification settings
-        if (m_notificationTime != null || m_notificationProject != null) {
+        if ((m_notificationTime != null) || (m_notificationProject != null)) {
             Element notificationElement = systemElement.addElement(N_CONTENT_NOTIFICATION);
             if (m_notificationTime != null) {
                 notificationElement.addElement(N_NOTIFICATION_TIME).setText(m_notificationTime.toString());
             }
             if (m_notificationProject != null) {
-                notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject.toString());
+                notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject);
             }
         }
 
-        // return the vfs node
+        // authorization handler
+        if (m_authorizationHandler != null) {
+            Element authorizationHandlerElem = systemElement.addElement(N_AUTHORIZATIONHANDLER);
+            authorizationHandlerElem.addAttribute(A_CLASS, m_authorizationHandler);
+        }
+
+        // optional publish manager nodes
+        if (m_publishManager != null) {
+            Element pubHistElement = systemElement.addElement(N_PUBLISHMANAGER);
+            pubHistElement.addElement(N_HISTORYSIZE).setText(String.valueOf(m_publishManager.getPublishHistorySize()));
+            // optional nodes for publish queue
+            pubHistElement.addElement(N_QUEUEPERSISTANCE).setText(
+                String.valueOf(m_publishManager.isPublishQueuePersistanceEnabled()));
+            pubHistElement.addElement(N_QUEUESHUTDOWNTIME).setText(
+                String.valueOf(m_publishManager.getPublishQueueShutdowntime()));
+        }
+
+        // session storage provider
+        if (m_sessionStorageProvider != null) {
+            Element sessionStorageProviderElem = systemElement.addElement(N_SESSION_STORAGEPROVIDER);
+            sessionStorageProviderElem.addAttribute(A_CLASS, m_sessionStorageProvider);
+        }
+
+        // return the system node
         return systemElement;
+    }
+
+    /**
+     * Returns an instance of the configured authorization handler.<p>
+     * 
+     * @return an instance of the configured authorization handler
+     */
+    public I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_authorizationHandler)) {
+            return new CmsDefaultAuthorizationHandler();
+        }
+        try {
+            I_CmsAuthorizationHandler authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(
+                m_authorizationHandler).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
+                    m_authorizationHandler));
+            }
+            return authorizationHandler;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_AUTHORIZATION_HANDLER_CLASS_INVALID_1,
+                m_authorizationHandler), t);
+            return new CmsDefaultAuthorizationHandler();
+        }
     }
 
     /**
@@ -1301,6 +1445,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsEventManager getEventManager() {
 
         return m_eventManager;
+    }
+
+    /**
+     * Returns the maximum number of versions that are kept per resource in the VFS version history.<p>
+     * 
+     * If the version history is disabled, this setting has no effect.<p>
+     * 
+     * @return the maximum number of versions that are kept per resource
+     * 
+     * @see #isHistoryEnabled()
+     */
+    public int getHistoryVersions() {
+
+        return m_historyVersions;
+    }
+
+    /**
+     * Returns the maximum number of versions that are kept in the VFS version history for deleted resources.<p>
+     * 
+     * If the version history is disabled, this setting has no effect.<p>
+     * 
+     * @return the maximum number of versions that are kept for deleted resources
+     * 
+     * @see #isHistoryEnabled()
+     */
+    public int getHistoryVersionsAfterDeletion() {
+
+        return m_historyVersionsAfterDeletion;
     }
 
     /**
@@ -1392,6 +1564,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Returns the configured publish manager.<p>
+     * 
+     * @return the configured publish manager
+     */
+    public CmsPublishManager getPublishManager() {
+
+        if (m_publishManager == null) {
+            // no publish manager configured, create default
+            m_publishManager = new CmsPublishManager(
+                CmsPublishManager.DEFAULT_HISTORY_SIZE,
+                CmsPublishManager.DEFAULT_QUEUE_PERSISTANCE,
+                CmsPublishManager.DEFAULT_QUEUE_SHUTDOWNTIME);
+        }
+        return m_publishManager;
+    }
+
+    /**
      * Returns the list of instanciated request handler classes.<p>
      * 
      * @return the list of instanciated request handler classes
@@ -1442,6 +1631,33 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Returns an instance of the configured session storage provider.<p>
+     * 
+     * @return an instance of the configured session storage provider
+     */
+    public I_CmsSessionStorageProvider getSessionStorageProvider() {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_sessionStorageProvider)) {
+            return new CmsDefaultSessionStorageProvider();
+        }
+        try {
+            I_CmsSessionStorageProvider sessionCacheProvider = (I_CmsSessionStorageProvider)Class.forName(
+                m_sessionStorageProvider).newInstance();
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_SESSION_STORAGEPROVIDER_SUCCESS_1,
+                    m_sessionStorageProvider));
+            }
+            return sessionCacheProvider;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_SESSION_STORAGEPROVIDER_FAILURE_1,
+                m_sessionStorageProvider), t);
+            return new CmsDefaultSessionStorageProvider();
+        }
+    }
+
+    /**
      * Returns the site manager.<p>
      *
      * @return the site manager
@@ -1468,20 +1684,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public I_CmsValidationHandler getValidationHandler() {
 
-        return m_validationHandler;
-    }
-
-    /**
-     * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
-     * 
-     * If the versin history is disabled, this setting has no effect.<p>
-     * 
-     * @return the maximum number of versions that are kept per file
-     * @see #isVersionHistoryEnabled()
-     */
-    public int getVersionHistoryMaxCount() {
-
-        return m_versionHistoryMaxCount;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_validationHandler)) {
+            return new CmsDefaultValidationHandler();
+        }
+        try {
+            I_CmsValidationHandler validationHandler = (I_CmsValidationHandler)Class.forName(m_validationHandler).newInstance();
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
+                    m_validationHandler));
+            }
+            return validationHandler;
+        } catch (Throwable t) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.INIT_VALIDATION_HANDLER_CLASS_INVALID_1,
+                m_validationHandler), t);
+            return new CmsDefaultValidationHandler();
+        }
     }
 
     /**
@@ -1499,9 +1718,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * 
      * @return if the VFS version history is enabled
      */
-    public boolean isVersionHistoryEnabled() {
+    public boolean isHistoryEnabled() {
 
-        return m_versionHistoryEnabled;
+        return m_historyEnabled;
+    }
+
+    /**
+     * Sets the authorization handler.<p>
+     * 
+     * @param authorizationHandlerClass the authorization handler class to set.
+     */
+    public void setAuthorizationHandler(String authorizationHandlerClass) {
+
+        m_authorizationHandler = authorizationHandlerClass;
     }
 
     /**
@@ -1537,6 +1766,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         String groupUsers,
         String groupGuests) {
 
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
+        }
         m_cmsDefaultUsers = new CmsDefaultUsers(
             userAdmin,
             userGuest,
@@ -1546,6 +1778,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             groupProjectmanagers,
             groupUsers,
             groupGuests);
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_ADMIN_USER_1,
+                m_cmsDefaultUsers.getUserAdmin()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_GUEST_USER_1,
+                m_cmsDefaultUsers.getUserGuest()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_EXPORT_USER_1,
+                m_cmsDefaultUsers.getUserExport()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_DELETED_RESOURCE_USER_1,
+                m_cmsDefaultUsers.getUserDeletedResource()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_ADMIN_GROUP_1,
+                m_cmsDefaultUsers.getGroupAdministrators()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
+                m_cmsDefaultUsers.getGroupProjectmanagers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_USERS_GROUP_1,
+                m_cmsDefaultUsers.getGroupUsers()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_GUESTS_GROUP_1,
+                m_cmsDefaultUsers.getGroupGuests()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
+        }
     }
 
     /**
@@ -1576,6 +1836,27 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setDefaultContentEncoding(String defaultContentEncoding) {
 
         m_defaultContentEncoding = defaultContentEncoding;
+    }
+
+    /**
+     * VFS version history settings are set here.<p>
+     * 
+     * @param historyEnabled if true the history is enabled
+     * @param historyVersions the maximum number of versions that are kept per VFS resource
+     * @param historyVersionsAfterDeletion the maximum number of versions for deleted resources
+     */
+    public void setHistorySettings(String historyEnabled, String historyVersions, String historyVersionsAfterDeletion) {
+
+        m_historyEnabled = Boolean.valueOf(historyEnabled).booleanValue();
+        m_historyVersions = Integer.valueOf(historyVersions).intValue();
+        m_historyVersionsAfterDeletion = Integer.valueOf(historyVersionsAfterDeletion).intValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_HISTORY_SETTINGS_3,
+                Boolean.valueOf(m_historyEnabled),
+                new Integer(m_historyVersions),
+                new Integer(m_historyVersionsAfterDeletion)));
+        }
     }
 
     /**
@@ -1641,8 +1922,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_LOGINMESSAGE_3,
-                new Boolean(message.isEnabled()),
-                new Boolean(message.isLoginForbidden()),
+                Boolean.valueOf(message.isEnabled()),
+                Boolean.valueOf(message.isLoginForbidden()),
                 message.getMessage()));
         }
     }
@@ -1706,6 +1987,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the publish manager.<p>
+     * 
+     * @param publishManager the publish manager
+     */
+    public void setPublishManager(CmsPublishManager publishManager) {
+
+        m_publishManager = publishManager;
+    }
+
+    /**
      * Sets the runtime info factory.<p>
      * 
      * @param className the class name of the configured runtime info factory
@@ -1734,6 +2025,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             }
         }
 
+    }
+
+    /**
+     * Sets the session storage provider.<p>
+     * 
+     * @param sessionStorageProviderClass the session storage provider class to set.
+     */
+    public void setSessionStorageProvider(String sessionStorageProviderClass) {
+
+        m_sessionStorageProvider = sessionStorageProviderClass;
     }
 
     /**
@@ -1771,30 +2072,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /**
      * Sets the validation handler.<p>
      * 
-     * @param validationHandler the validation handler to set.
+     * @param validationHandlerClass the validation handler class to set.
      */
-    public void setValidationHandler(I_CmsValidationHandler validationHandler) {
+    public void setValidationHandler(String validationHandlerClass) {
 
-        m_validationHandler = validationHandler;
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_VALIDATION_HANDLER_1, validationHandler));
-        }
-    }
-
-    /**
-     * VFS version history settings are set here.<p>
-     * 
-     * @param historyEnabled if true the history is enabled
-     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
-     */
-    public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
-
-        m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
-        m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_HISTORY_SETTINGS_2,
-            // is Boolean type localized by underlying java.text.MessageFormat?
-                new Boolean(m_versionHistoryEnabled), new Integer(m_versionHistoryMaxCount)));
-        }
+        m_validationHandler = validationHandlerClass;
     }
 }

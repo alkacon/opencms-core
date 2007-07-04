@@ -21,9 +21,11 @@
 			<mailhost name="another.alternative.smtp.server"/>
 		</mail>
 		<scheduler />	
-	   	<versionhistory enabled="true" count="10"/>		   	
+	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
-            <resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
@@ -31,6 +33,7 @@
 			<digest-type>MD5</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
 		</passwordhandler>
+		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
@@ -53,7 +56,7 @@
 			<group-guests>Guests</group-guests>
 		</defaultusers>	
 		<defaultcontentencoding>UTF-8</defaultcontentencoding>
-		<memorymonitor>
+		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
 			<maxusagepercent>90</maxusagepercent>
 			<log-interval>600</log-interval>
 			<email-interval>43200</email-interval>
@@ -74,11 +77,14 @@
 			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
 			<size-users>64</size-users>
 			<size-groups>64</size-groups>
+			<size-orgunits>64</size-orgunits>
 			<size-usergroups>256</size-usergroups>
 			<size-projects>32</size-projects>
+			<size-projectresources>64</size-projectresources>
 			<size-resources>8192</size-resources>
 			<size-resourcelists>256</size-resourcelists>
 			<size-properties>1024</size-properties>
+			<size-propertylists>1024</size-propertylists>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
 		</resultcache>
@@ -86,5 +92,12 @@
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
         </content-notification>		
+		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<publishmanager>
+			<history-size>100</history-size>
+			<queue-persistance>true</queue-persistance>
+		    <queue-shutdowntime>1</queue-shutdowntime>
+		</publishmanager>
+		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
 </opencms>

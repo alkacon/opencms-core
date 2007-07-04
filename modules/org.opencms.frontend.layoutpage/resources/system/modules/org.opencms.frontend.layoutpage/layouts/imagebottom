@@ -1,6 +1,0 @@
-<div class="element">${layout.headline}
-<div class="lp_maxwidth"><p>
-${layout.text}
-${layout.image}
-</div></p>
-</div>

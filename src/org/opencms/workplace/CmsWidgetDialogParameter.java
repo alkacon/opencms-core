@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -293,19 +293,26 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 
             PropertyUtilsBean bean = new PropertyUtilsBean();
 
+            Object value = null;
             // make sure the base object has the requested property
             if (!bean.isReadable(m_baseObject, m_baseObjectProperty)
                 || !bean.isWriteable(m_baseObject, m_baseObjectProperty)) {
-
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_NO_PROPERTY_2,
-                    base.getClass().getName(),
-                    property));
+                try {
+                    // check if this is a mapped property
+                    value = bean.getMappedProperty(m_baseObject, m_baseObjectProperty);
+                } catch (Exception e) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_NO_PROPERTY_2,
+                        base.getClass().getName(),
+                        property));
+                }
             }
 
-            Object value;
             try {
-                value = bean.getNestedProperty(m_baseObject, m_baseObjectProperty);
+                if (value == null) {
+                    // may have been read already as a mapped property
+                    value = bean.getNestedProperty(m_baseObject, m_baseObjectProperty);
+                }
             } catch (Exception e) {
                 throw new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_PROPERTY_READ_2,
@@ -314,7 +321,6 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
             }
 
             if (value != null) {
-
                 if ((value instanceof List) || (value instanceof SortedMap)) {
                     m_baseCollection = value;
                     m_minOccurs = 0;
@@ -409,7 +415,6 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     public void commitValue(CmsWidgetDialog dialog) throws CmsException {
 
         if (m_baseCollection == null) {
-
             PropertyUtilsBean bean = new PropertyUtilsBean();
             ConvertUtilsBean converter = new ConvertUtilsBean();
             Object value = null;

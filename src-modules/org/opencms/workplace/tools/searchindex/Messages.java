@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,54 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCHINDEX_REBUILD_MULTI_0 = "ERR_SEARCHINDEX_REBUILD_MULTI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_DELETE_0 = "GUI_GROUPS_FIELD_TOOL_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_DELETE_HELP_0 = "GUI_GROUPS_FIELD_TOOL_DELETE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_EDIT_0 = "GUI_GROUPS_FIELD_TOOL_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_EDIT_HELP_0 = "GUI_GROUPS_FIELD_TOOL_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_GROUP_0 = "GUI_GROUPS_FIELD_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELD_TOOL_OVERVIEW_0 = "GUI_GROUPS_FIELD_TOOL_OVERVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_DELETE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_HELP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_GROUP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_INDEX_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_INDEX_HELP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_INDEX_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_NEW_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_NEW_HELP_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_NEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_OVERVIEW_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_OVERVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPS_FIELDCONFIGURATION_TOOL_OVERVIEW_NAVACTIVE_0 = "GUI_GROUPS_FIELDCONFIGURATION_TOOL_OVERVIEW_NAVACTIVE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_INDEXSOURCE_TOOL_DELETE_HELP_0 = "GUI_GROUPS_INDEXSOURCE_TOOL_DELETE_HELP_0";
@@ -164,6 +212,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INDEXING_THREAD_NAME_1 = "GUI_INDEXING_THREAD_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_FIELD_BLOCK_SETTINGS_0 = "GUI_LABEL_FIELD_BLOCK_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_FIELDCONFIGURATION_BLOCK_SETTINGS_0 = "GUI_LABEL_FIELDCONFIGURATION_BLOCK_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_INDEXSOURCE_BLOCK_SETTINGS_0 = "GUI_LABEL_INDEXSOURCE_BLOCK_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -225,6 +279,189 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_DOCUMENTTYPES_NAME_HELP_0 = "GUI_LIST_DOCUMENTTYPES_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_DELETE_CONF_1 = "GUI_LIST_FIELD_ACTION_DELETE_CONF_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_DELETE_NAME_0 = "GUI_LIST_FIELD_ACTION_DELETE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_EDIT_NAME_0 = "GUI_LIST_FIELD_ACTION_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_FALSE_CONF_0 = "GUI_LIST_FIELD_ACTION_FALSE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_FALSE_HELP_0 = "GUI_LIST_FIELD_ACTION_FALSE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_FALSE_NAME_0 = "GUI_LIST_FIELD_ACTION_FALSE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_MAPPING_0 = "GUI_LIST_FIELD_ACTION_MAPPING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_TRUE_CONF_0 = "GUI_LIST_FIELD_ACTION_TRUE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_TRUE_HELP_0 = "GUI_LIST_FIELD_ACTION_TRUE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_ACTION_TRUE_NAME_0 = "GUI_LIST_FIELD_ACTION_TRUE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_BOOST_0 = "GUI_LIST_FIELD_COL_BOOST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_DEFAULT_0 = "GUI_LIST_FIELD_COL_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_DISPLAY_0 = "GUI_LIST_FIELD_COL_DISPLAY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_EDIT_NAME_0 = "GUI_LIST_FIELD_COL_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_EDIT_NAME_HELP_0 = "GUI_LIST_FIELD_COL_EDIT_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_EXCERPT_0 = "GUI_LIST_FIELD_COL_EXCERPT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_INDEX_0 = "GUI_LIST_FIELD_COL_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_MAPPING_0 = "GUI_LIST_FIELD_COL_MAPPING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_MAPPING_HELP_0 = "GUI_LIST_FIELD_COL_MAPPING_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_OVERVIEW_NAME_0 = "GUI_LIST_FIELD_COL_OVERVIEW_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_OVERVIEW_NAME_HELP_0 = "GUI_LIST_FIELD_COL_OVERVIEW_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_STORE_0 = "GUI_LIST_FIELD_COL_STORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_COL_TOKEN_0 = "GUI_LIST_FIELD_COL_TOKEN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_0 = "GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_HELP_0 = "GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_DETAIL_MAPPINGS_NAME_0 = "GUI_LIST_FIELD_DETAIL_MAPPINGS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_0 = "GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_HELP_0 = "GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0 = "GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_0 = "GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_HELP_0 = "GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0 = "GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_0 = "GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0 = "GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_NAME_0 = "GUI_LIST_FIELD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELD_NAME_HELP_0 = "GUI_LIST_FIELD_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_CONF_1 = "GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_CONF_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_ACTION_EDIT_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_ACTION_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_ACTION_FIELD_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_ACTION_FIELD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_DELETE_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_COL_DELETE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_DESCRIPTION_0 = "GUI_LIST_FIELDCONFIGURATION_COL_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_EDIT_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_COL_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_EDIT_NAME_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_COL_EDIT_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_FIELD_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_COL_FIELD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_FIELD_NAME_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_COL_FIELD_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_ICON_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_COL_ICON_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_ICON_NAME_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_COL_ICON_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_OVERVIEW_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_COL_OVERVIEW_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_COL_OVERVIEW_NAME_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_COL_OVERVIEW_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_HIDE_0 = "GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_HIDE_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_HIDE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_SHOW_0 = "GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_SHOW_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_DETAIL_FIELDS_SHOW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_CONF_0 = "GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_NAME_0 = "GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_NAME_HELP_0 = "GUI_LIST_FIELDCONFIGURATION_MACTION_DELETECONFIGURATION_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDCONFIGURATIONS_NAME_0 = "GUI_LIST_FIELDCONFIGURATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDS_NAME_0 = "GUI_LIST_FIELDS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_FIELDS_NAME_HELP_0 = "GUI_LIST_FIELDS_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_INDEXSOURCE_ACTION_DELETE_CONF_0 = "GUI_LIST_INDEXSOURCE_ACTION_DELETE_CONF_0";
@@ -350,6 +587,27 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_INDEXSOURCES_NAME_0 = "GUI_LIST_INDEXSOURCES_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_DEFAULT_0 = "GUI_LIST_MAPPING_COL_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_EDIT_NAME_0 = "GUI_LIST_MAPPING_COL_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0 = "GUI_LIST_MAPPING_COL_EDIT_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_TYPE_0 = "GUI_LIST_MAPPING_COL_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_COL_VALUE_0 = "GUI_LIST_MAPPING_COL_VALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPING_NAME_HELP_0 = "GUI_LIST_MAPPING_NAME_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_MAPPINGS_NAME_0 = "GUI_LIST_MAPPINGS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_RESOURCES_NAME_0 = "GUI_LIST_RESOURCES_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -386,7 +644,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_SEARCHINDEX_ACTION_EDIT_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_EDIT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_ACTION_FIELDCONFIGURATIONS_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_FIELDCONFIGURATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_ACTION_FIELDS_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_FIELDS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_ACTION_INDEXSOURCES_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_INDEXSOURCES_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_ACTION_MAPPINGS_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_MAPPINGS_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_ACTION_REBUILD_CONF_0 = "GUI_LIST_SEARCHINDEX_ACTION_REBUILD_CONF_0";
@@ -416,6 +683,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_SEARCHINDEX_ACTION_SEARCH_NAME_0 = "GUI_LIST_SEARCHINDEX_ACTION_SEARCH_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0 = "GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0 = "GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -426,6 +696,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_COL_EDIT_NAME_0 = "GUI_LIST_SEARCHINDEX_COL_EDIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_COL_FIELDCONFIGURATIONS_NAME_0 = "GUI_LIST_SEARCHINDEX_COL_FIELDCONFIGURATIONS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_COL_FIELDCONFIGURATIONS_NAME_HELP_0 = "GUI_LIST_SEARCHINDEX_COL_FIELDCONFIGURATIONS_NAME_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_COL_INDEXSOURCES_NAME_0 = "GUI_LIST_SEARCHINDEX_COL_INDEXSOURCES_NAME_0";
@@ -462,6 +738,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_COL_SEARCH_NAME_0 = "GUI_LIST_SEARCHINDEX_COL_SEARCH_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_0 = "GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_HELP_0 = "GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0 = "GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_0 = "GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_HELP_0 = "GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_SEARCHINDEX_DETAIL_INDEXSOURCE_HIDE_0 = "GUI_LIST_SEARCHINDEX_DETAIL_INDEXSOURCE_HIDE_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2006/05/12 16:05:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_BACKUPRESOURCE_2 = "ERR_BACKUPRESOURCE_2";
+    public static final String ERR_BAD_ORGUNIT_2 = "ERR_BAD_ORGUNIT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_PROPERTYNAME_4 = "ERR_BAD_PROPERTYNAME_4";
@@ -68,10 +68,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EMPTY_SITEROOT_0 = "ERR_EMPTY_SITEROOT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_FIRSTNAME_EMPTY_0 = "ERR_FIRSTNAME_EMPTY_0";
+    public static final String ERR_HISTORYRESOURCE_2 = "ERR_HISTORYRESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LASTNAME_EMPTY_0 = "ERR_LASTNAME_EMPTY_0";
+    public static final String ERR_METHOD_NOT_IMPLEMENTED_1 = "ERR_METHOD_NOT_IMPLEMENTED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_SAME_FOLDER_2 = "ERR_MOVE_SAME_FOLDER_2";
@@ -84,6 +84,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0 = "ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_OVERWRITE_RESOURCE_2 = "ERR_OVERWRITE_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PERMALINK_1 = "ERR_PERMALINK_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROJECTNAME_VALIDATION_0 = "ERR_PROJECTNAME_VALIDATION_0";

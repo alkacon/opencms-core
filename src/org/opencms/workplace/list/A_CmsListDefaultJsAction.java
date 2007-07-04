@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDefaultJsAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,9 +61,9 @@ public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveOnClic(java.util.Locale)
      */
     protected String resolveOnClic(Locale locale) {
-    
+
         String confirmationMessage = getConfirmationMessage().key(locale);
-        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
             confirmationMessage = new MessageFormat(confirmationMessage, locale).format(new Object[] {getItem().get(
                 getColumnForTexts())});
         }

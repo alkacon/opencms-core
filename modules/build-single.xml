@@ -3,7 +3,7 @@
 <project name="OpenCms Common Module" default="dist" basedir=".">
 
 	<property name="opencms.input" location="${basedir}/.." />
-	<property name="opencms.output" location="${opencms.input}/.." />
+	<property name="opencms.output" location="${opencms.input}/../BuildCms" />
 	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
 	<property name="opencms.input.libs" location="${opencms.input.warfiles}/WEB-INF/lib" />
 	<property name="opencms.build" location="${opencms.output}/build" />
@@ -21,9 +21,9 @@
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
 			<pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-digester-1.7.jar" />
-			<pathelement location="${opencms.input.libs}/commons-collections-3.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-logging-1.0.4.jar" />
+			<pathelement location="${opencms.input.libs}/commons-digester-1.8.jar" />
+			<pathelement location="${opencms.input.libs}/commons-collections-3.2.jar" />
+			<pathelement location="${opencms.input.libs}/commons-logging-1.1.jar" />
 			<pathelement location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
 		</classpath>
 	</taskdef>
@@ -196,6 +196,7 @@
 		<echo message="Module input directory is: ${module.input}" />
 		<echo message="Module source directory is: ${module.input.src}" />
 		<echo message="Detected Java version: ${ant.java.version}" />
+        <echo message="Java target version: ${java.target.version}"/>		
 		<echo message="Tomcat home is: ${tomcat.home}" />
 		<echo message="Excluded files in Jar: ${jar.excludes}" />
 		<if>
@@ -278,7 +279,16 @@
 				<if>
 					<equals arg1="${src.mode}" arg2="shared" />
 					<then>
-						<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${module.package}/*.java" source="1.4" target="1.4">
+						<javac 
+							srcdir="${module.input.src.shared}" 
+							destdir="${module.output.classes}" 
+							debug="on" 
+							optimize="on" 
+							deprecation="on" 
+							includes="${module.package}/*.java" 
+							source="1.4" 
+							target="${java.target.version}">
+						
 							<classpath>
 								<fileset dir="${opencms.input.libs}">
 									<include name="**/*.jar" />
@@ -307,7 +317,16 @@
 												<var name="package.dir" value="${package.dir}@{package}/" />
 											</sequential>
 										</for>
-										<javac srcdir="${module.input.src.shared}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" includes="${package.dir}/*.java" source="1.4" target="1.4">
+										<javac 
+											srcdir="${module.input.src.shared}" 
+											destdir="${module.output.classes}" 
+											debug="on" 
+											optimize="on" 
+											deprecation="on" 
+											includes="${package.dir}/*.java" 
+											source="1.4" 
+											target="${java.target.version}">
+											
 											<classpath>
 												<fileset dir="${opencms.input.libs}">
 													<include name="**/*.jar" />
@@ -326,7 +345,15 @@
 								</for>
 							</then>
 							<else>
-								<javac srcdir="${module.input.src.single}" destdir="${module.output.classes}" debug="on" optimize="on" deprecation="on" source="1.4" target="1.4">
+								<javac 
+									srcdir="${module.input.src.single}" 
+									destdir="${module.output.classes}" 
+									debug="on" 
+									optimize="on" 
+									deprecation="on" 
+									source="1.4" 
+									target="${java.target.version}">
+									
 									<exclude name="**/test/**/*.java" />
 									<classpath>
 										<fileset dir="${opencms.input.libs}">

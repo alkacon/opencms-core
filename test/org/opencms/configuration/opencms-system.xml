@@ -57,13 +57,15 @@
 					<remoteaddr>127.0.0.1</remoteaddr>
 				</context>
 			</job>			
-		</scheduler>	
+		</scheduler>
 		<events>
-			<eventmanager class="org.opencms.main.CmsEventManager"/>
-		</events>				
-	   	<versionhistory enabled="true" count="10"/>
+			<eventmanager class="org.opencms.main.CmsTestEventManager"/>
+		</events>	
+	   	<versionhistory enabled="true" count="10" deleted="4" />
 		<resourceinit>
 			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
+			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
+			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
 		</resourceinit>
 		<requesthandlers/>
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
@@ -107,7 +109,7 @@
 			<group-guests>Guests</group-guests>
 		</defaultusers>		
 		<defaultcontentencoding>UTF-8</defaultcontentencoding>
-		<memorymonitor>
+		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
 			<maxusagepercent>90</maxusagepercent>
 			<log-interval>2</log-interval>
 			<email-interval>43200</email-interval>
@@ -129,17 +131,27 @@
 			<keygenerator>org.opencms.db.CmsCacheKey</keygenerator>
 			<size-users>64</size-users>
 			<size-groups>64</size-groups>
+			<size-orgunits>64</size-orgunits>
 			<size-usergroups>256</size-usergroups>
 			<size-projects>32</size-projects>
+			<size-projectresources>64</size-projectresources>
 			<size-resources>8192</size-resources>
 			<size-resourcelists>256</size-resourcelists>
 			<size-properties>128</size-properties>
+			<size-propertylists>128</size-propertylists>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
 		</resultcache>		
 		<content-notification>
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
-        </content-notification>					
+        </content-notification>
+		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+		<publishmanager>
+			<history-size>100</history-size>
+			<queue-persistance>false</queue-persistance>
+		    <queue-shutdowntime>1</queue-shutdowntime>
+		</publishmanager>
+		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
 </opencms>

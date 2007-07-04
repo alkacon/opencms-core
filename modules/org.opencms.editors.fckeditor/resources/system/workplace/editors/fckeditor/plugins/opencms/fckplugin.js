@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.jsp.*,
-	org.opencms.workplace.editors.*, 
+	org.opencms.workplace.editors.*,
+	org.opencms.workplace.galleries.*,
 	org.opencms.editors.fckeditor.*,
 	java.util.*
 "%><%
@@ -69,7 +70,8 @@ function execAction(form, action, target) {
 
 // opens the specified gallery in a popup window
 function openGallery(galleryType) {
-	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+	var cssPath = encodeURIComponent(top.edit.cssPath);
+	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType + "&csspath=" + cssPath, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 	focusCount = 1;
 	openWindow.focus();
 }
@@ -100,7 +102,7 @@ function openAnchorDialogWindow(linkType, errorMessage) {
 		var params = "?showCss=" + USE_LINKSTYLEINPUTS;
 		if (linkInformation != null) {
 			if (linkType == "link") {
-				params += "&href=" + linkInformation["href"];
+				params += "&href=" + encodeURIComponent(linkInformation["href"]);
 				params += "&target=" + linkInformation["target"];
 				params += "&title= "+linkInformation["title"];
 			} else {

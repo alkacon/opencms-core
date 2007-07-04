@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.security;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
+import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
@@ -51,39 +54,44 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestCmsPrincipal(String arg0) {
-        
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsPrincipal.class.getName());
 
         suite.addTest(new TestCmsPrincipal("testBasicReadOperation"));
-        
+        suite.addTest(new TestCmsPrincipal("testUserHistory"));
+        suite.addTest(new TestCmsPrincipal("testGroupHistory"));
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    } 
-    
+    }
+
     /**
      * Tests basic principal read operation.<p>
      * 
@@ -108,42 +116,103 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
         assertFalse(principal.isUser());
         assertTrue(principal.isGroup());
         assertEquals(prefixedName, principal.getPrefixedName());
-        
+
         // negative test
         prefixedName = "kaputt";
-        CmsException caught = null; 
+        CmsException caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
-        assertTrue(caught instanceof CmsSecurityException);
-        assertSame(Messages.ERR_INVALID_PRINCIPAL_1, caught.getMessageContainer().getKey());
-        
+        assertTrue(caught instanceof CmsDbEntryNotFoundException);
+        if (caught != null) {
+            assertSame(Messages.ERR_INVALID_PRINCIPAL_1, caught.getMessageContainer().getKey());
+        }
+
         // negative test 2
         prefixedName = CmsPrincipal.getPrefixedUser("kaputt");
-        caught = null; 
+        caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
         assertTrue(caught instanceof CmsDbEntryNotFoundException);
-        assertSame(org.opencms.db.Messages.ERR_READ_USER_FOR_NAME_1, caught.getMessageContainer().getKey());
-        
+        if (caught != null) {
+            assertSame(org.opencms.db.Messages.ERR_READ_USER_FOR_NAME_1, caught.getMessageContainer().getKey());
+        }
+
         // negative test 3
         prefixedName = CmsPrincipal.getPrefixedGroup("kaputt");
-        caught = null; 
+        caught = null;
         try {
-            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);            
+            principal = CmsPrincipal.readPrefixedPrincipal(cms, prefixedName);
         } catch (CmsException e) {
             caught = e;
         }
         assertNotNull(caught);
         assertTrue(caught instanceof CmsDbEntryNotFoundException);
-        assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
+        if (caught != null) {
+            assertSame(org.opencms.db.Messages.ERR_READ_GROUP_FOR_NAME_1, caught.getMessageContainer().getKey());
+        }
+    }
 
-    }    
+    /**
+     * Test group history.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testGroupHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing group history");
+
+        CmsGroup group = cms.createGroup("groupDelete", "my description", 0, null);
+        long before = System.currentTimeMillis();
+        cms.deleteGroup(group.getId(), null);
+        long after = System.currentTimeMillis();
+
+        CmsHistoryPrincipal histUser = cms.readHistoryPrincipal(group.getId());
+        assertEquals(group.getId(), histUser.getId());
+        assertEquals(group.getName(), histUser.getName());
+        assertEquals(group.getSimpleName(), histUser.getSimpleName());
+        assertEquals(group.getOuFqn(), histUser.getOuFqn());
+        assertEquals(group.getDescription(), histUser.getDescription());
+        assertEquals("-", histUser.getEmail());
+        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertTrue(before <= histUser.getDateDeleted());
+        assertTrue(histUser.getDateDeleted() <= after);
+    }
+
+    /**
+     * Test user history.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUserHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing user history");
+
+        CmsUser user = cms.createUser("userDelete", "userDelete", "my description", null);
+        user.setEmail("aa@bb.cc");
+        cms.writeUser(user);
+        long before = System.currentTimeMillis();
+        cms.deleteUser(user.getId());
+        long after = System.currentTimeMillis();
+
+        CmsHistoryPrincipal histUser = cms.readHistoryPrincipal(user.getId());
+        assertEquals(user.getId(), histUser.getId());
+        assertEquals(user.getName(), histUser.getName());
+        assertEquals(user.getSimpleName(), histUser.getSimpleName());
+        assertEquals(user.getOuFqn(), histUser.getOuFqn());
+        assertEquals(user.getDescription(), histUser.getDescription());
+        assertEquals(user.getEmail(), histUser.getEmail());
+        assertEquals(cms.getRequestContext().currentUser().getId(), histUser.getUserDeleted());
+        assertTrue(before <= histUser.getDateDeleted());
+        assertTrue(histUser.getDateDeleted() <= after);
+    }
 }

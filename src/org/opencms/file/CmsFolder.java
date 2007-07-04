@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0 
  */
@@ -80,13 +81,14 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getUserCreated(),
             resource.getDateLastModified(),
             resource.getUserLastModified(),
-            resource.getSiblingCount(),
             resource.getDateReleased(),
-            resource.getDateExpired());
+            resource.getDateExpired(),
+            resource.getVersion());
     }
 
     /**
      * Constructor, creates a new CmsFolder object.<p>
+     * 
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resouce
@@ -98,9 +100,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * @param userCreated the id of the user who created this resource
      * @param dateLastModified the date of the last modification of this resource
      * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
-     * @param linkCount the count of all siblings of this resource 
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
+     * @param version the version number of this resource
      */
     public CmsFolder(
         CmsUUID structureId,
@@ -108,15 +110,15 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         String path,
         int type,
         int flags,
-        int projectId,
-        int state,
+        CmsUUID projectId,
+        CmsResourceState state,
         long dateCreated,
         CmsUUID userCreated,
         long dateLastModified,
         CmsUUID userLastModified,
-        int linkCount,
         long dateReleased,
-        long dateExpired) {
+        long dateExpired,
+        int version) {
 
         super(
             structureId,
@@ -133,8 +135,22 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             userLastModified,
             dateReleased,
             dateExpired,
-            linkCount,
-            -1);
+            1,
+            -1,
+            -1,
+            version);
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource size describes a folder type.<p>
+     * 
+     * @param size the resource size to check 
+     * 
+     * @return true if the given resource size describes a folder type or false if it is no folder
+     */
+    public static final boolean isFolderSize(long size) {
+
+        return (size < 0);
     }
 
     /**
@@ -143,7 +159,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * @param typeId the resource type id to check 
      * 
      * @return true if the given resource type id describes a folder type or false if it is no folder or an unknown type.
-     * 
      */
     public static final boolean isFolderType(int typeId) {
 
@@ -194,9 +209,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getUserCreated(),
             getDateLastModified(),
             getUserLastModified(),
-            getSiblingCount(),
             getDateReleased(),
-            getDateExpired());
+            getDateExpired(),
+            getVersion());
 
         if (isTouched()) {
             clone.setDateLastModified(getDateLastModified());

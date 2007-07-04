@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPropertyUtils.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -45,7 +46,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,16 +79,19 @@ public final class CmsPropertyUtils {
             input.close();
         } catch (IOException e) {
             try {
-                input.close();
+                if (input != null) {
+                    input.close();
+                }
             } catch (Exception ex) {
                 // nothing we can do
             }
             throw e;
         }
 
-        for (Iterator i = properties.keySet().iterator(); i.hasNext();) {
-            String key = (String)i.next();
-            Object obj = properties.get(key);
+        for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            Object obj = entry.getValue();
             String[] value = {};
 
             if (obj instanceof Vector) {

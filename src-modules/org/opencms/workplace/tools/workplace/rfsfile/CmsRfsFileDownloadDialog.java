@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2006/03/28 13:52:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/04 16:57:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,11 +249,11 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
     }
     
     /**
-     * Returns the File to downoad from the <code>{@link org.opencms.workplace.WorkplaceManager}</code>'s 
-     * setting {@link org.opencms.workplace.WorkplaceManager#getRfsFileViewSettings()}.<p>
+     * Returns the File to downoad from the <code>{@link org.opencms.workplace.CmsWorkplaceManager}</code>'s 
+     * setting {@link org.opencms.workplace.CmsWorkplaceManager#getFileViewSettings()}.<p>
      * 
-     * @return the File to downoad from the <code>{@link org.opencms.workplace.WorkplaceManager}</code>'s 
-     *         setting {@link org.opencms.workplace.WorkplaceManager#getRfsFileViewSettings()}
+     * @return the File to downoad from the <code>{@link org.opencms.workplace.CmsWorkplaceManager}</code>'s 
+     *         setting {@link org.opencms.workplace.CmsWorkplaceManager#getFileViewSettings()}
      * @throws CmsRuntimeException if access to the chosen file to download fails
      */
     private File getDownloadFileInternal() throws CmsRuntimeException {

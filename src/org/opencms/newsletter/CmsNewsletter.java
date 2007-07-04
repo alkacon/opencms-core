@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2006/07/20 13:06:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System

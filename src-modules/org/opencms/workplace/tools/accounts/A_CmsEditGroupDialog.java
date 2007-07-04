@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:56:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,15 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.CmsSelectWidget;
-import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -52,7 +53,6 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,14 +75,20 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** Request parameter name for the user id. */
+    /** Request parameter name for the group id. */
     public static final String PARAM_GROUPID = "groupid";
+
+    /** Request parameter name for the group name. */
+    public static final String PARAM_GROUPNAME = "groupname";
 
     /** The user object that is edited on this dialog. */
     protected CmsGroup m_group;
 
     /** Stores the value of the request parameter for the group id. */
     private String m_paramGroupid;
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /** Auxiliary Property for better representation of the bean parentId property. */
     private String m_parentGroup;
@@ -98,20 +104,6 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the dialog class name of the list to refresh.<p> 
-     * 
-     * @return the list dialog class name
-     */
-    protected abstract String getListClass();
-
-    /**
-     * Returns the root path for the list tool.<p>
-     * 
-     * @return the root path
-     */
-    protected abstract String getListRootPath();
-
-    /**
      * Commits the edited group to the db.<p>
      */
     public void actionCommit() {
@@ -122,13 +114,12 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             // if new create it first
             if (m_group.getId() == null) {
                 CmsGroup newGroup = getCms().createGroup(
-                    m_group.getName(),
+                    m_paramOufqn + m_group.getSimpleName(),
                     m_group.getDescription(),
                     m_group.isEnabled() ? I_CmsPrincipal.FLAG_ENABLED : I_CmsPrincipal.FLAG_DISABLED,
                     getParentGroup());
-                newGroup.setProjectManager(m_group.getProjectManager());
-                newGroup.setProjectCoWorker(m_group.getProjectCoWorker());
-                newGroup.setRole(m_group.getRole());
+                newGroup.setProjectManager(m_group.isProjectManager());
+                newGroup.setProjectCoWorker(m_group.isProjectCoWorker());
                 m_group = newGroup;
             } else {
                 if (getParentGroup() != null) {
@@ -155,11 +146,22 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                 Map argMap = new HashMap();
                 argMap.put("groupid", m_group.getId());
                 argMap.put("groupname", m_group.getName());
+                argMap.put("oufqn", m_paramOufqn);
                 setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getListRootPath() + "/edit", argMap));
             }
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
+    }
+
+    /**
+     * Returns the localized description of a group.<p>
+     * 
+     * @return the localized description of a group
+     */
+    public String getDescription() {
+
+        return m_group.getDescription(getLocale());
     }
 
     /**
@@ -173,6 +175,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the organizational unit parameter value.<p>
+     * 
+     * @return the organizational unit parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
      * Returns the parent Group name.<p>
      *
      * @return the parent Group name
@@ -183,6 +195,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the description for a group.<p>
+     * 
+     * @param description the description for a group
+     */
+    public void setDescription(String description) {
+
+        m_group.setDescription(description);
+    }
+
+    /**
      * Sets the user id parameter value.<p>
      * 
      * @param userId the user id parameter value
@@ -190,6 +212,19 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     public void setParamGroupid(String userId) {
 
         m_paramGroupid = userId;
+    }
+
+    /**
+     * Sets the organizational unit parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -232,12 +267,12 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 3));
+            result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(4, 6));
+            result.append(createDialogRowsHtml(5, 6));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -258,26 +293,43 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
         // widgets to display
         if (m_group.getId() == null && isEditable(m_group)) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsInputWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
         }
         if (isEditable(m_group)) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsTextareaWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsSelectWidget(getSelectGroups())));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsTextareaWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsGroupWidget(
+                null,
+                null,
+                getParamOufqn())));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsCheckboxWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsCheckboxWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
         }
     }
+
+    /**
+     * Returns the dialog class name of the list to refresh.<p> 
+     * 
+     * @return the list dialog class name
+     */
+    protected abstract String getListClass();
+
+    /**
+     * Returns the root path for the list tool.<p>
+     * 
+     * @return the root path
+     */
+    protected abstract String getListRootPath();
 
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
@@ -347,39 +399,26 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Tests if the given group is editable or not.<p>
+     * 
+     * Not editable means that no property can be changed.<p>
+     * 
+     * @param group the group to test 
+     * 
+     * @return the editable flag
+     */
+    protected abstract boolean isEditable(CmsGroup group);
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
 
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParamOufqn()));
         if (!isNewGroup()) {
             // test the needed parameters
             getCms().readGroup(new CmsUUID(getParamGroupid())).getName();
-
         }
-    }
-
-    /**
-     * Returns the groups names to show in the select box.<p>
-     * 
-     * @return the groups names to show in the select box
-     */
-    private List getSelectGroups() {
-
-        List retVal = new ArrayList();
-        retVal.add(new CmsSelectWidgetOption("none", true));
-        try {
-            Iterator itGroups = getCms().getGroups().iterator();
-            while (itGroups.hasNext()) {
-                CmsGroup group = (CmsGroup)itGroups.next();
-                if (group.getId().equals(m_group.getId())) {
-                    continue;
-                }
-                retVal.add(new CmsSelectWidgetOption(group.getName()));
-            }
-        } catch (Exception e) {
-            // noop
-        }
-        return retVal;
     }
 
     /**
@@ -392,15 +431,4 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
         return getCurrentToolPath().equals(getListRootPath() + "/new");
     }
 
-    /**
-     * Tests if the given group is editable or not.<p>
-     * 
-     * Not editable means that no property can be changed.<p>
-     * 
-     * @param group the group to test 
-     * 
-     * @return the editable flag
-     */
-    protected abstract boolean isEditable(CmsGroup group);
-    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2006/10/19 14:16:40 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,10 +100,11 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         List galleries = new ArrayList(galleryMap.size());
         Map typeMap = new HashMap(galleryMap.size());
 
-        Iterator i = galleryMap.keySet().iterator();
+        Iterator i = galleryMap.entrySet().iterator();
         while (i.hasNext()) {
-            String key = (String)i.next();
-            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            Map.Entry entry = (Map.Entry)i.next();
+            String key = (String)entry.getKey();
+            A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
             galleries.add(currGallery);
             // put the type name to the type Map
             typeMap.put(currGallery, key);
@@ -150,7 +151,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         setParamDialogtype(EDITOR_TYPE);
 
         // Initialize a page object from the temporary file
-        if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
+        if ((getParamTempfile() != null) && !"null".equals(getParamTempfile())) {
             try {
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
@@ -234,7 +235,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 // lock resource if autolock is enabled in configuration
                 if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
-                    checkLock(getParamResource(), CmsLock.TEMPORARY);
+                    checkLock(getParamResource(), CmsLockType.TEMPORARY);
                 } else {
                     // set common lock
                     checkLock(getParamResource());

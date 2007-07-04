@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiAction.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsListMultiAction extends A_CmsListAction {
 
         if (!isVisible()) {
             return "";
-        } 
+        }
         if (isEnabled()) {
             String onClic = "listMAction('"
                 + getListId()
@@ -76,7 +76,6 @@ public class CmsListMultiAction extends A_CmsListAction {
                 + CmsHtmlList.NO_SELECTION_HELP_VAR
                 + ");";
             return A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 getId(),
                 getName().key(wp.getLocale()),

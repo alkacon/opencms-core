@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2006/10/18 15:02:25 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  * 
@@ -132,6 +134,9 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             do {
                 // get all template resources which are potential candidates for a static export
                 publishedTemplateResources = cmsExportObject.readStaticExportResources(linkMode, timestamp);
+                if (publishedTemplateResources == null) {
+                    break;
+                }
                 newTemplateLinksFound = publishedTemplateResources.size() > 0;
                 if (newTemplateLinksFound) {
                     if (linkMode == CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER) {
@@ -154,7 +159,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         }
                     }
                     // leave if no template left
-                    if (publishedTemplateResources == null || publishedTemplateResources.isEmpty()) {
+                    if (publishedTemplateResources.isEmpty()) {
                         break;
                     }
                     // export
@@ -166,13 +171,13 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * Gets all resources within the folder tree.<p>
-     * Since the long min and max value do not work with the sql timestamp function in the driver, we must calculate 
-     * some different, but usable start and endtime values first.<p>
+     * Returns all resources within the current OpenCms site that are not marked as internal.<p>
+     * 
+     * The result list contains objects of type {@link CmsPublishedResource}.<p>
      * 
      * @param cms the cms context
      * 
-     * @return all resources within the folder tree
+     * @return all resources within the current OpenCms site that are not marked as internal
      * 
      * @throws CmsException if something goes wrong
      */
@@ -181,17 +186,26 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_ALL_RESOURCES_0));
         }
-		// read all from the root path, exclude resources flagged as internal        
+        // TODO: to improve performance, get here only the resources to render from the configuration
+
+        // read all from the root path, exclude resources flagged as internal        
         List vfsResources = cms.readResources("/", CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
+
+        CmsExportFolderMatcher matcher = OpenCms.getStaticExportManager().getExportFolderMatcher();
         // loop through the list and create the list of CmsPublishedResources
         List resources = new ArrayList(vfsResources.size());
         Iterator i = vfsResources.iterator();
         while (i.hasNext()) {
-            CmsPublishedResource resource = new CmsPublishedResource((CmsResource)i.next());
+            CmsResource resource = (CmsResource)i.next();
+            if (!matcher.match(resource.getRootPath())) {
+                // filter files that do not match the resources to render 
+                continue;
+            }
+            CmsPublishedResource pubRes = new CmsPublishedResource(resource);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESSING_1, resource.getRootPath()));
             }
-            resources.add(resource);
+            resources.add(pubRes);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -209,18 +223,15 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             m_busy = true;
             exportAfterPublish(publishHistoryId, report);
         } catch (Throwable t) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_ERROR_0), t);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_ERROR_0), t);
+            }
+            if (report != null) {
+                report.addError(t);
+            }
         } finally {
             m_busy = false;
         }
-    }
-
-    /**
-     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
-     */
-    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
-
-        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -235,7 +246,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
+    protected void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         // first check if the test resource was published already
@@ -259,12 +270,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_TEST_RESOURCE_EXISTS_0));
             }
 
-            // delete all resources deleted during the publish process
-            scrubExportFolders(publishHistoryId);
-
-            // get the list of published resources from the publish history table
-            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            List publishedResources = cms.readPublishedResources(publishHistoryId);
+            // delete all resources deleted during the publish process, and retrieve the list of resources to actually export
+            List publishedResources = scrubExportFolders(publishHistoryId);
 
             // do the export
             doExportAfterPublish(publishedResources, report);
@@ -285,7 +292,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private boolean exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report)
+    protected boolean exportNonTemplateResources(CmsObject cms, List publishedResources, I_CmsReport report)
     throws CmsException, IOException, ServletException {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
@@ -299,23 +306,19 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0),
             I_CmsReport.FORMAT_HEADLINE);
 
-        // loop through all resources
-        Iterator i = publishedResources.iterator();
-
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_EXPORTING_NON_TEMPLATE_1,
                 new Integer(publishedResources.size())));
         }
 
+        // loop through all resources
+        Iterator i = publishedResources.iterator();
         while (i.hasNext()) {
             CmsPublishedResource pupRes = (CmsPublishedResource)i.next();
-
             vfsName = pupRes.getRootPath();
-
             // only process this resource, if it is within the tree of allowed folders for static export
             if (manager.getExportFolderMatcher().match(vfsName)) {
-
                 // only export VFS files, other data is handled elsewhere 
                 if (pupRes.isVfsResource()) {
                     // get the export data object, if null is returned, this resource cannot be exported
@@ -347,12 +350,12 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                                 }
                             }
                         }
-                        if (resource != null) {
+                        if (resource != null && resource.isFile()) {
                             // check loader for current resource if it must be processed before exported
                             I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
                             if (!loader.isStaticExportProcessable()) {
                                 // this resource must not be processed, so export it (if it's not marked as deleted)
-                                if (pupRes.getState() != CmsResource.STATE_DELETED) {
+                                if (!pupRes.getState().isDeleted()) {
                                     // mark the resource for export to the real file system                  
                                     resourcesToExport.add(exportData);
                                 }
@@ -432,7 +435,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @param publishedTemplateResources list of potential candidates to export
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file    
      */
-    private void exportTemplateResources(CmsObject cms, List publishedTemplateResources, I_CmsReport report) {
+    protected void exportTemplateResources(CmsObject cms, List publishedTemplateResources, I_CmsReport report) {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
         int size = publishedTemplateResources.size();
@@ -453,26 +456,33 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             String rfsName = (String)i.next();
             String vfsName = manager.getVfsNameInternal(cms, rfsName);
             if (vfsName == null) {
-                String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
+                String rfsBaseName = rfsName;
+                int pos = rfsName.lastIndexOf('_');
+                if (pos >= 0) {
+                    rfsBaseName = rfsName.substring(0, pos);
+                }
                 vfsName = manager.getVfsNameInternal(cms, rfsBaseName);
             }
-
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(count++),
-                new Integer(size)), I_CmsReport.FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                rfsName));
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            if (vfsName != null) {
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    new Integer(count++),
+                    new Integer(size)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    rfsName));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            } else {
+                // no valid resource found for rfs name (already deleted), skip it
+                continue;
+            }
 
             String exportUrlStr = manager.getExportUrl() + manager.getRfsPrefix(vfsName) + rfsName;
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_SENDING_REQUEST_2, rfsName, exportUrlStr));
             }
-
             try {
                 // setup the connection and request the resource
                 URL exportUrl = new URL(exportUrlStr);
@@ -575,7 +585,15 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     }
 
     /**
-     * Creates a list of <code>{@link CmsPulishedResource}</code> objects containing all related resources of the VFS tree.<p>
+     * @see org.opencms.staticexport.A_CmsStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
+     */
+    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
+
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * Creates a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects containing all related resources of the VFS tree.<p>
      * 
      * If the static export has been triggered by the OpenCms workplace, publishedResources is null and all resources in the VFS tree are returned.<p>
      * If really an after publish static export is triggered, then only the related resources are returned.<p>
@@ -587,18 +605,18 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * 
      * @throws CmsException in case of errors accessing the VFS
      */
-    private List getRelatedResources(CmsObject cms, List publishedResources) throws CmsException {
+    protected List getRelatedResources(CmsObject cms, List publishedResources) throws CmsException {
 
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             // switch to root site
-            cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
             if (publishedResources == null) {
                 // full static export
                 return getAllResources(cms);
             } else {
                 // after publish export
-                Set resourceSet = new HashSet();
+                Map resourceMap = new HashMap();
                 Iterator itPubRes = publishedResources.iterator();
                 while (itPubRes.hasNext()) {
                     CmsPublishedResource pubResource = (CmsPublishedResource)itPubRes.next();
@@ -608,19 +626,29 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         CmsResource vfsResource = cms.readResource(pubResource.getRootPath());
                         if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) != CmsResource.FLAG_INTERNAL) {
                             // add only if not internal
-                            resourceSet.add(pubResource);
+                            // additionally, add all siblings of the resource
+                            Iterator itSiblings = getSiblings(cms, pubResource).iterator();
+                            while (itSiblings.hasNext()) {
+                                CmsPublishedResource sibling = (CmsPublishedResource)itSiblings.next();
+                                resourceMap.put(sibling.getRootPath(), sibling);
+                            }
                         }
                     } else {
                         // the resource does not exist, so add them for deletion in the static export
-                        resourceSet.add(pubResource);
+                        resourceMap.put(pubResource.getRootPath(), pubResource);
                     }
+
                     boolean match = false;
                     Iterator itExportRules = OpenCms.getStaticExportManager().getExportRules().iterator();
                     while (itExportRules.hasNext()) {
                         CmsStaticExportExportRule rule = (CmsStaticExportExportRule)itExportRules.next();
                         Set relatedResources = rule.getRelatedResources(cms, pubResource);
                         if (relatedResources != null) {
-                            resourceSet.addAll(relatedResources);
+                            Iterator itRelatedRes = relatedResources.iterator();
+                            while (itRelatedRes.hasNext()) {
+                                CmsPublishedResource relatedRes = (CmsPublishedResource)itRelatedRes.next();
+                                resourceMap.put(relatedRes.getRootPath(), relatedRes);
+                            }
                             match = true;
                         }
                     }
@@ -629,10 +657,30 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                         return getAllResources(cms);
                     }
                 }
-                return new ArrayList(resourceSet);
+                return new ArrayList(resourceMap.values());
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
+    }
+
+    /**
+     * Returns all siblings of the published resource as list of <code>CmsPublishedResource</code>.<p>
+     * 
+     * @param cms the cms object
+     * @param pubResource the published resource
+     * 
+     * @return all siblings of the published resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private Set getSiblings(CmsObject cms, CmsPublishedResource pubResource) throws CmsException {
+
+        Set siblings = new HashSet();
+        for (Iterator i = getSiblingsList(cms, pubResource.getRootPath()).iterator(); i.hasNext();) {
+            String sibling = (String)i.next();
+            siblings.add(new CmsPublishedResource(cms.readResource(sibling)));
+        }
+        return siblings;
     }
 }

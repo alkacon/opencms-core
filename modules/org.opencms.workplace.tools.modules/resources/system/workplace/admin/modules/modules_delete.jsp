@@ -35,15 +35,7 @@ default:
 
 %><%= wp.htmlStart() %>
 
-<script language="JavaScript">
-function init() {
-	if (window.top.body.admin_head) {
-		window.top.body.admin_head.location.href="<%= wp.getJsp().link("/system/workplace/action/administration_head.html") %>";
-	}
-}
-</script>
-
-<%= wp.bodyStart("dialog", "onLoad=\"init();\"") %>
+<%= wp.bodyStart("dialog", "") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>

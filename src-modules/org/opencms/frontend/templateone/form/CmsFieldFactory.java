@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class CmsFieldFactory {
 
@@ -77,6 +77,7 @@ public final class CmsFieldFactory {
         // register all the standard OpenCms field types
         registerFieldType(CmsCheckboxField.getStaticType(), CmsCheckboxField.class.getName());
         registerFieldType(CmsEmailField.getStaticType(), CmsEmailField.class.getName());
+        registerFieldType(CmsFileUploadField.getStaticType(), CmsFileUploadField.class.getName());
         registerFieldType(CmsHiddenField.getStaticType(), CmsHiddenField.class.getName());
         registerFieldType(CmsRadioButtonField.getStaticType(), CmsRadioButtonField.class.getName());
         registerFieldType(CmsSelectionField.getStaticType(), CmsSelectionField.class.getName());
@@ -106,7 +107,7 @@ public final class CmsFieldFactory {
                     }
 
                     String[] values = fieldProperties.getStringArray(key);
-                    if (values == null || values.length == 0) {
+                    if ((values == null) || (values.length == 0)) {
                         continue;
                     }
 
@@ -125,32 +126,12 @@ public final class CmsFieldFactory {
                 }
             }
         } catch (IOException e) {
-
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_ERR_READING_CUSTOM_FORM_FIELD_PROPERTIES_1,
-                    propertyFile.getAbsolutePath()), e);
+                    propertyFile == null ? CUSTOM_FORM_FIELD_PROPERTIES : propertyFile.getAbsolutePath()), e);
             }
         }
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-
-            if (m_registeredFieldTypes != null) {
-                m_registeredFieldTypes.clear();
-            }
-
-            m_registeredFieldTypes = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-
-        super.finalize();
     }
 
     /**
@@ -168,15 +149,18 @@ public final class CmsFieldFactory {
     }
 
     /**
-     * Registers a class as a field type in the factory.<p>
-     * 
-     * @param type the type of the field
-     * @param className the name of the field class
-     * @return the previous class associated with this type, or null if there was no mapping before
+     * @see java.lang.Object#finalize()
      */
-    private Object registerFieldType(String type, String className) {
+    protected void finalize() throws Throwable {
 
-        return m_registeredFieldTypes.put(type, className);
+        try {
+            if (m_registeredFieldTypes != null) {
+                m_registeredFieldTypes.clear();
+            }
+        } catch (Throwable t) {
+            // ignore
+        }
+        super.finalize();
     }
 
     /**
@@ -201,5 +185,17 @@ public final class CmsFieldFactory {
         }
 
         return field;
+    }
+
+    /**
+     * Registers a class as a field type in the factory.<p>
+     * 
+     * @param type the type of the field
+     * @param className the name of the field class
+     * @return the previous class associated with this type, or null if there was no mapping before
+     */
+    private Object registerFieldType(String type, String className) {
+
+        return m_registeredFieldTypes.put(type, className);
     }
 }

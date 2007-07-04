@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2005/08/31 16:20:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,10 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 
 import java.util.List;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 
@@ -47,7 +45,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,24 +60,6 @@ public interface I_CmsIndexer {
      * @throws CmsIndexException if something goes wrong
      */
     void deleteResources(IndexReader reader, List resourcesToDelete) throws CmsIndexException;
-
-    /**
-     * Returns an index resource for a specified Lucene search result document.<p>
-     * 
-     * Implementations of this method have to check if the current user has read permissions
-     * on the Cms resource represented by the Lucene document.<p>
-     * 
-     * If this check fails, the implementation must return null as a result.<p>
-     * 
-     * @param cms the OpenCms context to use when reading resources from the VFS
-     * @param doc the Lucene search result document
-     * @return a new index resource
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see A_CmsIndexResource
-     */
-    A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException;
 
     /**
      * Calculates the data for an incremental search index update.<p>

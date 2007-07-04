@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,14 @@ package org.opencms.search;
 
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.util.CmsStringUtil;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
@@ -45,9 +49,10 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
+ * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,14 +64,11 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /** The last modification date of this search result. */
     protected Date m_dateLastModified;
 
-    /** The description of this search result. */
-    protected String m_description;
+    /** The document type of the search result. */
+    protected String m_documentType;
 
     /** The excerpt of this search result. */
     protected String m_excerpt;
-
-    /** The key words of this search result. */
-    protected String m_keyWords;
 
     /** The resource path of this search result. */
     protected String m_path;
@@ -74,52 +76,50 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /** The score of this search result. */
     protected int m_score;
 
-    /** The title of this search result. */
-    protected String m_title;
+    /** Holds the values of the search result fields. */
+    Map m_fields;
+
+    /** Contains the pre-calculated memory size. */
+    private int m_memorySize;
 
     /**
      * Creates a new search result.<p>
      * 
      * @param score the score of this search result
-     * @param luceneDocument the Lucene document to extract fields from such as description, title, key words etc. pp.
+     * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
      */
-    protected CmsSearchResult(int score, Document luceneDocument, String excerpt) {
-
-        Field f;
+    protected CmsSearchResult(int score, Document doc, String excerpt) {
 
         m_score = score;
         m_excerpt = excerpt;
+        m_fields = new HashMap();
 
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DESCRIPTION);
-        if (f != null) {
-            m_description = f.stringValue();
-        } else {
-            m_description = null;
+        Iterator i = doc.getFields().iterator();
+        while (i.hasNext()) {
+            Field field = (Field)i.next();
+            if ((field != null) && field.isStored()) {
+                // content can be displayed only if it has been stored in the field
+                String name = field.name();
+                String value = field.stringValue();
+                if (CmsStringUtil.isNotEmpty(value)
+                    && !CmsSearchField.FIELD_PATH.equals(name)
+                    && !CmsSearchField.FIELD_DATE_CREATED.equals(name)
+                    && !CmsSearchField.FIELD_DATE_LASTMODIFIED.equals(name)) {
+                    // these "hard coded" fields are treated differently
+                    m_fields.put(name, value);
+                }
+            }
         }
 
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_KEYWORDS);
-        if (f != null) {
-            m_keyWords = f.stringValue();
-        } else {
-            m_keyWords = null;
-        }
-
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE_KEY);
-        if (f != null) {
-            m_title = f.stringValue();
-        } else {
-            m_title = null;
-        }
-
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_PATH);
+        Field f = doc.getField(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         } else {
             m_path = null;
         }
 
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_CREATED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -130,15 +130,22 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             m_dateCreated = null;
         }
 
-        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED);
+        f = doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
             } catch (ParseException exc) {
                 m_dateLastModified = null;
-            }                
+            }
         } else {
             m_dateLastModified = null;
+        }
+
+        f = doc.getField(CmsSearchField.FIELD_TYPE);
+        if (f != null) {
+            m_documentType = f.stringValue();
+        } else {
+            m_documentType = null;
         }
     }
 
@@ -157,13 +164,28 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSearchResult) {
+            CmsSearchResult other = (CmsSearchResult)obj;
+            return m_documentType.equals(other.m_documentType) && m_path.equals(other.m_path);
+        }
+        return false;
+    }
+
+    /**
      * Returns the date created.<p>
      *
      * @return the date created
      */
     public Date getDateCreated() {
 
-        return m_dateCreated;
+        return (Date)m_dateCreated.clone();
     }
 
     /**
@@ -173,17 +195,38 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     public Date getDateLastModified() {
 
-        return m_dateLastModified;
+        return (Date)m_dateLastModified.clone();
     }
 
     /**
      * Returns the description.<p>
      *
      * @return the description
+     * 
+     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     *      for example use {@link CmsSearchField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
 
-        return m_description;
+        return getField(CmsSearchField.FIELD_DESCRIPTION);
+    }
+
+    /**
+     * Returns the document type of the search result document.<p>
+     * 
+     * Usually this will be a VFS resource type String that can be used in the 
+     * resource type manager with {@link org.opencms.loader.CmsResourceManager#getResourceType(String)}.
+     * However, what is stored in the document type field depends only on the indexer used, and therefore it
+     * may also be some String not referring  a VFS resource type but some external type or application.
+     * It may also be <code>null</code> in case it has not been set by a non-standard indexer.<p>  
+     * 
+     * @return the document type of the search result document
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(String)
+     */
+    public String getDocumentType() {
+
+        return m_documentType;
     }
 
     /**
@@ -197,13 +240,28 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     }
 
     /**
+     * Returns the text stored in the search index field with the given name.<p>
+     * 
+     * @param fieldName the name of the field to get the stored text for
+     * 
+     * @return the text stored in the search index field with the given name
+     */
+    public String getField(String fieldName) {
+
+        return (String)m_fields.get(fieldName);
+    }
+
+    /**
      * Returns the key words.<p>
      *
      * @return the key words
+     * 
+     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     *      for example use {@link CmsSearchField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
 
-        return m_keyWords;
+        return getField(CmsSearchField.FIELD_KEYWORDS);
     }
 
     /**
@@ -211,37 +269,31 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     public int getMemorySize() {
 
-        int result = 8;
-
-        if (m_dateCreated != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_dateCreated);
+        if (m_memorySize == 0) {
+            int result = 8;
+            if (m_dateCreated != null) {
+                result += CmsMemoryMonitor.getMemorySize(m_dateCreated);
+            }
+            if (m_dateLastModified != null) {
+                result += CmsMemoryMonitor.getMemorySize(m_dateLastModified);
+            }
+            if (m_path != null) {
+                result += CmsMemoryMonitor.getMemorySize(m_path);
+            }
+            if (m_fields != null) {
+                Iterator entries = m_fields.entrySet().iterator();
+                while (entries.hasNext()) {
+                    Map.Entry entry = (Map.Entry)entries.next();
+                    result += CmsMemoryMonitor.getMemorySize(entry.getKey());
+                    result += CmsMemoryMonitor.getMemorySize(entry.getValue());
+                }
+            }
+            if (m_excerpt != null) {
+                result += CmsMemoryMonitor.getMemorySize(m_excerpt);
+            }
+            m_memorySize = result;
         }
-
-        if (m_dateLastModified != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_dateLastModified);
-        }
-
-        if (m_path != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_path);
-        }
-
-        if (m_title != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_title);
-        }
-
-        if (m_description != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_description);
-        }
-
-        if (m_keyWords != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_keyWords);
-        }
-
-        if (m_excerpt != null) {
-            result += CmsMemoryMonitor.getMemorySize(m_excerpt);
-        }
-
-        return result;
+        return m_memorySize;
     }
 
     /**
@@ -268,10 +320,20 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      * Returns the title.<p>
      *
      * @return the title
+     * 
+     * @deprecated use {@link #getField(String)} instead with the name of the field, 
+     *      for example use {@link CmsSearchField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {
 
-        return m_title;
+        return getField(CmsSearchField.FIELD_TITLE);
     }
 
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_documentType.hashCode() * 1109 + m_path.hashCode();
+    }
 }

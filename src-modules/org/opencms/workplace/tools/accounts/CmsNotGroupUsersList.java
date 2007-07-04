@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,12 +159,17 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers()
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers(boolean)
      */
-    protected List getUsers() throws CmsException {
+    protected List getUsers(boolean withOtherOus) throws CmsException {
 
-        List groupusers = getCms().getUsersOfGroup(getParamGroupname());
-        List users = getCms().getUsers();
+        List groupusers = getCms().getUsersOfGroup(getParamGroupname(), withOtherOus);
+        List users;
+        if (withOtherOus) {
+            users = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
+        } else {
+            users = OpenCms.getRoleManager().getManageableUsers(getCms(), getParamOufqn(), false);
+        }
         users.removeAll(groupusers);
         return users;
     }
@@ -187,12 +193,31 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDefaultAction(LIST_ACTION_ICON) {
+
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                return ((A_CmsGroupUsersList)getWp()).getIconPath(getItem());
+            }
+        };
         iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_HELP_0));
         iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
         iconAction.setEnabled(false);
         iconCol.addDirectAction(iconAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setIndependentActions(CmsListMetadata metadata) {
+
+        super.setIndependentActions(metadata);
+
+        metadata.getItemDetailDefinition(LIST_DETAIL_OTHEROU).setVisible(false);
     }
 
     /**
@@ -232,4 +257,5 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         // keep the id
         m_addActionIds.add(stateAction.getId());
     }
+
 }

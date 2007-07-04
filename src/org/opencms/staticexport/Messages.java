@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_1 = "ERR_CREATE_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EMPTY_EVENT_DATA_0 = "ERR_EMPTY_EVENT_DATA_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EXPORT_NOT_SUCCESSFUL_0 = "ERR_EXPORT_NOT_SUCCESSFUL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPORT_NOT_SUPPORTED_2 = "ERR_EXPORT_NOT_SUPPORTED_2";
@@ -62,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUTPUT_STREAM_1 = "ERR_OUTPUT_STREAM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_VALIDATE_EXPORTPATH_0 = "ERR_VALIDATE_EXPORTPATH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1 = "GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1";
@@ -122,6 +131,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_SE_PARAM_2 = "LOG_ADD_SE_PARAM_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_BROKEN_LINK_BY_ID_2 = "LOG_BROKEN_LINK_BY_ID_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_BROKEN_LINK_BY_NAME_1 = "LOG_BROKEN_LINK_BY_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_BROKEN_LINK_UPDATED_BY_ID_3 = "LOG_BROKEN_LINK_UPDATED_BY_ID_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_BROKEN_LINK_UPDATED_BY_NAME_3 = "LOG_BROKEN_LINK_UPDATED_BY_NAME_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CHECKING_STATIC_EXPORT_2 = "LOG_CHECKING_STATIC_EXPORT_2";
@@ -193,9 +214,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MALFORMED_URI_1 = "LOG_MALFORMED_URI_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_RESOURCE_ACESS_ERROR_3 = "LOG_RESOURCE_ACESS_ERROR_3";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_NUM_EXPORT_1 = "LOG_NUM_EXPORT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -211,6 +229,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_REQUEST_RESULT_3 = "LOG_REQUEST_RESULT_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_RESOURCE_ACESS_ERROR_3 = "LOG_RESOURCE_ACESS_ERROR_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SCRUBBING_EXPORT_FOLDERS_1 = "LOG_SCRUBBING_EXPORT_FOLDERS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -224,6 +245,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_LAST_MODIFIED_2 = "LOG_SET_LAST_MODIFIED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_STATIC_EXPORT_DISABLED_0 = "LOG_STATIC_EXPORT_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_STATIC_EXPORT_ERROR_0 = "LOG_STATIC_EXPORT_ERROR_0";

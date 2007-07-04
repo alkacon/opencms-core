@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  * 
@@ -110,10 +110,10 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * 
      * @param cms the user context the publish was executed with
      * @param publishList the list of published resources
-     * @param backupTagId the id of the backup tag
+     * @param publishTag the publish tag
      * @param report the report to write messages to
      */
-    void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report);
+    void publishProject(CmsObject cms, CmsPublishList publishList, int publishTag, I_CmsReport report);
 
     /**
      * Will be called by the OpenCms system during server shutdown.<p>

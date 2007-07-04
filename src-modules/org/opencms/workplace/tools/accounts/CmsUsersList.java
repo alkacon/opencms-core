@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:56:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -49,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +94,7 @@ public class CmsUsersList extends A_CmsUsersList {
      */
     protected List getUsers() throws CmsException {
 
-        return CmsPrincipal.filterCore(getCms().getUsers(CmsUser.USER_TYPE_SYSTEMUSER));
+        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false));
     }
 
     /**
@@ -101,7 +102,7 @@ public class CmsUsersList extends A_CmsUsersList {
      */
     protected CmsUser readUser(String name) throws CmsException {
 
-        return getCms().readUser(name, CmsUser.USER_TYPE_SYSTEMUSER);
+        return getCms().readUser(name);
     }
 
     /**

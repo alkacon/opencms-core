@@ -24,7 +24,7 @@
 # containing the file name as value..
 -->
 <!ELEMENT newresource EMPTY>
-<!ATTLIST newresource handler CDATA #IMPLIED page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED>
+<!ATTLIST newresource handler CDATA #IMPLIED page CDATA #IMPLIED uri CDATA #REQUIRED order CDATA #REQUIRED autosetnavigation (true|false) #IMPLIED autosettitle (true|false) #IMPLIED info CDATA #IMPLIED icon CDATA #IMPLIED key CDATA #IMPLIED>
 
 <!--
 # Enter the permissions for OpenCms groups. The flags have the following meaning:
@@ -49,8 +49,8 @@
 # If the enabled attribute is false, the special property dialog will not be used.
 # If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
 #
-# Use the property element to define the shown default properties for the special property dialog.
-# Note: for module configuration files, use the defaultproperty element instead. 
+# Use the defaultproperty element to define the shown default properties for the special property dialog.
+# Note: property element still supported for backward compatibility, but should not longer be used
 -->
 <!ELEMENT defaultproperties (property|defaultproperty)*>
 <!ATTLIST defaultproperties 
@@ -67,7 +67,7 @@
 # key: the name for the localized key of the menu entry.
 # uri: the OpenCms VFS URI of the dialog.
 #
-# rules:	The display rules for the current menu entry. 
+# rules:	The legacy display rules for the current menu entry, should not be used anymore. 
 #			The rule characters have been separated by spaces for better readability.
 #
 #			Example: "d d iiii aaai dddd"
@@ -95,7 +95,8 @@
 #           This is e.g. required to show the "undelete" option on the 
 #           menu only if the resource is deleted. 
 #
-# order: the order of the entry (display position in the menu).
+# rule: the name of the menu rule that should be used to display the entry, this replaces the legacy rules attribute.
+# order: the order of the entry (display position in the menu), not used anymore.
 # isxml: optional, if the URI leads to a legacy XMLTemplate based dialog, set this attribute to true.
 # A separator node only needs the order attribute to be displayed properly.
 -->
@@ -103,14 +104,20 @@
 	entry*,
 	separator*)*>
 	
-<!ELEMENT entry EMPTY>
+<!ELEMENT entry (
+	entry*,
+	separator*)*>
+
 <!ATTLIST entry 
 	key CDATA #REQUIRED 
-	uri CDATA #REQUIRED 
-	rules CDATA #REQUIRED 
-	order CDATA #REQUIRED 
+	uri CDATA #IMPLIED 
+	rules CDATA #IMPLIED 
+	rule CDATA #IMPLIED
+	order CDATA #IMPLIED 
 	target CDATA #IMPLIED
+	name CDATA #IMPLIED
+	parent CDATA #IMPLIED
 	isxml (true|false|TRUE|FALSE) #IMPLIED>
 	
 <!ELEMENT separator EMPTY>
-<!ATTLIST separator order CDATA #REQUIRED>
+<!ATTLIST separator order CDATA #IMPLIED>

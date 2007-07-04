@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTableGallery extends CmsHtmlGallery {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTableGallery.class);
 
@@ -106,7 +106,7 @@ public class CmsTableGallery extends CmsHtmlGallery {
                         ""));
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             StringBuffer result = new StringBuffer();
@@ -128,14 +128,14 @@ public class CmsTableGallery extends CmsHtmlGallery {
 
         return "440";
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
     }
 

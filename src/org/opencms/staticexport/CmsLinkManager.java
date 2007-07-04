@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/03/27 15:07:51 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,15 +32,19 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsExternalLinksValidationResult;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.validation.CmsPointerLinkValidationResult;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.net.MalformedURLException;
@@ -57,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,7 +74,7 @@ public class CmsLinkManager {
     private static URL m_baseUrl;
 
     /** Stores the results of a extern link validation. */
-    private CmsPointerLinkValidationResult m_pointerLinkValidationResult;
+    private CmsExternalLinksValidationResult m_pointerLinkValidationResult;
 
     /**
      * Public constructor.<p>
@@ -104,7 +108,7 @@ public class CmsLinkManager {
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
 
-        if ((relativeUri == null) || (relativeUri.length() >= 1 && relativeUri.charAt(0) == '/')) {
+        if ((relativeUri == null) || ((relativeUri.length() >= 1) && (relativeUri.charAt(0) == '/'))) {
             // uri is null or already absolute
             return relativeUri;
         }
@@ -344,11 +348,84 @@ public class CmsLinkManager {
     }
 
     /**
+     * Returns the online link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the online link for
+     * 
+     * @return the online link
+     */
+    public String getOnlineLink(CmsObject cms, String resourceName) {
+
+        String onlineLink = "";
+        try {
+            CmsSite currentSite = CmsSiteManager.getCurrentSite(cms);
+            CmsProject currentProject = cms.getRequestContext().currentProject();
+            try {
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                onlineLink = OpenCms.getLinkManager().substituteLink(cms, resourceName, currentSite.getSiteRoot());
+            } finally {
+                cms.getRequestContext().setCurrentProject(currentProject);
+            }
+            String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
+            if (!onlineLink.startsWith(serverPrefix)) {
+                onlineLink = serverPrefix + onlineLink;
+            }
+        } catch (CmsException e) {
+            // should never happen
+            onlineLink = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return onlineLink;
+    }
+
+    /**
+     * Returns the perma link for the given resource.<p>
+     * 
+     * Like
+     * <code>http://site.enterprise.com:8080/permalink/4b65369f-1266-11db-8360-bf0f6fbae1f8.html</code>.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource to generate the perma link for
+     * 
+     * @return the perma link
+     */
+    public String getPermalink(CmsObject cms, String resourceName) {
+
+        String permalink = "";
+        try {
+            permalink = substituteLink(cms, CmsPermalinkResourceHandler.PERMALINK_HANDLER);
+            String id = cms.readResource(resourceName, CmsResourceFilter.ALL).getStructureId().toString();
+            permalink += id;
+            String ext = CmsFileUtil.getExtension(resourceName);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
+                permalink += ext;
+            }
+            String serverPrefix = CmsSiteManager.getCurrentSite(cms).getServerPrefix(cms, resourceName);
+            if (!permalink.startsWith(serverPrefix)) {
+                permalink = serverPrefix + permalink;
+            }
+        } catch (CmsException e) {
+            // if something wrong
+            permalink = e.getLocalizedMessage();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return permalink;
+    }
+
+    /**
      * Returns the result of the last extern link validation.<p>
      * 
      * @return the result of the last extern link validation
      */
-    public CmsPointerLinkValidationResult getPointerLinkValidationResult() {
+    public CmsExternalLinksValidationResult getPointerLinkValidationResult() {
 
         return m_pointerLinkValidationResult;
     }
@@ -358,7 +435,7 @@ public class CmsLinkManager {
      * 
      * @param externLinkValidationResult the result a extern link validation
      */
-    public void setPointerLinkValidationResult(CmsPointerLinkValidationResult externLinkValidationResult) {
+    public void setPointerLinkValidationResult(CmsExternalLinksValidationResult externLinkValidationResult) {
 
         m_pointerLinkValidationResult = externLinkValidationResult;
     }
@@ -491,23 +568,26 @@ public class CmsLinkManager {
             // check if we have the absolute vfs name for the link target cached
             resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {
-                cms.getRequestContext().saveSiteRoot();
-                cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
-                // didn't find the link in the cache
-                if (exportManager.isExportLink(cms, vfsName)) {
-                    // export required, get export name for target link
-                    resultLink = exportManager.getRfsName(cms, vfsName, parameters);
-                    // now set the parameters to null, we do not need them anymore
-                    parameters = null;
-                } else {
-                    // no export required for the target link
-                    resultLink = exportManager.getVfsPrefix().concat(vfsName);
-                    // add cut off parameters if required
-                    if (parameters != null) {
-                        resultLink = resultLink.concat(parameters);
+                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+                try {
+                    cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
+                    // didn't find the link in the cache
+                    if (exportManager.isExportLink(cms, vfsName)) {
+                        // export required, get export name for target link
+                        resultLink = exportManager.getRfsName(cms, vfsName, parameters);
+                        // now set the parameters to null, we do not need them anymore
+                        parameters = null;
+                    } else {
+                        // no export required for the target link
+                        resultLink = exportManager.getVfsPrefix().concat(vfsName);
+                        // add cut off parameters if required
+                        if (parameters != null) {
+                            resultLink = resultLink.concat(parameters);
+                        }
                     }
+                } finally {
+                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
-                cms.getRequestContext().restoreSiteRoot();
                 // cache the result
                 exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
             }
@@ -573,5 +653,4 @@ public class CmsLinkManager {
         }
         return serverPrefix.concat(resultLink);
     }
-
 }

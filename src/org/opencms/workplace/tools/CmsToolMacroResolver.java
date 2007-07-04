@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolMacroResolver.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.I_CmsMacroResolver;
@@ -51,11 +52,13 @@ import java.util.List;
  *   <li>admin.groupName|id</li>
  *   <li>admin.jobName|id</li>
  *   <li>admin.projectName|id</li>
+ *   <li>admin.ouDescription|fqn</li>
+ *   <li>admin.roleName|id</li>
  * </ul><p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * @since 6.0.0 
  */
 public class CmsToolMacroResolver implements I_CmsMacroResolver {
@@ -75,8 +78,20 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
     /** Identifier for admin parameter names. */
     public static final String KEY_PROJECTNAME = "projectName.";
 
+    /** Identifier for admin parameter names. */
+    public static final String KEY_OUDESCRIPTION = "ouDescription.";
+
+    /** Identifier for admin parameter names. */
+    public static final String KEY_ROLENAME = "roleName.";
+
     /** Identified for admin parameter commands. */
-    public static final String[] VALUE_NAME_ARRAY = {KEY_USERNAME, KEY_GROUPNAME, KEY_JOBNAME, KEY_PROJECTNAME};
+    public static final String[] VALUE_NAME_ARRAY = {
+        KEY_USERNAME,
+        KEY_GROUPNAME,
+        KEY_JOBNAME,
+        KEY_PROJECTNAME,
+        KEY_OUDESCRIPTION,
+        KEY_ROLENAME};
 
     /** The admin commands wrapped in a List. */
     public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
@@ -140,16 +155,22 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         }
         try {
             if (macro == CmsToolMacroResolver.KEY_USERNAME) {
-                return m_wp.getCms().readUser(new CmsUUID(id)).getName();
+                return m_wp.getCms().readUser(new CmsUUID(id)).getSimpleName();
             }
             if (macro == CmsToolMacroResolver.KEY_GROUPNAME) {
-                return m_wp.getCms().readGroup(new CmsUUID(id)).getName();
+                return m_wp.getCms().readGroup(new CmsUUID(id)).getSimpleName();
             }
             if (macro == CmsToolMacroResolver.KEY_PROJECTNAME) {
-                return m_wp.getCms().readProject(new Integer(id).intValue()).getName();
+                return m_wp.getCms().readProject(new CmsUUID(id)).getSimpleName();
             }
             if (macro == CmsToolMacroResolver.KEY_JOBNAME) {
                 return OpenCms.getScheduleManager().getJob(id).getJobName();
+            }
+            if (macro == CmsToolMacroResolver.KEY_OUDESCRIPTION) {
+                return OpenCms.getOrgUnitManager().readOrganizationalUnit(m_wp.getCms(), id).getDisplayName(m_wp.getLocale());
+            }
+            if (macro == CmsToolMacroResolver.KEY_ROLENAME) {
+                return CmsRole.valueOf(m_wp.getCms().readGroup(id)).getName(m_wp.getCms().getRequestContext().getLocale());
             }
         } catch (Exception e) {
             // ignore
@@ -188,6 +209,6 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
      */
     public boolean isKeepEmptyMacros() {
 
-        return true;
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsCaptchaField extends A_CmsField {
 
@@ -269,7 +269,7 @@ public class CmsCaptchaField extends A_CmsField {
         } catch (Exception e) {
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
             cms.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

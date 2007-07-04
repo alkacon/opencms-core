@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -70,11 +69,11 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearch implements Cloneable {
+public class CmsSearch {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearch.class);
@@ -85,14 +84,8 @@ public class CmsSearch implements Cloneable {
     /** The cms object. */
     protected transient CmsObject m_cms;
 
-    /** The number of displayed pages returned by getPageLinks(). */
-    protected int m_displayPages;
-
     /** The latest exception. */
     protected Exception m_lastException;
-
-    /** The number of matches per page. */
-    protected int m_matchesPerPage;
 
     /** The URL which leads to the next result page. */
     protected String m_nextUrl;
@@ -129,13 +122,8 @@ public class CmsSearch implements Cloneable {
         m_parameters.setSearchRoots("");
         m_parameters.setSearchPage(1);
         m_searchResultCount = 0;
-        m_matchesPerPage = 10;
-        m_displayPages = 10;
         m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
-        List fields = new ArrayList(2);
-        fields.add(CmsSearchIndex.DOC_META_FIELDS[0]);
-        fields.add(CmsSearchIndex.DOC_META_FIELDS[1]);
-        m_parameters.setFields(fields);
+        m_parameters.setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
     }
 
     /**
@@ -171,7 +159,7 @@ public class CmsSearch implements Cloneable {
      */
     public int getDisplayPages() {
 
-        return m_displayPages;
+        return m_parameters.getDisplayPages();
     }
 
     /**
@@ -220,7 +208,7 @@ public class CmsSearch implements Cloneable {
      */
     public int getMatchesPerPage() {
 
-        return m_matchesPerPage;
+        return m_parameters.getMatchesPerPage();
     }
 
     /**
@@ -345,71 +333,14 @@ public class CmsSearch implements Cloneable {
      * Creates a String with the necessary search parameters for page links.<p>
      * 
      * @return String with search parameters
+     * 
+     * @deprecated use {@link CmsSearchParameters#toQueryString()} instead
+     * 
+     * @see #getParameters()
      */
     public String getSearchParameters() {
 
-        // if (m_searchParameters == null) {
-        StringBuffer params = new StringBuffer(128);
-        params.append("?action=search&query=");
-        params.append(CmsEncoder.encodeParameter(m_parameters.getQuery()));
-
-        params.append("&matchesPerPage=");
-        params.append(getMatchesPerPage());
-        params.append("&displayPages=");
-        params.append(getDisplayPages());
-        params.append("&index=");
-        params.append(CmsEncoder.encodeParameter(m_parameters.getIndex()));
-
-        Sort sort = m_parameters.getSort();
-        if (sort != CmsSearchParameters.SORT_DEFAULT) {
-            params.append("&sort=");
-            // TODO: find a better way to name sort
-            if (sort == CmsSearchParameters.SORT_TITLE) {
-                params.append("title");
-            } else if (sort == CmsSearchParameters.SORT_DATE_CREATED) {
-                params.append("date-created");
-            } else if (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED) {
-                params.append("date-lastmodified");
-            }
-        }
-
-        if (m_parameters.getCategories() != null) {
-            params.append("&category=");
-            Iterator it = m_parameters.getCategories().iterator();
-            while (it.hasNext()) {
-                params.append(it.next());
-                if (it.hasNext()) {
-                    params.append(',');
-                }
-            }
-        }
-
-        if (m_parameters.getRoots() != null) {
-            params.append("&searchRoots=");
-            Iterator it = m_parameters.getRoots().iterator();
-            while (it.hasNext()) {
-                params.append(CmsEncoder.encode((String)it.next()));
-                if (it.hasNext()) {
-                    params.append(',');
-                }
-            }
-        }
-
-        // TODO: Better move this whole method into class "CmsSearchParameters"
-        int todo = 0;
-        // TODO: handle the multiple search roots (could be easy, just use multiple parameters?)
-        // TODO: handle the categories
-        // TODO: handle the search fields
-        // params.append("&searchRoot=");
-        // params.append(CmsEncoder.encode(m_searchRoots[0]));
-
-        return params.toString();
-        // cw: cannot store searchParameters any longer since resultRestrictions changes query
-        // m_searchParameters = params.toString();
-        // return m_searchParameters;
-        /* } else {
-         return m_searchParameters;
-         } */
+        return m_parameters.toQueryString();
     }
 
     /**
@@ -419,9 +350,9 @@ public class CmsSearch implements Cloneable {
      */
     public List getSearchResult() {
 
-        if (m_cms != null
-            && m_result == null
-            && m_parameters.getIndex() != null
+        if ((m_cms != null)
+            && (m_result == null)
+            && (m_parameters.getIndex() != null)
             && CmsStringUtil.isNotEmpty(m_parameters.getQuery())) {
 
             if ((getQueryLength() > 0) && (m_parameters.getQuery().trim().length() < getQueryLength())) {
@@ -435,10 +366,7 @@ public class CmsSearch implements Cloneable {
 
             try {
 
-                CmsSearchResultList result = m_parameters.getSearchIndex().search(
-                    m_cms,
-                    getParameters(),
-                    m_matchesPerPage);
+                CmsSearchResultList result = m_parameters.getSearchIndex().search(m_cms, getParameters());
 
                 if (result.size() > 0) {
 
@@ -447,13 +375,13 @@ public class CmsSearch implements Cloneable {
                     m_categoriesFound = result.getCategories();
 
                     // re-caluclate the number of pages for this search result
-                    m_pageCount = m_searchResultCount / m_matchesPerPage;
-                    if ((m_searchResultCount % m_matchesPerPage) != 0) {
+                    m_pageCount = m_searchResultCount / m_parameters.getMatchesPerPage();
+                    if ((m_searchResultCount % m_parameters.getMatchesPerPage()) != 0) {
                         m_pageCount++;
                     }
 
                     // re-calculate the URLs to browse forward and backward in the search result
-                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
+                    String url = m_cms.getRequestContext().getUri() + m_parameters.toQueryString() + "&searchPage=";
                     if (m_parameters.getSearchPage() > 1) {
                         m_prevUrl = url + (m_parameters.getSearchPage() - 1);
                     }
@@ -609,7 +537,25 @@ public class CmsSearch implements Cloneable {
      */
     public void setDisplayPages(int value) {
 
-        m_displayPages = value;
+        m_parameters.setDisplayPages(value);
+    }
+
+    /**
+     * Controls if the excerpt from a field is generated only for searched fields, or for all fields (the default).<p>
+     *
+     * The default setting is <code>false</code>, which means all text fields configured for the excerpt will
+     * be used to gernerate the excerpt, regardless if they have been searched in or not.<p>
+     *
+     * Please note: A field will only be included in the excerpt if it has been configured as <code>excerpt="true"</code>
+     * in <code>opencms-search.xml</code>. This method controls if so configured fields are used depending on the
+     * fields searched, see {@link #setField(String[])}.<p>
+     * 
+     * @param value if <code>true</code>, the excerpt is generated only from the fields actually searched in
+     */
+    public void setExcerptOnlySearchedFields(boolean value) {
+
+        m_parameters.setExcerptOnlySearchedFields(value);
+        resetLastResult();
     }
 
     /**
@@ -625,8 +571,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setField(String[] fields) {
 
-        List l = new LinkedList(Arrays.asList(fields));
-        m_parameters.setFields(l);
+        m_parameters.setFields(Arrays.asList(fields));
         resetLastResult();
     }
 
@@ -664,7 +609,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setMatchesPerPage(int matches) {
 
-        m_matchesPerPage = matches;
+        m_parameters.setMatchesPerPage(matches);
         resetLastResult();
     }
 
@@ -792,5 +737,4 @@ public class CmsSearch implements Cloneable {
         m_categoriesFound = null;
         m_parameterRestriction = null;
     }
-
 }

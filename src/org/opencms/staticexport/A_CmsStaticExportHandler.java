@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2006/09/20 09:28:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
@@ -48,6 +50,7 @@ import org.opencms.util.CmsUUID;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.7 
  * 
@@ -74,7 +77,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     /**
      * Implements the file filter used to remove variants with parameters of a base file.<p>
      */
-    private class PrefixFileFilter implements FileFilter {
+    private static class PrefixFileFilter implements FileFilter {
 
         /** The extension. */
         private String m_baseExtension;
@@ -90,7 +93,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         public PrefixFileFilter(File baseFile) {
 
             String fileName = baseFile.getName();
-            m_baseExtension = CmsFileUtil.getFileExtension(fileName);
+            m_baseExtension = CmsFileUtil.getExtension(fileName);
             m_baseName = fileName + "_";
         }
 
@@ -130,8 +133,10 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * so that the export is newly created after the next request to the resource.<p>
      * 
      * @param publishHistoryId id of the last published project
+     * 
+     * @return the list of {@link CmsPublishedResource} objects to export
      */
-    public void scrubExportFolders(CmsUUID publishHistoryId) {
+    public List scrubExportFolders(CmsUUID publishHistoryId) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRUBBING_EXPORT_FOLDERS_1, publishHistoryId));
@@ -147,24 +152,26 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         } catch (CmsException e) {
             // this should never happen
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_FAILED_0), e);
-            return;
+            return Collections.EMPTY_LIST;
         }
 
         List publishedResources;
         try {
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
-
             LOG.error(
                 Messages.get().getBundle().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId),
                 e);
-            return;
+            return Collections.EMPTY_LIST;
         }
 
+        publishedResources = addMovedLinkSources(cms, publishedResources);
+
+        // now iterate the actual resources to be exported
         Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
-            if (res.isUnChanged() || !res.isVfsResource()) {
+            if (res.getState().isUnchanged() || !res.isVfsResource()) {
                 // unchanged resources and non vfs resources don't need to be deleted
                 continue;
             }
@@ -187,7 +194,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                     && (!scrubedFolders.contains(CmsResource.getFolderPath(rfsName)))) {
 
                     if (res.isFolder()) {
-                        if (res.isDeleted()) {
+                        if (res.getState().isDeleted()) {
                             String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
                                 vfsName)
                                 + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
@@ -243,9 +250,82 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
                         scrubedFiles.add(rfsName);
                     }
                 }
-
             }
         }
+        return publishedResources;
+    }
+
+    /**
+     * Add the link sources of moved resources to the list of published resources.<p>
+     * 
+     * @param cms the cms context
+     * @param publishedResources the published resources
+     * 
+     * @return the list of published resources included the link sources of moved resources 
+     */
+    protected List addMovedLinkSources(CmsObject cms, List publishedResources) {
+        
+        publishedResources = new ArrayList(publishedResources);
+        Set pubResources = new HashSet(publishedResources.size());
+        // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
+        // and with moved files you have 2 entries with the same id and different paths...
+        Iterator itPubRes = publishedResources.iterator();
+        while (itPubRes.hasNext()) {
+            CmsPublishedResource pubRes = (CmsPublishedResource)itPubRes.next();
+            pubResources.add(pubRes.getRootPath());
+        }
+        boolean modified = true;
+        // until no more resources are added
+        while (modified) {
+            modified = false;
+            Iterator itPrePubRes = new ArrayList(publishedResources).iterator();
+            while (itPrePubRes.hasNext()) {
+                CmsPublishedResource res = (CmsPublishedResource)itPrePubRes.next();
+                if (!res.isVfsResource() || res.getMovedState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
+                    // handle only resources that are destination of move operations
+                    continue;
+                }
+                List relations = null;
+                try {
+                    // get all link sources to this resource
+                    relations = cms.getRelationsForResource(
+                        cms.getRequestContext().removeSiteRoot(res.getRootPath()),
+                        CmsRelationFilter.SOURCES);
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                if (relations == null || relations.isEmpty()) {
+                    // continue with next resource if no link sources found
+                    continue;
+                }
+                Iterator itRelations = relations.iterator();
+                while (itRelations.hasNext()) {
+                    CmsRelation relation = (CmsRelation)itRelations.next();
+                    CmsPublishedResource source = null;
+                    try {
+                        // get the link source
+                        source = new CmsPublishedResource(relation.getSource(cms, CmsResourceFilter.ALL));
+                    } catch (CmsException e) {
+                        // should never happen
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e.getLocalizedMessage());
+                        }
+                    }
+                    if (source == null || pubResources.contains(source.getRootPath())) {
+                        // continue if the link source could not been retrieved or if the list already contains it
+                        continue;
+                    }
+                    // add it, and set the modified flag to give it another round
+                    modified = true;
+                    pubResources.add(source.getRootPath());
+                    publishedResources.add(source);
+                }
+            }
+        }
+        return publishedResources;
     }
 
     /**

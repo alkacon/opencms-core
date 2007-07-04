@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2006/03/27 14:52:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,22 @@
 
 package org.opencms.security;
 
-import org.opencms.db.CmsDefaultUsers;
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * A role is used in the OpenCms security system to check if a user has access to a certain system function.<p>
@@ -58,111 +65,79 @@ import java.util.List;
  * "indirect" membership to the role.<p>
  * 
  * Please note that "indirect" membership does grant the user the same full access to a role that "direct" 
- * membership does. For example, the <code>{@link #ADMINISTRATOR}</code> role is a parent group of all other roles. 
- * So all users that are members of <code>{@link #ADMINISTRATOR}</code> have access to the functions of all other roles.<p>
+ * membership does. For example, the <code>{@link #ROOT_ADMIN}</code> role is a parent group of all other roles. 
+ * So all users that are members of <code>{@link #ROOT_ADMIN}</code> have access to the functions of all other roles.<p>
  * 
  * Please do not perform automated sorting of members on this compilation unit. That leads 
  * to NPE's<p>
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsRole {
 
-    /** The "ADMINISTRATOR" role, which is a parent to all other roles.<p> */
-    public static final CmsRole ADMINISTRATOR = new CmsRole("ADMINISTRATOR", new CmsRole[0]);
+    /** The "ACCOUNT_MANAGER" role. */
+    public static final CmsRole ACCOUNT_MANAGER;
 
-    /** The "DEVELOPER" role. */
-    public static final CmsRole DEVELOPER = new CmsRole("DEVELOPER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** The "ADMINISTRATOR" role, which is a parent to all organizational unit roles. */
+    public static final CmsRole ADMINISTRATOR;
 
     /** The "EXPORT_DATABASE" role. */
-    public static final CmsRole EXPORT_DATABASE = new CmsRole("EXPORT_DATABASE", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    public static final CmsRole DATABASE_MANAGER;
 
-    /** The "HISTORY_MANAGER" role. */
-    public static final CmsRole HISTORY_MANAGER = new CmsRole("HISTORY_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** The "DEVELOPER" role. */
+    public static final CmsRole DEVELOPER;
 
-    /** The "IMPORT_DATABASE" role. */
-    public static final CmsRole IMPORT_DATABASE = new CmsRole("IMPORT_DATABASE", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** Identifier for role principals. */
+    public static final String PRINCIPAL_ROLE = "ROLE";
 
-    /** The "MODULE_MANAGER" role. */
-    public static final CmsRole MODULE_MANAGER = new CmsRole("MODULE_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** The "DIRECT_EDIT_USER" role. */
+    // public static final CmsRole DIRECT_EDIT_USER;
 
     /** The "PROJECT_MANAGER" role. */
-    public static final CmsRole PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    public static final CmsRole PROJECT_MANAGER;
 
-    /** The "PROPERTY_MANAGER" role. */
-    public static final CmsRole PROPERTY_MANAGER = new CmsRole(
-        "PROPERTY_MANAGER",
-        new CmsRole[] {CmsRole.ADMINISTRATOR});
-
-    /** 
-     * The "RESOURCE_TYPE_MANAGER" role.<p>
-     *
-     * Additional parent: <code>{@link CmsRole#MODULE_MANAGER}</code>.<p>
-     */
-    public static final CmsRole RESOURCE_TYPE_MANAGER = new CmsRole("RESOURCE_TYPE_MANAGER", new CmsRole[] {
-        CmsRole.ADMINISTRATOR,
-        CmsRole.MODULE_MANAGER});
-
-    /** The "ROOT_FOLDER_ACCESS" role. */
-    public static final CmsRole ROOT_FOLDER_ACCESS = new CmsRole(
-        "ROOT_FOLDER_ACCESS",
-        new CmsRole[] {CmsRole.ADMINISTRATOR});
-
-    /** The "SCHEDULER_MANAGER" role. */
-    public static final CmsRole SCHEDULER_MANAGER = new CmsRole(
-        "SCHEDULER_MANAGER",
-        new CmsRole[] {CmsRole.ADMINISTRATOR});
-
-    /** The "SEARCH_MANAGER" role. */
-    public static final CmsRole SEARCH_MANAGER = new CmsRole("SEARCH_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-
-    /** The "ACCOUNT_MANAGER" role. */
-    public static final CmsRole ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** The "ROOT_ADMIN" role, which is a parent to all other roles. */
+    public static final CmsRole ROOT_ADMIN;
 
     /** The "VFS_MANAGER" role. */
-    public static final CmsRole VFS_MANAGER = new CmsRole("VFS_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    public static final CmsRole VFS_MANAGER;
 
-    /** 
-     * The "WORKPLACE_MANAGER" role.<p>
-     *
-     * Additional parents: <code>{@link CmsRole#MODULE_MANAGER}</code>, <code>{@link CmsRole#DEVELOPER}</code>.<p>
-     */
-    public static final CmsRole WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", new CmsRole[] {
-        CmsRole.ADMINISTRATOR,
-        CmsRole.MODULE_MANAGER,
-        CmsRole.DEVELOPER});
+    /** The "WORKPLACE_MANAGER" role. */
+    public static final CmsRole WORKPLACE_MANAGER;
 
     /** The "WORKPLACE_USER" role. */
-    public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-
-    /** 
-     * The "SYSTEM_USER" role.<p>
-     *
-     * Additional parents: <code>{@link CmsRole#WORKPLACE_USER}</code>, <code>{@link CmsRole#PROJECT_MANAGER},</code>
-     * <code>{@link CmsRole#DEVELOPER}</code>.<p>
-     */
-    public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
-    // important: this role must be defined _after_ all other roles it refers to
-        CmsRole.ADMINISTRATOR, CmsRole.WORKPLACE_USER, CmsRole.PROJECT_MANAGER, CmsRole.DEVELOPER});
+    public static final CmsRole WORKPLACE_USER;
 
     /** The list of system roles. */
-    private static List m_systemRoles;
+    private static final List SYSTEM_ROLES;
+
+    /** The child roles of this role. */
+    private final List m_children = new ArrayList();
 
     /** The distinct group names of this role. */
-    private Object[] m_distictGroupNames;
+    private List m_distictGroupNames = new ArrayList();
 
     /** The name of the group this role is mapped to in the OpenCms database.*/
-    private String m_groupName;
+    private final String m_groupName;
 
-    /** The parent roles of this role. */
-    private List m_parentRoles;
+    /** The id of the role, does not differentiate for organizational units. */
+    private final CmsUUID m_id;
+
+    /** Indicates if this role is organizational unit dependent. */
+    private boolean m_ouDependent;
+
+    /** The organizational unit this role applies to. */
+    private String m_ouFqn;
+
+    /** The parent role of this role. */
+    private final CmsRole m_parentRole;
 
     /** The name of this role. */
-    private String m_roleName;
+    private final String m_roleName;
 
     /** Indicates if this role is a system role or a user defined role. */
     private boolean m_systemRole;
@@ -172,28 +147,93 @@ public final class CmsRole {
      * 
      * @param roleName the name of this role
      * @param groupName the name of the group the members of this role are stored in
-     * @param parentRoles the parent roles of this role
+     * @param parentRole the parent role of this role
+     * @param ouDependent if the role is organizational unit dependent
      */
-    public CmsRole(String roleName, String groupName, CmsRole[] parentRoles) {
+    public CmsRole(String roleName, CmsRole parentRole, String groupName, boolean ouDependent) {
 
-        m_roleName = roleName;
-        m_groupName = groupName;
-        m_parentRoles = Collections.unmodifiableList(Arrays.asList(parentRoles));
+        this(roleName, parentRole, groupName);
+        m_ouDependent = ouDependent;
         m_systemRole = false;
         initialize();
+    }
+
+    /**
+     * Copy constructor.<p>
+     * 
+     * @param role the role to copy
+     */
+    private CmsRole(CmsRole role) {
+
+        m_roleName = role.m_roleName;
+        m_id = CmsUUID.getConstantUUID(m_roleName);
+        m_groupName = role.m_groupName;
+        m_parentRole = role.m_parentRole;
+        m_systemRole = role.m_systemRole;
+        m_ouDependent = role.m_ouDependent;
+        m_children.addAll(role.m_children);
+        m_distictGroupNames.addAll(Collections.unmodifiableList(role.m_distictGroupNames));
     }
 
     /**
      * Creates a system role.<p>
      * 
      * @param roleName the name of this role
-     * @param parentRoles the parent roles of this role
+     * @param parentRole the parent role of this role
+     * @param groupName the related group name
      */
-    private CmsRole(String roleName, CmsRole[] parentRoles) {
+    private CmsRole(String roleName, CmsRole parentRole, String groupName) {
 
         m_roleName = roleName;
-        m_parentRoles = Collections.unmodifiableList(Arrays.asList(parentRoles));
+        m_id = CmsUUID.getConstantUUID(m_roleName);
+        m_ouDependent = !groupName.startsWith(CmsOrganizationalUnit.SEPARATOR);
+        m_parentRole = parentRole;
         m_systemRole = true;
+        if (!m_ouDependent) {
+            m_groupName = groupName.substring(1);
+        } else {
+            m_groupName = groupName;
+        }
+        if (parentRole != null) {
+            parentRole.m_children.add(this);
+        }
+    }
+
+    /**
+     * Initializes the system roles with the configured OpenCms system group names.<p>
+     */
+    static {
+
+        ROOT_ADMIN = new CmsRole("ROOT_ADMIN", null, "/RoleRootAdmins");
+        WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleWorkplaceManager");
+        DATABASE_MANAGER = new CmsRole("DATABASE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleDatabaseManager");
+
+        ADMINISTRATOR = new CmsRole("ADMINISTRATOR", CmsRole.ROOT_ADMIN, "RoleAdministrators");
+        PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", CmsRole.ADMINISTRATOR, "RoleProjectmanagers");
+        ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
+        VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
+        DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
+        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.ADMINISTRATOR, "RoleWorkplaceUsers");
+        // DIRECT_EDIT_USER = new CmsRole("DIRECT_EDIT_USER", CmsRole.WORKPLACE_USER, "RoleDirectEditUsers");
+
+        // create a lookup list for the system roles
+        SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
+            ROOT_ADMIN,
+            WORKPLACE_MANAGER,
+            DATABASE_MANAGER,
+            ADMINISTRATOR,
+            PROJECT_MANAGER,
+            ACCOUNT_MANAGER,
+            VFS_MANAGER,
+            DEVELOPER,
+            WORKPLACE_USER
+        // DIRECT_EDIT_USER
+        }));
+
+        // now initilaize all system roles
+        for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
+            ((CmsRole)SYSTEM_ROLES.get(i)).initialize();
+        }
     }
 
     /**
@@ -203,117 +243,165 @@ public final class CmsRole {
      */
     public static List getSystemRoles() {
 
-        return m_systemRoles;
+        return SYSTEM_ROLES;
     }
 
     /**
-     * Initializes the system roles with the configured OpenCms system group names.<p>
+     * Returns the role for the given group.<p>
      * 
-     * This is done automatically during the system startup phase, any manual calls 
-     * later will result in an Exception.<p>
+     * @param group a group to check for role representation
      * 
-     * @param defaultUsers the OpenCms default users
-     * 
-     * @throws CmsSecurityException if called outside the system startup phase
+     * @return the role for the given group
      */
-    public static void initialize(CmsDefaultUsers defaultUsers) throws CmsSecurityException {
+    public static CmsRole valueOf(CmsGroup group) {
 
-        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
-            // this method can be called only during the system startup phase
-            throw new CmsSecurityException(Messages.get().container(Messages.ERR_STARTUP_FINISHED_0));
-        }
-
-        // set the configured group names for the system roles
-        ADMINISTRATOR.m_groupName = defaultUsers.getGroupAdministrators();
-        PROJECT_MANAGER.m_groupName = defaultUsers.getGroupProjectmanagers();
-        WORKPLACE_USER.m_groupName = defaultUsers.getGroupUsers();
-
-        // TODO: Don't base all roles only on the "Administrator" group
-        MODULE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        ACCOUNT_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        EXPORT_DATABASE.m_groupName = defaultUsers.getGroupAdministrators();
-        IMPORT_DATABASE.m_groupName = defaultUsers.getGroupAdministrators();
-        DEVELOPER.m_groupName = defaultUsers.getGroupAdministrators();
-        SCHEDULER_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        SEARCH_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        VFS_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        RESOURCE_TYPE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        HISTORY_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        PROPERTY_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        ROOT_FOLDER_ACCESS.m_groupName = defaultUsers.getGroupAdministrators();
-        WORKPLACE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        SYSTEM_USER.m_groupName = defaultUsers.getGroupUsers();
-
-        // create a lookup list for the system roles
-        m_systemRoles = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
-            ADMINISTRATOR,
-            PROJECT_MANAGER,
-            WORKPLACE_USER,
-            MODULE_MANAGER,
-            ACCOUNT_MANAGER,
-            EXPORT_DATABASE,
-            IMPORT_DATABASE,
-            DEVELOPER,
-            SCHEDULER_MANAGER,
-            SEARCH_MANAGER,
-            VFS_MANAGER,
-            RESOURCE_TYPE_MANAGER,
-            HISTORY_MANAGER,
-            PROPERTY_MANAGER,
-            ROOT_FOLDER_ACCESS,
-            WORKPLACE_MANAGER,
-            SYSTEM_USER}));
-
-        // now initilaize all system roles
-        for (int i = 0; i < m_systemRoles.size(); i++) {
-            ((CmsRole)m_systemRoles.get(i)).initialize();
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if the role group of this role (not the groups from the parent roles) 
-     * matches a name of one of the given groups.<p>
-     * 
-     * This check is required only to find out if a user is a direct member of the role group of 
-     * this role. It should never be used for permission checks. For all permission checks, use
-     * <code>{@link #hasRole(List)}</code>.<p>
-     * 
-     * @param groups a List of <code>{@link CmsGroup}</code> instances to match this role group against
-     * @return <code>true</code> if the role group of this role (not the groups from the parent roles) 
-     *      matches a name of one of the given groups
-     */
-    public boolean checkDirectAccess(List groups) {
-
-        for (int i = 0; i < groups.size(); i++) {
-            if (m_groupName.equals(((CmsGroup)groups.get(i)).getName())) {
-                return true;
+        // check groups for internal representing the roles
+        if (group.isRole()) {
+            CmsRole role = valueOfGroupName(group.getName());
+            if (role != null) {
+                return role;
             }
         }
-        return false;
+        // check virtual groups mapping a role
+        if (group.isVirtual()) {
+            int index = (group.getFlags() & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
+            index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
+            CmsRole role = (CmsRole)getSystemRoles().get(index);
+            return role.forOrgUnit(group.getOuFqn());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the role for the given group name.<p>
+     * 
+     * @param groupName a group name to check for role representation
+     * 
+     * @return the role for the given group name
+     */
+    public static CmsRole valueOfGroupName(String groupName) {
+
+        String groupOu = CmsOrganizationalUnit.getParentFqn(groupName);
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            // direct check
+            if (groupName.equals(role.getGroupName())) {
+                return role.forOrgUnit(groupOu);
+            }
+            if (!role.isOrganizationalUnitIndependent()) {
+                // the role group name does not start with "/", but the given group fqn does 
+                if (groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
+                    return role.forOrgUnit(groupOu);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the role for the given id.<p>
+     * 
+     * @param roleId the id to check for role representation
+     * 
+     * @return the role for the given role id
+     */
+    public static CmsRole valueOfId(CmsUUID roleId) {
+
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            if (roleId.equals(role.getId())) {
+                return role;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the role for the given role name.<p>
+     * 
+     * @param roleName a role name to check for role representation
+     * 
+     * @return the role for the given role name
+     */
+    public static CmsRole valueOfRoleName(String roleName) {
+
+        String roleOu = CmsOrganizationalUnit.getParentFqn(roleName);
+        Iterator it = SYSTEM_ROLES.iterator();
+        while (it.hasNext()) {
+            CmsRole role = (CmsRole)it.next();
+            // direct check
+            if (roleName.equals(role.getRoleName())) {
+                return role.forOrgUnit(roleOu);
+            }
+            if (!role.isOrganizationalUnitIndependent()) {
+                // the role name does not start with "/", but the given role fqn does 
+                if (roleName.endsWith(CmsOrganizationalUnit.SEPARATOR + role.getGroupName())) {
+                    return role.forOrgUnit(roleOu);
+                }
+            }
+        }
+        return null;
     }
 
     /**
      * Returns a role violation exception configured with a localized, role specific message 
      * for this role.<p>
      * 
-     * @param context the current users OpenCms request context
+     * @param requestContext the current users OpenCms request context
      * 
      * @return a role violation exception configured with a localized, role specific message 
      *      for this role
      */
-    public CmsRoleViolationException createRoleViolationException(CmsRequestContext context) {
+    public CmsRoleViolationException createRoleViolationException(CmsRequestContext requestContext) {
 
-        String roleName;
-        if (m_systemRole) {
-            // localize role names for system roles
-            roleName = Messages.get().getBundle(context.getLocale()).key("GUI_ROLENAME_" + m_roleName + "_0");
-        } else {
-            roleName = getRoleName();
-        }
         return new CmsRoleViolationException(Messages.get().container(
-            Messages.ERR_NOT_IN_ROLE_2,
-            context.currentUser().getName(),
-            roleName));
+            Messages.ERR_USER_NOT_IN_ROLE_2,
+            requestContext.currentUser().getName(),
+            getName(requestContext.getLocale())));
+    }
+
+    /**
+     * Returns a role violation exception configured with a localized, role specific message 
+     * for this role.<p>
+     * 
+     * @param requestContext the current users OpenCms request context
+     * @param orgUnitFqn the organizational unit used for the role check, it may be <code>null</code>
+     * 
+     * @return a role violation exception configured with a localized, role specific message 
+     *      for this role
+     */
+    public CmsRoleViolationException createRoleViolationExceptionForOrgUnit(
+        CmsRequestContext requestContext,
+        String orgUnitFqn) {
+
+        return new CmsRoleViolationException(Messages.get().container(
+            Messages.ERR_USER_NOT_IN_ROLE_FOR_ORGUNIT_3,
+            requestContext.currentUser().getName(),
+            getName(requestContext.getLocale()),
+            orgUnitFqn));
+    }
+
+    /**
+     * Returns a role violation exception configured with a localized, role specific message 
+     * for this role.<p>
+     * 
+     * @param requestContext the current users OpenCms request context
+     * @param resource the resource used for the role check, it may be <code>null</code>
+     * 
+     * @return a role violation exception configured with a localized, role specific message 
+     *      for this role
+     */
+    public CmsRoleViolationException createRoleViolationExceptionForResource(
+        CmsRequestContext requestContext,
+        CmsResource resource) {
+
+        return new CmsRoleViolationException(Messages.get().container(
+            Messages.ERR_USER_NOT_IN_ROLE_FOR_RESOURCE_3,
+            requestContext.currentUser().getName(),
+            getName(requestContext.getLocale()),
+            requestContext.removeSiteRoot(resource.getRootPath())));
     }
 
     /**
@@ -325,29 +413,191 @@ public final class CmsRole {
             return true;
         }
         if (obj instanceof CmsRole) {
-            return m_roleName.equals(((CmsRole)obj).m_roleName);
+            CmsRole that = (CmsRole)obj;
+            // first check name
+            if (m_roleName.equals(that.m_roleName)) {
+                if (isOrganizationalUnitIndependent()) {
+                    // if ou independent ignore ou info
+                    return true;
+                }
+                // then check the org unit
+                if (m_ouFqn == null) {
+                    // if org unit not set
+                    return (that.m_ouFqn == null);
+                } else {
+                    // if org unit set
+                    return (m_ouFqn.equals(that.m_ouFqn));
+                }
+            }
         }
         return false;
     }
 
     /**
+     * Creates a new role based on this one for the given organizational unit.<p>
+     * 
+     * @param ouFqn fully qualified name of the organizational unit
+     * 
+     * @return a new role based on this one for the given organizational unit
+     */
+    public CmsRole forOrgUnit(String ouFqn) {
+
+        CmsRole newRole = new CmsRole(this);
+        newRole.m_ouFqn = ouFqn;
+        return newRole;
+    }
+
+    /**
+     * Returns a list of all sub roles.<p>
+     * 
+     * @param recursive if not set just direct children are returned
+     * 
+     * @return all sub roles as a list of {@link CmsRole} objects
+     */
+    public List getChildren(boolean recursive) {
+
+        List children = new ArrayList();
+        Iterator itChildren = m_children.iterator();
+        while (itChildren.hasNext()) {
+            CmsRole child = (CmsRole)itChildren.next();
+            if (child.isOrganizationalUnitIndependent()) {
+                child = child.forOrgUnit(null);
+            } else {
+                child = child.forOrgUnit(m_ouFqn);
+            }
+            children.add(child);
+            if (recursive) {
+                children.addAll(child.getChildren(true));
+            }
+        }
+        return children;
+    }
+
+    /**
+     * Returns a localized role description.<p>
+     * 
+     * @param locale the locale
+     * 
+     * @return the localized role description
+     */
+    public String getDescription(Locale locale) {
+
+        if (m_systemRole) {
+            // localize role names for system roles
+            return Messages.get().getBundle(locale).key("GUI_ROLE_DESCRIPTION_" + m_roleName + "_0");
+        } else {
+            return getName(locale);
+        }
+    }
+
+    /**
+     * Returns the display name of this role including the organizational unit.<p>
+     * 
+     * @param cms the cms context
+     * @param locale the locale
+     * 
+     * @return the display name of this role including the organizational unit
+     * 
+     * @throws CmsException if the organizational unit could not be read 
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+
+        return Messages.get().getBundle(locale).key(
+            Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+            getName(locale),
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+    }
+
+    /**
+     * Returns the distinct group names of this role.<p>
+     * 
+     * This group names are not fully qualified (organizational unit dependent).<p>
+     * 
+     * @return the distinct group names of this role
+     */
+    public List getDistinctGroupNames() {
+
+        return m_distictGroupNames;
+    }
+
+    /**
+     * Returns the fully qualified name of this role.<p>
+     * 
+     * @return the fqn of this role
+     */
+    public String getFqn() {
+
+        if (getOuFqn() == null) {
+            return getRoleName();
+        }
+        return getOuFqn() + getRoleName();
+    }
+
+    /**
      * Returns the name of the group this role is mapped to in the OpenCms database.<p>
+     * 
+     * Here the fully qualified group name is returned.<p>
      * 
      * @return the name of the group this role is mapped to in the OpenCms database
      */
     public String getGroupName() {
 
-        return m_groupName;
+        if (m_ouFqn == null || isOrganizationalUnitIndependent()) {
+            return m_groupName;
+        }
+        return m_ouFqn + m_groupName;
     }
 
     /**
-     * Returns the (unmodifialble) List of parent roles of this role (instances of <code>{@link CmsRole}</code>.<p>
-     *
-     * @return the (unmodifialble) List of parent roles of this role
+     * Returns the id of this role.<p>
+     * 
+     * Does not differentiate for organizational units.<p>
+     * 
+     * @return the id of this role
      */
-    public List getParentRoles() {
+    public CmsUUID getId() {
 
-        return m_parentRoles;
+        return m_id;
+    }
+
+    /**
+     * Returns a localized role name.<p>
+     * 
+     * @param locale the locale
+     * 
+     * @return the localized role name
+     */
+    public String getName(Locale locale) {
+
+        if (m_systemRole) {
+            // localize role names for system roles
+            return Messages.get().getBundle(locale).key("GUI_ROLENAME_" + m_roleName + "_0");
+        } else {
+            return getRoleName();
+        }
+    }
+
+    /**
+     * Returns the fully qualified name of the organizational unit.<p>
+     *
+     * @return the fully qualified name of the organizational unit
+     */
+    public String getOuFqn() {
+
+        return CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
+    }
+
+    /**
+     * Returns the parent role of this role.<p>
+     *
+     * @return the parent role of this role
+     */
+    public CmsRole getParentRole() {
+
+        if (m_parentRole == null) {
+            return null;
+        }
+        return m_parentRole.forOrgUnit(m_ouFqn);
     }
 
     /**
@@ -361,54 +611,34 @@ public final class CmsRole {
     }
 
     /**
+     * Returns the flags needed for a group to emulate this role.<p>
+     * 
+     * @return the flags needed for a group to emulate this role
+     */
+    public int getVirtualGroupFlags() {
+
+        int flags = I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
+        flags += I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2 * getSystemRoles().indexOf(forOrgUnit(null));
+        return flags;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
 
-        return m_roleName.hashCode();
+        return m_roleName.hashCode()
+            + ((m_ouFqn == null || isOrganizationalUnitIndependent()) ? 13 : m_ouFqn.hashCode());
     }
 
     /**
-     * Returns <code>true</code> if at last one of the given <code>{@link CmsGroup}</code> instances is 
-     * equal to a group of this role.<p>
+     * Checks if this role is organizational unit independent.<p>
      * 
-     * This checks the given list against the role group of this role as well as against the role group 
-     * of all parent roles.<p>
-     * 
-     * @param groups a List of <code>{@link CmsGroup}</code> instances to match the role groups against
-     * @return <code>true</code> if at last one of the given group names is equal to a group name
-     *      of this role
+     * @return <code>true</code> if this role is organizational unit independent
      */
-    public boolean hasRole(List groups) {
+    public boolean isOrganizationalUnitIndependent() {
 
-        String[] groupNames = new String[groups.size()];
-        for (int i = 0; i < groups.size(); i++) {
-            groupNames[i] = ((CmsGroup)groups.get(i)).getName();
-        }
-        return hasRole(groupNames);
-    }
-
-    /**
-     * Returns <code>true</code> if at last one of the given group names is equal to a group name
-     * of this role.<p>
-     * 
-     * This checks the given list against the role group of this role as well as against the role group 
-     * of all parent roles.<p>
-     * 
-     * @param groupNames the group names to match the role groups against
-     * @return <code>true</code> if at last one of the given group names is equal to a group name
-     *      of this role
-     */
-    public boolean hasRole(String[] groupNames) {
-
-        for (int i = 0; i < m_distictGroupNames.length; i++) {
-            for (int j = 0; j < groupNames.length; j++) {
-                if (m_distictGroupNames[i].equals(groupNames[j])) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return !m_ouDependent;
     }
 
     /**
@@ -422,11 +652,30 @@ public final class CmsRole {
         result.append(this.getClass().getName());
         result.append(", role: ");
         result.append(getRoleName());
+        result.append(", org unit: ");
+        result.append(getOuFqn());
         result.append(", group: ");
         result.append(getGroupName());
         result.append("]");
 
         return result.toString();
+    }
+
+    /**
+     * Returns a set of all roles group names.<p>
+     * 
+     * @return a set of all roles group names
+     */
+    private Set getAllGroupNames() {
+
+        Set distinctGroups = new HashSet();
+        // add role group name
+        distinctGroups.add(getGroupName());
+        if (getParentRole() != null) {
+            // add parent roles group names
+            distinctGroups.addAll(getParentRole().getAllGroupNames());
+        }
+        return distinctGroups;
     }
 
     /**
@@ -436,14 +685,8 @@ public final class CmsRole {
     private void initialize() {
 
         // calculate the distinct groups of this role
-        ArrayList distinctGroups = new ArrayList();
-        distinctGroups.add(getGroupName());
-        for (int i = 0; i < m_parentRoles.size(); i++) {
-            String name = ((CmsRole)m_parentRoles.get(i)).getGroupName();
-            if (!distinctGroups.contains(name)) {
-                distinctGroups.add(name);
-            }
-        }
-        m_distictGroupNames = distinctGroups.toArray();
+        Set distinctGroups = new HashSet();
+        distinctGroups.addAll(getAllGroupNames());
+        m_distictGroupNames = Collections.unmodifiableList(new ArrayList(distinctGroups));
     }
 }

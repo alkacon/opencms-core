@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2006/03/27 14:52:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -71,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -94,6 +98,9 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_SEARCHINDEX_OVERVIEW = "asio";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_CONFIGURATION = "cc";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_DELETE = "cad";
@@ -126,7 +133,11 @@ public class CmsSearchIndexList extends A_CmsListDialog {
     public static final String LIST_COLUMN_SEARCH = "cas";
 
     /** list item detail id constant. */
+    public static final String LIST_DETAIL_FIELDCONFIGURATION = "df";
+
+    /** list item detail id constant. */
     public static final String LIST_DETAIL_INDEXSOURCE = "di";
+
     /** list id constant. */
     public static final String LIST_ID = "lssi";
 
@@ -223,7 +234,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
                 CmsListItem listItem = (CmsListItem)itItems.next();
                 searchManager.removeSearchIndex(searchManager.getIndex((String)listItem.get(LIST_COLUMN_NAME)));
                 removedItems.add(listItem.getId());
-                getList().removeItem(listItem.getId(), getLocale());
             }
             writeConfiguration(false);
         } else if (getParamListAction().equals(LIST_MACTION_REBUILD)) {
@@ -257,7 +267,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         String action = getParamListAction();
         if (action.equals(LIST_ACTION_DELETE)) {
             searchManager.removeSearchIndex(searchManager.getIndex(index));
-            getList().removeItem(index, getLocale());
             writeConfiguration(false);
         } else if (action.equals(LIST_ACTION_REBUILD)) {
             // forward to the rebuild index screen   
@@ -266,7 +275,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
         } else if (action.equals(LIST_ACTION_SEARCH)) {
-            // forward to the edit index screen   
+            // forward to the search screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(CmsRebuildReport.PARAM_INDEXES, index);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
@@ -307,10 +316,10 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             item = (CmsListItem)itItems.next();
             if (detailId.equals(LIST_DETAIL_INDEXSOURCE)) {
                 fillDetailIndexSource(item, detailId);
+            } else if (detailId.equals(LIST_DETAIL_FIELDCONFIGURATION)) {
+                fillDetailFieldConfiguration(item, detailId);
             }
-
         }
-
     }
 
     /**
@@ -327,9 +336,10 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             index = (CmsSearchIndex)itIndexes.next();
             CmsListItem item = getList().newItem(index.getName());
             item.set(LIST_COLUMN_NAME, index.getName());
+            item.set(LIST_COLUMN_CONFIGURATION, index.getFieldConfiguration().getName());
             item.set(LIST_COLUMN_REBUILDMODE, index.getRebuildMode());
             item.set(LIST_COLUMN_PROJECT, index.getProject());
-            item.set(LIST_COLUMN_LOCALE, index.getLocale());
+            item.set(LIST_COLUMN_LOCALE, index.getLocale().toString());
             result.add(item);
         }
         return result;
@@ -438,7 +448,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nameCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_NAME_0));
-        nameCol.setWidth("45%");
+        nameCol.setWidth("35%");
         // a default action for the link to overview        
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_ACTION_SEARCHINDEX_OVERVIEW);
         defEditAction.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_OVERVIEW_NAME_0));
@@ -446,11 +456,18 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         nameCol.addDefaultAction(defEditAction);
         metadata.addColumn(nameCol);
 
+        // add column for field configuration
+        CmsListColumnDefinition configCol = new CmsListColumnDefinition(LIST_COLUMN_CONFIGURATION);
+        configCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        configCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_CONFIGURATION_0));
+        configCol.setWidth("15%");
+        metadata.addColumn(configCol);
+
         // add column for rebuild mode
         CmsListColumnDefinition rebuildModeCol = new CmsListColumnDefinition(LIST_COLUMN_REBUILDMODE);
         rebuildModeCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         rebuildModeCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_REBUILDMODE_0));
-        rebuildModeCol.setWidth("15%");
+        rebuildModeCol.setWidth("5%");
         metadata.addColumn(rebuildModeCol);
 
         // add column for project
@@ -487,6 +504,23 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         indexDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_LIST_SEARCHINDEX_DETAIL_INDEXSOURCE_NAME_0)));
         metadata.addItemDetails(indexDetails);
+
+        // add field configuration details
+        CmsListItemDetails configDetails = new CmsListItemDetails(LIST_DETAIL_FIELDCONFIGURATION);
+        configDetails.setAtColumn(LIST_COLUMN_NAME);
+        configDetails.setVisible(false);
+        configDetails.setShowActionName(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_0));
+        configDetails.setShowActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_SHOW_HELP_0));
+        configDetails.setHideActionName(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_0));
+        configDetails.setHideActionHelpText(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_HIDE_HELP_0));
+        configDetails.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0));
+        configDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
+            Messages.GUI_LIST_SEARCHINDEX_DETAIL_FIELDCONFIGURATION_NAME_0)));
+        metadata.addItemDetails(configDetails);
     }
 
     /**
@@ -527,6 +561,77 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         if (refresh) {
             refreshList();
         }
+    }
+
+    /**
+     * Fills details of the field configuration into the given item. <p>
+     * 
+     * @param item the list item to fill
+     * @param detailId the id for the detail to fill
+     */
+    private void fillDetailFieldConfiguration(CmsListItem item, String detailId) {
+
+        StringBuffer html = new StringBuffer();
+        // search for the corresponding CmsSearchIndex: 
+        String idxName = (String)item.get(LIST_COLUMN_NAME);
+        CmsSearchIndex idx = OpenCms.getSearchManager().getIndex(idxName);
+
+        CmsSearchFieldConfiguration idxFieldConfiguration = idx.getFieldConfiguration();
+        List fields = idxFieldConfiguration.getFields();
+
+        html.append("<ul>\n");
+        html.append("  <li>\n").append("    ").append("name      : ").append(idxFieldConfiguration.getName()).append(
+            "\n");
+        html.append("  </li>");
+        html.append("  <li>\n").append("    ").append("fields : ").append("\n");
+        html.append("    <ul>\n");
+
+        Iterator itFields = fields.iterator();
+        while (itFields.hasNext()) {
+            CmsSearchField field = (CmsSearchField)itFields.next();
+            String fieldName = field.getName();
+            boolean fieldStore = field.isStored();
+            String fieldIndex = field.getIndexed();
+            boolean fieldExcerpt = field.isInExcerpt();
+            float fieldBoost = field.getBoost();
+            String fieldDefault = field.getDefaultValue();
+
+            html.append("  <li>\n").append("    ");
+            html.append("name=").append(fieldName);
+            if (fieldStore) {
+                html.append(", ").append("store=").append(fieldStore);
+            }
+            if (!fieldIndex.equals("false")) {
+                html.append(", ").append("index=").append(fieldIndex);
+            }
+            if (fieldExcerpt) {
+                html.append(", ").append("excerpt=").append(fieldExcerpt);
+            }
+            if (fieldBoost != CmsSearchField.BOOST_DEFAULT) {
+                html.append(", ").append("boost=").append(fieldBoost);
+            }
+            if (fieldDefault != null) {
+                html.append(", ").append("default=").append(field.getDefaultValue());
+            }
+            html.append("\n").append("    <ul>\n");
+
+            Iterator itMappings = field.getMappings().iterator();
+            while (itMappings.hasNext()) {
+                CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
+                html.append("  <li>\n").append("    ");
+                html.append(mapping.getType().toString());
+                if (CmsStringUtil.isNotEmpty(mapping.getParam())) {
+                    html.append("=").append(mapping.getParam()).append("\n");
+                }
+                html.append("  </li>");
+            }
+            html.append("    </ul>\n");
+            html.append("  </li>");
+        }
+        html.append("    </ul>\n");
+        html.append("  </li>");
+        html.append("</ul>\n");
+        item.set(detailId, html.toString());
     }
 
     /**

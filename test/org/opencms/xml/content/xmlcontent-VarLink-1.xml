@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<VarLinktests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/testVarLink1.xsd">
+  
+	<VarLinktest language="en">
+		<VfsLink>
+			<link type="WEAK">
+				<target><![CDATA[/sites/default/index.html]]></target>
+			</link>
+		</VfsLink>
+		<VarLink>
+			<link internal="true" type="WEAK">
+				<target><![CDATA[/sites/default/index.html]]></target>
+			</link>	
+		</VarLink>		
+		<VarLink>
+			<link internal="false">
+				<target><![CDATA[http://www.alkacon.com]]></target>
+			</link>			
+		</VarLink>	
+	</VarLinktest>
+</VarLinktests>

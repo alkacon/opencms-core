@@ -3,7 +3,12 @@
 <PhotoAlbumConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.photoalbum/schemas/photoalbum.xsd">
   <PhotoAlbumConfiguration language="en">
     <Title><![CDATA[Demo Photo album]]></Title>
-    <VfsFolder>/sites/default/demopages/photoalbum/</VfsFolder>
+    <VfsFolder>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demopages/photoalbum/]]></target>
+        <uuid>adba0c04-11b7-11db-91cd-fdbae480bac9</uuid>
+      </link>
+    </VfsFolder>
     <AlignNavigation><![CDATA[center]]></AlignNavigation>
     <NavigationPosition><![CDATA[t_a,b_b]]></NavigationPosition>
     <ShowResourceNameAsTitle>false</ShowResourceNameAsTitle>
@@ -18,7 +23,8 @@
       <Background>#FFFFFF</Background>
       <TextTop name="TextTop0">
         <links/>
-        <content><![CDATA[This example shows the usage of the OpenCms photo album module. It simplifies the integration of photos in your website by using XML contents to create a highly configurable photo album.]]></content>
+        <content><![CDATA[<p>This example shows the usage of the OpenCms photo album module. It simplifies the integration of
+photos in your website by using XML contents to create a highly configurable photo album.</p>]]></content>
       </TextTop>
     </Thumbs>
     <Details>

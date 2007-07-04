@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchUtils.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Tests some search utils that don't require an OpenCms context.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCmsSearchUtils extends TestCase {
 
@@ -87,9 +87,11 @@ public class TestCmsSearchUtils extends TestCase {
         if ((a == null) || (b == null)) {
             assertTrue(a == b);
         }
-        assertEquals(a.length, b.length);
-        for (int i = 0; i < a.length; i++) {
-            assertEquals(a[i], b[i]);
+        if (a != null) {
+            assertEquals(a.length, b.length);
+            for (int i = 0; i < a.length; i++) {
+                assertEquals(a[i], b[i]);
+            }
         }
     }
 }

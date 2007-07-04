@@ -1,4 +1,10 @@
-<%@ page import="org.opencms.workplace.commons.*" %><%	
+<%@ page import="
+    org.opencms.widgets.CmsCalendarWidget,
+    org.opencms.workplace.CmsDialog,
+    org.opencms.workplace.CmsWorkplace,
+    org.opencms.workplace.commons.CmsTouch,
+    org.opencms.workplace.commons.Messages
+"%><%
 
 	// initialize the workplace class
 	CmsTouch wp = new CmsTouch(pageContext, request, response);
@@ -7,7 +13,7 @@
 	
 switch (wp.getAction()) {
 
-case CmsTouch.ACTION_CANCEL:
+case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionCloseDialog();
@@ -16,7 +22,7 @@ break;
 
 
 case CmsTouch.ACTION_TOUCH:	
-case CmsTouch.ACTION_WAIT:
+case CmsDialog.ACTION_WAIT:
 
 //////////////////// ACTION: main touching action (with optional wait screen)
 
@@ -24,34 +30,32 @@ case CmsTouch.ACTION_WAIT:
 
 break;
 
-case CmsTouch.ACTION_DEFAULT:
-default:
-
+case CmsDialog.ACTION_LOCKS_CONFIRMED:
 //////////////////// ACTION: show touch dialog (default)
 
 	wp.setParamAction("touch");
 	
-%><%= wp.htmlStart() %>
-<%= wp.calendarIncludes() %>
+ %><%= wp.htmlStart() %>
+<%= CmsCalendarWidget.calendarIncludes(wp.getLocale()) %>
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
-if (wp.isMultiOperation()) { %>
+if (wp.isMultiOperation()) { //%>
 	<%@ include file="includes/multiresourcelist.txt" %><%
-} else { %>
+} else { //%>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <table border="0">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_TOUCH_NEW_TIMESTAMP_0) %>
-	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_NEWTIMESTAMP %>" id="<%= wp.PARAM_NEWTIMESTAMP %>" value="<%= wp.getCurrentDateTime() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggercalendar" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= CmsTouch.PARAM_NEWTIMESTAMP %>" id="<%= CmsTouch.PARAM_NEWTIMESTAMP %>" value="<%= wp.getCurrentDateTime() %>"></td>
+	<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggercalendar" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
 </tr>
 <%= wp.buildCheckRecursive() %>
 </table>
@@ -78,10 +82,16 @@ if (wp.isMultiOperation()) { %>
      * @param showTime true if the time selector should be shown, otherwise false
      */
 
-%><%= wp.calendarInit(wp.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
+%><%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsTouch.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-<%
-} 
+<% 
+   break;
+
+case CmsDialog.ACTION_DEFAULT:
+default:
+%>
+<%= wp.buildLockDialog() %>
+<% } 
 //////////////////// end of switch statement 
 %>

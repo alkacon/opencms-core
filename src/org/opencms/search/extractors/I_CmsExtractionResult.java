@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,67 +41,77 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsExtractionResult {
 
-    /** Key to access the document author name in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_AUTHOR = "author";
+    /** Key to access the document author name in the item map. */
+    String ITEM_AUTHOR = "author";
 
-    /** Key to access the document catrgory in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_CATEGORY = "category";
+    /** Key to access the document catrgory in the item map. */
+    String ITEM_CATEGORY = "category";
 
-    /** Key to access the document comments in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_COMMENTS = "comments";
+    /** Key to access the document comments in the item map. */
+    String ITEM_COMMENTS = "comments";
 
-    /** Key to access the document company name in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_COMPANY = "company";
+    /** Key to access the document company name in the item map. */
+    String ITEM_COMPANY = "company";
 
-    /** Key to access the document creator name in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_CREATOR = "creator";
+    /** Key for accessing the default (combined) content in {@link #getContentItems()}. */
+    String ITEM_CONTENT = "__content";
 
-    /** Key to access the document creation date in the meta information map (the value is a <code>{@link java.util.Date}</code> object). */
-    String META_DATE_CREATED = "creation date";
+    /** Key to access the document creator name in the item map. */
+    String ITEM_CREATOR = "creator";
 
-    /** Key to access the document date of last modification in the meta information map (the value is a <code>{@link java.util.Date}</code> object). */
-    String META_DATE_LASTMODIFIED = "last modification date";
+    /** Key to access the document keywords in the item map. */
+    String ITEM_KEYWORDS = "keywords";
 
-    /** Key to access the document keywords in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_KEYWORDS = "keywords";
+    /** Key to access the document manager name in the item map. */
+    String ITEM_MANAGER = "manager";
 
-    /** Key to access the document manager name in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_MANAGER = "manager";
+    /** Key to access the document producer name in the item map. */
+    String ITEM_PRODUCER = "producer";
 
-    /** Key to access the document producer name in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_PRODUCER = "producer";
+    /** Key for accessing the raw content in {@link #getContentItems()}. */
+    String ITEM_RAW = "__raw";
 
-    /** Key to access the document subject in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_SUBJECT = "subject";
+    /** Key to access the document subject in the item map. */
+    String ITEM_SUBJECT = "subject";
 
-    /** Key to access the document title in the meta information map (the value is a <code>{@link String}</code> object). */
-    String META_TITLE = "title";
+    /** Key to access the document title in the item map. */
+    String ITEM_TITLE = "title";
 
     /**
-     * Returns the extracted content as a String.<p>
+     * Returns the extracted content combined as a String.<p>
      *
-     * @return the extracted content as a String
+     * @return the extracted content combined as a String
      */
     String getContent();
 
     /**
-     * Returns the extracted meta information.<p>
-     *
-     * The result Map contains all meta information extracted
-     * by the extractor. The key is always a String, and should be one of the constants 
-     * defined in the <code>{@link I_CmsExtractionResult}</code> interface. For example
-     * <code>{@link I_CmsExtractionResult#META_TITLE}</code> will contain the document title as 
-     * a String.<p>
-     *
-     * @return the extracted meta information
+     * Returns the extracted content as individual items.<p>
+     * 
+     * The result Map contains all content items extracted
+     * by the extractor. The key is always a String, and contains the name of the item.
+     * The value is also a String and contains the extracted text.<p>
+     * 
+     * The detailed form will depend on the resource type indexed:
+     * <ul>
+     * <li>For a <code>xmlpage</code>, the key will be the element name, and the value 
+     * will be the text of the element.
+     * <li>For a <code>xmlcontent</code>, the key will be the xpath of the XML node, 
+     * and the value will be the text of that XML node.
+     * <li>In case the document contains meta information (for example PDF or MS Office documents),
+     * the meta information is stored with the name of the meta field as key and the content as value.
+     * <li>For all other resource types, there will be only ony key {@link #ITEM_CONTENT},
+     * which will contain the value of the complete content. 
+     * </ul>
+     * 
+     * @return the extracted content as individual items
      */
-    Map getMetaInfo();
+    Map getContentItems();
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

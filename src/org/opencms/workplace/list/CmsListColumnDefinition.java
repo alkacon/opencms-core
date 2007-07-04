@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2006/03/27 14:52:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,9 @@ public class CmsListColumnDefinition {
     /** Column width. */
     private String m_width;
 
+    /** The related workplace dialog object. */
+    private transient A_CmsListDialog m_wp;
+
     /**
      * Default Constructor.<p>
      * 
@@ -129,7 +132,7 @@ public class CmsListColumnDefinition {
             defaultAction.setListId(m_listId);
         }
         // set the column id
-        defaultAction.setColumnForLink(getId());
+        defaultAction.setColumnForLink(this);
 
         m_defaultActions.add(defaultAction);
     }
@@ -151,11 +154,10 @@ public class CmsListColumnDefinition {
      * returns the csv output for a cell.<p>
      * 
      * @param item the item to render the cell for
-     * @param wp the workplace context
      * 
      * @return csv output
      */
-    public String csvCell(CmsListItem item, CmsWorkplace wp) {
+    public String csvCell(CmsListItem item) {
 
         if (!isVisible()) {
             return "";
@@ -172,13 +174,13 @@ public class CmsListColumnDefinition {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
                     if (action.isVisible()) {
                         action.setItem(item);
-                        csv.append(action.getName().key(wp.getLocale()));
+                        csv.append(action.getName().key(getWp().getLocale()));
                     }
                 }
             }
         } else {
             // formatted output
-            csv.append(m_formatter.format(item.get(m_id), wp.getLocale()));
+            csv.append(m_formatter.format(item.get(m_id), getWp().getLocale()));
         }
         return csv.toString();
     }
@@ -186,16 +188,14 @@ public class CmsListColumnDefinition {
     /**
      * Returns the csv output for a column header.<p>
      * 
-     * @param wp the workplace instance
-     * 
      * @return csv header
      */
-    public String csvHeader(CmsWorkplace wp) {
+    public String csvHeader() {
 
         if (!isVisible()) {
             return "";
         }
-        return getName().key(wp.getLocale());
+        return getName().key(getWp().getLocale());
     }
 
     /**
@@ -246,7 +246,7 @@ public class CmsListColumnDefinition {
     /**
      * Returns the default Actions list.<p>
      *
-     * @return the default Actions list
+     * @return a list of {@link CmsListDefaultAction} objects
      */
     public List getDefaultActions() {
 
@@ -365,15 +365,24 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Returns the workplace dialog object.<p>
+     *
+     * @return the workplace dialog object
+     */
+    public A_CmsListDialog getWp() {
+
+        return m_wp;
+    }
+
+    /**
      * returns the html for a cell.<p>
      * 
      * @param item the item to render the cell for
-     * @param wp the workplace context
      * @param isPrintable if the list is to be printed
      * 
      * @return html code
      */
-    public String htmlCell(CmsListItem item, CmsWorkplace wp, boolean isPrintable) {
+    public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(512);
         Iterator itActions = m_directActions.iterator();
@@ -384,7 +393,7 @@ public class CmsListColumnDefinition {
             if (isPrintable) {
                 action.setEnabled(false);
             }
-            html.append(action.buttonHtml(wp));
+            html.append(action.buttonHtml());
             if (isPrintable) {
                 action.setEnabled(enabled);
             }
@@ -392,13 +401,13 @@ public class CmsListColumnDefinition {
         if (!m_defaultActions.isEmpty()) {
             Iterator itDefaultActions = m_defaultActions.iterator();
             while (itDefaultActions.hasNext()) {
-                I_CmsListDirectAction defAction = (I_CmsListDirectAction)itDefaultActions.next();
+                CmsListDefaultAction defAction = (CmsListDefaultAction)itDefaultActions.next();
                 defAction.setItem(item);
                 boolean enabled = defAction.isEnabled();
                 if (isPrintable) {
                     defAction.setEnabled(false);
                 }
-                html.append(defAction.buttonHtml(wp));
+                html.append(defAction.buttonHtml());
                 if (isPrintable) {
                     defAction.setEnabled(enabled);
                 }
@@ -412,7 +421,7 @@ public class CmsListColumnDefinition {
                 }
             } else {
                 // formatted output
-                html.append(m_formatter.format(item.get(m_id), wp.getLocale()));
+                html.append(m_formatter.format(item.get(m_id), getWp().getLocale()));
             }
         }
         html.append("\n");
@@ -423,22 +432,17 @@ public class CmsListColumnDefinition {
      * Returns the html code for a column header.<p>
      * 
      * @param list the list to generate the header code for
-     * @param wp the workplace instance
      * 
      * @return html code
      */
-    public String htmlHeader(CmsHtmlList list, CmsWorkplace wp) {
-
-        if (!isVisible()) {
-            return "";
-        }
+    public String htmlHeader(CmsHtmlList list) {
 
         String listId = list.getId();
         String sortedCol = list.getSortedColumn();
         CmsListOrderEnum order = list.getCurrentSortOrder();
 
         StringBuffer html = new StringBuffer(512);
-        Locale locale = wp.getLocale(); 
+        Locale locale = getWp().getLocale();
         CmsMessages messages = Messages.get().getBundle(locale);
         html.append("<th");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth())) {
@@ -453,7 +457,7 @@ public class CmsListColumnDefinition {
 
         boolean isSorted = getId().equals(sortedCol);
         CmsListOrderEnum nextOrder = CmsListOrderEnum.ORDER_ASCENDING;
-        if (isSorted && order == CmsListOrderEnum.ORDER_ASCENDING) {
+        if (isSorted && (order == CmsListOrderEnum.ORDER_ASCENDING)) {
             nextOrder = CmsListOrderEnum.ORDER_DESCENDING;
         }
         // button
@@ -461,53 +465,45 @@ public class CmsListColumnDefinition {
         String onClic = "listSort('" + listId + "', '" + getId() + "');";
         String helpText = null;
         if (m_helpText != null) {
-            helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(
-                locale)});
+            helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(locale)});
         } else {
             if (isSorteable()) {
                 if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
-                    helpText = messages.key(Messages.GUI_LIST_COLUMN_ASC_SORT_1, new Object[] {getName().key(
-                        locale)});
+                    helpText = messages.key(Messages.GUI_LIST_COLUMN_ASC_SORT_1, new Object[] {getName().key(locale)});
                 } else {
-                    helpText = messages.key(Messages.GUI_LIST_COLUMN_DESC_SORT_1, new Object[] {getName().key(
-                        locale)});
+                    helpText = messages.key(Messages.GUI_LIST_COLUMN_DESC_SORT_1, new Object[] {getName().key(locale)});
                 }
             } else {
-                helpText = messages.key(
-                    Messages.GUI_LIST_COLUMN_NO_SORT_1,
-                    new Object[] {getName().key(locale)});
+                helpText = messages.key(Messages.GUI_LIST_COLUMN_NO_SORT_1, new Object[] {getName().key(locale)});
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t<div style='display:block; width: ");
             html.append(getWidth());
             html.append("px;'>\n");
         }
+        String sortArrow = "";
+        // sort order marker
+        if (isSorted) {
+            if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
+                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_UP + "' alt=''>&nbsp;";
+            } else {
+                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_DOWN + "' alt=''>&nbsp;";
+            }
+        }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            id,
             id,
             getName().key(locale),
             helpText,
             list.isPrintable() ? false : isSorteable(),
             null,
             null,
-            onClic));
-        // sort order marker
-        if (isSorted) {
-            if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
-                html.append("\t\t<img src='");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(ICON_UP);
-                html.append("' alt=''>\n");
-            } else {
-                html.append("\t\t<img src='");
-                html.append(CmsWorkplace.getSkinUri());
-                html.append(ICON_DOWN);
-                html.append("' alt=''>\n");
-            }
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
+            onClic,
+            false,
+            sortArrow));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t</div>\n");
         }
         html.append("</th>\n");
@@ -555,6 +551,46 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Removes the default action from this column by id.<p>
+     * 
+     * @param actionId the id of the action to remove
+     * 
+     * @return the action if found or <code>null</code>
+     */
+    public CmsListDefaultAction removeDefaultAction(String actionId) {
+
+        Iterator it = m_defaultActions.iterator();
+        while (it.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            if (action.getId().equals(actionId)) {
+                it.remove();
+                return action;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes a direct action from this column by id.<p>
+     * 
+     * @param actionId the id of the action to remove
+     * 
+     * @return the action if found or <code>null</code>
+     */
+    public I_CmsListDirectAction removeDirectAction(String actionId) {
+
+        Iterator it = m_directActions.iterator();
+        while (it.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            if (action.getId().equals(actionId)) {
+                it.remove();
+                return action;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Sets the align.<p>
      *
      * @param align the align to set
@@ -572,6 +608,12 @@ public class CmsListColumnDefinition {
     public void setFormatter(I_CmsListFormatter formatter) {
 
         m_formatter = formatter;
+        // set the formatter for all default actions
+        Iterator it = m_defaultActions.iterator();
+        while (it.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            action.setColumnForLink(this);
+        }
     }
 
     /**
@@ -647,11 +689,16 @@ public class CmsListColumnDefinition {
     /**
      * Sets the visible.<p>
      *
+     * This will set also the printable flag to <code>false</code>.<p>
+     *
      * @param visible the visible to set
      */
     public void setVisible(boolean visible) {
 
         m_visible = visible;
+        if (!m_visible) {
+            setPrintable(false);
+        }
     }
 
     /**
@@ -662,6 +709,26 @@ public class CmsListColumnDefinition {
     public void setWidth(String width) {
 
         m_width = width;
+    }
+
+    /**
+     * Sets the workplace dialog object.<p>
+     *
+     * @param wp the workplace dialog object to set
+     */
+    public void setWp(A_CmsListDialog wp) {
+
+        m_wp = wp;
+        Iterator itActs = getDirectActions().iterator();
+        while (itActs.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)itActs.next();
+            action.setWp(wp);
+        }
+        Iterator itDefActs = getDefaultActions().iterator();
+        while (itDefActs.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)itDefActs.next();
+            action.setWp(wp);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +76,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /** Parameter name for the request parameter "old element name". */
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
+
+    /** option values for font select boxes. */
+    public static final String[] SELECTBOX_FONTS = {
+        "Arial",
+        "Arial Narrow",
+        "System",
+        "Times New Roman",
+        "Verdana",
+        "Monospace",
+        "SansSerif"};
 
     /** Name of the special body element from an XMLTemplate. */
     public static final String XML_BODY_ELEMENT = "body";
@@ -92,19 +103,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /** The element locale. */
     private Locale m_elementLocale;
-
     private String m_paramElementname;
-    private String m_paramOldelementname;
 
-    /** option values for font select boxes. */
-    public static final String[] SELECTBOX_FONTS = {
-        "Arial",
-        "Arial Narrow",
-        "System",
-        "Times New Roman",
-        "Verdana",
-        "Monospace",
-        "SansSerif"};
+    private String m_paramOldelementname;
+    
+    /** The URI of the style sheet to use in the editor. */
+    private String m_uriStyleSheet;
 
     /**
      * Public constructor.<p>
@@ -436,18 +440,31 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String getUriStyleSheet() {
 
-        String result = "";
-        try {
-            String currentTemplate = getUriTemplate();
-            if (!"".equals(currentTemplate)) {
-                // read the stylesheet from the template file
-                result = getCms().readPropertyObject(currentTemplate, CmsPropertyDefinition.PROPERTY_TEMPLATE, false).getValue(
-                    "");
+        if (m_uriStyleSheet == null) {
+            try {
+                if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+                    // use the configured handlers to determine the CSS to use
+                    Iterator i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+                    while (i.hasNext()) {
+                        I_CmsEditorCssHandler cssHandler = (I_CmsEditorCssHandler)i.next();
+                        if (cssHandler.matches(getCms(), getParamTempfile())) {
+                            m_uriStyleSheet = cssHandler.getUriStyleSheet(getCms(), getParamTempfile());
+                            break;
+                        }
+                    }
+                } else {
+                    // for compatibility reasons, read the template property value from the template file to get the CSS
+                    String currentTemplate = getUriTemplate();
+                    m_uriStyleSheet = getCms().readPropertyObject(
+                        currentTemplate,
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                        false).getValue("");
+                }
+            } catch (CmsException e) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
             }
-        } catch (CmsException e) {
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
         }
-        return result;
+        return m_uriStyleSheet;
     }
 
     /**
@@ -552,7 +569,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initBodyElementName(String elementName) {
 
-        if (elementName == null
+        if ((elementName == null)
             || (m_page.hasValue(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {
             // elementName not specified or given element is disabled, determine default element
             List allElements = m_page.getNames(getElementLocale());
@@ -606,7 +623,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 }
             }
         }
-        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
 
         String elementData;
         if (m_page.hasValue(getParamElementname(), getElementLocale())) {
@@ -668,7 +685,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // content might have been modified during write operation
         m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
         if (m_page.hasValue(body, locale)) {
-            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
+            getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, Boolean.TRUE);
             content = m_page.getStringValue(getCms(), body, locale);
             if (content == null) {
                 content = "";

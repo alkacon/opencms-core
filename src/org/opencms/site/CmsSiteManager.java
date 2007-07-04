@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/03/27 15:07:51 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsSiteManager implements Cloneable {
+public final class CmsSiteManager {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManager.class);
@@ -111,14 +111,30 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Returns a list of all site available for the current user.<p>
+     * Returns a list of all sites available for the current user.<p>
      * 
      * @param cms the current cms context 
      * @param workplaceMode if true, the root and current site is included for the admin user
-     * and the view permission is required to see the site root
+     *                      and the view permission is required to see the site root
+     * 
      * @return a list of all site available for the current user
      */
     public static List getAvailableSites(CmsObject cms, boolean workplaceMode) {
+
+        return getAvailableSites(cms, workplaceMode, cms.getRequestContext().getOuFqn());
+    }
+
+    /**
+     * Returns a list of all sites that are compatible to the given organizational unit.<p>
+     * 
+     * @param cms the current cms context 
+     * @param workplaceMode if true, the root and current site is included for the admin user
+     *                      and the view permission is required to see the site root
+     * @param ouFqn the organizational unit
+     * 
+     * @return a list of all site available for the current user
+     */
+    public static List getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
 
         Map sites = OpenCms.getSiteManager().getSites();
         List siteroots = new ArrayList(sites.size() + 1);
@@ -137,53 +153,70 @@ public final class CmsSiteManager implements Cloneable {
             }
         }
         // add default site
-        if (workplaceMode && OpenCms.getSiteManager().getDefaultSite() != null) {
+        if (workplaceMode && (OpenCms.getSiteManager().getDefaultSite() != null)) {
             String folder = OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);
             }
         }
 
-        String currentRoot = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().saveSiteRoot();
+        String storedSiteRoot = cms.getRequestContext().getSiteRoot();
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (workplaceMode && cms.hasRole(CmsRole.ROOT_FOLDER_ACCESS)) {
+            if (workplaceMode && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
                 if (!siteroots.contains("/")) {
                     siteroots.add("/");
                 }
-                if (!siteroots.contains(currentRoot + "/")) {
-                    siteroots.add(currentRoot + "/");
+                if (!siteroots.contains(storedSiteRoot + "/")) {
+                    siteroots.add(storedSiteRoot + "/");
                 }
             }
+            List resources;
+            try {
+                resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ouFqn);
+            } catch (CmsException e) {
+                return Collections.EMPTY_LIST;
+            }
+
             Collections.sort(siteroots);
             i = siteroots.iterator();
             while (i.hasNext()) {
                 String folder = (String)i.next();
-                try {
-                    CmsResource res = cms.readResource(folder);
-                    if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
-                        String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                        if (title == null) {
-                            title = folder;
-                        }
-                        result.add(new CmsSite(
-                            folder,
-                            res.getStructureId(),
-                            title,
-                            (CmsSiteMatcher)siteServers.get(folder)));
+                boolean compatible = false;
+                Iterator itResources = resources.iterator();
+                while (itResources.hasNext()) {
+                    CmsResource resource = (CmsResource)itResources.next();
+                    if (resource.getRootPath().startsWith(folder) || folder.startsWith(resource.getRootPath())) {
+                        compatible = true;
+                        break;
                     }
-
-                } catch (CmsException e) {
-                    // user probably has no read access to the folder, ignore and continue iterating            
+                }
+                // select only sites compatibles to the given organizational unit 
+                if (compatible) {
+                    try {
+                        CmsResource res = cms.readResource(folder);
+                        if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
+                            String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                            if (title == null) {
+                                title = folder;
+                            }
+                            result.add(new CmsSite(
+                                folder,
+                                res.getStructureId(),
+                                title,
+                                (CmsSiteMatcher)siteServers.get(folder)));
+                        }
+                    } catch (CmsException e) {
+                        // user probably has no read access to the folder, ignore and continue iterating            
+                    }
                 }
             }
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {
             // restore the user's current context 
-            cms.getRequestContext().restoreSiteRoot();
+            cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return result;
     }
@@ -464,11 +497,11 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Returns if the given site matcher matches the current site.<p>
+     * Returns <code>true</code> if the given site matcher matches the current site.<p>
      * 
      * @param cms the cms object
      * @param matcher the site matcher to match the site with
-     * @return true if the matcher matches the current site
+     * @return <code>true</code> if the matcher matches the current site
      */
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
 
@@ -523,7 +556,7 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Return the site that matches the given site matcher,
+     * Return the configurded site that matches the given site matcher,
      * or the default site if no sites matches.<p>
      * 
      * @param matcher the site matcher to match the site with

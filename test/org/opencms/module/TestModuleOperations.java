@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2006/03/27 14:53:04 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:38 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -89,6 +89,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         suite.addTest(new TestModuleOperations("testModuleImport"));
         suite.addTest(new TestModuleOperations("testModuleExport"));
         suite.addTest(new TestModuleOperations("testOldModuleImport"));
+        suite.addTest(new TestModuleOperations("testModuleImportConflictId"));
+        suite.addTest(new TestModuleOperations("testModuleUpdateWithResourceId"));
         suite.addTest(new TestModuleOperations("testModuleImportMissingResTypeClass"));
         suite.addTest(new TestModuleOperations("testModuleDependencies"));
         suite.addTest(new TestModuleOperations("testModuleAdditionalResourcesWorkaround"));
@@ -151,7 +153,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         TestModuleActionImpl.m_publishProject = false;
 
         // publish the current project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
         assertEquals(true, TestModuleActionImpl.m_publishProject);
         assertTrue(TestModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
 
@@ -190,7 +193,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         TestModuleActionImpl.m_publishProject = false;
 
         // publish the current project 
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
         assertEquals(false, TestModuleActionImpl.m_publishProject);
         assertTrue(TestModuleActionImpl.m_cmsEvent == -1);
@@ -406,7 +410,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // publish the current project
-        cms.publishProject();
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
@@ -530,6 +535,98 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertEquals(module.getParameter("param2"), "value2");
     }
 
+    /**
+     * Tests the import of a module that has a duplicate id.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testModuleImportConflictId() throws Exception {
+
+        // this test imports a module with the id "12" and name "article"
+        // id 12 is already configured for "tablegallery"
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing import of a module with a conflicting id");
+
+        String moduleName = "org.opencms.test.modules.testConflictId";
+
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        try {
+            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        } catch (CmsConfigurationException e) {
+            // this is the expected exception - the module should not have been imported
+        }
+
+        // check if the module was not imported
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was imported, but should not have been because of id conflicts!");
+        }
+        
+        // next test: try a module that has an internal id conflict
+        echo("Testing import of a module with internal conflicting ids");
+        
+        moduleName = "org.opencms.test.modules.testConflictId2";
+        moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        
+        try {
+            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        } catch (CmsConfigurationException e) {
+            // this is the expected exception - the module should not have been imported
+        }        
+        
+        // check if the module was not imported
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was imported, but should not have been because of id conflicts!");
+        }       
+    }
+    
+    /**
+     * Tests a update of a module that contains a new resource type.<p>
+     * 
+     * This test was added because there was an issue where modules with a resource 
+     * type generated an error "conficting id" during update.<p>
+     * 
+     * @throws Exception if the test fails
+     */    
+    public void testModuleUpdateWithResourceId() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing update of a module that contains a resource type id definition");
+
+        String moduleName = "org.opencms.test.modules.testConflictIdUpdate";
+
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        
+        // now import the module first time - this must work
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was imported correctly
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }
+        
+        // update the module - this is a "delete" and then "import again" operation
+
+        // first delete the module - marked as "true" for update
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, true, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was deletet correctly
+        if (OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not deleted!");
+        }       
+        
+        // now import the module again second time
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
+        
+        // basic check if the module was imported correctly again
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }       
+    }
+    
     /**
      * Tests a module import with an unknown resource type class.<p>
      * 

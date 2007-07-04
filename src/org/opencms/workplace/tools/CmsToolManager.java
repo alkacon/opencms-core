@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/07/04 16:57:08 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,16 +229,8 @@ public class CmsToolManager {
             return "<div class='pathbar'>&nbsp;</div>\n";
         }
         CmsTool adminTool = resolveAdminTool(getCurrentRoot(wp).getKey(), toolPath);
-        String html = A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "nav" + adminTool.getId(),
-            adminTool.getHandler().getShortName(),
-            null,
-            false,
-            null,
-            null,
-            null);
+        String html = A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT, "nav"
+            + adminTool.getId(), adminTool.getHandler().getName(), null, false, null, null, null);
         String parent = toolPath;
         while (!parent.equals(getBaseToolPath(wp))) {
             parent = getParent(wp, parent);
@@ -249,7 +240,6 @@ public class CmsToolManager {
             String link = linkForToolPath(wp.getJsp(), parent, adminTool.getHandler().getParameters(wp));
             String onClic = "openPage('" + link + "');";
             String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
                 adminTool.getHandler().getName(),
@@ -260,8 +250,11 @@ public class CmsToolManager {
                 onClic);
             html = buttonHtml + NAVBAR_SEPARATOR + html;
         }
-
-        return CmsToolMacroResolver.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n", wp);
+        html = CmsToolMacroResolver.resolveMacros(html, wp);
+        html = CmsEncoder.decode(html);
+        html = CmsToolMacroResolver.resolveMacros(html, wp);
+        html = "<div class='pathbar'>\n" + html + "&nbsp;</div>\n";
+        return html;
     }
 
     /**
@@ -292,8 +285,14 @@ public class CmsToolManager {
 
         CmsToolUserData userData = getUserData(wp);
         String root = ROOTKEY_DEFAULT;
-        if (userData != null && m_roots.getObject(userData.getRootKey()) != null) {
-            root = userData.getRootKey();
+        if (userData != null) {
+            if (m_roots.getObject(userData.getRootKey()) != null) {
+                root = userData.getRootKey();
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_NOT_CONFIGURED_ROOT_1, userData.getRootKey()));
+                }
+            }
         }
         return (CmsToolRootHandler)m_roots.getObject(root);
     }
@@ -396,7 +395,7 @@ public class CmsToolManager {
             // filter for path
             if (baseTool.equals(TOOLPATH_SEPARATOR) || path.startsWith(baseTool + TOOLPATH_SEPARATOR)) {
                 // filter sub tree
-                if (includeSubtools || path.indexOf(TOOLPATH_SEPARATOR, baseTool.length() + 1) < 0) {
+                if (includeSubtools || (path.indexOf(TOOLPATH_SEPARATOR, baseTool.length() + 1) < 0)) {
                     toolList.add(tool);
                 }
             }
@@ -438,7 +437,7 @@ public class CmsToolManager {
     public boolean hasToolPathForUrl(String url) {
 
         List toolPaths = (List)m_urls.getObject(url);
-        return (toolPaths != null && !toolPaths.isEmpty());
+        return ((toolPaths != null) && !toolPaths.isEmpty());
     }
 
     /**
@@ -473,24 +472,11 @@ public class CmsToolManager {
      */
     public void jspForwardPage(CmsWorkplace wp, String pagePath, Map params) throws IOException, ServletException {
 
-        Map newParams = new HashMap();
-        // add query parameters to the parameter map if required
+        Map newParams = createToolParams(wp, pagePath, params);
         if (pagePath.indexOf("?") > 0) {
-            String query = pagePath.substring(pagePath.indexOf("?"));
             pagePath = pagePath.substring(0, pagePath.indexOf("?"));
-            Map reqParameters = CmsRequestUtil.createParameterMap(query);
-            newParams.putAll(reqParameters);
-        }
-        if (params != null) {
-            newParams.putAll(params);
         }
 
-        // put close link if not set
-        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            Map argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
-                wp);
-            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
-        }
         wp.setForwarded(true);
         // forward to the requested page uri
         CmsRequestUtil.forwardRequest(
@@ -592,6 +578,7 @@ public class CmsToolManager {
     /**
      * Configures a whole tool root with all its tools.<p>
      * 
+     * @param cms the cms context
      * @param toolRoot the tool root to configure
      * 
      * @throws CmsException if something goes wrong
@@ -652,6 +639,37 @@ public class CmsToolManager {
             }
         }
         registerHandlerList(cms, toolRoot, 1, handlers);
+    }
+
+    /**
+     * Creates a parameter map from the given url and additional parameters.<p>
+     * 
+     * @param wp the workplace context
+     * @param url the url to create the parameter map for (extracting query params)
+     * @param params additional parameter map
+     * 
+     * @return the new parameter map
+     */
+    private Map createToolParams(CmsWorkplace wp, String url, Map params) {
+
+        Map newParams = new HashMap();
+        // add query parameters to the parameter map if required
+        if (url.indexOf("?") > 0) {
+            String query = url.substring(url.indexOf("?"));
+            Map reqParameters = CmsRequestUtil.createParameterMap(query);
+            newParams.putAll(reqParameters);
+        }
+        if (params != null) {
+            newParams.putAll(params);
+        }
+
+        // put close link if not set
+        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            Map argMap = resolveAdminTool(getCurrentRoot(wp).getKey(), getCurrentToolPath(wp)).getHandler().getParameters(
+                wp);
+            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
+        }
+        return newParams;
     }
 
     /**
@@ -733,8 +751,8 @@ public class CmsToolManager {
         while (it.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
             int myLen = CmsStringUtil.splitAsArray(handler.getPath(), TOOLPATH_SEPARATOR).length;
-            if ((len == myLen && !handler.getPath().equals(TOOLPATH_SEPARATOR))
-                || (len == 1 && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
+            if (((len == myLen) && !handler.getPath().equals(TOOLPATH_SEPARATOR))
+                || ((len == 1) && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
                 found = true;
                 registerAdminTool(cms, toolRoot, handler);
             }
@@ -773,7 +791,7 @@ public class CmsToolManager {
 
         // navegate until to reach an enabled path
         CmsTool aTool = resolveAdminTool(rootKey, path);
-        while (!aTool.getHandler().isEnabled(wp.getCms())) {
+        while (!aTool.getHandler().isEnabled(wp)) {
             if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;

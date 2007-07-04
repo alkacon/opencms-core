@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2006/10/25 09:55:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.7
  */
@@ -602,7 +602,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
                 long size = fi.getSize();
                 long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
                 // check file size
-                if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
+                if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                     // file size is larger than maximum allowed file size, throw an error
                     throw new Exception();
                 }

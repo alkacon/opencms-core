@@ -1,7 +1,7 @@
 <%@ page session="false" buffer="none" import="org.opencms.loader.*, org.opencms.util.*, org.opencms.frontend.templateone.modules.*" %><%--
 --%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
---%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%--
---%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%
 
 CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
@@ -44,7 +44,7 @@ if (cms.hasCategoryFolders()) {
 <c:choose>
 <c:when test="${(rescount != '0') && (rescount != '-1')}">
 
-<cms:contentload collector="${param.collector}" param="${pageContext.catfolder}link_${number}.html|linklist|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
+<cms:contentload collector="%(param.collector)" param="%(pageContext.catfolder)link_%(number).html|linklist|%(param.elementcount)" editable="true" pageSize="%(param.count)" pageIndex="%(param.pageIndex)" pageNavLength="10"><%--
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 
 --%><c:if test="${(contentInfo.resultIndex % contentInfo.pageSize) == 1}"><%--

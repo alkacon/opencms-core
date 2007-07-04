@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Javadoc Core" default="javadoc">
-    <property name="opencms.input" value="../../"/>
+<property name="opencms.input" value="../../"/>
     <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
     <property name="srcdir" value="${opencms.input}/src"/>
     <property name="imgdir" value="${opencms.input}/doc/javadoc/logos"  />
-    <property name="partname"   value="core" />
-	
-	<property file="${basedir}/opencms.properties" />
+    <property name="partname"   value="core-dev" />
  
     <!-- dont change this property! -->
     <property name="destdir" value="${opencms.output}/doc/${partname}"  />
@@ -25,7 +23,9 @@
     <target name="javadoc" depends="init,clean">
         <antcall target="copy.images" />
         <javadoc destdir="${destdir}" 
+          maxmemory="512m"
           nohelp="true"
+          classpath="${opencms.input}/bin"
           access="protected" 
           use="false" 
           notree="true" 
@@ -40,8 +40,8 @@
           nodeprecated="false" 
           stylesheetfile="${opencms.input}/doc/javadoc/javadoc.css" 
           overview="${srcdir}/org/opencms/main/overview.html"
-          doctitle="${product.name} Core API, version ${version.number}" 
-          Windowtitle="${product.name} Core API, version ${version.number}"
+          doctitle="OpenCms Core API, version 7 RC 1" 
+          Windowtitle="OpenCms Core API, version 7 RC 1"
           additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <package name="org.opencms.*"/>

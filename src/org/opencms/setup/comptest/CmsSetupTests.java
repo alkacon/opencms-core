@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,12 +150,11 @@ public class CmsSetupTests {
                 testResult = test.execute(setupBean);
                 m_testResults.add(testResult);
             } catch (Throwable e) {
-                if (testResult != null) {
-                    testResult.setRed();
-                    testResult.setResult(I_CmsSetupTest.RESULT_FAILED);
-                    testResult.setHelp("Unable to test " + test.getName());
-                    testResult.setInfo(e.toString());
-                }
+                testResult = new CmsSetupTestResult(test);
+                testResult.setRed();
+                testResult.setResult(I_CmsSetupTest.RESULT_FAILED);
+                testResult.setHelp("Unable to test " + test.getName());
+                testResult.setInfo(e.toString());
             }
         }
 

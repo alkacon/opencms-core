@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,17 @@
 
 package org.opencms.site;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Describes a configured site in OpenCms.<p>
@@ -42,11 +49,14 @@ import java.util.List;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List m_aliases;
@@ -168,6 +178,35 @@ public final class CmsSite implements Cloneable {
     public String getSecureUrl() {
 
         return m_secureServer.getUrl();
+    }
+
+    /**
+     * Returns the server prefix for the given resource in this site.<p>
+     * 
+     * Like, <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource name
+     * 
+     * @return the server prefix for the given resource in this site
+     */
+    public String getServerPrefix(CmsObject cms, String resourceName) {
+
+        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
+            return OpenCms.getSiteManager().getWorkplaceServer();
+        }
+        boolean secure = false;
+        if (hasSecureServer()) {
+            try {
+                secure = Boolean.valueOf(
+                    cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return (secure ? getSecureUrl() : getUrl());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/05/19 08:34:50 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,6 +125,9 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     /** The uri suffix for the gallery start page. */
     public static final String OPEN_URI_SUFFIX = "gallery_fs.jsp";
 
+    /** Request parameter name for the CSS path used in the preview area. */
+    public static final String PARAM_CSSPATH = "csspath";
+
     /** Request parameter name for the dialog mode (widget or editor). */
     public static final String PARAM_DIALOGMODE = "dialogmode";
 
@@ -168,6 +172,9 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
     /** The optional parameters for the gallery from the XML configuration. */
     private String m_galleryTypeParams;
+
+    /** The CSS path used in the preview area. */
+    private String m_paramCssPath;
 
     /** The dialog mode the gallery is running in. */
     private String m_paramDialogMode;
@@ -243,12 +250,14 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             HttpSession session = jsp.getRequest().getSession();
             // lookup the workplace settings 
             CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-            if (CmsStringUtil.isEmpty(galleryTypeName)) {
-                // look up the gallery type from the settings
-                galleryTypeName = settings.getGalleryType();
-            } else {
-                // store the last used gallery type name
-                settings.setGalleryType(galleryTypeName);
+            if (settings != null) {
+                if (CmsStringUtil.isEmpty(galleryTypeName)) {
+                    // look up the gallery type from the settings
+                    galleryTypeName = settings.getGalleryType();
+                } else {
+                    // store the last used gallery type name
+                    settings.setGalleryType(galleryTypeName);
+                }
             }
         }
         // get the gallery class name for the type
@@ -451,7 +460,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         if (pageno == null) {
             pageno = "1";
         }
-        if (items != null && items.size() > 0) {
+        if ((items != null) && (items.size() > 0)) {
             // calculate page items
             int start = 0;
             int end = getSettings().getUserSettings().getExplorerFileEntries();
@@ -466,17 +475,14 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             for (int i = start; i < end; i++) {
 
                 CmsResource res = (CmsResource)items.get(i);
-                int state = res.getState();
+                CmsResourceState state = res.getState();
                 String tdClass;
-                switch (state) {
-                    case CmsResource.STATE_CHANGED:
-                        tdClass = "fc";
-                        break;
-                    case CmsResource.STATE_NEW:
-                        tdClass = "fn";
-                        break;
-                    default:
-                        tdClass = "list";
+                if (state.isChanged()) {
+                    tdClass = "fc";
+                } else if (state.isNew()) {
+                    tdClass = "fn";
+                } else {
+                    tdClass = "list";
                 }
                 String resPath = getCms().getSitePath(res);
                 String resName = CmsResource.getName(resPath);
@@ -524,7 +530,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String buildGallerySelectBox() {
 
         List galleries = getGalleries();
-        if (galleries != null && galleries.size() == 1) {
+        if ((galleries != null) && (galleries.size() == 1)) {
             // exactly one gallery present
             CmsResource res = (CmsResource)galleries.get(0);
             StringBuffer result = new StringBuffer(128);
@@ -535,7 +541,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 title = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
             } catch (CmsException e) {
                 // error reading title property 
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
             result.append(title);
             result.append(" (");
@@ -547,7 +553,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             result.append(path);
             result.append("\">");
             return result.toString();
-        } else if (galleries.size() > 1) {
+        } else if ((galleries != null) && (galleries.size() > 1)) {
             // more than one gallery present
             int galleryCount = galleries.size();
             List options = new ArrayList(galleryCount);
@@ -566,7 +572,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 } catch (CmsException e) {
                     // error reading title property
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 options.add(title + " (" + path + ")");
@@ -684,7 +690,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         } catch (CmsException e) {
             // error checking permissions
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return button(null, null, "deletecontent_in.png", "", 0);
@@ -712,7 +718,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             }
         } catch (CmsException e) {
             // error checking permissions
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return button(null, null, "edit_in.png", "", 0);
     }
@@ -725,7 +731,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public boolean galleriesExists() {
 
         List galleries = getGalleries();
-        if (galleries != null && galleries.size() > 0) {
+        if ((galleries != null) && (galleries.size() > 0)) {
             // at least one gallery exists
             return true;
         }
@@ -775,7 +781,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public List getGalleries() {
 
-        List galleries = null;
+        List galleries = new ArrayList();
         int galleryTypeId = getGalleryTypeId();
         try {
             // get the galleries of the current site
@@ -784,7 +790,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             // error reading resources with filter
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         // if the current site is NOT the root site - add all other galleries from the system path
@@ -797,10 +803,10 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             } catch (CmsException e) {
                 // error reading resources with filter
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
-            if (systemGalleries != null && systemGalleries.size() > 0) {
+            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
                 // add the found system galleries to the result
                 galleries.addAll(systemGalleries);
             }
@@ -835,7 +841,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
                     // error reading reaources
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 } catch (NullPointerException e) {
                     // ignore this exception    
                 }
@@ -929,6 +935,16 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     }
 
     /**
+     * Returns the CSS path used in the preview area.<p>
+     * 
+     * @return the CSS path used in the preview area
+     */
+    public String getParamCssPath() {
+
+        return m_paramCssPath;
+    }
+
+    /**
      * Returns the current mode of the dialog.<p>
      * 
      * This is necessary to distinguish between widget mode, view mode and editor mode.<p>
@@ -1016,7 +1032,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getPreviewBodyStyle() {
 
-        return new String(" class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"");
+        return " class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"";
     }
 
     /**
@@ -1026,7 +1042,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getPreviewDivStyle() {
 
-        return new String("style=\"text-align: center; width: 100%; margin-top: 5px\"");
+        return "style=\"text-align: center; width: 100%; margin-top: 5px\"";
     }
 
     /**
@@ -1092,7 +1108,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     /**
      * Generates a HTML table row with two columns.<p>
      * 
-     * The first column includes the given key as localized string, the second column
+     * The first column includes the given string, the second column
      * includes the value of the given property.<p>
      *  
      * @param column1 the string value for the first column
@@ -1102,14 +1118,14 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String previewRow(String column1, String column2) {
 
         StringBuffer previewRow = new StringBuffer();
-        previewRow.append("<tr align=\"left\">");
-        previewRow.append("<td><b>");
+        previewRow.append("<tr align=\"left\">\n");
+        previewRow.append("<td>\n<b>");
         previewRow.append(column1);
-        previewRow.append("</b></td>");
-        previewRow.append("<td>");
+        previewRow.append("</b>\n</td>\n");
+        previewRow.append("<td>\n");
         previewRow.append(column2);
-        previewRow.append("</td>");
-        previewRow.append("</tr>");
+        previewRow.append("</td>\n");
+        previewRow.append("</tr>\n");
 
         return previewRow.toString();
 
@@ -1124,15 +1140,17 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String publishButton() {
 
-        if (getCms().hasPublishPermissions(getParamResourcePath())) {
+        try {
+            OpenCms.getPublishManager().getPublishList(getCms(), getCms().readResource(getParamResourcePath()), false);
             return button(
                 "javascript:publishResource(\'" + getParamResourcePath() + "\');",
                 null,
                 "publish.png",
                 Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0,
                 0);
+        } catch (Exception e) {
+            return button(null, null, "publish_in.png", "", 0);
         }
-        return button(null, null, "publish_in.png", "", 0);
     }
 
     /**
@@ -1153,6 +1171,16 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public void setCurrentResource(CmsResource currentResource) {
 
         m_currentResource = currentResource;
+    }
+
+    /**
+     * Sets the CSS path used in the preview area.<p>
+     * 
+     * @param paramCssPath the CSS path used in the preview area
+     */
+    public void setParamCssPath(String paramCssPath) {
+
+        m_paramCssPath = paramCssPath;
     }
 
     /**
@@ -1370,7 +1398,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 value = property.getValue("[" + resName + "]");
             } catch (CmsException e) {
                 // error reading property object
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return value;
@@ -1397,7 +1425,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     CmsPropertyDefinition.PROPERTY_TITLE,
                     getCms().getSitePath(res),
                     resname).toLowerCase();
-                if (restitle.indexOf(searchword) != -1 || resname.indexOf(searchword) != -1) {
+                if ((restitle.indexOf(searchword) != -1) || (resname.indexOf(searchword) != -1)) {
                     // add this resource to the hitlist
                     hitlist.add(res);
                 }
@@ -1495,10 +1523,11 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         options.clear();
 
         // bring the values in the new order according to the sorted options
-        Iterator it = valuesByOption.keySet().iterator();
+        Iterator it = valuesByOption.entrySet().iterator();
         while (it.hasNext()) {
-            String option = (String)it.next();
-            String value = (String)valuesByOption.get(option);
+            Map.Entry entry = (Map.Entry)it.next();
+            String option = (String)entry.getKey();
+            String value = (String)entry.getValue();
 
             if (value.equals(getParamGalleryPath())) {
                 selectedIndex = options.size();
@@ -1549,7 +1578,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 currentProperty.setResourceValue(currentPropertyValue);
             }
             CmsLock lock = getCms().getLock(res);
-            if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
+            if (lock.isUnlocked()) {
                 // lock resource before operation
                 getCms().lockResource(resPath);
             }
@@ -1559,7 +1588,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             getCms().unlockResource(resPath);
         } catch (CmsException e) {
             // writing the property failed, log error
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 }

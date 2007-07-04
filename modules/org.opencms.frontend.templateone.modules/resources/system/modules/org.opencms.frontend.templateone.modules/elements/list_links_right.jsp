@@ -1,7 +1,7 @@
 <%@ page session="false" import="org.opencms.frontend.templateone.modules.*" %><%--
 --%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
---%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
---%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %><%
 
 CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
@@ -12,7 +12,7 @@ pageContext.setAttribute("locale", locale);
 String folder = request.getParameter("folder");
 String folderTitle = cms.property("Title", folder, "");
 
-%><cms:contentload collector="${param.collector}" param="${param.folder}link_${number}.html|linklist|${param.count}" preload="true"><%--
+%><cms:contentload collector="%(param.collector)" param="%(param.folder)link_%(number).html|linklist|%(param.count)" preload="true"><%--
 
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 --%><c:if test="${! contentInfo.emptyResult}"><%--

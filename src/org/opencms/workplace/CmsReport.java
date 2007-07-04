@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2006/03/27 14:52:43 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/04 16:57:11 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +108,108 @@ public class CmsReport extends CmsMultiDialog {
     public CmsReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Returns the style sheets for the report.<p>
+     * 
+     * @return the style sheets for the report
+     */
+    public static String generateCssStyle() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<style type='text/css'>\n");
+        result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color:#ffffff; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
+        result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; white-space: nowrap; }\n");
+        result.append("span.head  { color: #000099; font-weight: bold; }\n");
+        result.append("span.note  { color: #666666; }\n");
+        result.append("span.ok    { color: #009900; }\n");
+        result.append("span.warn  { color: #990000; padding-left: 40px; }\n");
+        result.append("span.err   { color: #990000; font-weight: bold; padding-left: 40px; }\n");
+        result.append("span.throw { color: #990000; font-weight: bold; }\n");
+        result.append("span.link1 { color: #666666; }\n");
+        result.append("span.link2 { color: #666666; padding-left: 40px; }\n");
+        result.append("span.link2 { color: #990000; }\n");
+        result.append("</style>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the footer for the extended report view.<p>
+     * 
+     * @return html code
+     */
+    public static String generatePageEndExtended() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("</div>\n");
+        result.append("</body>\n");
+        result.append("</html>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the footer for the simple report view.<p>
+     * 
+     * @return html code
+     */
+    public static String generatePageEndSimple() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("</td></tr>\n");
+        result.append("</table></div>\n");
+        result.append("</body>\n</html>");
+        return result.toString();
+    }
+
+    /**
+     * Generates the header for the extended report view.<p>
+     * 
+     * @param encoding the encoding string
+     * 
+     * @return html code
+     */
+    public static String generatePageStartExtended(String encoding) {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<html>\n<head>\n");
+        result.append("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=");
+        result.append(encoding);
+        result.append("'>\n");
+        result.append(generateCssStyle());
+        result.append("</head>\n");
+        result.append("<body style='overflow: auto;'>\n");
+        result.append("<div class='main'>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the header for the simple report view.<p>
+     * 
+     * @param wp the workplace instance
+     * 
+     * @return html code
+     */
+    public static String generatePageStartSimple(CmsWorkplace wp) {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<html>\n<head>\n");
+        result.append("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=");
+        result.append(wp.getEncoding());
+        result.append("'>\n");
+        result.append("<link rel='stylesheet' type='text/css' href='");
+        result.append(wp.getStyleUri("workplace.css"));
+        result.append("'>\n");
+        result.append(generateCssStyle());
+        result.append("</head>\n");
+        result.append("<body style='background-color:Menu;'>\n");
+        result.append("<div style='vertical-align:middle; height: 100%;'>\n");
+        result.append("<table border='0' style='vertical-align:middle; height: 100%;'>\n");
+        result.append("<tr><td width='40' align='center' valign='middle'><img name='report_img' src='");
+        result.append(CmsWorkplace.getSkinUri());
+        result.append("commons/wait.gif' width='32' height='32' alt=''></td>\n");
+        result.append("<td valign='middle'>");
+        return result.toString();
     }
 
     /**
@@ -373,6 +477,26 @@ public class CmsReport extends CmsMultiDialog {
     }
 
     /**
+     * Returns an optional conclusion text to be displayed below the report output.<p>
+     * 
+     * @return an optional conclusion text
+     */
+    public String reportConclusionText() {
+
+        return "";
+    }
+
+    /**
+     * Returns an optional introduction text to be displayed above the report output.<p>
+     * 
+     * @return an optional introduction text
+     */
+    public String reportIntroductionText() {
+
+        return "";
+    }
+
+    /**
      * Sets  if the workplace must be refreshed.<p>
      * 
      * @param value <code>"true"</code> (String) if the workplace must be refreshed.
@@ -454,10 +578,8 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
-    protected boolean performDialogOperation() {
+    protected boolean performDialogOperation() throws CmsException {
 
-        // do nothing, has to be implemented
-        return true;
+        throw new CmsException(new CmsMessageContainer(null, ""));
     }
-
 }

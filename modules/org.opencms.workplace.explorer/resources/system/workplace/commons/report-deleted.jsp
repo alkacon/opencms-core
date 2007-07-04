@@ -1,0 +1,1 @@
+<%= new org.opencms.workplace.commons.CmsDeletedResources(pageContext, request, response).buildReport() %>

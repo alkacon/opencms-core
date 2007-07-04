@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResourceHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,34 +31,45 @@
 
 package org.opencms.file;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsResourceInitException;
-import org.opencms.main.I_CmsResourceInit;
-import org.opencms.main.OpenCms;
+import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.file.history.I_CmsHistoryResource;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Resource init handler that loads backup versions of resources.<p>
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- * @since 6.0.1 
+ * @since 6.0.1
+ * 
+ * @deprecated use {@link CmsHistoryResourceHandler} instead
  */
-public class CmsBackupResourceHandler implements I_CmsResourceInit {
+public class CmsBackupResourceHandler extends CmsHistoryResourceHandler {
 
-    /** Constant for the backup request attribute name. */
-    public static final String ATTRIBUTE_NAME = "org.opencms.file.CmsBackupResourceHandler";
+    /**
+     * The historical version handler path.<p> 
+     * 
+     * @deprecated Use {@link #HISTORY_HANDLER} instead
+     */
+    public static final String BACKUP_HANDLER = HISTORY_HANDLER;
 
-    /** The backup handler path. */
-    public static final String BACKUP_HANDLER = "/system/shared/showversion";
+    /**
+     * Returns the historical version of a resource, 
+     * if the given request is displaying a history version.<p> 
+     * 
+     * @param req the request to check
+     * 
+     * @return the backup resource if the given request is displaying a history backup version
+     * 
+     * @deprecated use {@link CmsHistoryResourceHandler#getHistoryResource(ServletRequest)} instead
+     */
+    public static I_CmsHistoryResource getBackupResouce(ServletRequest req) {
 
-    /** Request parameter name for the version id. */
-    public static final String PARAM_VERSIONID = "versionid";
+        return getHistoryResource(req);
+    }
 
     /**
      * Returns <code>true</code> if the given request is displaying a history backup version.<p> 
@@ -66,65 +77,11 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
      * @param req the request to check
      * 
      * @return <code>true</code> if the given request is displaying a history backup version
+     * 
+     * @deprecated Use {@link #isHistoryRequest(ServletRequest)} instead
      */
     public static boolean isBackupRequest(ServletRequest req) {
 
-        return null != req.getAttribute(ATTRIBUTE_NAME);
-    }
-
-    /**
-     * @throws CmsResourceInitException 
-     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
-
-        // we only have to check for backup resources if the handler was called
-        // during a real request and NOT during a dummy-request while doing
-        // a static export
-        if (req != null) {
-            String versionId = req.getParameter(PARAM_VERSIONID);
-
-            // only do something if the resource was not found and there was a "versionid" parameter included
-            if (resource == null && versionId != null) {
-
-                String uri = cms.getRequestContext().getUri();
-                // check if the resource starts with the BACKUP_HANDLER
-                if (uri.startsWith(BACKUP_HANDLER)) {
-                    // test if the current user is allowed to read backup versions of resources
-                    // this can be done by trying to read the backup handler resource
-                    if (cms.existsResource(BACKUP_HANDLER)) {
-                        try {
-                            // extract the "real" resourcename
-                            uri = uri.substring(BACKUP_HANDLER.length(), uri.length());
-                            int id = new Integer(versionId).intValue();
-                            // we now must switch to the root site to read the backup resource
-                            cms.getRequestContext().saveSiteRoot();
-                            cms.getRequestContext().setSiteRoot("/");
-                            resource = cms.readBackupFile(uri, id);
-                            // store a request attribute to indicate that this is in fact a backup version
-                            req.setAttribute(ATTRIBUTE_NAME, Boolean.TRUE);
-                        } catch (CmsException e) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error(
-                                    Messages.get().container(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
-                            }
-                            throw new CmsResourceInitException(Messages.get().container(
-                                Messages.ERR_SHOWVERSION_2,
-                                uri,
-                                versionId), e);
-                        } finally {
-                            // restore the siteroot and modify the uri to the one of the correct resource
-                            cms.getRequestContext().restoreSiteRoot();
-                            if (resource != null) {
-                                // resource may be null in case of a
-                                cms.getRequestContext().setUri(cms.getSitePath(resource));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return resource;
+        return isHistoryRequest(req);
     }
 }

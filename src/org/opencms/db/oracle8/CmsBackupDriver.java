@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle8/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/24 16:27:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/07/04 16:57:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,11 @@ package org.opencms.db.oracle8;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $
- * @since 6.0.0 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0.0
+ * 
+ * @deprecated use {@link CmsHistoryDriver} instead
  */
 public class CmsBackupDriver extends org.opencms.db.oracle.CmsBackupDriver {
 

@@ -23,7 +23,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.tools.content.workplace"/>
+			<resourcebundle name="org.opencms.workplace.tools.content.messages"/>
 		</xsd:appinfo>
 	</xsd:annotation>  
 	

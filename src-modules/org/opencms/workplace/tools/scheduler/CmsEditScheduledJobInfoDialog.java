@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/04 16:57:13 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,16 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
+import org.opencms.relations.CmsExternalLinksValidator;
+import org.opencms.relations.CmsInternalRelationsValidationJob;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsCreateImageSizeJob;
+import org.opencms.scheduler.jobs.CmsHistoryClearJob;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.scheduler.jobs.CmsStaticExportJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.validation.CmsPointerLinkValidator;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -70,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +218,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsUserWidget(
             null,
-            null,
             null)));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(
@@ -275,6 +276,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         List result = new ArrayList();
         result.add(new CmsSelectWidgetOption(
+            CmsInternalRelationsValidationJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_INTERNALVALIDATION_0)));
+        result.add(new CmsSelectWidgetOption(
             CmsPublishJob.class.getName(),
             false,
             null,
@@ -285,7 +291,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_STATICEXPORT_0)));
         result.add(new CmsSelectWidgetOption(
-            CmsPointerLinkValidator.class.getName(),
+            CmsExternalLinksValidator.class.getName(),
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0)));
@@ -314,6 +320,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsHistoryClearJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_CLEARHISTORY_0)));
         return result;
     }
 

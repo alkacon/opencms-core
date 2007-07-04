@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2006/07/20 12:38:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * A data container for image size and scale operations.<p>
      */
-    protected class CmsImageAdjuster {
+    protected static class CmsImageAdjuster {
 
         /** The image byte content. */
         private byte[] m_content;

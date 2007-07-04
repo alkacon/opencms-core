@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2006/10/04 15:09:43 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0
  */
@@ -128,10 +128,10 @@ public final class CmsDbPool {
 
     /** Key for test on borrow flag. */
     public static final String KEY_TEST_ON_BORROW = "testOnBorrow";
-
+    
     /** Key for test query. */
     public static final String KEY_TEST_QUERY = "testQuery";
-
+    
     /** Key for test while idle flag. */
     public static final String KEY_TEST_WHILE_IDLE = "testWhileIdle";
     
@@ -188,7 +188,7 @@ public final class CmsDbPool {
         int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_IDLE, 5);
-       	int minEvictableIdleTime = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME, 1800000);
+        int minEvictableIdleTime = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME, 1800000);
         int minIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_IDLE, 0);
         int numTestsPerEvictionRun = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
         int timeBetweenEvictionRuns = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
@@ -325,44 +325,24 @@ public final class CmsDbPool {
      */
     public static String getDbPoolName(Map configuration, String key) {
 
-        // TODO: name should be refactored to getDbPoolUrl 
-        // changed KEY_JDBC_URL to KEY_POOL_URL 
         return configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL).toString();
-
-        /* 
-         String jdbcUrl = configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL).toString();
-         if (jdbcUrl.startsWith(OPENCMS_URL_PREFIX)) {
-         return jdbcUrl.substring(jdbcUrl.indexOf(':'));
-         } else {
-         return jdbcUrl;
-         }
-         */
     }
 
     /**
      * Returns a list of available database pool names.<p>
      * 
-     * @param configuration the configuration
+     * @param configuration the configuration to read the pool names from
+     * 
      * @return a list of database pool names
      */
-    public static List getDbPoolNames(Map configuration) {
-
-        // TODO: name should be refactored to getDbPoolUrls
-        ExtendedProperties config;
-        if (configuration instanceof ExtendedProperties) {
-            config = (ExtendedProperties)configuration;
-        } else {
-            config = new ExtendedProperties();
-            config.putAll(configuration);
-        }
+    public static List getDbPoolUrls(ExtendedProperties configuration) {
 
         List dbPoolNames = new ArrayList();
-        String[] driverPoolNames = config.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
+        String[] driverPoolNames = configuration.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
 
         for (int i = 0; i < driverPoolNames.length; i++) {
             dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));
         }
-
         return dbPoolNames;
     }
 

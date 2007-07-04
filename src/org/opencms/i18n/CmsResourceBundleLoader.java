@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -108,7 +108,7 @@ public final class CmsResourceBundleLoader {
                 return false;
             }
             BundleKey key = (BundleKey)o;
-            return m_hashcode == key.m_hashcode && m_baseName.equals(key.m_baseName) && m_locale.equals(key.m_locale);
+            return (m_hashcode == key.m_hashcode) && m_baseName.equals(key.m_baseName) && m_locale.equals(key.m_locale);
         }
 
         /**
@@ -235,7 +235,7 @@ public final class CmsResourceBundleLoader {
             CmsResourceBundle bundle = tryBundle(baseName, locale, wantBase);
 
             // Try the default locale if neccessary.
-            if (bundle == null && !locale.equals(defaultLocale)) {
+            if ((bundle == null) && !locale.equals(defaultLocale)) {
                 bundle = tryBundle(baseName, defaultLocale, true);
             }
 
@@ -363,7 +363,7 @@ public final class CmsResourceBundleLoader {
             int idx = bundleName.lastIndexOf('_');
             // Try the non-localized base name only if we already have a
             // localized child bundle, or wantBase is true.
-            if (idx > baseLen || (idx == baseLen && (first != null || wantBase))) {
+            if ((idx > baseLen) || ((idx == baseLen) && ((first != null) || wantBase))) {
                 bundleName = bundleName.substring(0, idx);
             } else {
                 break;

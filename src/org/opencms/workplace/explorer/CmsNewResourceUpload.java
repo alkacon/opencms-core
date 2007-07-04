@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2007/03/29 15:47:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,20 +33,27 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsChtype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,6 +67,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
@@ -72,7 +80,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +88,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
+
+    /** The value for the resource upload applet action. */
+    public static final int ACTION_APPLET_CHECK_OVERWRITE = 141;
 
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM2 = 120;
@@ -90,11 +101,30 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The value for the resource name form submission action. */
     public static final int ACTION_SUBMITFORM2 = 130;
 
+    /** Constant for pre selection of the file filter for web documents / snippets in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.ImageFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_IMAGES = "imagefilter";
+
+    /** Constant for pre selection of the file filter for office documents in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.OfficeFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_OFFICE = "officefilter";
+
+    /** Constant for pre selection of the file filter for web documents / snippets in the upload applet. */
+    // Warning: keep in sync with org.opencms.applet.upload.WebFilter.FILTER_ID.
+    public static final String APPLET_FILEFILTER_WEB = "webfilter";
+
+    /** The value for the resource upload applet action. */
+    // Warning: This constant has to be kept in sync with the same named constant in org.opencms.applet.FileUploadApplet!    
+    public static final String DIALOG_CHECK_OVERWRITE = "checkoverwrite";
+
     /** The name for the resource form submission action. */
     public static final String DIALOG_SHOWERROR = "showerror";
 
     /** The name for the resource form submission action. */
     public static final String DIALOG_SUBMITFORM2 = "submitform2";
+
+    /** Request parameter name for the upload folder name. */
+    public static final String PARAM_CLIENTFOLDER = "clientfolder";
 
     /** Request parameter name for the new resource file name. */
     public static final String PARAM_NEWRESOURCENAME = "newresourcename";
@@ -117,6 +147,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
+
+    private String m_paramClientFolder;
     private String m_paramNewResourceName;
     private String m_paramRedirectUrl;
     private String m_paramTargetFrame;
@@ -148,6 +182,102 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
+     * Builds the html for the list of possible types for the uploaded file.<p>
+     * 
+     * This method can be used by all workplace dialog classes to build 
+     * radio input buttons to select a resource type.<p>
+     * 
+     * @param dialog the dialog class instance which creates the type list
+     * @param useTypeId if true, the resource type ID will be used for value attributes, otherwise the resource type names 
+     * @return the list of possible files for the uploaded resource
+     */
+    public static String buildTypeList(CmsDialog dialog, boolean useTypeId) {
+
+        StringBuffer result = new StringBuffer(512);
+        try {
+            // get current Cms object
+            CmsObject cms = dialog.getCms();
+            // determine resource type id of resource to change
+            CmsResource res = cms.readResource(dialog.getParamResource(), CmsResourceFilter.ALL);
+            int currentResTypeId = res.getTypeId();
+            // get all available explorer type settings
+            List resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
+            boolean isFolder = res.isFolder();
+            // loop through all visible resource types
+            for (int i = 0; i < resTypes.size(); i++) {
+                boolean changeable = false;
+                // get explorer type settings for current resource type
+                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)resTypes.get(i);
+
+                // only if settings is a real resourcetype
+                boolean isResourceType;
+                try {
+                    OpenCms.getResourceManager().getResourceType(settings.getName());
+                    isResourceType = true;
+                } catch (CmsLoaderException e) {
+                    isResourceType = false;
+                }
+
+                if (isResourceType) {
+                    int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
+                    // determine if this resTypeId is changeable by currentResTypeId
+
+                    // changeable is true if current resource is a folder and this resource type also
+                    if (isFolder && OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
+                        changeable = true;
+                    } else if (!isFolder && !OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
+                        // changeable is true if current resource is NOT a folder and this resource type also NOT                    
+                        changeable = true;
+                    }
+
+                    if (changeable) {
+                        // determine if this resource type is editable for the current user
+                        CmsPermissionSet permissions = settings.getAccess().getPermissions(cms, res);
+                        if (!permissions.requiresWritePermission() || !permissions.requiresControlPermission()) {
+                            // skip resource types without required write or create permissions
+                            continue;
+                        }
+
+                        // create table row with input radio button
+                        result.append("<tr><td>");
+                        result.append("<input type=\"radio\" name=\"");
+                        result.append(PARAM_NEWRESOURCETYPE);
+                        result.append("\" value=\"");
+                        if (useTypeId) {
+                            // use resource type id as value
+                            result.append(resTypeId);
+                        } else {
+                            // use resource type name as value
+                            result.append(settings.getName());
+                        }
+                        result.append("\"");
+                        if (resTypeId == currentResTypeId) {
+                            result.append(" checked=\"checked\"");
+                        }
+                        result.append("></td>");
+                        result.append("\t<td><img src=\"");
+                        result.append(getSkinUri());
+                        result.append("filetypes/");
+                        result.append(settings.getIcon());
+                        result.append("\" border=\"0\" title=\"");
+                        result.append(dialog.key(settings.getKey()));
+                        result.append("\"></td>\n");
+                        result.append("<td>");
+                        result.append(dialog.key(settings.getKey()));
+                        result.append("</td></tr>\n");
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            // error reading the VFS resource, log error
+            LOG.error(org.opencms.workplace.commons.Messages.get().getBundle().key(
+                org.opencms.workplace.commons.Messages.ERR_BUILDING_RESTYPE_LIST_1,
+                dialog.getParamResource()));
+        }
+        return result.toString();
+    }
+
+    /**
      * Used to close the current JSP dialog.<p>
      * 
      * This method overwrites the close dialog method in the super class,
@@ -165,11 +295,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
         if (getAction() == ACTION_CANCEL) {
             try {
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-                if (res.getState() == CmsResource.STATE_NEW) {
+                if (res.getState().isNew()) {
                     // only delete new resource
                     getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
                 }
-                if (res.getState() == CmsResource.STATE_CHANGED) {
+                if (res.getState().isChanged()) {
                     // resource is changed, restore content of resource from online project
                     CmsProject currentProject = getCms().getRequestContext().currentProject();
                     byte[] onlineContents = null;
@@ -179,7 +309,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                             getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
                         CmsFile onlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
                         onlineContents = onlineFile.getContents();
-                        
+
                     } finally {
                         // switch back to current project
                         getCms().getRequestContext().setCurrentProject(currentProject);
@@ -210,9 +340,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             I_CmsResourceType oldType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+            int newType = oldType.getTypeId();
             if (!oldType.getTypeName().equals(getParamNewResourceType())) {
-                // change the type of the uploaded resource
-                int newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
+
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewResourceType())) {
+                    // automatic resource type selection
+                    newType = OpenCms.getResourceManager().getDefaultTypeForName(res.getName()).getTypeId();
+                } else {
+                    // change the type of the uploaded resource
+                    newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
+                }
                 getCms().chtype(getParamResource(), newType);
             }
             if ((getParamNewResourceName() != null) && !getParamResource().endsWith(getParamNewResourceName())) {
@@ -238,6 +375,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // determine the type of upload
         boolean unzipFile = Boolean.valueOf(getParamUnzipFile()).booleanValue();
         // Suffix for error messages (e.g. when exceeding the maximum file upload size)
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamClientFolder())) {
+            CmsUserSettings userSettings = new CmsUserSettings(getCms());
+            userSettings.setUploadAppletClientFolder(getParamClientFolder());
+            try {
+                userSettings.save(getCms());
+            } catch (CmsException e) {
+                // it's not fatal if the client folder for the applet file chooser is not possible 
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle(getLocale()).key(
+                        Messages.ERR_UPLOAD_STORE_CLIENT_FOLDER_1,
+                        new Object[] {getCms().getRequestContext().currentUser().getName()}), e);
+                }
+            }
+        }
 
         try {
             // get the file item from the multipart request
@@ -265,8 +416,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
                         new Long(maxFileSizeBytes / 1024)));
                 }
-                
-                // TODO: This will not work for large files (out of memory): Use a loop and stream based access.
                 byte[] content = fi.get();
                 fi.delete();
 
@@ -307,7 +456,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-                    if (! getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    if (!getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                         try {
                             // create the resource
                             getCms().createResource(getParamResource(), resTypeId, content, properties);
@@ -349,7 +498,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      */
     public String buildTypeList() {
 
-        return CmsChtype.buildTypeList(this, false);
+        return buildTypeList(this, false);
     }
 
     /**
@@ -437,7 +586,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"targetframe\" value=\"");
         applet.append(getParamTargetFrame());
         applet.append("\">\n");
-        applet.append("<param name=error value=\"");
+        applet.append("<param name=\"error\" value=\"");
         applet.append(scheme);
         applet.append("://");
         applet.append(host);
@@ -451,6 +600,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"filelist\" value=\"");
         applet.append(currentFolder);
         applet.append("\">\n");
+        applet.append("<param name=\"filefilterselection\" value=\"");
+        applet.append(getAppletFileFilterPreselectionConstant());
+        applet.append("\">\n");
         applet.append("<param name=\"colors\" value=\"");
         applet.append(colors);
         applet.append("\">\n");
@@ -461,7 +613,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(maxFileSize);
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputSelect\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0)); 
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0));
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputCount\"value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_COUNT_0));
@@ -471,6 +623,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("\">\n");
         applet.append("<param name=\"actionOutputUpload\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_UPLOAD_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOverwriteCheck\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0));
         applet.append("\">\n");
         applet.append("<param name=\"messageOutputUpload\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0));
@@ -493,10 +648,44 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append("<param name=\"errorLine1\" value=\"");
         applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_LINE1_0));
         applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorTitle\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogTitle\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogIntro\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogOk\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogCancel\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogLocale\" value=\"");
+        applet.append(getLocale().toString());
+        applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorMessage\" value=\"");
+        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"clientFolder\" value=\"");
+        applet.append(new CmsUserSettings(getCms()).getUploadAppletClientFolder());
+        applet.append(" \">\n");
         applet.append("</applet>\n");
 
         return applet.toString();
 
+    }
+
+    /**
+     * Returns the paramClientFolder.<p>
+     *
+     * @return the paramClientFolder
+     */
+    public String getParamClientFolder() {
+
+        return m_paramClientFolder;
     }
 
     /**
@@ -571,6 +760,52 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public String getParamUploadFolder() {
 
         return m_paramUploadFolder;
+    }
+
+    /** 
+     * Replies on the request of the upload applet for checking potential overwrites of VFS resources 
+     * with the line based resources that do exist on the host. <p> 
+     * 
+     * @param request the request sent by the applet 
+     * 
+     * @return the line based resources that do exist on the host
+     */
+    public String handleUploadOverwriteCheckRequest(HttpServletRequest request) {
+
+        StringBuffer result = new StringBuffer();
+        String uploadFiles = CmsEncoder.decode(request.getHeader("uploadFiles"));
+        String currentFolder = CmsEncoder.decode(request.getHeader("uploadFolder"));
+        if (currentFolder.endsWith("/")) {
+            currentFolder = currentFolder.substring(0, currentFolder.length() - 1);
+        }
+        List vfsfiles = CmsStringUtil.splitAsList(uploadFiles, '\n');
+        Iterator it = vfsfiles.iterator();
+        // apply directory translation only for server comparison
+        String vfsfile;
+        // return the clean file as know by the client
+        String clientfile;
+
+        while (it.hasNext()) {
+            clientfile = (String)it.next();
+            vfsfile = new StringBuffer(currentFolder).append(clientfile).toString();
+            vfsfile = OpenCms.getResourceManager().getFileTranslator().translateResource(vfsfile);
+            if (getCms().existsResource(vfsfile)) {
+                result.append(CmsEncoder.encode(clientfile, CmsEncoder.ENCODING_UTF_8));
+                result.append('\n');
+            }
+        }
+        return result.toString();
+
+    }
+
+    /**
+     * Sets the client upload folder name.<p>
+     * 
+     * @param clientFolder the client upload folder name
+     */
+    public void setParamClientFolder(String clientFolder) {
+
+        m_paramClientFolder = clientFolder;
     }
 
     /**
@@ -689,6 +924,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
             setAction(ACTION_SUBMITFORM2);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
+        } else if (DIALOG_CHECK_OVERWRITE.equals(getParamAction())) {
+            setAction(ACTION_APPLET_CHECK_OVERWRITE);
         } else {
             if (getSettings().getUserSettings().useUploadApplet()) {
                 setAction(ACTION_APPLET);
@@ -700,4 +937,30 @@ public class CmsNewResourceUpload extends CmsNewResource {
         }
     }
 
+    /**
+     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current 
+     * folder to upload to. <p>
+     * 
+     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>, 
+     *      <code>{@link #APPLET_FILEFILTER_WEB}</code>
+     */
+    private String getAppletFileFilterPreselectionConstant() {
+
+        String result = "";
+        try {
+            CmsResource res = getCms().readResource(getParamCurrentFolder(), CmsResourceFilter.IGNORE_EXPIRATION);
+            result = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+            if ("imagegallery".equals(result)) {
+                result = APPLET_FILEFILTER_IMAGES;
+            } else if ("htmlgallery".equals(result)) {
+                result = APPLET_FILEFILTER_WEB;
+            } else if ("downloadgallery".equals(result)) {
+                result = APPLET_FILEFILTER_OFFICE;
+            }
+        } catch (CmsException e) {
+            System.err.println(e);
+            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
+        }
+        return result;
+    }
 }

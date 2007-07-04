@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/04 16:57:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.list;
 
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,7 +64,7 @@ public class CmsListItem {
      */
     public CmsListItem(CmsListMetadata metadata, String id) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+        if (id == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "id"));
         }
         if (metadata == null) {
@@ -88,8 +87,8 @@ public class CmsListItem {
      */
     public Object get(String columnId) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(columnId) == null
-            && getMetadata().getItemDetailDefinition(columnId) == null) {
+        if ((getMetadata().getColumnDefinition(columnId) == null)
+            && (getMetadata().getItemDetailDefinition(columnId) == null)) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
@@ -119,6 +118,16 @@ public class CmsListItem {
     }
 
     /**
+     * Returns the value map of the list item.<p>
+     * 
+     * @return the value map of the list item
+     */
+    public Map getValues() {
+
+        return m_values;
+    }
+
+    /**
      * Sets the object to display at the given column.<p>
      * 
      * @param columnId the column id
@@ -130,8 +139,8 @@ public class CmsListItem {
      */
     public Object set(String columnId, Object value) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(columnId) == null
-            && getMetadata().getItemDetailDefinition(columnId) == null) {
+        if ((getMetadata().getColumnDefinition(columnId) == null)
+            && (getMetadata().getItemDetailDefinition(columnId) == null)) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }

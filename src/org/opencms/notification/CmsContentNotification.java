@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2007/01/02 10:04:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:57:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
@@ -132,7 +133,6 @@ public class CmsContentNotification extends A_CmsNotification {
 
         return m_responsible;
     }
-
 
     /**
      * Creates the mail to be sent to the responsible user.<p>
@@ -234,7 +234,7 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
             params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-            int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+            CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
             html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             html.append("\">");
@@ -263,7 +263,7 @@ public class CmsContentNotification extends A_CmsNotification {
                 String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
                 resourcePath = resourcePath.substring(siteRoot.length());
                 Map params = new HashMap();
-                int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+                CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
                 params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
                 params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
                 params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
@@ -303,7 +303,7 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
             params.put(CmsFrameset.PARAM_WP_START, wpStartUri.toString());
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
-            int projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getId();
+            CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
             html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
             html.append("\">");
@@ -347,6 +347,9 @@ public class CmsContentNotification extends A_CmsNotification {
     /**
      * Returns a string representation of this resource info.<p>
      * 
+     * @param notificationCause the notification cause 
+     * @param row the row number
+     * 
      * @return a string representation of this resource info
      */
     private String buildNotificationListItem(CmsExtendedNotificationCause notificationCause, int row) {
@@ -358,8 +361,8 @@ public class CmsContentNotification extends A_CmsNotification {
         String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
         resourcePath = resourcePath.substring(siteRoot.length());
         // append link, if page is available
-        if (notificationCause.getResource().getDateReleased() < System.currentTimeMillis()
-            && notificationCause.getResource().getDateExpired() > System.currentTimeMillis()) {
+        if ((notificationCause.getResource().getDateReleased() < System.currentTimeMillis())
+            && (notificationCause.getResource().getDateExpired() > System.currentTimeMillis())) {
 
             Map params = new HashMap();
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);

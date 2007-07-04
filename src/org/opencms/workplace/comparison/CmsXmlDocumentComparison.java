@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2006/03/30 09:30:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
     /**
      * Visitor that collects the xpath expressions of xml contents.<p>
      */
-    class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
+    static class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
 
         /** The paths to the elements in the xml content. */
         private List m_elementPaths;
@@ -79,7 +80,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             // only add simple types
             if (value.isSimpleType()) {
                 m_elementPaths.add(new CmsXmlContentElementComparison(
-                    value.getLocale().toString(),
+                    value.getLocale(),
                     value.getPath(),
                     value.getTypeName()));
             }
@@ -117,8 +118,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         List elements1 = null;
         List elements2 = null;
 
-        if (res1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()
-            && res2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+        if ((res1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())
+            && (res2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
             resource1 = CmsXmlPageFactory.unmarshal(cms, res1);
             resource2 = CmsXmlPageFactory.unmarshal(cms, res2);
             elements1 = getElements(resource1);
@@ -140,7 +141,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
             elem.setStatus(CmsResourceComparison.TYPE_REMOVED);
-            String value = resource1.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            String value = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             elem.setVersion1(value);
             elem.setVersion2("");
         }
@@ -151,7 +152,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             CmsElementComparison elem = (CmsElementComparison)i.next();
             elem.setStatus(CmsResourceComparison.TYPE_ADDED);
             elem.setVersion1("");
-            String value = resource2.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            I_CmsXmlContentValue contentValue = resource2.getValue(elem.getName(), elem.getLocale());
+            String value = contentValue.getStringValue(cms);
             elem.setVersion2(value);
         }
         List union = new ArrayList(elements1);
@@ -161,8 +163,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         i = new ArrayList(union).iterator();
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
-            String value1 = resource1.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
-            String value2 = resource2.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
+            String value1 = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
+            String value2 = resource2.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             if (value1 == null) {
                 value1 = "";
             }
@@ -180,6 +182,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         m_elements = new ArrayList(removed);
         m_elements.addAll(added);
         m_elements.addAll(union);
+        Collections.sort(m_elements);
     }
 
     /**
@@ -189,7 +192,10 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
      */
     public List getElements() {
 
-        return m_elements;
+        if (m_elements == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(m_elements);
     }
 
     /** Returs a list of all element names of a xml page.<p>
@@ -206,7 +212,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             Iterator elementNames = xmlPage.getNames(locale).iterator();
             while (elementNames.hasNext()) {
                 String elementName = (String)elementNames.next();
-                elements.add(new CmsElementComparison(locale.toString(), elementName));
+                elements.add(new CmsElementComparison(locale, elementName));
             }
         }
         return elements;

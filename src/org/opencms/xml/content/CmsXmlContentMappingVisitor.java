@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2006/03/27 14:52:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/04 16:57:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,10 +62,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
     CmsXmlContent m_content;
 
     /** The "main" content definition, used for all mappings. */
-    CmsXmlContentDefinition m_definition;
-
-    /** The error handler instance that stores the errors and warnings found. */
-    CmsXmlContentErrorHandler m_errorHandler;
+    I_CmsXmlContentHandler m_handler;
 
     /**
      * Creates a new error handler node visitor.<p> 
@@ -79,17 +75,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         // store references
         m_cms = cms;
         m_content = content;
-        m_definition = content.getContentDefinition();
-    }
-
-    /**
-     * Returns the error handler instance that stores the errors and warnings found.<p>
-     * 
-     * @return the error handler instance that stores the errors and warnings found
-     */
-    public CmsXmlContentErrorHandler getErrorHandler() {
-
-        return m_errorHandler;
+        m_handler = content.getContentDefinition().getContentHandler();
     }
 
     /**
@@ -100,10 +86,9 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_VISIT_1, value.getPath()));
         }
-
         try {
-            m_definition.getContentHandler().resolveMapping(m_cms, m_content, value);
-        } catch (CmsException e) {
+            m_handler.resolveMapping(m_cms, m_content, value);
+        } catch (CmsException e) {    
             LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
         }
     }

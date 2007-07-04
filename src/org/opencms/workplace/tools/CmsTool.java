@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2006/03/27 14:52:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -48,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +80,7 @@ public class CmsTool {
      * 
      * @param group the group
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addToolGroup(CmsToolGroup group) {
 
@@ -94,7 +93,7 @@ public class CmsTool {
      * @param group the group
      * @param position the position
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addToolGroup(CmsToolGroup group, float position) {
 
@@ -110,7 +109,7 @@ public class CmsTool {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        if (!m_handler.isVisible(wp.getCms())) {
+        if (!m_handler.isVisible(wp)) {
             return "";
         }
         String link = CmsToolManager.linkForToolPath(
@@ -119,12 +118,11 @@ public class CmsTool {
             getHandler().getParameters(wp));
         String onClic = "openPage('" + link + "');";
         return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT,
             getId(),
-            m_handler.getName(),
-            m_handler.isEnabled(wp.getCms()) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
-            m_handler.isEnabled(wp.getCms()),
+            m_handler.getShortName(),
+            m_handler.isEnabled(wp) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
+            m_handler.isEnabled(wp),
             m_handler.getIconPath(),
             m_handler.getConfirmationMessage(),
             onClic);
@@ -175,7 +173,7 @@ public class CmsTool {
      * 
      * @return the group
      * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#getObject(String)
+     * @see org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsToolGroup getToolGroup(String name) {
 
@@ -201,7 +199,10 @@ public class CmsTool {
      */
     public String groupHtml(CmsWorkplace wp) {
 
-        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(wp, getHandler().getPath(), false);
+        List subTools = OpenCms.getWorkplaceManager().getToolManager().getToolsForPath(
+            wp,
+            getHandler().getPath(),
+            false);
         Iterator itSubTools = subTools.iterator();
         m_container.clear();
         while (itSubTools.hasNext()) {

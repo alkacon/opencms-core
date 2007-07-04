@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsSystemInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/04 16:57:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -146,7 +146,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebApplication("WEB-INF/log/opencms.log");
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebApplication("WEB-INF/config/opencms.properties");
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);

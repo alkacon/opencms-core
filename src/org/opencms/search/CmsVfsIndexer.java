@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/07/04 16:57:27 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,8 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -59,7 +57,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +97,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 // ensure siblings are only deleted once per update
                 resourcesAlreadyDeleted.add(rootPath);
                 // search for an exact match on the document root path
-                Term term = new Term(I_CmsDocumentFactory.DOC_PATH, rootPath);
+                Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
                 try {
                     // delete all documents with this term from the index
                     reader.deleteDocuments(term);
@@ -113,25 +111,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
             }
         }
-    }
-
-    /**
-     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.opencms.file.CmsObject, org.apache.lucene.document.Document)
-     */
-    public A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException {
-
-        A_CmsIndexResource result = null;
-
-        Field f = doc.getField(I_CmsDocumentFactory.DOC_PATH);
-        if (f != null) {
-
-            String path = cms.getRequestContext().removeSiteRoot(f.stringValue());
-            CmsResource resource = cms.readResource(path);
-            // an exception would have been thrown if the user has no read persmissions
-            result = new CmsVfsIndexResource(resource);
-        }
-
-        return result;
     }
 
     /**
@@ -151,16 +130,16 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 // use utility method from CmsProject to check if published resource is "inside" this index source
                 if (CmsProject.isInsideProject(source.getResourcesNames(), resource.getRootPath())) {
                     // the resource is "inside" this index source
-                    if (resource.isNew()) {
+                    if (resource.getState().isNew()) {
                         // new resource just needs to be updated
                         if (isResourceInTimeWindow(resource)) {
                             // update only if resource is in time window
                             result.addResourceToUpdate(resource);
                         }
-                    } else if (resource.isDeleted()) {
+                    } else if (resource.getState().isDeleted()) {
                         // deleted resource just needs to be removed
                         result.addResourceToDelete(resource);
-                    } else if (resource.isChanged() || resource.isUnChanged()) {
+                    } else if (resource.getState().isChanged() || resource.getState().isUnchanged()) {
                         // changed (or unchaged) resource must be removed first, and then updated
                         // note: unchanged resources can be siblings that have been added from the online project,
                         //       these must be treated as if the resource had changed
@@ -256,7 +235,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_UNABLE_TO_READ_RESOURCE_2,
-                        resource.getRootPath(),
+                        res.getRootPath(),
                         m_index.getName()), e);
                 }
             }
@@ -318,8 +297,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     I_CmsReport.FORMAT_DEFAULT);
             }
 
-            A_CmsIndexResource indexResource = new CmsVfsIndexResource(resource);
-            threadManager.createIndexingThread(m_cms, writer, indexResource, m_index);
+            threadManager.createIndexingThread(m_cms, writer, resource, m_index, m_report);
 
         } catch (Exception e) {
 

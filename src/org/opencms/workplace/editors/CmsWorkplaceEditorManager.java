@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/04 16:57:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsWorkplaceEditorManager {
     public CmsWorkplaceEditorManager(CmsObject cms) {
 
         // get all subfolders of the workplace editor folder
-        List editorFolders = new ArrayList();
+        List editorFolders;
         try {
             editorFolders = cms.getSubFolders(CmsEditor.PATH_EDITORS);
         } catch (CmsException e) {
@@ -158,7 +158,7 @@ public class CmsWorkplaceEditorManager {
 
                 // check if the current resource type is only a reference to another resource type
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(key);
-                if (CmsStringUtil.isNotEmpty(settings.getReference())) {
+                if (settings == null || CmsStringUtil.isNotEmpty(settings.getReference())) {
                     // skip this resource type
                     continue;
                 }
@@ -209,7 +209,7 @@ public class CmsWorkplaceEditorManager {
         }
         if (preferredEditorSetting != null) {
             CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
-            if (preferredConf != null && preferredConf.isWidgetEditor() && preferredConf.matchesBrowser(userAgent)) {
+            if ((preferredConf != null) && preferredConf.isWidgetEditor() && preferredConf.matchesBrowser(userAgent)) {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getWidgetEditor();
             }
@@ -301,7 +301,7 @@ public class CmsWorkplaceEditorManager {
         }
         if (preferredEditorSetting != null) {
             CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
-            if (preferredConf != null && preferredConf.matchesBrowser(userAgent)) {
+            if ((preferredConf != null) && preferredConf.matchesBrowser(userAgent)) {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getEditorUri();
             }

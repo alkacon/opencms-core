@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2006/07/20 10:14:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,15 @@ package org.opencms.workplace.administration;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer;
 
 import java.util.Iterator;
 
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public class CmsAdminMenu extends CmsToolDialog {
 
         super(jsp);
         try { 
-        	initAdminTool();
+            initAdminTool();
         } catch (Exception e) {
             // ignore, only a role violation, not important for left side menu
         }
@@ -208,7 +208,7 @@ public class CmsAdminMenu extends CmsToolDialog {
             if (link.indexOf("?") > 0) {
                 link = link.substring(0, link.indexOf("?"));
             }
-            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(getCms())) {
+            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(this)) {
                 continue;
             }
 
@@ -228,9 +228,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                     tool.getHandler().getShortName(),
                     tool.getHandler().getSmallIconPath(),
                     CmsToolManager.linkForToolPath(getJsp(), tool.getHandler().getPath()),
-                    tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText()
+                    tool.getHandler().isEnabled(this) ? tool.getHandler().getHelpText()
                     : tool.getHandler().getDisabledHelpText(),
-                    tool.getHandler().isEnabled(getCms()),
+                    tool.getHandler().isEnabled(this),
                     tool.getHandler().getPosition(),
                     CmsAdminMenu.DEFAULT_TARGET);
             }

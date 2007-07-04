@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,11 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsProject.CmsProjectType;
 import org.opencms.main.CmsException;
+import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTask;
 
 import java.util.List;
 import java.util.Set;
@@ -53,11 +54,14 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsProjectDriver {
+
+    /** Name of the setup project. */
+    String SETUP_PROJECT_NAME = "_setupProject";
 
     /** The type ID to identify project driver implementations. */
     int DRIVER_TYPE_ID = 1;
@@ -69,15 +73,14 @@ public interface I_CmsProjectDriver {
      * Creates a new project.<p>
      * 
      * @param dbc the current database context
+     * @param id the project id
      * @param owner the owner of the project
      * @param group the group for the project
      * @param managergroup the managergroup for the project
-     * @param task the base workflow task for the project
      * @param name the name of the project to create
      * @param description the description for the project
      * @param flags the flags for the project
      * @param type the type for the project
-     * @param reservedParam reserved optional parameter, should be <code>null</code> on standard OpenCms installations
      * 
      * @return the created <code>{@link CmsProject}</code> instance
      * 
@@ -85,15 +88,14 @@ public interface I_CmsProjectDriver {
      */
     CmsProject createProject(
         CmsDbContext dbc,
+        CmsUUID id,
         CmsUser owner,
         CmsGroup group,
         CmsGroup managergroup,
-        CmsTask task,
         String name,
         String description,
         int flags,
-        int type,
-        Object reservedParam) throws CmsDataAccessException;
+        CmsProjectType type) throws CmsDataAccessException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
@@ -101,24 +103,30 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param projectId The project in which the resource will be used
      * @param resourceName The resource to be written to the Cms
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createProjectResource(CmsDbContext dbc, int projectId, String resourceName, Object reservedParam)
-    throws CmsDataAccessException;
+    void createProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName) throws CmsDataAccessException;
+
+    /**
+     * Inserts an entry for a publish job .<p>
+     * 
+     * @param dbc the current database context
+     * @param publishJob the publish job data
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
 
     /**
      * Deletes all entries in the published resource table.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType)
-    throws CmsDataAccessException;
+    void deleteAllStaticExportPublishedResources(CmsDbContext dbc, int linkType) throws CmsDataAccessException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -140,7 +148,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsDataAccessException;
+    void deleteProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourceName) throws CmsDataAccessException;
 
     /**
      * Deletes a specified project.<p>
@@ -153,49 +161,58 @@ public interface I_CmsProjectDriver {
     void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Deletes all publish history entries with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * Deletes all publish history entries with publish tags >=0 and < the specified max. publish tag.<p>
      * 
      * @param dbc the current database context
      * @param projectId the ID of the current project
-     * @param maxBackupTagId entries with backup tag IDs >=0 and < this max. backup tag ID get deleted
+     * @param maxPublishTag entries with publish tags >=0 and < this max. publish tag get deleted
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsDataAccessException;
+    void deletePublishHistory(CmsDbContext dbc, CmsUUID projectId, int maxPublishTag) throws CmsDataAccessException;
 
     /**
-     * Deletes a publish history entry with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * Deletes a publish history entry with publish tags >=0 and < the specified max. publish tag.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the ID of the current project
      * @param publishHistoryId the id of the history to delete the entry from
      * @param publishResource the entry to delete
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistoryEntry(
-        CmsDbContext dbc,
-        int projectId,
-        CmsUUID publishHistoryId,
-        CmsPublishedResource publishResource) throws CmsDataAccessException;
+    void deletePublishHistoryEntry(CmsDbContext dbc, CmsUUID publishHistoryId, CmsPublishedResource publishResource)
+    throws CmsDataAccessException;
+
+    /**
+     * Deletes a publish job identified by its history id.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deletePublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+
+    /**
+     * Deletes the publish list assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context 
+     * @param publishHistoryId the history id identifying the publish job
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deletePublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
      * Deletes an entry in the published resource table.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param resourceName The name of the resource to be deleted in the static export
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters of the resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteStaticExportPublishedResource(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        String resourceName,
-        int linkType,
-        String linkParameter) throws CmsDataAccessException;
+    void deleteStaticExportPublishedResource(CmsDbContext dbc, String resourceName, int linkType, String linkParameter)
+    throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -224,7 +241,7 @@ public interface I_CmsProjectDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.<p>
+     * {online|offline|history} pool Urls have to be specified.<p>
      * 
      * @param classname the classname of the SQL manager
      * 
@@ -241,11 +258,8 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param offlineFolder the offline folder to publish
-     * @param backupEnabled flag if backup is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -256,11 +270,8 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder offlineFolder,
-        boolean backupEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a new, changed or deleted file.<p>
@@ -272,11 +283,8 @@ public interface I_CmsProjectDriver {
      * @param onlineProject the online project
      * @param offlineResource the offline file to publish
      * @param publishedContentIds contains the UUIDs of already published content records
-     * @param backupEnabled flag if backup is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -288,11 +296,8 @@ public interface I_CmsProjectDriver {
         CmsProject onlineProject,
         CmsResource offlineResource,
         Set publishedContentIds,
-        boolean backupEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes the content record of a file.<p>
@@ -310,8 +315,11 @@ public interface I_CmsProjectDriver {
      * @param onlineProject the online project to write data
      * @param offlineFileHeader the offline header of the file of which the content gets published
      * @param publishedResourceIds a Set with the UUIDs of the already published content records
+     * @param needToUpdateContent <code>true</code> if the content record has to be updated
+     * @param publishTag the publish tag
      * 
      * @return the published file (online)
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsFile publishFileContent(
@@ -319,7 +327,9 @@ public interface I_CmsProjectDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineFileHeader,
-        Set publishedResourceIds) throws CmsDataAccessException;
+        Set publishedResourceIds,
+        boolean needToUpdateContent,
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -330,11 +340,8 @@ public interface I_CmsProjectDriver {
      * @param n the number of all folders to publish
      * @param onlineProject the online project
      * @param currentFolder the offline folder to publish
-     * @param backupEnabled flag if backup is enabled
-     * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
-     * @param backupTagId the backup tag id
-     * @param maxVersions the maxmum number of backup versions for each resource
+     * @param publishTag the publish tag
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
@@ -345,11 +352,8 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsFolder currentFolder,
-        boolean backupEnabled,
-        long publishDate,
         CmsUUID publishHistoryId,
-        int backupTagId,
-        int maxVersions) throws CmsDataAccessException;
+        int publishTag) throws CmsDataAccessException;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -358,9 +362,7 @@ public interface I_CmsProjectDriver {
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
      * @param publishList a Cms publish list
-     * @param backupEnabled true if published resources should be written to the Cms backup
-     * @param backupTagId the backup tag ID
-     * @param maxVersions maximum number of backup versions
+     * @param publishTag the publish tag
      * 
      * @throws CmsException if something goes wrong
      */
@@ -369,9 +371,20 @@ public interface I_CmsProjectDriver {
         I_CmsReport report,
         CmsProject onlineProject,
         CmsPublishList publishList,
-        boolean backupEnabled,
-        int backupTagId,
-        int maxVersions) throws CmsException;
+        int publishTag) throws CmsException;
+
+    /**
+     * Reads the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     * that were saved to the database in the previous run of OpenCms.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @return the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     *      that were saved to the database in the previous run of OpenCms.
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readLocks(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Reads a project given the projects id.<p>
@@ -383,7 +396,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsProject readProject(CmsDbContext dbc, int id) throws CmsDataAccessException;
+    CmsProject readProject(CmsDbContext dbc, CmsUUID id) throws CmsDataAccessException;
 
     /**
      * Reads a project.<p>
@@ -403,13 +416,11 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param projectId the ID of the project for which the resource path is read
      * @param resourcename the project's resource path
-     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return String the project's resource path
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readProjectResource(CmsDbContext dbc, int projectId, String resourcename, Object reservedParam)
-    throws CmsDataAccessException;
+    String readProjectResource(CmsDbContext dbc, CmsUUID projectId, String resourcename) throws CmsDataAccessException;
 
     /**
      * Reads the project resources for a specified project.<p>
@@ -424,16 +435,16 @@ public interface I_CmsProjectDriver {
     List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Returns all projects with the given state.<p>
+     * Returns all projects in the given organizational unit.<p>
      *
      * @param dbc the current database context
-     * @param state the requested project state
+     * @param ouFqn the fully qualified name of the organizational unit to get the projects for
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjects(CmsDbContext dbc, int state) throws CmsDataAccessException;
+    List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -470,51 +481,77 @@ public interface I_CmsProjectDriver {
     List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 
     /**
-     * Reads all resources that build the "view" of a project.<p>
-     *
-     * @param dbc the current database context
-     * @param project the id of the project in which the resource will be used
-     * @param filter the filter for the resources to read
+     * Reads a single publish job identified by its publish history id.<p>
      * 
-     * @return a List of resources
+     * @param dbc the current database context
+     * @param publishHistoryId unique id to identify the publish job in the publish history
+     * @return an object of type <code>{@link CmsPublishJobInfoBean}</code> 
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsDataAccessException;
+    CmsPublishJobInfoBean readPublishJob(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+
+    /**
+     * Reads all publish jobs finished in the given time range.<p>
+     * If <code>(0L, 0L)</code> is passed as time range, all pending jobs are returned.
+     * 
+     * @param dbc the current database context
+     * @param startTime the start of the time range for finish time
+     * @param endTime the end of the time range for finish time
+     * @return a list of objects of type <code>{@link CmsPublishJobInfoBean}</code>
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsDataAccessException;
+
+    /**
+     * Reads the publish list assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job
+     * @return the assigned publish list
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    CmsPublishList readPublishList(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+
+    /**
+     * Reads the publish report assigned to a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishHistoryId the history id identifying the publish job  
+     * @return the content of the assigned publish report
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    byte[] readPublishReportContents(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
      * Reads the resources that were published during a publish process for a given publish history ID.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the ID of the current project
      * @param publishHistoryId unique int ID to identify the publish process in the publish history
      * 
      * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId)
-    throws CmsDataAccessException;
+    List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param rfsName the rfs name of the resource
      * 
      * @return the paramter string of the requested resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName)
-    throws CmsDataAccessException;
+    String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName) throws CmsDataAccessException;
 
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
      * @param timestamp the timestamp information
      * 
@@ -522,7 +559,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readStaticExportResources(CmsDbContext dbc, CmsProject currentProject, int parameterResources, long timestamp)
+    List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsDataAccessException;
 
     /**
@@ -535,6 +572,21 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
+
+    /**
+     * Writes the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code> 
+     * to the database for reuse in the next run of OpenCms.<p>   
+     * 
+     * This method must only be called at startup or the in-memory locking will overwritten.<p>
+     * 
+     * @param dbc the current database context
+     * 
+     * @param locks the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt;</code> that 
+     *      currently exist in OpenCms ({@link org.opencms.lock.CmsLockManager}) 
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writeLocks(CmsDbContext dbc, List locks) throws CmsDataAccessException;
 
     /**
      * Writes an already existing project.<p>
@@ -555,17 +607,32 @@ public interface I_CmsProjectDriver {
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param resource the state of the resource *before* it was published
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writePublishHistory(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        CmsUUID publishId,
-        CmsPublishedResource resource) throws CmsDataAccessException;
+    void writePublishHistory(CmsDbContext dbc, CmsUUID publishId, CmsPublishedResource resource)
+    throws CmsDataAccessException;
+
+    /**
+     * Writes a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishJob the publish job to write
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writePublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException;
+
+    /**
+     * Writes a publish report for a publish job.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishId the ID of the current publishing process
+     * @param content the report output
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) throws CmsDataAccessException;
 
     /**
      * Inserts an entry in the published resource table.<p>
@@ -573,7 +640,6 @@ public interface I_CmsProjectDriver {
      * This is done during static export.<p>
      * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param resourceName The name of the resource to be added to the static export
      * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters added to the resource
@@ -583,7 +649,6 @@ public interface I_CmsProjectDriver {
      */
     void writeStaticExportPublishedResource(
         CmsDbContext dbc,
-        CmsProject currentProject,
         String resourceName,
         int linkType,
         String linkParameter,

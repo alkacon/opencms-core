@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2006/04/27 15:32:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/04 16:57:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,21 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.lock.CmsLock;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -44,6 +53,7 @@ import org.opencms.util.CmsResourceTranslator;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -53,7 +63,8 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.18 $
+ * 
+ * @version $Revision: 1.19 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -66,37 +77,6 @@ public class TestSiblings extends OpenCmsTestCase {
 
         super(arg0);
     }
-    
-    /**
-     * Test suite for this test class.<p>
-     * 
-     * @return the test suite
-     */
-    public static Test suite() {
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSiblings.class.getName());        
-        
-        suite.addTest(new TestSiblings("testSiblingsCopy"));
-        suite.addTest(new TestSiblings("testSiblingsCreate"));
-        suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
-        suite.addTest(new TestSiblings("testDeleteAllSiblings"));
-        suite.addTest(new TestSiblings("testSiblingStateIssue"));        
-        
-        TestSetup wrapper = new TestSetup(suite) {
-            
-            protected void setUp() {
-                setupOpenCms("simpletest", "/sites/default/");
-            }
-            
-            protected void tearDown() {
-                removeOpenCms();
-            }
-        };
-        
-        return wrapper;
-    }    
 
     /**
      * Creates a copy of a resource as a new sibling.<p>
@@ -112,12 +92,12 @@ public class TestSiblings extends OpenCmsTestCase {
 
         // save the source in the store
         tc.storeResources(cms, source);
-        
+
         // copy source to target as a sibling, the new sibling should not be locked
         cms.copyResource(source, target, CmsResource.COPY_AS_SIBLING);
 
         // validate the source sibling
-        
+
         // validate if all unmodified fields on the source resource are still equal
         tc.assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
         // validate if the last-modified-in-project field is the current project
@@ -127,10 +107,10 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
-        tc.assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
+        tc.assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
 
         // validate the target sibling
-        
+
         // validate the fields that both in the existing and the new sibling have to be equal
         tc.assertFilter(cms, source, target, OpenCmsTestResourceFilter.FILTER_EXISTING_AND_NEW_SIBLING);
         // validate if the state of the new sibling is "new" (blue)
@@ -138,7 +118,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the new sibling has a red flag
         tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
-        tc.assertLock(cms, target, CmsLock.TYPE_EXCLUSIVE);        
+        tc.assertLock(cms, target, CmsLockType.EXCLUSIVE);
     }
 
     /**
@@ -154,15 +134,15 @@ public class TestSiblings extends OpenCmsTestCase {
 
         // save the source in the store
         tc.storeResources(cms, source);
-        
+
         // create a new sibling from the source
         List properties = cms.readPropertyObjects(source, false);
         cms.createSibling(source, target, properties);
 
         // validate the source sibling
-        
+
         // validate if all unmodified fields of the source are still equal
-        tc.assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);        
+        tc.assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
         // validate if the last-modified-in-project field is the current project
         tc.assertProject(cms, source, cms.getRequestContext().currentProject());
         // validate if the sibling count field has been incremented
@@ -170,10 +150,10 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
-        tc.assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);        
+        tc.assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
 
         // validate the target sibling
-        
+
         // validate the fields that both in the existing and the new sibling have to be equal
         tc.assertFilter(cms, source, target, OpenCmsTestResourceFilter.FILTER_EXISTING_AND_NEW_SIBLING);
         // validate if the state of the new sibling is "new" (blue)
@@ -181,237 +161,46 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the new sibling has a red flag
         tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
-        tc.assertLock(cms, target, CmsLock.TYPE_EXCLUSIVE);        
-    }    
-    
-    /**
-     * Tests the "copy as new sibling" function.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testSiblingsCopy() throws Throwable {
-
-        CmsObject cms = getCmsObject(); 
-        String source = "/index.html";
-        String target = "/index_sibling.html";
-        echo("Copying " + source + " as a new sibling to " + target);
-        copyResourceAsSibling(this, cms, source, target);
+        tc.assertLock(cms, target, CmsLockType.EXCLUSIVE);
     }
-    
+
     /**
-     * Tests the "copy as new sibling" function.<p>
+     * Test suite for this test class.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @return the test suite
      */
-    public void testSiblingsCreate() throws Throwable {
+    public static Test suite() {
 
-        CmsObject cms = getCmsObject();
-        String source = "/folder1/image1.gif";
-        String target = "/folder1/image1_sibling.gif";        
-        echo("Creating a new sibling " + target + " from " + source);
-        createSibling(this, cms, source, target);
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestSiblings.class.getName());
+
+        suite.addTest(new TestSiblings("testSiblingsCopy"));
+        suite.addTest(new TestSiblings("testSiblingsCreate"));
+        suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
+        suite.addTest(new TestSiblings("testDeleteAllSiblings"));
+        suite.addTest(new TestSiblings("testSiblingStateIssue"));
+        suite.addTest(new TestSiblings("testSiblingsRelations"));
+        suite.addTest(new TestSiblings("testSiblingProjects"));
+        suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+        };
+
+        return wrapper;
     }
-    
-    /**
-     * Error scenario where an import is deleted that contains siblings inside the same folders.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void testSiblingIssueAfterImport() throws Exception {       
-        
-        echo("Testing sibling issue after import");        
-        
-        CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
-        
-        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
-            new String[] {
-                "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
-                "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
-                "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",                
-                "s#^/sites/default/download(.*)#/system/galleries/download$1#",
-                "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
-                "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
-                "s#^/sites/default/content(.*)#/system$1#"
-                }, 
-            false);   
-        
-        // set modified folder translator
-        OpenCms.getResourceManager().setTranslators(
-            folderTranslator, 
-            OpenCms.getResourceManager().getFileTranslator());
 
-        try {
-            
-            CmsObject cms = getCmsObject();
-            
-            cms.getRequestContext().setSiteRoot("/");
-    
-            // need to create the "galleries" folder manually
-            cms.createResource("/system/galleries", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-            cms.unlockResource("/system/galleries");
-            
-            cms.getRequestContext().setSiteRoot("/sites/default");
-            
-            // import the files
-            String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
-            OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport(cms.getRequestContext().getLocale()));                                    
-            
-            // clean up for the next test
-            cms.getRequestContext().setSiteRoot("/");        
-            cms.lockResource("/sites/default");
-            cms.lockResource("/system");       
-            
-            // using the option "DELETE_REMOVE_SIBLINGS" caused an error here!
-            cms.deleteResource("/sites/default/importtest", CmsResource.DELETE_REMOVE_SIBLINGS);
-            cms.deleteResource("/system/bodies", CmsResource.DELETE_REMOVE_SIBLINGS);
-            cms.deleteResource("/system/galleries/pics", CmsResource.DELETE_REMOVE_SIBLINGS);
-            
-            cms.unlockResource("/sites/default");
-            cms.unlockResource("/system");               
-            cms.publishProject();
-            
-        } finally {
-            
-            // reset the translation rules
-            OpenCms.getResourceManager().setTranslators(
-                oldFolderTranslator, 
-                OpenCms.getResourceManager().getFileTranslator()); 
-            
-        }
-    }    
-    
-    /**
-     * Does an "undo changes" from the online project on a resource with more than 1 sibling.<p>
-     */
-    /*
-    public static void undoChangesWithSiblings(...) throws Throwable {
-        // this test should do the following:
-        // - create a sibling of a resource
-        // - e.g. touch the black/unchanged sibling so that it gets red/changed
-        // - make an "undo changes" -> the last-modified-in-project ID in the resource record 
-        // of the resource must be the ID of the current project, and not 0
-        // - this is to ensure that the new/changed/deleted other sibling still have a valid
-        // state which consits of the last-modified-in-project ID plus the resource state
-        // - otherwise this may result in grey flags
-
-        Another issue:
-        What happens if a user A has an exclusive lock on a resource X,
-        and user B does a "copy as sibling Y" of X, or "create 
-        new sibling Y" of X. The lock status of the resource X is exclusive
-        to A, but test implies that it would be switched to B after operation!
-        Maybe copy as / create new sibling must not be allowed if original is
-        currently locked by another user? 
-
-    }
-    */
-    
-    /**
-     * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testSiblingStateIssue() throws Throwable {
-        
-        echo("Tests issue with resource state and siblings");
-        CmsObject cms = getCmsObject();
-        
-        // part 1: changes to the fields that are part of the resource table
-        String resource1 = "/folder1/page1.html";
-        String sibling1 = "/folder1/sibling1.html";
-        
-        // create a sibling 
-        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
-        
-        // verify the state of the resources
-        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        // now set the flags for the sibling
-        cms.chflags(sibling1, 1024);
-        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
-        
-        // verify the state of the resources after the change
-        assertState(cms, resource1, CmsResource.STATE_CHANGED);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-
-        
-        // part 2: now the same operation with a new copy
-        String copy1 = "/folder1/copy1.html";
-        sibling1 = "/folder1/siblingofcopy1.html";
-
-        // create a copy 
-        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
-        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
-        
-        // verify the state of the resources
-        assertState(cms, copy1, CmsResource.STATE_NEW);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        // now set the flags for the sibling
-        cms.chflags(sibling1, 1024);
-        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
-        
-        // verify the state of the resources after the change
-        assertState(cms, copy1, CmsResource.STATE_NEW);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);        
-        
-        
-        // part 3: changes to the fields that are part of the structure table
-        resource1 = "/folder1/page2.html";
-        sibling1 = "/folder1/sibling2.html";
-        
-        // create a sibling 
-        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
-        
-        // verify the state of the resources
-        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        // after changes of dates the resource states must be the same        
-        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
-        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
-
-        // verify the state of the resources after the change
-        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        
-        // step 4: changes to the fields that are part of the resource table
-        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
-        
-        // verify the state of the resources after the change
-        assertState(cms, resource1, CmsResource.STATE_CHANGED);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        
-        // part 5: now the same operation with a new copy
-        copy1 = "/folder1/copy2.html";
-        sibling1 = "/folder1/siblingofcopy2.html";
-        
-        // create a copy
-        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
-        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
-        
-        // verify the state of the resources
-        assertState(cms, copy1, CmsResource.STATE_NEW);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);
-        
-        // change date of last modification
-        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
-        
-        // verify the state of the resources after the change
-        assertState(cms, copy1, CmsResource.STATE_NEW);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);  
-        
-        // modifiy release info
-        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
-        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
-        
-        // verify the state of the resources after the change
-        assertState(cms, copy1, CmsResource.STATE_NEW);
-        assertState(cms, sibling1, CmsResource.STATE_NEW);               
-    }
-    
     /**
      * Tests deletion of a resource together with all siblings.<p>
      * 
@@ -421,7 +210,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
         echo("Creating a new resource with 2 siblings, then deleting it with all siblings again");
         CmsObject cms = getCmsObject();
-        
+
         String sib1Name = "/folder1/sib1.txt";
         String sib2Name = "/folder1/sib2.txt";
         String sib3Name = "/folder1/sib3.txt";
@@ -429,29 +218,482 @@ public class TestSiblings extends OpenCmsTestCase {
         cms.createResource(sib1Name, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
         cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
-        
+
         cms.deleteResource(sib1Name, CmsResource.DELETE_REMOVE_SIBLINGS);
-        
+
         CmsResource sib2Resource = null;
         try {
             sib2Resource = cms.readResource(sib2Name);
         } catch (CmsVfsResourceNotFoundException e) {
             // intentionally left blank
         }
-        
+
         if (sib2Resource != null) {
             fail("Sibling " + sib2Name + " has not been deleted!");
         }
-        
+
         CmsResource sib3Resource = null;
         try {
             sib3Resource = cms.readResource(sib3Name);
         } catch (CmsVfsResourceNotFoundException e) {
             // intentionally left blank
         }
-        
+
         if (sib3Resource != null) {
             fail("Sibling " + sib3Name + " has not been deleted!");
         }
+    }
+
+    /**
+     * Tests the link management features with siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsRelations() throws Throwable {
+
+        echo("Testing link management features with siblings");
+        CmsObject cms = getCmsObject();
+
+        String sib1Name = "/folder1/sib1.html";
+        String sib2Name = "/folder1/sib2.html";
+        String sib3Name = "/folder1/sib3.html";
+
+        String targetName = "/folder1/image2.gif";
+        CmsResource target = cms.readResource(targetName);
+
+        CmsResource sib1 = cms.createResource(sib1Name, CmsResourceTypeXmlPage.getStaticTypeId());
+        int sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        List links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        CmsRelation relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
+        CmsResource sib2 = cms.readResource(sib2Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
+        CmsResource sib3 = cms.readResource(sib3Name);
+        assertEquals(sources + 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources++;
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        // remove the link
+        TestLinkValidation.setContent(cms, sib1Name, "<h1>hello world!</h1>");
+        assertEquals(sources - 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources -= 3;
+        assertTrue(cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS).isEmpty());
+        assertTrue(cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS).isEmpty());
+
+        // add the link again
+        TestLinkValidation.setContent(cms, sib1Name, "<img src='" + targetName + "'>");
+        assertEquals(sources + 3, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources += 3;
+        links = cms.getRelationsForResource(sib1Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib1, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib2Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib2, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+        links = cms.getRelationsForResource(sib3Name, CmsRelationFilter.TARGETS);
+        assertEquals(1, links.size());
+        relation = new CmsRelation(sib3, target, CmsRelationType.EMBEDDED_IMAGE);
+        assertRelation(relation, (CmsRelation)links.get(0));
+
+        cms.deleteResource(sib3Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib2Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+        cms.deleteResource(sib1Name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertEquals(sources - 1, cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size());
+        sources--;
+    }
+
+    /**
+     * Error scenario where an import is deleted that contains siblings inside the same folders.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testSiblingIssueAfterImport() throws Exception {
+
+        echo("Testing sibling issue after import");
+
+        CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
+
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(new String[] {
+            "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
+            "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
+            "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",
+            "s#^/sites/default/download(.*)#/system/galleries/download$1#",
+            "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
+            "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+            "s#^/sites/default/content(.*)#/system$1#"}, false);
+
+        // set modified folder translator
+        OpenCms.getResourceManager().setTranslators(folderTranslator, OpenCms.getResourceManager().getFileTranslator());
+
+        try {
+
+            CmsObject cms = getCmsObject();
+
+            cms.getRequestContext().setSiteRoot("/");
+
+            // need to create the "galleries" folder manually
+            cms.createResource("/system/galleries", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+            cms.unlockResource("/system/galleries");
+
+            cms.getRequestContext().setSiteRoot("/sites/default");
+
+            // import the files
+            String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
+            OpenCms.getImportExportManager().importData(
+                cms,
+                importFile,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // clean up for the next test
+            cms.getRequestContext().setSiteRoot("/");
+            cms.lockResource("/sites/default");
+            cms.lockResource("/system");
+
+            // using the option "DELETE_REMOVE_SIBLINGS" caused an error here!
+            cms.deleteResource("/sites/default/importtest", CmsResource.DELETE_REMOVE_SIBLINGS);
+            cms.deleteResource("/system/galleries/pics", CmsResource.DELETE_REMOVE_SIBLINGS);
+
+            cms.unlockResource("/sites/default");
+            cms.unlockResource("/system");
+            OpenCms.getPublishManager().publishProject(cms);
+            OpenCms.getPublishManager().waitWhileRunning();
+        } finally {
+
+            // reset the translation rules
+            OpenCms.getResourceManager().setTranslators(
+                oldFolderTranslator,
+                OpenCms.getResourceManager().getFileTranslator());
+
+        }
+    }
+
+    /**
+     * Tests the "copy as new sibling" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCopy() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String source = "/index.html";
+        String target = "/index_sibling.html";
+        echo("Copying " + source + " as a new sibling to " + target);
+        copyResourceAsSibling(this, cms, source, target);
+    }
+
+    /**
+     * Does an "undo changes" from the online project on a resource with more than 1 sibling.<p>
+     */
+    /*
+     public static void undoChangesWithSiblings(...) throws Throwable {
+     // this test should do the following:
+     // - create a sibling of a resource
+     // - e.g. touch the black/unchanged sibling so that it gets red/changed
+     // - make an "undo changes" -> the last-modified-in-project ID in the resource record 
+     // of the resource must be the ID of the current project, and not 0
+     // - this is to ensure that the new/changed/deleted other sibling still have a valid
+     // state which consits of the last-modified-in-project ID plus the resource state
+     // - otherwise this may result in grey flags
+
+     Another issue:
+     What happens if a user A has an exclusive lock on a resource X,
+     and user B does a "copy as sibling Y" of X, or "create 
+     new sibling Y" of X. The lock status of the resource X is exclusive
+     to A, but test implies that it would be switched to B after operation!
+     Maybe copy as / create new sibling must not be allowed if original is
+     currently locked by another user? 
+
+     }
+     */
+
+    /**
+     * Tests the "project last modified" state with sibling operations across different projects.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingProjects() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the 'project last modified' state of siblings across different projects");
+
+        String source = "/folder1/image1.gif";
+        String target = "/folder2/image1_sibling2.gif";
+        createSibling(this, cms, source, target);
+
+        OpenCms.getPublishManager().publishResource(cms, target, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+        assertLock(cms, source, CmsLockType.UNLOCKED);
+        assertLock(cms, target, CmsLockType.UNLOCKED);
+
+        // create a new org unit, that will automatically create a new project...
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            "/test",
+            "test",
+            0,
+            "/folder1");
+
+        // this user will have publish permissions on the test ou project, but not on the root Offline project
+        cms.createUser("/test/myuser", "myuser", "blah-blah", null);
+        cms.addUserToGroup("/test/myuser", ou.getName() + OpenCms.getDefaultUsers().getGroupUsers());
+        // the default permissions for the user are: +r+w+v+c since it is indirect user of the /Users group, 
+        // so we need to explicitly remove the w flag, but we can not do that on the sibling itself, 
+        // since the ACEs are bound to the resource entries, so we do it on the folder
+        cms.lockResource("/folder2/");
+        cms.chacc("/folder2/", I_CmsPrincipal.PRINCIPAL_USER, "/test/myuser", "-w");
+
+        OpenCms.getPublishManager().publishResource(cms, "/folder2/");
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject prj = cms.readProject(ou.getProjectId());
+
+        cms.loginUser("/test/myuser", "myuser");
+        cms.getRequestContext().setCurrentProject(prj);
+
+        // check the permissions
+        assertTrue(cms.hasPermissions(
+            cms.readResource(source, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ALL));
+        assertFalse(cms.hasPermissions(
+            cms.readResource(target, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.ALL));
+
+        // change a resource attribute
+        cms.lockResource(source);
+        cms.setDateLastModified(source, System.currentTimeMillis(), false);
+        // check the project las modified
+        assertProject(cms, source, prj);
+        // the sibling has the same project last modified
+        assertProject(cms, target, prj);
+
+        // check the publish list
+        CmsPublishList pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source), true);
+        assertEquals(2, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source)));
+        assertTrue(pl.getFileList().contains(cms.readResource("/folder1/image1_sibling.gif")));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        // the sibling has been published, since we just changed a resource attribute, this is ok so
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // now the same for an structure property
+        cms.lockResource(source);
+        cms.writePropertyObject(source, new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "desc", null));
+        // check the project las modified
+        assertProject(cms, source, prj);
+        // the sibling has the same project last modified
+        assertProject(cms, target, prj);
+        // the sibling is still unchanged since no shared property has been changed
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // check the publish list
+        pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source), true);
+        assertEquals(1, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source)));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // now check deleting the sibling
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_REMOVE_SIBLINGS);
+        assertState(cms, source, CmsResourceState.STATE_DELETED);
+        // the sibling has not been deleted, since the current user has no write permissions on the sibling!
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+
+        // check the publish list
+        pl = OpenCms.getPublishManager().getPublishList(cms, cms.readResource(source, CmsResourceFilter.ALL), true);
+        assertEquals(2, pl.size());
+        assertTrue(pl.getFileList().contains(cms.readResource(source, CmsResourceFilter.ALL)));
+        assertTrue(pl.getFileList().contains(cms.readResource("/folder1/image1_sibling.gif", CmsResourceFilter.ALL)));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, source, true, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getPublishManager().waitWhileRunning();
+        assertFalse(cms.existsResource(source));
+        // the sibling has not been published!
+        assertTrue(cms.existsResource(target));
+        assertState(cms, target, CmsResourceState.STATE_UNCHANGED);
+        assertSiblingCount(cms, target, 1);
+    }
+
+    /**
+     * Tests the "copy as new sibling" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCreate() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String source = "/folder1/image1.gif";
+        String target = "/folder1/image1_sibling.gif";
+        echo("Creating a new sibling " + target + " from " + source);
+        createSibling(this, cms, source, target);
+    }
+
+    /**
+     * Tests creating 2 new siblings and publishing just one of them.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCreateIssue() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creating 2 new siblings and publishing just one of them");
+
+        String source = "/folder1/newsource.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        String target = "/folder1/newsibling.txt";
+        cms.createSibling(source, target, null);
+
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+        assertState(cms, target, CmsResourceState.STATE_NEW);
+
+        OpenCms.getPublishManager().publishResource(cms, source);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, target, CmsResourceState.STATE_NEW);
+    }
+
+    /**
+     * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingStateIssue() throws Throwable {
+
+        echo("Tests issue with resource state and siblings");
+        CmsObject cms = getCmsObject();
+
+        // part 1: changes to the fields that are part of the resource table
+        String resource1 = "/folder1/page1.html";
+        String sibling1 = "/folder1/sibling1.html";
+
+        // create a sibling 
+        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
+
+        // verify the state of the resources
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // now set the flags for the sibling
+        cms.chflags(sibling1, 1024);
+        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
+
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // part 2: now the same operation with a new copy
+        String copy1 = "/folder1/copy1.html";
+        sibling1 = "/folder1/siblingofcopy1.html";
+
+        // create a copy 
+        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
+        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
+
+        // verify the state of the resources
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // now set the flags for the sibling
+        cms.chflags(sibling1, 1024);
+        cms.chtype(sibling1, CmsResourceTypeBinary.getStaticTypeId());
+
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // part 3: changes to the fields that are part of the structure table
+        resource1 = "/folder1/page2.html";
+        sibling1 = "/folder1/sibling2.html";
+
+        // create a sibling 
+        cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
+
+        // verify the state of the resources
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // after changes of dates the resource states must be the same        
+        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
+        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
+
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // step 4: changes to the fields that are part of the resource table
+        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
+
+        // verify the state of the resources after the change
+        assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // part 5: now the same operation with a new copy
+        copy1 = "/folder1/copy2.html";
+        sibling1 = "/folder1/siblingofcopy2.html";
+
+        // create a copy
+        cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
+        cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
+
+        // verify the state of the resources
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // change date of last modification
+        cms.setDateLastModified(sibling1, System.currentTimeMillis(), false);
+
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
+
+        // modifiy release info
+        cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
+        cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
+
+        // verify the state of the resources after the change
+        assertState(cms, copy1, CmsResource.STATE_NEW);
+        assertState(cms, sibling1, CmsResource.STATE_NEW);
     }
 }

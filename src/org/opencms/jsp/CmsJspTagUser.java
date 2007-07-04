@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/04 16:57:23 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsJspTagUser extends TagSupport {
                 result = user.getCity();
                 break;
             case 7: // description
-                result = user.getDescription();
+                result = user.getDescription(cms.getRequestContext().getLocale());
                 break;
             case 8: // group
             case 9: // currentgroup
@@ -145,7 +145,6 @@ public class CmsJspTagUser extends TagSupport {
             default:
                 msgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_USER_PROP_1, property);
                 result = Messages.getLocalizedMessage(msgContainer, req);
-
         }
 
         return result;

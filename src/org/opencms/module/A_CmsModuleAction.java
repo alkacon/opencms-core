@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/07/04 16:57:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +110,7 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
      */
-    public void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report) {
+    public void publishProject(CmsObject cms, CmsPublishList publishList, int publishTag, I_CmsReport report) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_1, this.getClass().getName()));

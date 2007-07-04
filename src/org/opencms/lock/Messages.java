@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Messages.java,v $
- * Date   : $Date: 2005/08/10 14:44:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/04 16:57:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,38 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_LOCK_TYPE_1 = "ERR_INVALID_LOCK_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCK_ILLEGAL_STATE_2 = "ERR_LOCK_ILLEGAL_STATE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_LOCKS_0 = "ERR_READ_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_LOCKS_STARTUP_ONLY_0 = "ERR_READ_LOCKS_STARTUP_ONLY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REMOVING_UNDELETED_RESOURCE_1 = "ERR_REMOVING_UNDELETED_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_LOCKED_1 = "ERR_RESOURCE_LOCKED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_BYOTHERUSER_1 = "ERR_RESOURCE_LOCKED_BYOTHERUSER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_FORPUBLISH_1 = "ERR_RESOURCE_LOCKED_FORPUBLISH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_LOCKED_INHERITED_1 = "ERR_RESOURCE_LOCKED_INHERITED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_UNLOCK_1 = "ERR_RESOURCE_UNLOCK_1";
@@ -58,8 +82,11 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNLOCK_LOCK_INHERITED_1 = "ERR_UNLOCK_LOCK_INHERITED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_REMOVING_UNDELETED_RESOURCE_1 = "ERR_REMOVING_UNDELETED_RESOURCE_1";
-    
+    public static final String ERR_WRITE_LOCKS_0 = "ERR_WRITE_LOCKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WRITE_LOCKS_FINAL_0 = "ERR_WRITE_LOCKS_FINAL_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.lock.messages";
 

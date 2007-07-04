@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreeDialog.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:57:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Michael Moossen (original non-tree version)
  * @author Achim Westermann (modified tree version)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.1.6
  * 
@@ -427,6 +427,8 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
      * Recursivley selects the nodes that are qualified by the default selections.
      * 
      * @param node the current Node
+     * @param path the node path
+     * @param treePath the tree path
      */
     private void selectDefaultNodes(DefaultMutableTreeNode node, String path, TreePath treePath) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/04 16:57:24 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,27 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * A container for all new/changed/deteled Cms resources that are published together.<p>
@@ -57,13 +68,25 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  * 
  * @see org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)
  */
-public class CmsPublishList {
+public class CmsPublishList implements Externalizable {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishList.class);
+
+    /** Indicates a nonexistant object in the serialized data. */
+    private static final int NIL = -1;
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -2578909250462750927L;
+
+    /** Lenght of a serialized uuid. */
+    private static final int UUID_LENGTH = CmsUUID.getNullUUID().toByteArray().length;
 
     /** The list of deleted Cms folder resources to be published.<p> */
     private List m_deletedFolderList;
@@ -77,8 +100,11 @@ public class CmsPublishList {
     /** The list of new/changed Cms folder resources to be published.<p> */
     private List m_folderList;
 
+    /** Flag to indicate if the list needs to be revived. */
+    private boolean m_needsRevive = false;
+
     /** The id of the project that is to be published. */
-    private int m_projectId;
+    private CmsUUID m_projectId;
 
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
@@ -88,6 +114,14 @@ public class CmsPublishList {
 
     /** Indicates if sub-resources in folders should be published (for direct publish only). */
     private boolean m_publishSubResources;
+
+    /**
+     * Empty constructor.<p> 
+     */
+    public CmsPublishList() {
+
+        // noop
+    }
 
     /**
      * Constructs a publish list for a given project.<p>
@@ -153,11 +187,28 @@ public class CmsPublishList {
         m_publishHistoryId = new CmsUUID();
         m_publishSiblings = publishSiblings;
         m_publishSubResources = publishSubResources;
-        m_projectId = (project != null) ? project.getId() : -1;
+        m_projectId = (project != null) ? project.getUuid() : null;
         if (directPublishResources != null) {
             // reduce list of folders to minimum
             m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
         }
+    }
+
+    /**
+     * Returns a list of all resources in the publish list, 
+     * including folders and files.<p>
+     * 
+     * @return a list of {@link CmsResource} objects
+     */
+    public List getAllResources() {
+
+        List all = new ArrayList();
+        all.addAll(m_folderList);
+        all.addAll(m_fileList);
+        all.addAll(m_deletedFolderList);
+
+        Collections.sort(all, CmsResource.COMPARE_ROOT_PATH);
+        return Collections.unmodifiableList(all);
     }
 
     /**
@@ -167,7 +218,11 @@ public class CmsPublishList {
      */
     public List getDeletedFolderList() {
 
-        return m_deletedFolderList;
+        if (m_needsRevive) {
+            return null;
+        } else {
+            return m_deletedFolderList;
+        }
     }
 
     /**
@@ -180,7 +235,11 @@ public class CmsPublishList {
      */
     public List getDirectPublishResources() {
 
-        return m_directPublishResources;
+        if (m_needsRevive) {
+            return null;
+        } else {
+            return m_directPublishResources;
+        }
     }
 
     /**
@@ -190,7 +249,11 @@ public class CmsPublishList {
      */
     public List getFileList() {
 
-        return Collections.unmodifiableList(m_fileList);
+        if (m_needsRevive) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(m_fileList);
+        }
     }
 
     /**
@@ -200,7 +263,11 @@ public class CmsPublishList {
      */
     public List getFolderList() {
 
-        return Collections.unmodifiableList(m_folderList);
+        if (m_needsRevive) {
+            return null;
+        } else {
+            return Collections.unmodifiableList(m_folderList);
+        }
     }
 
     /**
@@ -209,7 +276,7 @@ public class CmsPublishList {
      * 
      * @return the id of the project that should be published, or <code>-1</code>
      */
-    public int getProjectId() {
+    public CmsUUID getProjectId() {
 
         return m_projectId;
     }
@@ -231,7 +298,7 @@ public class CmsPublishList {
      */
     public boolean isDirectPublish() {
 
-        return m_projectId < 0;
+        return (m_projectId == null);
     }
 
     /**
@@ -255,6 +322,71 @@ public class CmsPublishList {
     }
 
     /**
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
+    public void readExternal(ObjectInput in) throws IOException {
+
+        // read the history id
+        m_publishHistoryId = internalReadUUID(in);
+        // read the project id
+        m_projectId = internalReadUUID(in);
+        if (m_projectId.isNullUUID()) {
+            m_projectId = null;
+        }
+        // read the flags
+        m_publishSiblings = (in.readInt() != 0);
+        m_publishSubResources = (in.readInt() != 0);
+        // read the list of direct published resources
+        m_directPublishResources = internalReadUUIDList(in);
+        // read the list of published files
+        m_fileList = internalReadUUIDList(in);
+        // read the list of published folders
+        m_folderList = internalReadUUIDList(in);
+        // read the list of deleted folders
+        m_deletedFolderList = internalReadUUIDList(in);
+        // set revive flag to indicate that resource lists must be revived
+        m_needsRevive = true;
+    }
+
+    /**
+     * Revives the publish list by populating the internal resource lists with <code>CmsResource</code> instances.<p>
+     * 
+     * @param cms a cms object used to read the resource instances
+     */
+    public void revive(CmsObject cms) {
+
+        if (m_needsRevive) {
+            if (m_directPublishResources != null) {
+                m_directPublishResources = internalReadResourceList(cms, m_directPublishResources);
+            }
+            if (m_fileList != null) {
+                m_fileList = internalReadResourceList(cms, m_fileList);
+            }
+            if (m_folderList != null) {
+                m_folderList = internalReadResourceList(cms, m_folderList);
+            }
+            if (m_deletedFolderList != null) {
+                m_deletedFolderList = internalReadResourceList(cms, m_deletedFolderList);
+            }
+            m_needsRevive = false;
+        }
+    }
+
+    /**
+     * Returns the number of all resources to be published.<p>
+     * 
+     * @return the number of all resources to be published
+     */
+    public int size() {
+
+        if (m_needsRevive) {
+            return 0;
+        } else {
+            return m_folderList.size() + m_fileList.size() + m_deletedFolderList.size();
+        }
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -269,53 +401,58 @@ public class CmsPublishList {
         result.append("publish history ID: ").append(m_publishHistoryId.toString()).append("\n");
         result.append("resources: ").append(m_fileList.toString()).append("\n");
         result.append("folders: ").append(m_folderList.toString()).append("\n");
+        result.append("deletedFolders: ").append(m_deletedFolderList.toString()).append("\n");
         result.append("]\n");
         return result.toString();
     }
 
     /**
-     * Adds a new/changed/deleted Cms file resource to the publish list.<p>
-     * 
-     * @param resource a new/changed/deleted Cms file resource
-     * @throws CmsIllegalArgumentException if the specified resource is not a file or unchanged
+     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
      */
-    protected void addFile(CmsResource resource) throws CmsIllegalArgumentException {
+    public void writeExternal(ObjectOutput out) throws IOException {
 
-        // it is essential that this method is only visible within the db package!
-
-        if (resource.isFolder()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_PUBLISH_NO_CMS_FILE_1,
-                resource.getRootPath()));
+        // write the history id
+        out.write(m_publishHistoryId.toByteArray());
+        // write the project id
+        out.write((m_projectId != null) ? m_projectId.toByteArray() : CmsUUID.getNullUUID().toByteArray());
+        // write the flags
+        out.writeInt((m_publishSiblings) ? 1 : 0);
+        out.writeInt((m_publishSubResources) ? 1 : 0);
+        // write the list of direct publish resources by writing the uuid of each resource
+        if (m_directPublishResources != null) {
+            out.writeInt(m_directPublishResources.size());
+            for (Iterator i = m_directPublishResources.iterator(); i.hasNext();) {
+                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            }
+        } else {
+            out.writeInt(NIL);
         }
-
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
-                resource.getRootPath()));
+        // write the list of published files by writing the uuid of each resource
+        if (m_fileList != null) {
+            out.writeInt(m_fileList.size());
+            for (Iterator i = m_fileList.iterator(); i.hasNext();) {
+                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            }
+        } else {
+            out.writeInt(NIL);
         }
-
-        if (!m_fileList.contains(resource)) {
-            // only add files not already contained in the list
-            // this is required to make sure no siblings are duplicated
-            m_fileList.add(resource);
+        // write the list of published folders by writing the uuid of each resource
+        if (m_folderList != null) {
+            out.writeInt(m_folderList.size());
+            for (Iterator i = m_folderList.iterator(); i.hasNext();) {
+                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            }
+        } else {
+            out.writeInt(NIL);
         }
-    }
-
-    /**
-     * Appends all of the new/changed/deleted Cms file resources in the specified list to the end 
-     * of this publish list.<p>
-     * 
-     * @param list a list with new/changed/deleted Cms file resources to be added to this publish list
-     * @throws IllegalArgumentException if one of the resources is not a file or unchanged
-     */
-    protected void addFiles(List list) throws IllegalArgumentException {
-
-        // it is essential that this method is only visible within the db package!
-
-        Iterator i = list.iterator();
-        while (i.hasNext()) {
-            addFile((CmsResource)i.next());
+        // write the list of deleted folders by writing the uuid of each resource
+        if (m_deletedFolderList != null) {
+            out.writeInt(m_deletedFolderList.size());
+            for (Iterator i = m_deletedFolderList.iterator(); i.hasNext();) {
+                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            }
+        } else {
+            out.writeInt(NIL);
         }
     }
 
@@ -323,45 +460,57 @@ public class CmsPublishList {
      * Adds a new/changed Cms folder resource to the publish list.<p>
      * 
      * @param resource a new/changed Cms folder resource
-     * @throws IllegalArgumentException if the specified resource is not a folder or unchanged
+     * @param check if set an exception is thrown if the specified resource is unchanged, 
+     *              if not set the resource is ignored
+     * 
+     * @throws IllegalArgumentException if the specified resource is unchanged
      */
-    protected void addFolder(CmsResource resource) throws IllegalArgumentException {
+    protected void add(CmsResource resource, boolean check) throws IllegalArgumentException {
 
-        // it is essential that this method is only visible within the db package!
-
-        if (resource.isFile()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_PUBLISH_NO_FOLDER_1,
-                resource.getRootPath()));
+        if (check) {
+            // it is essential that this method is only visible within the db package!
+            if (resource.getState().isUnchanged()) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
+                    resource.getRootPath()));
+            }
         }
-
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
-                resource.getRootPath()));
-        }
-
-        if (resource.getState() == CmsResource.STATE_DELETED) {
-            m_deletedFolderList.add(resource);
+        if (resource.isFolder()) {
+            if (resource.getState().isDeleted()) {
+                if (!m_deletedFolderList.contains(resource)) {
+                    // only add files not already contained in the list
+                    m_deletedFolderList.add(resource);
+                }
+            } else {
+                if (!m_folderList.contains(resource)) {
+                    // only add files not already contained in the list
+                    m_folderList.add(resource);
+                }
+            }
         } else {
-            m_folderList.add(resource);
+            if (!m_fileList.contains(resource)) {
+                // only add files not already contained in the list
+                // this is required to make sure no siblings are duplicated
+                m_fileList.add(resource);
+            }
         }
     }
 
     /**
-     * Appends all of the new/changed Cms folder resources in the specified list to the end 
-     * of this publish list.<p>
+     * Appends all the given resources to this publish list.<p>
      * 
-     * @param list a list with new/changed Cms folder resources to be added to this publish list
-     * @throws IllegalArgumentException if one of the resources is not a folder or unchanged
+     * @param resources resources to be added to this publish list
+     * @param check if set an exception is thrown if the a resource is unchanged, 
+     *              if not set the resource is ignored
+     * 
+     * @throws IllegalArgumentException if one of the resources is unchanged
      */
-    protected void addFolders(List list) throws IllegalArgumentException {
+    protected void addAll(Collection resources, boolean check) throws IllegalArgumentException {
 
         // it is essential that this method is only visible within the db package!
-
-        Iterator i = list.iterator();
+        Iterator i = resources.iterator();
         while (i.hasNext()) {
-            addFolder((CmsResource)i.next());
+            add((CmsResource)i.next(), check);
         }
     }
 
@@ -374,33 +523,17 @@ public class CmsPublishList {
             if (m_fileList != null) {
                 m_fileList.clear();
             }
-            m_fileList = null;
-
             if (m_folderList != null) {
                 m_folderList.clear();
             }
-            m_folderList = null;
-
             if (m_deletedFolderList != null) {
                 m_deletedFolderList.clear();
             }
-            m_deletedFolderList = null;
         } catch (Throwable t) {
             // ignore
         }
 
         super.finalize();
-    }
-
-    /**
-     * Returns the list with the new/changed Cms folder resources.<p>
-     * 
-     * @return the list with the new/changed Cms folder resources
-     */
-    protected List getFolderListInstance() {
-
-        // it is essential that this method is only visible within the db package!
-        return m_folderList;
     }
 
     /**
@@ -429,12 +562,77 @@ public class CmsPublishList {
      * Removes a Cms resource from the publish list.<p>
      * 
      * @param resource a Cms resource
+     * 
      * @return true if this publish list contains the specified resource
+     * 
      * @see List#remove(java.lang.Object)
      */
     protected boolean remove(CmsResource resource) {
 
         // it is essential that this method is only visible within the db package!
-        return m_fileList.remove(resource);
+        boolean ret = m_fileList.remove(resource);
+        ret |= m_folderList.remove(resource);
+        ret |= m_deletedFolderList.remove(resource);
+        return ret;
+    }
+
+    /**
+     * Builds a list of <code>CmsResource</code> instances from a list of resource structure ids.<p>
+     * 
+     * @param cms a cms object
+     * @param uuidList the list of structure ids
+     * @return a list of <code>CmsResource</code> instances
+     */
+    private List internalReadResourceList(CmsObject cms, List uuidList) {
+
+        List resList = new ArrayList(uuidList.size());
+        for (Iterator i = uuidList.iterator(); i.hasNext();) {
+            try {
+                CmsResource res = cms.readResource((CmsUUID)i.next(), CmsResourceFilter.ALL);
+                resList.add(res);
+            } catch (CmsException exc) {
+                LOG.error(exc);
+            }
+        }
+
+        return resList;
+    }
+
+    /**
+     * Reads a UUID from an object input.<p>
+     * 
+     * @param in the object input
+     * @return a UUID
+     * @throws IOException
+     */
+    private CmsUUID internalReadUUID(ObjectInput in) throws IOException {
+
+        byte[] bytes = new byte[UUID_LENGTH];
+        in.readFully(bytes, 0, UUID_LENGTH);
+        return new CmsUUID(bytes);
+    }
+
+    /**
+     * Reads a sequence of UUIDs from an objetc input and builds a list of <code>CmsResource</code> instances from it.<p>
+     * 
+     * @param in the object input
+     * @return a list of <code>{@link CmsResource}</code> instances
+     * 
+     * @throws IOException if something goes wrong 
+     */
+    private List internalReadUUIDList(ObjectInput in) throws IOException {
+
+        List result = null;
+
+        int i = in.readInt();
+        if (i >= 0) {
+            result = new ArrayList();
+            while (i > 0) {
+                result.add(internalReadUUID(in));
+                i--;
+            }
+        }
+
+        return result;
     }
 }

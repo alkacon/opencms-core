@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/05/18 11:15:40 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/07/04 16:57:12 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,20 @@
 
 package org.opencms.file;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -50,26 +53,25 @@ import java.util.Map;
  * A user in OpenCms is uniquely definded by its user named returned by
  * <code>{@link #getName()}</code>.<p>
  * 
- * Basic users in OpenCms are of type <code>{@link #USER_TYPE_SYSTEMUSER}</code>.
- * This means that the user can access the OpenCms Workplace.
+ * Basic users in OpenCms are users that can access the OpenCms Workplace.
  * Moreover, the user must be created by another user with the
- * <code>{@link org.opencms.security.CmsRole#ACCOUNT_MANAGER}</code>.
- * This user type is for "content managers" that actually have write permissions in 
+ * <code>{@link org.opencms.security.CmsRole#ACCOUNT_MANAGER}</code> role.
+ * These users are "content managers" that actually have write permissions in 
  * at last some parts of the VFS.<p>
  * 
- * Another possible type of users is <code>{@link #USER_TYPE_WEBUSER}</code>.
+ * Another possibility is to have users in a 'Guests' group.
  * These users do not have access to the OpenCms Workplace. 
- * However, a web user can be created by every user, for example the "Guest" user.
- * The main use case is that web users are used for users of the website that 
- * can generate their own accounts, in a "please register your account..." scenario. 
- * These web user accounts can then be used to 
- * build personalized web sites. A web user is created using 
- * <code>{@link org.opencms.file.CmsObject#addWebUser(String, String, String, String, Map)}</code>.<p>
+ * However, an user in a 'Guests' group can be created by every user, for example 
+ * the "Guest" user. The main use case is that these users are used for users of 
+ * the website that can generate their own accounts, in a "please register your 
+ * account..." scenario. 
+ * These user accounts can then be used to build personalized web sites.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 6.0.0
  * 
@@ -77,17 +79,11 @@ import java.util.Map;
  */
 public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
-    /** Identifies the system user type. */
-    public static final int USER_TYPE_SYSTEMUSER = 0;
-
-    /** Identifies the web user type. */
-    public static final int USER_TYPE_WEBUSER = 2;
-
     /** Storage for additional user information. */
     private Map m_additionalInfo;
 
-    /** The address of this user. */
-    private String m_address;
+    /** The creation date. */
+    private long m_dateCreated;
 
     /**  The email of the user. */
     private String m_email;
@@ -108,90 +104,71 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     private String m_password;
 
     /**
-     * Defines if the user is of type "syetem user" or a "web user".<p>
-     * 
-     * Use {@link #USER_TYPE_SYSTEMUSER} for system users, or 
-     * {@link #USER_TYPE_WEBUSER} for web usera.
-     */
-    private int m_type;
-
-    /**
      * Creates a new, empty OpenCms user principal.<p>
      *
-     * Mostly intented to be used with the {@link org.opencms.workplace.tools.accounts.A_CmsEditUserDialog}.<p>
+     * Mostly intented to be used with the <code>org.opencms.workplace.tools.accounts.A_CmsEditUserDialog</code>.<p>
      */
     public CmsUser() {
 
-        this(null, "", "");
-        setAdditionalInfo(new HashMap());
-    }
-
-    /**
-     * Creates a new OpenCms user principal.<p>
-     *
-     * @param id the unique id of the new user
-     * @param name the unique name of the new user
-     * @param description the description of the new user
-     */
-    public CmsUser(CmsUUID id, String name, String description) {
-
         this(
-            id,
-            name,
-            "",
-            description,
-            "",
-            "",
-            "",
-            CmsDbUtil.UNKNOWN_ID,
-            I_CmsPrincipal.FLAG_ENABLED,
             null,
             "",
-            CmsDbUtil.UNKNOWN_ID);
+            "",
+            "",
+            "",
+            "",
+            0,
+            I_CmsPrincipal.FLAG_ENABLED,
+            System.currentTimeMillis(),
+            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, ""));
     }
 
     /**
      * Creates a new OpenCms user principal.<p>
      * 
      * @param id the unique id of the new user
-     * @param name the unique name of the new user
+     * @param name the fully qualified name of the new user
      * @param password the password of the user
-     * @param description the description of the new user
      * @param firstname the first name
      * @param lastname the last name
      * @param email the email address
      * @param lastlogin time stamp 
      * @param flags flags
+     * @param dateCreated the creation date
      * @param additionalInfo user related information
-     * @param address the address
-     * @param type the type of this user
      */
     public CmsUser(
         CmsUUID id,
         String name,
         String password,
-        String description,
         String firstname,
         String lastname,
         String email,
         long lastlogin,
         int flags,
-        Map additionalInfo,
-        String address,
-        int type) {
+        long dateCreated,
+        Map additionalInfo) {
 
         m_id = id;
         m_name = name;
         m_password = password;
-        m_description = description;
         m_firstname = firstname;
         m_lastname = lastname;
         m_email = email;
         m_lastlogin = lastlogin;
         m_flags = flags;
-        m_additionalInfo = additionalInfo;
-        m_address = address;
-        m_type = type;
+        m_dateCreated = dateCreated;
+        if (additionalInfo != null) {
+            m_additionalInfo = new HashMap(additionalInfo);
+        } else {
+            m_additionalInfo = new HashMap();
+        }
+        if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_ADDRESS) == null) {
+            m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, "");
+        }
+        if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION) == null) {
+            m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, "");
+        }
     }
 
     /**
@@ -249,18 +226,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if the provided user type indicates a web user.<p>
-     * 
-     * @param type the user type to check
-     * 
-     * @return true if the provided user type indicates a web user
-     */
-    public static boolean isWebUser(int type) {
-
-        return (type & 2) > 0;
-    }
-
-    /**
      * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
      * 
@@ -282,15 +247,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             m_id,
             m_name,
             m_password,
-            m_description,
             m_firstname,
             m_lastname,
             m_email,
             m_lastlogin,
             m_flags,
-            m_additionalInfo != null ? new HashMap(m_additionalInfo) : null,
-            m_address,
-            m_type);
+            m_dateCreated,
+            m_additionalInfo);
     }
 
     /**
@@ -308,10 +271,10 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Returns this users complete "additional information" storage map.<p>
      *
-     * The "additional information" storage map is a simple {@link java.util#Map}
+     * The "additional information" storage map is a simple {@link java.util.Map}
      * that can be used to store any key / value pairs for the user.
      * Some information parts of the users address are stored in this map
-     * by default. The map is serialized when the user is stored in the database.<p>
+     * by default.<p>
      * 
      * @return this users complete "additional information" storage map
      */
@@ -342,13 +305,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public String getAddress() {
 
-        return m_address;
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ADDRESS);
     }
 
     /**
      * Returns the city information of this user.<p>
      * 
-     * This informaion is stored in the "additional information" storage map
+     * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_CITY}</code>.<p>
      * 
      * @return the city information of this user
@@ -372,6 +335,38 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Returns the creation date.<p>
+     *
+     * @return the creation date
+     */
+    public long getDateCreated() {
+
+        return m_dateCreated;
+    }
+
+    /**
+     * @see org.opencms.security.CmsPrincipal#getDescription()
+     */
+    public String getDescription() {
+
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION);
+    }
+
+    /**
+     * Returns the description of this organizational unit.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the description of this organizational unit
+     */
+    public String getDescription(Locale locale) {
+
+        CmsMacroResolver macroResolver = new CmsMacroResolver();
+        macroResolver.setMessages(org.opencms.db.generic.Messages.get().getBundle(locale));
+        return macroResolver.resolveMacros((String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION));
+    }
+
+    /**
      * Returns <code>true</code> if this user is disabled.<p>
      *
      * @return <code>true</code> if this user is disabled
@@ -381,6 +376,21 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public boolean getDisabled() {
 
         return !isEnabled();
+    }
+
+    /**
+     * @see org.opencms.security.CmsPrincipal#getDisplayName(org.opencms.file.CmsObject, java.util.Locale)
+     */
+    public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
+
+        if (OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).size() > 0) {
+            return org.opencms.security.Messages.get().getBundle(locale).key(
+                org.opencms.security.Messages.GUI_PRINCIPAL_DISPLAY_NAME_2,
+                getFullName(),
+                OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, getOuFqn()).getDisplayName(locale));
+        } else {
+            return getFullName();
+        }
     }
 
     /**
@@ -422,7 +432,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
             buf.append(" ");
         }
         buf.append("(");
-        buf.append(getName());
+        buf.append(getSimpleName());
         buf.append(")");
         return buf.toString();
     }
@@ -458,20 +468,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the type of this user.<p>
-     * 
-     * Possible options are
-     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a "system user",
-     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a "web user".<p>
-     *
-     * @return the type of this user
-     */
-    public int getType() {
-
-        return m_type;
-    }
-
-    /**
      * Returns the zip code information of this user.<p>
      * 
      * This informaion is stored in the "additional information" storage map
@@ -499,17 +495,17 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public boolean isGuestUser() {
 
-        return OpenCms.getDefaultUsers().getUserGuest().equals(getName());
+        return OpenCms.getDefaultUsers().isUserGuest(getName());
     }
 
     /**
-     * Returns <code>true</code> if this user is a "system user".<p>
+     * Returns <code>true</code> if this user is not able to manage itselfs.<p> 
      * 
-     * @return true if this user is a "system user"
+     * @return <code>true</code> if this user is not able to manage itselfs 
      */
-    public boolean isSystemUser() {
+    public boolean isManaged() {
 
-        return isSystemUser(m_type);
+        return (getFlags() & I_CmsPrincipal.FLAG_USER_MANAGED) == I_CmsPrincipal.FLAG_USER_MANAGED;
     }
 
     /**
@@ -528,16 +524,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public boolean isUser() {
 
         return true;
-    }
-
-    /**
-     * Returns <code>true</code> if this user is a "web user".<p>
-     * 
-     * @return true if this user is a "web user"
-     */
-    public boolean isWebUser() {
-
-        return isWebUser(m_type);
     }
 
     /**
@@ -572,7 +558,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setAddress(String address) {
 
-        m_address = address;
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
     }
 
     /**
@@ -593,6 +579,14 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setCountry(String country) {
 
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY, country);
+    }
+
+    /**
+     * @see org.opencms.security.CmsPrincipal#setDescription(java.lang.String)
+     */
+    public void setDescription(String description) {
+
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
     }
 
     /**
@@ -633,9 +627,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setFirstname(String firstname) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(firstname)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FIRSTNAME_EMPTY_0));
-        }
+        OpenCms.getValidationHandler().checkFirstname(firstname);
         m_firstname = firstname;
     }
 
@@ -657,10 +649,20 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      */
     public void setLastname(String lastname) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
-        }
+        OpenCms.getValidationHandler().checkLastname(lastname);
         m_lastname = lastname;
+    }
+
+    /**
+     * Sets the managed flag for this user to the given value.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setManaged(boolean value) {
+
+        if (isManaged() != value) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_USER_MANAGED);
+        }
     }
 
     /**
@@ -686,7 +688,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setZipcode(String zipcode) {
 
         checkZipCode(zipcode);
-        zipcode = zipcode.toUpperCase();
+        if (CmsStringUtil.isNotEmpty(zipcode)) {
+            zipcode = zipcode.toUpperCase();
+        }
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
     }
 
@@ -698,15 +702,13 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         StringBuffer result = new StringBuffer();
         result.append("[User]");
         result.append(" name:");
-        result.append(m_name);
+        result.append(getName());
         result.append(" id:");
         result.append(m_id);
         result.append(" flags:");
         result.append(getFlags());
-        result.append(" type:");
-        result.append(getType());
         result.append(" description:");
-        result.append(m_description);
+        result.append(getDescription());
         return result.toString();
     }
 
@@ -716,19 +718,5 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void touch() {
 
         m_isTouched = true;
-    }
-
-    /**
-     * Sets the type of this user.<p>
-     * 
-     * Possible options are
-     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a "system user",
-     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a "web user".<p>
-     * 
-     * @param value the type to set
-     */
-    protected void setType(int value) {
-
-        m_type = value;
     }
 }

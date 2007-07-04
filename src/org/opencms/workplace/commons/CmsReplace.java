@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/07/04 16:57:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,7 +120,7 @@ public class CmsReplace extends CmsDialog {
                 long size = fi.getSize();
                 long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
                 // check file size
-                if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
+                if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                     // file size is larger than maximum allowed file size, throw an error
                     throw new CmsException(Messages.get().container(
                         Messages.ERR_FILE_SIZE_TOO_LARGE_1,
@@ -162,13 +162,13 @@ public class CmsReplace extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to replace the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -182,8 +182,7 @@ public class CmsReplace extends CmsDialog {
             // first call of dialog
             setAction(ACTION_DEFAULT);
             // build title for replace resource dialog     
-            setParamTitle(key(Messages.GUI_REPLACE_FILE_1, 
-                new Object[] {CmsResource.getName(getParamResource())}));
+            setParamTitle(key(Messages.GUI_REPLACE_FILE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

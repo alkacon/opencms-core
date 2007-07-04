@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDefaultComparator.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/04 16:57:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -72,9 +72,12 @@ public class CmsListItemDefaultComparator implements I_CmsListItemComparator {
              */
             public int compare(Object o1, Object o2) {
 
+                if ((o1 == o2) || !(o1 instanceof CmsListItem) || !(o2 instanceof CmsListItem)) {
+                    return 0;
+                }
                 Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
                 Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                if (c1 instanceof String && c2 instanceof String) {
+                if ((c1 instanceof String) && (c2 instanceof String)) {
                     return collator.compare(c1, c2);
                 } else if (c1 != null) {
                     if (c2 == null) {

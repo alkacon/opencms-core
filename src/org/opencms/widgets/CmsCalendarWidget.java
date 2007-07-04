@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2006/09/22 15:17:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/07/04 16:57:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +81,7 @@ public class CmsCalendarWidget extends A_CmsWidget {
         super(configuration);
     }
 
-	/**
+    /**
      * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
      * 
      * The default <code>"opencms"</code> style is used.<p>
@@ -287,24 +288,6 @@ public class CmsCalendarWidget extends A_CmsWidget {
         return calendarIncludes(widgetDialog.getLocale());
     }
 
-    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        String result = param.getStringValue(cms);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
-            try {
-                result = getCalendarLocalizedTime(
-                    widgetDialog.getLocale(),
-                    widgetDialog.getMessages(),
-                    Long.parseLong(result));
-            } catch (NumberFormatException e) {
-                result = "";
-            }
-        } else {
-            result = "";
-        }
-        return result;
-    }
-
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
@@ -357,6 +340,30 @@ public class CmsCalendarWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        String result = param.getStringValue(cms);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result) && !"0".equals(result)) {
+            try {
+                result = getCalendarLocalizedTime(
+                    widgetDialog.getLocale(),
+                    widgetDialog.getMessages(),
+                    Long.parseLong(result));
+            } catch (NumberFormatException e) {
+                if (!CmsMacroResolver.isMacro(result, CmsMacroResolver.KEY_CURRENT_TIME)) {
+                    // neither long nor macro, show empty value
+                    result = "";
+                }
+            }
+        } else {
+            result = "";
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
@@ -375,26 +382,32 @@ public class CmsCalendarWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            long dateTime;
-            try {
-                dateTime = Long.valueOf(param.getStringValue(cms)).longValue();
-            } catch (NumberFormatException e) {
-                dateTime = 0;
-            }
             String dateTimeValue = values[0].trim();
-            if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
-                try {
-                    dateTime = getCalendarDate(widgetDialog.getMessages(), dateTimeValue, true);
-                } catch (ParseException e) {
-                    // TODO: Better exception handling
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
-                    }
-                }
+            if (CmsMacroResolver.isMacro(dateTimeValue, CmsMacroResolver.KEY_CURRENT_TIME)) {
+                // a macro is used, redisplay it
+                param.setStringValue(cms, dateTimeValue);
             } else {
-                dateTime = 0;
+                // a date value should be used
+                long dateTime;
+                try {
+                    dateTime = Long.valueOf(param.getStringValue(cms)).longValue();
+                } catch (NumberFormatException e) {
+                    dateTime = 0;
+                }
+                if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
+                    try {
+                        dateTime = getCalendarDate(widgetDialog.getMessages(), dateTimeValue, true);
+                    } catch (ParseException e) {
+                        // TODO: Better exception handling
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
+                        }
+                    }
+                } else {
+                    dateTime = 0;
+                }
+                param.setStringValue(cms, String.valueOf(dateTime));
             }
-            param.setStringValue(cms, String.valueOf(dateTime));
         }
     }
 }

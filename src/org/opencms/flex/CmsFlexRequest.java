@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2006/03/27 14:52:35 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/07/04 16:57:43 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,13 +126,13 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] paras = req.getParameterValues(PARAMETER_FLEX);
-        boolean nocachepara = false;
+        boolean nocachepara = CmsHistoryResourceHandler.isHistoryRequest(req);
         boolean dorecompile = false;
         if (paras != null) {
-            if (cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
                 List l = Arrays.asList(paras);
                 boolean firstCall = controller.isEmptyRequestList();
-                nocachepara = l.contains("nocache");
+                nocachepara |= l.contains("nocache");
                 dorecompile = l.contains("recompile");
                 boolean p_on = l.contains("online");
                 boolean p_off = l.contains("offline");
@@ -235,14 +236,15 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             HashMap parameters = new HashMap();
             parameters.putAll(m_parameters);
 
-            Iterator it = map.keySet().iterator();
+            Iterator it = map.entrySet().iterator();
             while (it.hasNext()) {
-                String key = (String)it.next();
+                Map.Entry entry = (Map.Entry)it.next();                
+                String key = (String)entry.getKey();
                 // Check if the parameter name (key) exists
                 if (parameters.containsKey(key)) {
 
                     String[] oldValues = (String[])parameters.get(key);
-                    String[] newValues = (String[])map.get(key);
+                    String[] newValues = (String[])entry.getValue();
 
                     String[] mergeValues = new String[oldValues.length + newValues.length];
                     System.arraycopy(newValues, 0, mergeValues, 0, newValues.length);
@@ -251,7 +253,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                     parameters.put(key, mergeValues);
                 } else {
                     // No: Add new value array
-                    parameters.put(key, map.get(key));
+                    parameters.put(key, entry.getValue());
                 }
             }
             m_parameters = Collections.unmodifiableMap(parameters);

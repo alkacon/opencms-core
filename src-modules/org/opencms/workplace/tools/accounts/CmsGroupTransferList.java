@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupTransferList.java,v $
- * Date   : $Date: 2006/03/27 14:52:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/04 16:56:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,7 +98,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     public static final String LIST_DEFACTION_TRANSFER = "dt";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_CHILDS = "dc";
+    public static final String LIST_DETAIL_CHILDREN = "dc";
 
     /** list item detail id constant. */
     public static final String LIST_DETAIL_USERS = "du";
@@ -264,12 +265,12 @@ public class CmsGroupTransferList extends A_CmsListDialog {
                         }
                         html.append("\n");
                     }
-                } else if (detailId.equals(LIST_DETAIL_CHILDS)) {
-                    // childs
-                    Iterator itChilds = getCms().getChild(groupName).iterator();
-                    while (itChilds.hasNext()) {
-                        html.append(((CmsGroup)itChilds.next()).getName());
-                        if (itChilds.hasNext()) {
+                } else if (detailId.equals(LIST_DETAIL_CHILDREN)) {
+                    // children
+                    Iterator itChildren = getCms().getChildren(groupName, false).iterator();
+                    while (itChildren.hasNext()) {
+                        html.append(((CmsGroup)itChildren.next()).getName());
+                        if (itChildren.hasNext()) {
                             html.append("<br>");
                         }
                         html.append("\n");
@@ -293,7 +294,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
      */
     protected List getGroups() throws CmsException {
 
-        return CmsPrincipal.filterCore(getCms().getGroups());
+        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
     }
 
     /**
@@ -313,7 +314,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
             }
             CmsListItem item = getList().newItem(group.getId().toString());
             item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription(getLocale()));
             try {
                 item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
             } catch (Exception e) {
@@ -383,20 +384,6 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the icon actions for the transfer list.<p>
-     * 
-     * @param transferCol the column to set the action
-     */
-    protected void setTransferAction(CmsListColumnDefinition transferCol) {
-
-        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
-        transferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
-        transferAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
-        transferAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
-        transferCol.addDirectAction(transferAction);
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -414,17 +401,17 @@ public class CmsGroupTransferList extends A_CmsListDialog {
             Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
-        // add user childs details
-        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDS);
+        // add user children details
+        CmsListItemDetails childDetails = new CmsListItemDetails(LIST_DETAIL_CHILDREN);
         childDetails.setAtColumn(LIST_COLUMN_NAME);
         childDetails.setVisible(false);
-        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_NAME_0));
-        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDS_HELP_0));
-        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_NAME_0));
-        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDS_HELP_0));
-        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0));
+        childDetails.setShowActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_NAME_0));
+        childDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SHOW_CHILDREN_HELP_0));
+        childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0));
+        childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0));
+        childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0));
         childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_CHILDS_NAME_0)));
+            Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
         metadata.addItemDetails(childDetails);
     }
 
@@ -434,6 +421,20 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
+    }
+
+    /**
+     * Sets the icon actions for the transfer list.<p>
+     * 
+     * @param transferCol the column to set the action
+     */
+    protected void setTransferAction(CmsListColumnDefinition transferCol) {
+
+        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
+        transferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
+        transferAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
+        transferAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
+        transferCol.addDirectAction(transferAction);
     }
 
     /**

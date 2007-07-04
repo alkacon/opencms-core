@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2007/02/23 16:23:06 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2007/07/04 16:56:41 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,16 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
-import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.CmsOrgUnitManager;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleManager;
+import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSiteManager;
@@ -93,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +167,16 @@ public final class OpenCms {
     public static void fireCmsEvent(int type, Map data) {
 
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
+    }
+
+    /**
+     * Returns the configured authorization handler.<p>
+     *
+     * @return the configured authorization handler
+     */
+    public static I_CmsAuthorizationHandler getAuthorizationHandler() {
+
+        return OpenCmsCore.getInstance().getAuthorizationHandler();
     }
 
     /**
@@ -241,16 +254,6 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the lock manager used for the locking mechanism.<p>
-     * 
-     * @return the lock manager used for the locking mechanism
-     */
-    public static CmsLockManager getLockManager() {
-
-        return OpenCmsCore.getInstance().getLockManager();
-    }
-
-    /**
      * Returns the log for the selected object.<p>
      * 
      * If the provided object is a String, this String will
@@ -296,6 +299,16 @@ public final class OpenCms {
     }
 
     /**
+     * Returns the organizational unit manager.<p>
+     * 
+     * @return the organizational unit manager
+     */
+    public static CmsOrgUnitManager getOrgUnitManager() {
+
+        return OpenCmsCore.getInstance().getOrgUnitManager();
+    }
+
+    /**
      * Returns the password handler.<p>
      * 
      * @return the password handler
@@ -303,6 +316,16 @@ public final class OpenCms {
     public static I_CmsPasswordHandler getPasswordHandler() {
 
         return OpenCmsCore.getInstance().getPasswordHandler();
+    }
+
+    /**
+     * Returns the core publish manager class.<p>
+     * 
+     * @return the publish manager instance
+     */
+    public static CmsPublishManager getPublishManager() {
+
+        return OpenCmsCore.getInstance().getPublishManager();
     }
 
     /**
@@ -314,7 +337,7 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getRepositoryManager();
     }
-    
+
     /**
      * Returns the resource manager.<p>
      * 
@@ -323,6 +346,16 @@ public final class OpenCms {
     public static CmsResourceManager getResourceManager() {
 
         return OpenCmsCore.getInstance().getResourceManager();
+    }
+
+    /**
+     * Returns the role manager.<p>
+     * 
+     * @return the role manager
+     */
+    public static CmsRoleManager getRoleManager() {
+
+        return OpenCmsCore.getInstance().getRoleManager();
     }
 
     /**
