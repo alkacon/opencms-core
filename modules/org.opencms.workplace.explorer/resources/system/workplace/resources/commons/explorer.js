@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/07/03 17:50:10 $
- * Version: $Revision: 1.13.4.32 $
+ * Date   : $Date: 2007/07/04 12:19:13 $
+ * Version: $Revision: 1.13.4.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -722,6 +722,9 @@ function printList(wo) {
 			} else if (vi.liste[i].lockState == 3) {
 				lockIcon = vi.skinPath + 'explorer/lock_user.gif';
 				lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
+			}
+			if (vi.liste[i].projectState == 5) {
+				lockIcon = vi.skinPath + 'explorer/lock_other.gif';
 			}
 			if (lockIcon != '') {
 	        	wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");
