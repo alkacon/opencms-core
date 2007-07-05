@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/07/04 16:57:18 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/07/05 09:09:21 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,14 +127,14 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /** List column id constant. */
     public static final String LIST_COLUMN_URI = "nrcu";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
-
     /** Request parameter name for the append html suffix checkbox. */
     public static final String PARAM_APPENDSUFFIXHTML = "appendsuffixhtml";
 
     /** Request parameter name for the current folder name. */
     public static final String PARAM_CURRENTFOLDER = "currentfolder";
+
+    /** Request parameter name for the new form uri. */
+    public static final String PARAM_NEWFORMURI = "newformuri";
 
     /** Request parameter name for the new resource edit properties flag. */
     public static final String PARAM_NEWRESOURCEEDITPROPS = "newresourceeditprops";
@@ -147,6 +147,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
     /** The property value for available resource to reset behaviour to default dialog. */
     public static final String VALUE_DEFAULT = "default";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
     private String m_availableResTypes;
     private boolean m_limitedRestypes;
 
@@ -154,6 +157,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     private String m_paramAppendSuffixHtml;
     private String m_paramCurrentFolder;
     private String m_paramDialogMode;
+    private String m_paramNewFormUri;
     private String m_paramNewResourceEditProps;
     private String m_paramNewResourceType;
 
@@ -209,67 +213,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             title = title.substring(0, lastDot);
         }
         return title;
-    }
-
-    /**
-     * Creates a single property object and sets the value individual or shared depending on the OpenCms settings.<p>
-     * 
-     * @param name the name of the property
-     * @param value the value to set
-     * @return an initialized property object 
-     */
-    protected static CmsProperty createPropertyObject(String name, String value) {
-
-        CmsProperty prop = new CmsProperty();
-        prop.setAutoCreatePropertyDefinition(true);
-        prop.setName(name);
-        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-            prop.setValue(value, CmsProperty.TYPE_INDIVIDUAL);
-        } else {
-            prop.setValue(value, CmsProperty.TYPE_SHARED);
-        }
-        return prop;
-    }
-
-    /**
-     * Returns the properties to create automatically with the new VFS resource.<p>
-     * 
-     * If configured, the Title and Navigation properties are set on resource creation.<p>
-     * 
-     * @param cms the initialized CmsObject
-     * @param resourceName the full resource name
-     * @param resTypeName the name of the resource type
-     * @param title the Title String to use for the property values
-     * @return the List of initialized property objects
-     */
-    protected static List createResourceProperties(CmsObject cms, String resourceName, String resTypeName, String title) {
-
-        // create property values
-        List properties = new ArrayList(3);
-
-        // get explorer type settings for the resource type
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
-        if (settings.isAutoSetTitle()) {
-
-            // add the Title property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_TITLE, title));
-        }
-        if (settings.isAutoSetNavigation()) {
-
-            // add the NavText property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
-
-            // calculate the new navigation position for the resource
-            List navList = CmsJspNavBuilder.getNavigationForFolder(cms, resourceName);
-            float navPos = 1;
-            if (navList.size() > 0) {
-                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
-                navPos = nav.getNavPosition() + 1;
-            }
-            // add the NavPos property
-            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
-        }
-        return properties;
     }
 
     /**
@@ -332,6 +275,67 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         }
 
         return handler;
+    }
+
+    /**
+     * Creates a single property object and sets the value individual or shared depending on the OpenCms settings.<p>
+     * 
+     * @param name the name of the property
+     * @param value the value to set
+     * @return an initialized property object 
+     */
+    protected static CmsProperty createPropertyObject(String name, String value) {
+
+        CmsProperty prop = new CmsProperty();
+        prop.setAutoCreatePropertyDefinition(true);
+        prop.setName(name);
+        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+            prop.setValue(value, CmsProperty.TYPE_INDIVIDUAL);
+        } else {
+            prop.setValue(value, CmsProperty.TYPE_SHARED);
+        }
+        return prop;
+    }
+
+    /**
+     * Returns the properties to create automatically with the new VFS resource.<p>
+     * 
+     * If configured, the Title and Navigation properties are set on resource creation.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @param resourceName the full resource name
+     * @param resTypeName the name of the resource type
+     * @param title the Title String to use for the property values
+     * @return the List of initialized property objects
+     */
+    protected static List createResourceProperties(CmsObject cms, String resourceName, String resTypeName, String title) {
+
+        // create property values
+        List properties = new ArrayList(3);
+
+        // get explorer type settings for the resource type
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (settings.isAutoSetTitle()) {
+
+            // add the Title property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_TITLE, title));
+        }
+        if (settings.isAutoSetNavigation()) {
+
+            // add the NavText property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
+
+            // calculate the new navigation position for the resource
+            List navList = CmsJspNavBuilder.getNavigationForFolder(cms, resourceName);
+            float navPos = 1;
+            if (navList.size() > 0) {
+                CmsJspNavElement nav = (CmsJspNavElement)navList.get(navList.size() - 1);
+                navPos = nav.getNavPosition() + 1;
+            }
+            // add the NavPos property
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
+        }
+        return properties;
     }
 
     /**
@@ -469,7 +473,285 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         CmsUriSplitter splitter = new CmsUriSplitter(nextUri);
         Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
         params.putAll(paramsAsParameterMap());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_page)) {
+            params.remove(PARAM_PAGE);
+        }
         sendForward(splitter.getPrefix(), params);
+    }
+
+    /**
+     * Returns the value for the Title property from the given resource name.<p>
+     * 
+     * @return the value for the Title property from the given resource name
+     */
+    public String computeNewTitleProperty() {
+
+        return computeNewTitleProperty(getParamResource());
+    }
+
+    /**
+     * Builds a default button row with a continue and cancel button.<p>
+     * 
+     * Override this to have special buttons for your dialog.<p>
+     * 
+     * @return the button row 
+     */
+    public String dialogButtons() {
+
+        return dialogButtonsAdvancedNextCancel(
+            " onclick=\"submitAdvanced();\"",
+            "id=\"nextButton\" disabled=\"disabled\"",
+            null);
+    }
+
+    /**
+     * Builds a button row with an optional "advanced", "next" and a "cancel" button.<p>
+     * 
+     * @param advancedAttrs optional attributes for the advanced button
+     * @param nextAttrs optional attributes for the next button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @return the button row 
+     */
+    public String dialogButtonsAdvancedNextCancel(String advancedAttrs, String nextAttrs, String cancelAttrs) {
+
+        if (m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+            return dialogButtons(new int[] {BUTTON_ADVANCED, BUTTON_NEXT, BUTTON_CANCEL}, new String[] {
+                advancedAttrs,
+                nextAttrs,
+                cancelAttrs});
+        } else {
+            return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
+        }
+    }
+
+    /**
+     * Builds a button row with a "next" and a "cancel" button.<p>
+     * 
+     * @param nextAttrs optional attributes for the next button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @return the button row 
+     */
+    public String dialogButtonsNextCancel(String nextAttrs, String cancelAttrs) {
+
+        return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
+    }
+
+    /**
+     * Returns the parameter to check if a ".html" suffix should be added to the new resource name.<p>
+     * 
+     * @return the parameter to check if a ".html" suffix should be added to the new resource name
+     */
+    public String getParamAppendSuffixHtml() {
+
+        return m_paramAppendSuffixHtml;
+    }
+
+    /**
+     * Returns the current folder set by the http request.<p>
+     *  
+     * If the request parameter value is null/empty then returns the default computed folder.<p>
+     *
+     * @return the current folder set by the request param or the computed current folder
+     */
+    public String getParamCurrentFolder() {
+
+        if (CmsStringUtil.isEmpty(m_paramCurrentFolder)) {
+            return computeCurrentFolder();
+        }
+
+        return m_paramCurrentFolder;
+    }
+
+    /**
+     * Returns the value of the dialogmode parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The dialogmode parameter stores the different modes of the property dialog,
+     * e.g. for displaying other buttons in the new resource wizard.<p>
+     * 
+     * @return the value of the usetempfileproject parameter
+     */
+    public String getParamDialogmode() {
+
+        return m_paramDialogMode;
+    }
+
+    /**
+     * Returns the new form URI parameter.<p>
+     *
+     * @return the new form URI parameter
+     */
+    public String getParamNewFormUri() {
+
+        return m_paramNewFormUri;
+    }
+
+    /**
+     * Returns the new resource edit properties flag parameter.<p>
+     * 
+     * @return the new resource edit properties flag parameter
+     */
+    public String getParamNewResourceEditProps() {
+
+        return m_paramNewResourceEditProps;
+    }
+
+    /**
+     * Returns the new resource type parameter.<p>
+     * 
+     * @return the new resource type parameter
+     */
+    public String getParamNewResourceType() {
+
+        return m_paramNewResourceType;
+    }
+
+    /**
+     * Returns the new resource URI parameter.<p>
+     * 
+     * @return the new resource URI parameter
+     */
+    public String getParamNewResourceUri() {
+
+        return m_paramNewResourceUri;
+    }
+
+    /**
+     * Returns the paramPage.<p>
+     *
+     * @return the paramPage
+     */
+    public String getParamPage() {
+
+        return m_paramPage;
+    }
+
+    /**
+     * Returns true if the current mode is: create an index page in a newly created folder.<p>
+     * 
+     * @return true if we are in wizard mode to create an index page, otherwise false
+     */
+    public boolean isCreateIndexMode() {
+
+        return CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode());
+    }
+
+    /**
+     * Returns true if the resource is created successfully; otherwise false.<p>
+     * 
+     * @return true if the resource is created successfully; otherwise false
+     */
+    public boolean isResourceCreated() {
+
+        return m_resourceCreated;
+    }
+
+    /**
+     * Overrides the super implementation to avoid problems with double reqource input fields.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     */
+    public String paramsAsHidden() {
+
+        String resourceName = getParamResource();
+
+        // remove resource parameter from hidden params to avoid problems with double input fields in form
+        setParamResource(null);
+        String params = super.paramsAsHidden();
+
+        // set resource parameter to stored value
+        setParamResource(resourceName);
+        return params;
+    }
+
+    /**
+     * Sets the parameter to check if a ".html" suffix should be added to the new resource name.<p>
+     * 
+     * @param paramAppendSuffixHtml the parameter to check if a ".html" suffix should be added to the new resource name
+     */
+    public void setParamAppendSuffixHtml(String paramAppendSuffixHtml) {
+
+        m_paramAppendSuffixHtml = paramAppendSuffixHtml;
+    }
+
+    /**
+     * Sets the current folder.<p>
+     *
+     * @param paramCurrentFolder the current folder to set
+     */
+    public void setParamCurrentFolder(String paramCurrentFolder) {
+
+        m_paramCurrentFolder = paramCurrentFolder;
+    }
+
+    /**
+     * Sets the value of the dialogmode parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamDialogmode(String value) {
+
+        m_paramDialogMode = value;
+    }
+
+    /**
+     * Sets the new form URI parameter.<p>
+     *
+     * @param paramNewFormUri the new form URI parameter to set
+     */
+    public void setParamNewFormUri(String paramNewFormUri) {
+
+        m_paramNewFormUri = paramNewFormUri;
+    }
+
+    /**
+     * Sets the new resource edit properties flag parameter.<p>
+     * 
+     * @param newResourceEditProps the new resource edit properties flag parameter
+     */
+    public void setParamNewResourceEditProps(String newResourceEditProps) {
+
+        m_paramNewResourceEditProps = newResourceEditProps;
+    }
+
+    /**
+     * Sets the new resource type parameter.<p>
+     * 
+     * @param newResourceType the new resource type parameter
+     */
+    public void setParamNewResourceType(String newResourceType) {
+
+        m_paramNewResourceType = newResourceType;
+    }
+
+    /**
+     * Sets the new resource URI parameter.<p>
+     * 
+     * @param newResourceUri the new resource URI parameter
+     */
+    public void setParamNewResourceUri(String newResourceUri) {
+
+        m_paramNewResourceUri = newResourceUri;
+    }
+
+    /**
+     * Sets the paramPage.<p>
+     *
+     * @param paramPage the paramPage to set
+     */
+    public void setParamPage(String paramPage) {
+
+        m_paramPage = paramPage;
+    }
+
+    /**
+     * Sets the boolean flag successfullyCreated.<p>
+     *   
+     * @param successfullyCreated a boolean flag that indicates if the create resource operation was successfull or not
+     */
+    public void setResourceCreated(boolean successfullyCreated) {
+
+        m_resourceCreated = successfullyCreated;
     }
 
     /**
@@ -505,16 +787,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             currentFolder = computeCurrentFolder();
         }
         return currentFolder + getParamResource();
-    }
-
-    /**
-     * Returns the value for the Title property from the given resource name.<p>
-     * 
-     * @return the value for the Title property from the given resource name
-     */
-    public String computeNewTitleProperty() {
-
-        return computeNewTitleProperty(getParamResource());
     }
 
     /**
@@ -564,41 +836,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     }
 
     /**
-     * Builds a default button row with a continue and cancel button.<p>
-     * 
-     * Override this to have special buttons for your dialog.<p>
-     * 
-     * @return the button row 
-     */
-    public String dialogButtons() {
-
-        return dialogButtonsAdvancedNextCancel(
-            " onclick=\"submitAdvanced();\"",
-            "id=\"nextButton\" disabled=\"disabled\"",
-            null);
-    }
-
-    /**
-     * Builds a button row with an optional "advanced", "next" and a "cancel" button.<p>
-     * 
-     * @param advancedAttrs optional attributes for the advanced button
-     * @param nextAttrs optional attributes for the next button
-     * @param cancelAttrs optional attributes for the cancel button
-     * @return the button row 
-     */
-    public String dialogButtonsAdvancedNextCancel(String advancedAttrs, String nextAttrs, String cancelAttrs) {
-
-        if (m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
-            return dialogButtons(new int[] {BUTTON_ADVANCED, BUTTON_NEXT, BUTTON_CANCEL}, new String[] {
-                advancedAttrs,
-                nextAttrs,
-                cancelAttrs});
-        } else {
-            return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
-        }
-    }
-
-    /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
@@ -616,18 +853,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             default:
                 super.dialogButtonsHtml(result, button, attribute);
         }
-    }
-
-    /**
-     * Builds a button row with a "next" and a "cancel" button.<p>
-     * 
-     * @param nextAttrs optional attributes for the next button
-     * @param cancelAttrs optional attributes for the cancel button
-     * @return the button row 
-     */
-    public String dialogButtonsNextCancel(String nextAttrs, String cancelAttrs) {
-
-        return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
     }
 
     /**
@@ -721,86 +946,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     }
 
     /**
-     * Returns the parameter to check if a ".html" suffix should be added to the new resource name.<p>
-     * 
-     * @return the parameter to check if a ".html" suffix should be added to the new resource name
-     */
-    public String getParamAppendSuffixHtml() {
-
-        return m_paramAppendSuffixHtml;
-    }
-
-    /**
-     * Returns the current folder set by the http request.<p>
-     *  
-     * If the request parameter value is null/empty then returns the default computed folder.<p>
-     *
-     * @return the current folder set by the request param or the computed current folder
-     */
-    public String getParamCurrentFolder() {
-
-        if (CmsStringUtil.isEmpty(m_paramCurrentFolder)) {
-            return computeCurrentFolder();
-        }
-
-        return m_paramCurrentFolder;
-    }
-
-    /**
-     * Returns the value of the dialogmode parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The dialogmode parameter stores the different modes of the property dialog,
-     * e.g. for displaying other buttons in the new resource wizard.<p>
-     * 
-     * @return the value of the usetempfileproject parameter
-     */
-    public String getParamDialogmode() {
-
-        return m_paramDialogMode;
-    }
-
-    /**
-     * Returns the new resource edit properties flag parameter.<p>
-     * 
-     * @return the new resource edit properties flag parameter
-     */
-    public String getParamNewResourceEditProps() {
-
-        return m_paramNewResourceEditProps;
-    }
-
-    /**
-     * Returns the new resource type parameter.<p>
-     * 
-     * @return the new resource type parameter
-     */
-    public String getParamNewResourceType() {
-
-        return m_paramNewResourceType;
-    }
-
-    /**
-     * Returns the new resource URI parameter.<p>
-     * 
-     * @return the new resource URI parameter
-     */
-    public String getParamNewResourceUri() {
-
-        return m_paramNewResourceUri;
-    }
-
-    /**
-     * Returns the paramPage.<p>
-     *
-     * @return the paramPage
-     */
-    public String getParamPage() {
-
-        return m_paramPage;
-    }
-
-    /**
      * Returns the title to use for the dialog.<p>
      * 
      * Checks if a custom title key is given in the explorer type settings 
@@ -842,9 +987,15 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         if (CmsStringUtil.isNotEmpty(getParamPage())) {
             m_page = getParamPage();
-            setParamAction(null);
-            setParamNewResourceUri(null);
-            setParamPage(null);
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri())) {
+                setParamNewFormUri(getParamNewResourceUri());
+                setParamNewResourceUri(null);
+            }
+
+            if ((DIALOG_NEWFORM.equals(getParamAction())) || (LIST_INDEPENDENT_ACTION.equals(getParamAction()))) {
+                setParamAction(null);
+            }
         }
 
         // set the action for the JSP switch 
@@ -885,44 +1036,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
                 }
             }
         }
-    }
-
-    /**
-     * Returns true if the current mode is: create an index page in a newly created folder.<p>
-     * 
-     * @return true if we are in wizard mode to create an index page, otherwise false
-     */
-    public boolean isCreateIndexMode() {
-
-        return CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode());
-    }
-
-    /**
-     * Returns true if the resource is created successfully; otherwise false.<p>
-     * 
-     * @return true if the resource is created successfully; otherwise false
-     */
-    public boolean isResourceCreated() {
-
-        return m_resourceCreated;
-    }
-
-    /**
-     * Overrides the super implementation to avoid problems with double reqource input fields.<p>
-     * 
-     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
-     */
-    public String paramsAsHidden() {
-
-        String resourceName = getParamResource();
-
-        // remove resource parameter from hidden params to avoid problems with double input fields in form
-        setParamResource(null);
-        String params = super.paramsAsHidden();
-
-        // set resource parameter to stored value
-        setParamResource(resourceName);
-        return params;
     }
 
     /**
@@ -972,85 +1085,5 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         } else {
             setParamResource("");
         }
-    }
-
-    /**
-     * Sets the parameter to check if a ".html" suffix should be added to the new resource name.<p>
-     * 
-     * @param paramAppendSuffixHtml the parameter to check if a ".html" suffix should be added to the new resource name
-     */
-    public void setParamAppendSuffixHtml(String paramAppendSuffixHtml) {
-
-        m_paramAppendSuffixHtml = paramAppendSuffixHtml;
-    }
-
-    /**
-     * Sets the current folder.<p>
-     *
-     * @param paramCurrentFolder the current folder to set
-     */
-    public void setParamCurrentFolder(String paramCurrentFolder) {
-
-        m_paramCurrentFolder = paramCurrentFolder;
-    }
-
-    /**
-     * Sets the value of the dialogmode parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamDialogmode(String value) {
-
-        m_paramDialogMode = value;
-    }
-
-    /**
-     * Sets the new resource edit properties flag parameter.<p>
-     * 
-     * @param newResourceEditProps the new resource edit properties flag parameter
-     */
-    public void setParamNewResourceEditProps(String newResourceEditProps) {
-
-        m_paramNewResourceEditProps = newResourceEditProps;
-    }
-
-    /**
-     * Sets the new resource type parameter.<p>
-     * 
-     * @param newResourceType the new resource type parameter
-     */
-    public void setParamNewResourceType(String newResourceType) {
-
-        m_paramNewResourceType = newResourceType;
-    }
-
-    /**
-     * Sets the new resource URI parameter.<p>
-     * 
-     * @param newResourceUri the new resource URI parameter
-     */
-    public void setParamNewResourceUri(String newResourceUri) {
-
-        m_paramNewResourceUri = newResourceUri;
-    }
-
-    /**
-     * Sets the paramPage.<p>
-     *
-     * @param paramPage the paramPage to set
-     */
-    public void setParamPage(String paramPage) {
-
-        m_paramPage = paramPage;
-    }
-
-    /**
-     * Sets the boolean flag successfullyCreated.<p>
-     *   
-     * @param successfullyCreated a boolean flag that indicates if the create resource operation was successfull or not
-     */
-    public void setResourceCreated(boolean successfullyCreated) {
-
-        m_resourceCreated = successfullyCreated;
     }
 }

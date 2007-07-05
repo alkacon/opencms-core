@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceTypeDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/05 09:09:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.7.2
  */
@@ -278,6 +278,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
         excludes.add(PARAM_SELECTED_TYPE);
         excludes.add(PARAM_SORT_COL);
+        excludes.add(LIST_INDEPENDENT_ACTION);
         return super.paramsAsHidden(excludes);
     }
     
