@@ -1,0 +1,20 @@
+<XML>
+   <cacheHeadRevision value="1"/>
+   <keyExpand value="1"/>
+   <sharedWorkFolderMode value="0"/>
+   <symbNameOnCI value="0"/>
+   <keyExpandLT value="0"/>
+   <doQuickLock value="0"/>
+   <workingMode value="2"/>
+   <diffMode value="1"/>
+   <diffWrap value="-1"/>
+   <projLog value="0"/>
+   <infoCacheTimeout value="25"/>
+   <useGlobalPrjList value="0"/>
+   <recalcStatusOnScan value="0"/>
+   <winExpIntegration value="0"/>
+   <Ver value="282.0"/>
+   <ProjectName value="Opencms"/>
+   <ProjectFilePath value="C:\Documents and Settings\pso\Local Settings\Data aplikací\ComponentSoftware\CS-RCS\cvs.opencms.org\opencms/CVS.adm\prjprm.stp"/>
+   <WorkflowInherit value="1"/>
+</XML>
