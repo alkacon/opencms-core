@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/05 12:17:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -48,6 +49,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * This is a widget to be used in a dialog which should show a progress bar based
  * on a list.<p>
@@ -58,11 +61,14 @@ import javax.servlet.jsp.PageContext;
  * The progress to be displayed is the progress of building large lists which can
  * take some time until they are finished.<p>
  * 
+ * There is a progress bar shown with the percentages on the left. Additionaly it
+ * is possible to show a description above the progress bar.<p>
+ * 
  * @see A_CmsListDialog
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -71,11 +77,11 @@ public class CmsProgressWidget {
     /** The name of the key request parameter. */
     public static final String PARAMETER_KEY = "progresskey";
 
-    /** The name of the show wait time request parameter. */
-    public static final String PARAMETER_SHOWWAITTIME = "showwaittime";
-
     /** The name of the refresh rate request parameter. */
     public static final String PARAMETER_REFRESHRATE = "refreshrate";
+
+    /** The name of the show wait time request parameter. */
+    public static final String PARAMETER_SHOWWAITTIME = "showwaittime";
 
     /** The time period after finished thread will be removed (10 min). */
     private static final long CLEANUP_PERIOD = 10 * 60 * 1000;
@@ -88,6 +94,9 @@ public class CmsProgressWidget {
 
     /** The default width of the progress bar. */
     private static final String DEFAULT_WIDTH = "200px";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsProgressWidget.class);
 
     /** Map of running threads. */
     private static Map m_threads = new HashMap();
@@ -108,8 +117,7 @@ public class CmsProgressWidget {
     private int m_refreshRate;
 
     /** The time period the show the wait symbol before the progress bar is shown.<p> 
-     *  Set to 0 (zero) to disable this.<p>
-     */
+     *  Set to 0 (zero) to disable this.<p> */
     private int m_showWaitTime;
 
     /** The width of the progress bar to use in HTML.<p> */
@@ -143,7 +151,6 @@ public class CmsProgressWidget {
         // find the key from the request
         m_key = getJsp().getRequest().getParameter(PARAMETER_KEY);
         if (m_key == null) {
-
             // generate unique key
             m_key = new CmsUUID().toString();
         }
@@ -162,11 +169,11 @@ public class CmsProgressWidget {
     }
 
     /**
-     * Returns the thread for the progress for the given key.<p>
+     * Returns the thread for the progress with the given key.<p>
      * 
      * @param key the key of the thread
      * 
-     * @return the thread for the progress for the given key
+     * @return the thread for the progress with the given key
      */
     public static CmsProgressThread getProgressThread(String key) {
 
@@ -186,19 +193,18 @@ public class CmsProgressWidget {
     /**
      * Returns the actual progress in percent.<p>
      * 
-     * @return the actual progress in percent
+     * The return value depends on the state of the progress/thread. This can be
+     * <ul>
+     * <li>the actual progress in percent with an optional description.</li>
+     * <li>the result as the html code for the list.</li>
+     * <li>an error message.</li>
+     * </ul><p>
+     * 
+     * The result will be interpreted by the JavaScript method "updateProgressbar()".<p>
+     * 
+     * @return the actual progress as a String
      */
     public String getActualProgress() {
-
-        StringBuffer result = new StringBuffer();
-
-        // check if a key was found
-        if (getKey() == null) {
-
-            result.append(createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                Messages.GUI_PROGRESS_KEY_NOT_SET_0)));
-            return result.toString();
-        }
 
         try {
             CmsProgressThread thread;
@@ -206,14 +212,15 @@ public class CmsProgressWidget {
                 thread = (CmsProgressThread)m_threads.get(getKey());
 
                 if (thread.isAlive()) {
-                    if (thread.getRuntime() < m_showWaitTime) {
-                        while ((thread.getRuntime() < m_showWaitTime) && (thread.isAlive())) {
+                    // wait the configured time until to update the progress the first time
+                    if (thread.getRuntime() < getShowWaitTime()) {
+                        while ((thread.getRuntime() < getShowWaitTime()) && (thread.isAlive())) {
                             synchronized (this) {
                                 wait(500);
                             }
                         }
                     } else {
-
+                        // wait the configured resfresh reate before returning
                         synchronized (this) {
                             wait(getRefreshRate());
                         }
@@ -221,42 +228,42 @@ public class CmsProgressWidget {
                 }
 
                 if (!thread.isAlive()) {
-
                     // is an error occured in the execution of the thread?
                     if (thread.getError() != null) {
-
-                        result.append(createError(
-                            Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                                Messages.GUI_PROGRESS_ERROR_IN_THREAD_0),
-                            thread.getError()));
-                        return result.toString();
+                        return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                            Messages.GUI_PROGRESS_ERROR_IN_THREAD_0), thread.getError());
                     }
 
                     // return the result of the list created in the progress
                     return thread.getResult();
                 }
 
+                // create and return the actual progress in percent with the description to be shown
+                StringBuffer result = new StringBuffer();
+
                 result.append("PRO");
                 result.append(thread.getProgress());
                 result.append("%");
                 result.append("|");
                 result.append(thread.getDescription());
-            } else {
 
-                result.append(createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                    Messages.GUI_PROGRESS_THREAD_NOT_FOUND_1,
-                    getKey())));
                 return result.toString();
+            } else {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_PROGRESS_THREAD_NOT_FOUND_1, getKey()));
+                }
+                return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                    Messages.GUI_PROGRESS_THREAD_NOT_FOUND_1,
+                    getKey()));
             }
 
         } catch (Throwable t) {
-
-            result.append(createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                Messages.GUI_PROGRESS_ERROR_CALCULATING_0), t));
-            return result.toString();
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_PROGRESS_ERROR_CALC_PROGRESS_0), t);
+            }
+            return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                Messages.GUI_PROGRESS_ERROR_CALCULATING_0), t);
         }
-
-        return result.toString();
     }
 
     /**
@@ -337,7 +344,7 @@ public class CmsProgressWidget {
         result.append("&");
         result.append(PARAMETER_SHOWWAITTIME);
         result.append("=");
-        result.append(m_showWaitTime);
+        result.append(getShowWaitTime());
         result.append("&");
         result.append(PARAMETER_REFRESHRATE);
         result.append("=");
@@ -453,11 +460,12 @@ public class CmsProgressWidget {
         result.append("&");
         result.append(PARAMETER_SHOWWAITTIME);
         result.append("=");
-        result.append(m_showWaitTime);
+        result.append(getShowWaitTime());
         result.append("&");
         result.append(PARAMETER_REFRESHRATE);
         result.append("=");
-        result.append(getRefreshRate());        result.append("', 'updateProgressBar');\n");
+        result.append(getRefreshRate());
+        result.append("', 'updateProgressBar');\n");
         result.append("\t}\n");
 
         result.append("</script>\n");
@@ -515,6 +523,9 @@ public class CmsProgressWidget {
         StringBuffer result = new StringBuffer();
 
         CmsProgressThread thread = getProgressThread(getKey());
+
+        // if the thread is finished before the widget is rendered
+        // show directly the result
         if ((thread != null) && (!thread.isAlive())) {
             result.append("<script type=\"text/javascript\">\n");
             result.append("\tprogressState = 0;\n");
@@ -526,13 +537,14 @@ public class CmsProgressWidget {
             result.append("();\n");
             result.append("</script>\n");
         } else {
-
             // check if to show the wait symbol
             boolean showWait = false;
-            if (m_showWaitTime > 0) {
-                if ((thread != null) && (thread.isAlive()) && (thread.getRuntime() < m_showWaitTime)) {
+            if (getShowWaitTime() > 0) {
+                // show if the thread is running and the time running is smaller than the configured
+                if ((thread != null) && (thread.isAlive()) && (thread.getRuntime() < getShowWaitTime())) {
                     showWait = true;
-                } else if (thread == null) {
+                } else if ((thread == null) && (getShowWaitTime() > 0)) {
+                    // show if there is no thread
                     showWait = true;
                 }
             }
@@ -654,19 +666,18 @@ public class CmsProgressWidget {
 
         // check the list
         if (list == null) {
-
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PROGRESS_START_INVALID_LIST_0));
         }
 
         // check if created key already exists
         if (m_threads.get(getKey()) != null) {
-
             if (abortExisting) {
-
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_INTERRUPT_THREAD_1, getKey()));
+                }
                 Thread thread = (Thread)m_threads.get(getKey());
                 thread.interrupt();
             } else {
-
                 throw new CmsIllegalStateException(
                     Messages.get().container(Messages.ERR_PROGRESS_START_THREAD_EXISTS_0));
             }
@@ -680,11 +691,13 @@ public class CmsProgressWidget {
         // clean up abonded threads
         Iterator iter = m_threads.entrySet().iterator();
         while (iter.hasNext()) {
-
             Map.Entry entry = (Map.Entry)iter.next();
 
             CmsProgressThread value = (CmsProgressThread)entry.getValue();
             if ((!thread.isAlive()) && (System.currentTimeMillis() - value.getFinishTime() > CLEANUP_PERIOD)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_CLEAN_UP_THREAD_1, getKey()));
+                }
                 m_threads.remove(entry.getKey());
             }
         }

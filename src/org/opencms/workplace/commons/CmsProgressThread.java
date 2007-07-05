@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressThread.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/05 12:17:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,16 +44,19 @@ import org.apache.commons.logging.Log;
  * This class is used to build a list ({@link A_CmsListDialog}) in the background
  * and to show the progress of building to the user.<p> 
  * 
+ * To work correctly the operations while building the list have to update the
+ * actual progress.<p>
+ * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
 public class CmsProgressThread extends Thread {
 
     /** The log object for this class. */
-    protected static final Log LOG = CmsLog.getLog(CmsProgressThread.class);
+    private static final Log LOG = CmsLog.getLog(CmsProgressThread.class);
 
     /** The description to show for the progress. */
     private String m_description;
@@ -214,7 +217,9 @@ public class CmsProgressThread extends Thread {
     public void run() {
 
         try {
-
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_START_THREAD_1, getKey()));
+            }
             m_starttime = System.currentTimeMillis();
 
             // calculate size of the list
@@ -242,6 +247,9 @@ public class CmsProgressThread extends Thread {
             }
         } finally {
             m_finishtime = System.currentTimeMillis();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_FINISHED_THREAD_1, getKey()));
+            }
         }
 
     }
