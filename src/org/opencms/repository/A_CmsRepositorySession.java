@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepositorySession.java,v $
- * Date   : $Date: 2007/07/04 16:56:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/05 15:42:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,15 @@
 
 package org.opencms.repository;
 
+import org.opencms.workplace.CmsWorkplace;
+
 /**
  * Abstract implementation of the interface {@link I_CmsRepositorySession} to provide
  * the functionality of filtering items.<p>
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.6
  */
@@ -74,6 +76,11 @@ public abstract class A_CmsRepositorySession implements I_CmsRepositorySession {
      */
     protected boolean isFiltered(String path) {
 
+        // filter all temporary files
+        if (CmsWorkplace.isTemporaryFileName(path)) {
+            return true;
+        }
+        
         if (m_filter == null) {
             return false;
         }
