@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/05 13:03:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      * 
      * @since 6.1.6
      * 
@@ -247,20 +247,20 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     }
 
     /**
-     * Compares two {@link CmsResourceSelectWidgetOption} instances by any resource related value
-     * that may be accessed via a {@link CmsMacroResolver} (except message keys).
-     * <p>
+     * Compares two {@link CmsSelectWidgetXmlcontentType.CmsResourceSelectWidgetOption} 
+     * instances by any resource related value that may be accessed via a 
+     * {@link CmsMacroResolver} (except message keys).<p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      * 
      * @since 6.1.6
      * 
      */
     private static final class CmsResourceSelectWidgetOptionComparator implements Comparator, Serializable {
 
-        /** Serival UID required for safe serialization. */
+        /** Serial UID required for safe serialization. */
         private static final long serialVersionUID = -4078389792834878256L;
 
         /** The {@link CmsMacroResolver} compatible macro to resolve for comparison. * */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2007/07/04 16:57:43 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/05 13:03:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,14 +122,6 @@ public final class CmsSite implements Cloneable {
         setTitle(title);
         setSiteMatcher(siteMatcher);
         m_aliases = new ArrayList();
-    }
-
-    /**
-     * Hides the public default constructor.<p>
-     */
-    private CmsSite() {
-
-        // NOOP
     }
 
     /**
