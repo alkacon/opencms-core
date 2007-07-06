@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:25 $
- * Version: $Revision: 1.579 $
+ * Date   : $Date: 2007/07/06 09:44:36 $
+ * Version: $Revision: 1.580 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1183,10 +1183,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsGroup createGroup(CmsDbContext dbc, CmsUUID id, String name, String description, int flags, String parent)
     throws CmsIllegalArgumentException, CmsException {
 
-        // check the groupname
-        OpenCms.getValidationHandler().checkGroupName(name);
+        // check the group name
+        OpenCms.getValidationHandler().checkGroupName(CmsOrganizationalUnit.getSimpleName(name));
         // trim the name
         name = name.trim();
+        // check the ou
+        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
 
         // get the id of the parent group if necessary
         if (CmsStringUtil.isNotEmpty(parent)) {
@@ -1290,8 +1292,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return the created project
      * 
      * @throws CmsIllegalArgumentException if the chosen <code>name</code> is already used 
-     *         by the online project
-     * @throws CmsDataAccessException if something goes wrong
+     *         by the online project, or if the name is not valid
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(
         CmsDbContext dbc,
@@ -1299,13 +1301,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String description,
         String groupname,
         String managergroupname,
-        CmsProject.CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsDataAccessException {
+        CmsProject.CmsProjectType projecttype) throws CmsIllegalArgumentException, CmsException {
 
         if (CmsProject.ONLINE_PROJECT_NAME.equals(name)) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_CREATE_PROJECT_ONLINE_PROJECT_NAME_1,
                 CmsProject.ONLINE_PROJECT_NAME));
         }
+        // check the name
+        CmsProject.checkProjectName(CmsOrganizationalUnit.getSimpleName(name));
+        // check the ou
+        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
         // read the needed groups from the cms
         CmsGroup group = readGroup(dbc, groupname);
         CmsGroup managergroup = readGroup(dbc, managergroupname);
@@ -1945,11 +1951,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, Map additionalInfos)
     throws CmsException, CmsIllegalArgumentException {
 
+        String userName = CmsOrganizationalUnit.getSimpleName(name);
+        // check the user name
+        OpenCms.getValidationHandler().checkUserName(userName);
         // no space before or after the name
         name = name.trim();
-        String userName = CmsOrganizationalUnit.getSimpleName(name);
-        // check the username
-        OpenCms.getValidationHandler().checkUserName(userName);
+        // check the ou
+        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
         // check the password
         validatePassword(password);
 
