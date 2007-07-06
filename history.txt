@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/05 15:42:38 $
- * Version: $Revision: 1.822 $
+ * Date   : $Date: 2007/07/06 10:24:41 $
+ * Version: $Revision: 1.823 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,8 @@ Legend:
 OpenCms 7.0.1 - xxx, 2007
 * Fixed bug switching on/off descriptions in new dialog
 - Prevent displaying temporary files in WebDAV
+* Fixed issue forgetting the selected resources while creating a new project
+
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
