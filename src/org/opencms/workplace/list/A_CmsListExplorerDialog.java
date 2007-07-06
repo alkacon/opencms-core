@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/06 11:42:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -520,7 +520,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
             LIST_DEFACTION_OPEN,
-            LIST_COLUMN_NAME);
+            LIST_COLUMN_ROOT_PATH);
         resourceOpenDefAction.setEnabled(true);
         nameCol.addDefaultAction(resourceOpenDefAction);
         metadata.addColumn(nameCol);
