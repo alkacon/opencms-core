@@ -12,6 +12,11 @@
 		params.append(CmsTree.PARAM_INCLUDEFILES);
 		params.append("=true");
 	}
+	if (!wp.isProjectAware()) {
+		params.append("&");
+		params.append(CmsTree.PARAM_PROJECTAWARE);
+		params.append("=false");
+	}
 	if (wp.getTreeType() != null) {
 		params.append("&");
 		params.append(CmsTree.PARAM_TYPE);

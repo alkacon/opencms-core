@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/06 09:52:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -504,6 +504,19 @@ function setIncludeFiles(value) {
 }
 
 
+var m_projectAware = true;
+
+
+function isProjectAware() {
+	return m_projectAware;
+}
+
+
+function setProjectAware(value) {
+	m_projectAware = value;
+}
+
+
 var m_treeType = null;
 
 function getTreeType() {
@@ -558,6 +571,9 @@ function doActionFolderOpen(doc, nodeId) {
     var params = "";
     if (includeFiles()) {
     	params += "&includefiles=true"
+    }
+    if (!isProjectAware()) {
+    	params += "&projectaware=false"
     }
     if (tree.nodes[nodeId].childs != null) {
         setNoChilds(nodeId);
@@ -662,9 +678,12 @@ function loadNodeList(doc, params) {
 	if (params == null) {
 		params = "";
 	}
-    	if (includeFiles()) {
-    		params += "&includefiles=true"
-    	}
+    if (includeFiles()) {
+    	params += "&includefiles=true"
+    }
+    if (!isProjectAware()) {
+    	params += "&projectaware=false"
+    }
    	if (getTreeType() != null) {
     		params += "&type=" + getTreeType();
     	}    	

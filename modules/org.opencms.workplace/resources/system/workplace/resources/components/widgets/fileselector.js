@@ -32,8 +32,10 @@
 /*
  * When using this script to open the VFS file selector dialog, be sure to
  * initialize the tree in the opener properly:
- * (wp is an org.opencms.workplace.CmsWorkplace class)
+ * (<code>wp</code> is an {@link org.opencms.workplace.CmsWorkplace} class)
+ * <pre>
  * <%= CmsTree.initTree(wp.getCms(), wp.getEncoding(), wp.getSkinUri()) %>
+ * </pre>
  */
  
 var treewin = null;
@@ -41,10 +43,13 @@ var treeForm = null;
 var treeField = null;
 var treeDoc = null;
 
-function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite, includeFiles) {
+function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite, includeFiles, projectAware) {
 
 	if (includeFiles == null) {
 		includeFiles = true;
+	}
+	if (projectAware == null) {
+		projectAware = true;
 	}
 
 	var paramString = "?type=vfswidget&includefiles=" + includeFiles + "&showsiteselector=";
@@ -54,6 +59,7 @@ function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite, i
 	} else {
 		paramString += "false";
 	}
+	paramString += "&projectaware=" + projectAware;
 	
 	if (startSite != null) {
 		paramString += "&treesite=";

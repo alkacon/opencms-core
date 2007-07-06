@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/06 09:52:13 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +85,9 @@ public class CmsTree extends CmsWorkplace {
 
     /** Request parameter name for the lastknown parameter. */
     public static final String PARAM_LASTKNOWN = "lastknown";
+
+    /** Request parameter name for the projectaware parameter. */
+    public static final String PARAM_PROJECTAWARE = "projectaware";
 
     /** Request parameter name for the resource parameter. */
     public static final String PARAM_RESOURCE = "resource";
@@ -125,7 +128,10 @@ public class CmsTree extends CmsWorkplace {
     /** Indicates if a complete new tree should be created. */
     private boolean m_newTree;
 
-    /** The name of the root folder to dsiplay the tree from, usually "/". */
+    /** Indicates project awareness, ie. if resources outside of the current project should be displayed as normal. */
+    private boolean m_projectAware = true;
+
+    /** The name of the root folder to display the tree from, usually "/". */
     private String m_rootFolder;
 
     /** Flag to indicate if the site selector should be shown in popup tree window. */
@@ -304,18 +310,11 @@ public class CmsTree extends CmsWorkplace {
     public String getTree() {
 
         StringBuffer result = new StringBuffer(2048);
-        String targetFolder = getTargetFolder();
-        String startFolder = getStartFolder();
-        List targetFolderList = new ArrayList();
-        boolean grey;
-        List resources = new ArrayList();
-        CmsFolder folder = null;
-        String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
-        String storedSiteRoot = null;
 
-        if (targetFolder != null) {
+        List targetFolderList = new ArrayList();
+        if (getTargetFolder() != null) {
             // check if there is more than one folder to update (e.g. move operation)
-            StringTokenizer T = new StringTokenizer(targetFolder, "|");
+            StringTokenizer T = new StringTokenizer(getTargetFolder(), "|");
             while (T.hasMoreTokens()) {
                 String currentFolder = T.nextToken().trim();
                 targetFolderList.add(currentFolder);
@@ -324,9 +323,13 @@ public class CmsTree extends CmsWorkplace {
             targetFolderList.add(null);
         }
 
-        Iterator targets = targetFolderList.iterator();
+        String storedSiteRoot = null;
         try {
+            CmsFolder folder = null;
+            List resources = new ArrayList();
+            String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
 
+            Iterator targets = targetFolderList.iterator();
             while (targets.hasNext()) {
                 // iterate over all given target folders
                 String currentTargetFolder = (String)targets.next();
@@ -358,6 +361,7 @@ public class CmsTree extends CmsWorkplace {
                     return printError(e);
                 }
 
+                String startFolder = getStartFolder();
                 if ((startFolder == null) || (!currentTargetFolder.startsWith(startFolder))) {
                     // no (valid) start folder given, just load current folder        
                     try {
@@ -417,22 +421,26 @@ public class CmsTree extends CmsWorkplace {
             }
 
             // read the list of project resource to select which resource is "inside" or "outside" 
-            List projectResources;
-            try {
-                projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
-            } catch (CmsException e) {
-                // use an empty list (all resources are "outside")
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+            List projectResources = new ArrayList();
+            if (isProjectAware()) {
+                try {
+                    projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+                } catch (CmsException e) {
+                    // use an empty list (all resources are "outside")
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
+                    }
                 }
-                projectResources = new ArrayList();
             }
 
             // now output all the tree nodes
             Iterator i = resources.iterator();
             while (i.hasNext()) {
                 CmsResource resource = (CmsResource)i.next();
-                grey = !CmsProject.isInsideProject(projectResources, resource);
+                boolean grey = false;
+                if (isProjectAware()) {
+                    grey = !CmsProject.isInsideProject(projectResources, resource);
+                }
                 if (!grey) {
                     try {
                         OpenCms.getResourceManager().getResourceType(resource.getTypeId());
@@ -454,6 +462,7 @@ public class CmsTree extends CmsWorkplace {
             if (includeFiles()) {
                 result.append("parent.setIncludeFiles(true);\n");
             }
+            result.append("parent.setProjectAware(").append(isProjectAware()).append(");\n");
             if (getTreeType() != null) {
                 // this is a popup window tree
                 result.append("parent.setTreeType(\"");
@@ -533,6 +542,26 @@ public class CmsTree extends CmsWorkplace {
     }
 
     /**
+     * Returns the project awareness flag.<p>
+     *
+     * @return the project awareness flag
+     */
+    public boolean isProjectAware() {
+
+        return m_projectAware;
+    }
+
+    /**
+     * Sets the project awareness flag.<p>
+     *
+     * @param projectAware the project awareness flag to set
+     */
+    public void setProjectAware(boolean projectAware) {
+
+        m_projectAware = projectAware;
+    }
+
+    /**
      * Indicates if the site selector should be shown depending on the tree type, initial settings and the count of accessible sites.<p>
      * 
      * @return true if site selector should be shown, otherwise false
@@ -548,6 +577,7 @@ public class CmsTree extends CmsWorkplace {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setIncludeFiles(Boolean.valueOf(request.getParameter(PARAM_INCLUDEFILES)).booleanValue());
+        setProjectAware(Boolean.valueOf(request.getParameter(PARAM_PROJECTAWARE)).booleanValue());
         boolean rootloaded = Boolean.valueOf(request.getParameter(PARAM_ROOTLOADED)).booleanValue();
         String resource = request.getParameter(PARAM_RESOURCE);
         setTreeType(request.getParameter(PARAM_TYPE));
@@ -770,7 +800,7 @@ public class CmsTree extends CmsWorkplace {
     /**
      * Creates error information output.<p>
      * 
-     * @param t an error that occured
+     * @param t an error that occurred
      * @return error information output
      */
     private String printError(Throwable t) {

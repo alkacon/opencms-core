@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2007/07/04 16:57:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/06 09:52:13 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,26 +41,38 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsVfsFileWidget extends A_CmsWidget {
 
-    /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
-    public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
+    /** Configuration parameter to set the flag to include files in popup resource tree. */
+    public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
 
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
-    public static final String CONFIGURATION_SHOWSITESELECTOR = "showsiteselector";
+    public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
 
     /** Configuration parameter to set the flag to include files in popup resource tree. */
     public static final String CONFIGURATION_INCLUDEFILES = "includefiles";
 
-    /** Configuration parameter to set the flag to include files in popup resource tree. */
-    public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
-    
+    /** Configuration parameter to prevent the project awareness flag in the popup resource tree. */
+    public static final String CONFIGURATION_NOTPROJECTAWARE = "notprojectaware";
+
+    /** Configuration parameter to set the project awareness flag in the popup resource tree. */
+    public static final String CONFIGURATION_PROJECTAWARE = "projectaware";
+
+    /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
+    public static final String CONFIGURATION_SHOWSITESELECTOR = "showsiteselector";
+
     /** Configuration parameter to set start site of the popup resource tree. */
     public static final String CONFIGURATION_STARTSITE = "startsite";
+
+    /** Flag to determine if files should be shown in popup window. */
+    private boolean m_includeFiles;
+
+    /** Flag to determine project awareness, ie. if resources outside of the current project should be displayed as normal. */
+    private boolean m_projectAware;
 
     /** Flag to determine if the site selector should be shown in popup window. */
     private boolean m_showSiteSelector;
@@ -68,9 +80,6 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     /** The start site used in the popup window. */
     private String m_startSite;
 
-    /** Flag to determine if files should be shown in popup window. */
-    private boolean m_includeFiles;
-    
     /**
      * Creates a new vfs file widget.<p>
      */
@@ -81,7 +90,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
-     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
+     * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
      * 
      * @param showSiteSelector true if the site selector should be shown in the popup window
      * @param startSite the start site root for the popup window
@@ -92,7 +101,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
-     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
+     * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
      * 
      * @param showSiteSelector true if the site selector should be shown in the popup window
      * @param startSite the start site root for the popup window
@@ -100,11 +109,25 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public CmsVfsFileWidget(boolean showSiteSelector, String startSite, boolean includeFiles) {
 
+        this(showSiteSelector, startSite, true, true);
+    }
+
+    /**
+     * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
+     * 
+     * @param showSiteSelector true if the site selector should be shown in the popup window
+     * @param startSite the start site root for the popup window
+     * @param includeFiles <code>true</code> if files should be shown in the popup window
+     * @param projectAware <code>true</code> if resources outside of the current project should be displayed as normal
+     */
+    public CmsVfsFileWidget(boolean showSiteSelector, String startSite, boolean includeFiles, boolean projectAware) {
+
         m_showSiteSelector = showSiteSelector;
         m_startSite = startSite;
         m_includeFiles = includeFiles;
+        m_projectAware = projectAware;
     }
-    
+
     /**
      * Creates a new vfs file widget with the given configuration.<p>
      * 
@@ -144,7 +167,15 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         } else {
             result.append(CONFIGURATION_EXCLUDEFILES);
         }
-        
+
+        // append flag for project awareness
+        result.append("|");
+        if (m_projectAware) {
+            result.append(CONFIGURATION_INCLUDEFILES);
+        } else {
+            result.append(CONFIGURATION_EXCLUDEFILES);
+        }
+
         return result.toString();
     }
 
@@ -175,7 +206,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         StringBuffer result = new StringBuffer(16);
         result.append("function initVfsFileSelector() {\n");
-        //initialize tree javascript, does parts of CmsTree.initTree(CmsObject, encoding, skinuri);
+        //initialize tree javascript, does parts of <code>CmsTree.initTree(CmsObject, encoding, skinuri);</code>
         result.append("\tinitResources(\"");
         result.append(OpenCms.getWorkplaceManager().getEncoding());
         result.append("\", \"");
@@ -216,24 +247,20 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         StringBuffer buttonJs = new StringBuffer(8);
         buttonJs.append("javascript:openTreeWin('EDITOR',  '");
         buttonJs.append(id);
-        buttonJs.append("', document");
-        if (m_showSiteSelector) {
-            buttonJs.append(", true");
-        } else {
-            buttonJs.append(", false");
-        }
+        buttonJs.append("', document, ");
+        buttonJs.append(m_showSiteSelector);
         buttonJs.append(", '");
         if (m_startSite != null) {
             buttonJs.append(m_startSite);
         } else {
             buttonJs.append(cms.getRequestContext().getSiteRoot());
         }
-        buttonJs.append("','");
-        
+        buttonJs.append("', ");
         // include files
         buttonJs.append(m_includeFiles);
-        buttonJs.append("'");
-        
+        // project awareness
+        buttonJs.append(", ");
+        buttonJs.append(m_projectAware);
         buttonJs.append(");return false;");
 
         result.append(widgetDialog.button(
@@ -290,6 +317,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         m_showSiteSelector = true;
         m_includeFiles = true;
+        m_projectAware = true;
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
             if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
@@ -308,6 +336,10 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             }
             if (configuration.indexOf(CONFIGURATION_EXCLUDEFILES) != -1) {
                 // files should not be included
+                m_includeFiles = false;
+            }
+            if (configuration.indexOf(CONFIGURATION_NOTPROJECTAWARE) != -1) {
+                // resources outside of the current project should not be disabled
                 m_includeFiles = false;
             }
         }
