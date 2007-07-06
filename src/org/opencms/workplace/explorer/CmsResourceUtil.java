@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/06 15:48:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,13 +82,13 @@ public final class CmsResourceUtil {
         protected static final CmsResourceProjectState LOCKED_FOR_PUBLISHING = new CmsResourceProjectState(5);
 
         /** Constant for the project state locked in current project. */
-        protected static final CmsResourceProjectState LOCKED_IN_CURRENT_PROJECT = new CmsResourceProjectState(1);
+        protected static final CmsResourceProjectState MODIFIED_IN_CURRENT_PROJECT = new CmsResourceProjectState(1);
 
         /** Constant for the project state locked in other project. */
-        protected static final CmsResourceProjectState LOCKED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
+        protected static final CmsResourceProjectState MODIFIED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
 
         /** Constant for the project state unlocked. */
-        protected static final CmsResourceProjectState UNLOCKED = new CmsResourceProjectState(0);
+        protected static final CmsResourceProjectState CLEAN = new CmsResourceProjectState(0);
 
         private static final long serialVersionUID = 4580450220255428716L;
 
@@ -113,33 +113,33 @@ public final class CmsResourceUtil {
         }
 
         /**
-         * Checks if this is a {@link #LOCKED_IN_CURRENT_PROJECT} state.<p>
+         * Checks if this is a {@link #MODIFIED_IN_CURRENT_PROJECT} state.<p>
          * 
-         * @return <code>true</code> if this is a {@link #LOCKED_IN_CURRENT_PROJECT} state
+         * @return <code>true</code> if this is a {@link #MODIFIED_IN_CURRENT_PROJECT} state
          */
-        public boolean isLockedInCurrentProject() {
+        public boolean isModifiedInCurrentProject() {
 
-            return (this == LOCKED_IN_CURRENT_PROJECT);
+            return (this == MODIFIED_IN_CURRENT_PROJECT);
         }
 
         /**
-         * Checks if this is a {@link #LOCKED_IN_OTHER_PROJECT} state.<p>
+         * Checks if this is a {@link #MODIFIED_IN_OTHER_PROJECT} state.<p>
          * 
-         * @return <code>true</code> if this is a {@link #LOCKED_IN_OTHER_PROJECT} state
+         * @return <code>true</code> if this is a {@link #MODIFIED_IN_OTHER_PROJECT} state
          */
-        public boolean isLockedInOtherProject() {
+        public boolean isModifiedInOtherProject() {
 
-            return (this == LOCKED_IN_OTHER_PROJECT);
+            return (this == MODIFIED_IN_OTHER_PROJECT);
         }
 
         /**
-         * Checks if this is a {@link #UNLOCKED} state.<p>
+         * Checks if this is a {@link #CLEAN} state.<p>
          * 
-         * @return <code>true</code> if this is a {@link #UNLOCKED} state
+         * @return <code>true</code> if this is a {@link #CLEAN} state
          */
         public boolean isUnlocked() {
 
-            return (this == UNLOCKED);
+            return (this == CLEAN);
         }
     }
 
@@ -179,10 +179,10 @@ public final class CmsResourceUtil {
     public static final CmsResourceProjectState STATE_LOCKED_FOR_PUBLISHING = CmsResourceProjectState.LOCKED_FOR_PUBLISHING;
 
     /** Constant for the project state locked in current project. */
-    public static final CmsResourceProjectState STATE_LOCKED_IN_CURRENT_PROJECT = CmsResourceProjectState.LOCKED_IN_CURRENT_PROJECT;
+    public static final CmsResourceProjectState STATE_MODIFIED_IN_CURRENT_PROJECT = CmsResourceProjectState.MODIFIED_IN_CURRENT_PROJECT;
 
     /** Constant for the project state locked in other project. */
-    public static final CmsResourceProjectState STATE_LOCKED_IN_OTHER_PROJECT = CmsResourceProjectState.LOCKED_IN_OTHER_PROJECT;
+    public static final CmsResourceProjectState STATE_MODIFIED_IN_OTHER_PROJECT = CmsResourceProjectState.MODIFIED_IN_OTHER_PROJECT;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceUtil.class);
@@ -191,7 +191,7 @@ public final class CmsResourceUtil {
     private static final String SIZE_DIR = "-";
 
     /** Constant for the project state unlocked. */
-    private static final CmsResourceProjectState STATE_UNLOCKED = CmsResourceProjectState.UNLOCKED;
+    private static final CmsResourceProjectState STATE_CLEAN = CmsResourceProjectState.CLEAN;
 
     /** If greater than zero, the path will be formatted to this number of chars. */
     private int m_abbrevLength;
@@ -399,9 +399,9 @@ public final class CmsResourceUtil {
     public String getIconPathProjectState() {
 
         String iconPath;
-        if (getProjectState() == STATE_LOCKED_IN_CURRENT_PROJECT) {
+        if (getProjectState() == STATE_MODIFIED_IN_CURRENT_PROJECT) {
             iconPath = "this.png";
-        } else if (getProjectState() == STATE_LOCKED_IN_OTHER_PROJECT) {
+        } else if (getProjectState() == STATE_MODIFIED_IN_OTHER_PROJECT) {
             iconPath = "other.png";
         } else if (getProjectState() == STATE_LOCKED_FOR_PUBLISHING) {
             iconPath = "publish.png";
@@ -688,17 +688,15 @@ public final class CmsResourceUtil {
      */
     public CmsResourceProjectState getProjectState() {
 
-        if (getLock().getSystemLock().isPublish()) {
+        if (getResource().getState().isUnchanged()) {
+            return STATE_CLEAN; // STATE_CLEAN
+        } else if (getLock().getSystemLock().isPublish()) {
             return STATE_LOCKED_FOR_PUBLISHING;
+        } else if (getResource().getProjectLastModified().equals(getReferenceProject().getUuid())) {
+            return STATE_MODIFIED_IN_CURRENT_PROJECT; // STATE_MODIFIED_CURRENT_PROJECT
+        } else {
+            return STATE_MODIFIED_IN_OTHER_PROJECT; // STATE_MODIFIED_OTHER_PROJECT
         }
-        if (!getLock().isUnlocked() && !getResource().getState().isUnchanged()) {
-            if (getLockedInProjectId().equals(getReferenceProject().getUuid())) {
-                return STATE_LOCKED_IN_CURRENT_PROJECT;
-            } else if (!getLockedInProjectId().equals(getReferenceProject().getUuid())) {
-                return STATE_LOCKED_IN_OTHER_PROJECT;
-            }
-        }
-        return STATE_UNLOCKED;
     }
 
     /**
