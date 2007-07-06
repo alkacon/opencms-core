@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/07/04 18:50:05 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/07/06 13:48:55 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  * 
@@ -598,6 +598,12 @@ public final class CmsLockManager {
         CmsProject project,
         CmsLockType type,
         CmsLock currentLock) throws CmsLockException {
+
+        if (!type.isTemporary() && currentLock.getEditionLock().isInherited()) {
+            throw new CmsLockException(Messages.get().container(
+                Messages.ERR_RESOURCE_LOCKED_INHERITED_1,
+                dbc.getRequestContext().getSitePath(resource)));
+        }
 
         if (!currentLock.isLockableBy(user)) {
             // check type, owner and project for system locks

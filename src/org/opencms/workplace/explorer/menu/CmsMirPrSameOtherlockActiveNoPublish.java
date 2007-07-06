@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameOtherlockActiveNoPublish.java,v $
- * Date   : $Date: 2007/07/04 16:56:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/06 13:48:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6
  */
@@ -52,8 +52,10 @@ public class CmsMirPrSameOtherlockActiveNoPublish extends A_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (resourceUtil[0].isEditable() && !resourceUtil[0].getProjectState().isLockedForPublishing()) {
+        if (resourceUtil[0].isEditable() && !resourceUtil[0].getProjectState().isLockedForPublishing() && !resourceUtil[0].getLock().isInherited()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+        } else if (resourceUtil[0].getLock().isInherited()) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
