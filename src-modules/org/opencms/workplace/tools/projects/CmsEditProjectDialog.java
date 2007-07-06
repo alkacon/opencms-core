@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:36 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/07/06 09:51:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
@@ -49,10 +51,12 @@ import org.opencms.widgets.CmsOrgUnitWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +70,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsEditProjectDialog extends A_CmsProjectDialog {
+public class CmsEditProjectDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "project";
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1"};
 
     /** Request parameter name for the project id. */
     public static final String PARAM_PROJECTID = "projectid";
@@ -83,9 +90,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
     /** The project object that is edited on this dialog. */
     protected CmsProject m_project;
-
-    /** The fully qualified name of the organizational unit. */
-    private String m_oufqn;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -116,7 +120,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
-     * Commits the edited project to the db.<p>
+     * Commits the edited project to the database.<p>
      */
     public void actionCommit() {
 
@@ -126,15 +130,13 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             // if new create it first
             if (m_project.getUuid() == null) {
                 CmsProject newProject = getCms().createProject(
-                    getOufqn() + m_project.getName(),
+                    m_project.getName(),
                     m_project.getDescription(),
                     getUserGroup(),
                     getManagerGroup(),
                     m_project.getType());
                 m_project = newProject;
             } else {
-                m_project.setGroupId(getCms().readGroup(getUserGroup()).getId());
-                m_project.setManagerGroupId(getCms().readGroup(getManagerGroup()).getId());
                 getCms().writeProject(m_project);
             }
             // write the edited project resources
@@ -207,13 +209,31 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
+     * Returns the manager Group name.<p>
+     *
+     * @return the manager Group name
+     */
+    public String getManagerGroup() {
+
+        try {
+            return getCms().readGroup(m_project.getManagerGroupId()).getName();
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
+    /**
      * Returns the simple name of the project.<p>
      * 
      * @return the simple name of the project
      */
     public String getName() {
 
-        return m_project.getSimpleName();
+        String name = m_project.getSimpleName();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name) || name.equals("/")) {
+            name = "";
+        }
+        return name;
     }
 
     /**
@@ -223,7 +243,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
      */
     public String getOufqn() {
 
-        return m_oufqn;
+        return m_project.getOuFqn();
     }
 
     /**
@@ -250,6 +270,20 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
+     * Returns the user Group name.<p>
+     *
+     * @return the user Group name
+     */
+    public String getUserGroup() {
+
+        try {
+            return getCms().readGroup(m_project.getGroupId()).getName();
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
+    /**
      * Just a setter method needed for the widget dialog.<p>
      * 
      * @param ou ignored
@@ -260,13 +294,26 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
+     * Sets the manager Group name.<p>
+     *
+     * @param managerGroup the manager Group name to set
+     */
+    public void setManagerGroup(String managerGroup) {
+
+        CmsGroup group = checkGroup(managerGroup);
+        if (group != null) {
+            m_project.setManagerGroupId(group.getId());
+        }
+    }
+
+    /**
      * Sets the name of the project.<p>
      * 
      * @param name the name to set
      */
     public void setName(String name) {
 
-        m_project.setName(name);
+        m_project.setName(getOufqn() + "/" + name);
     }
 
     /**
@@ -276,7 +323,22 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
      */
     public void setOufqn(String oufqn) {
 
-        m_oufqn = oufqn;
+        if (oufqn != null) {
+            if (oufqn.endsWith("/")) {
+                oufqn += '/';
+            }
+        } else {
+            oufqn = "";
+        }
+        String name = m_project.getSimpleName();
+        if (name == null) {
+            name = "";
+        }
+        name = oufqn + name;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            name = "/";
+        }
+        m_project.setName(oufqn + name);
     }
 
     /**
@@ -301,6 +363,19 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             return;
         }
         m_resources = CmsFileUtil.removeRedundancies(value);
+    }
+
+    /**
+     * Sets the user Group name.<p>
+     *
+     * @param userGroup the user Group name to set
+     */
+    public void setUserGroup(String userGroup) {
+
+        CmsGroup group = checkGroup(userGroup);
+        if (group != null) {
+            m_project.setGroupId(group.getId());
+        }
     }
 
     /**
@@ -369,7 +444,30 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
+        addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(
+            false,
+            "",
+            false,
+            false)));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
 
     /**
@@ -387,41 +485,25 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
         try {
             if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-                // edit an existing project, get the project object from db
+                // edit an existing project, get the project object from database
                 m_project = getCms().readProject(new CmsUUID(getParamProjectid()));
+                m_resources = getCms().readProjectResources(m_project);
             } else {
                 // this is not the initial call, get the project object from session            
                 o = getDialogObject();
-                m_project = (CmsProject)o;
+                Map map = (Map)o;
+                m_project = (CmsProject)map.get("prj");
                 // test
                 m_project.getUuid();
+                m_resources = (List)map.get("res");
+                m_resources.isEmpty();
             }
         } catch (Exception e) {
             // create a new project object
             m_project = new CmsProject();
-        }
-        try {
-            setManagerGroup(getCms().readManagerGroup(m_project).getName());
-        } catch (Exception e) {
-            // ignore
-        }
-        try {
-            setUserGroup(getCms().readGroup(m_project).getName());
-        } catch (Exception e) {
-            try {
-                setUserGroup(getCms().readGroup(
-                    getCms().getRequestContext().getOuFqn() + OpenCms.getDefaultUsers().getGroupUsers()).getName());
-            } catch (CmsException e1) {
-                // should never happen
-            }
-        }
-        try {
-            setResources(getCms().readProjectResources(m_project));
-        } catch (Exception e) {
-            // ignore
-        }
-        if (m_oufqn == null) {
-            m_oufqn = getCms().getRequestContext().getOuFqn();
+            m_resources = new ArrayList();
+            setOufqn(getCms().getRequestContext().getOuFqn());
+            setUserGroup(getCms().getRequestContext().getOuFqn() + OpenCms.getDefaultUsers().getGroupUsers());
         }
     }
 
@@ -444,8 +526,11 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
+        Map map = new HashMap();
+        map.put("prj", m_project);
+        map.put("res", m_resources);
         // save the current state of the project (may be changed because of the widget values)
-        setDialogObject(m_project);
+        setDialogObject(map);
     }
 
     /**
@@ -468,5 +553,21 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             getCms().readProject(new CmsUUID(getParamProjectid())).getName();
         }
 
+    }
+
+    /**
+     * Checks if the given group name is a valid opencms user group.<p>
+     * 
+     * @param groupName the group name to check
+     * 
+     * @return the read group
+     */
+    private CmsGroup checkGroup(String groupName) {
+
+        try {
+            return getCms().readGroup(groupName);
+        } catch (CmsException e) {
+            throw new CmsIllegalArgumentException(e.getMessageContainer());
+        }
     }
 }
