@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/06 09:48:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */
@@ -146,7 +146,7 @@ public class CmsProject implements Cloneable, Comparable {
      */
     public CmsProject() {
 
-        // noop
+        // empty
     }
 
     /**
@@ -182,6 +182,18 @@ public class CmsProject implements Cloneable, Comparable {
         m_flags = flags;
         m_type = type;
         m_dateCreated = dateCreated;
+    }
+
+    /**
+     * Throws a runtime exception if name is empty.<p>
+     * 
+     * @param name the project name to check
+     */
+    public static void checkProjectName(String name) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PROJECTNAME_VALIDATION_0));
+        }
     }
 
     /**
@@ -528,9 +540,7 @@ public class CmsProject implements Cloneable, Comparable {
      */
     public void setName(String name) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PROJECTNAME_VALIDATION_0));
-        }
+        checkProjectName(name);
         m_name = name;
     }
 
