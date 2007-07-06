@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/07/04 16:57:31 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/06 09:49:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUUID.class);
 
-    /** Ethernet addess of the server machine. */
+    /** Ethernet address of the server machine. */
     private static EthernetAddress m_ethernetAddress;
 
     /** Flag to indicate if the ethernet address has been initialized. */
@@ -99,7 +99,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * Creates a new UUID.<p>
      * 
      * Please note that the static init() method has to be called first to initialize the 
-     * enternet address of the machine.<p>
+     * internet address of the machine.<p>
      */
     public CmsUUID() {
 
@@ -183,7 +183,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
 
     /**
      * Returns a null UUID,
-     * use this null UUID to check if a UUID has been initilized or not.<p>
+     * use this null UUID to check if a UUID has been initialized or not.<p>
      * 
      * @return a null UUID
      */
@@ -369,7 +369,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
             }
         }
 
-        // throw an error if the uuid could ne be deserialized
+        // throw an error if the uuid could not be deserialized
         if (m_uuid == UUID.getNullUUID()) {
             m_uuid = null;
             // UUID cannot be deserialized

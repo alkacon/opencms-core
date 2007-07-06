@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/07/06 09:49:46 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0 
  */
@@ -319,7 +319,7 @@ public final class CmsRequestContext {
     /**
      * Returns the remote ip address.<p>
      * 
-     * @return the renote ip addresss as string
+     * @return the remote ip address as string
      */
     public String getRemoteAddress() {
 
@@ -477,7 +477,7 @@ public final class CmsRequestContext {
     public void setAttribute(String key, Object value) {
 
         if (m_attributeMap == null) {
-            // Hashtable is still the most efficient form of a synchronized Map
+            // Hash table is still the most efficient form of a synchronized Map
             m_attributeMap = new Hashtable();
         }
         m_attributeMap.put(key, value);
@@ -487,6 +487,7 @@ public final class CmsRequestContext {
      * Sets the current project for the user.<p>
      *
      * @param project the project to be set as current project
+     * 
      * @return the CmsProject instance
      */
     public CmsProject setCurrentProject(CmsProject project) {
@@ -547,9 +548,9 @@ public final class CmsRequestContext {
      * 
      * Use this with caution! Many things (caches etc.) depend on this value.
      * If you change this value, better make sure that you change it only temporarily 
-     * and reset it in a <code>try { // do something // } finaly { // reset URI // }</code> statement.<p>
+     * and reset it in a <code>try { // do something // } finally { // reset URI // }</code> statement.<p>
      * 
-     * @param value the value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
+     * @param value the value to set the Uri to, must be a complete OpenCms path name like /system/workplace/style.css
      */
     public void setUri(String value) {
 

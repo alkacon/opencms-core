@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsValidationHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/06 09:49:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsIllegalArgumentException;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -54,9 +54,9 @@ public interface I_CmsValidationHandler {
     void checkEmail(String email) throws CmsIllegalArgumentException;
 
     /**
-     * Checks if the provided firstname is valid.<p>
+     * Checks if the provided first name is valid.<p>
      * 
-     * @param firstname the firstname to validate
+     * @param firstname the first name to validate
      * 
      * @throws CmsIllegalArgumentException if the given email address is not valid
      */
@@ -72,9 +72,9 @@ public interface I_CmsValidationHandler {
     void checkGroupName(String groupName) throws CmsIllegalArgumentException;
 
     /**
-     * Checks if the provided lastname is valid.<p>
+     * Checks if the provided last name is valid.<p>
      * 
-     * @param lastname the lastname to validate
+     * @param lastname the last name to validate
      * 
      * @throws CmsIllegalArgumentException if the given email address is not valid
      */
@@ -90,11 +90,11 @@ public interface I_CmsValidationHandler {
     void checkUserName(String userName) throws CmsIllegalArgumentException;
 
     /**
-     * Checks if the provided string is a valid zipcode.<p>
+     * Checks if the provided string is a valid zip code.<p>
      * 
-     * @param zipcode the zipcode to validate
+     * @param zipcode the zip code to validate
      * 
-     * @throws CmsIllegalArgumentException if the given zipcode is not valid
+     * @throws CmsIllegalArgumentException if the given zip code is not valid
      */
     void checkZipCode(String zipcode) throws CmsIllegalArgumentException;
 }

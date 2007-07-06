@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:07 $
- * Version: $Revision: 1.242 $
+ * Date   : $Date: 2007/07/06 09:49:46 $
+ * Version: $Revision: 1.243 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.242 $
+ * @version $Revision: 1.243 $
  * 
  * @since 6.0.0 
  */
@@ -156,7 +156,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 stmt.setLong(8, createTime);
                 stmt.executeUpdate();
                 try {
-                    // this is an ungly hack, but for MySQL (and maybe other DBs as well)
+                    // this is an ugly hack, but for MySQL (and maybe other DBs as well)
                     // there is a UNIQUE INDEX constraint on the project name+createTime
                     // so theoretically if 2 projects with the same name are created very fast, this
                     // SQL restraint would be violated if we don't wait here
@@ -243,7 +243,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             LOG.error("already on db: " + currentJob);
             return;
         } catch (CmsDbEntryNotFoundException e) {
-            // ok, this is the expected behaviour
+            // ok, this is the expected behavior
         }
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -311,7 +311,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // delete the resources from project_resources
         deleteProjectResources(dbc, project);
 
-        // remove the project id form all resources within theis project
+        // remove the project id form all resources within their project
         unmarkProjectResources(dbc, project);
 
         // finally delete the project     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:10 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2007/07/06 09:49:46 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,8 +177,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Commits the edited object after pressing the "OK" button.<p>
      * 
-     * @throws IOException in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public abstract void actionCommit() throws IOException, ServletException;
 
@@ -357,8 +357,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
@@ -372,8 +372,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
 
@@ -389,7 +389,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 break;
 
             case ACTION_ERROR:
-                // ACTION: an error occured (display nothing)
+                // ACTION: an error occurred (display nothing)
                 break;
 
             case ACTION_SAVE:
@@ -712,7 +712,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * excluding the widget values that are on the given dialog page.<p>
      * 
      * This can be used to create multi-page dialogs where the values are passed from
-     * one page to another before everyting is submitted. If a widget A is used on page X,
+     * one page to another before everything is submitted. If a widget A is used on page X,
      * there should be no "hidden" HTML field for A since otherwise A would have 2 values when 
      * submitting the dialog page: The one from the widget itself and the one from the hidden 
      * field. This may lead to undefined results when processing the submitted values.<p>
@@ -753,7 +753,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * Writes the dialog html code, only if the <code>{@link #ACTION_DEFAULT}</code> is set.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      */
     public void writeDialog() throws IOException, JspException {
 
@@ -778,7 +778,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Adds the given error to the list of errors that are thrown by save actions or form generation.<p>
      * 
-     * If the error list has not been initilaized yet, this is done automatically.<p>
+     * If the error list has not been initialized yet, this is done automatically.<p>
      * 
      * @param error the errors to add
      */
@@ -832,7 +832,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param dialogPage the dialog (page) to commit
      * 
-     * @return a List of all Exceptions that occured when comitting the dialog page.<p>
+     * @return a List of all Exceptions that occurred when committing the dialog page.<p>
      */
     protected List commitWidgetValues(String dialogPage) {
 
@@ -906,7 +906,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Creates the dialog HTML for all occurences of one widget parameter.<p>  
+     * Creates the dialog HTML for all occurrences of one widget parameter.<p>  
      * 
      * @param base the widget parameter base
      * @return the dialog HTML for one widget parameter
@@ -1038,6 +1038,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param startIndex the widget index to start with
      * @param endIndex the widget index to stop at
+     * 
      * @return the dialog widget rows HTML for the specified widget indices
      */
     protected String createDialogRowsHtml(int startIndex, int endIndex) {
@@ -1065,7 +1066,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Create the complete widget dialog start block HTML that begins a widget block with optional headline.<p>
+     * 
      * @param headline the headline String for the block
+     * 
      * @return the complete widget dialog start block HTML that begins a widget block with optional headline
      */
     protected String createWidgetBlockStart(String headline) {
@@ -1498,7 +1501,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             try {
                 actionCloseDialog();
             } catch (JspException e1) {
-                // noop
+                // ignore
             }
             return;
         }
@@ -1606,9 +1609,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Should be overriden for parameter validation.<p>
+     * Should be overridden for parameter validation.<p>
      * 
-     * The exception is never seen by the user, so it can be just a <code>new Exception()</code>.<p>
+     * The exception is never seen by the user, so it can be just a <code>new {@link Exception}()</code>.<p>
      * 
      * @throws Exception if the parameters are not valid
      */
@@ -1626,7 +1629,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         Map objects = (Map)getSettings().getDialogObject();
         if (objects == null) {
-            // using hashtable as most efficient version of a synchronized map
+            // using hash table as most efficient version of a synchronized map
             objects = new Hashtable();
             getSettings().setDialogObject(objects);
         }

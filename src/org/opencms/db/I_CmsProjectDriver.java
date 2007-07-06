@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:24 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2007/07/06 09:49:46 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public interface I_CmsProjectDriver {
      * @param id the project id
      * @param owner the owner of the project
      * @param group the group for the project
-     * @param managergroup the managergroup for the project
+     * @param managergroup the manager group for the project
      * @param name the name of the project to create
      * @param description the description for the project
      * @param flags the flags for the project
