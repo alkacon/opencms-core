@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/06 09:44:36 $
- * Version: $Revision: 1.580 $
+ * Date   : $Date: 2007/07/06 15:39:59 $
+ * Version: $Revision: 1.581 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1505,8 +1505,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResourceById.getRootPath(),
                         currentResourceById.getStructureId()));
                 }
-                // lock the resource by id, will throw an exception if not lockable
-                lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
+                // lock the resource by id
+                CmsLock currentLock = getLock(dbc, currentResourceById);
+                if (currentLock.isUnlocked()) {
+                    // upgrade the lock status if required
+                    lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
+                } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+                    // lock the resource, will throw an exception if not lockable
+                    changeLock(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
+                }
 
                 // deleted resources were not moved to L&F
                 if (currentResourceById.getState().isDeleted()) {
@@ -1559,8 +1566,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 }
                 if (!overwrite) {
-                    // lock the resource, will throw an exception if not lockable
-                    lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
+                    if (!currentResourceByName.equals(currentResourceById)) {
+                        // lock the resource by name
+                        CmsLock currentLock = getLock(dbc, currentResourceByName);
+                        if (currentLock.isUnlocked()) {
+                            // upgrade the lock status if required
+                            lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
+                        } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+                            // lock the resource, will throw an exception if not lockable
+                            changeLock(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
+                        }
+                    }
                     // trigger createResource instead of writeResource
                     currentResourceByName = null;
                 }
@@ -1705,7 +1721,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
             } else {
                 // lock the original resource
-                lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
+                CmsLock currentLock = getLock(dbc, overwrittenResource);
+                if (currentLock.isUnlocked()) {
+                    // upgrade the lock status if required
+                    lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
+                } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+                    // lock the resource, will throw an exception if not lockable
+                    changeLock(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
+                }
 
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
@@ -2608,9 +2631,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(dbc, resource);
-        if (currentLock.getEditionLock().isDirectlyInherited()) {
+        if (currentLock.isUnlocked()) {
             // upgrade the lock status if required
             lockResource(dbc, resource, CmsLockType.EXCLUSIVE);
+        } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+            // lock the resource, will throw an exception if not lockable
+            changeLock(dbc, resource, CmsLockType.EXCLUSIVE);
         }
 
         // check if siblings of the resource exist and must be deleted as well
