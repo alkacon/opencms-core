@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/07/06 09:49:46 $
- * Version: $Revision: 1.243 $
+ * Date   : $Date: 2007/07/09 12:34:58 $
+ * Version: $Revision: 1.244 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.243 $
+ * @version $Revision: 1.244 $
  * 
  * @since 6.0.0 
  */
@@ -2395,9 +2395,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // ok, resource new, not moved
             return offlineResource.getState();
         }
-
-        // move the relations of the moved resource
-        m_driverManager.getVfsDriver().moveRelations(dbc, onlineProject.getUuid(), onlineResource);
 
         // move the online resource to the new position
         m_driverManager.getVfsDriver().moveResource(

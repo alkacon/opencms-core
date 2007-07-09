@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2007/07/04 16:57:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/07/09 12:34:59 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,23 @@ public final class CmsFileUtil {
      */
     private CmsFileUtil() {
 
-        // noop
+        // empty
+    }
+
+    /**
+     * Adds a trailing separator to a path if required.<p>
+     * 
+     * @param path the path to add the trailing separator to
+     * @return the path with a trailing separator
+     */
+    public static String addTrailingSeparator(String path) {
+
+        int l = path.length();
+        if ((l == 0) || (path.charAt(l - 1) != '/')) {
+            return path.concat("/");
+        } else {
+            return path;
+        }
     }
 
     /**
@@ -710,7 +726,8 @@ public final class CmsFileUtil {
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource is indirectly contained because a parent folder is contained
                 CmsResource check = (CmsResource)result.get(j);
-                if ((check.isFolder() && resource.getRootPath().startsWith(check.getRootPath())) || resource.getRootPath().equals(check.getRootPath())) {
+                if ((check.isFolder() && resource.getRootPath().startsWith(check.getRootPath()))
+                    || resource.getRootPath().equals(check.getRootPath())) {
                     valid = false;
                     break;
                 }
@@ -721,6 +738,22 @@ public final class CmsFileUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Removes a trailing separator from a path if required.<p>
+     * 
+     * @param path the path to remove the trailing separator from
+     * @return the path without a trailing separator
+     */
+    public static String removeTrailingSeparator(String path) {
+
+        int l = path.length();
+        if ((l <= 1) || (path.charAt(l - 1) != '/')) {
+            return path;
+        } else {
+            return path.substring(0, l - 1);
+        }
     }
 
     /**

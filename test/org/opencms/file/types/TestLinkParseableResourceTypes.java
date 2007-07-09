@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/07/04 16:57:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 12:34:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -421,7 +421,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
         assertTrue(relations.isEmpty());
         relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
-        assertEquals(relations.size(), sources - 1);
+        assertEquals(sources, relations.size());
 
         // there is no direct way to check the relations of deleted resources
         /*

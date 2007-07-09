@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/06 15:39:59 $
- * Version: $Revision: 1.581 $
+ * Date   : $Date: 2007/07/09 12:34:58 $
+ * Version: $Revision: 1.582 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -677,9 +677,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1,
                 dbc.getRequestContext().getSitePath(resource)));
-        } else if (lockType == CmsLockType.EXCLUSIVE
-            && currentLock.isExclusiveOwnedBy(dbc.currentUser())
-            && currentLock.isInProject(dbc.currentProject())) {
+        } else if ((lockType == CmsLockType.EXCLUSIVE)
+            && currentLock.isExclusiveOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
             // the current lock requires no change
             return;
         }
@@ -1046,7 +1045,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // no further permission check required here, will be done in createResource()
 
-        // set user and creation timestamps
+        // set user and creation time stamps
         long currentTime = System.currentTimeMillis();
         long dateLastModified;
         CmsUUID userLastModified;
@@ -1435,6 +1434,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean importCase) throws CmsException {
 
         CmsResource newResource = null;
+        if (resource.isFolder()) {
+            resourcePath = CmsFileUtil.addTrailingSeparator(resourcePath);
+        }
 
         try {
             // check import configuration of "lost and found" folder
@@ -1505,15 +1507,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResourceById.getRootPath(),
                         currentResourceById.getStructureId()));
                 }
-                // lock the resource by id
-                CmsLock currentLock = getLock(dbc, currentResourceById);
-                if (currentLock.isUnlocked()) {
-                    // upgrade the lock status if required
-                    lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
-                } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                    // lock the resource, will throw an exception if not lockable
-                    changeLock(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
-                }
+                // lock the resource by id, will throw an exception if not lockable
+                lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
 
                 // deleted resources were not moved to L&F
                 if (currentResourceById.getState().isDeleted()) {
@@ -1566,17 +1561,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 }
                 if (!overwrite) {
-                    if (!currentResourceByName.equals(currentResourceById)) {
-                        // lock the resource by name
-                        CmsLock currentLock = getLock(dbc, currentResourceByName);
-                        if (currentLock.isUnlocked()) {
-                            // upgrade the lock status if required
-                            lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
-                        } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                            // lock the resource, will throw an exception if not lockable
-                            changeLock(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
-                        }
-                    }
+                    // lock the resource, will throw an exception if not lockable
+                    lockResource(dbc, currentResourceByName, CmsLockType.EXCLUSIVE);
+
                     // trigger createResource instead of writeResource
                     currentResourceByName = null;
                 }
@@ -1612,7 +1599,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            // check if the target name is valid (forbitten chars etc.), 
+            // check if the target name is valid (forbidden chars etc.), 
             // if not throw an exception
             // must do this here since targetName is modified in folder case (see above)
             CmsResource.checkResourceName(targetName);
@@ -1633,7 +1620,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // decide which resource id to use
             if (overwrittenResource != null) {
-                // if we are overwritting we have to assure the resource id is the same
+                // if we are overwriting we have to assure the resource id is the same
                 resourceId = overwrittenResource.getResourceId();
             }
             if (resourceId.isNullUUID()) {
@@ -1648,7 +1635,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     CmsProject.ONLINE_PROJECT_ID,
                     resourcePath,
                     true);
-                // only allow to overwrite with diff id if importing (createResource will set the right id)
+                // only allow to overwrite with different id if importing (createResource will set the right id)
                 try {
                     CmsResource offlineResource = m_vfsDriver.readResource(
                         dbc,
@@ -1712,6 +1699,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
+            // delete all relations for the resource, before writing the content
+            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
             if (overwrittenResource == null) {
                 CmsLock lock = getLock(dbc, newResource);
                 if (lock.getEditionLock().isExclusive()) {
@@ -1721,14 +1710,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
             } else {
                 // lock the original resource
-                CmsLock currentLock = getLock(dbc, overwrittenResource);
-                if (currentLock.isUnlocked()) {
-                    // upgrade the lock status if required
-                    lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
-                } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                    // lock the resource, will throw an exception if not lockable
-                    changeLock(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
-                }
+                lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
 
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
@@ -1758,8 +1740,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         new Object[] {dbc.removeSiteRoot(newResource.getRootPath())}));
                 }
             }
-            // delete all relations for the resource
-            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), newResource, CmsRelationFilter.TARGETS);
         } finally {
             // clear the internal caches
             clearAccessControlListCache();
@@ -2631,12 +2611,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // upgrade a potential inherited, non-shared lock into a common lock
         CmsLock currentLock = getLock(dbc, resource);
-        if (currentLock.isUnlocked()) {
+        if (currentLock.getEditionLock().isDirectlyInherited()) {
             // upgrade the lock status if required
             lockResource(dbc, resource, CmsLockType.EXCLUSIVE);
-        } else if (!currentLock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-            // lock the resource, will throw an exception if not lockable
-            changeLock(dbc, resource, CmsLockType.EXCLUSIVE);
         }
 
         // check if siblings of the resource exist and must be deleted as well
@@ -2758,7 +2735,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 if (!existsOnline) {
                     // the resource does not exist online => remove the resource
-                    // this means the resoruce is "new" (blue) in the offline project                
+                    // this means the resource is "new" (blue) in the offline project                
 
                     // delete all properties of this resource
                     deleteAllProperties(dbc, currentResource.getRootPath());
@@ -2768,7 +2745,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     } else {
                         // check labels
                         if (currentResource.isLabeled() && !labelResource(dbc, currentResource, null, 2)) {
-                            // update the resource flags to "unlabel" the other siblings
+                            // update the resource flags to "un label" the other siblings
                             int flags = currentResource.getFlags();
                             flags &= ~CmsResource.FLAG_LABELED;
                             currentResource.setFlags(flags);
@@ -2778,8 +2755,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     // ensure an exclusive lock is removed in the lock manager for a deleted new resource,
                     // otherwise it would "stick" in the lock manager, preventing other users from creating 
-                    // a file with the same name (issue with tempfiles in editor)
+                    // a file with the same name (issue with temp files in editor)
                     m_lockManager.removeDeletedResource(dbc, currentResource.getRootPath());
+                    // delete relations
+                    m_vfsDriver.deleteRelations(
+                        dbc,
+                        dbc.currentProject().getUuid(),
+                        currentResource,
+                        CmsRelationFilter.TARGETS);
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // structure record is removed during next publish
@@ -2798,10 +2781,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         currentResource);
                 }
             }
-            // delete relations
-            m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), currentResource, CmsRelationFilter.TARGETS);
-            // update broken remaining relations
-            m_vfsDriver.updateBrokenRelations(dbc, resource, true);
         }
 
         if ((resource.getSiblingCount() <= 1) || allSiblingsRemoved) {
@@ -2830,8 +2809,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters ofthe resource
+     * @param linkType the type of resource deleted (0= non-parameter, 1=parameter)
+     * @param linkParameter the parameters of the resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -2855,7 +2834,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param username the name of the user to be deleted
      * @param replacementUsername the name of the user to be transfered, can be <code>null</code>
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      */
     public void deleteUser(CmsDbContext dbc, CmsProject project, String username, String replacementUsername)
     throws CmsException {
@@ -3789,7 +3768,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param resource the resource
      * @param user the user
      * 
-     * @return bitset with allowed permissions
+     * @return bit set with allowed permissions
      * 
      * @throws CmsException if something goes wrong
      */
@@ -7053,7 +7032,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // prevent the date last modified is set to the current time
         newResource.setDateLastModified(newResource.getDateLastModified());
         // restore the resource!
-        createResource(dbc, path + resName, newResource, contents, properties, true);
+        CmsResource resource = createResource(dbc, path + resName, newResource, contents, properties, true);
+        // fire the event
+        HashMap data = new HashMap(2);
+        data.put("resource", resource);
+        data.put("change", new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
     /**
@@ -7578,7 +7562,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void updateRelationsForResource(CmsDbContext dbc, CmsResource resource, List links) throws CmsException {
 
         deleteRelationsWithSiblings(dbc, resource);
-        m_vfsDriver.updateBrokenRelations(dbc, resource, false);
 
         // build the links again only if needed
         if ((links == null) || links.isEmpty()) {
@@ -7942,7 +7925,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * The organizational unit id has to be a valid OpenCms organizational unit id.<br>
      * 
-     * The organizational unit with the given id will be completely overriden
+     * The organizational unit with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param dbc the current db context
@@ -7964,7 +7947,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * The project id has to be a valid OpenCms project id.<br>
      * 
-     * The project with the given id will be completely overriden
+     * The project with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param dbc the current database context
@@ -8000,7 +7983,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // test if and what state should be updated
-            // 0: none, 1: str, 2: res
+            // 0: none, 1: structure, 2: resource
             int updateState = getUpdateState(dbc, resource, Collections.singletonList(property));
 
             // write the property
@@ -8064,7 +8047,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // test if and what state should be updated
-            // 0: none, 1: res, 2: str
+            // 0: none, 1: structure, 2: resource
             int updateStateValue = 0;
             if (updateState) {
                 updateStateValue = getUpdateState(dbc, resource, properties);
@@ -8077,7 +8060,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             if (updateStateValue > 0) {
-                updateState(dbc, resource, updateStateValue == 2);
+                updateState(dbc, resource, (updateStateValue == 2));
             }
         } finally {
             // update the driver manager cache
@@ -8161,9 +8144,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @param dbc the current database context
      * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource exported (0= non-parameter, 1=parameter)
      * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
+     * @param timestamp a time stamp for writing the data into the db
      * 
      * @throws CmsException if something goes wrong
      */
@@ -8182,13 +8165,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * The user id has to be a valid OpenCms user id.<br>
      * 
-     * The user with the given id will be completely overriden
+     * The user with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param dbc the current database context
      * @param user the user to be updated
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
@@ -8524,7 +8507,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 result.add(res);
             } catch (Exception e) {
-                // noop
+                // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
@@ -8547,7 +8530,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List result = new ArrayList();
 
-        // removed internal extendable folder list, since iterated (sibling) resources are files in any case, never folders
+        // removed internal extendible folder list, since iterated (sibling) resources are files in any case, never folders
 
         for (Iterator i = resourceList.iterator(); i.hasNext();) {
             CmsResource res = (CmsResource)i.next();
@@ -8588,7 +8571,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 result.add(res);
             } catch (Exception e) {
-                // noop
+                // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
@@ -8713,7 +8696,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Return a cache key build from the provided information.<p>
      * 
      * @param keys an array of keys to generate the cache key from
-     * @param project the project for which to genertate the key
+     * @param project the project for which to generate the key
      *
      * @return String a cache key build from the provided information
      */
@@ -8804,7 +8787,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return all groups that are virtualizing the given role (or a child of it)
      * 
-     * @throws CmsException if soemthing goes wrong 
+     * @throws CmsException if something goes wrong 
      */
     private List getVirtualGroupsForRole(CmsDbContext dbc, CmsRole role) throws CmsException {
 
@@ -8848,7 +8831,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     private List internalUsersOfGroup(
         CmsDbContext dbc,
@@ -8959,7 +8942,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     resources.add(currentResource);
                 }
             } catch (CmsException e) {
-                // the project resource probably doesnt exist (anymore)...
+                // the project resource probably doesn't exist (anymore)...
                 if (!(e instanceof CmsVfsResourceNotFoundException)) {
                     throw e;
                 }
@@ -9026,7 +9009,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param replacementId the user to be transfered
      * @param withACEs flag to signal if the ACEs should also be transfered or just deleted
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      */
     private void transferPrincipalResources(
         CmsDbContext dbc,
@@ -9202,7 +9185,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineResource);
 
             if (offlineResource != null) {
-                // bugfix 1020: delete all properties (included shared), 
+                // bug fix 1020: delete all properties (included shared), 
                 // shared properties will be recreated by the next call of #createResource(...)
                 m_vfsDriver.deletePropertyObjects(
                     dbc,
@@ -9277,7 +9260,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * This checks the date information of the resource based on
      * {@link CmsResource#getDateLastModified()} as well as 
      * {@link CmsResource#getDateReleased()} and {@link CmsResource#getDateExpired()}.
-     * The current users requerst context is updated with the the "latest" dates found.<p>
+     * The current users request context is updated with the the "latest" dates found.<p>
      * 
      * This is required in order to ensure proper setting of <code>"last-modified"</code> http headers
      * and also for expiration of cached elements in the Flex cache.
