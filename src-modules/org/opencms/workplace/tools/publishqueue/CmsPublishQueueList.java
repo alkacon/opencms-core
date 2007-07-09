@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueList.java,v $
- * Date   : $Date: 2007/07/04 16:57:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 10:09:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5
  */
@@ -198,7 +198,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             try {
                 getToolManager().jspForwardTool(this, "/publishqueue/live", null);
             } catch (Exception e) {
-                // shopuld never happen
+                // Should never happen
             }
         } else if (getParamListAction().equals(LIST_ACTION_CANCEL)) {
             // search for the publish job to cancel
