@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/07/04 16:57:14 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/09 13:19:10 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,7 +225,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
         // add to zipfile
         String name = file.getAbsolutePath().replace('\\', '/');
         name = name.substring(m_fileSelector.getCurrentDirectory().getAbsolutePath().length());
-      
+
         m_message = m_messageOutputAdding + " " + name + "..";
         m_step++;
         repaint();
@@ -296,58 +296,72 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         StringBuffer uploadFiles = new StringBuffer();
         Iterator it = fileNames.iterator();
-        while (it.hasNext()) {
-            uploadFiles.append(((String)it.next())).append('\n');
-        }
-
+        // Http post header is limited, therefore only a ceratain amount of files may be checked 
+        // for server overwrites. Solution is: multiple requests. 
+        int count = 0;
+        List duplications;
         // request to server
         HttpClient client = new HttpClient();
-        PostMethod post = new PostMethod(m_targetUrl);
+        this.m_overwrites = new ArrayList();
         try {
-            // files to upload:
-            Header postHeader = new Header("uploadFiles", URLEncoder.encode(uploadFiles.toString(), "utf-8"));
-            post.addRequestHeader(postHeader);
-            // upload folder in vfs: 
-            Header header2 = new Header("uploadFolder", URLEncoder.encode(getParameter("filelist"), "utf-8"));
-            post.addRequestHeader(header2);
+            while (it.hasNext()) {
+                count++;
+                uploadFiles.append(((String)it.next())).append('\n');
 
-            // the action constant
-            post.setParameter("action", DIALOG_CHECK_OVERWRITE);
+                if (((count % 40) == 0) || (!it.hasNext())) {
+                    // files to upload:
+                    PostMethod post = new PostMethod(m_targetUrl);
+                    Header postHeader = new Header("uploadFiles", URLEncoder.encode(uploadFiles.toString(), "utf-8"));
+                    post.addRequestHeader(postHeader);
+                    // upload folder in vfs: 
+                    Header header2 = new Header("uploadFolder", URLEncoder.encode(getParameter("filelist"), "utf-8"));
+                    post.addRequestHeader(header2);
 
-            // add jsessionid query string
-            String sessionId = getParameter("sessionId");
-            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;
-            post.setQueryString(query);
-            post.addRequestHeader(C_JSESSIONID, sessionId);
+                    // the action constant
+                    post.setParameter("action", DIALOG_CHECK_OVERWRITE);
 
-            HttpConnectionParams connectionParams = client.getHttpConnectionManager().getParams();
-            connectionParams.setConnectionTimeout(5000);
+                    // add jsessionid query string
+                    String sessionId = getParameter("sessionId");
+                    String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;
+                    post.setQueryString(query);
+                    post.addRequestHeader(C_JSESSIONID, sessionId);
 
-            // add the session cookie
-            client.getState();
-            client.getHostConfiguration().getHost();
+                    HttpConnectionParams connectionParams = client.getHttpConnectionManager().getParams();
+                    connectionParams.setConnectionTimeout(5000);
 
-            HttpState initialState = new HttpState();
-            URI uri = new URI(m_targetUrl, false);
-            Cookie sessionCookie = new Cookie(uri.getHost(), C_JSESSIONID, sessionId, "/", null, false);
-            initialState.addCookie(sessionCookie);
-            client.setState(initialState);
-            int status = client.executeMethod(post);
+                    // add the session cookie
+                    client.getState();
+                    client.getHostConfiguration().getHost();
 
-            if (status == HttpStatus.SC_OK) {
-                String response = post.getResponseBodyAsString();
-                m_overwrites = parseDuplicateFiles(URLDecoder.decode(response, "utf-8"));
-                if (m_overwrites.size() > 0) {
-                    rtv = showDuplicationsDialog(m_overwrites);
-                } else {
-                    rtv = ModalDialog.APPROVE_OPTION;
+                    HttpState initialState = new HttpState();
+                    URI uri = new URI(m_targetUrl, false);
+                    Cookie sessionCookie = new Cookie(uri.getHost(), C_JSESSIONID, sessionId, "/", null, false);
+                    initialState.addCookie(sessionCookie);
+                    client.setState(initialState);
+                    int status = client.executeMethod(post);
+
+                    if (status == HttpStatus.SC_OK) {
+                        String response = post.getResponseBodyAsString();
+                        duplications = parseDuplicateFiles(URLDecoder.decode(response, "utf-8"));
+                        this.m_overwrites.addAll(duplications);
+
+                    } else {
+                        // continue without overwrite check 
+                        String error = m_errorLine1 + "\n" + post.getStatusLine();
+                        System.err.println(error);
+                    }
+
+                    count = 0;
+                    uploadFiles = new StringBuffer();
                 }
 
-            } else {
-                // continue without overwrite check 
-                String error = m_errorLine1 + "\n" + post.getStatusLine();
-                System.err.println(error);
             }
+            if (m_overwrites.size() > 0) {
+                rtv = showDuplicationsDialog(m_overwrites);
+            } else {
+                rtv = ModalDialog.APPROVE_OPTION;
+            }
+
         } catch (HttpException e) {
             // TODO Auto-generated catch block
             e.printStackTrace(System.err);
@@ -355,6 +369,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             // TODO Auto-generated catch block
             e.printStackTrace(System.err);
         }
+
         return rtv;
     }
 
@@ -447,7 +462,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
         return targetFile;
     }
 
-
     /**
      * Returns the stack trace (including the message) of an exception as a String.<p>
      * 
@@ -464,6 +478,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
         e.printStackTrace(printWriter);
         return stringWriter.toString();
     }
+
     /**
      * @see java.applet.Applet#destroy()
      */
@@ -870,6 +885,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                     }
                 }
                 repaint();
+                m_overwrites = new ArrayList();
                 int returnVal = m_fileSelector.showDialog(this, "OK");
 
                 // process the results.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/09 12:34:59 $
- * Version: $Revision: 1.826 $
+ * Date   : $Date: 2007/07/09 13:19:11 $
+ * Version: $Revision: 1.827 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,7 @@ OpenCms 7.0.1 - xxx, 2007
 * Fixed issue not displaying project state flag in explorer view when resources not locked
 * Fixed issue with lost relations on folders
 * Fixed issue being unable to modify permissions outside of the /system/ folder
+* Fixed issue with upload applet failing when uploading large amounts of files  
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
