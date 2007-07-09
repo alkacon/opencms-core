@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/07/04 16:57:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 12:27:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -1516,7 +1516,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      * @param cms the cms context
      * @param ou the organizational unit to get the resources for
      * 
-     * @throws CmsException if somehting goes wrong
+     * @throws CmsException if something goes wrong
      */
     private void assertOrgUnitResources(CmsObject cms, CmsOrganizationalUnit ou) throws CmsException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/07/09 12:26:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -263,7 +263,7 @@ public class TestDeletion extends OpenCmsTestCase {
     }
 
     /**
-     * Tests to delete a folder structure with unvisible resources inside.<p>
+     * Tests to delete a folder structure with invisible resources inside.<p>
      * 
      * @throws Exception if the test fails
      */

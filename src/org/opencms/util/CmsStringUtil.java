@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2007/07/04 16:57:30 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/07/09 12:25:52 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -603,7 +603,7 @@ public final class CmsStringUtil {
      * Returns <code>true</code> if the provided Objects are either both <code>null</code> 
      * or equal according to {@link Object#equals(Object)}.<p>
      * 
-     * @param value1 the firt object to compare
+     * @param value1 the first object to compare
      * @param value2 the second object to compare
      * 
      * @return <code>true</code> if the provided Objects are either both <code>null</code> 
