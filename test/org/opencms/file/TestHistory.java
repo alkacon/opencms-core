@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 12:26:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,9 @@ import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -53,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */
@@ -477,6 +480,10 @@ public class TestHistory extends OpenCmsTestCase {
 
         // create a new folder and resource
         CmsResource folder = cms.createResource("testFolder", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        // create a relation
+        cms.lockResource("index.html");
+        cms.addRelationToResource("index.html", "testFolder", CmsRelationType.CATEGORY.getName());
+        // write props
         cms.writePropertyObject("testFolder", new CmsProperty(
             CmsPropertyDefinition.PROPERTY_TITLE,
             "strFolder",
@@ -486,6 +493,9 @@ public class TestHistory extends OpenCmsTestCase {
             CmsResourceTypePlain.getStaticTypeId(),
             "test".getBytes(),
             null);
+        // create a relation
+        cms.addRelationToResource("index.html", "testFolder/test.txt", CmsRelationType.CATEGORY.getName());
+        // write props
         cms.writePropertyObject("testFolder/test.txt", new CmsProperty(
             CmsPropertyDefinition.PROPERTY_TITLE,
             "strFile",
@@ -510,7 +520,7 @@ public class TestHistory extends OpenCmsTestCase {
         assertFalse(cms.existsResource("testFolder", CmsResourceFilter.ALL));
         assertFalse(cms.existsResource("testFolder/test.txt", CmsResourceFilter.ALL));
 
-        // be sure the files were deleted, this could fail with enabled cache
+        // be sure the files were deleted
         CmsProject offline = cms.getRequestContext().currentProject();
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         assertFalse(cms.existsResource("testFolder", CmsResourceFilter.ALL));
@@ -534,11 +544,23 @@ public class TestHistory extends OpenCmsTestCase {
         deletedResources = cms.readDeletedResources("/", true);
         assertTrue(deletedResources.isEmpty());
 
-        // assert
+        // assert the resources
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.enableDateCreatedSecTest();
         assertFilter(cms, "testFolder/", filter);
         assertFilter(cms, cms.getSitePath(res), filter);
+
+        // assert the relations
+        List relations = cms.getRelationsForResource("/testFolder", CmsRelationFilter.SOURCES);
+        assertEquals(1, relations.size());
+        assertRelation(
+            new CmsRelation(cms.readResource("index.html"), folder, CmsRelationType.CATEGORY),
+            (CmsRelation)relations.get(0));
+        relations = cms.getRelationsForResource("/testFolder/test.txt", CmsRelationFilter.SOURCES);
+        assertEquals(1, relations.size());
+        assertRelation(
+            new CmsRelation(cms.readResource("index.html"), res, CmsRelationType.CATEGORY),
+            (CmsRelation)relations.get(0));
 
         // delete again
         cms.lockResource("testFolder");
