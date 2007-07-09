@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsDefaultSessionStorageProvider.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 16:00:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.collections.FastHashMap;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -172,8 +172,11 @@ public class CmsDefaultSessionStorageProvider implements I_CmsSessionStorageProv
             // CME can also be triggered from the Iterator#next() method.
             // ignore, better luck next time...
         } finally {
-            // reset session map to "fast" mode
-            m_sessions.setFast(true);
+            // it may be null during shutdown
+            if (m_sessions != null) {
+                // reset session map to "fast" mode
+                m_sessions.setFast(true);
+            }
         }
     }
 }
