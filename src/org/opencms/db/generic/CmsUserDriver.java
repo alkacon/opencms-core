@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2007/07/09 12:24:45 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  * 
  * @since 6.0.0 
  */
@@ -507,7 +507,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 conn = getSqlManager().getConnection(dbc);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADD_USER_TO_GROUP_3");
 
-                // write the new assingment to the database
+                // write the new assignment to the database
                 stmt.setString(1, groupId.toString());
                 stmt.setString(2, userId.toString());
                 // flag field is not used yet
@@ -587,8 +587,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 CmsResourceFilter.DEFAULT);
             internalDeleteOrgUnitResource(dbc, resource);
             try {
-                // be sure the project was not deleted
-                m_driverManager.readProject(dbc, organizationalUnit.getProjectId());
                 // maintain the default project synchronized
                 m_driverManager.deleteProject(dbc, m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
             } catch (CmsDbEntryNotFoundException e) {
@@ -2328,7 +2326,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @param dbc the current database context
      * @param resource the resource to delete
      * 
-     * @throws CmsException if soemthing goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected void internalDeleteOrgUnitResource(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
