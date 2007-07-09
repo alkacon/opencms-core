@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/07/04 16:57:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  */
@@ -121,6 +121,14 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    protected String defaultActionHtmlStart() {
+
+        return getList().listJs() + dialogContentStart(getParamTitle());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsShowSiblingsList.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,16 +37,17 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListResourceCollector;
+import org.opencms.workplace.list.CmsListExplorerColumn;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ import java.util.Map;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2 
  */
@@ -135,7 +136,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
                  */
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-                    // noop
+                    // empty
                 }
             };
         }
@@ -143,11 +144,19 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    protected String defaultActionHtmlStart() {
+
+        return getList().listJs() + CmsListExplorerColumn.getExplorerStyleDef() + dialogContentStart(getParamTitle());
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
 
-        // noop
+        // empty
     }
 
     /**
@@ -162,33 +171,20 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumnVisibilities()
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
-    protected void setColumnVisibilities() {
+    protected boolean isColumnVisible(int colFlag) {
 
-        Map colVisibilities = new HashMap(16);
-        // set explorer configurable column visibilities
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_TITLE), Boolean.TRUE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_TYPE), Boolean.TRUE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_SIZE), Boolean.TRUE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_PERMISSIONS), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_DATE_LASTMODIFIED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_USER_LASTMODIFIED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_DATE_CREATED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_USER_CREATED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_DATE_RELEASED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_DATE_EXPIRED), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_STATE), Boolean.FALSE);
-        colVisibilities.put(new Integer(CmsUserSettings.FILELIST_LOCKEDBY), Boolean.FALSE);
-        // set explorer no configurable column visibilities
-        colVisibilities.put(new Integer(LIST_COLUMN_TYPEICON.hashCode()), Boolean.TRUE);
-        colVisibilities.put(new Integer(LIST_COLUMN_LOCKICON.hashCode()), Boolean.TRUE);
-        colVisibilities.put(new Integer(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
-        colVisibilities.put(new Integer(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
-        colVisibilities.put(new Integer(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
-        colVisibilities.put(new Integer(LIST_COLUMN_SITE.hashCode()), Boolean.FALSE);
-
-        setColVisibilities(colVisibilities);
+        boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
+        isVisible = isVisible || (colFlag == LIST_COLUMN_TYPEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
+        isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_TYPE);
+        isVisible = isVisible || (colFlag == CmsUserSettings.FILELIST_SIZE);
+        isVisible = isVisible
+            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
+        return isVisible;
     }
 
     /**
@@ -196,7 +192,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // noop
+        // empty
     }
 
     /**

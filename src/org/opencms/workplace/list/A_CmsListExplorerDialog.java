@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2007/07/06 11:42:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -426,11 +427,11 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     /**
      * Returns the visibility flag for a given column.<p>
      * 
-     * The default behaviour is to show the same columns as the explorer view,
+     * The default behavior is to show the same columns as the explorer view,
      * but this can be overwritten.<p>
      * 
      * @param colFlag some {@link CmsUserSettings#FILELIST_TITLE} like value 
-     *              indentifying the column to get the visibility flag for
+     *              identifying the column to get the visibility flag for
      *  
      * @return the visibility flag for the given column
      */
@@ -649,7 +650,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         m_colVisibilities.put(new Integer(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
         m_colVisibilities.put(new Integer(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
-        m_colVisibilities.put(new Integer(LIST_COLUMN_SITE.hashCode()), Boolean.FALSE);
+        m_colVisibilities.put(
+            new Integer(LIST_COLUMN_SITE.hashCode()),
+            Boolean.valueOf(OpenCms.getSiteManager().getSites().size() > 1));
     }
 
     /**

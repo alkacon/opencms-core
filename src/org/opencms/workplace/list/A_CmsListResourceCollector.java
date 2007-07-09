@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/07/04 16:57:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.commons.CmsProgressThread;
@@ -58,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.0 
  */
@@ -221,11 +220,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             Iterator itRes = resources.iterator();
             int count = 0;
             while (itRes.hasNext()) {
-
                 // set progress in thread
-                count++;
                 if (thread != null) {
-
+                    count++;
                     if (thread.isInterrupted()) {
                         throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                             org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
@@ -235,7 +232,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                         org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
                         new Integer(count),
                         new Integer(resources.size())));
-
                 }
 
                 Object obj = itRes.next();
@@ -458,25 +454,12 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         // get an initialized resource utility
         CmsResourceUtil resUtil = getWp().getResourceUtil();
         resUtil.setResource(resource);
-        boolean isDummyResource = !getWp().getCms().existsResource(
-            getWp().getCms().getSitePath(resource),
-            CmsResourceFilter.ALL);
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_NAME, resUtil.getPath());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_ROOT_PATH, resUtil.getFullPath());
-        if (isDummyResource) {
-            item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, "");
-        } else {
-            item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
-        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
-        if (isDummyResource) {
-            item.set(
-                A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS,
-                CmsPermissionSet.ACCESS_VIEW.getPermissionString());
-        } else {
-            item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
-        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
@@ -484,11 +467,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
-        if (isDummyResource) {
-            item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getUserLastModified());
-        } else {
-            item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
-        }
+        item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSiteTitle());
         setAdditionalColumns(item, resUtil);
         return item;

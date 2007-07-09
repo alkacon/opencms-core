@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:43 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2007/07/09 15:11:06 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -556,11 +556,11 @@ public final class CmsSiteManager {
     }
 
     /**
-     * Return the configurded site that matches the given site matcher,
+     * Return the configured site that matches the given site matcher,
      * or the default site if no sites matches.<p>
      * 
      * @param matcher the site matcher to match the site with
-     * @return the matching site, or the defaule site if no sites matches
+     * @return the matching site, or the default site if no sites matches
      */
     public CmsSite matchSite(CmsSiteMatcher matcher) {
 
@@ -610,7 +610,7 @@ public final class CmsSiteManager {
      * @param server the SiteMatcher of the server
      * @param site the site to add
      * 
-     * @throws CmsConfigurationException if the site contains a servername, that is already assigned
+     * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
     private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
 

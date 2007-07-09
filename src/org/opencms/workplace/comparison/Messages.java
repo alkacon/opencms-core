@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/09 15:11:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,9 +140,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIFF_SKIP_LINES_1 = "GUI_DIFF_SKIP_LINES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_FILEINFO_0 = "GUI_HISTORY_FILEINFO_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.comparison.messages";

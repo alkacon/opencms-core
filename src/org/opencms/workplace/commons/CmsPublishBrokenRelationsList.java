@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.commons;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationPublishValidator;
 import org.opencms.relations.CmsRelationValidatorInfoEntry;
@@ -62,7 +63,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -128,14 +129,14 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
-            
+
             m_validator = new CmsRelationPublishValidator(getCms(), getSettings().getPublishList());
             List resourceList = new ArrayList(m_validator.keySet());
             Collections.sort(resourceList);
 
             m_collector = new CmsPublishBrokenRelationsCollector(this, resourceList);
         }
-        
+
         return m_collector;
     }
 
@@ -237,7 +238,8 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
         isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
         isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_SITE.hashCode());
+        isVisible = isVisible
+            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
         return isVisible;
     }
 

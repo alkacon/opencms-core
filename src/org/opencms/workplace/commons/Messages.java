@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/07/05 12:17:17 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,7 +50,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_MULTI_0 = "ERR_AVAILABILITY_MULTI_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BUILDING_RESTYPE_LIST_1 = "ERR_BUILDING_RESTYPE_LIST_1";
 
@@ -518,6 +518,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_0 = "GUI_RESOURCE_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0 = "GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0";

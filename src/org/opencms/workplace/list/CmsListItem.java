@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2007/07/04 16:57:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/09 15:11:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.list;
 
 import org.opencms.main.CmsIllegalArgumentException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,9 +109,9 @@ public class CmsListItem {
     }
 
     /**
-     * Returns the metadata.<p>
+     * Returns the meta data.<p>
      *
-     * @return the metadata
+     * @return the meta data
      */
     public CmsListMetadata getMetadata() {
 
@@ -124,7 +125,7 @@ public class CmsListItem {
      */
     public Map getValues() {
 
-        return m_values;
+        return Collections.unmodifiableMap(m_values);
     }
 
     /**
@@ -133,7 +134,7 @@ public class CmsListItem {
      * @param columnId the column id
      * @param value the value to display
      * 
-     * @return the previous value, or <code>null</code> if unset
+     * @return the previous value, or <code>null</code> if not set
      * @throws CmsIllegalArgumentException if the given <code>columnId</code> is invalid
      * 
      */
@@ -145,5 +146,13 @@ public class CmsListItem {
                 Messages.get().container(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
         }
         return m_values.put(columnId, value);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_values.toString();
     }
 }

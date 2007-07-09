@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/09 15:11:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.CmsResourceInfoDialog;
 import org.opencms.workplace.list.CmsMultiListDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +135,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(value);
                     m_buffer.append(widget.getWidgetStringValue(
                         getCms(),
-                        new CmsFileInfoDialog(getJsp()),
+                        new CmsResourceInfoDialog(getJsp()),
                         (I_CmsWidgetParameter)value));
                 } catch (CmsXmlException e) {
                     LOG.error(e.getMessage(), e);
@@ -276,7 +277,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     public void displayDialog() throws Exception {
 
-        CmsFileInfoDialog fileInfo = new CmsFileInfoDialog(getJsp()) {
+        CmsResourceInfoDialog fileInfo = new CmsResourceInfoDialog(getJsp()) {
 
             protected String defaultActionHtmlEnd() {
 
@@ -699,7 +700,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                             value);
                         result.append(widget.getWidgetStringValue(
                             getCms(),
-                            new CmsFileInfoDialog(getJsp()),
+                            new CmsResourceInfoDialog(getJsp()),
                             (I_CmsWidgetParameter)value));
                     } catch (CmsXmlException e) {
                         LOG.error(e.getMessage(), e);

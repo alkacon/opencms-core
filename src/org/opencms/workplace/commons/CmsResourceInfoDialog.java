@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsFileInfoDialog.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceInfoDialog.java,v $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.comparison;
+package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.jsp.CmsJspActionElement;
@@ -49,17 +49,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsFileInfoDialog extends CmsWidgetDialog {
+public class CmsResourceInfoDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
-    public static final String KEY_PREFIX = "fileinfo";
+    public static final String KEY_PREFIX = "resourceinfo";
 
     /** Defines which pages are valid for this dialog. */
-    static final String[] PAGES = {"page1"};
+    protected static final String[] PAGES = {"page1"};
 
     /** The user object that is edited on this dialog. */
     private String m_path;
@@ -72,7 +72,7 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsFileInfoDialog(CmsJspActionElement jsp) {
+    public CmsResourceInfoDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -84,7 +84,7 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsFileInfoDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsResourceInfoDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -154,7 +154,7 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
         // create the widgets for the first dialog page
-        result.append(dialogBlockStart(key(Messages.GUI_HISTORY_FILEINFO_0)));
+        result.append(dialogBlockStart(key(Messages.GUI_RESOURCE_INFO_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 1));
         result.append(createWidgetTableEnd());
@@ -180,6 +180,8 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
         // initialize the user object to use for the dialog
         initFileInfo();
 
+        setKeyPrefix(KEY_PREFIX);
+
         addWidget(new CmsWidgetDialogParameter(this, "path", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "title", PAGES[0], new CmsDisplayWidget()));
     }
@@ -200,8 +202,7 @@ public class CmsFileInfoDialog extends CmsWidgetDialog {
         try {
             // edit an existing user, get the user object from db
             m_path = getParamResource();
-            m_title = getCms().readPropertyObject(m_path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-
+            m_title = getCms().readPropertyObject(m_path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("-");
         } catch (CmsException e) {
             // should never happen
         }

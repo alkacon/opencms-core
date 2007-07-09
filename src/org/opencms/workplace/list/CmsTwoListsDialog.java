@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsTwoListsDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,8 +134,8 @@ public class CmsTwoListsDialog {
      * Display method for two list dialogs.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
@@ -145,7 +145,7 @@ public class CmsTwoListsDialog {
     /**
      * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
      * 
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      */
     public void writeDialog() throws IOException {
 
@@ -164,8 +164,8 @@ public class CmsTwoListsDialog {
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
 

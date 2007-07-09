@@ -1,7 +1,8 @@
-<%@ page import="org.opencms.workplace.comparison.*" %><%	
+<%@ page import="org.opencms.workplace.comparison.CmsResourceComparisonDialog" %><%	
+%><%@ page import="org.opencms.workplace.commons.CmsResourceInfoDialog" %><%	
 
 	// initialize the widget dialog
-	CmsFileInfoDialog wpWidget = new CmsFileInfoDialog(pageContext, request, response);
+	CmsResourceInfoDialog wpWidget = new CmsResourceInfoDialog(pageContext, request, response);
 	// perform the widget actions   
 	wpWidget.displayDialog(true);
 	if (wpWidget.isForwarded()) {

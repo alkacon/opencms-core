@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:11:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5 
  */
@@ -396,7 +396,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         isVisible = isVisible || (colFlag == LIST_COLUMN_LOCKICON.hashCode());
         isVisible = isVisible || (colFlag == LIST_COLUMN_PROJSTATEICON.hashCode());
         isVisible = isVisible || (colFlag == LIST_COLUMN_NAME.hashCode());
-        isVisible = isVisible || (colFlag == LIST_COLUMN_SITE.hashCode());
+        isVisible = isVisible
+            || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
         return isVisible;
     }
 
