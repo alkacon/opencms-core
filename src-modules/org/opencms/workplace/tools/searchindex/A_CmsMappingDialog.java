@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsMappingDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 16:01:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5
  */
@@ -400,7 +400,7 @@ public class A_CmsMappingDialog extends CmsWidgetDialog {
 
         if (!isNewMapping()) {
             // test the needed parameters
-            if (getParamField() == null && getJsp().getRequest().getParameter("name.0") == null) {
+            if ((getParamField() == null) && (getJsp().getRequest().getParameter("name.0") == null)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                     PARAM_FIELD));

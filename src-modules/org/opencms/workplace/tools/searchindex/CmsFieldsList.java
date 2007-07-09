@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsFieldsList.java,v $
- * Date   : $Date: 2007/07/04 16:57:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 16:01:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -617,6 +617,15 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
             Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // will throw NPE if something wrong
+        OpenCms.getSearchManager().getFieldConfiguration(getParamFieldconfiguration()).getFields();
     }
 
     /**
