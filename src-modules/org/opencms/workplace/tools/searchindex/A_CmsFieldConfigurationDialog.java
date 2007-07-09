@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsFieldConfigurationDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5
  */
@@ -69,11 +69,8 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** 
-     * The request parameter for the fieldconfiguration to work with when contacting 
-     * this dialog from another. <p>
-     *      
-     */
+    /** The request parameter for the fieldconfiguration to work with when contacting 
+     * this dialog from another. */
     public static final String PARAM_FIELDCONFIGURATION = "fieldconfiguration";
 
     /** The user object that is edited on this dialog. */
@@ -125,7 +122,6 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         try {
-
             // if new create it first
             if (m_searchManager.getFieldConfiguration(m_fieldconfiguration.getName()) == null) {
                 m_searchManager.addFieldConfiguration(m_fieldconfiguration);
@@ -133,7 +129,6 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
             if (checkWriteConfiguration()) {
                 writeConfiguration();
             }
-
         } catch (Throwable t) {
             errors.add(t);
         }
@@ -190,7 +185,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
 
         result.append(createWidgetTableEnd());
 
-        // Output the list with cocument types:
+        // Output the list with document types:
         return result.toString();
     }
 
@@ -305,7 +300,7 @@ public class A_CmsFieldConfigurationDialog extends CmsWidgetDialog {
 
         if (!isNewFieldConfiguration()) {
             // test the needed parameters
-            if (getParamFieldconfiguration() == null && getJsp().getRequest().getParameter("name.0") == null) {
+            if ((getParamFieldconfiguration() == null) && (getJsp().getRequest().getParameter("name.0") == null)) {
                 throw new CmsIllegalStateException(Messages.get().container(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                     PARAM_FIELDCONFIGURATION));

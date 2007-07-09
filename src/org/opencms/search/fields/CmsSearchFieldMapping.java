@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -186,11 +186,10 @@ public class CmsSearchFieldMapping {
     public int hashCode() {
 
         if (m_hashCode == 0) {
-            int hashCode = 0;
+            int hashCode = 73 * m_type.hashCode();
             if (m_param != null) {
-                hashCode = m_param.hashCode();
+                hashCode += m_param.hashCode();
             }
-            hashCode += 73 * m_type.hashCode();
             m_hashCode = hashCode;
         }
         return m_hashCode;

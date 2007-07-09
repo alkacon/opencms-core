@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewFieldConfigurationDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.5
  */
@@ -100,7 +100,7 @@ public class CmsOverviewFieldConfigurationDialog extends A_CmsFieldConfiguration
 
         result.append(createWidgetTableEnd());
 
-        // Output the list with cocument types:
+        // Output the list with document types:
         return result.toString();
     }
 

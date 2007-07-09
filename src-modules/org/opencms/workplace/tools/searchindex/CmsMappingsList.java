@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsMappingsList.java,v $
- * Date   : $Date: 2007/07/04 16:57:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/09 15:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -103,7 +103,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /** list action id constant. */
     public static final String LIST_MACTION_DELETEMAPPING = "mad";
 
-    /** The path to the fieldconfiguration list icon. */
+    /** The path to the field configuration list icon. */
     protected static final String LIST_ICON_MAPPING = "tools/searchindex/icons/small/fieldconfiguration-mapping.png";
 
     /** The log object for this class. */
@@ -156,7 +156,6 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         String searchableColId) {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
-
     }
 
     /**
@@ -166,40 +165,39 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
         if (getParamListAction().equals(LIST_MACTION_DELETEMAPPING)) {
-            // execute the delete multiaction
-            Iterator itItems = getSelectedItems().iterator();
-            CmsListItem listItem;
-            CmsSearchField field = null;
-            CmsSearchFieldMapping mapping;
+            // execute the delete multi action, first search for the field to edit
             List fields = searchManager.getFieldConfiguration(m_paramFieldconfiguration).getFields();
             Iterator itFields = fields.iterator();
             while (itFields.hasNext()) {
                 CmsSearchField curField = (CmsSearchField)itFields.next();
                 if (curField.getName().equals(m_paramField)) {
-                    field = curField;
-                }
-            }
-            if (field != null) {
-                Iterator itMappings;
-                List deleteMappings = new ArrayList();
-                while (itItems.hasNext()) {
-                    listItem = (CmsListItem)itItems.next();
-                    itMappings = field.getMappings().iterator();
-                    while (itMappings.hasNext()) {
-                        String itemValue = (String)listItem.get(LIST_COLUMN_VALUE);
-                        String itemType = (String)listItem.get(LIST_COLUMN_TYPE);
-
-                        CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
-                        if (curMapping.getType().toString().equals(itemType)
-                            && ((curMapping.getParam() == null && itemValue == null) || (curMapping.getParam().equals(itemValue)))) {
-                            deleteMappings.add(curMapping);
+                    // we found the field to edit
+                    List deleteMappings = new ArrayList();
+                    Iterator itItems = getSelectedItems().iterator();
+                    while (itItems.hasNext()) {
+                        // iterate all selected mappings
+                        CmsListItem listItem = (CmsListItem)itItems.next();
+                        Iterator itMappings = curField.getMappings().iterator();
+                        while (itMappings.hasNext()) {
+                            // iterate all field mappings 
+                            CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
+                            String itemValue = (String)listItem.get(LIST_COLUMN_VALUE);
+                            String itemType = (String)listItem.get(LIST_COLUMN_TYPE);
+                            // match the selected mapping
+                            if (curMapping.getType().toString().equals(itemType)
+                                && (((curMapping.getParam() == null) && (itemValue == null)) || (curMapping.getParam().equals(itemValue)))) {
+                                // mark for deletion
+                                deleteMappings.add(curMapping);
+                            }
                         }
                     }
-                }
-                itMappings = deleteMappings.iterator();
-                while (itMappings.hasNext()) {
-                    mapping = (CmsSearchFieldMapping)itMappings.next();
-                    searchManager.removeSearchFieldMapping(field, mapping);
+                    // delete the marked mappings
+                    Iterator itMappings = deleteMappings.iterator();
+                    while (itMappings.hasNext()) {
+                        CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)itMappings.next();
+                        searchManager.removeSearchFieldMapping(curField, mapping);
+                    }
+                    break;
                 }
             }
 
@@ -261,7 +259,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * Sets the request parameter "field". <p>
      * 
-     * Method intended for workplace-properietary automatic filling of 
+     * Method intended for workplace-proprietary automatic filling of 
      * request parameter values to dialogs, not for manual invocation. <p>
      *  
      * @param field the request parameter "field" to set 
@@ -274,7 +272,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * Sets the request parameter "fieldconfiguration". <p>
      * 
-     * Method intended for workplace-properietary automatic filling of 
+     * Method intended for workplace-proprietary automatic filling of 
      * request parameter values to dialogs, not for manual invocation. <p>
      *  
      * @param fieldconfiguration the request parameter "fieldconfiguration" to set 
@@ -378,7 +376,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // noop
+        // empty
     }
 
     /**
