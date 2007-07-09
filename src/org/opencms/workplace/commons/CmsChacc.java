@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/09 08:43:39 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -1330,12 +1330,12 @@ public class CmsChacc extends CmsDialog {
             resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             internal = ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0);
         } catch (CmsException e) {
-            // an error occured reading the resource 
+            // an error occurred reading the resource 
             LOG.error(e.getLocalizedMessage());
         }
 
         if ((resource != null) && (resource.isFile())) {
-            // only show internal checkbox on files
+            // only show internal check box on files
             result.append("<form action=\"").append(getDialogUri()).append(
                 "\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");
             result.append("<table border=\"0\" width=\"100%\">\n");
@@ -1384,7 +1384,6 @@ public class CmsChacc extends CmsDialog {
         String inheritRes) {
 
         StringBuffer result = new StringBuffer(8);
-        editable &= isRoleEditable(); // only vfs managers can edit a role based permission
 
         // get name and type of the current entry
         I_CmsPrincipal principal = getCms().lookupPrincipal(entry.getPrincipal());
@@ -1553,11 +1552,11 @@ public class CmsChacc extends CmsDialog {
                 result.append("</tr>\n");
             }
 
-            // show overwrite checkbox and buttons only for editable entries
+            // show overwrite check box and buttons only for editable entries
             if (editable) {
                 // do not show the responsible option for the 'all others' ace
                 if (!id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
-                    // show owner checkbox
+                    // show owner check box
                     result.append("<tr>\n");
                     result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_LABEL_RESPONSIBLE_0)).append(
                         "</td>\n");
@@ -1571,7 +1570,7 @@ public class CmsChacc extends CmsDialog {
                     result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
                     result.append("</tr>\n");
                 }
-                // show overwrite inherited checkbox
+                // show overwrite inherited check box
                 result.append("<tr>\n");
                 result.append("\t<td class=\"dialogpermissioncell\">").append(
                     key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append("</td>\n");
@@ -1585,7 +1584,7 @@ public class CmsChacc extends CmsDialog {
                 result.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
                 result.append("</tr>\n");
 
-                // show inherit permissions checkbox on folders
+                // show inherit permissions check box on folders
                 if (getInheritOption()) {
                     result.append("<tr>\n");
                     result.append("\t<td class=\"dialogpermissioncell\">").append(
@@ -1801,6 +1800,7 @@ public class CmsChacc extends CmsDialog {
     private boolean isRoleEditable() {
 
         return OpenCms.getRoleManager().hasRoleForResource(getCms(), CmsRole.VFS_MANAGER, getParamResource())
-            && getParamResource().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
+            && (getParamResource().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && getParamResource().startsWith(
+                CmsWorkplace.VFS_PATH_SYSTEM));
     }
 }
