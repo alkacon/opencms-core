@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/10 16:28:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,14 +225,14 @@ public class CmsExplorerTypeAccess {
             groups = cms.getGroupsOfUser(user.getName(), false);
         } catch (CmsException e) {
             // error reading the groups of the current user
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);
         }
         List roles = null;
         try {
             roles = OpenCms.getRoleManager().getRolesForResource(cms, user.getName(), cms.getSitePath(resource));
         } catch (CmsException e) {
             // error reading the roles of the current user
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);
         }
         String defaultPermissions = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
         // add the default permissions to the acl
