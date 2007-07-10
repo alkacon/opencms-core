@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/07/04 16:57:18 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/07/10 12:25:27 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -618,13 +618,13 @@ public class CmsPublishProject extends CmsMultiDialog {
                 CmsLock lock = getCms().getLock(getCms().readResource(resName, CmsResourceFilter.ALL));
                 if (!lock.isUnlocked()) {
                     unlocked = false;
-                }
-                if (locked
-                    && !lock.isOwnedInProjectBy(
-                        getCms().getRequestContext().currentUser(),
-                        getCms().getRequestContext().currentProject())) {
-                    // locks of another users or locked in another project are blocking
-                    locked = false;
+                    if (locked
+                        && !lock.isOwnedInProjectBy(
+                            getCms().getRequestContext().currentUser(),
+                            getCms().getRequestContext().currentProject())) {
+                        // locks of another users or locked in another project are blocking
+                        locked = false;
+                    }
                 }
             } catch (CmsException e) {
                 // error reading a resource, should usually never happen
@@ -719,7 +719,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         super.actionCloseDialog();
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -741,7 +741,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamAction()) || DIALOG_INITIAL.equals(getParamAction())) {
             // siblings option. set to the default value defined in the opencms-workplace.xml
             setParamPublishsiblings(String.valueOf(getSettings().getUserSettings().getDialogPublishSiblings()));
-            // subresources option. default value is true
+            // sub resources option. default value is true
             setParamSubresources(Boolean.TRUE.toString());
             // related resources option.
             String defValue = CmsStringUtil.TRUE;
@@ -767,7 +767,6 @@ public class CmsPublishProject extends CmsMultiDialog {
                     CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
                     CmsPublishList storedList = null;
                     if (thread != null) {
-
                         storedList = ((CmsPublishResourcesList)thread.getList()).getPublishList();
                     }
 
@@ -804,7 +803,6 @@ public class CmsPublishProject extends CmsMultiDialog {
 
             CmsProgressThread thread = CmsProgressWidget.getProgressThread(getProgress().getKey());
             if ((!thread.isAlive()) && (thread.getList().getList().getTotalSize() == 0)) {
-
                 // skip broken links confirmation screen
                 setAction(ACTION_PUBLISH);
             }
@@ -938,6 +936,9 @@ public class CmsPublishProject extends CmsMultiDialog {
      */
     private boolean isDirectPublish() {
 
-        return Boolean.valueOf(getParamDirectpublish()).booleanValue();
+        if (getParamDirectpublish() != null) {
+            return Boolean.valueOf(getParamDirectpublish()).booleanValue();
+        }
+        return getDialogUri().endsWith("publishresource.jsp");
     }
 }
