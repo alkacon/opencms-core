@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/07/09 12:34:58 $
- * Version: $Revision: 1.263 $
+ * Date   : $Date: 2007/07/10 16:27:48 $
+ * Version: $Revision: 1.264 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.263 $
+ * @version $Revision: 1.264 $
  * 
  * @since 6.0.0 
  */
@@ -983,7 +983,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
         // update broken remaining relations
-        updateBrokenRelations(dbc, projectId);
+        updateBrokenRelations(dbc, projectId, resource.getRootPath());
     }
 
     /**
@@ -3698,10 +3698,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the project id
+     * @param rootPath the root path of the resource that has been deleted 
      * 
      * @throws CmsDataAccessException if something goes wrong 
      */
-    protected void updateBrokenRelations(CmsDbContext dbc, CmsUUID projectId) throws CmsDataAccessException {
+    protected void updateBrokenRelations(CmsDbContext dbc, CmsUUID projectId, String rootPath)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -3709,6 +3711,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RELATIONS_UPDATE_BROKEN");
+            stmt.setString(1, rootPath);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
