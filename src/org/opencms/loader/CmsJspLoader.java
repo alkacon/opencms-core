@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/07/04 16:57:47 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2007/07/10 08:04:31 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.loader;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -113,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.102 $ 
+ * @version $Revision: 1.103 $ 
  * 
  * @since 6.0.0 
  * 
@@ -126,7 +127,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** Property value for "cache" that indicates that the ouput should be streamed. */
     public static final String CACHE_PROPERTY_STREAM = "stream";
-    
+
     /** Default jsp folder constant. */
     public static final String DEFAULT_JSP_FOLDER = "/WEB-INF/jsp/";
 
@@ -537,7 +538,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
+        CmsRequestContext context = cms.getRequestContext();
+        // If we load template jsp or template-element jsp (xml contents or xml pages) don't show source (2nd test) 
+        if ((CmsHistoryResourceHandler.isHistoryRequest(req))
+            && (context.getUri().equals(context.removeSiteRoot(file.getRootPath())))) {
             showSource(cms, file, req, res);
         } else {
             // load and process the JSP         

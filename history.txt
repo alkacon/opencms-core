@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/09 16:16:24 $
- * Version: $Revision: 1.830 $
+ * Date   : $Date: 2007/07/10 08:04:31 $
+ * Version: $Revision: 1.831 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 7.0.1 - July 11, 2007
 - Added jdbc driver for MsSql
 * Fixed display issue with resources across sites in the show sibling and show relations dialogs 
 - Updated alkacon-simapi.jar to version 0.9.5, fixed an issue with scaling of screenshots
+* Fixed issue with history displaying source code for xmlpages and XML contents
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
