@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/07/10 13:13:59 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -82,7 +83,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -760,7 +761,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if (!value.isSimpleType()) {
             // no validation for a nested schema is possible
-            // note that the sub-elemenets of the nested schema ARE validated by the node visitor,
+            // note that the sub-elements of the nested schema ARE validated by the node visitor,
             // it's just the nested schema value itself that does not support validation
             return errorHandler;
         }
@@ -1489,7 +1490,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected boolean validateLink(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContentErrorHandler errorHandler) {
 
-        // if there is a value of type file ref
+        // if there is a value of type file reference
         if ((value == null) || (!(value instanceof CmsXmlVfsFileValue) && !(value instanceof CmsXmlVarLinkValue))) {
             return false;
         }
@@ -1564,6 +1565,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         boolean isWarning) {
 
         if (validateLink(cms, value, errorHandler)) {
+            return errorHandler;
+        }
+        try {
+            if (value.getContentDefinition().getContentHandler().getWidget(value) instanceof CmsDisplayWidget) {
+                // display widgets should not be validated
+                return errorHandler;
+            }
+        } catch (CmsXmlException e) {
+            errorHandler.addError(value, e.getMessage());
             return errorHandler;
         }
 
