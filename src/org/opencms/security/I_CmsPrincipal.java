@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2007/07/04 16:57:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/07/10 16:28:33 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public interface I_CmsPrincipal extends Principal {
     /**
      * Compares the given object with this principal.<p>
      * 
-     * @param obj object to comapre
+     * @param obj object to compare
      * @return true if the object is equal
      */
     boolean equals(Object obj);
@@ -164,7 +164,7 @@ public interface I_CmsPrincipal extends Principal {
     /**
      * Returns <code>true</code> if this principal is enabled.<p>
      * 
-     * A principal may be disabled in order to deactivate it, for example to prevent
+     * A principal may be disabled in order to disable it, for example to prevent
      * logins of a user. If a principal is just disabled but not deleted, 
      * the credentials of the principal in the VFS are still valid.<p>
      * 
@@ -204,7 +204,7 @@ public interface I_CmsPrincipal extends Principal {
      * Sets this principals flags to the specified value.<p>
      *
      * The principal flags are used to store special information about the 
-     * principals state encoded bitwise. Usually the flags int value should not 
+     * principals state encoded bitwise. Usually the flags integer value should not 
      * be directly accessed. Utility methods like <code>{@link #setEnabled(boolean)}</code>
      * provide a much easier way to manipulate the information contained in the flags.<p>
      *
