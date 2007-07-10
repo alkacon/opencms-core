@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServletErrorHandler.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/10 16:28:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  * 
@@ -72,12 +72,12 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        // chech the error status
+        // check the error status
         Integer errorStatus = (Integer)req.getAttribute(CmsJspStatusBean.ERROR_STATUS_CODE);
         if (errorStatus != null) {
             // only use super method if an error status code is set
             if (OpenCmsCore.getInstance().getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                // use super method if servlet runlevel is available
+                // use super method if servlet run level is available
                 super.doGet(req, res);
             } else {
                 // otherwise display a simple error page

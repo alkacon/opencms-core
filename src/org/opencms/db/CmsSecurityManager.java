@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:25 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2007/07/10 16:27:08 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2012,7 +2012,7 @@ public final class CmsSecurityManager {
      * @param resource the resource
      * @param user the user
      * 
-     * @return bitset with allowed permissions
+     * @return bit set with allowed permissions
      * 
      * @throws CmsException if something goes wrong
      */
@@ -5572,7 +5572,7 @@ public final class CmsSecurityManager {
 
         int denied = 0;
 
-        // if this is the onlineproject, write is rejected 
+        // if this is the online project, write is rejected 
         if (dbc.currentProject().isOnlineProject()) {
             denied |= CmsPermissionSet.PERMISSION_WRITE;
         }
