@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
+		<opencms_version>7.0.1</opencms_version>
 		<createdate>Mon, 25 Jun 2007 14:15:22 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
@@ -668,8 +668,16 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
+					<uuidprincipal>USER.Export</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
 					<permissionset>
 						<allowed>1</allowed>
 						<denied>0</denied>

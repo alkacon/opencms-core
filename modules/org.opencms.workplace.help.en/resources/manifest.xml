@@ -139,8 +139,16 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
+					<uuidprincipal>USER.Export</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
 					<permissionset>
 						<allowed>1</allowed>
 						<denied>0</denied>
