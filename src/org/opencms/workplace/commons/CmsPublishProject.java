@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/07/10 12:25:27 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/07/10 13:02:58 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -468,7 +468,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * Returns the value of the subresources parameter.<p>
      * 
-     * @return the value of the subresources parameter
+     * @return the value of the sub resources parameter
      */
     public String getParamSubresources() {
 

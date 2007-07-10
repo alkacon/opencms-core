@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/07/06 15:48:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/10 13:03:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -820,7 +820,7 @@ public final class CmsResourceUtil {
         } catch (CmsException e) {
             // ignore
         } finally {
-            getCms().getRequestContext().setSiteRoot(rootSite);            
+            getCms().getRequestContext().setSiteRoot(rootSite);
         }
         return title;
     }
@@ -1046,7 +1046,7 @@ public final class CmsResourceUtil {
     /**
      * Returns <code>true</code> if the given resource is editable by the current user.<p>
      * 
-     * Retuns <code>false</code> if no request context is set.<p>
+     * Returns <code>false</code> if no request context is set.<p>
      * 
      * @return <code>true</code> if the given resource is editable by the current user
      */
