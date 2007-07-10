@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/10 12:27:28 $
- * Version: $Revision: 1.832 $
+ * Date   : $Date: 2007/07/10 13:04:06 $
+ * Version: $Revision: 1.833 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ OpenCms 7.0.1 - July 11, 2007
 * Fixed issue with history displaying control code for xmlpages and XML contents
 * Updated MySql4.0 driver
 * Fixed issue showing the lock dialog during publishing in some irrelevant cases
+* Fixed issue with wrong resource filter preventing permission check on deleted resources
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
