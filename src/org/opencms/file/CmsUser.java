@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/10 12:25:58 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0
  * 
@@ -607,6 +607,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setEmail(String email) {
 
         checkEmail(email);
+        if (email != null) {
+            email = email.trim();
+        }
         m_email = email;
     }
 
@@ -628,13 +631,16 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setFirstname(String firstname) {
 
         OpenCms.getValidationHandler().checkFirstname(firstname);
+        if (firstname != null) {
+            firstname = firstname.trim();
+        }
         m_firstname = firstname;
     }
 
     /**
-     * Sets the last login timestamp of this user.<p>
+     * Sets the last login time stamp of this user.<p>
      *
-     * @param value the last login timestamp to set
+     * @param value the last login time stamp to set
      */
     public void setLastlogin(long value) {
 
@@ -650,6 +656,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setLastname(String lastname) {
 
         OpenCms.getValidationHandler().checkLastname(lastname);
+        if (lastname != null) {
+            lastname = lastname.trim();
+        }
         m_lastname = lastname;
     }
 
@@ -688,7 +697,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public void setZipcode(String zipcode) {
 
         checkZipCode(zipcode);
-        if (CmsStringUtil.isNotEmpty(zipcode)) {
+        if (zipcode != null) {
             zipcode = zipcode.toUpperCase();
         }
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
