@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/10 08:04:31 $
- * Version: $Revision: 1.831 $
+ * Date   : $Date: 2007/07/10 12:27:28 $
+ * Version: $Revision: 1.832 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,12 +26,14 @@ OpenCms 7.0.1 - July 11, 2007
 - Improved handling of overwriting inherited locks (including disabling menu entries)
 * Fixed issue not displaying project state flag in explorer view when resources not locked
 * Fixed issue with lost relations on folders
-* Fixed issue being unable to modify permissions outside of the /system/ folder
+* Fixed issue being unable to edit permissions outside of the /system/ folder
 * Fixed issue with upload applet failing when uploading large amounts of files  
 - Added jdbc driver for MsSql
 * Fixed display issue with resources across sites in the show sibling and show relations dialogs 
 - Updated alkacon-simapi.jar to version 0.9.5, fixed an issue with scaling of screenshots
-* Fixed issue with history displaying source code for xmlpages and XML contents
+* Fixed issue with history displaying control code for xmlpages and XML contents
+* Updated MySql4.0 driver
+* Fixed issue showing the lock dialog during publishing in some irrelevant cases
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
