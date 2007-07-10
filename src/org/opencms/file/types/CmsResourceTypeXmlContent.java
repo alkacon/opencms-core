@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/07/04 16:57:35 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/07/10 12:25:38 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,7 +225,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                     while (k.hasNext()) {
                         CmsLink link = (CmsLink)k.next();
 
-                        // external links are ommitted
+                        // external links are omitted
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
                             links.add(link);
