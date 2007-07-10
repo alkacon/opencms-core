@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2007/07/04 16:57:24 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/10 13:02:07 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 6.0.0
  * 
@@ -79,13 +79,13 @@ public class CmsPublishList implements Externalizable {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishList.class);
 
-    /** Indicates a nonexistant object in the serialized data. */
+    /** Indicates a non existent object in the serialized data. */
     private static final int NIL = -1;
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -2578909250462750927L;
 
-    /** Lenght of a serialized uuid. */
+    /** Length of a serialized uuid. */
     private static final int UUID_LENGTH = CmsUUID.getNullUUID().toByteArray().length;
 
     /** The list of deleted Cms folder resources to be published.<p> */
