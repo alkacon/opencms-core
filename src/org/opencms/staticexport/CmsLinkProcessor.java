@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/07/04 16:57:22 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/07/11 09:30:03 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -328,7 +328,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     // link management check
                     String l = link.getLink(m_cms, m_processEditorLinks);
                     if (TAG_PARAM.equals(tag.getTagName())) {
-                        // HACK: to distinguish link params the link itself has to end with '&' or '?'
+                        // HACK: to distinguish link parameters the link itself has to end with '&' or '?'
                         // another solution should be a kind of macro...
                         if (!l.endsWith(CmsRequestUtil.URL_DELIMITER)
                             && !l.endsWith(CmsRequestUtil.PARAMETER_DELIMITER)) {
@@ -347,8 +347,11 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 // links are replaced with macros
                 String targetUri = tag.getAttribute(attr);
                 if (CmsStringUtil.isNotEmpty(targetUri)) {
-                    String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
-                    // HACK: to distinguish link params the link itself has to end with '&' or '?'
+                    String internalUri = null;
+                    if (!CmsMacroResolver.isMacro(targetUri)) {
+                        CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                    }
+                    // HACK: to distinguish link parameters the link itself has to end with '&' or '?'
                     // another solution should be a kind of macro...
                     if (!TAG_PARAM.equals(tag.getTagName())
                         || targetUri.endsWith(CmsRequestUtil.URL_DELIMITER)
@@ -374,7 +377,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     }
                 }
                 break;
-            default: // noop
+            default: // empty
         }
     }
 
@@ -400,7 +403,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             String attr = OBJECT_TAG_LINKED_ATTRIBS[i];
             processLink(tag, attr, type);
             if (i == 0 && tag.getAttribute(attr) != null) {
-                // if codebase is available, the other attributes are relative to it, so do not process them
+                // if code base is available, the other attributes are relative to it, so do not process them
                 break;
             }
         }
@@ -430,7 +433,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
         if (!hasAltAttrib) {
             String value = null;
             if ((internalUri != null) && (m_rootCms != null)) {
-                // internal image: try to read the alt text from the "Title" property
+                // internal image: try to read the "alt" text from the "Title" property
                 try {
                     value = m_rootCms.readPropertyObject(internalUri, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                 } catch (CmsException e) {
