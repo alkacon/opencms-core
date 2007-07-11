@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/07/11 09:30:03 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2007/07/11 13:46:29 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,7 +349,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 if (CmsStringUtil.isNotEmpty(targetUri)) {
                     String internalUri = null;
                     if (!CmsMacroResolver.isMacro(targetUri)) {
-                        CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                        internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
                     }
                     // HACK: to distinguish link parameters the link itself has to end with '&' or '?'
                     // another solution should be a kind of macro...
