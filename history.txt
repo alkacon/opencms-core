@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/11 11:05:28 $
- * Version: $Revision: 1.837 $
+ * Date   : $Date: 2007/07/11 12:24:21 $
+ * Version: $Revision: 1.838 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ OpenCms 7.0.1 - July 11, 2007
 * Fixed FCKeditor issue gallery buttons not working after pressing save
 - Permissions column in explorer shows the permissions taking into account the roles
 * Fixed issue 1459: Wrong default value for property content-conversion
+! Added favicon for OpenCms workplace login page
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
