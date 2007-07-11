@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/07/05 12:17:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/11 11:00:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.0
  */
@@ -688,7 +688,7 @@ public class CmsProgressWidget {
         m_threads.put(getKey(), thread);
         thread.start();
 
-        // clean up abonded threads
+        // clean up abandoned threads
         Iterator iter = m_threads.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry)iter.next();

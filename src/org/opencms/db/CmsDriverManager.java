@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/09 12:34:58 $
- * Version: $Revision: 1.582 $
+ * Date   : $Date: 2007/07/11 10:59:33 $
+ * Version: $Revision: 1.583 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -6063,7 +6063,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
                 }
             } else if (search) {
-                // result not cached, look it up recursivly with search enabled
+                // result not cached, look it up recursively with search enabled
                 String cacheKey3 = getCacheKey(key, search, dbc.currentProject().getUuid(), resource.getRootPath());
                 value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey3);
 
