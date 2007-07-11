@@ -6,18 +6,16 @@
       <links>
         <link name="link0" internal="true" type="A">
           <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
-          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
         <link name="link1" internal="false" type="A">
-          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+          <target><![CDATA[http://bugzilla.opencms.org/]]></target>
         </link>
       </links>
       <content><![CDATA[<h1>Release Notes for OpenCms 7.0.1</h1>
-<p>July 11, 2007: This is the final release of OpenCms 7.0.1. OpenCms 7 is a major upgrade, and it
-vastly expands the features of OpenCms 6.</p>
-<h2>
-<strong>Features of the OpenCms 7 release</strong>
-</h2>
+<p>July 11, 2007: This is the release of OpenCms 7.0.1. OpenCms 7 is a major upgrade, and it vastly
+expands the features of OpenCms 6. Version 7.0.1 is a bugfix release that fixes a critical issues
+present in the first 7.0.0 release, as well as a number of other issues.</p>
+<h2><strong>Features of the OpenCms 7 release</strong></h2>
 <ul>
 <li>An update Wizard for OpenCms 6 installations on MySQL and Oracle&nbsp;is available.</li>
 <li>Support for the PostgreSQL database now included.</li>
@@ -58,49 +56,57 @@ moved or renamed.</li>
 <li>The core database structure has been optimized.</li>
 <li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
 </ul>
-<h2>Fixed issues and improvements of OpenCms 7.0.1</h2>
+<h2>Fixed issues and improvements in OpenCms 7.0.1</h2>
 <ul>
-<li>Fixed bug switching on/off descriptions in new resource dialog</li>
-<li>Fixed issue forgetting the selected resources while creating a new project</li>
-<li>Fixed issue not displaying project state flag in explorer view when resources not locked</li>
-<li>Fixed issue with lost relations on folders</li>
-<li>Fixed issue being unable to edit permissions outside of the /system/ folder</li>
-<li>Fixed issue with upload applet failing when uploading large amounts of files&nbsp;</li>
-<li>Fixed display issue with resources across sites in the show sibling and show relations
-dialogs</li>
-<li>Fixed issue with history displaying control code for xmlpages and XML contents</li>
-<li>Updated MySql driver to work with versions 4.0.x</li>
-<li>Fixed issue showing the lock dialog during publishing in some irrelevant cases</li>
-<li>Fixed issue with wrong resource filter preventing permission check on deleted resources</li>
-<li>Fixed issue forcing display widgets to be valid</li>
-<li>Fixed FCKeditor issue gallery buttons not working after pressing save</li>
-<li>Fixed issue 1459: Wrong default value for property content-conversion</li>
-<li>Prevent displaying temporary files in WebDAV</li>
-<li>Improved handling of overwriting inherited locks (including disabling menu entries)</li>
-<li>Added favicon for OpenCms workplace login page</li>
-<li>Added jdbc driver for MsSql</li>
-<li>Permissions column in explorer shows the permissions taking into account the roles</li>
-<li>Updated alkacon-simapi.jar to version 0.9.5, fixed an issue with scaling of screenshots</li>
+<li>Fixed critical issue that makes it impossible to apply permissions to resources outside the
+/system/ folder.</li>
+<li>Fixed issue with broken support for MySQL version 4.0.</li>
+<li>Fixed issue with project state flag not displaying correctly in explorer view when resources
+are not locked.</li>
+<li>Fixed issue with upload applet failing when uploading large amounts of files.</li>
+<li>Fixed issue with display of resources across sites in the "show siblings" and "show relations"
+dialogs.</li>
+<li>Fixed issue with lost relations on folders.</li>
+<li>Fixed issue with history displaying only control code for xmlpages and XML contents.</li>
+<li>Fixed issue with wrong resource filter preventing permission check on deleted resources.</li>
+<li>Fixed issue with an empty lock check dialog appearing in some special cases when
+publishing.</li>
+<li>Fixed issue with switching on/off descriptions in the "create new resource" dialog.</li>
+<li>Fixed issue with gallery buttons not working after pressing "save" in FCKeditor.</li>
+<li>Fixed issue with "create new project" dialog in Admin view forgetting the selected resources
+for the project.</li>
+<li>Fixed issue with CmsDisplayWidget validation sometimes failing, validation is not longer
+performed.</li>
+<li>Fixed issue 1459: Wrong default value for property content-conversion.</li>
+<li>Improvement: Prevent displaying of temporary files in WebDAV repository view.</li>
+<li>Improvement: Improved handling of overwriting inherited locks (including disabling menu
+entries).</li>
+<li>Improvement: Added favicon.ico for OpenCms Workplace login page.</li>
+<li>Improvement: Permissions column in explorer now also takes into account the users roles.</li>
+<li>Improvement: Added jdts.jar by default, this is the JDBC driver for Microsoft SQL Server.</li>
+<li>Improvement: Updated alkacon-simapi.jar to version 0.9.5, fixed an issue with scaling of
+screenshots</li>
 </ul>
-<h2>Backward compatibility with version 6</h2>
-<p>We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.1 release. In
-case you are using one of the previous development versions (OpenCms&nbsp;7 alpha, beta or release
-candidates), there have been a lot of issues fixed in the final release.</p>
-<p>OpenCms 7.0.1 is largely&nbsp;backward compatible with version 6. Most templates and other
-OpenCms developed code from version 6 should work "out of the box" with version 7. A number of API
-methods from OpenCms 6 have been marked as "deprecated". In case you have made extensive use of
-OpenCms internal classes and APIs from version 6, there may be some changes required in your code.
-However, in most cases this should not take longer than a couple of hours.</p>
+<h2>Backward compatibility</h2>
+<p>We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.1 release.
+OpenCms 7.0.0 has a critical bug that makes it impossible to apply permissions to resources outside
+the /system/ folder. In case you are using one of the previous versions (OpenCms 7 alpha, beta or
+release candidates), there have been a lot of issues fixed in the final release.</p>
+<p>OpenCms 7 is largely&nbsp;backward compatible with version 6. Most templates and other OpenCms
+developed code from version 6 should work "out of the box" with version 7. A number of API methods
+from OpenCms 6 have been marked as "deprecated". In case you have made extensive use of OpenCms
+internal classes and APIs from version 6, there may be some changes required in your code. However,
+in most cases this should not take longer than a couple of hours.</p>
 <p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have
 to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates run without
 change. You must edit the "web-app" node in the OpenCms web.xml file to do that.</p>
 <h2>Compatibility with Java versions, Servlet containers and Databases</h2>
-<p>OpenCms 7.0.1 has been written and tested using Java 1.5 / 1.6. It works well with Java 1.4
-using the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have tested
-only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it
-should in theory run with all compliant JVMs.</p>
+<p>OpenCms 7 has been written and tested using Java 1.5 / 1.6. It works well with Java 1.4 using
+the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have tested only
+with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it should
+in theory run with all compliant JVMs.</p>
 <p>We have tested this release on the Tomcat servlet engine. OpenCms 7.0.0 works "out of the box"
-with Tomcat 5.5, which we recommend. Others have reported deploying 7.0.1 development versions
+with Tomcat 5.5, which we recommend. Others have reported deploying 7 development versions
 successfully on other servlet containers like JBoss, BEA and Websphere. We appreciate any feedback
 regarding other servlet containers.</p>
 <p>On the database side, we have tested with MySQL 4.0.x, MySQL 4.1, MySQL 5.x, Oracle 9.x and
@@ -110,16 +116,14 @@ supports MySQL and Oracle.</p>
 <p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
 tag numbers&nbsp;for all OpenCms 7&nbsp;final&nbsp;releases&nbsp;are "build_7_0_x", so the 7.0.1
 release is tagged "build_7_0_1". Development of maintenance releases (like 7.0.1) is currently done
-in CVS HEAD. OpenCms&nbsp;7 alpha had CVS build tags 6.5.x, the&nbsp;6 beta did use 6.7.x, and
-the&nbsp;7 RC had 6.9.x.</p>
+in CVS HEAD.</p>
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core
-development team on the 
-<a href="%(link0)" target="_self">opencms-dev</a> mailing list in
-case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: 
-<a href="%(link1)" target="extern">http://www.opencms.org/bugzilla/
-<br /></a></p>
+development team on the <a href="%(link0)" target="extern">opencms-dev</a> mailing list 
+in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)"
+target="extern">http://bugzilla.opencms.org/<br>
+</a></p>
 <p>Thank you for using OpenCms and have fun with OpenCms 7.0.1 :-)</p>]]></content>
     </element>
   </page>
