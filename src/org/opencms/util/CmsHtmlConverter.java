@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2007/07/04 16:57:30 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/07/11 09:42:33 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,22 +60,22 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlConverter {
 
-    /** Param value for disabled mode. **/
+    /** Parameter value for disabled mode. **/
     public static final String PARAM_DISABLED = CmsStringUtil.FALSE;
 
-    /** Param value for enabled mode. **/
+    /** Parameter value for enabled mode. **/
     public static final String PARAM_ENABLED = CmsStringUtil.TRUE;
 
-    /** Param value for WORD mode. **/
+    /** Parameter value for WORD mode. **/
     public static final String PARAM_WORD = "cleanup";
 
-    /** Param value for XHTML mode. **/
+    /** Parameter value for XHTML mode. **/
     public static final String PARAM_XHTML = "xhtml";
 
     /** The log object for this class. */
@@ -181,7 +181,7 @@ public class CmsHtmlConverter {
                 resourceName,
                 CmsPropertyDefinition.PROPERTY_CONTENT_CONVERSION,
                 true);
-            contentConversion = contentConversionProperty.getValue();
+            contentConversion = contentConversionProperty.getValue(CmsHtmlConverter.PARAM_DISABLED);
         } catch (CmsException e) {
             // if there was an error reading the property, choose a default value
             contentConversion = CmsHtmlConverter.PARAM_DISABLED;
