@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/11 09:27:00 $
- * Version: $Revision: 1.835 $
+ * Date   : $Date: 2007/07/11 09:32:28 $
+ * Version: $Revision: 1.836 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,12 @@ OpenCms 7.0.1 - July 11, 2007
 * Fixed display issue with resources across sites in the show sibling and show relations dialogs 
 - Updated alkacon-simapi.jar to version 0.9.5, fixed an issue with scaling of screenshots
 * Fixed issue with history displaying control code for xmlpages and XML contents
-* Updated MySql4.0 driver
+* Updated MySql driver to work with versions 4.0.x
 * Fixed issue showing the lock dialog during publishing in some irrelevant cases
 * Fixed issue with wrong resource filter preventing permission check on deleted resources
 * Fixed issue forcing display widgets to be valid
 * Fixed FCKeditor issue gallery buttons not working after pressing save
+- Permissions column in explorer shows the permissions taking into account the roles
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
